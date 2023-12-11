@@ -1,6 +1,6 @@
 import { DisplayObject } from "pixi.js";
-import { lerp } from "../../../../common/src/utils/math";
-import { type Game } from "../game";
+import { lerp } from "../../../../common/src/utils/math.js";
+import { type Game } from "../game.js";
 
 export class Tween<T> {
     readonly game: Game;

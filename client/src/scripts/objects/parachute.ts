@@ -1,14 +1,14 @@
-import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { lerp } from "../../../../common/src/utils/math";
-import type { ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector } from "../../../../common/src/utils/vector";
-import type { Game } from "../game";
-import { GameObject } from "./gameObject";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import type { GameSound } from "../utils/soundManager";
-import { Tween } from "../utils/tween";
+import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants.js";
+import { lerp } from "../../../../common/src/utils/math.js";
+import type { ObjectsNetData } from "../../../../common/src/utils/objectsSerializations.js";
+import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random.js";
+import { FloorTypes } from "../../../../common/src/utils/terrain.js";
+import { v, type Vector } from "../../../../common/src/utils/vector.js";
+import type { Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi.js";
+import type { GameSound } from "../utils/soundManager.js";
+import { Tween } from "../utils/tween.js";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;

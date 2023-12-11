@@ -1,20 +1,20 @@
 // noinspection JSConstantReassignment
 import $ from "jquery";
 
-import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
-import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
-import { Loots } from "../../../../../common/src/definitions/loots";
-import { Scopes } from "../../../../../common/src/definitions/scopes";
-import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
-import { absMod } from "../../../../../common/src/utils/math";
-import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
-import { v } from "../../../../../common/src/utils/vector";
-import { type Game } from "../../game";
-import { type InputManager } from "../inputManager";
-import { type PossibleError, type Stringable } from "./gameConsole";
-import { ConVar } from "./variables";
+import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants.js";
+import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems.js";
+import { Loots } from "../../../../../common/src/definitions/loots.js";
+import { Scopes } from "../../../../../common/src/definitions/scopes.js";
+import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket.js";
+import { absMod } from "../../../../../common/src/utils/math.js";
+import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions.js";
+import { v } from "../../../../../common/src/utils/vector.js";
+import { type Game } from "../../game.js";
+import { type InputManager } from "../inputManager.js";
+import { type PossibleError, type Stringable } from "./gameConsole.js";
+import { ConVar } from "./variables.js";
 import { Graphics, Rectangle, Sprite } from "pixi.js";
-import { COLORS } from "../constants";
+import { COLORS } from "../constants.js";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 

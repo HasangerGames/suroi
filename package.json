@@ -3,6 +3,7 @@
   "version": "0.14.0",
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "pnpm -r build",
     "build:client": "cd client && pnpm build",

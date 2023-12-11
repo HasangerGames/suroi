@@ -1,7 +1,7 @@
-import { GameConstants, PacketType } from "../constants";
-import { type EmoteDefinition, Emotes } from "../definitions/emotes";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { GameConstants, PacketType } from "../constants.js";
+import { type EmoteDefinition, Emotes } from "../definitions/emotes.js";
+import { type SuroiBitStream } from "../utils/suroiBitStream.js";
+import { Packet } from "./packet.js";
 
 export class JoinedPacket extends Packet {
     override readonly allocBytes = 34;

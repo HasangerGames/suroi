@@ -1,9 +1,9 @@
-import pkg from "../package.json";
+import pkg from "../package.json" assert { type: "json" };
 
 import { defineConfig } from "vite";
 
-import prodConfig from "./vite/vite.prod";
-import devConfig from "./vite/vite.dev";
+import prodConfig from "./vite/vite.prod.js";
+import devConfig from "./vite/vite.dev.js";
 
 import { existsSync, rmSync } from "fs";
 import { dirname, resolve } from "path";

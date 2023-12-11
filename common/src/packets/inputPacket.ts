@@ -1,9 +1,9 @@
-import { GameConstants, InputActions, PacketType } from "../constants";
-import { type HealingItemDefinition } from "../definitions/healingItems";
-import { Loots } from "../definitions/loots";
-import { type ScopeDefinition } from "../definitions/scopes";
-import { type SuroiBitStream, calculateEnumPacketBits } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { GameConstants, InputActions, PacketType } from "../constants.js";
+import { type HealingItemDefinition } from "../definitions/healingItems.js";
+import { Loots } from "../definitions/loots.js";
+import { type ScopeDefinition } from "../definitions/scopes.js";
+import { type SuroiBitStream, calculateEnumPacketBits } from "../utils/suroiBitStream.js";
+import { Packet } from "./packet.js";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 

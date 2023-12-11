@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "fs";
-import { type Punishment } from "./server";
+import { type Punishment } from "./server.js";
 
 const rawPunishments = readFileSync("punishments.json", "utf8");
 const punishments: Record<string, Punishment> = rawPunishments === "" ? {} : JSON.parse(rawPunishments);

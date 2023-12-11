@@ -1,10 +1,10 @@
 import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet, type ISpritesheetData } from "pixi.js";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
-import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE } from "./constants";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox.js";
+import { v, type Vector, vMul } from "../../../../common/src/utils/vector.js";
+import { MODE, PIXI_SCALE } from "./constants.js";
 
 import { atlases } from "virtual:spritesheets-jsons";
-import { Reskins } from "../../../../common/src/definitions/modes";
+import { Reskins } from "../../../../common/src/definitions/modes.js";
 
 const textures: Record<string, Texture> = {};
 

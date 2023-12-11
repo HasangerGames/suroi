@@ -1,4 +1,4 @@
-import pkg from "../../package.json";
+import pkg from "../../package.json" assert { type: "json" };
 
 import { splitVendorChunkPlugin, type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";

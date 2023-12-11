@@ -7,32 +7,32 @@ import {
     PlayerActions,
     SpectateActions,
     ZIndexes
-} from "../../../../common/src/constants";
-import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
-import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
-import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GameObject } from "./gameObject";
-import { type GameSound } from "../utils/soundManager";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { Obstacle } from "./obstacle";
-import { type ParticleEmitter } from "./particles";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
-import { type SkinDefinition } from "../../../../common/src/definitions/skins";
-import type { Timeout } from "../../../../common/src/utils/misc";
+} from "../../../../common/src/constants.js";
+import { type ArmorDefinition } from "../../../../common/src/definitions/armors.js";
+import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks.js";
+import { type EmoteDefinition } from "../../../../common/src/definitions/emotes.js";
+import { type GunDefinition } from "../../../../common/src/definitions/guns.js";
+import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems.js";
+import { Loots } from "../../../../common/src/definitions/loots.js";
+import { type MeleeDefinition } from "../../../../common/src/definitions/melees.js";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox.js";
+import { FloorTypes } from "../../../../common/src/utils/terrain.js";
+import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math.js";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions.js";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations.js";
+import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random.js";
+import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
+import { type GameSound } from "../utils/soundManager.js";
+import { EaseFunctions, Tween } from "../utils/tween.js";
+import { Obstacle } from "./obstacle.js";
+import { type ParticleEmitter } from "./particles.js";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi.js";
+import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants.js";
+import { SpectatePacket } from "../../../../common/src/packets/spectatePacket.js";
+import { type SkinDefinition } from "../../../../common/src/definitions/skins.js";
+import type { Timeout } from "../../../../common/src/utils/misc.js";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;

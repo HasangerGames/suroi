@@ -1,6 +1,6 @@
-import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type Player } from "./player";
+import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes.js";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type Player } from "./player.js";
 
 export class Emote {
     readonly definition: EmoteDefinition;

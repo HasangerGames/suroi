@@ -1,10 +1,10 @@
 import $ from "jquery";
 
-import { clamp } from "../../../../../common/src/utils/math";
-import { type Game } from "../../game";
-import { type Command } from "./commands";
-import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
-import { ConVar, ConsoleVariables, type CVarFlags } from "./variables";
+import { clamp } from "../../../../../common/src/utils/math.js";
+import { type Game } from "../../game.js";
+import { type Command } from "./commands.js";
+import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars.js";
+import { ConVar, ConsoleVariables, type CVarFlags } from "./variables.js";
 
 enum MessageType {
     Log = "log",

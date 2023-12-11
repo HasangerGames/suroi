@@ -1,15 +1,15 @@
-import { Explosions, type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/math";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { randomRotation } from "../../../common/src/utils/random";
-import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { type GameObject } from "./gameObject";
-import { Decal } from "./decal";
-import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
+import { Explosions, type ExplosionDefinition } from "../../../common/src/definitions/explosions.js";
+import { CircleHitbox } from "../../../common/src/utils/hitbox.js";
+import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/math.js";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { randomRotation } from "../../../common/src/utils/random.js";
+import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { type GameObject } from "./gameObject.js";
+import { Decal } from "./decal.js";
+import { Loot } from "./loot.js";
+import { Obstacle } from "./obstacle.js";
+import { Player } from "./player.js";
 
 export class Explosion {
     readonly game: Game;

@@ -1,6 +1,6 @@
-import { type LootDefinition, Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { type ItemType, type WearerAttributes, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type Player } from "../objects/player";
+import { type LootDefinition, Loots, type WeaponDefinition } from "../../../common/src/definitions/loots.js";
+import { type ItemType, type WearerAttributes, type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type Player } from "../objects/player.js";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*

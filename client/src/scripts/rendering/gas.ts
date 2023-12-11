@@ -1,13 +1,13 @@
 import $ from "jquery";
 
 import { Graphics } from "pixi.js";
-import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants";
-import { clamp, lerp, vLerp } from "../../../../common/src/utils/math";
-import { v, type Vector, vMul, vClone } from "../../../../common/src/utils/vector";
-import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
-import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
-import { formatDate } from "../utils/misc";
-import { type Game } from "../game";
+import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants.js";
+import { clamp, lerp, vLerp } from "../../../../common/src/utils/math.js";
+import { v, type Vector, vMul, vClone } from "../../../../common/src/utils/vector.js";
+import { COLORS, UI_DEBUG_MODE } from "../utils/constants.js";
+import { type UpdatePacket } from "../../../../common/src/packets/updatePacket.js";
+import { formatDate } from "../utils/misc.js";
+import { type Game } from "../game.js";
 
 const kOverdraw = 100 * 1000;
 const kSegments = 512;

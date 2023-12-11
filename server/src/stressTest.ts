@@ -1,13 +1,13 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { InputActions, PacketType } from "../../common/src/constants";
-import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
-import { Skins } from "../../common/src/definitions/skins";
-import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Loots } from "../../common/src/definitions/loots";
-import { type InputAction, InputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
+import { InputActions, PacketType } from "../../common/src/constants.js";
+import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes.js";
+import { Skins } from "../../common/src/definitions/skins.js";
+import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random.js";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream.js";
+import { Loots } from "../../common/src/definitions/loots.js";
+import { type InputAction, InputPacket } from "../../common/src/packets/inputPacket.js";
+import { JoinPacket } from "../../common/src/packets/joinPacket.js";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket.js";
 
 const config = {
     address: "127.0.0.1:8000",

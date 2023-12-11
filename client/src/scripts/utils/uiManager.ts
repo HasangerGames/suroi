@@ -1,13 +1,13 @@
-import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
-import { Ammos } from "../../../../common/src/definitions/ammos";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
-import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type Game } from "../game";
-import { UI_DEBUG_MODE } from "./constants";
-import { formatDate } from "./misc";
+import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants.js";
+import { Ammos } from "../../../../common/src/definitions/ammos.js";
+import { Loots } from "../../../../common/src/definitions/loots.js";
+import { type ScopeDefinition } from "../../../../common/src/definitions/scopes.js";
+import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket.js";
+import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket.js";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions.js";
+import { type Game } from "../game.js";
+import { UI_DEBUG_MODE } from "./constants.js";
+import { formatDate } from "./misc.js";
 import $ from "jquery";
 
 function safeRound(value: number): number {

@@ -2,17 +2,17 @@ import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 
-import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
-import { v, vDiv } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { defaultBinds } from "./console/defaultClientCVars";
-import { type GameSettings } from "./console/gameConsole";
-import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { InputActions } from "../../../../common/src/constants";
-import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { type InputAction, InputPacket } from "../../../../common/src/packets/inputPacket";
+import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math.js";
+import { v, vDiv } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { defaultBinds } from "./console/defaultClientCVars.js";
+import { type GameSettings } from "./console/gameConsole.js";
+import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants.js";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions.js";
+import { InputActions } from "../../../../common/src/constants.js";
+import { Scopes } from "../../../../common/src/definitions/scopes.js";
+import { Loots } from "../../../../common/src/definitions/loots.js";
+import { type InputAction, InputPacket } from "../../../../common/src/packets/inputPacket.js";
 
 export class InputManager {
     readonly game: Game;

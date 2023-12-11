@@ -1,5 +1,5 @@
-import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions, type ReferenceTo } from "../utils/objectDefinitions";
-import { type DecalDefinition } from "./decals";
+import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions, type ReferenceTo } from "../utils/objectDefinitions.js";
+import { type DecalDefinition } from "./decals.js";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number

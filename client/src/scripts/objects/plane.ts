@@ -1,10 +1,10 @@
-import { vAdd, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "../utils/pixi";
-import { type Game } from "../game";
-import { distanceSquared, vLerp, velFromAngle } from "../../../../common/src/utils/math";
-import { PIXI_SCALE } from "../utils/constants";
-import { GameConstants, ZIndexes } from "../../../../common/src/constants";
-import type { GameSound } from "../utils/soundManager";
+import { vAdd, type Vector, vMul } from "../../../../common/src/utils/vector.js";
+import { SuroiSprite } from "../utils/pixi.js";
+import { type Game } from "../game.js";
+import { distanceSquared, vLerp, velFromAngle } from "../../../../common/src/utils/math.js";
+import { PIXI_SCALE } from "../utils/constants.js";
+import { GameConstants, ZIndexes } from "../../../../common/src/constants.js";
+import type { GameSound } from "../utils/soundManager.js";
 
 export class Plane {
     game: Game;

@@ -1,6 +1,6 @@
-import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { Explosions } from "./explosions";
-import { Guns } from "./guns";
+import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions.js";
+import { Explosions } from "./explosions.js";
+import { Guns } from "./guns.js";
 
 export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 import { Color } from "pixi.js";
-import { type ColorKeys, Modes } from "../../../../common/src/definitions/modes";
-import { Config } from "../config";
+import { type ColorKeys, Modes } from "../../../../common/src/definitions/modes.js";
+import { Config } from "../config.js";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;

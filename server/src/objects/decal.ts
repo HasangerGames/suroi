@@ -1,11 +1,11 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { Decals, type DecalDefinition } from "../../../common/src/definitions/decals";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { randomRotation } from "../../../common/src/utils/random";
-import { type Vector } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GameObject } from "./gameObject";
+import { ObjectCategory } from "../../../common/src/constants.js";
+import { Decals, type DecalDefinition } from "../../../common/src/definitions/decals.js";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations.js";
+import { randomRotation } from "../../../common/src/utils/random.js";
+import { type Vector } from "../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
 
 export class Decal extends GameObject<ObjectCategory.Decal> {
     override readonly type = ObjectCategory.Decal;

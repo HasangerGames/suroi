@@ -1,6 +1,6 @@
 import { mergeConfig, type UserConfig } from "vite";
 
-import common from "./vite.common";
+import common from "./vite.common.js";
 
 const config: UserConfig = {
     server: {

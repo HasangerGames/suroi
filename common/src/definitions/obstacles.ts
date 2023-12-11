@@ -1,15 +1,15 @@
-import { ZIndexes } from "../constants";
-import { type Variation } from "../typings";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
+import { ZIndexes } from "../constants.js";
+import { type Variation } from "../typings.js";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox.js";
 import {
     type ObjectDefinition,
     ObjectDefinitions,
     ObstacleSpecialRoles,
     MapObjectSpawnMode,
     type ReferenceTo
-} from "../utils/objectDefinitions";
-import { v, type Vector } from "../utils/vector";
-import { ContainerTints } from "./buildings";
+} from "../utils/objectDefinitions.js";
+import { v, type Vector } from "../utils/vector.js";
+import { ContainerTints } from "./buildings.js";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]

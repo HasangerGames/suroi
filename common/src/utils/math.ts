@@ -1,8 +1,8 @@
-import { type ObstacleDefinition } from "../definitions/obstacles";
-import { type Orientation } from "../typings";
-import { RectangleHitbox } from "./hitbox";
-import { ObstacleSpecialRoles } from "./objectDefinitions";
-import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector";
+import { type ObstacleDefinition } from "../definitions/obstacles.js";
+import { type Orientation } from "../typings.js";
+import { RectangleHitbox } from "./hitbox.js";
+import { ObstacleSpecialRoles } from "./objectDefinitions.js";
+import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector.js";
 
 /**
  * Draws a line between two points and returns that line's angle

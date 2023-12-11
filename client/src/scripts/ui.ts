@@ -1,18 +1,18 @@
 import $ from "jquery";
-import { UI_DEBUG_MODE } from "./utils/constants";
-import { requestFullscreen } from "./utils/misc";
-import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
+import { UI_DEBUG_MODE } from "./utils/constants.js";
+import { requestFullscreen } from "./utils/misc.js";
+import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants.js";
+import { Scopes } from "../../../common/src/definitions/scopes.js";
+import { HealingItems, HealType } from "../../../common/src/definitions/healingItems.js";
 import { isMobile } from "pixi.js";
-import { Ammos } from "../../../common/src/definitions/ammos";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { type Game } from "./game";
-import { Skins } from "../../../common/src/definitions/skins";
-import { body, createDropdown } from "./uiHelpers";
-import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
+import { Ammos } from "../../../common/src/definitions/ammos.js";
+import { Emotes } from "../../../common/src/definitions/emotes.js";
+import { type Game } from "./game.js";
+import { Skins } from "../../../common/src/definitions/skins.js";
+import { body, createDropdown } from "./uiHelpers.js";
+import { Crosshairs, getCrosshair } from "./utils/crosshairs.js";
+import { SpectatePacket } from "../../../common/src/packets/spectatePacket.js";
+import type { CVarTypeMapping } from "./utils/console/defaultClientCVars.js";
 import { sound } from "@pixi/sound";
 
 export function setupUI(game: Game): void {

@@ -1,6 +1,6 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { RotationMode } from "./obstacles";
-import { ZIndexes } from "../constants";
+import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions.js";
+import { RotationMode } from "./obstacles.js";
+import { ZIndexes } from "../constants.js";
 
 export interface DecalDefinition extends ObjectDefinition {
     readonly image?: string

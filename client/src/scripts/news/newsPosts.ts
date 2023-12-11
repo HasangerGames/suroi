@@ -1,5 +1,5 @@
 /* eslint-disable quotes,@typescript-eslint/quotes */
-import { type NewsPost } from "./newsHelper";
+import { type NewsPost } from "./newsHelper.js";
 
 export const news: NewsPost[] = [
     {

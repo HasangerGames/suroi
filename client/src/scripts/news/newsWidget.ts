@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-import { news } from "./newsPosts";
+import { news } from "./newsPosts.js";
 
 let newsText = "";
 for (const newsPost of news.slice(0, 5)) {

@@ -3,11 +3,11 @@ import {
     GameConstants,
     ObjectCategory,
     PacketType
-} from "../constants";
-import { RotationMode } from "../definitions/obstacles";
-import { type Orientation, type Variation } from "../typings";
-import { normalizeAngle } from "./math";
-import { type Vector } from "./vector";
+} from "../constants.js";
+import { RotationMode } from "../definitions/obstacles.js";
+import { type Orientation, type Variation } from "../typings.js";
+import { normalizeAngle } from "./math.js";
+import { type Vector } from "./vector.js";
 
 export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
 

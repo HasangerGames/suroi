@@ -1,15 +1,15 @@
-import { AnimationType, FireMode } from "../../../common/src/constants";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
-import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
-import { Obstacle } from "../objects/obstacle";
-import { type Player } from "../objects/player";
-import { ReloadAction } from "./action";
-import { InventoryItem } from "./inventoryItem";
-import { type Timeout } from "../../../common/src/utils/misc";
+import { AnimationType, FireMode } from "../../../common/src/constants.js";
+import { type GunDefinition } from "../../../common/src/definitions/guns.js";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox.js";
+import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math.js";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions.js";
+import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random.js";
+import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector.js";
+import { Obstacle } from "../objects/obstacle.js";
+import { type Player } from "../objects/player.js";
+import { ReloadAction } from "./action.js";
+import { InventoryItem } from "./inventoryItem.js";
+import { type Timeout } from "../../../common/src/utils/misc.js";
 
 /**
  * A class representing a firearm

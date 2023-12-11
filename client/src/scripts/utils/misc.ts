@@ -1,4 +1,4 @@
-import { normalizeAngle } from "../../../../common/src/utils/math";
+import { normalizeAngle } from "../../../../common/src/utils/math.js";
 
 export function orientationToRotation(orientation: number): number {
     return -normalizeAngle(orientation * (Math.PI / 2));

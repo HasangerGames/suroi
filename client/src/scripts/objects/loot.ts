@@ -1,18 +1,18 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
-import { ArmorType } from "../../../../common/src/definitions/armors";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { type Vector } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GameObject } from "./gameObject";
-import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Player } from "./player";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants.js";
+import { type AmmoDefinition } from "../../../../common/src/definitions/ammos.js";
+import { ArmorType } from "../../../../common/src/definitions/armors.js";
+import { type LootDefinition } from "../../../../common/src/definitions/loots.js";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox.js";
+import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions.js";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations.js";
+import { FloorTypes } from "../../../../common/src/utils/terrain.js";
+import { type Vector } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
+import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants.js";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi.js";
+import { EaseFunctions, Tween } from "../utils/tween.js";
+import { type Player } from "./player.js";
 
 export class Loot extends GameObject {
     override readonly type = ObjectCategory.Loot;

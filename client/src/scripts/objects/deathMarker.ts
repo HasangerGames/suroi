@@ -1,12 +1,12 @@
 import { Text, type Container } from "pixi.js";
-import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GameObject } from "./gameObject";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Tween } from "../utils/tween";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants.js";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations.js";
+import { type Vector } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi.js";
+import { Tween } from "../utils/tween.js";
+import { FloorTypes } from "../../../../common/src/utils/terrain.js";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;

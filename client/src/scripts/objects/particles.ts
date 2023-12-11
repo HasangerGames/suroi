@@ -1,8 +1,8 @@
-import { lerp } from "../../../../common/src/utils/math";
-import { random, randomRotation } from "../../../../common/src/utils/random";
-import { vAdd, vDiv, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { lerp } from "../../../../common/src/utils/math.js";
+import { random, randomRotation } from "../../../../common/src/utils/random.js";
+import { vAdd, vDiv, type Vector, vMul } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi.js";
 
 export class ParticleManager {
     readonly particles = new Set<Particle>();

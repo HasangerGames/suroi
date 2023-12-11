@@ -1,8 +1,8 @@
-import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ObjectDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { weightedRandom } from "../../../common/src/utils/random";
-import { LootTiers, type WeightedItem } from "../data/lootTables";
-import { ColorStyles, styleText } from "./ansiColoring";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots.js";
+import { type ObjectDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions.js";
+import { weightedRandom } from "../../../common/src/utils/random.js";
+import { LootTiers, type WeightedItem } from "../data/lootTables.js";
+import { ColorStyles, styleText } from "./ansiColoring.js";
 
 export class LootItem {
     constructor(

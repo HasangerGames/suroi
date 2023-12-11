@@ -1,5 +1,5 @@
-import { type PacketType } from "../constants";
-import { SuroiBitStream } from "../utils/suroiBitStream";
+import { type PacketType } from "../constants.js";
+import { SuroiBitStream } from "../utils/suroiBitStream.js";
 
 export abstract class Packet {
     abstract readonly allocBytes: number;

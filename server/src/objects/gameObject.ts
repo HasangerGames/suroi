@@ -1,8 +1,8 @@
-import { type ObjectCategory } from "../../../common/src/constants";
-import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
+import { type ObjectCategory } from "../../../common/src/constants.js";
+import { type Hitbox } from "../../../common/src/utils/hitbox.js";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations.js";
+import { type Vector } from "../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     abstract readonly type: Cat;

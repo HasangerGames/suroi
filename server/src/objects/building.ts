@@ -1,13 +1,13 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { type Orientation } from "../../../common/src/typings";
-import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GameObject } from "./gameObject";
-import { type Obstacle } from "./obstacle";
+import { ObjectCategory } from "../../../common/src/constants.js";
+import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings.js";
+import { type Orientation } from "../../../common/src/typings.js";
+import { type Hitbox } from "../../../common/src/utils/hitbox.js";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations.js";
+import { type Vector } from "../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
+import { type Obstacle } from "./obstacle.js";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;

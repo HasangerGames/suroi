@@ -1,6 +1,6 @@
-import { type RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
-import { clamp } from "../../../common/src/utils/math";
-import { type Vector, v } from "../../../common/src/utils/vector";
+import { type RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox.js";
+import { clamp } from "../../../common/src/utils/math.js";
+import { type Vector, v } from "../../../common/src/utils/vector.js";
 
 interface GameObject {
     readonly id: number

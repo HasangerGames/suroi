@@ -1,8 +1,8 @@
 import $ from "jquery";
-import { Config } from "./config";
-import { Game } from "./game";
-import { loadTextures } from "./utils/pixi";
-import { stringIsPositiveNumber } from "./utils/misc";
+import { Config } from "./config.js";
+import { Game } from "./game.js";
+import { loadTextures } from "./utils/pixi.js";
+import { stringIsPositiveNumber } from "./utils/misc.js";
 
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";

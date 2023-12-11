@@ -1,5 +1,5 @@
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { type LootDefinition } from "../../../common/src/definitions/loots.js";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions.js";
 
 export type WeightedItem =
     (

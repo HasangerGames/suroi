@@ -2,7 +2,7 @@
   "name": "@suroi/server",
   "description": "",
   "private": true,
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/server/src/server.js",

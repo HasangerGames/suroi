@@ -1,9 +1,9 @@
-import { PacketType } from "../constants";
-import { type EmoteDefinition, Emotes } from "../definitions/emotes";
-import { Loots } from "../definitions/loots";
-import { type SkinDefinition } from "../definitions/skins";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { PacketType } from "../constants.js";
+import { type EmoteDefinition, Emotes } from "../definitions/emotes.js";
+import { Loots } from "../definitions/loots.js";
+import { type SkinDefinition } from "../definitions/skins.js";
+import { type SuroiBitStream } from "../utils/suroiBitStream.js";
+import { Packet } from "./packet.js";
 
 export class JoinPacket extends Packet {
     override readonly allocBytes = 24;

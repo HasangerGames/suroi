@@ -1,16 +1,16 @@
-import { GameConstants } from "../../../common/src/constants";
-import { Bullets } from "../../../common/src/definitions/bullets";
-import { BaseBullet } from "../../../common/src/utils/baseBullet";
-import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { normalizeAngle } from "../../../common/src/utils/math";
-import { randomFloat } from "../../../common/src/utils/random";
-import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { type GunItem } from "../inventory/gunItem";
-import { type GameObject } from "./gameObject";
-import { type Explosion } from "./explosion";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
+import { GameConstants } from "../../../common/src/constants.js";
+import { Bullets } from "../../../common/src/definitions/bullets.js";
+import { BaseBullet } from "../../../common/src/utils/baseBullet.js";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox.js";
+import { normalizeAngle } from "../../../common/src/utils/math.js";
+import { randomFloat } from "../../../common/src/utils/random.js";
+import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { type GunItem } from "../inventory/gunItem.js";
+import { type GameObject } from "./gameObject.js";
+import { type Explosion } from "./explosion.js";
+import { Obstacle } from "./obstacle.js";
+import { Player } from "./player.js";
 
 type Weapon = GunItem | Explosion;
 

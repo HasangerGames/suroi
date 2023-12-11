@@ -1,4 +1,4 @@
-import { type Vector } from "../../common/src/utils/vector";
+import { type Vector } from "../../common/src/utils/vector.js";
 
 export enum SpawnMode {
     Normal,

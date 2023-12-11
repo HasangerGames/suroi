@@ -1,12 +1,12 @@
-import { AnimationType, FireMode } from "../../../common/src/constants";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { vAdd, vRotate } from "../../../common/src/utils/vector";
-import { Obstacle } from "../objects/obstacle";
-import { type Player } from "../objects/player";
-import { type GameObject } from "../objects/gameObject";
-import { InventoryItem } from "./inventoryItem";
+import { AnimationType, FireMode } from "../../../common/src/constants.js";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees.js";
+import { CircleHitbox } from "../../../common/src/utils/hitbox.js";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions.js";
+import { vAdd, vRotate } from "../../../common/src/utils/vector.js";
+import { Obstacle } from "../objects/obstacle.js";
+import { type Player } from "../objects/player.js";
+import { type GameObject } from "../objects/gameObject.js";
+import { InventoryItem } from "./inventoryItem.js";
 
 /**
  * A class representing a melee weapon

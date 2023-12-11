@@ -1,7 +1,7 @@
-import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
-import { clamp, distanceToLine, lerp, rayIntersectsPolygon } from "./math";
-import { SeededRandom } from "./random";
-import { v, vAdd, vClone, type Vector, vMul, vNormalizeSafe, vDot, vSub, vLengthSqr, vLength } from "./vector";
+import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox.js";
+import { clamp, distanceToLine, lerp, rayIntersectsPolygon } from "./math.js";
+import { SeededRandom } from "./random.js";
+import { v, vAdd, vClone, type Vector, vMul, vNormalizeSafe, vDot, vSub, vLengthSqr, vLength } from "./vector.js";
 
 export interface FloorDefinition {
     debugColor: number

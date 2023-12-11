@@ -1,11 +1,11 @@
-import { ZIndexes } from "../../../../common/src/constants";
-import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
-import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { ZIndexes } from "../../../../common/src/constants.js";
+import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions.js";
+import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random.js";
+import { FloorTypes } from "../../../../common/src/utils/terrain.js";
+import { v, type Vector } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi.js";
+import { EaseFunctions, Tween } from "../utils/tween.js";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector): void {
     const pixiPos = toPixiCoords(position);

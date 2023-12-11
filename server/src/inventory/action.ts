@@ -1,10 +1,10 @@
-import { PlayerActions } from "../../../common/src/constants";
-import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type Player } from "../objects/player";
-import { type GunItem } from "./gunItem";
+import { PlayerActions } from "../../../common/src/constants.js";
+import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems.js";
+import { Loots } from "../../../common/src/definitions/loots.js";
+import { type Timeout } from "../../../common/src/utils/misc.js";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type Player } from "../objects/player.js";
+import { type GunItem } from "./gunItem.js";
 
 export abstract class Action {
     readonly player: Player;

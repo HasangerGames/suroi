@@ -1,6 +1,6 @@
-import { PacketType } from "../constants";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { PacketType } from "../constants.js";
+import { type SuroiBitStream } from "../utils/suroiBitStream.js";
+import { Packet } from "./packet.js";
 
 export class GameOverPacket extends Packet {
     override readonly allocBytes = 1 << 6;

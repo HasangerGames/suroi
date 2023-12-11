@@ -1,5 +1,5 @@
-import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
-import { defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
+import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole.js";
+import { defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars.js";
 
 export interface CVarFlags {
     readonly archive: boolean

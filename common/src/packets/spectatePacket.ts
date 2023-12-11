@@ -1,6 +1,6 @@
-import { PacketType, SpectateActions } from "../constants";
-import { type SuroiBitStream, calculateEnumPacketBits } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { PacketType, SpectateActions } from "../constants.js";
+import { type SuroiBitStream, calculateEnumPacketBits } from "../utils/suroiBitStream.js";
+import { Packet } from "./packet.js";
 
 const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 

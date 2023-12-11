@@ -1,21 +1,21 @@
 import { Container, Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
-import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../../../common/src/utils/hitbox";
-import { circleCircleIntersection, rectCircleIntersection, velFromAngle } from "../../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import type { Game } from "../game";
-import { GameObject } from "./gameObject";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants.js";
+import { type BuildingDefinition } from "../../../../common/src/definitions/buildings.js";
+import { type Orientation } from "../../../../common/src/typings.js";
+import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../../../common/src/utils/hitbox.js";
+import { circleCircleIntersection, rectCircleIntersection, velFromAngle } from "../../../../common/src/utils/math.js";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations.js";
+import { randomFloat, randomRotation } from "../../../../common/src/utils/random.js";
+import type { Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
 
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector, v, vAdd, vMul, vRotate } from "../../../../common/src/utils/vector";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
-import type { GameSound } from "../utils/soundManager";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants.js";
+import { orientationToRotation } from "../utils/misc.js";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi.js";
+import { EaseFunctions, Tween } from "../utils/tween.js";
+import { type Vector, v, vAdd, vMul, vRotate } from "../../../../common/src/utils/vector.js";
+import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions.js";
+import type { GameSound } from "../utils/soundManager.js";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;

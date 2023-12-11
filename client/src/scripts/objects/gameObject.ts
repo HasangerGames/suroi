@@ -1,13 +1,13 @@
 import { Container, Graphics } from "pixi.js";
-import { GameConstants, type ObjectCategory } from "../../../../common/src/constants";
-import { vLerp } from "../../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { HITBOX_DEBUG_MODE } from "../utils/constants";
-import { toPixiCoords } from "../utils/pixi";
-import type { Timeout } from "../../../../common/src/utils/misc";
-import type { GameSound, SoundOptions } from "../utils/soundManager";
+import { GameConstants, type ObjectCategory } from "../../../../common/src/constants.js";
+import { vLerp } from "../../../../common/src/utils/math.js";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations.js";
+import { v, vClone, type Vector } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { HITBOX_DEBUG_MODE } from "../utils/constants.js";
+import { toPixiCoords } from "../utils/pixi.js";
+import type { Timeout } from "../../../../common/src/utils/misc.js";
+import type { GameSound, SoundOptions } from "../utils/soundManager.js";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;

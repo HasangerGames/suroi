@@ -1,9 +1,9 @@
-import { type BulletDefinition, Bullets } from "../definitions/bullets";
-import { type Hitbox } from "./hitbox";
-import { clamp, distanceSquared } from "./math";
-import { type ReifiableDef } from "./objectDefinitions";
-import { type SuroiBitStream } from "./suroiBitStream";
-import { v, vAdd, vClone, vMul, type Vector } from "./vector";
+import { type BulletDefinition, Bullets } from "../definitions/bullets.js";
+import { type Hitbox } from "./hitbox.js";
+import { clamp, distanceSquared } from "./math.js";
+import { type ReifiableDef } from "./objectDefinitions.js";
+import { type SuroiBitStream } from "./suroiBitStream.js";
+import { v, vAdd, vClone, vMul, type Vector } from "./vector.js";
 
 export interface BulletOptions {
     readonly position: Vector

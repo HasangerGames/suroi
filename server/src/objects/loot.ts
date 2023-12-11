@@ -1,18 +1,18 @@
-import { GameConstants, ObjectCategory, PlayerActions } from "../../../common/src/constants";
-import { ArmorType } from "../../../common/src/definitions/armors";
-import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
-import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { randomRotation } from "../../../common/src/utils/random";
-import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GunItem } from "../inventory/gunItem";
-import { GameObject } from "./gameObject";
-import { Obstacle } from "./obstacle";
-import { type Player } from "./player";
+import { GameConstants, ObjectCategory, PlayerActions } from "../../../common/src/constants.js";
+import { ArmorType } from "../../../common/src/definitions/armors.js";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots.js";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket.js";
+import { CircleHitbox } from "../../../common/src/utils/hitbox.js";
+import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math.js";
+import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations.js";
+import { randomRotation } from "../../../common/src/utils/random.js";
+import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { GunItem } from "../inventory/gunItem.js";
+import { GameObject } from "./gameObject.js";
+import { Obstacle } from "./obstacle.js";
+import { type Player } from "./player.js";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
     override readonly type = ObjectCategory.Loot;

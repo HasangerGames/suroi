@@ -1,6 +1,6 @@
-import { PacketType } from "../constants";
-import { PACKET_TYPE_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { PacketType } from "../constants.js";
+import { PACKET_TYPE_BITS, type SuroiBitStream } from "../utils/suroiBitStream.js";
+import { Packet } from "./packet.js";
 
 export class PingPacket extends Packet {
     override readonly allocBytes = PACKET_TYPE_BITS;

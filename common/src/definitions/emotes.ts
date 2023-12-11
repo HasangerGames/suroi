@@ -1,4 +1,4 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions.js";
 
 export interface EmoteDefinition extends ObjectDefinition {}
 

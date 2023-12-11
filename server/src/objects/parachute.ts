@@ -1,14 +1,14 @@
-import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { angleBetweenPoints, lerp } from "../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../common/src/utils/vector";
-import { type Airdrop, type Game } from "../game";
-import { GameObject } from "./gameObject";
-import { Building } from "./building";
-import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
+import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants.js";
+import { CircleHitbox } from "../../../common/src/utils/hitbox.js";
+import { angleBetweenPoints, lerp } from "../../../common/src/utils/math.js";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations.js";
+import { type Vector } from "../../../common/src/utils/vector.js";
+import { type Airdrop, type Game } from "../game.js";
+import { GameObject } from "./gameObject.js";
+import { Building } from "./building.js";
+import { Loot } from "./loot.js";
+import { Obstacle } from "./obstacle.js";
+import { Player } from "./player.js";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;

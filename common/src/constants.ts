@@ -1,7 +1,7 @@
-import { Ammos } from "./definitions/ammos";
-import { HealingItems } from "./definitions/healingItems";
-import { Scopes } from "./definitions/scopes";
-import { ItemType } from "./utils/objectDefinitions";
+import { Ammos } from "./definitions/ammos.js";
+import { HealingItems } from "./definitions/healingItems.js";
+import { Scopes } from "./definitions/scopes.js";
+import { ItemType } from "./utils/objectDefinitions.js";
 
 export enum ObjectCategory {
     Player,

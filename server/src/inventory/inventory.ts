@@ -1,20 +1,20 @@
-import { DEFAULT_INVENTORY, GameConstants } from "../../../common/src/constants";
-import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { HealType, type HealingItemDefinition, HealingItems } from "../../../common/src/definitions/healingItems";
-import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { absMod } from "../../../common/src/utils/math";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type Player } from "../objects/player";
-import { HealingAction } from "./action";
-import { GunItem } from "./gunItem";
-import { type InventoryItem } from "./inventoryItem";
-import { MeleeItem } from "./meleeItem";
+import { DEFAULT_INVENTORY, GameConstants } from "../../../common/src/constants.js";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos.js";
+import { type ArmorDefinition } from "../../../common/src/definitions/armors.js";
+import { type BackpackDefinition } from "../../../common/src/definitions/backpacks.js";
+import { type GunDefinition } from "../../../common/src/definitions/guns.js";
+import { HealType, type HealingItemDefinition, HealingItems } from "../../../common/src/definitions/healingItems.js";
+import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots.js";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees.js";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes.js";
+import { absMod } from "../../../common/src/utils/math.js";
+import { type Timeout } from "../../../common/src/utils/misc.js";
+import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions.js";
+import { type Player } from "../objects/player.js";
+import { HealingAction } from "./action.js";
+import { GunItem } from "./gunItem.js";
+import { type InventoryItem } from "./inventoryItem.js";
+import { MeleeItem } from "./meleeItem.js";
 
 type ReifiableItem = GunItem | MeleeItem | ReifiableDef<GunDefinition> | ReifiableDef<MeleeDefinition>;
 

@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions.js";
 
 export interface BackpackDefinition extends ItemDefinition {
     readonly itemType: ItemType.Backpack

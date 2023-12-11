@@ -1,12 +1,12 @@
-import { ObjectDefinitions } from "../utils/objectDefinitions";
-import { type AmmoDefinition, Ammos } from "./ammos";
-import { type ArmorDefinition, Armors } from "./armors";
-import { type BackpackDefinition, Backpacks } from "./backpacks";
-import { type GunDefinition, Guns } from "./guns";
-import { type HealingItemDefinition, HealingItems } from "./healingItems";
-import { type MeleeDefinition, Melees } from "./melees";
-import { type ScopeDefinition, Scopes } from "./scopes";
-import { type SkinDefinition, Skins } from "./skins";
+import { ObjectDefinitions } from "../utils/objectDefinitions.js";
+import { type AmmoDefinition, Ammos } from "./ammos.js";
+import { type ArmorDefinition, Armors } from "./armors.js";
+import { type BackpackDefinition, Backpacks } from "./backpacks.js";
+import { type GunDefinition, Guns } from "./guns.js";
+import { type HealingItemDefinition, HealingItems } from "./healingItems.js";
+import { type MeleeDefinition, Melees } from "./melees.js";
+import { type ScopeDefinition, Scopes } from "./scopes.js";
+import { type SkinDefinition, Skins } from "./skins.js";
 
 export type LootDefinition = GunDefinition | AmmoDefinition | MeleeDefinition | HealingItemDefinition | ArmorDefinition | BackpackDefinition | ScopeDefinition | SkinDefinition;
 export type WeaponDefinition = GunDefinition | MeleeDefinition;

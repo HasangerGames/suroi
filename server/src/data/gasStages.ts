@@ -1,4 +1,4 @@
-import { GasState } from "../../../common/src/constants";
+import { GasState } from "../../../common/src/constants.js";
 
 export interface GasStage {
     readonly state: GasState

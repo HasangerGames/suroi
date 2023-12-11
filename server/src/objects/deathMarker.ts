@@ -1,7 +1,7 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { GameObject } from "./gameObject";
-import { type Player } from "./player";
+import { ObjectCategory } from "../../../common/src/constants.js";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations.js";
+import { GameObject } from "./gameObject.js";
+import { type Player } from "./player.js";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;

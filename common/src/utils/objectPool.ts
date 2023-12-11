@@ -1,4 +1,4 @@
-import { ObjectCategory } from "../constants";
+import { ObjectCategory } from "../constants.js";
 
 interface GameObject<T extends ObjectCategory = ObjectCategory> {
     readonly type: T

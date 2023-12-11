@@ -1,11 +1,11 @@
 import { Color } from "pixi.js";
-import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { distance } from "../../../../common/src/utils/math";
-import { type Game } from "../game";
-import { MODE, PIXI_SCALE } from "../utils/constants";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
+import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet.js";
+import { distance } from "../../../../common/src/utils/math.js";
+import { type Game } from "../game.js";
+import { MODE, PIXI_SCALE } from "../utils/constants.js";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi.js";
+import { Obstacle } from "./obstacle.js";
+import { Player } from "./player.js";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;

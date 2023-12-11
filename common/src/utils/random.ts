@@ -1,5 +1,5 @@
-import { lerp } from "./math";
-import { type Vector } from "./vector";
+import { lerp } from "./math.js";
+import { type Vector } from "./vector.js";
 
 /**
  * Generate a random floating-point value.

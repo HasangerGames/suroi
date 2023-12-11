@@ -1,10 +1,10 @@
-import { ObjectCategory, PacketType } from "../constants";
-import { Buildings, type BuildingDefinition } from "../definitions/buildings";
-import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles";
-import { type Variation } from "../typings";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { ObjectCategory, PacketType } from "../constants.js";
+import { Buildings, type BuildingDefinition } from "../definitions/buildings.js";
+import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles.js";
+import { type Variation } from "../typings.js";
+import { type SuroiBitStream } from "../utils/suroiBitStream.js";
+import { type Vector } from "../utils/vector.js";
+import { Packet } from "./packet.js";
 
 type MapObject = {
     readonly position: Vector

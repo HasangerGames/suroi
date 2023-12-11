@@ -1,5 +1,6 @@
-import { Config } from "./config";
-import { version } from "../../package.json";
+import pkg from "../../package.json" assert { type: "json" };
+
+import { Config } from "./config.js";
 
 import {
     App,
@@ -14,11 +15,11 @@ import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import os from "os";
 
 import { URLSearchParams } from "node:url";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Game } from "./game";
-import { type Player } from "./objects/player";
-import { Logger } from "./utils/misc";
-import { clamp } from "../../common/src/utils/math";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream.js";
+import { Game } from "./game.js";
+import { type Player } from "./objects/player.js";
+import { Logger } from "./utils/misc.js";
+import { clamp } from "../../common/src/utils/math.js";
 
 /**
  * Apply CORS headers to a response.
@@ -362,7 +363,7 @@ app.listen(Config.host, Config.port, (): void => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    Logger.log(`Suroi Server v${version}`);
+    Logger.log(`Suroi Server v${pkg.version}`);
     Logger.log(`Listening on ${Config.host}:${Config.port}`);
     Logger.log("Press Ctrl+C to exit.");
 

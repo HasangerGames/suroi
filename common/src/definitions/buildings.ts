@@ -1,10 +1,10 @@
-import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { type FloorTypes } from "../utils/terrain";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo, MapObjectSpawnMode } from "../utils/objectDefinitions";
-import { v, type Vector } from "../utils/vector";
-import { type ObstacleDefinition, type RotationMode } from "./obstacles";
-import { ZIndexes } from "../constants";
+import { type Orientation, type Variation } from "../typings.js";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox.js";
+import { type FloorTypes } from "../utils/terrain.js";
+import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo, MapObjectSpawnMode } from "../utils/objectDefinitions.js";
+import { v, type Vector } from "../utils/vector.js";
+import { type ObstacleDefinition, type RotationMode } from "./obstacles.js";
+import { ZIndexes } from "../constants.js";
 
 interface BuildingObstacle {
     readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>

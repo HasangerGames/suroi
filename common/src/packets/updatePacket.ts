@@ -6,17 +6,17 @@ import {
     type ObjectCategory,
     PacketType,
     GameConstants
-} from "../constants";
-import { type EmoteDefinition, Emotes } from "../definitions/emotes";
-import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
-import { type LootDefinition, Loots, type WeaponDefinition } from "../definitions/loots";
-import { type ScopeDefinition, Scopes } from "../definitions/scopes";
-import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { ItemType } from "../utils/objectDefinitions";
-import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
-import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+} from "../constants.js";
+import { type EmoteDefinition, Emotes } from "../definitions/emotes.js";
+import { type ExplosionDefinition, Explosions } from "../definitions/explosions.js";
+import { type LootDefinition, Loots, type WeaponDefinition } from "../definitions/loots.js";
+import { type ScopeDefinition, Scopes } from "../definitions/scopes.js";
+import { BaseBullet, type BulletOptions } from "../utils/baseBullet.js";
+import { ItemType } from "../utils/objectDefinitions.js";
+import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations.js";
+import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream.js";
+import { type Vector } from "../utils/vector.js";
+import { Packet } from "./packet.js";
 
 interface ObjectFullData {
     readonly id: number

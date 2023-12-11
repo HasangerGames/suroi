@@ -1,5 +1,5 @@
-import { type ExplosionDefinition } from "../definitions/explosions";
-import { type SuroiBitStream } from "./suroiBitStream";
+import { type ExplosionDefinition } from "../definitions/explosions.js";
+import { type SuroiBitStream } from "./suroiBitStream.js";
 
 /**
  * A class representing a list of definitions

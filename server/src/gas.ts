@@ -1,12 +1,12 @@
-import { GasState } from "../../common/src/constants";
-import { clamp, distanceSquared, lerp, vLerp } from "../../common/src/utils/math";
-import { randomPointInsideCircle } from "../../common/src/utils/random";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { Config, GasMode } from "./config";
-import { GasStages } from "./data/gasStages";
-import { type Game } from "./game";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
+import { GasState } from "../../common/src/constants.js";
+import { clamp, distanceSquared, lerp, vLerp } from "../../common/src/utils/math.js";
+import { randomPointInsideCircle } from "../../common/src/utils/random.js";
+import { v, vClone, type Vector } from "../../common/src/utils/vector.js";
+import { Config, GasMode } from "./config.js";
+import { GasStages } from "./data/gasStages.js";
+import { type Game } from "./game.js";
+import { CircleHitbox } from "../../common/src/utils/hitbox.js";
+import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions.js";
 
 export class Gas {
     stage = 0;

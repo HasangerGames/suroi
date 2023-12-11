@@ -1,12 +1,12 @@
-import { Guns } from "../../../../common/src/definitions/guns";
-import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { Materials } from "../../../../common/src/definitions/obstacles";
-import { clamp } from "../../../../common/src/utils/math";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { MODE } from "./constants";
-import { Reskins } from "../../../../common/src/definitions/modes";
+import { Guns } from "../../../../common/src/definitions/guns.js";
+import { HealingItems } from "../../../../common/src/definitions/healingItems.js";
+import { Materials } from "../../../../common/src/definitions/obstacles.js";
+import { clamp } from "../../../../common/src/utils/math.js";
+import { FloorTypes } from "../../../../common/src/utils/terrain.js";
+import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector.js";
+import { type Game } from "../game.js";
+import { MODE } from "./constants.js";
+import { Reskins } from "../../../../common/src/definitions/modes.js";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 

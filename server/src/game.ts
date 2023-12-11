@@ -1,54 +1,54 @@
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Gas } from "./gas";
-import { Grid } from "./utils/grid";
-import { type GameObject } from "./objects/gameObject";
-import { type Emote } from "./objects/emote";
-import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
+import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream.js";
+import { Gas } from "./gas.js";
+import { Grid } from "./utils/grid.js";
+import { type GameObject } from "./objects/gameObject.js";
+import { type Emote } from "./objects/emote.js";
+import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet.js";
 import {
     GameConstants,
     KillFeedMessageType,
     KillType,
     ObjectCategory,
     PacketType
-} from "../../common/src/constants";
-import { Maps } from "./data/maps";
-import { Config, SpawnMode } from "./config";
-import { Map } from "./map";
-import { endGame, newGame, type PlayerContainer } from "./server";
+} from "../../common/src/constants.js";
+import { Maps } from "./data/maps.js";
+import { Config, SpawnMode } from "./config.js";
+import { Map } from "./map.js";
+import { endGame, newGame, type PlayerContainer } from "./server.js";
 import { type WebSocket } from "uWebSockets.js";
-import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { v, vAdd, type Vector } from "../../common/src/utils/vector";
-import { clamp, distanceSquared, velFromAngle } from "../../common/src/utils/math";
-import { Logger, removeFrom } from "./utils/misc";
-import { type LootDefinition } from "../../common/src/definitions/loots";
-import { type GunItem } from "./inventory/gunItem";
-import { IDAllocator } from "./utils/idAllocator";
+import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random.js";
+import { v, vAdd, type Vector } from "../../common/src/utils/vector.js";
+import { clamp, distanceSquared, velFromAngle } from "../../common/src/utils/math.js";
+import { Logger, removeFrom } from "./utils/misc.js";
+import { type LootDefinition } from "../../common/src/definitions/loots.js";
+import { type GunItem } from "./inventory/gunItem.js";
+import { IDAllocator } from "./utils/idAllocator.js";
 import {
     ItemType,
     MapObjectSpawnMode,
     type ReferenceTo,
     type ReifiableDef
-} from "../../common/src/utils/objectDefinitions";
-import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { hasBadWords } from "./utils/badWordFilter";
-import { JoinedPacket } from "../../common/src/packets/joinedPacket";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { PingPacket } from "../../common/src/packets/pingPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
-import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
-import { Obstacle } from "./objects/obstacle";
-import { type ObstacleDefinition, Obstacles } from "../../common/src/definitions/obstacles";
-import { Timeout } from "../../common/src/utils/misc";
-import { Explosion } from "./objects/explosion";
-import { Player } from "./objects/player";
-import { Loot } from "./objects/loot";
-import { Building } from "./objects/building";
-import { Parachute } from "./objects/parachute";
-import { type DeathMarker } from "./objects/deathMarker";
-import { type Decal } from "./objects/decal";
-import { ObjectPool } from "../../common/src/utils/objectPool";
+} from "../../common/src/utils/objectDefinitions.js";
+import { type ExplosionDefinition } from "../../common/src/definitions/explosions.js";
+import { CircleHitbox } from "../../common/src/utils/hitbox.js";
+import { JoinPacket } from "../../common/src/packets/joinPacket.js";
+import { hasBadWords } from "./utils/badWordFilter.js";
+import { JoinedPacket } from "../../common/src/packets/joinedPacket.js";
+import { InputPacket } from "../../common/src/packets/inputPacket.js";
+import { PingPacket } from "../../common/src/packets/pingPacket.js";
+import { SpectatePacket } from "../../common/src/packets/spectatePacket.js";
+import { type KillFeedMessage } from "../../common/src/packets/updatePacket.js";
+import { Obstacle } from "./objects/obstacle.js";
+import { type ObstacleDefinition, Obstacles } from "../../common/src/definitions/obstacles.js";
+import { Timeout } from "../../common/src/utils/misc.js";
+import { Explosion } from "./objects/explosion.js";
+import { Player } from "./objects/player.js";
+import { Loot } from "./objects/loot.js";
+import { Building } from "./objects/building.js";
+import { Parachute } from "./objects/parachute.js";
+import { type DeathMarker } from "./objects/deathMarker.js";
+import { type Decal } from "./objects/decal.js";
+import { ObjectPool } from "../../common/src/utils/objectPool.js";
 
 interface ObjectMapping {
     [ObjectCategory.Player]: Player

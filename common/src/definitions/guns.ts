@@ -1,7 +1,7 @@
-import { FireMode } from "../constants";
-import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions";
-import { v, type Vector } from "../utils/vector";
-import { type AmmoDefinition } from "./ammos";
+import { FireMode } from "../constants.js";
+import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions.js";
+import { v, type Vector } from "../utils/vector.js";
+import { type AmmoDefinition } from "./ammos.js";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun

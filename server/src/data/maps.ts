@@ -1,19 +1,19 @@
-import { type BuildingDefinition, Buildings } from "../../../common/src/definitions/buildings";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type ObstacleDefinition, Obstacles } from "../../../common/src/definitions/obstacles";
-import { type Variation } from "../../../common/src/typings";
-import { circleCollision } from "../../../common/src/utils/math";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { pickRandomInArray, random } from "../../../common/src/utils/random";
-import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
-import { type Map } from "../map";
-import { Guns } from "../../../common/src/definitions/guns";
-import { Player } from "../objects/player";
-import { type PlayerContainer } from "../server";
+import { type BuildingDefinition, Buildings } from "../../../common/src/definitions/buildings.js";
+import { Loots } from "../../../common/src/definitions/loots.js";
+import { type ObstacleDefinition, Obstacles } from "../../../common/src/definitions/obstacles.js";
+import { type Variation } from "../../../common/src/typings.js";
+import { circleCollision } from "../../../common/src/utils/math.js";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions.js";
+import { pickRandomInArray, random } from "../../../common/src/utils/random.js";
+import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector.js";
+import { type Map } from "../map.js";
+import { Guns } from "../../../common/src/definitions/guns.js";
+import { Player } from "../objects/player.js";
+import { type PlayerContainer } from "../server.js";
 import { type WebSocket } from "uWebSockets.js";
-import { type GunItem } from "../inventory/gunItem";
-import { Skins } from "../../../common/src/definitions/skins";
-import { type LootTables } from "./lootTables";
+import { type GunItem } from "../inventory/gunItem.js";
+import { Skins } from "../../../common/src/definitions/skins.js";
+import { type LootTables } from "./lootTables.js";
 
 interface MapDefinition {
     readonly width: number

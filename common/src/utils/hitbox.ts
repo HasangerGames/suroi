@@ -1,7 +1,7 @@
-import { type Orientation } from "../typings";
-import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2, rectRectIntersection } from "./math";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
-import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
+import { type Orientation } from "../typings.js";
+import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2, rectRectIntersection } from "./math.js";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random.js";
+import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector.js";
 
 export abstract class Hitbox {
     /**
