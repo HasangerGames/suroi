@@ -156,10 +156,10 @@ $(async(): Promise<void> => {
                 const nameColor = game.console.getBuiltInCVar("dv_name_color");
                 if (nameColor) {
                     try {
-                        const finalColor = new Color(game.console.getBuiltInCVar("dv_name_color")).toNumber();
+                        const finalColor = new Color(nameColor).toNumber();
                         address += `&nameColor=${finalColor}`;
                     } catch (e) {
-                        alert("Nice try kenos.");
+                        game.console.setBuiltInCVar("dv_name_color", "");
                         console.error(e);
                     }
                 }
