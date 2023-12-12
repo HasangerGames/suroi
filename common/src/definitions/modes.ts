@@ -7,7 +7,7 @@ export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly specialMenuMusic?: boolean
     readonly reskin?: string
-    // will be multiplied to the bullet trail color
+    // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
 }
 

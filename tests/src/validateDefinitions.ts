@@ -23,6 +23,7 @@ import { LootTables, LootTiers } from "../../server/src/data/lootTables";
 import { Maps } from "../../server/src/data/maps";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
 import { logger, tester, validators } from "./validationUtils";
+import { Modes } from "../../common/src/definitions/modes";
 
 /*
     eslint-disable
@@ -1314,14 +1315,14 @@ logger.indent("Validating guns", () => {
                             obj: casings,
                             field: "count",
                             defaultValue: 1,
-                            baseErrorPath: errorPath
+                            baseErrorPath: errorPath2
                         });
 
                         if (casings.count !== undefined) {
                             tester.assertIsPositiveFiniteReal({
                                 obj: casings,
                                 field: "count",
-                                baseErrorPath: errorPath
+                                baseErrorPath: errorPath2
                             });
                         }
 
@@ -1329,21 +1330,105 @@ logger.indent("Validating guns", () => {
                             obj: casings,
                             field: "spawnOnReload",
                             defaultValue: false,
-                            baseErrorPath: errorPath
+                            baseErrorPath: errorPath2
                         });
 
                         tester.assertNoPointlessValue({
                             obj: casings,
                             field: "ejectionDelay",
                             defaultValue: 0,
-                            baseErrorPath: errorPath
+                            baseErrorPath: errorPath2
                         });
 
                         if (casings.ejectionDelay !== undefined) {
                             tester.assertIsPositiveFiniteReal({
                                 obj: casings,
                                 field: "ejectionDelay",
-                                baseErrorPath: errorPath
+                                baseErrorPath: errorPath2
+                            });
+                        }
+
+                        tester.assertNoPointlessValue({
+                            obj: casings,
+                            field: "velocity",
+                            defaultValue: {},
+                            equalityFunction: a => Object.keys(a).length === 0,
+                            baseErrorPath: errorPath2
+                        });
+
+                        if (casings.velocity) {
+                            logger.indent("Validating casing velocities", () => {
+                                const velocity = casings.velocity!;
+
+                                tester.assertNoPointlessValue({
+                                    obj: velocity,
+                                    field: "x",
+                                    defaultValue: {},
+                                    equalityFunction: a => Object.keys(a).length === 0,
+                                    baseErrorPath: errorPath2
+                                });
+
+                                if (velocity.x) {
+                                    tester.assertInBounds({
+                                        obj: velocity.x,
+                                        field: "min",
+                                        min: -Infinity,
+                                        max: velocity.x.max,
+                                        includeMin: false,
+                                        baseErrorPath: errorPath2
+                                    });
+
+                                    tester.assertInBounds({
+                                        obj: velocity.x,
+                                        field: "max",
+                                        min: velocity.x.min,
+                                        max: Infinity,
+                                        includeMax: false,
+                                        baseErrorPath: errorPath2
+                                    });
+
+                                    tester.assertNoPointlessValue({
+                                        obj: velocity.x,
+                                        field: "randomSign",
+                                        defaultValue: false,
+                                        baseErrorPath: errorPath2
+                                    });
+                                }
+
+                                tester.assertNoPointlessValue({
+                                    obj: velocity,
+                                    field: "y",
+                                    defaultValue: {},
+                                    equalityFunction: a => Object.keys(a).length === 0,
+                                    baseErrorPath: errorPath2
+                                });
+
+                                if (velocity.y) {
+                                    tester.assertInBounds({
+                                        obj: velocity.y,
+                                        field: "min",
+                                        min: -Infinity,
+                                        max: velocity.y.max,
+                                        includeMin: false,
+                                        baseErrorPath: errorPath2
+                                    });
+
+                                    tester.assertInBounds({
+                                        obj: velocity.y,
+                                        field: "max",
+                                        min: velocity.y.min,
+                                        max: Infinity,
+                                        includeMax: false,
+                                        baseErrorPath: errorPath2
+                                    });
+
+                                    tester.assertNoPointlessValue({
+                                        obj: velocity.y,
+                                        field: "randomSign",
+                                        defaultValue: false,
+                                        baseErrorPath: errorPath2
+                                    });
+                                }
                             });
                         }
                     });
@@ -1588,16 +1673,36 @@ logger.indent("Validating melees", () => {
     }
 });
 
-// TODO Validate modes
-/* logger.indent("Validating modes", () => {
+logger.indent("Validating modes", () => {
     tester.assertNoDuplicateIDStrings(Modes, "Modes", "modes");
 
     for (const mode of Modes) {
         logger.indent(`Validating mode '${mode.idString}'`, () => {
             const errorPath = tester.createPath("modes", `mode '${mode.idString}'`);
+
+            tester.assertNoPointlessValue({
+                obj: mode,
+                field: "specialMenuMusic",
+                defaultValue: false,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: mode,
+                field: "reskin",
+                defaultValue: "",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: mode,
+                field: "bulletTrailAdjust",
+                defaultValue: "",
+                baseErrorPath: errorPath
+            });
         });
     }
-}); */
+});
 
 logger.indent("Validating obstacles", () => {
     tester.assertNoDuplicateIDStrings(Obstacles.definitions, "Obstacles", "obstacles");
