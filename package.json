@@ -17,7 +17,7 @@
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm test",
     "lint": "eslint . --fix --ext .js,.ts",
-    "lint:ci": "eslint . --ext .js,.ts",
+    "lint:ci": "eslint . --max-warnings 0 --ext .js,.ts",
     "validateDefinitions": "cd tests && tsc && pnpm validateDefinitions",
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install"
   },

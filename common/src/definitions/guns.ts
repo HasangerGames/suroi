@@ -103,20 +103,20 @@ type RawGunDefinition = GunDefinition & {
     } & {
         [
         K in Extract<
-            keyof (GunDefinition & { readonly isDual: true }),
-            "wearerAttributes" |
-            "ammoSpawnAmount" |
-            "capacity" |
-            "reloadTime" |
-            "fireDelay" |
-            "switchDelay" |
-            "speedMultiplier" |
-            "recoilMultiplier" |
-            "recoilDuration" |
-            "shotSpread" |
-            "moveSpread" |
-            "burstProperties" |
-            "leftRightOffset"
+        keyof (GunDefinition & { readonly isDual: true }),
+        "wearerAttributes" |
+        "ammoSpawnAmount" |
+        "capacity" |
+        "reloadTime" |
+        "fireDelay" |
+        "switchDelay" |
+        "speedMultiplier" |
+        "recoilMultiplier" |
+        "recoilDuration" |
+        "shotSpread" |
+        "moveSpread" |
+        "burstProperties" |
+        "leftRightOffset"
         >
         ]?: (GunDefinition & { readonly isDual: true })[K]
     }
