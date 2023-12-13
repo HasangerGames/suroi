@@ -6,7 +6,7 @@ import {
 } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
-import { normalizeAngle } from "./math";
+import { clamp, normalizeAngle } from "./math";
 import { type Vector } from "./vector";
 
 export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
@@ -41,7 +41,7 @@ export class SuroiBitStream extends BitStream {
      */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
         const range = (1 << bitCount) - 1;
-        const clamped = value < max ? (value > min ? value : min) : max;
+        const clamped = clamp(value, min, max);
         this.writeBits(((clamped - min) / (max - min)) * range + 0.5, bitCount);
     }
 

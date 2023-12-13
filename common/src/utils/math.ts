@@ -153,12 +153,12 @@ export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: n
 
 /**
  * Conform a number to specified bounds
- * @param a The number to conform
+ * @param value The number to conform
  * @param min The minimum value the number can hold
  * @param max The maximum value the number can hold
  */
-export function clamp(a: number, min: number, max: number): number {
-    return a < max ? a > min ? a : min : max;
+export function clamp(value: number, min: number, max: number): number {
+    return value < max ? value > min ? value : min : max;
 }
 
 /**

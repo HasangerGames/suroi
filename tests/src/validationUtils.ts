@@ -3,6 +3,7 @@ import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox 
 import type { Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 import { Loots } from "../../common/src/definitions/loots";
+import { ZIndexes } from "../../common/src/constants";
 
 /*
     eslint-disable
@@ -462,6 +463,27 @@ export const validators = Object.freeze({
                         baseErrorPath: errorPath
                     });
                 }
+
+                tester.assertNoPointlessValue({
+                    obj: tracer,
+                    field: "image",
+                    defaultValue: "base_trail",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertNoPointlessValue({
+                    obj: tracer,
+                    field: "particle",
+                    defaultValue: false,
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertNoPointlessValue({
+                    obj: tracer,
+                    field: "zIndex",
+                    defaultValue: ZIndexes.Bullets,
+                    baseErrorPath: errorPath
+                });
             });
         }
 
@@ -487,6 +509,20 @@ export const validators = Object.freeze({
         tester.assertNoPointlessValue({
             obj: ballistics,
             field: "goToMouse",
+            defaultValue: false,
+            baseErrorPath
+        });
+
+        tester.assertNoPointlessValue({
+            obj: ballistics,
+            field: "lastShotFX",
+            defaultValue: false,
+            baseErrorPath
+        });
+
+        tester.assertNoPointlessValue({
+            obj: ballistics,
+            field: "noCollision",
             defaultValue: false,
             baseErrorPath
         });

@@ -4,7 +4,7 @@ import { type BaseBulletDefinition, type ItemDefinition, ItemType, type Referenc
 import { v, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
-export type GunDefinition = ItemDefinition & {
+type BaseGunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
     readonly ammoType: ReferenceTo<AmmoDefinition>
@@ -60,8 +60,6 @@ export type GunDefinition = ItemDefinition & {
         readonly angle?: number
     }
 
-    readonly dualVariant?: ReferenceTo<GunDefinition>
-
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
 } & ({
@@ -94,30 +92,35 @@ export type GunDefinition = ItemDefinition & {
     readonly leftRightOffset: number
 });
 
+export type GunDefinition = BaseGunDefinition & {
+    readonly dualVariant?: ReferenceTo<GunDefinition>
+};
+
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
 
-type RawGunDefinition = GunDefinition & {
+/* eslint-disable @typescript-eslint/indent */
+type RawGunDefinition = BaseGunDefinition & {
     readonly dual?: {
         readonly leftRightOffset: number
     } & {
         [
-        K in Extract<
-        keyof (GunDefinition & { readonly isDual: true }),
-        "wearerAttributes" |
-        "ammoSpawnAmount" |
-        "capacity" |
-        "reloadTime" |
-        "fireDelay" |
-        "switchDelay" |
-        "speedMultiplier" |
-        "recoilMultiplier" |
-        "recoilDuration" |
-        "shotSpread" |
-        "moveSpread" |
-        "burstProperties" |
-        "leftRightOffset"
-        >
+            K in Extract<
+                keyof DualGunNarrowing,
+                "wearerAttributes" |
+                "ammoSpawnAmount" |
+                "capacity" |
+                "reloadTime" |
+                "fireDelay" |
+                "switchDelay" |
+                "speedMultiplier" |
+                "recoilMultiplier" |
+                "recoilDuration" |
+                "shotSpread" |
+                "moveSpread" |
+                "burstProperties" |
+                "leftRightOffset"
+            >
         ]?: (GunDefinition & { readonly isDual: true })[K]
     }
 };

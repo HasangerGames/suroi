@@ -23,7 +23,7 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>(
             let tracerColor = def.ballistics.tracer?.color;
 
             // if this bullet definition doesn't override the tracer color
-            // calculate it based on ammo type or if its a shrapnel
+            // calculate it based on ammo type or if it's shrapnel
             if (!tracerColor) {
                 if ("ammoType" in def && def.ammoType in bulletColors) {
                     tracerColor = bulletColors[def.ammoType];
