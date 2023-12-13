@@ -1,7 +1,7 @@
 import $ from "jquery";
 
-import { Application, Color, Container } from "pixi.js";
-import { GameConstants, InputActions, ObjectCategory, PacketType, ZIndexes } from "../../../common/src/constants";
+import { Application, Color } from "pixi.js";
+import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
@@ -80,9 +80,6 @@ export class Game {
     readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
-    // Since all bullets have the same zIndex
-    // Add all to a container so pixi has to do less sorting of zIndexes
-    readonly bulletsContainer = new Container();
 
     readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color }>();
 
@@ -151,8 +148,6 @@ export class Game {
         this.camera = new Camera(this);
         this.map = new Minimap(this);
 
-        this.bulletsContainer.zIndex = ZIndexes.Bullets;
-
         this.music = sound.add("menu_music", {
             url: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
             singleInstance: true,
@@ -206,7 +201,7 @@ export class Game {
 
             this.sendPacket(joinPacket);
 
-            this.camera.addObject(this.bulletsContainer, this.gasRender.graphics);
+            this.camera.addObject(this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
 
@@ -360,7 +355,6 @@ export class Game {
         this.bullets.clear();
         this.planes.clear();
         this.camera.container.removeChildren();
-        this.bulletsContainer.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
         this.map.pings.clear();

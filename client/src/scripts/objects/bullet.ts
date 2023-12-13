@@ -6,6 +6,7 @@ import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
+import { ZIndexes } from "../../../../common/src/constants";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -28,15 +29,17 @@ export class Bullet extends BaseBullet {
 
         this.tracerLength = tracerStats?.length ?? 1;
         this.maxLength = this.image.width * this.tracerLength;
-        this.image.scale.set(0, tracerStats?.width ?? 1);
-        this.image.anchor.set(1, 0.5);
+        this.image.scale.y = tracerStats?.width ?? 1;
+        if (!this.definition.tracer?.particle) this.image.anchor.set(1, 0.5);
         this.image.alpha = (tracerStats?.opacity ?? 1) / (this.reflectionCount + 1);
 
         const color = new Color(this.definition.tracer?.color ?? 0xffffff);
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
         this.image.tint = color;
 
-        this.game.bulletsContainer.addChild(this.image);
+        this.image.zIndex = this.definition.tracer?.zIndex ?? ZIndexes.Bullets;
+
+        this.game.camera.addObject(this.image);
     }
 
     update(delta: number): void {
@@ -61,28 +64,32 @@ export class Bullet extends BaseBullet {
                 if (this.definition.penetration?.players && object instanceof Player) continue;
 
                 this.dead = true;
+                this._trailReachedMaxLength = true;
                 this.position = collision.intersection.point;
                 break;
             }
-
-            if (!this._trailReachedMaxLength) this._trailTicks += delta;
-        } else {
-            this._trailTicks -= delta;
         }
 
-        const length = this.definition.tracer?.forceMaxLength
-            ? this.maxLength
-            : Math.min(
+        if (!this._trailReachedMaxLength) this._trailTicks += delta;
+        else if (this.dead || this.definition.tracer?.particle) this._trailTicks -= delta;
+
+        const dist = distance(this.initialPosition, this.position);
+
+        if (this.definition.tracer?.particle) {
+            this.image.scale.set(1 + (dist / this.maxDistance));
+            this.image.alpha = (this.definition.speed * this._trailTicks) / (this.maxDistance / 2);
+            if (this.image.alpha >= 1) this._trailReachedMaxLength = true;
+        } else {
+            this.image.width = Math.min(
                 Math.min(
                     this.definition.speed * this._trailTicks,
-                    distance(this.initialPosition, this.position)
+                    dist
                 ) * PIXI_SCALE,
                 this.maxLength
             );
+            if (this.image.width === this.maxLength) this._trailReachedMaxLength = true;
+        }
 
-        if (length === this.maxLength) this._trailReachedMaxLength = true;
-
-        this.image.width = length;
         this.image.setVPos(toPixiCoords(this.position));
 
         if (this._trailTicks <= 0 && this.dead) {

@@ -1,4 +1,4 @@
-import { FireMode } from "../constants";
+import { FireMode, ZIndexes } from "../constants";
 import { mergeDeep } from "../utils/misc";
 import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
@@ -97,32 +97,32 @@ export type GunDefinition = ItemDefinition & {
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
 
-/* eslint-disable @typescript-eslint/indent */
-
-const GunsRaw: Array<GunDefinition & {
+type RawGunDefinition = GunDefinition & {
     readonly dual?: {
         readonly leftRightOffset: number
     } & {
         [
-            K in Extract<
-                keyof (GunDefinition & { readonly isDual: true }),
-                "wearerAttributes" |
-                "ammoSpawnAmount" |
-                "capacity" |
-                "reloadTime" |
-                "fireDelay" |
-                "switchDelay" |
-                "speedMultiplier" |
-                "recoilMultiplier" |
-                "recoilDuration" |
-                "shotSpread" |
-                "moveSpread" |
-                "burstProperties" |
-                "leftRightOffset"
-            >
+        K in Extract<
+            keyof (GunDefinition & { readonly isDual: true }),
+            "wearerAttributes" |
+            "ammoSpawnAmount" |
+            "capacity" |
+            "reloadTime" |
+            "fireDelay" |
+            "switchDelay" |
+            "speedMultiplier" |
+            "recoilMultiplier" |
+            "recoilDuration" |
+            "shotSpread" |
+            "moveSpread" |
+            "burstProperties" |
+            "leftRightOffset"
+        >
         ]?: (GunDefinition & { readonly isDual: true })[K]
     }
-}> = [
+};
+
+const GunsRaw: RawGunDefinition[] = [
     {
         idString: "ak47",
         name: "AK-47",
@@ -697,12 +697,14 @@ const GunsRaw: Array<GunDefinition & {
             tracer: {
                 image: "radio_wave",
                 opacity: 0.8,
-                forceMaxLength: true
+                particle: true,
+                zIndex: ZIndexes.BuildingsCeiling
             },
             damage: 0,
             obstacleMultiplier: 1,
             speed: 0.01,
-            range: 50
+            range: 50,
+            noCollision: true
         }
     },
     {

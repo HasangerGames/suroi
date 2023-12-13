@@ -97,6 +97,8 @@ export class BaseBullet {
             this.position = vAdd(this.initialPosition, (vMul(this.direction, this.maxDistance)));
         }
 
+        if (this.definition.noCollision) return [];
+
         const collisions: Collision[] = [];
 
         for (const object of objects) {
