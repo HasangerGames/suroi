@@ -269,7 +269,7 @@ const GunsRaw: Array<GunDefinition & {
         itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 18,
-        capacity: 9,
+        capacity: 8,
         reloadTime: 0.55,
         fireDelay: 700,
         switchDelay: 700,
@@ -297,7 +297,7 @@ const GunsRaw: Array<GunDefinition & {
             damage: 9,
             obstacleMultiplier: 1,
             speed: 0.2,
-            range: 80
+            range: 68
         }
     },
     {
@@ -364,7 +364,7 @@ const GunsRaw: Array<GunDefinition & {
         recoilDuration: 600,
         fireMode: FireMode.Single,
         bulletCount: 18,
-        shotSpread: 15,
+        shotSpread: 14,
         moveSpread: 22,
         jitterRadius: 1.5,
         length: 8,
@@ -382,7 +382,7 @@ const GunsRaw: Array<GunDefinition & {
             damage: 5,
             obstacleMultiplier: 0.5,
             speed: 0.12,
-            range: 40,
+            range: 44,
             tracer: {
                 length: 0.5
             }
@@ -430,7 +430,7 @@ const GunsRaw: Array<GunDefinition & {
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            range: 48,
+            range: 50,
             tracer: {
                 length: 0.5
             }
