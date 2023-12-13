@@ -41,7 +41,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
             { tier: "melee", weight: 0.04 },
-            { tier: "winter_skins", weight: 0.5 } // winter mode
+            { tier: "winter_skins", weight: 0.4 } // winter mode
         ]
     },
     aegis_crate: {
@@ -308,14 +308,15 @@ export const LootTables: Record<string, LootTable> = {
         ]
     },
     christmas_tree: {
-        min: 3,
+        min: 4,
         max: 5,
         loot: [
             { tier: "special_winter_skins", weight: 1 },
             { tier: "special_guns", weight: 1 },
             { tier: "special_equipment", weight: 0.65 },
             { tier: "special_healing_items", weight: 0.65 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { item: "radio", weight: 0.1 }
         ]
     }
 };

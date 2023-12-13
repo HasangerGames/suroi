@@ -324,10 +324,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
             zIndex: ZIndexes.ObstaclesLayer4,
-            frames: {
-                particle: "pine_tree_particle",
-                residue: "pine_tree_residue"
-            },
             hasLoot: true
         },
         {
