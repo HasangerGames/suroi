@@ -1,15 +1,8 @@
 // noinspection JSConstantReassignment
 import $ from "jquery";
-
-import {
-    GameConstants,
-    InputActions,
-    SpectateActions
-} from "../../../../../common/src/constants";
-import {
-    type HealingItemDefinition,
-    HealingItems
-} from "../../../../../common/src/definitions/healingItems";
+import { Graphics, Rectangle, Sprite } from "pixi.js";
+import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
+import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../../common/src/definitions/scopes";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
@@ -17,11 +10,10 @@ import { absMod } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
+import { COLORS } from "../constants";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
-import { Graphics, Rectangle, Sprite } from "pixi.js";
-import { COLORS } from "../constants";
 
 type CommandExecutor<ErrorType = never> = (
     this: Game,

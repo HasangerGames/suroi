@@ -1,7 +1,7 @@
-import { Packet } from "./packet";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { PacketType } from "../constants";
-import { type LootDefinition, Loots } from "../definitions/loots";
+import { Loots, type LootDefinition } from "../definitions/loots";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { Packet } from "./packet";
 
 export class PickupPacket extends Packet {
     override readonly allocBytes = 2;

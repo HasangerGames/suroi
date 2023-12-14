@@ -1,4 +1,4 @@
-import { type Application, Container, type DisplayObject } from "pixi.js";
+import { Container, type Application, type DisplayObject } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";

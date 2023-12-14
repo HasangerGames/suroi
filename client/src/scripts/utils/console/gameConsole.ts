@@ -1,5 +1,4 @@
 import $ from "jquery";
-
 import { clamp } from "../../../../../common/src/utils/math";
 import { type Game } from "../../game";
 import { type Command } from "./commands";

@@ -1,9 +1,9 @@
-import { type ObjectDefinition, type ObjectDefinitions, type BaseBulletDefinition } from "../../common/src/utils/objectDefinitions";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import type { Vector } from "../../common/src/utils/vector";
-import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
-import { Loots } from "../../common/src/definitions/loots";
 import { ZIndexes } from "../../common/src/constants";
+import { Loots } from "../../common/src/definitions/loots";
+import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { type BaseBulletDefinition, type ObjectDefinition, type ObjectDefinitions } from "../../common/src/utils/objectDefinitions";
+import { type Vector } from "../../common/src/utils/vector";
+import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
 /*
     eslint-disable

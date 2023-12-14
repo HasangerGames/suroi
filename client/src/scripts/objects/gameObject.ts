@@ -1,13 +1,13 @@
 import { Container, Graphics } from "pixi.js";
 import { GameConstants, type ObjectCategory } from "../../../../common/src/constants";
 import { vLerp } from "../../../../common/src/utils/math";
+import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
-import type { Timeout } from "../../../../common/src/utils/misc";
-import type { GameSound, SoundOptions } from "../utils/soundManager";
+import { type GameSound, type SoundOptions } from "../utils/soundManager";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;

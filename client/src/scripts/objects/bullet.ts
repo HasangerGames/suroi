@@ -1,4 +1,5 @@
 import { Color } from "pixi.js";
+import { ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { distance } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
@@ -6,7 +7,6 @@ import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
-import { ZIndexes } from "../../../../common/src/constants";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;

@@ -6,17 +6,17 @@ import { addAdjust, calculateDoorHitboxes, lerp, polarToVector } from "../../../
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "./gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type Player } from "./player";
+import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import type { GameSound } from "../utils/soundManager";
+import { type Player } from "./player";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;

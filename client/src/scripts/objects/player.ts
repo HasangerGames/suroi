@@ -1,38 +1,31 @@
 import $ from "jquery";
 import { Container, Texture, TilingSprite } from "pixi.js";
-import {
-    AnimationType,
-    GameConstants,
-    ObjectCategory,
-    PlayerActions,
-    SpectateActions,
-    ZIndexes
-} from "../../../../common/src/constants";
+import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
-import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
+import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { type SkinDefinition } from "../../../../common/src/definitions/skins";
+import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { angleBetweenPoints, distanceSquared, polarToVector } from "../../../../common/src/utils/math";
+import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomSign, randomVector } from "../../../../common/src/utils/random";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "./gameObject";
+import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
-import { type SkinDefinition } from "../../../../common/src/definitions/skins";
-import type { Timeout } from "../../../../common/src/utils/misc";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;

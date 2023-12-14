@@ -1,5 +1,5 @@
 import { PacketType } from "../constants";
-import { type EmoteDefinition, Emotes } from "../definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Loots } from "../definitions/loots";
 import { type SkinDefinition } from "../definitions/skins";
 import { type SuroiBitStream } from "../utils/suroiBitStream";

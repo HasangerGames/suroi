@@ -1,9 +1,5 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import {
-    GameConstants,
-    ObjectCategory,
-    PacketType
-} from "../constants";
+import { GameConstants, ObjectCategory, PacketType } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { clamp, normalizeAngle } from "./math";

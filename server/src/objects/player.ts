@@ -1,51 +1,42 @@
+import { randomBytes } from "crypto";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
-import {
-    AnimationType,
-    GameConstants,
-    InputActions,
-    KillFeedMessageType,
-    KillType,
-    ObjectCategory,
-    PlayerActions,
-    SpectateActions
-} from "../../../common/src/constants";
-import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
+import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { type Packet } from "../../../common/src/packets/packet";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { FloorTypes } from "../../../common/src/utils/terrain";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
-import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { type Timeout } from "../../../common/src/utils/misc";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { pickRandomInArray } from "../../../common/src/utils/random";
+import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
-import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { type Action, HealingAction, ReloadAction } from "../inventory/action";
+import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { type PlayerContainer } from "../server";
-import { GameObject } from "./gameObject";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
-import { Obstacle } from "./obstacle";
-import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { type Packet } from "../../../common/src/packets/packet";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { randomBytes } from "crypto";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { type Timeout } from "../../../common/src/utils/misc";
+import { Obstacle } from "./obstacle";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;

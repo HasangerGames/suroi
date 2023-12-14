@@ -1,19 +1,18 @@
+import "@pixi/graphics-extras";
 import $ from "jquery";
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
-import "@pixi/graphics-extras";
-
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { type MapPacket } from "../../../../common/src/packets/mapPacket";
+import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { addAdjust, lerp } from "../../../../common/src/utils/math";
+import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { GasRender } from "./gas";
-import { type MapPacket } from "../../../../common/src/packets/mapPacket";
-import { type Orientation } from "../../../../common/src/typings";
-import { orientationToRotation } from "../utils/misc";
 
 export class Minimap {
     game: Game;

@@ -1,4 +1,4 @@
-import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
 import { Guns } from "./guns";
 

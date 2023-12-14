@@ -1,5 +1,7 @@
 import { GameConstants } from "../../../common/src/constants";
 import { Bullets } from "../../../common/src/definitions/bullets";
+import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
+import { Loots } from "../../../common/src/definitions/loots";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { normalizeAngle } from "../../../common/src/utils/math";
@@ -7,12 +9,10 @@ import { randomFloat } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { type GameObject } from "./gameObject";
 import { type Explosion } from "./explosion";
+import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
 
 type Weapon = GunItem | Explosion;
 

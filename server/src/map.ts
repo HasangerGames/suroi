@@ -1,14 +1,15 @@
+import { ObjectCategory } from "../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { MapPacket } from "../../common/src/packets/mapPacket";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { River, Terrain } from "../../common/src/utils/terrain";
 import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, polarToVector } from "../../common/src/utils/math";
-import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
+import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
+import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -16,7 +17,6 @@ import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { Logger, getLootTableLoot, getRandomIdString } from "./utils/misc";
-import { ObjectCategory } from "../../common/src/constants";
 
 export class Map {
     readonly game: Game;

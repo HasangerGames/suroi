@@ -2,19 +2,19 @@ import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox, HitboxGroup } from "../../../../common/src/utils/hitbox";
-import { circleCircleIntersection, rectCircleIntersection, polarToVector } from "../../../../common/src/utils/math";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { circleCircleIntersection, polarToVector, rectCircleIntersection } from "../../../../common/src/utils/math";
+import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "./gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector, Vec } from "../../../../common/src/utils/vector";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type GameSound } from "../utils/soundManager";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;

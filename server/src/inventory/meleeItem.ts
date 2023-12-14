@@ -3,9 +3,9 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../common/src/utils/vector";
+import { type GameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
-import { type GameObject } from "../objects/gameObject";
 import { InventoryItem } from "./inventoryItem";
 
 /**

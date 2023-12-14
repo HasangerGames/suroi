@@ -1,4 +1,4 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
 export interface EmoteDefinition extends ObjectDefinition {}
 

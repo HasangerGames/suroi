@@ -1,13 +1,7 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
-import { CircleHitbox, HitboxGroup, type Hitbox, RectangleHitbox } from "../utils/hitbox";
-import {
-    type ObjectDefinition,
-    ObjectDefinitions,
-    ObstacleSpecialRoles,
-    MapObjectSpawnMode,
-    type ReferenceTo
-} from "../utils/objectDefinitions";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 import { type LootDefinition } from "./loots";

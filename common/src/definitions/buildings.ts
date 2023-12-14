@@ -1,10 +1,10 @@
+import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type FloorTypes } from "../utils/terrain";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo, MapObjectSpawnMode } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type ObstacleDefinition, type RotationMode } from "./obstacles";
-import { ZIndexes } from "../constants";
 
 interface BuildingObstacle {
     readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>

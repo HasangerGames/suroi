@@ -1,10 +1,10 @@
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "../utils/pixi";
-import { type Game } from "../game";
-import { distanceSquared, vLerp, polarToVector } from "../../../../common/src/utils/math";
-import { PIXI_SCALE } from "../utils/constants";
 import { GameConstants, ZIndexes } from "../../../../common/src/constants";
-import type { GameSound } from "../utils/soundManager";
+import { distanceSquared, polarToVector, vLerp } from "../../../../common/src/utils/math";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite } from "../utils/pixi";
+import { type GameSound } from "../utils/soundManager";
 
 export class Plane {
     readonly game: Game;

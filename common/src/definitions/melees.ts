@@ -1,5 +1,5 @@
 import { type FireMode } from "../constants";
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { ItemType, type ItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 
 export interface MeleeDefinition extends ItemDefinition {

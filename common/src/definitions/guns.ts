@@ -1,6 +1,6 @@
 import { FireMode, ZIndexes } from "../constants";
 import { mergeDeep } from "../utils/misc";
-import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, type BaseBulletDefinition, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 

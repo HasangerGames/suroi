@@ -1,5 +1,5 @@
 import { type Orientation } from "../typings";
-import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2, rectRectIntersection } from "./math";
+import { addAdjust, circleCircleIntersection, circleCollision, distance, distanceSquared, distanceToCircle, distanceToRectangle, lineIntersectsCircle, lineIntersectsRect, lineIntersectsRect2, rectCircleIntersection, rectRectCollision, rectRectIntersection, rectangleCollision, rectangleDistanceToRectangle, transformRectangle, type CollisionRecord, type IntersectionResponse } from "./math";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { Vec, type Vector } from "./vector";
 

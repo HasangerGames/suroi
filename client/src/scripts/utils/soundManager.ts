@@ -1,12 +1,12 @@
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { clamp } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "./constants";
-import { Reskins } from "../../../../common/src/definitions/modes";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 

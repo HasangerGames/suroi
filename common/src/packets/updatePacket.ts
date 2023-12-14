@@ -1,17 +1,9 @@
-import {
-    DEFAULT_INVENTORY,
-    type GasState,
-    KillFeedMessageType,
-    KillType,
-    type ObjectCategory,
-    PacketType,
-    GameConstants
-} from "../constants";
-import { type EmoteDefinition, Emotes } from "../definitions/emotes";
-import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
+import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType, PacketType, type GasState, type ObjectCategory } from "../constants";
+import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { type GunDefinition } from "../definitions/guns";
-import { type LootDefinition, Loots, type WeaponDefinition } from "../definitions/loots";
-import { type ScopeDefinition, Scopes } from "../definitions/scopes";
+import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
+import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ItemType } from "../utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";

@@ -1,16 +1,16 @@
-import { ObjectCategory, PlayerActions, AnimationType } from "../constants";
+import { AnimationType, ObjectCategory, PlayerActions } from "../constants";
+import { Armors, type ArmorDefinition } from "../definitions/armors";
+import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
+import { Buildings, type BuildingDefinition } from "../definitions/buildings";
+import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
-import { type LootDefinition, Loots } from "../definitions/loots";
-import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles";
+import { Loots, type LootDefinition } from "../definitions/loots";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
-import { Decals, type DecalDefinition } from "../definitions/decals";
-import { type BuildingDefinition, Buildings } from "../definitions/buildings";
-import { Armors, type ArmorDefinition } from "../definitions/armors";
-import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 
 const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);

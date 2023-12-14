@@ -1,4 +1,4 @@
-import { type BulletDefinition, Bullets } from "../definitions/bullets";
+import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import { type Hitbox } from "./hitbox";
 import { clamp, distanceSquared } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";

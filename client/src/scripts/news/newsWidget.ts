@@ -1,5 +1,4 @@
 import $ from "jquery";
-
 import { news } from "./newsPosts";
 
 let newsText = "";

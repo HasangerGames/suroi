@@ -2,6 +2,7 @@ import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
+import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { Vec } from "../../../common/src/utils/vector";
@@ -9,7 +10,6 @@ import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
-import { type Timeout } from "../../../common/src/utils/misc";
 
 /**
  * A class representing a firearm

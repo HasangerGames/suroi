@@ -3,7 +3,7 @@ import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammo
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { HealType, type HealingItemDefinition, HealingItems } from "../../../common/src/definitions/healingItems";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";

@@ -1,7 +1,7 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type ObstacleDefinition, Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
-import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { addAdjust, angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
@@ -12,10 +12,10 @@ import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
-import { GameObject } from "./gameObject";
 import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
+import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
