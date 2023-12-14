@@ -6,16 +6,15 @@ import { CircleHitbox, RectangleHitbox, type Hitbox, HitboxGroup } from "../../.
 import { circleCircleIntersection, rectCircleIntersection, polarToVector } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import type { Game } from "../game";
+import { type Game } from "../game";
 import { GameObject } from "./gameObject";
-
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector, v, vAdd, vMul, vRotate } from "../../../../common/src/utils/vector";
+import { type Vector, Vec } from "../../../../common/src/utils/vector";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
-import type { GameSound } from "../utils/soundManager";
+import { type GameSound } from "../utils/soundManager";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
@@ -110,7 +109,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     const halfPi = Math.PI / 2;
                     for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
                         collided = false;
-                        const vec = vAdd(player.position, vMul(v(Math.cos(i), Math.sin(i)), visionSize));
+                        const vec = Vec.add(player.position, Vec.scale(Vec.create(Math.cos(i), Math.sin(i)), visionSize));
                         const end = this.ceilingHitbox.intersectsLine(player.position, vec)?.point;
                         if (!end) {
                             collided = true;
@@ -186,7 +185,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 const sounds = this.definition.sounds;
 
                 const soundOptions = {
-                    position: vAdd(vRotate(sounds?.position ?? v(0, 0), this.rotation), this.position),
+                    position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
                     fallOff: sounds.fallOff,
                     maxRange: sounds.maxRange,
                     dynamic: true,

@@ -1,4 +1,4 @@
-import { vAdd, type Vector, vMul } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
 import { type Game } from "../game";
 import { distanceSquared, vLerp, polarToVector } from "../../../../common/src/utils/math";
@@ -23,7 +23,7 @@ export class Plane {
 
         this.startPosition = startPosition;
 
-        this.endPosition = vAdd(
+        this.endPosition = Vec.add(
             this.startPosition,
             polarToVector(direction, GameConstants.maxPosition * 2)
         );
@@ -53,7 +53,7 @@ export class Plane {
             (Date.now() - this.startTime) / (GameConstants.airdrop.flyTime * 2)
         );
 
-        this.image.setVPos(vMul(position, PIXI_SCALE));
+        this.image.setVPos(Vec.scale(position, PIXI_SCALE));
 
         if (distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();

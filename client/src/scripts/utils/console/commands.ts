@@ -15,7 +15,7 @@ import { Scopes } from "../../../../../common/src/definitions/scopes";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { absMod } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
-import { v } from "../../../../../common/src/utils/vector";
+import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
@@ -606,7 +606,7 @@ export function setUpCommands(game: Game): void {
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
                 .show();
             this.inputManager.emoteWheelActive = true;
-            this.inputManager.emoteWheelPosition = v(mouseX, mouseY);
+            this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
         },
         function(): undefined {
             if (this.inputManager.emoteWheelActive) {

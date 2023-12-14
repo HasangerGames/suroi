@@ -1,6 +1,6 @@
 import { lerp } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
-import { vAdd, vDiv, type Vector, vMul } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
@@ -111,7 +111,7 @@ export class Particle {
     }
 
     update(delta: number): void {
-        this.position = vAdd(this.position, vDiv(vMul(this.options.speed, delta), 1000));
+        this.position = Vec.add(this.position, Vec.scale(Vec.scale(this.options.speed, delta), 1e-3));
         const options = this.options;
 
         const now = Date.now();

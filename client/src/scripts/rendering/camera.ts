@@ -1,6 +1,6 @@
 import { type Application, Container, type DisplayObject } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, type Vector, vMul } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { EaseFunctions, Tween } from "../utils/tween";
 
@@ -9,7 +9,7 @@ export class Camera {
     container: Container;
     game: Game;
 
-    position = v(0, 0);
+    position = Vec.create(0, 0);
 
     private _zoom = 48;
     get zoom(): number { return this._zoom; }
@@ -66,13 +66,13 @@ export class Camera {
 
         if (this.shaking) {
             const s = this.shakeIntensity;
-            position = vAdd2(position, randomFloat(-s, s), randomFloat(-s, s));
+            position = Vec.addComponent(position, randomFloat(-s, s), randomFloat(-s, s));
             if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
         }
 
-        const cameraPos = vAdd(
-            vMul(position, this.container.scale.x),
-            v(-this.width / 2, -this.height / 2)
+        const cameraPos = Vec.add(
+            Vec.scale(position, this.container.scale.x),
+            Vec.create(-this.width / 2, -this.height / 2)
         );
 
         this.container.position.set(-cameraPos.x, -cameraPos.y);

@@ -3,7 +3,7 @@ import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { clamp } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "./constants";
 import { Reskins } from "../../../../common/src/definitions/modes";
@@ -85,11 +85,11 @@ export class GameSound {
 
     update(): void {
         if (this.instance && this.position) {
-            const diff = vSub(this.manager.position, this.position);
+            const diff = Vec.subtract(this.manager.position, this.position);
 
             this.instance.volume = (1 -
                 clamp(
-                    Math.abs(vLength(diff) / this.maxRange),
+                    Math.abs(Vec.length(diff) / this.maxRange),
                     0,
                     1
                 )) ** (1 + this.fallOff * 2) * this.manager.volume;
@@ -112,7 +112,7 @@ export class SoundManager {
     readonly dynamicSounds = new Set<GameSound>();
 
     volume: number;
-    position = v(0, 0);
+    position = Vec.create(0, 0);
 
     constructor(game: Game) {
         this.game = game;

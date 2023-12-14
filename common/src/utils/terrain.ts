@@ -1,8 +1,7 @@
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { clamp, distanceToLine, lerp, rayIntersectsPolygon } from "./math";
 import { SeededRandom } from "./random";
-import { v, vAdd, vClone, type Vector, vMul, vNormalizeSafe, vDot, vSub, vLengthSqr, vLength } from "./vector";
-
+import { Vec, type Vector } from "./vector";
 export interface FloorDefinition {
     debugColor: number
     speedMultiplier?: number
@@ -83,13 +82,13 @@ export class Terrain {
         const variation = 8;
 
         const beachRect = this.groundRect = new RectangleHitbox(
-            v(oceanSize, oceanSize),
-            v(width - oceanSize, height - oceanSize)
+            Vec.create(oceanSize, oceanSize),
+            Vec.create(width - oceanSize, height - oceanSize)
         );
 
         const grassRect = new RectangleHitbox(
-            v(beachPadding, beachPadding),
-            v(width - beachPadding, height - beachPadding)
+            Vec.create(beachPadding, beachPadding),
+            Vec.create(width - beachPadding, height - beachPadding)
         );
 
         this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, variation, random));
@@ -106,10 +105,10 @@ export class Terrain {
 
             for (let x = min.x; x <= max.x; x++) {
                 for (let y = min.y; y <= max.y; y++) {
-                    const min = v(x * this.cellSize, y * this.cellSize);
+                    const min = Vec.create(x * this.cellSize, y * this.cellSize);
                     const rect = new RectangleHitbox(
                         min,
-                        vAdd(min, v(this.cellSize, this.cellSize))
+                        Vec.add(min, Vec.create(this.cellSize, this.cellSize))
                     );
                     // only add it to cells it collides with
                     if (river.bankHitbox.collidesWith(rect)) {
@@ -197,7 +196,7 @@ export class Terrain {
     }
 
     private _roundToCells(vector: Vector): Vector {
-        return v(
+        return Vec.create(
             clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
             clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
         );
@@ -242,7 +241,7 @@ export class River {
             for (const river of otherRivers) {
                 const t = river.getClosestT(current);
                 const p = river.getPosition(t);
-                const length = vLength(vSub(p, current));
+                const length = Vec.length(Vec.subtract(p, current));
                 if (length < river.width * 2) {
                     bankWidth = Math.max(bankWidth, river.bankWidth);
                 }
@@ -255,11 +254,11 @@ export class River {
             const width = (1 + end ** 3 * 1.5) * this.width;
 
             const clipRayToPoly = (point: Vector, direction: Vector, polygon: PolygonHitbox): Vector => {
-                const end = vAdd(point, direction);
+                const end = Vec.add(point, direction);
                 if (!polygon.isPointInside(end)) {
                     const t = rayIntersectsPolygon(point, direction, polygon.points);
                     if (t) {
-                        return vMul(direction, t);
+                        return Vec.scale(direction, t);
                     }
                 }
                 return direction;
@@ -267,10 +266,10 @@ export class River {
 
             const finalBankWidth = width + bankWidth;
 
-            let waterRay1 = vMul(normal, width);
-            let waterRay2 = vMul(normal, -width);
-            let bankRay1 = vMul(normal, finalBankWidth);
-            let bankRay2 = vMul(normal, -finalBankWidth);
+            let waterRay1 = Vec.scale(normal, width);
+            let waterRay2 = Vec.scale(normal, -width);
+            let bankRay1 = Vec.scale(normal, finalBankWidth);
+            let bankRay2 = Vec.scale(normal, -finalBankWidth);
 
             if (collidingRiver) {
                 waterRay1 = clipRayToPoly(current, waterRay1, collidingRiver.waterHitbox);
@@ -279,14 +278,14 @@ export class River {
                 bankRay2 = clipRayToPoly(current, bankRay2, collidingRiver.bankHitbox);
             }
 
-            const waterPoint1 = vAdd(current, waterRay1);
-            const waterPoint2 = vAdd(current, waterRay2);
+            const waterPoint1 = Vec.add(current, waterRay1);
+            const waterPoint2 = Vec.add(current, waterRay2);
 
             waterPoints[i] = waterPoint1;
             waterPoints[this.points.length + length - i] = waterPoint2;
 
-            const bankPoint1 = vAdd(current, bankRay1);
-            const bankPoint2 = vAdd(current, bankRay2);
+            const bankPoint1 = Vec.add(current, bankRay1);
+            const bankPoint2 = Vec.add(current, bankRay2);
 
             bankPoints[i] = bankPoint1;
             bankPoints[this.points.length + length - i] = bankPoint2;
@@ -330,8 +329,8 @@ export class River {
 
     getNormal(t: number): Vector {
         const tangent = this.getTangent(t);
-        const vec = vNormalizeSafe(tangent, v(1, 0));
-        return v(-vec.y, vec.x);
+        const vec = Vec.normalizeSafe(tangent, Vec.create(1, 0));
+        return Vec.create(-vec.y, vec.x);
     }
 
     getPosition(t: number): Vector {
@@ -358,8 +357,8 @@ export class River {
         const idx1 = idx0 + 1;
         const s0 = this.points[idx0];
         const s1 = this.points[idx1];
-        const seg = vSub(s1, s0);
-        const t = clamp(vDot(vSub(position, s0), seg) / vDot(seg, seg), 0, 1);
+        const seg = Vec.subtract(s1, s0);
+        const t = clamp(Vec.dotProduct(Vec.subtract(position, s0), seg) / Vec.dotProduct(seg, seg), 0, 1);
         const len = this.points.length - 1;
         const tMin = clamp((idx0 + t - 0.1) / len, 0, 1);
         const tMax = clamp((idx0 + t + 0.1) / len, 0, 1);
@@ -371,7 +370,7 @@ export class River {
         for (let i = 0; i <= kIter; i++) {
             const testT = lerp(i / kIter, tMin, tMax);
             const testPos = this.getPosition(testT);
-            const testDistSq = vLengthSqr(vSub(testPos, position));
+            const testDistSq = Vec.squaredLength(Vec.subtract(testPos, position));
             if (testDistSq < nearestDistSq) {
                 nearestT = testT;
                 nearestDistSq = testDistSq;
@@ -380,12 +379,12 @@ export class River {
 
         // Refine by offsetting along the spline tangent
         const tangent = this.getTangent(nearestT);
-        const tanLen = vLength(tangent);
+        const tanLen = Vec.length(tangent);
         if (tanLen > 0) {
             const nearest = this.getPosition(nearestT);
-            const offset = vDot(tangent, vSub(position, nearest)) / tanLen;
+            const offset = Vec.dotProduct(tangent, Vec.subtract(position, nearest)) / tanLen;
             const offsetT = nearestT + offset / (tanLen * len);
-            if (vLengthSqr(vSub(position, this.getPosition(offsetT))) < vLengthSqr(vSub(position, nearest))) {
+            if (Vec.squaredLength(Vec.subtract(position, this.getPosition(offsetT))) < Vec.squaredLength(Vec.subtract(position, nearest))) {
                 nearestT = offsetT;
             }
         }
@@ -400,10 +399,10 @@ function jaggedRectangle(
     variation: number,
     random: SeededRandom
 ): Vector[] {
-    const topLeft = vClone(hitbox.min);
-    const topRight = v(hitbox.max.x, hitbox.min.y);
-    const bottomRight = vClone(hitbox.max);
-    const bottomLeft = v(hitbox.min.x, hitbox.max.y);
+    const topLeft = Vec.clone(hitbox.min);
+    const topRight = Vec.create(hitbox.max.x, hitbox.min.y);
+    const bottomRight = Vec.clone(hitbox.max);
+    const bottomLeft = Vec.create(hitbox.min.x, hitbox.max.y);
 
     const points: Vector[] = [];
 
@@ -411,16 +410,16 @@ function jaggedRectangle(
     const getVariation = (): number => random.get(-variation, variation);
 
     for (let x = topLeft.x + spacing; x < topRight.x; x += spacing) {
-        points.push(v(x, topLeft.y + getVariation()));
+        points.push(Vec.create(x, topLeft.y + getVariation()));
     }
     for (let y = topRight.y + spacing; y < bottomRight.y; y += spacing) {
-        points.push(v(topRight.x + getVariation(), y));
+        points.push(Vec.create(topRight.x + getVariation(), y));
     }
     for (let x = bottomRight.x - spacing; x > bottomLeft.x; x -= spacing) {
-        points.push(v(x, bottomRight.y + getVariation()));
+        points.push(Vec.create(x, bottomRight.y + getVariation()));
     }
     for (let y = bottomLeft.y - spacing; y > topLeft.y; y -= spacing) {
-        points.push(v(bottomLeft.x + getVariation(), y));
+        points.push(Vec.create(bottomLeft.x + getVariation(), y));
     }
 
     return points;

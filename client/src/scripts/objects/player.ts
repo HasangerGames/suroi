@@ -21,7 +21,7 @@ import { angleBetweenPoints, distanceSquared, polarToVector } from "../../../../
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomSign, randomVector } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "./gameObject";
 import { type GameSound } from "../utils/soundManager";
@@ -126,7 +126,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
-            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
@@ -148,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.container.eventMode = "static";
 
         this.images.aimTrail.angle = 90;
-        this.images.aimTrail.position = v(6000, -8);
+        this.images.aimTrail.position = Vec.create(6000, -8);
         this.images.aimTrail.alpha = 0;
         if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
@@ -184,7 +184,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         start: 1,
                         end: 1.5
                     },
-                    speed: v(randomFloat(-1, 1), -3)
+                    speed: Vec.create(randomFloat(-1, 1), -3)
                 };
             }
         });
@@ -201,7 +201,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
-        if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
+        if (!this.destroyed) this.emoteContainer.position = Vec.addComponent(this.container.position, 0, -175);
     }
 
     spawnCasingParticles(altFire = false): void {
@@ -212,7 +212,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (casings === undefined) return;
 
-        const position = vClone(casings.position);
+        const position = Vec.clone(casings.position);
         if (weaponDef.isDual) {
             position.y = (altFire ? -1 : 1) * (position.y + weaponDef.leftRightOffset);
         }
@@ -243,7 +243,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     return {
                         frames: `${weaponDef.ammoType}_particle`,
                         zIndex: ZIndexes.Players,
-                        position: vAdd(this.position, vRotate(position, this.rotation)),
+                        position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                         lifetime: 400,
                         scale: {
                             start: 0.8,
@@ -259,8 +259,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             end: initialRotation + Math.sign(displacement.y) * spinAmount
                             //                    ^^^^^^^^^^ make casings spin clockwise or counterclockwise depending on which way they're flying
                         },
-                        speed: vRotate(
-                            vAdd2(
+                        speed: Vec.rotate(
+                            Vec.addComponent(
                                 displacement,
                                 -(spinAmount / 4),
                                 0
@@ -289,7 +289,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         // Position and rotation
-        if (this.position !== undefined) this.oldPosition = vClone(this.position);
+        if (this.position !== undefined) this.oldPosition = Vec.clone(this.position);
         this.position = data.position;
         this.hitbox.position = this.position;
 
@@ -351,7 +351,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         zIndex: ZIndexes.Ground,
                         position: this.hitbox.randomPoint(),
                         lifetime: 1000,
-                        speed: v(0, 0)
+                        speed: Vec.create(0, 0)
                     };
 
                     // outer
@@ -385,7 +385,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             const pos = toPixiCoords(this.position);
-            const emotePos = vAdd(pos, v(0, -175));
+            const emotePos = Vec.add(pos, Vec.create(0, -175));
             this.container.position.copyFrom(pos);
             this.emoteContainer.position.copyFrom(emotePos);
         }
@@ -501,7 +501,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         width: 4
                     });
                     ctx.moveTo(this.container.position.x, this.container.position.y);
-                    const lineEnd = toPixiCoords(vAdd(this.position, vRotate(v(this.activeItem.length, 0), this.rotation)));
+                    const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
                     ctx.lineTo(lineEnd.x, lineEnd.y);
                     ctx.endFill();
                     break;
@@ -510,9 +510,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     drawHitbox(
                         new CircleHitbox(
                             this.activeItem.radius,
-                            vAdd(
+                            Vec.add(
                                 this.position,
-                                vRotate(this.activeItem.offset, this.rotation)
+                                Vec.rotate(this.activeItem.offset, this.rotation)
                             )
                         ),
                         HITBOX_COLORS.playerWeapon,
@@ -757,8 +757,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
-                    const rotated = vRotate(weaponDef.offset, this.rotation);
-                    const position = vAdd(this.position, rotated);
+                    const rotated = Vec.rotate(weaponDef.offset, this.rotation);
+                    const position = Vec.add(this.position, rotated);
                     const hitbox = new CircleHitbox(weaponDef.radius, position);
 
                     const damagedObjects: Array<Player | Obstacle> = [];
@@ -835,7 +835,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         muzzleFlash.y = (isAltFire ? -1 : 1) * this._getOffset();
                         muzzleFlash.setVisible(true);
                         muzzleFlash.alpha = 0.95;
-                        muzzleFlash.scale = v(
+                        muzzleFlash.scale = Vec.create(
                             randomFloat(0.75, 1.25),
                             randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
                         );

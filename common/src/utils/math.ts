@@ -2,7 +2,7 @@ import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
 import { RectangleHitbox } from "./hitbox";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
-import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector";
+import { Vec, type Vector } from "./vector";
 
 /**
  * Draws a line between two points and returns that line's angle
@@ -22,7 +22,7 @@ export function angleBetweenPoints(a: Vector, b: Vector): number {
  * @param b The second vector
  */
 export function angleBetweenVectors(a: Vector, b: Vector): number {
-    return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(distanceSquared(v(0, 0), a) * distanceSquared(v(0, 0), b)));
+    return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(distanceSquared(Vec.create(0, 0), a) * distanceSquared(Vec.create(0, 0), b)));
 }
 
 /**
@@ -114,7 +114,7 @@ export function lerp(start: number, end: number, interpFactor: number): number {
  *
  */
 export function vLerp(start: Vector, end: Vector, interpFactor: number): Vector {
-    return vAdd(vMul(start, 1 - interpFactor), vMul(end, interpFactor));
+    return Vec.add(Vec.scale(start, 1 - interpFactor), Vec.scale(end, interpFactor));
 }
 
 /**
@@ -261,7 +261,7 @@ export function addOrientations(n1: Orientation, n2: Orientation): Orientation {
  * @return A new Vector
  */
 export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
-    if (orientation === 0) return vAdd(position1, position2);
+    if (orientation === 0) return Vec.add(position1, position2);
     let xOffset: number, yOffset: number;
     switch (orientation) {
         case 1:
@@ -279,7 +279,7 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
             yOffset = position2.x;
             break;
     }
-    return vAdd(position1, v(xOffset, yOffset));
+    return Vec.add(position1, Vec.create(xOffset, yOffset));
 }
 
 /**
@@ -292,23 +292,23 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
  * @return A new Rectangle transformed by the given position and orientation
  */
 export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { readonly min: Vector, readonly max: Vector } {
-    min = vMul(min, scale);
-    max = vMul(max, scale);
+    min = Vec.scale(min, scale);
+    max = Vec.scale(max, scale);
     if (orientation !== 0) {
         const minX = min.x; const minY = min.y;
         const maxX = max.x; const maxY = max.y;
         switch (orientation) {
             case 1:
-                min = v(maxX, minY);
-                max = v(minX, maxY);
+                min = Vec.create(maxX, minY);
+                max = Vec.create(minX, maxY);
                 break;
             case 2:
-                min = v(maxX, maxY);
-                max = v(minX, minY);
+                min = Vec.create(maxX, maxY);
+                max = Vec.create(minX, minY);
                 break;
             case 3:
-                min = v(minX, maxY);
-                max = v(maxX, minY);
+                min = Vec.create(minX, maxY);
+                max = Vec.create(maxX, minY);
                 break;
         }
     }
@@ -338,7 +338,7 @@ export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vecto
         const x4 = x3 + x2 - x1;
         if (x3 * x4 < 0.0) {
             const t = x3 / (x3 - x4);
-            return vAdd(a0, vMul(vSub(a1, a0), t));
+            return Vec.add(a0, Vec.scale(Vec.subtract(a1, a0), t));
         }
     }
     return null;
@@ -355,12 +355,12 @@ export type IntersectionResponse = { readonly point: Vector, readonly normal: Ve
  * @return An intersection response with the intersection position and normal Vectors, returns null if they don't intersect
 */
 export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): IntersectionResponse {
-    let d = vSub(s1, s0);
-    const len = Math.max(vLength(d), 0.000001);
-    d = vDiv(d, len);
-    const m = vSub(s0, pos);
-    const b = vDot(m, d);
-    const c = vDot(m, m) - rad * rad;
+    let d = Vec.subtract(s1, s0);
+    const len = Math.max(Vec.length(d), 0.000001);
+    d = Vec.normalizeSafe(d);
+    const m = Vec.subtract(s0, pos);
+    const b = Vec.dotProduct(m, d);
+    const c = Vec.dotProduct(m, m) - rad * rad;
     if (c > 0.0 && b > 0.0) {
         return null;
     }
@@ -374,10 +374,10 @@ export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: n
         t = -b + disc;
     }
     if (t <= len) {
-        const point = vAdd(s0, vMul(d, t));
+        const point = Vec.add(s0, Vec.scale(d, t));
         return {
             point,
-            normal: vNormalize(vSub(point, pos))
+            normal: Vec.normalize(Vec.subtract(point, pos))
         };
     }
     return null;
@@ -396,9 +396,9 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     let tmax = Number.MAX_VALUE;
     const eps = 0.00001;
     const r = s0;
-    let d = vSub(s1, s0);
-    const dist = vLength(d);
-    d = dist > eps ? vDiv(d, dist) : v(1.0, 0.0);
+    let d = Vec.subtract(s1, s0);
+    const dist = Vec.length(d);
+    d = Vec.normalizeSafe(d);
 
     let absDx = Math.abs(d.x);
     let absDy = Math.abs(d.y);
@@ -434,15 +434,15 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
         return null;
     }
     // Hit
-    const p = vAdd(s0, vMul(d, tmin));
+    const p = Vec.add(s0, Vec.scale(d, tmin));
     // Intersection normal
-    const c = vAdd(min, vMul(vSub(max, min), 0.5));
-    const p0 = vSub(p, c);
-    const d0 = vMul(vSub(min, max), 0.5);
+    const c = Vec.add(min, Vec.scale(Vec.subtract(max, min), 0.5));
+    const p0 = Vec.subtract(p, c);
+    const d0 = Vec.scale(Vec.subtract(min, max), 0.5);
 
     const x = p0.x / Math.abs(d0.x) * 1.001;
     const y = p0.y / Math.abs(d0.y) * 1.001;
-    const n = vNormalizeSafe(v(x < 0.0 ? Math.ceil(x) : Math.floor(x), y < 0.0 ? Math.ceil(y) : Math.floor(y)), v(1.0, 0.0));
+    const n = Vec.normalizeSafe(Vec.create(x < 0.0 ? Math.ceil(x) : Math.floor(x), y < 0.0 ? Math.ceil(y) : Math.floor(y)), Vec.create(1.0, 0.0));
     return {
         point: p,
         normal: n
@@ -462,9 +462,9 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
     let tmax = Number.MAX_VALUE;
     const eps = 0.00001;
     const r = s0;
-    let d = vSub(s1, s0);
-    const dist = vLength(d);
-    d = dist > eps ? vDiv(d, dist) : v(1.0, 0.0);
+    let d = Vec.subtract(s1, s0);
+    const dist = Vec.length(d);
+    d = Vec.normalizeSafe(d);
 
     let absDx = Math.abs(d.x);
     let absDy = Math.abs(d.y);
@@ -504,14 +504,15 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
 
 export type CollisionResponse = { readonly dir: Vector, readonly pen: number } | null;
 
-export function circleCircleIntersection(pos0: Vector, rad0: number, pos1: Vector, rad1: number): CollisionResponse {
-    const r = rad0 + rad1;
-    const toP1 = vSub(pos1, pos0);
-    const distSqr = vLengthSqr(toP1);
+export function circleCircleIntersection(centerA: Vector, radiusA: number, centerB: Vector, radiusB: number): CollisionResponse {
+    const r = radiusA + radiusB;
+    const toP1 = Vec.subtract(centerB, centerA);
+    const distSqr = Vec.squaredLength(toP1);
+
     if (distSqr < r * r) {
         const dist = Math.sqrt(distSqr);
         return {
-            dir: dist > 0.00001 ? vDiv(toP1, dist) : v(1.0, 0.0),
+            dir: Vec.normalizeSafe(toP1),
             pen: r - dist
         };
     }
@@ -520,32 +521,33 @@ export function circleCircleIntersection(pos0: Vector, rad0: number, pos1: Vecto
 
 export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, radius: number): CollisionResponse {
     if (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y) {
-        const e = vMul(vSub(max, min), 0.5);
-        const c = vAdd(min, e);
-        const p = vSub(pos, c);
+        const e = Vec.scale(Vec.subtract(max, min), 0.5);
+        const c = Vec.add(min, e);
+        const p = Vec.subtract(pos, c);
         const xp = Math.abs(p.x) - e.x - radius;
         const yp = Math.abs(p.y) - e.y - radius;
         if (xp > yp) {
             return {
-                dir: v(p.x > 0.0 ? 1.0 : -1.0, 0.0),
+                dir: Vec.create(p.x > 0.0 ? 1.0 : -1.0, 0.0),
                 pen: -xp
             };
         }
         return {
-            dir: v(0.0, p.y > 0.0 ? 1.0 : -1.0),
+            dir: Vec.create(0.0, p.y > 0.0 ? 1.0 : -1.0),
             pen: -yp
         };
     }
-    const cpt = v(clamp(pos.x, min.x, max.x), clamp(pos.y, min.y, max.y));
-    let dir = vSub(pos, cpt);
 
-    dir = vSub(cpt, pos);
+    const cpt = Vec.create(clamp(pos.x, min.x, max.x), clamp(pos.y, min.y, max.y));
+    let dir = Vec.subtract(pos, cpt);
 
-    const dstSqr = vLengthSqr(dir);
+    dir = Vec.subtract(cpt, pos);
+
+    const dstSqr = Vec.squaredLength(dir);
     if (dstSqr < radius * radius) {
         const dst = Math.sqrt(dstSqr);
         return {
-            dir: dst > 0.0001 ? vDiv(dir, dst) : v(1.0, 0.0),
+            dir: Vec.normalizeSafe(dir),
             pen: radius - dst
         };
     }
@@ -554,27 +556,27 @@ export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, ra
 }
 
 export function distanceToLine(p: Vector, a: Vector, b: Vector): number {
-    const ab = vSub(b, a);
-    const c = vDot(vSub(p, a), ab) / vDot(ab, ab);
-    const d = vAdd(a, vMul(ab, clamp(c, 0, 1)));
-    const e = vSub(d, p);
-    return vDot(e, e);
+    const ab = Vec.subtract(b, a);
+    const c = Vec.dotProduct(Vec.subtract(p, a), ab) / Vec.dotProduct(ab, ab);
+    const d = Vec.add(a, Vec.scale(ab, clamp(c, 0, 1)));
+    const e = Vec.subtract(d, p);
+    return Vec.dotProduct(e, e);
 }
 
 // http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
 export function rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {
-    const segment = vSub(lineB, lineA);
-    const segmentPerp = v(segment.y, -segment.x);
-    const perpDotDir = vDot(direction, segmentPerp);
+    const segment = Vec.subtract(lineB, lineA);
+    const segmentPerp = Vec.create(segment.y, -segment.x);
+    const perpDotDir = Vec.dotProduct(direction, segmentPerp);
 
     // If lines are parallel, no intersection
     if (Math.abs(perpDotDir) <= 0.000001) return null;
 
-    const d = vSub(lineA, origin);
+    const d = Vec.subtract(lineA, origin);
 
-    const distanceAlongRay = vDot(segmentPerp, d) / perpDotDir;
+    const distanceAlongRay = Vec.dotProduct(segmentPerp, d) / perpDotDir;
 
-    const distanceAlongLine = vDot(v(direction.y, -direction.x), d) / perpDotDir;
+    const distanceAlongLine = Vec.dotProduct(Vec.create(direction.y, -direction.x), d) / perpDotDir;
 
     // If t is positive and s lies within the line it intersects; returns t
     return distanceAlongRay >= 0 && distanceAlongLine >= 0 && distanceAlongLine <= 1 ? distanceAlongRay : null;
@@ -597,23 +599,23 @@ export function rayIntersectsPolygon(origin: Vector, direction: Vector, polygon:
 }
 
 export function rectRectIntersection(min0: Vector, max0: Vector, min1: Vector, max1: Vector): CollisionResponse {
-    const e0 = vMul(vSub(max0, min0), 0.5);
-    const c0 = vAdd(min0, e0);
-    const e1 = vMul(vSub(max1, min1), 0.5);
-    const c1 = vAdd(min1, e1);
-    const n = vSub(c1, c0);
+    const e0 = Vec.scale(Vec.subtract(max0, min0), 0.5);
+    const c0 = Vec.add(min0, e0);
+    const e1 = Vec.scale(Vec.subtract(max1, min1), 0.5);
+    const c1 = Vec.add(min1, e1);
+    const n = Vec.subtract(c1, c0);
     const xo = e0.x + e1.x - Math.abs(n.x);
     if (xo > 0.0) {
         const yo = e0.y + e1.y - Math.abs(n.y);
         if (yo > 0.0) {
             if (xo > yo) {
                 return {
-                    dir: n.x < 0 ? v(-1, 0) : v(1, 0),
+                    dir: n.x < 0 ? Vec.create(-1, 0) : Vec.create(1, 0),
                     pen: xo
                 };
             }
             return {
-                dir: n.y < 0 ? v(0, -1) : v(0, 1),
+                dir: n.y < 0 ? Vec.create(0, -1) : Vec.create(0, 1),
                 pen: yo
             };
         }
@@ -645,7 +647,7 @@ export function calculateDoorHitboxes<
     switch (definition.operationStyle) {
         case "slide": {
             const openHitbox = transformRectangle(
-                addAdjust(position, v((definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1), 0), rotation),
+                addAdjust(position, Vec.create((definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1), 0), rotation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
@@ -660,14 +662,14 @@ export function calculateDoorHitboxes<
         case "swivel":
         default: {
             const openRectangle = transformRectangle(
-                addAdjust(position, vAdd((definition as Swivel).hingeOffset, v(-(definition as Swivel).hingeOffset.y, (definition as Swivel).hingeOffset.x)), rotation),
+                addAdjust(position, Vec.add((definition as Swivel).hingeOffset, Vec.create(-(definition as Swivel).hingeOffset.y, (definition as Swivel).hingeOffset.x)), rotation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
                 absMod(rotation + 1, 4) as Orientation
             );
             const openAltRectangle = transformRectangle(
-                addAdjust(position, vAdd((definition as Swivel).hingeOffset, v((definition as Swivel).hingeOffset.y, -(definition as Swivel).hingeOffset.x)), rotation),
+                addAdjust(position, Vec.add((definition as Swivel).hingeOffset, Vec.create((definition as Swivel).hingeOffset.y, -(definition as Swivel).hingeOffset.x)), rotation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,

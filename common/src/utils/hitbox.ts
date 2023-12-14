@@ -1,7 +1,7 @@
 import { type Orientation } from "../typings";
 import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2, rectRectIntersection } from "./math";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
-import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
+import { Vec, type Vector } from "./vector";
 
 export enum HitboxType {
     Circle,
@@ -131,7 +131,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     constructor(radius: number, position?: Vector) {
         super();
 
-        this.position = position ?? v(0, 0);
+        this.position = position ?? Vec.create(0, 0);
         this.radius = radius;
     }
 
@@ -139,7 +139,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
         return {
             type: this.type,
             radius: this.radius,
-            position: vClone(this.position)
+            position: Vec.clone(this.position)
         };
     }
 
@@ -162,14 +162,14 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
             case HitboxType.Circle: {
                 const collision = circleCircleIntersection(this.position, this.radius, that.position, that.radius);
                 if (collision) {
-                    this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+                    this.position = Vec.subtract(this.position, Vec.scale(collision.dir, collision.pen));
                 }
             }
                 break;
             case HitboxType.Rect: {
                 const collision = rectCircleIntersection(that.min, that.max, this.position, this.radius);
                 if (collision) {
-                    this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+                    this.position = Vec.subtract(this.position, Vec.scale(collision.dir, collision.pen));
                 }
                 break;
             }
@@ -196,7 +196,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     }
 
     override clone(): CircleHitbox {
-        return new CircleHitbox(this.radius, vClone(this.position));
+        return new CircleHitbox(this.radius, Vec.clone(this.position));
     }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
@@ -216,7 +216,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     }
 
     override toRectangle(): RectangleHitbox {
-        return new RectangleHitbox(v(this.position.x - this.radius, this.position.y - this.radius), v(this.position.x + this.radius, this.position.y + this.radius));
+        return new RectangleHitbox(Vec.create(this.position.x - this.radius, this.position.y - this.radius), Vec.create(this.position.x + this.radius, this.position.y + this.radius));
     }
 
     override isPointInside(point: Vector): boolean {
@@ -243,30 +243,30 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     toJSON(): HitboxJsonMapping[HitboxType.Rect] {
         return {
             type: this.type,
-            min: vClone(this.min),
-            max: vClone(this.max)
+            min: Vec.clone(this.min),
+            max: Vec.clone(this.max)
         };
     }
 
     static fromLine(a: Vector, b: Vector): RectangleHitbox {
         return new RectangleHitbox(
-            v(
+            Vec.create(
                 Math.min(a.x, b.x),
                 Math.min(a.y, b.y)
             ),
-            v(
+            Vec.create(
                 Math.max(a.x, b.x),
                 Math.max(a.y, b.y)
             )
         );
     }
 
-    static fromRect(width: number, height: number, pos = v(0, 0)): RectangleHitbox {
-        const size = v(width / 2, height / 2);
+    static fromRect(width: number, height: number, pos = Vec.create(0, 0)): RectangleHitbox {
+        const size = Vec.create(width / 2, height / 2);
 
         return new RectangleHitbox(
-            vSub(pos, size),
-            vAdd(pos, size)
+            Vec.subtract(pos, size),
+            Vec.add(pos, size)
         );
     }
 
@@ -287,7 +287,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
             case HitboxType.Circle: {
                 const collision = rectCircleIntersection(this.min, this.max, that.position, that.radius);
                 if (collision) {
-                    const rect = this.transform(vMul(collision.dir, collision.pen));
+                    const rect = this.transform(Vec.scale(collision.dir, collision.pen));
                     this.min = rect.min;
                     this.max = rect.max;
                 }
@@ -296,7 +296,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
             case HitboxType.Rect: {
                 const collision = rectRectIntersection(this.min, this.max, that.min, that.max);
                 if (collision) {
-                    const rect = this.transform(vMul(collision.dir, collision.pen));
+                    const rect = this.transform(Vec.scale(collision.dir, collision.pen));
                     this.min = rect.min;
                     this.max = rect.max;
                 }
@@ -324,7 +324,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
 
     override clone(): RectangleHitbox {
-        return new RectangleHitbox(vClone(this.min), vClone(this.max));
+        return new RectangleHitbox(Vec.clone(this.min), Vec.clone(this.max));
     }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
@@ -336,8 +336,8 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override scale(scale: number): void {
         const centerX = (this.min.x + this.max.x) / 2;
         const centerY = (this.min.y + this.max.y) / 2;
-        this.min = v((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
-        this.max = v((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
+        this.min = Vec.create((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
+        this.max = Vec.create((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
 
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
@@ -369,7 +369,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
 
 export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
-    position = v(0, 0);
+    position = Vec.create(0, 0);
     hitboxes: Array<RectangleHitbox | CircleHitbox>;
 
     constructor(...hitboxes: Array<RectangleHitbox | CircleHitbox>) {
@@ -462,8 +462,8 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     }
 
     override toRectangle(): RectangleHitbox {
-        const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
-        const max = v(0, 0);
+        const min = Vec.create(Number.MAX_VALUE, Number.MAX_VALUE);
+        const max = Vec.create(0, 0);
         for (const hitbox of this.hitboxes) {
             const toRect = hitbox.toRectangle();
             min.x = Math.min(min.x, toRect.min.x);
@@ -499,7 +499,7 @@ export class PolygonHitbox extends BaseHitbox {
     override toJSON(): HitboxJsonMapping[HitboxType.Polygon] {
         return {
             type: this.type,
-            points: this.points.map(point => vClone(point))
+            points: this.points.map(point => Vec.clone(point))
         };
     }
 
@@ -534,13 +534,13 @@ export class PolygonHitbox extends BaseHitbox {
 
     override transform(position: Vector, scale: number = 1, orientation: Orientation = 0): PolygonHitbox {
         return new PolygonHitbox(
-            this.points.map(point => vMul(addAdjust(position, point, orientation), scale))
+            this.points.map(point => Vec.scale(addAdjust(position, point, orientation), scale))
         );
     }
 
     override scale(scale: number): void {
         for (let i = 0, length = this.points.length; i < length; i++) {
-            this.points[i] = vMul(this.points[i], scale);
+            this.points[i] = Vec.scale(this.points[i], scale);
         }
     }
 
@@ -560,8 +560,8 @@ export class PolygonHitbox extends BaseHitbox {
     }
 
     override toRectangle(): RectangleHitbox {
-        const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
-        const max = v(0, 0);
+        const min = Vec.create(Number.MAX_VALUE, Number.MAX_VALUE);
+        const max = Vec.create(0, 0);
         for (const point of this.points) {
             min.x = Math.min(min.x, point.x);
             min.y = Math.min(min.y, point.y);

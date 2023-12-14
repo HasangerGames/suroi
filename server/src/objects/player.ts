@@ -19,7 +19,7 @@ import { FloorTypes } from "../../../common/src/utils/terrain";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
 import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
 import { type Game } from "../game";
@@ -375,7 +375,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     update(): void {
         // This system allows opposite movement keys to cancel each other out.
-        const movement = v(0, 0);
+        const movement = Vec.create(0, 0);
 
         if (this.isMobile && this.movement.moving) {
             movement.x = Math.cos(this.movement.angle) * 1.45;
@@ -410,8 +410,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
-        const oldPosition = vClone(this.position);
-        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+        const oldPosition = Vec.clone(this.position);
+        this.position = Vec.add(this.position, Vec.create(movement.x * speed, movement.y * speed));
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -435,7 +435,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        this.isMoving = !vEqual(oldPosition, this.position);
+        this.isMoving = !Vec.equals(oldPosition, this.position);
 
         if (this.isMoving) this.game.grid.addObject(this);
 

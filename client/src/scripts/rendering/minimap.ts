@@ -6,7 +6,7 @@ import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../c
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { addAdjust, lerp } from "../../../../common/src/utils/math";
-import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
@@ -19,11 +19,11 @@ export class Minimap {
     game: Game;
     expanded = false;
     visible = true;
-    position = v(0, 0);
-    lastPosition = v(0, 0);
+    position = Vec.create(0, 0);
+    lastPosition = Vec.create(0, 0);
 
     // used for the gas to player line and circle
-    gasPos = v(0, 0);
+    gasPos = Vec.create(0, 0);
     gasRadius = 0;
     gasGraphics = new Graphics();
 
@@ -40,7 +40,7 @@ export class Minimap {
     minimapWidth = 0;
     minimapHeight = 0;
 
-    margins = v(0, 0);
+    margins = Vec.create(0, 0);
 
     readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
@@ -129,7 +129,7 @@ export class Minimap {
 
             const radius = 20 * scale;
 
-            const beach = scale === 1 ? beachPoints : beachPoints.map(point => vMul(point, scale));
+            const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
             // The grass is a hole in the map shape, the background clear color is the grass color
             ctx.beginHole();
             ctx.drawRoundedShape?.(beach, radius);
@@ -141,7 +141,7 @@ export class Minimap {
 
             ctx.beginHole();
 
-            const grass = scale === 1 ? grassPoints : grassPoints.map(point => vMul(point, scale));
+            const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
             ctx.drawRoundedShape?.(grass, radius);
 
             ctx.endHole();
@@ -350,7 +350,7 @@ export class Minimap {
             drawHitbox(terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
 
             for (const river of rivers) {
-                const points = river.points.map(point => vMul(point, PIXI_SCALE));
+                const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
 
                 drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
                 drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
@@ -452,7 +452,7 @@ export class Minimap {
             // noinspection JSSuspiciousNameCombination
             this.minimapWidth = this.sprite.width * this.container.scale.x;
             this.minimapHeight = this.sprite.height * this.container.scale.y;
-            this.margins = v(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
+            this.margins = Vec.create(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
             closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
@@ -474,7 +474,7 @@ export class Minimap {
 
             this.minimapWidth = bounds.width - border * 2;
             this.minimapHeight = bounds.height - border * 2;
-            this.margins = v(bounds.left + border, bounds.top + border);
+            this.margins = Vec.create(bounds.left + border, bounds.top + border);
 
             if (window.innerWidth > 1200) {
                 this.container.scale.set(1 / 1.25);
@@ -502,7 +502,7 @@ export class Minimap {
     }
 
     setPosition(pos: Vector): void {
-        this.position = vClone(pos);
+        this.position = Vec.clone(pos);
         this.indicator.setVPos(pos);
         this.updatePosition();
     }
@@ -513,12 +513,12 @@ export class Minimap {
             this.objectsContainer.position.set(-this.width / 2, 0);
             return;
         }
-        const pos = vClone(this.position);
+        const pos = Vec.clone(this.position);
         pos.x -= (this.minimapWidth / 2 + this.margins.x) / this.container.scale.x;
         pos.y -= (this.minimapHeight / 2 + this.margins.y) / this.container.scale.y;
 
         this.container.position.set(0, 0);
-        this.objectsContainer.position.copyFrom(vMul(pos, -1));
+        this.objectsContainer.position.copyFrom(Vec.scale(pos, -1));
     }
 
     switchToBigMap(): void {

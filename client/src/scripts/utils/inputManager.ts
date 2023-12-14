@@ -3,7 +3,7 @@ import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 
 import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
-import { v, vDiv } from "../../../../common/src/utils/vector";
+import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
@@ -36,7 +36,7 @@ export class InputManager {
     mouseY = 0;
 
     emoteWheelActive = false;
-    emoteWheelPosition = v(0, 0);
+    emoteWheelPosition = Vec.create(0, 0);
 
     rotation = 0;
 
@@ -154,7 +154,7 @@ export class InputManager {
             this.mouseY = e.clientY;
 
             if (this.emoteWheelActive) {
-                const mousePosition = v(e.clientX, e.clientY);
+                const mousePosition = Vec.create(e.clientX, e.clientY);
                 if (distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
                     const angle = angleBetweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
@@ -182,9 +182,9 @@ export class InputManager {
             this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
 
             if (!game.gameOver && game.activePlayer) {
-                const globalPos = v(e.clientX, e.clientY);
+                const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
-                const gamePos = vDiv(pixiPos, PIXI_SCALE);
+                const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
                 this.distanceToMouse = distance(game.activePlayer.position, gamePos);
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {

@@ -4,7 +4,7 @@ import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
-import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
+import { Vec } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
@@ -118,11 +118,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
             ? ((this._altFire = !this._altFire) ? 1 : -1) * definition.leftRightOffset
             : 0;
 
-        const startPosition = vRotate(v(0, offset), owner.rotation);
+        const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
 
-        let position = vAdd(
+        let position = Vec.add(
             owner.position,
-            vRotate(v(definition.length + jitter, offset), owner.rotation) // player radius + gun length
+            Vec.rotate(Vec.create(definition.length + jitter, offset), owner.rotation) // player radius + gun length
         );
 
         for (
@@ -151,7 +151,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 if (intersection === null) continue;
 
                 if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
-                    position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
+                    position = Vec.subtract(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
                 }
             }
         }

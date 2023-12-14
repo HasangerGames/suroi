@@ -3,7 +3,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/math";
 import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { randomRotation } from "../../../common/src/utils/random";
-import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameObject } from "./gameObject";
 import { Decal } from "./decal";
@@ -37,7 +37,7 @@ export class Explosion {
                 readonly squareDistance: number
             }> = [];
 
-            const lineEnd = vAdd(this.position, vRotate(v(this.definition.radius.max, 0), angle));
+            const lineEnd = Vec.add(this.position, Vec.rotate(Vec.create(this.definition.radius.max, 0), angle));
 
             for (const object of objects) {
                 if (object.dead || !object.hitbox || !(object instanceof Obstacle || object instanceof Player || object instanceof Loot)) continue;

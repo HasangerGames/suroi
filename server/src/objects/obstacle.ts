@@ -6,7 +6,7 @@ import { addAdjust, angleBetweenPoints, calculateDoorHitboxes } from "../../../c
 import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
-import { vAdd, type Vector } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
@@ -168,7 +168,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 const loot = this.game.addLoot(
                     item.idString,
                     this.lootSpawnOffset
-                        ? vAdd(this.position, this.lootSpawnOffset)
+                        ? Vec.add(this.position, this.lootSpawnOffset)
                         : this.loot.length > 1
                             ? this.hitbox.randomPoint()
                             : this.position,

@@ -1,6 +1,6 @@
 import { type RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { clamp } from "../../../common/src/utils/math";
-import { type Vector, v } from "../../../common/src/utils/vector";
+import { type Vector, Vec } from "../../../common/src/utils/vector";
 
 interface GameObject {
     readonly id: number
@@ -71,7 +71,7 @@ export class Grid<T extends GameObject> {
                     y++
                 ) {
                     (xRow[y] ??= new Map()).set(object.id, object);
-                    cells.push(v(x, y));
+                    cells.push(Vec.create(x, y));
                 }
             }
         }

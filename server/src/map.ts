@@ -7,7 +7,7 @@ import { River, Terrain } from "../../common/src/utils/terrain";
 import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, polarToVector } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
-import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { Vec, type Vector } from "../../common/src/utils/vector";
 import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
@@ -65,20 +65,20 @@ export class Map {
 
         this.beachHitbox = new HitboxGroup(
             new RectangleHitbox(
-                v(this.width - beachPadding, oceanSize),
-                v(this.width - oceanSize, this.height - oceanSize)
+                Vec.create(this.width - beachPadding, oceanSize),
+                Vec.create(this.width - oceanSize, this.height - oceanSize)
             ),
             new RectangleHitbox(
-                v(oceanSize, oceanSize),
-                v(this.width - beachPadding, beachPadding)
+                Vec.create(oceanSize, oceanSize),
+                Vec.create(this.width - beachPadding, beachPadding)
             ),
             new RectangleHitbox(
-                v(oceanSize, oceanSize),
-                v(beachPadding, this.height - beachPadding)
+                Vec.create(oceanSize, oceanSize),
+                Vec.create(beachPadding, this.height - beachPadding)
             ),
             new RectangleHitbox(
-                v(oceanSize, this.height - beachPadding),
-                v(this.width - beachPadding, this.height - oceanSize)
+                Vec.create(oceanSize, this.height - beachPadding),
+                Vec.create(this.width - beachPadding, this.height - oceanSize)
             )
         );
 
@@ -90,8 +90,8 @@ export class Map {
             const riverPadding = 64;
 
             const riverRect = new RectangleHitbox(
-                v(riverPadding, riverPadding),
-                v(this.width - riverPadding, this.height - riverPadding)
+                Vec.create(riverPadding, riverPadding),
+                Vec.create(this.width - riverPadding, this.height - riverPadding)
             );
 
             const randomGenerator = new SeededRandom(this.seed);
@@ -110,7 +110,7 @@ export class Map {
 
             const halfWidth = this.width / 2;
             const halfHeight = this.height / 2;
-            const center = v(halfWidth, halfHeight);
+            const center = Vec.create(halfWidth, halfHeight);
             const width = this.width - riverPadding;
             const height = this.height - riverPadding;
 
@@ -125,11 +125,11 @@ export class Map {
                 if (horizontal) {
                     const topHalf = randomGenerator.get(riverPadding, halfHeight);
                     const bottomHalf = randomGenerator.get(halfHeight, height);
-                    start = v(riverPadding, reverse ? bottomHalf : topHalf);
+                    start = Vec.create(riverPadding, reverse ? bottomHalf : topHalf);
                 } else {
                     const leftHalf = randomGenerator.get(riverPadding, halfWidth);
                     const rightHalf = randomGenerator.get(halfWidth, width);
-                    start = v(reverse ? rightHalf : leftHalf, riverPadding);
+                    start = Vec.create(reverse ? rightHalf : leftHalf, riverPadding);
                 }
 
                 const startAngle = angleBetweenPoints(center, start) + (reverse ? 0 : Math.PI);
@@ -174,7 +174,7 @@ export class Map {
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
-                const position = v(
+                const position = Vec.create(
                     this.width * (place.position.x + randomFloat(-0.04, 0.04)),
                     this.height * (place.position.y + randomFloat(-0.04, 0.04))
                 );
@@ -206,7 +206,7 @@ export class Map {
 
         for (let i = 1; i < 60; i++) {
             const lastPoint = riverPoints[i - 1];
-            const center = v(this.width / 2, this.height / 2);
+            const center = Vec.create(this.width / 2, this.height / 2);
 
             const distFactor = distance(lastPoint, center) / (this.width / 2);
 
@@ -218,7 +218,7 @@ export class Map {
                 randomGenerator.get(minDeviation, maxDeviation)
             );
 
-            const pos = vAdd(lastPoint, polarToVector(angle, randomGenerator.getInt(30, 80)));
+            const pos = Vec.add(lastPoint, polarToVector(angle, randomGenerator.getInt(30, 80)));
 
             let collided = false;
 
@@ -277,7 +277,7 @@ export class Map {
         definition = Buildings.reify(definition);
         orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode ?? RotationMode.Limited);
 
-        const building = new Building(this.game, definition, vClone(position), orientation);
+        const building = new Building(this.game, definition, Vec.clone(position), orientation);
 
         for (const obstacleData of definition.obstacles ?? []) {
             const obstacleDef = Obstacles.fromString(getRandomIdString(obstacleData.idString));
@@ -289,7 +289,7 @@ export class Map {
 
             let lootSpawnOffset: Vector | undefined;
 
-            if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(v(0, 0), obstacleData.lootSpawnOffset, orientation);
+            if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(Vec.create(0, 0), obstacleData.lootSpawnOffset, orientation);
 
             const obstacle = this.generateObstacle(
                 obstacleDef,
@@ -399,7 +399,7 @@ export class Map {
         const obstacle = new Obstacle(
             this.game,
             definition,
-            vClone(position),
+            Vec.clone(position),
             rotation,
             scale,
             variation,
@@ -454,7 +454,7 @@ export class Map {
         // so it can retry on different orientations
         getOrientation?: (orientation: Orientation) => void
     }): Vector | undefined {
-        let position = v(0, 0);
+        let position = Vec.create(0, 0);
 
         const scale = params?.scale ?? 1;
         let orientation = params?.orientation ?? 0;

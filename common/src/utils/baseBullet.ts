@@ -3,7 +3,7 @@ import { type Hitbox } from "./hitbox";
 import { clamp, distanceSquared } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
 import { type SuroiBitStream } from "./suroiBitStream";
-import { v, vAdd, vClone, vMul, type Vector } from "./vector";
+import { Vec, type Vector } from "./vector";
 
 export interface BulletOptions {
     readonly position: Vector
@@ -57,7 +57,7 @@ export class BaseBullet {
     readonly canHitShooter: boolean;
 
     constructor(options: BulletOptions) {
-        this.initialPosition = vClone(options.position);
+        this.initialPosition = Vec.clone(options.position);
         this.position = options.position;
         this.rotation = options.rotation;
         this.reflectionCount = options.reflectionCount ?? 0;
@@ -74,9 +74,9 @@ export class BaseBullet {
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
 
-        this.direction = v(Math.sin(this.rotation), -Math.cos(this.rotation));
+        this.direction = Vec.create(Math.sin(this.rotation), -Math.cos(this.rotation));
 
-        this.velocity = vMul(this.direction, this.definition.speed * (this.rangeVariance + 1));
+        this.velocity = Vec.scale(this.direction, this.definition.speed * (this.rangeVariance + 1));
 
         this.canHitShooter = (this.definition.shrapnel ?? this.reflectionCount > 0);
     }
@@ -88,13 +88,13 @@ export class BaseBullet {
      * @returns An array containing the objects that the bullet collided and the intersection data
      */
     updateAndGetCollisions(delta: number, objects: { [Symbol.iterator]: () => Iterator<GameObject> }): Collision[] {
-        const oldPosition = vClone(this.position);
+        const oldPosition = Vec.clone(this.position);
 
-        this.position = vAdd(this.position, vMul(this.velocity, delta));
+        this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
 
         if (distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
             this.dead = true;
-            this.position = vAdd(this.initialPosition, (vMul(this.direction, this.maxDistance)));
+            this.position = Vec.add(this.initialPosition, (Vec.scale(this.direction, this.maxDistance)));
         }
 
         if (this.definition.noCollision) return [];

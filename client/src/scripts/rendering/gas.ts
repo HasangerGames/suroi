@@ -3,7 +3,7 @@ import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vLerp } from "../../../../common/src/utils/math";
-import { v, type Vector, vMul, vClone } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { formatDate } from "../utils/misc";
@@ -15,10 +15,10 @@ const kSegments = 512;
 export class Gas {
     state = GasState.Inactive;
     initialDuration = 0;
-    oldPosition = v(0, 0);
-    lastPosition = v(0, 0);
-    position = v(0, 0);
-    newPosition = v(0, 0);
+    oldPosition = Vec.create(0, 0);
+    lastPosition = Vec.create(0, 0);
+    position = Vec.create(0, 0);
+    newPosition = Vec.create(0, 0);
     oldRadius = 2048;
     lastRadius = 2048;
     radius = 2048;
@@ -111,7 +111,7 @@ export class Gas {
             }
 
             if (this.state === GasState.Advancing) {
-                this.lastPosition = vClone(this.position);
+                this.lastPosition = Vec.clone(this.position);
                 this.lastRadius = this.radius;
                 this.position = vLerp(this.oldPosition, this.newPosition, gasPercentage);
                 this.radius = lerp(this.oldRadius, this.newRadius, gasPercentage);
@@ -171,7 +171,7 @@ export class GasRender {
             radius = gas.radius;
         }
 
-        const center = vMul(position, this._scale);
+        const center = Vec.scale(position, this._scale);
         // Once the hole gets small enough, just fill the entire
         // screen with some random part of the geometry
         let rad = radius * this._scale;

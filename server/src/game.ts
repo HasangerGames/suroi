@@ -17,7 +17,7 @@ import { Map } from "./map";
 import { endGame, newGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
 import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { v, vAdd, type Vector } from "../../common/src/utils/vector";
+import { Vec, type Vector } from "../../common/src/utils/vector";
 import { clamp, distanceSquared, polarToVector } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
@@ -368,7 +368,7 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
-        let spawnPosition = v(this.map.width / 2, this.map.height / 2);
+        let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -627,7 +627,7 @@ export class Game {
 
         const direction = randomRotation();
 
-        const planePos = vAdd(
+        const planePos = Vec.add(
             position,
             polarToVector(direction, -GameConstants.maxPosition)
         );
