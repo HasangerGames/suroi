@@ -5,7 +5,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/s
 import { MapPacket } from "../../common/src/packets/mapPacket";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, polarToVector } from "../../common/src/utils/math";
+import { Angle, Collision, Geometry, Numeric } from "../../common/src/utils/math";
 import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
 import { River, Terrain } from "../../common/src/utils/terrain";
@@ -132,7 +132,7 @@ export class Map {
                     start = Vec.create(reverse ? rightHalf : leftHalf, riverPadding);
                 }
 
-                const startAngle = angleBetweenPoints(center, start) + (reverse ? 0 : Math.PI);
+                const startAngle = Angle.angleBetweenPoints(center, start) + (reverse ? 0 : Math.PI);
 
                 this.generateRiver(
                     start,
@@ -208,17 +208,17 @@ export class Map {
             const lastPoint = riverPoints[i - 1];
             const center = Vec.create(this.width / 2, this.height / 2);
 
-            const distFactor = distance(lastPoint, center) / (this.width / 2);
+            const distFactor = Geometry.distance(lastPoint, center) / (this.width / 2);
 
-            const maxDeviation = lerp(0.8, 0.1, distFactor);
-            const minDeviation = lerp(0.3, 0.1, distFactor);
+            const maxDeviation = Numeric.lerp(0.8, 0.1, distFactor);
+            const minDeviation = Numeric.lerp(0.3, 0.1, distFactor);
 
             angle = angle + randomGenerator.get(
                 -randomGenerator.get(minDeviation, maxDeviation),
                 randomGenerator.get(minDeviation, maxDeviation)
             );
 
-            const pos = Vec.add(lastPoint, polarToVector(angle, randomGenerator.getInt(30, 80)));
+            const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
 
             let collided = false;
 
@@ -226,9 +226,9 @@ export class Map {
             for (const river of rivers) {
                 const points = river.points;
                 for (let j = 1; j < points.length; j++) {
-                    const intersection = lineIntersectsLine(lastPoint, pos, points[j - 1], points[j]);
+                    const intersection = Collision.lineIntersectsLine(lastPoint, pos, points[j - 1], points[j]);
                     if (intersection) {
-                        const dist = distance(intersection, riverPoints[i - 1]);
+                        const dist = Geometry.distance(intersection, riverPoints[i - 1]);
                         if (dist > 16) riverPoints[i] = intersection;
                         collided = true;
                         break;
@@ -284,16 +284,16 @@ export class Map {
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
-                obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
+                obstacleRotation = Numeric.addOrientations(orientation, obstacleRotation as Orientation);
             }
 
             let lootSpawnOffset: Vector | undefined;
 
-            if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(Vec.create(0, 0), obstacleData.lootSpawnOffset, orientation);
+            if (obstacleData.lootSpawnOffset) lootSpawnOffset = Vec.addAdjust(Vec.create(0, 0), obstacleData.lootSpawnOffset, orientation);
 
             const obstacle = this.generateObstacle(
                 obstacleDef,
-                addAdjust(position, obstacleData.position, orientation),
+                Vec.addAdjust(position, obstacleData.position, orientation),
                 obstacleRotation,
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
@@ -319,17 +319,17 @@ export class Map {
             ) {
                 this.game.addLoot(
                     item.idString,
-                    addAdjust(position, lootData.position, orientation),
+                    Vec.addAdjust(position, lootData.position, orientation),
                     item.count
                 );
             }
         }
 
         for (const subBuilding of definition.subBuildings ?? []) {
-            const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
+            const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
                 getRandomIdString(subBuilding.idString),
-                addAdjust(position, subBuilding.position, finalOrientation),
+                Vec.addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
         }
@@ -339,7 +339,7 @@ export class Map {
         }
 
         for (const decal of definition.decals ?? []) {
-            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.orientation ?? 0)));
+            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
         }
 
         if (!definition.hideOnMap) this.packet.objects.push(building);

@@ -2,7 +2,7 @@ import { BitStream } from "@damienvesper/bit-buffer";
 import { GameConstants, ObjectCategory, PacketType } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
-import { clamp, normalizeAngle } from "./math";
+import { Angle, Numeric } from "./math";
 import { type Vector } from "./vector";
 
 export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
@@ -37,7 +37,7 @@ export class SuroiBitStream extends BitStream {
      */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
         const range = (1 << bitCount) - 1;
-        const clamped = clamp(value, min, max);
+        const clamped = Numeric.clamp(value, min, max);
         this.writeBits(((clamped - min) / (max - min)) * range + 0.5, bitCount);
     }
 
@@ -221,7 +221,7 @@ export class SuroiBitStream extends BitStream {
                 break;
             case RotationMode.Limited: // 4 possible orientations
                 orientation = this.readBits(2) as Orientation;
-                rotation = -normalizeAngle(orientation) * (Math.PI / 2);
+                rotation = -Angle.normalizeAngle(orientation) * (Math.PI / 2);
                 break;
             case RotationMode.Binary: // 2 possible orientations
                 if (this.readBoolean()) {

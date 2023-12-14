@@ -1,5 +1,5 @@
 import { GameConstants, ZIndexes } from "../../../../common/src/constants";
-import { distanceSquared, polarToVector, vLerp } from "../../../../common/src/utils/math";
+import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
@@ -25,7 +25,7 @@ export class Plane {
 
         this.endPosition = Vec.add(
             this.startPosition,
-            polarToVector(direction, GameConstants.maxPosition * 2)
+            Vec.fromPolar(direction, GameConstants.maxPosition * 2)
         );
 
         this.image = new SuroiSprite("airdrop_plane")
@@ -47,7 +47,7 @@ export class Plane {
     }
 
     update(): void {
-        const position = this.sound.position = vLerp(
+        const position = this.sound.position = Vec.lerp(
             this.startPosition,
             this.endPosition,
             (Date.now() - this.startTime) / (GameConstants.airdrop.flyTime * 2)
@@ -55,7 +55,7 @@ export class Plane {
 
         this.image.setVPos(Vec.scale(position, PIXI_SCALE));
 
-        if (distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
+        if (Geometry.distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();
             this.game.planes.delete(this);
         }

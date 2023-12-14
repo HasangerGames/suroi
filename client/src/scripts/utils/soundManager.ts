@@ -2,7 +2,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
-import { clamp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -88,13 +88,13 @@ export class GameSound {
             const diff = Vec.subtract(this.manager.position, this.position);
 
             this.instance.volume = (1 -
-                clamp(
+                Numeric.clamp(
                     Math.abs(Vec.length(diff) / this.maxRange),
                     0,
                     1
                 )) ** (1 + this.fallOff * 2) * this.manager.volume;
 
-            this.stereoFilter.pan = clamp(diff.x / this.maxRange * -1, -1, 1);
+            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
         }
     }
 

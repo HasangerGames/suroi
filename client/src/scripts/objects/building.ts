@@ -3,14 +3,13 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { circleCircleIntersection, polarToVector, rectCircleIntersection } from "../../../../common/src/utils/math";
+import { Angle, Collision } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -71,7 +70,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 let direction: Vector | null = null;
 
                 if (hitbox instanceof CircleHitbox) {
-                    const intersection = circleCircleIntersection(
+                    const intersection = Collision.circleCircleIntersection(
                         hitbox.position,
                         hitbox.radius,
                         playerHitbox.position,
@@ -79,7 +78,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                     direction = intersection?.dir ?? null;
                 } else if (hitbox instanceof RectangleHitbox) {
-                    const intersection = rectCircleIntersection(hitbox.min,
+                    const intersection = Collision.rectCircleIntersection(hitbox.min,
                         hitbox.max,
                         playerHitbox.position,
                         playerHitbox.radius);
@@ -175,7 +174,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.zIndex = this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
 
             this.orientation = full.rotation;
-            this.rotation = orientationToRotation(this.orientation);
+            this.rotation = Angle.orientationToRotation(this.orientation);
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;
 
@@ -231,7 +230,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         ease: EaseFunctions.sextIn
                     },
                     scale: { start: 1, end: 0.2 },
-                    speed: polarToVector(randomRotation(), randomFloat(1, 2))
+                    speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
                 }));
 
                 this.playSound(

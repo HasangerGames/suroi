@@ -7,7 +7,7 @@ import { HealType, HealingItems, type HealingItemDefinition } from "../../../com
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { absMod } from "../../../common/src/utils/math";
+import { Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
@@ -430,7 +430,7 @@ export class Inventory {
             } else if (slot === this._activeWeaponIndex) {
                 let target = this._activeWeaponIndex;
                 while (!this.hasWeapon(target)) {
-                    target = absMod(target + 1, this.weapons.length);
+                    target = Numeric.absMod(target + 1, this.weapons.length);
                 }
                 this.setActiveWeaponIndex(target);
             }
@@ -444,7 +444,7 @@ export class Inventory {
             ? 0
             : this._lastWeaponIndex;
         while (!this.hasWeapon(target)) {
-            target = absMod(target - 1, this.weapons.length);
+            target = Numeric.absMod(target - 1, this.weapons.length);
         }
         this._lastWeaponIndex = target;
 

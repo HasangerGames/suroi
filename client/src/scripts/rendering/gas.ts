@@ -2,7 +2,7 @@ import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants";
 import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
-import { clamp, lerp, vLerp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
@@ -112,8 +112,8 @@ export class Gas {
             if (this.state === GasState.Advancing) {
                 this.lastPosition = Vec.clone(this.position);
                 this.lastRadius = this.radius;
-                this.position = vLerp(this.oldPosition, this.newPosition, gasPercentage);
-                this.radius = lerp(this.oldRadius, this.newRadius, gasPercentage);
+                this.position = Vec.lerp(this.oldPosition, this.newPosition, gasPercentage);
+                this.radius = Numeric.lerp(this.oldRadius, this.newRadius, gasPercentage);
                 this.lastUpdateTime = Date.now();
             }
         }
@@ -162,9 +162,9 @@ export class GasRender {
         let radius: number;
 
         if (gas.state === GasState.Advancing) {
-            const interpFactor = clamp((Date.now() - gas.lastUpdateTime) / GameConstants.tps, 0, 1);
-            position = vLerp(gas.lastPosition, gas.position, interpFactor);
-            radius = lerp(gas.lastRadius, gas.radius, interpFactor);
+            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / GameConstants.tps, 0, 1);
+            position = Vec.lerp(gas.lastPosition, gas.position, interpFactor);
+            radius = Numeric.lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {
             position = gas.position;
             radius = gas.radius;

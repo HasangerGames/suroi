@@ -1,6 +1,6 @@
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import { type Hitbox } from "./hitbox";
-import { clamp, distanceSquared } from "./math";
+import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { Vec, type Vector } from "./vector";
@@ -69,7 +69,7 @@ export class BaseBullet {
         let range = this.definition.range;
 
         if (this.definition.goToMouse && options.clipDistance !== undefined) {
-            range = clamp(options.clipDistance, 0, this.definition.range);
+            range = Numeric.clamp(options.clipDistance, 0, this.definition.range);
         }
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
@@ -92,7 +92,7 @@ export class BaseBullet {
 
         this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
 
-        if (distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
+        if (Geometry.distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
             this.dead = true;
             this.position = Vec.add(this.initialPosition, (Vec.scale(this.direction, this.maxDistance)));
         }
@@ -121,8 +121,8 @@ export class BaseBullet {
         // Sort by closest to initial position
         collisions.sort(
             (a, b) =>
-                distanceSquared(a.intersection?.point, this.initialPosition) -
-                distanceSquared(b.intersection?.point, this.initialPosition)
+                Geometry.distanceSquared(a.intersection?.point, this.initialPosition) -
+                Geometry.distanceSquared(b.intersection?.point, this.initialPosition)
         );
 
         return collisions;

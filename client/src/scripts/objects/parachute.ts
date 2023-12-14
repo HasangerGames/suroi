@@ -1,5 +1,5 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { lerp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
@@ -42,7 +42,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
             );
         }
 
-        const scale = lerp(0.5, 1, data.height);
+        const scale = Numeric.lerp(0.5, 1, data.height);
         if (isNew) {
             this.container.scale.set(scale);
         } else {

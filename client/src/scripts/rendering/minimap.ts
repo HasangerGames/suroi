@@ -5,12 +5,11 @@ import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../c
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { addAdjust, lerp } from "../../../../common/src/utils/math";
+import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { GasRender } from "./gas";
 
@@ -262,12 +261,11 @@ export class Minimap {
 
                 case ObjectCategory.Building: {
                     const definition = mapObject.definition;
-
-                    const rotation = orientationToRotation(mapObject.rotation);
+                    const rotation = Angle.orientationToRotation(mapObject.rotation);
 
                     for (const image of definition.floorImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation)
                             .setZIndex(ZIndexes.BuildingsFloor);
 
@@ -278,7 +276,7 @@ export class Minimap {
 
                     for (const image of definition.ceilingImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation)
                             .setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
 
@@ -394,7 +392,7 @@ export class Minimap {
                     this.pingsContainer.addChild(ping.image);
                     ping.initialized = true;
                 }
-                const radius = lerp(0, 2048, (now - ping.startTime) / 7000);
+                const radius = Numeric.lerp(0, 2048, (now - ping.startTime) / 7000);
                 if (radius >= 2048) {
                     this.pings.delete(ping);
                     this.game.addTimeout(() => { ping.image.destroy(); }, 5000);

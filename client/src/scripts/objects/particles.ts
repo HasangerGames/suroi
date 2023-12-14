@@ -1,4 +1,4 @@
-import { lerp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -124,15 +124,15 @@ export class Particle {
         }
 
         if (typeof options.scale === "object") {
-            this.scale = lerp(options.scale.start, options.scale.end, (options.scale.ease ?? (t => t))(interpFactor));
+            this.scale = Numeric.lerp(options.scale.start, options.scale.end, (options.scale.ease ?? (t => t))(interpFactor));
         }
 
         if (typeof options.alpha === "object") {
-            this.alpha = lerp(options.alpha.start, options.alpha.end, (options.alpha.ease ?? (t => t))(interpFactor));
+            this.alpha = Numeric.lerp(options.alpha.start, options.alpha.end, (options.alpha.ease ?? (t => t))(interpFactor));
         }
 
         if (typeof options.rotation === "object") {
-            this.rotation = lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
+            this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
         this.image.position.copyFrom(toPixiCoords(this.position));

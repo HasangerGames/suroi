@@ -14,7 +14,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
+import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
@@ -423,8 +423,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // World boundaries
-        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
 
@@ -558,7 +558,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Cull bullets
         for (const bullet of this.game.newBullets) {
-            if (lineIntersectsRect2(bullet.initialPosition,
+            if (Collision.lineIntersectsRectTest(bullet.initialPosition,
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
@@ -569,7 +569,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Cull explosions
         for (const explosion of this.game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
-                distanceSquared(explosion.position, this.position) < 16384) {
+                Geometry.distanceSquared(explosion.position, this.position) < 16384) {
                 packet.explosions.add(explosion);
             }
         }
@@ -1056,7 +1056,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
-                            const dist = distanceSquared(object.position, this.position);
+                            const dist = Geometry.distanceSquared(object.position, this.position);
                             if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;

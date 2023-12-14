@@ -1,7 +1,7 @@
 import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
+import { Angle, Geometry } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
@@ -110,7 +110,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         const { moveSpread, shotSpread } = definition;
 
-        const spread = degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);
+        const spread = Angle.degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);
         const jitter = definition.jitterRadius ?? 0;
 
         const offset = definition.isDual
@@ -150,7 +150,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
                 if (intersection === null) continue;
 
-                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
+                if (Geometry.distanceSquared(this.owner.position, position) > Geometry.distanceSquared(this.owner.position, intersection.point)) {
                     position = Vec.subtract(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
                 }
             }

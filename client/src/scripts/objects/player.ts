@@ -11,7 +11,7 @@ import { type MeleeDefinition } from "../../../../common/src/definitions/melees"
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { angleBetweenPoints, distanceSquared, polarToVector } from "../../../../common/src/utils/math";
+import { Angle, Geometry } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -326,7 +326,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.floorType = floorType;
 
         if (this.oldPosition !== undefined) {
-            this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
+            this.distSinceLastFootstep += Geometry.distanceSquared(this.oldPosition, this.position);
 
             if (this.distSinceLastFootstep > 7) {
                 this.footstepSound = this.playSound(
@@ -778,7 +778,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         })
                         .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
                         // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-                        .forEach(target => target.hitEffect(position, angleBetweenPoints(this.position, position)));
+                        .forEach(target => target.hitEffect(position, Angle.angleBetweenPoints(this.position, position)));
                 }, 50);
 
                 break;
@@ -921,7 +921,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 start: 1,
                 end: 0
             },
-            speed: polarToVector(angle, randomFloat(0.5, 1))
+            speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
     }
 

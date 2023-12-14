@@ -3,7 +3,7 @@ import { ArmorType } from "../../../common/src/definitions/armors";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCircleIntersection, clamp, distance, polarToVector } from "../../../common/src/utils/math";
+import { Geometry, Numeric, Collision } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
@@ -69,11 +69,11 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         this.velocity = Vec.scale(this.velocity, 0.9);
         const velocity = Vec.scale(this.velocity, 1 / GameConstants.tps);
-        velocity.x = clamp(velocity.x, -1, 1);
-        velocity.y = clamp(velocity.y, -1, 1);
+        velocity.x = Numeric.clamp(velocity.x, -1, 1);
+        velocity.y = Numeric.clamp(velocity.y, -1, 1);
         this.position = Vec.add(this.position, velocity);
-        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
@@ -87,12 +87,12 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
 
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
-                const collision = circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
+                const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
                     this.velocity = Vec.subtract(this.velocity, Vec.scale(collision.dir, 0.45));
                 }
 
-                const dist = Math.max(distance(object.position, this.position), 1);
+                const dist = Math.max(Geometry.distance(object.position, this.position), 1);
                 const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
                 const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
                 const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
@@ -115,7 +115,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     }
 
     push(angle: number, velocity: number): void {
-        this.velocity = Vec.add(this.velocity, polarToVector(angle, velocity));
+        this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, velocity));
     }
 
     canInteract(player: Player): boolean {

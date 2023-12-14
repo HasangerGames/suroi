@@ -1,7 +1,7 @@
 import { Color } from "pixi.js";
 import { ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { distance } from "../../../../common/src/utils/math";
+import { Geometry } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -73,7 +73,7 @@ export class Bullet extends BaseBullet {
         if (!this._trailReachedMaxLength) this._trailTicks += delta;
         else if (this.dead || this.definition.tracer?.particle) this._trailTicks -= delta;
 
-        const dist = distance(this.initialPosition, this.position);
+        const dist = Geometry.distance(this.initialPosition, this.position);
 
         if (this.definition.tracer?.particle) {
             this.image.scale.set(1 + (dist / this.maxDistance));

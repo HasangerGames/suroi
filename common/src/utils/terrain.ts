@@ -1,5 +1,5 @@
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
-import { clamp, distanceToLine, lerp, rayIntersectsPolygon } from "./math";
+import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
 import { Vec, type Vector } from "./vector";
 export interface FloorDefinition {
@@ -197,8 +197,8 @@ export class Terrain {
 
     private _roundToCells(vector: Vector): Vector {
         return Vec.create(
-            clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
-            clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
+            Numeric.clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
+            Numeric.clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
         );
     }
 }
@@ -225,7 +225,7 @@ export class River {
 
         const length = this.points.length - 1;
 
-        this.bankWidth = clamp(this.width * 0.75, 12, 20);
+        this.bankWidth = Numeric.clamp(this.width * 0.75, 12, 20);
 
         const waterPoints: Vector[] = new Array(length * 2);
         const bankPoints: Vector[] = new Array(length * 2);
@@ -256,7 +256,7 @@ export class River {
             const clipRayToPoly = (point: Vector, direction: Vector, polygon: PolygonHitbox): Vector => {
                 const end = Vec.add(point, direction);
                 if (!polygon.isPointInside(end)) {
-                    const t = rayIntersectsPolygon(point, direction, polygon.points);
+                    const t = Collision.rayIntersectsPolygon(point, direction, polygon.points);
                     if (t) {
                         return Vec.scale(direction, t);
                     }
@@ -303,7 +303,7 @@ export class River {
         p3: Vector
     } {
         const count = this.points.length;
-        t = clamp(t, 0, 1);
+        t = Numeric.clamp(t, 0, 1);
         const i = ~~(t * (count - 1));
         const i1 = i === count - 1 ? i - 1 : i;
         const i2 = i1 + 1;
@@ -346,7 +346,7 @@ export class River {
         let closestDistSq = Number.MAX_VALUE;
         let closestSegIdx = 0;
         for (let i = 0; i < this.points.length - 1; i++) {
-            const distSq = distanceToLine(position, this.points[i], this.points[i + 1]);
+            const distSq = Collision.distanceToLine(position, this.points[i], this.points[i + 1]);
             if (distSq < closestDistSq) {
                 closestDistSq = distSq;
                 closestSegIdx = i;
@@ -358,17 +358,17 @@ export class River {
         const s0 = this.points[idx0];
         const s1 = this.points[idx1];
         const seg = Vec.subtract(s1, s0);
-        const t = clamp(Vec.dotProduct(Vec.subtract(position, s0), seg) / Vec.dotProduct(seg, seg), 0, 1);
+        const t = Numeric.clamp(Vec.dotProduct(Vec.subtract(position, s0), seg) / Vec.dotProduct(seg, seg), 0, 1);
         const len = this.points.length - 1;
-        const tMin = clamp((idx0 + t - 0.1) / len, 0, 1);
-        const tMax = clamp((idx0 + t + 0.1) / len, 0, 1);
+        const tMin = Numeric.clamp((idx0 + t - 0.1) / len, 0, 1);
+        const tMax = Numeric.clamp((idx0 + t + 0.1) / len, 0, 1);
 
         // Refine closest point by testing near the closest segment point
         let nearestT = (idx0 + t) / len;
         let nearestDistSq = Number.MAX_VALUE;
         const kIter = 8;
         for (let i = 0; i <= kIter; i++) {
-            const testT = lerp(i / kIter, tMin, tMax);
+            const testT = Numeric.lerp(i / kIter, tMin, tMax);
             const testPos = this.getPosition(testT);
             const testDistSq = Vec.squaredLength(Vec.subtract(testPos, position));
             if (testDistSq < nearestDistSq) {

@@ -1,5 +1,5 @@
 import { type Hitbox, type RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { clamp } from "../../../common/src/utils/math";
+import { Numeric } from "../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 
 interface GameObject {
@@ -136,8 +136,8 @@ export class Grid<T extends GameObject> {
      */
     private _roundToCells(vector: Vector): Vector {
         return {
-            x: clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
-            y: clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
+            x: Numeric.clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
+            y: Numeric.clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
         };
     }
 }

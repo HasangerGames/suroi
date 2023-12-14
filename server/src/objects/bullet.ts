@@ -4,7 +4,7 @@ import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { normalizeAngle } from "../../../common/src/utils/math";
+import { Angle } from "../../../common/src/utils/math";
 import { randomFloat } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -55,7 +55,7 @@ export class Bullet extends BaseBullet {
 
         super({
             ...options,
-            rotation: normalizeAngle(options.rotation),
+            rotation: Angle.normalizeAngle(options.rotation),
             source: definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined

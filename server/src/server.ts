@@ -2,7 +2,7 @@ import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
-import { clamp } from "../../common/src/utils/math";
+import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { version } from "../../package.json";
 import { Config } from "./config";
@@ -271,7 +271,7 @@ app.ws("/play", {
 
             try {
                 const colorString = searchParams.get("nameColor");
-                if (colorString) nameColor = clamp(parseInt(colorString), 0, 0xffffff);
+                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
             } catch { }
         }
 

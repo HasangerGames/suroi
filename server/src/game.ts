@@ -10,7 +10,7 @@ import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { clamp, distanceSquared, polarToVector } from "../../common/src/utils/math";
+import { Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../common/src/utils/objectPool";
@@ -369,7 +369,7 @@ export class Game {
                         maxAttempts: 500,
                         spawnMode: MapObjectSpawnMode.GrassAndSand,
                         collides: (position) => {
-                            return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
                         }
                     }) ?? spawnPosition;
 
@@ -389,7 +389,7 @@ export class Game {
                     maxAttempts: 500,
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
                     collides: (position) => {
-                        return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                        return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
                     }
                 }) ?? spawnPosition;
                 break;
@@ -610,15 +610,15 @@ export class Game {
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;
             const height = max.y - min.y;
-            position.x = clamp(position.x, width, this.map.width - width);
-            position.y = clamp(position.y, height, this.map.height - height);
+            position.x = Numeric.clamp(position.x, width, this.map.width - width);
+            position.y = Numeric.clamp(position.y, height, this.map.height - height);
         }
 
         const direction = randomRotation();
 
         const planePos = Vec.add(
             position,
-            polarToVector(direction, -GameConstants.maxPosition)
+            Vec.fromPolar(direction, -GameConstants.maxPosition)
         );
 
         const airdrop = { position, type: crateDef };

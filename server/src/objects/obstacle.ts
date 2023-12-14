@@ -2,7 +2,7 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
-import { addAdjust, angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
+import { Angle, calculateDoorHitboxes } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
@@ -177,7 +177,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
                 if (source.position === undefined && position === undefined) continue;
 
-                loot.push(angleBetweenPoints(this.position, position ?? source.position), 7);
+                loot.push(Angle.angleBetweenPoints(this.position, position ?? source.position), 7);
             }
 
             if (this.definition.role === ObstacleSpecialRoles.Wall) {
@@ -196,7 +196,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             }
                             case "swivel":
                             default: {
-                                const detectionHitbox = new CircleHitbox(1, addAdjust(object.position, definition.hingeOffset, object.rotation as Orientation));
+                                const detectionHitbox = new CircleHitbox(1, Vec.addAdjust(object.position, definition.hingeOffset, object.rotation as Orientation));
 
                                 if (this.hitbox.collidesWith(detectionHitbox)) {
                                     object.damage(Infinity, source, weaponUsed);

@@ -7,8 +7,8 @@ import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinPacket } from "../../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { JoinPacket } from "../../../common/src/packets/joinPacket";
 import { MapPacket } from "../../../common/src/packets/mapPacket";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
@@ -16,7 +16,7 @@ import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { distanceSquared } from "../../../common/src/utils/math";
+import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
@@ -599,7 +599,7 @@ export class Game {
                     (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
                     object.hitbox.collidesWith(detectionHitbox)
                 ) {
-                    const dist = distanceSquared(object.position, player.position);
+                    const dist = Geometry.distanceSquared(object.position, player.position);
                     if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;

@@ -5,7 +5,7 @@ import { InputActions } from "../../../../common/src/constants";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
-import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
+import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -105,8 +105,8 @@ export class InputManager {
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
             searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
-                ? absMod(searchIndex + offset, Scopes.definitions.length)
-                : clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
+                ? Numeric.absMod(searchIndex + offset, Scopes.definitions.length)
+                : Numeric.clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
 
             const scopeCandidate = Scopes.definitions[searchIndex].idString;
 
@@ -154,8 +154,8 @@ export class InputManager {
 
             if (this.emoteWheelActive) {
                 const mousePosition = Vec.create(e.clientX, e.clientY);
-                if (distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
-                    const angle = angleBetweenPoints(this.emoteWheelPosition, mousePosition);
+                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
+                    const angle = Angle.angleBetweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
 
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
@@ -184,7 +184,7 @@ export class InputManager {
                 const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
                 const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-                this.distanceToMouse = distance(game.activePlayer.position, gamePos);
+                this.distanceToMouse = Geometry.distance(game.activePlayer.position, gamePos);
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;

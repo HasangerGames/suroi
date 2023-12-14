@@ -1,3 +1,5 @@
+import { type Orientation } from "../typings";
+
 /**
  * An interface to represent a 2D vector. The x and y values are coordinates in a 2D space
  */
@@ -146,5 +148,63 @@ export const Vec = Object.freeze({
      */
     equals(a: Vector, b: Vector, epsilon = 0.001): boolean {
         return Math.abs(a.x - b.x) <= epsilon && Math.abs(a.y - b.y) <= epsilon;
+    },
+    /**
+     * Returns the angle between two vectors
+     * @param a The first vector
+     * @param b The second vector
+     */
+    angleBetweenVectors(a: Vector, b: Vector): number {
+        return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(Vec.length(a) * Vec.length(b)));
+    },
+    /**
+     * Interpolate between two `Vector`s
+     * @param start The start `Vector`
+     * @param end The end `Vector`
+     * @param interpFactor The interpolation factor ranging from 0 to 1
+     *
+     */
+    lerp(start: Vector, end: Vector, interpFactor: number): Vector {
+        return Vec.add(Vec.scale(start, 1 - interpFactor), Vec.scale(end, interpFactor));
+    },
+    /**
+     * Takes a polar representation of a vector and converts it into a cartesian one
+     * @param angle The vector's angle
+     * @param magnitude The vector's length. Defaults to 1
+     * @returns A new vector whose length is `magnitude` and whose direction is `angle`
+     */
+    fromPolar(angle: number, magnitude = 1): Vector {
+        return {
+            x: Math.cos(angle) * magnitude,
+            y: Math.sin(angle) * magnitude
+        };
+    },
+    /**
+     * Add a `Vector` to another one and rotate it by the given orientation
+     * @param position1 The initial `Vector`
+     * @param position2 The `Vector` to add to the first one
+     * @param orientation The orientation to rotate the second vector by
+     * @return A new `Vector`
+     */
+    addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
+        if (orientation === 0) return Vec.add(position1, position2);
+        let xOffset: number, yOffset: number;
+        switch (orientation) {
+            case 1:
+                // noinspection JSSuspiciousNameCombination
+                xOffset = position2.y;
+                yOffset = -position2.x;
+                break;
+            case 2:
+                xOffset = -position2.x;
+                yOffset = -position2.y;
+                break;
+            case 3:
+                xOffset = -position2.y;
+                // noinspection JSSuspiciousNameCombination
+                yOffset = position2.x;
+                break;
+        }
+        return Vec.add(position1, Vec.create(xOffset, yOffset));
     }
 });

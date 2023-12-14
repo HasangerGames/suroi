@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { clamp } from "../../../../../common/src/utils/math";
+import { Numeric } from "../../../../../common/src/utils/math";
 import { type Game } from "../../game";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
@@ -71,7 +71,7 @@ export class GameConsole {
         const proxy = {
             get width() { return width; },
             set width(w: number) {
-                w = clamp(
+                w = Numeric.clamp(
                     w,
                     0,
                     window.innerWidth - (Number.isNaN(T._position?.left ?? NaN) ? -Infinity : T._position.left)
@@ -88,7 +88,7 @@ export class GameConsole {
 
             get height() { return height; },
             set height(h: number) {
-                h = clamp(
+                h = Numeric.clamp(
                     h,
                     0,
                     window.innerHeight - (Number.isNaN(T._position?.top ?? NaN) ? -Infinity : T._position.top)
@@ -118,7 +118,7 @@ export class GameConsole {
         const proxy = {
             get left() { return left; },
             set left(l: number) {
-                l = clamp(
+                l = Numeric.clamp(
                     l,
                     0,
                     window.innerWidth - T._dimensions.width - magicalPadding
@@ -135,7 +135,7 @@ export class GameConsole {
 
             get top() { return top; },
             set top(t: number) {
-                t = clamp(
+                t = Numeric.clamp(
                     t,
                     0,
                     window.innerHeight - T._dimensions.height - magicalPadding

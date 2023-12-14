@@ -1,6 +1,6 @@
 import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { angleBetweenPoints, lerp } from "../../../common/src/utils/math";
+import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
@@ -61,7 +61,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     if (loot.hitbox.collidesWith(crate.hitbox)) {
                         loot.hitbox.resolveCollision(crate.hitbox);
                     }
-                    const angle = angleBetweenPoints(this.position, loot.position);
+                    const angle = Angle.angleBetweenPoints(this.position, loot.position);
 
                     loot.push(angle, -10);
                 }
@@ -72,7 +72,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
         const elapsed = this.endTime - this.game.now;
 
-        this.height = lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
+        this.height = Numeric.lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
 
         this.game.partialDirtyObjects.add(this);
     }

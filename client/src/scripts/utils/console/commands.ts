@@ -6,7 +6,7 @@ import { HealingItems, type HealingItemDefinition } from "../../../../../common/
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../../common/src/definitions/scopes";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
-import { absMod } from "../../../../../common/src/utils/math";
+import { Numeric } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
@@ -332,14 +332,14 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            let index = absMod(
+            let index = Numeric.absMod(
                 this.uiManager.inventory.activeWeaponIndex + step,
                 GameConstants.player.maxWeapons
             );
 
             let iterationCount = 0;
             while (!this.uiManager.inventory.weapons[index]) {
-                index = absMod(index + step, GameConstants.player.maxWeapons);
+                index = Numeric.absMod(index + step, GameConstants.player.maxWeapons);
 
                 /*
                     If, through some weirdness/oversight, the while loop were

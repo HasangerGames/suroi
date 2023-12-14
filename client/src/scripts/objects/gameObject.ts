@@ -1,6 +1,5 @@
 import { Container, Graphics } from "pixi.js";
 import { GameConstants, type ObjectCategory } from "../../../../common/src/constants";
-import { vLerp } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -33,7 +32,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
         const interpFactor = (Date.now() - this.lastPositionChange) / GameConstants.tps;
-        this.container.position = toPixiCoords(vLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
+        this.container.position = toPixiCoords(Vec.lerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
     oldRotation!: Vector;
@@ -54,7 +53,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
         const interpFactor = (Date.now() - this.lastRotationChange) / GameConstants.tps;
 
-        const interpolated = vLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
+        const interpolated = Vec.lerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
 
         this.container.rotation = Math.atan2(interpolated.y, interpolated.x);
     }

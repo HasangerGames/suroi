@@ -5,7 +5,7 @@ import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { Skins } from "../../../common/src/definitions/skins";
 import { type Variation } from "../../../common/src/typings";
-import { circleCollision } from "../../../common/src/utils/math";
+import { Collision } from "../../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray, random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -297,7 +297,7 @@ export const Maps: Record<string, MapDefinition> = {
                     const definition = Obstacles.fromString(obstacle);
 
                     const pos = map.getRandomPosition(definition.spawnHitbox ?? definition.hitbox, {
-                        collides: pos => circleCollision(center, 120, pos, 1)
+                        collides: pos => Collision.circleCollision(center, 120, pos, 1)
                     });
 
                     if (!pos) continue;
