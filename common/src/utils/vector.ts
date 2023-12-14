@@ -43,7 +43,7 @@ export const Vec = Object.freeze({
      * @param b The `Vector` to subtract
      * @returns A new `Vector` resulting from the subtraction of vector `b` from vector `a`
      */
-    subtract(a: Vector, b: Vector): Vector {
+    sub(a: Vector, b: Vector): Vector {
         return this.create(a.x - b.x, a.y - b.y);
     },
     /**

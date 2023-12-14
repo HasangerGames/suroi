@@ -151,7 +151,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 if (intersection === null) continue;
 
                 if (Geometry.distanceSquared(this.owner.position, position) > Geometry.distanceSquared(this.owner.position, intersection.point)) {
-                    position = Vec.subtract(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
+                    position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
                 }
             }
         }

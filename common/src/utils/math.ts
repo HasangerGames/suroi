@@ -279,7 +279,7 @@ export const Collision = Object.freeze({
                 return Vec.add(
                     startA,
                     Vec.scale(
-                        Vec.subtract(endA, startA),
+                        Vec.sub(endA, startA),
                         x3 / (x3 - x4)
                     )
                 );
@@ -297,11 +297,11 @@ export const Collision = Object.freeze({
      * @return An intersection response with the intersection position and normal `Vector`s, or `null` if they don't intersect
      */
     lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): IntersectionResponse {
-        let d = Vec.subtract(s1, s0);
+        let d = Vec.sub(s1, s0);
         const len = Math.max(Vec.length(d), 0.000001);
         d = Vec.normalizeSafe(d);
 
-        const m = Vec.subtract(s0, pos);
+        const m = Vec.sub(s0, pos);
         const b = Vec.dotProduct(m, d);
         const c = Vec.dotProduct(m, m) - rad * rad;
 
@@ -319,7 +319,7 @@ export const Collision = Object.freeze({
             const point = Vec.add(s0, Vec.scale(d, t));
             return {
                 point,
-                normal: Vec.normalize(Vec.subtract(point, pos))
+                normal: Vec.normalize(Vec.sub(point, pos))
             };
         }
 
@@ -340,7 +340,7 @@ export const Collision = Object.freeze({
         const eps = 1e-5;
         const r = s0;
 
-        let d = Vec.subtract(s1, s0);
+        let d = Vec.sub(s1, s0);
         const dist = Vec.length(d);
         d = Vec.normalizeSafe(d);
 
@@ -383,9 +383,9 @@ export const Collision = Object.freeze({
         const p = Vec.add(s0, Vec.scale(d, tmin));
 
         // Intersection normal
-        const c = Vec.add(min, Vec.scale(Vec.subtract(max, min), 0.5));
-        const p0 = Vec.subtract(p, c);
-        const d0 = Vec.scale(Vec.subtract(min, max), 0.5);
+        const c = Vec.add(min, Vec.scale(Vec.sub(max, min), 0.5));
+        const p0 = Vec.sub(p, c);
+        const d0 = Vec.scale(Vec.sub(min, max), 0.5);
 
         const x = p0.x / Math.abs(d0.x) * 1.001;
         const y = p0.y / Math.abs(d0.y) * 1.001;
@@ -411,7 +411,7 @@ export const Collision = Object.freeze({
         let tmax = Number.MAX_VALUE;
 
         const eps = 1e-5;
-        let d = Vec.subtract(s1, s0);
+        let d = Vec.sub(s1, s0);
         const dist = Vec.length(d);
         d = Vec.normalizeSafe(d);
 
@@ -452,7 +452,7 @@ export const Collision = Object.freeze({
     },
     circleCircleIntersection(centerA: Vector, radiusA: number, centerB: Vector, radiusB: number): CollisionResponse {
         const r = radiusA + radiusB;
-        const toP1 = Vec.subtract(centerB, centerA);
+        const toP1 = Vec.sub(centerB, centerA);
         const distSqr = Vec.squaredLength(toP1);
 
         return distSqr < r * r
@@ -464,8 +464,8 @@ export const Collision = Object.freeze({
     },
     rectCircleIntersection(min: Vector, max: Vector, pos: Vector, radius: number): CollisionResponse {
         if (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y) {
-            const e = Vec.scale(Vec.subtract(max, min), 0.5);
-            const p = Vec.subtract(pos, Vec.add(min, e));
+            const e = Vec.scale(Vec.sub(max, min), 0.5);
+            const p = Vec.sub(pos, Vec.add(min, e));
             const xp = Math.abs(p.x) - e.x - radius;
             const yp = Math.abs(p.y) - e.y - radius;
 
@@ -487,7 +487,7 @@ export const Collision = Object.freeze({
         }
 
         const cpt = Vec.create(Numeric.clamp(pos.x, min.x, max.x), Numeric.clamp(pos.y, min.y, max.y));
-        const dir = Vec.subtract(cpt, pos);
+        const dir = Vec.sub(cpt, pos);
         const dstSqr = Vec.squaredLength(dir);
 
         if (dstSqr < radius * radius) {
@@ -501,16 +501,16 @@ export const Collision = Object.freeze({
         return null;
     },
     distanceToLine(p: Vector, a: Vector, b: Vector): number {
-        const ab = Vec.subtract(b, a);
+        const ab = Vec.sub(b, a);
 
         return Vec.squaredLength(
-            Vec.subtract(
+            Vec.sub(
                 Vec.add(
                     a,
                     Vec.scale(
                         ab,
                         Numeric.clamp(
-                            Vec.dotProduct(Vec.subtract(p, a), ab) / Vec.dotProduct(ab, ab),
+                            Vec.dotProduct(Vec.sub(p, a), ab) / Vec.dotProduct(ab, ab),
                             0,
                             1
                         )
@@ -525,14 +525,14 @@ export const Collision = Object.freeze({
      * @link http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
      */
     rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {
-        const segment = Vec.subtract(lineB, lineA);
+        const segment = Vec.sub(lineB, lineA);
         const segmentPerp = Vec.create(segment.y, -segment.x);
         const perpDotDir = Vec.dotProduct(direction, segmentPerp);
 
         // If lines are parallel, no intersection
         if (Math.abs(perpDotDir) <= 1e-7) return null;
 
-        const d = Vec.subtract(lineA, origin);
+        const d = Vec.sub(lineA, origin);
         const distanceAlongRay = Vec.dotProduct(segmentPerp, d) / perpDotDir;
         const distanceAlongLine = Vec.dotProduct(Vec.create(direction.y, -direction.x), d) / perpDotDir;
 
@@ -560,9 +560,9 @@ export const Collision = Object.freeze({
         return intersected ? t : null;
     },
     rectRectIntersection(min0: Vector, max0: Vector, min1: Vector, max1: Vector): CollisionResponse {
-        const e0 = Vec.scale(Vec.subtract(max0, min0), 0.5);
-        const e1 = Vec.scale(Vec.subtract(max1, min1), 0.5);
-        const n = Vec.subtract(
+        const e0 = Vec.scale(Vec.sub(max0, min0), 0.5);
+        const e1 = Vec.scale(Vec.sub(max1, min1), 0.5);
+        const n = Vec.sub(
             Vec.add(min1, e1),
             Vec.add(min0, e0)
         );

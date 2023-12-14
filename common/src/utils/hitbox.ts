@@ -163,14 +163,14 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
                 const collision = Collision.circleCircleIntersection(this.position, this.radius, that.position, that.radius);
 
                 if (collision) {
-                    this.position = Vec.subtract(this.position, Vec.scale(collision.dir, collision.pen));
+                    this.position = Vec.sub(this.position, Vec.scale(collision.dir, collision.pen));
                 }
             }
                 break;
             case HitboxType.Rect: {
                 const collision = Collision.rectCircleIntersection(that.min, that.max, this.position, this.radius);
                 if (collision) {
-                    this.position = Vec.subtract(this.position, Vec.scale(collision.dir, collision.pen));
+                    this.position = Vec.sub(this.position, Vec.scale(collision.dir, collision.pen));
                 }
                 break;
             }
@@ -266,7 +266,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         const size = Vec.create(width / 2, height / 2);
 
         return new RectangleHitbox(
-            Vec.subtract(pos, size),
+            Vec.sub(pos, size),
             Vec.add(pos, size)
         );
     }

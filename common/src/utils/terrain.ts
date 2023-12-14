@@ -241,7 +241,7 @@ export class River {
             for (const river of otherRivers) {
                 const t = river.getClosestT(current);
                 const p = river.getPosition(t);
-                const length = Vec.length(Vec.subtract(p, current));
+                const length = Vec.length(Vec.sub(p, current));
                 if (length < river.width * 2) {
                     bankWidth = Math.max(bankWidth, river.bankWidth);
                 }
@@ -357,8 +357,8 @@ export class River {
         const idx1 = idx0 + 1;
         const s0 = this.points[idx0];
         const s1 = this.points[idx1];
-        const seg = Vec.subtract(s1, s0);
-        const t = Numeric.clamp(Vec.dotProduct(Vec.subtract(position, s0), seg) / Vec.dotProduct(seg, seg), 0, 1);
+        const seg = Vec.sub(s1, s0);
+        const t = Numeric.clamp(Vec.dotProduct(Vec.sub(position, s0), seg) / Vec.dotProduct(seg, seg), 0, 1);
         const len = this.points.length - 1;
         const tMin = Numeric.clamp((idx0 + t - 0.1) / len, 0, 1);
         const tMax = Numeric.clamp((idx0 + t + 0.1) / len, 0, 1);
@@ -370,7 +370,7 @@ export class River {
         for (let i = 0; i <= kIter; i++) {
             const testT = Numeric.lerp(i / kIter, tMin, tMax);
             const testPos = this.getPosition(testT);
-            const testDistSq = Vec.squaredLength(Vec.subtract(testPos, position));
+            const testDistSq = Vec.squaredLength(Vec.sub(testPos, position));
             if (testDistSq < nearestDistSq) {
                 nearestT = testT;
                 nearestDistSq = testDistSq;
@@ -382,9 +382,9 @@ export class River {
         const tanLen = Vec.length(tangent);
         if (tanLen > 0) {
             const nearest = this.getPosition(nearestT);
-            const offset = Vec.dotProduct(tangent, Vec.subtract(position, nearest)) / tanLen;
+            const offset = Vec.dotProduct(tangent, Vec.sub(position, nearest)) / tanLen;
             const offsetT = nearestT + offset / (tanLen * len);
-            if (Vec.squaredLength(Vec.subtract(position, this.getPosition(offsetT))) < Vec.squaredLength(Vec.subtract(position, nearest))) {
+            if (Vec.squaredLength(Vec.sub(position, this.getPosition(offsetT))) < Vec.squaredLength(Vec.sub(position, nearest))) {
                 nearestT = offsetT;
             }
         }

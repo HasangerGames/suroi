@@ -85,7 +85,7 @@ export class GameSound {
 
     update(): void {
         if (this.instance && this.position) {
-            const diff = Vec.subtract(this.manager.position, this.position);
+            const diff = Vec.sub(this.manager.position, this.position);
 
             this.instance.volume = (1 -
                 Numeric.clamp(
