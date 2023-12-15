@@ -589,6 +589,20 @@ Video evidence is required.`)) {
                 }
             }
         );
+                // drop item for mobile
+        slotElement[0].addEventListener(
+            "dblclick",
+            (e: PointerEvent): void => {
+                if (slotElement.hasClass("has-item")) {
+                    e.stopImmediatePropagation();
+                    game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        slot
+                    });
+                }
+            }
+        );
+
     }
 
     // Generate the UI for scopes, healing items and ammos
