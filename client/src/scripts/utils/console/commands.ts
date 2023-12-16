@@ -1,27 +1,19 @@
 // noinspection JSConstantReassignment
 import $ from "jquery";
-
-import {
-    GameConstants,
-    InputActions,
-    SpectateActions
-} from "../../../../../common/src/constants";
-import {
-    type HealingItemDefinition,
-    HealingItems
-} from "../../../../../common/src/definitions/healingItems";
+import { Graphics, Rectangle, Sprite } from "pixi.js";
+import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
+import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../../common/src/definitions/scopes";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
-import { absMod } from "../../../../../common/src/utils/math";
+import { Numeric } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
-import { v } from "../../../../../common/src/utils/vector";
+import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
+import { COLORS } from "../constants";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
-import { Graphics, Rectangle, Sprite } from "pixi.js";
-import { COLORS } from "../constants";
 
 type CommandExecutor<ErrorType = never> = (
     this: Game,
@@ -340,14 +332,14 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            let index = absMod(
+            let index = Numeric.absMod(
                 this.uiManager.inventory.activeWeaponIndex + step,
                 GameConstants.player.maxWeapons
             );
 
             let iterationCount = 0;
             while (!this.uiManager.inventory.weapons[index]) {
-                index = absMod(index + step, GameConstants.player.maxWeapons);
+                index = Numeric.absMod(index + step, GameConstants.player.maxWeapons);
 
                 /*
                     If, through some weirdness/oversight, the while loop were
@@ -606,7 +598,7 @@ export function setUpCommands(game: Game): void {
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
                 .show();
             this.inputManager.emoteWheelActive = true;
-            this.inputManager.emoteWheelPosition = v(mouseX, mouseY);
+            this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
         },
         function(): undefined {
             if (this.inputManager.emoteWheelActive) {

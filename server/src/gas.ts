@@ -1,12 +1,12 @@
 import { GasState } from "../../common/src/constants";
-import { clamp, distanceSquared, lerp, vLerp } from "../../common/src/utils/math";
+import { CircleHitbox } from "../../common/src/utils/hitbox";
+import { Geometry, Numeric } from "../../common/src/utils/math";
+import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
+import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 
 export class Gas {
     stage = 0;
@@ -43,9 +43,9 @@ export class Gas {
         this.newRadius = GasStages[0].newRadius * this.mapSize;
         this.currentRadius = GasStages[0].oldRadius * this.mapSize;
 
-        this.oldPosition = v(game.map.width / 2, game.map.height / 2);
-        this.newPosition = vClone(this.oldPosition);
-        this.currentPosition = vClone(this.oldPosition);
+        this.oldPosition = Vec.create(game.map.width / 2, game.map.height / 2);
+        this.newPosition = Vec.clone(this.oldPosition);
+        this.currentPosition = Vec.clone(this.oldPosition);
     }
 
     tick(): void {
@@ -61,8 +61,8 @@ export class Gas {
             this.ticksSinceLastDamage = 0;
             this.doDamage = true;
             if (this.state === GasState.Advancing) {
-                this.currentPosition = vLerp(this.oldPosition, this.newPosition, this.percentage);
-                this.currentRadius = lerp(this.oldRadius, this.newRadius, this.percentage);
+                this.currentPosition = Vec.lerp(this.oldPosition, this.newPosition, this.percentage);
+                this.currentRadius = Numeric.lerp(this.oldRadius, this.newRadius, this.percentage);
             }
         }
     }
@@ -79,20 +79,20 @@ export class Gas {
         this.countdownStart = this.game.now;
 
         if (currentStage.state === GasState.Waiting) {
-            this.oldPosition = vClone(this.newPosition);
+            this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {
                 if (Config.gas.mode === GasMode.Debug) {
-                    this.newPosition = v(this.game.map.width / 2, this.game.map.height / 2);
+                    this.newPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
                 } else {
                     this.newPosition = randomPointInsideCircle(this.oldPosition, (currentStage.oldRadius - currentStage.newRadius) * this.mapSize);
                     const radius = currentStage.newRadius * this.mapSize;
-                    this.newPosition.x = clamp(this.newPosition.x, radius, this.game.map.width - radius);
-                    this.newPosition.y = clamp(this.newPosition.y, radius, this.game.map.height - radius);
+                    this.newPosition.x = Numeric.clamp(this.newPosition.x, radius, this.game.map.width - radius);
+                    this.newPosition.y = Numeric.clamp(this.newPosition.y, radius, this.game.map.height - radius);
                 }
             } else {
-                this.newPosition = vClone(this.oldPosition);
+                this.newPosition = Vec.clone(this.oldPosition);
             }
-            this.currentPosition = vClone(this.oldPosition);
+            this.currentPosition = Vec.clone(this.oldPosition);
             this.currentRadius = currentStage.oldRadius * this.mapSize;
         }
         this.oldRadius = currentStage.oldRadius * this.mapSize;
@@ -109,7 +109,7 @@ export class Gas {
                 maxAttempts: 500,
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 collides: (position) => {
-                    return distanceSquared(position, this.currentPosition) >= gasRadius;
+                    return Geometry.distanceSquared(position, this.currentPosition) >= gasRadius;
                 }
             }) ?? spawnPosition;
             this.game.summonAirdrop(spawnPosition);
@@ -122,6 +122,6 @@ export class Gas {
     }
 
     isInGas(position: Vector): boolean {
-        return distanceSquared(position, this.currentPosition) >= this.currentRadius ** 2;
+        return Geometry.distanceSquared(position, this.currentPosition) >= this.currentRadius ** 2;
     }
 }

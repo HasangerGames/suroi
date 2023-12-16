@@ -2,7 +2,7 @@ import { ZIndexes } from "../../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -49,7 +49,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             zIndex: ZIndexes.Ground,
             position: randomPointInsideCircle(position, 6),
             lifetime: 1000,
-            speed: v(0, 0),
+            speed: Vec.create(0, 0),
             scale: {
                 start: randomFloat(0.45, 0.55),
                 end: randomFloat(2.95, 3.05)

@@ -1,5 +1,5 @@
-import { type LootDefinition, Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { type ItemType, type WearerAttributes, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { Loots, type LootDefinition, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { type ItemType, type ReifiableDef, type WearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 
 /**

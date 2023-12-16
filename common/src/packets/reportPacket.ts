@@ -1,6 +1,6 @@
-import { Packet } from "./packet";
 import { PacketType } from "../constants";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { Packet } from "./packet";
 
 export class ReportPacket extends Packet {
     readonly allocBytes = 25;

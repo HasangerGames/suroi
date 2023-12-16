@@ -2,21 +2,20 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { addAdjust, calculateDoorHitboxes, lerp, polarToVector } from "../../../../common/src/utils/math";
+import { Angle, calculateDoorHitboxes, Numeric } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { type Vector } from "../../../../common/src/utils/vector";
-import { type Game } from "../game";
-import { GameObject } from "./gameObject";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Player } from "./player";
-import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import type { GameSound } from "../utils/soundManager";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { type GameSound } from "../utils/soundManager";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
+import { type ParticleEmitter, type ParticleOptions } from "./particles";
+import { type Player } from "./player";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -87,7 +86,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
                         alpha: { start: 0.9, end: 0 },
-                        speed: polarToVector(randomFloat(-1.9, -2.1), randomFloat(5, 6))
+                        speed: Vec.fromPolar(randomFloat(-1.9, -2.1), randomFloat(5, 6))
                     })
                 });
             }
@@ -116,7 +115,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                                 ease: EaseFunctions.sextIn
                             },
                             rotation: { start: randomRotation(), end: randomRotation() },
-                            speed: polarToVector(randomRotation(), randomFloat(minSpeed, maxSpeed))
+                            speed: Vec.fromPolar(randomRotation(), randomFloat(minSpeed, maxSpeed))
                         });
 
                         /* eslint-disable @typescript-eslint/consistent-type-assertions */
@@ -157,7 +156,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
-            else this.smokeEmitter.delay = lerp(150, 3000, scaleFactor);
+            else this.smokeEmitter.delay = Numeric.lerp(150, 3000, scaleFactor);
         }
 
         this.container.scale.set(this.dead ? 1 : this.scale);
@@ -207,7 +206,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         end: 0,
                         ease: EaseFunctions.sextIn
                     },
-                    speed: polarToVector(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
+                    speed: Vec.fromPolar(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
                 }));
             }
         }
@@ -252,7 +251,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             if (definition.role === ObstacleSpecialRoles.Door && definition.operationStyle !== "slide") {
                 drawHitbox(
-                    new CircleHitbox(0.2, addAdjust(this.position, definition.hingeOffset, this.orientation)),
+                    new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
                     HITBOX_COLORS.obstacleNoCollision,
                     this.debugGraphics
                 );
@@ -274,7 +273,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (!this.door) this.door = { offset: 0 };
 
-        this.rotation = orientationToRotation(this.orientation);
+        this.rotation = Angle.orientationToRotation(this.orientation);
 
         const hitboxes = calculateDoorHitboxes(definition, this.position, this.orientation);
 
@@ -309,7 +308,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 break;
             case "swivel":
             default:
-                if (isNew) this.image.setRotation(orientationToRotation(offset));
+                if (isNew) this.image.setRotation(Angle.orientationToRotation(offset));
                 this.image.anchor.set(0, 0.5);
                 this.image.setPos(
                     definition.hingeOffset.x * PIXI_SCALE,
@@ -338,7 +337,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 // eslint-disable-next-line no-new
                 new Tween(this.game, {
                     target: this.image,
-                    to: { rotation: orientationToRotation(offset) },
+                    to: { rotation: Angle.orientationToRotation(offset) },
                     duration: definition.animationDuration ?? 150
                 });
             } else {
@@ -382,7 +381,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             lifetime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
-            speed: polarToVector((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
+            speed: Vec.fromPolar((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
         });
     }
 

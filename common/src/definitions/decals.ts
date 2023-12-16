@@ -1,6 +1,6 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { RotationMode } from "./obstacles";
 import { ZIndexes } from "../constants";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { RotationMode } from "./obstacles";
 
 export interface DecalDefinition extends ObjectDefinition {
     readonly image?: string
