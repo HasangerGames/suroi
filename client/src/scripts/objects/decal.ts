@@ -1,10 +1,10 @@
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type DecalDefinition } from "../../../../common/src/definitions/decals";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import type { Game } from "../game";
-import { GameObject } from "./gameObject";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { type Game } from "../game";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { GameObject } from "./gameObject";
 
 export class Decal extends GameObject<ObjectCategory.Decal> {
     override readonly type = ObjectCategory.Decal;

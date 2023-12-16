@@ -2,20 +2,18 @@ import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox, HitboxGroup } from "../../../../common/src/utils/hitbox";
-import { circleCircleIntersection, rectCircleIntersection, polarToVector } from "../../../../common/src/utils/math";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { Angle, Collision } from "../../../../common/src/utils/math";
+import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import type { Game } from "../game";
-import { GameObject } from "./gameObject";
-
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector, v, vAdd, vMul, vRotate } from "../../../../common/src/utils/vector";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
-import type { GameSound } from "../utils/soundManager";
+import { GameObject } from "./gameObject";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
@@ -72,7 +70,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 let direction: Vector | null = null;
 
                 if (hitbox instanceof CircleHitbox) {
-                    const intersection = circleCircleIntersection(
+                    const intersection = Collision.circleCircleIntersection(
                         hitbox.position,
                         hitbox.radius,
                         playerHitbox.position,
@@ -80,7 +78,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                     direction = intersection?.dir ?? null;
                 } else if (hitbox instanceof RectangleHitbox) {
-                    const intersection = rectCircleIntersection(hitbox.min,
+                    const intersection = Collision.rectCircleIntersection(hitbox.min,
                         hitbox.max,
                         playerHitbox.position,
                         playerHitbox.radius);
@@ -110,7 +108,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     const halfPi = Math.PI / 2;
                     for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
                         collided = false;
-                        const vec = vAdd(player.position, vMul(v(Math.cos(i), Math.sin(i)), visionSize));
+                        const vec = Vec.add(player.position, Vec.scale(Vec.create(Math.cos(i), Math.sin(i)), visionSize));
                         const end = this.ceilingHitbox.intersectsLine(player.position, vec)?.point;
                         if (!end) {
                             collided = true;
@@ -176,7 +174,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.zIndex = this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
 
             this.orientation = full.rotation;
-            this.rotation = orientationToRotation(this.orientation);
+            this.rotation = Angle.orientationToRotation(this.orientation);
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;
 
@@ -186,7 +184,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 const sounds = this.definition.sounds;
 
                 const soundOptions = {
-                    position: vAdd(vRotate(sounds?.position ?? v(0, 0), this.rotation), this.position),
+                    position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
                     fallOff: sounds.fallOff,
                     maxRange: sounds.maxRange,
                     dynamic: true,
@@ -232,7 +230,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         ease: EaseFunctions.sextIn
                     },
                     scale: { start: 1, end: 0.2 },
-                    speed: polarToVector(randomRotation(), randomFloat(1, 2))
+                    speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
                 }));
 
                 this.playSound(

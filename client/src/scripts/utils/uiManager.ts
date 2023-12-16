@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
@@ -8,7 +9,6 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
 import { formatDate } from "./misc";
-import $ from "jquery";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it

@@ -1,12 +1,12 @@
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
-import { clamp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "./constants";
-import { Reskins } from "../../../../common/src/definitions/modes";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
@@ -85,16 +85,16 @@ export class GameSound {
 
     update(): void {
         if (this.instance && this.position) {
-            const diff = vSub(this.manager.position, this.position);
+            const diff = Vec.sub(this.manager.position, this.position);
 
             this.instance.volume = (1 -
-                clamp(
-                    Math.abs(vLength(diff) / this.maxRange),
+                Numeric.clamp(
+                    Math.abs(Vec.length(diff) / this.maxRange),
                     0,
                     1
                 )) ** (1 + this.fallOff * 2) * this.manager.volume;
 
-            this.stereoFilter.pan = clamp(diff.x / this.maxRange * -1, -1, 1);
+            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
         }
     }
 
@@ -112,7 +112,7 @@ export class SoundManager {
     readonly dynamicSounds = new Set<GameSound>();
 
     volume: number;
-    position = v(0, 0);
+    position = Vec.create(0, 0);
 
     constructor(game: Game) {
         this.game = game;

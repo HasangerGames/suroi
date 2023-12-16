@@ -1,10 +1,9 @@
-import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet, type ISpritesheetData } from "pixi.js";
-import { type Hitbox, HitboxType } from "../../../../common/src/utils/hitbox";
-import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE } from "./constants";
-
+import { Sprite, Spritesheet, Texture, type ColorSource, type Graphics, type ISpritesheetData } from "pixi.js";
 import { atlases } from "virtual:spritesheets-jsons";
 import { Reskins } from "../../../../common/src/definitions/modes";
+import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { MODE, PIXI_SCALE } from "./constants";
 
 const textures: Record<string, Texture> = {};
 
@@ -84,7 +83,7 @@ export class SuroiSprite extends Sprite {
     }
 
     setScale(scale?: number): SuroiSprite {
-        this.scale = v(scale ?? 1, scale ?? 1);
+        this.scale = Vec.create(scale ?? 1, scale ?? 1);
         return this;
     }
 
@@ -105,7 +104,7 @@ export class SuroiSprite extends Sprite {
 }
 
 export function toPixiCoords(pos: Vector): Vector {
-    return vMul(pos, PIXI_SCALE);
+    return Vec.scale(pos, PIXI_SCALE);
 }
 
 export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {

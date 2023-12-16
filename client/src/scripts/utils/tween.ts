@@ -1,5 +1,5 @@
 import { DisplayObject } from "pixi.js";
-import { lerp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
 
 export class Tween<T> {
@@ -80,7 +80,7 @@ export class Tween<T> {
             const startValue = this.startValues[key];
             const endValue = this.endValues[key];
             const interpFactor = (now - this.startTime) / this.duration;
-            (this.target[key as keyof T] as number) = lerp(startValue, endValue, (this.ease ?? (t => t))(interpFactor));
+            (this.target[key as keyof T] as number) = Numeric.lerp(startValue, endValue, (this.ease ?? (t => t))(interpFactor));
         }
 
         this.onUpdate?.();

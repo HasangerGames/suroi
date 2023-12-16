@@ -1,5 +1,5 @@
 import { type Stringable } from "./gameConsole";
-import { type CVarFlags, type ExtractConVarValue, type ConVar } from "./variables";
+import { type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value

@@ -1,51 +1,42 @@
+import { randomBytes } from "crypto";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
-import {
-    AnimationType,
-    GameConstants,
-    InputActions,
-    KillFeedMessageType,
-    KillType,
-    ObjectCategory,
-    PlayerActions,
-    SpectateActions
-} from "../../../common/src/constants";
-import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
+import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { type Packet } from "../../../common/src/packets/packet";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { FloorTypes } from "../../../common/src/utils/terrain";
-import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
-import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
+import { type Timeout } from "../../../common/src/utils/misc";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
-import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { pickRandomInArray } from "../../../common/src/utils/random";
+import { FloorTypes } from "../../../common/src/utils/terrain";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { type Action, HealingAction, ReloadAction } from "../inventory/action";
+import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { type PlayerContainer } from "../server";
-import { GameObject } from "./gameObject";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
-import { Obstacle } from "./obstacle";
-import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { type Packet } from "../../../common/src/packets/packet";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { randomBytes } from "crypto";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { type Timeout } from "../../../common/src/utils/misc";
+import { Obstacle } from "./obstacle";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -375,7 +366,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     update(): void {
         // This system allows opposite movement keys to cancel each other out.
-        const movement = v(0, 0);
+        const movement = Vec.create(0, 0);
 
         if (this.isMobile && this.movement.moving) {
             movement.x = Math.cos(this.movement.angle) * 1.45;
@@ -410,8 +401,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
-        const oldPosition = vClone(this.position);
-        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+        const oldPosition = Vec.clone(this.position);
+        this.position = Vec.add(this.position, Vec.create(movement.x * speed, movement.y * speed));
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -432,10 +423,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // World boundaries
-        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        this.isMoving = !vEqual(oldPosition, this.position);
+        this.isMoving = !Vec.equals(oldPosition, this.position);
 
         if (this.isMoving) this.game.grid.addObject(this);
 
@@ -567,7 +558,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Cull bullets
         for (const bullet of this.game.newBullets) {
-            if (lineIntersectsRect2(bullet.initialPosition,
+            if (Collision.lineIntersectsRectTest(bullet.initialPosition,
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
@@ -578,7 +569,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Cull explosions
         for (const explosion of this.game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
-                distanceSquared(explosion.position, this.position) < 16384) {
+                Geometry.distanceSquared(explosion.position, this.position) < 16384) {
                 packet.explosions.add(explosion);
             }
         }
@@ -1065,7 +1056,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
-                            const dist = distanceSquared(object.position, this.position);
+                            const dist = Geometry.distanceSquared(object.position, this.position);
                             if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;

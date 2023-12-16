@@ -1,14 +1,8 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
-import { CircleHitbox, HitboxGroup, type Hitbox, RectangleHitbox } from "../utils/hitbox";
-import {
-    type ObjectDefinition,
-    ObjectDefinitions,
-    ObstacleSpecialRoles,
-    MapObjectSpawnMode,
-    type ReferenceTo
-} from "../utils/objectDefinitions";
-import { v, type Vector } from "../utils/vector";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { Vec, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 import { type LootDefinition } from "./loots";
 
@@ -192,15 +186,15 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
     switch (style) {
         case "open2":
             hitbox = new HitboxGroup(
-                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
-                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0))
+                RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, Vec.create(-6.1, 0))
             );
             break;
         case "open1":
             hitbox = new HitboxGroup(
-                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
-                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
+                RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, Vec.create(-6.1, 0)),
+                RectangleHitbox.fromRect(14, 1.85, Vec.create(0, -13.04))
             );
             break;
         case "closed":
@@ -249,10 +243,10 @@ function makeGunMount(idString: string, name: string): ObstacleDefinition {
         },
         hasLoot: true,
         hitbox: new HitboxGroup(
-            RectangleHitbox.fromRect(8.2, 0.95, v(0, -1.32)), // Base
-            RectangleHitbox.fromRect(0.75, 2.75, v(0, 0.48)), // Center post
-            RectangleHitbox.fromRect(0.75, 2.75, v(-3.11, 0.48)), // Left post
-            RectangleHitbox.fromRect(0.75, 2.75, v(3.17, 0.48)) // Right post
+            RectangleHitbox.fromRect(8.2, 0.95, Vec.create(0, -1.32)), // Base
+            RectangleHitbox.fromRect(0.75, 2.75, Vec.create(0, 0.48)), // Center post
+            RectangleHitbox.fromRect(0.75, 2.75, Vec.create(-3.11, 0.48)), // Left post
+            RectangleHitbox.fromRect(0.75, 2.75, Vec.create(3.17, 0.48)) // Right post
         ),
         rotationMode: RotationMode.Limited,
         frames: {
@@ -493,10 +487,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(16.8, 13.6),
                 RectangleHitbox.fromRect(26, 2),
-                new CircleHitbox(5, v(-8, 1.8)),
-                new CircleHitbox(5, v(-8, -1.8)),
-                new CircleHitbox(5, v(8, 1.8)),
-                new CircleHitbox(5, v(8, -1.8))
+                new CircleHitbox(5, Vec.create(-8, 1.8)),
+                new CircleHitbox(5, Vec.create(-8, -1.8)),
+                new CircleHitbox(5, Vec.create(8, 1.8)),
+                new CircleHitbox(5, Vec.create(8, -1.8))
             ),
             spawnHitbox: RectangleHitbox.fromRect(28, 18),
             rotationMode: RotationMode.Limited,
@@ -608,8 +602,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.7, 70.6),
-                RectangleHitbox.fromRect(12, 1.7, v(5.5, -34.5)),
-                RectangleHitbox.fromRect(12, 1.7, v(5.5, 34.5))
+                RectangleHitbox.fromRect(12, 1.7, Vec.create(5.5, -34.5)),
+                RectangleHitbox.fromRect(12, 1.7, Vec.create(5.5, 34.5))
             ),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
@@ -673,7 +667,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hasLoot: true,
-            hitbox: RectangleHitbox.fromRect(9.1, 6.45, v(0, -0.45)),
+            hitbox: RectangleHitbox.fromRect(9.1, 6.45, Vec.create(0, -0.45)),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -690,7 +684,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.8
             },
-            hitbox: RectangleHitbox.fromRect(9.1, 6.45, v(0, -0.45)),
+            hitbox: RectangleHitbox.fromRect(9.1, 6.45, Vec.create(0, -0.45)),
             rotationMode: RotationMode.Limited,
             explosion: "stove_explosion",
             frames: {
@@ -709,7 +703,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hasLoot: true,
-            hitbox: RectangleHitbox.fromRect(9.1, 6.45, v(0, -0.45)),
+            hitbox: RectangleHitbox.fromRect(9.1, 6.45, Vec.create(0, -0.45)),
             rotationMode: RotationMode.Limited,
             reflectBullets: true
         },
@@ -728,21 +722,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new HitboxGroup(
                 // Comments assume the building is not rotated (rotation = 0)
-                RectangleHitbox.fromRect(14.33, 2, v(-41.16, -34.15)), // First Topmost wall
-                RectangleHitbox.fromRect(17, 2, v(-15, -34.15)), // Topmost wall after the first window
-                RectangleHitbox.fromRect(44.33, 2, v(26.16, -34.15)), // Topmost wall after the second window
-                RectangleHitbox.fromRect(2, 22.3, v(12.88, -22.05)), // Wall coming off of topmost wall
-                RectangleHitbox.fromRect(2, 42.68, v(47.36, -11.86)), // Rightmost wall
-                RectangleHitbox.fromRect(5.38, 2, v(43.74, 8.53)), // Short wall coming off of rightmost wall
-                RectangleHitbox.fromRect(5.51, 2, v(16.62, 8.54)), // Short wall to the left of the previous one
-                RectangleHitbox.fromRect(2, 22.7, v(12.88, 10.15)), // Wall coming off of the longer bottommost wall
-                RectangleHitbox.fromRect(40.06, 2, v(-6.17, 22.54)), // Longer bottommost wall
-                RectangleHitbox.fromRect(12.08, 2, v(-42.29, 22.54)), // Shorter bottommost wall
-                RectangleHitbox.fromRect(2, 22.2, v(-47.36, -22.1)), // Leftmost wall until left window
-                RectangleHitbox.fromRect(2, 24, v(-47.36, 11.5)), // Leftmost wall after the window
+                RectangleHitbox.fromRect(14.33, 2, Vec.create(-41.16, -34.15)), // First Topmost wall
+                RectangleHitbox.fromRect(17, 2, Vec.create(-15, -34.15)), // Topmost wall after the first window
+                RectangleHitbox.fromRect(44.33, 2, Vec.create(26.16, -34.15)), // Topmost wall after the second window
+                RectangleHitbox.fromRect(2, 22.3, Vec.create(12.88, -22.05)), // Wall coming off of topmost wall
+                RectangleHitbox.fromRect(2, 42.68, Vec.create(47.36, -11.86)), // Rightmost wall
+                RectangleHitbox.fromRect(5.38, 2, Vec.create(43.74, 8.53)), // Short wall coming off of rightmost wall
+                RectangleHitbox.fromRect(5.51, 2, Vec.create(16.62, 8.54)), // Short wall to the left of the previous one
+                RectangleHitbox.fromRect(2, 22.7, Vec.create(12.88, 10.15)), // Wall coming off of the longer bottommost wall
+                RectangleHitbox.fromRect(40.06, 2, Vec.create(-6.17, 22.54)), // Longer bottommost wall
+                RectangleHitbox.fromRect(12.08, 2, Vec.create(-42.29, 22.54)), // Shorter bottommost wall
+                RectangleHitbox.fromRect(2, 22.2, Vec.create(-47.36, -22.1)), // Leftmost wall until left window
+                RectangleHitbox.fromRect(2, 24, Vec.create(-47.36, 11.5)), // Leftmost wall after the window
 
-                RectangleHitbox.fromRect(3.25, 3.25, v(-40.27, 33.56)), // Left post
-                RectangleHitbox.fromRect(3.25, 3.25, v(-22.48, 33.56)) // Right post
+                RectangleHitbox.fromRect(3.25, 3.25, Vec.create(-40.27, 33.56)), // Left post
+                RectangleHitbox.fromRect(3.25, 3.25, Vec.create(-22.48, 33.56)) // Right post
             ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
@@ -760,11 +754,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 1
             },
-            hitbox: RectangleHitbox.fromRect(10.15, 1.6, v(-0.44, 0)),
+            hitbox: RectangleHitbox.fromRect(10.15, 1.6, Vec.create(-0.44, 0)),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             role: ObstacleSpecialRoles.Door,
-            hingeOffset: v(-5.5, 0),
+            hingeOffset: Vec.create(-5.5, 0),
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "furniture_particle"
@@ -782,14 +776,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 1
             },
             reflectBullets: true,
-            hitbox: RectangleHitbox.fromRect(14.2, 1.9, v(1.1, -0.4)),
+            hitbox: RectangleHitbox.fromRect(14.2, 1.9, Vec.create(1.1, -0.4)),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Door,
             locked: true,
             openOnce: true,
             doorSound: "vault_door",
             animationDuration: 2000,
-            hingeOffset: v(-6.1, -0.8),
+            hingeOffset: Vec.create(-6.1, -0.8),
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "metal_particle"
@@ -847,7 +841,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.8
             },
-            hitbox: RectangleHitbox.fromRect(6.2, 6, v(0, -0.5)),
+            hitbox: RectangleHitbox.fromRect(6.2, 6, Vec.create(0, -0.5)),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
@@ -865,7 +859,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(12.5, 6, v(0, -0.5)),
+            hitbox: RectangleHitbox.fromRect(12.5, 6, Vec.create(0, -0.5)),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
@@ -883,7 +877,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(7, 15.8, v(-0.2, 0)),
+            hitbox: RectangleHitbox.fromRect(7, 15.8, Vec.create(-0.2, 0)),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
@@ -900,7 +894,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(1.1, 15.1, v(-0.25, 0)),
+            hitbox: RectangleHitbox.fromRect(1.1, 15.1, Vec.create(-0.25, 0)),
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
@@ -937,7 +931,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(6.8, 6.7, v(0, 0)),
+            hitbox: RectangleHitbox.fromRect(6.8, 6.7, Vec.create(0, 0)),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
@@ -1020,7 +1014,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(21.7, 1.5, v(0, -0.4)),
+            hitbox: RectangleHitbox.fromRect(21.7, 1.5, Vec.create(0, -0.4)),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
@@ -1037,7 +1031,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(12.13, 4.3, v(0.02, -1.05)),
+            hitbox: RectangleHitbox.fromRect(12.13, 4.3, Vec.create(0.02, -1.05)),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
@@ -1056,7 +1050,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(12, 4.3, v(0, -1.05)),
+            hitbox: RectangleHitbox.fromRect(12, 4.3, Vec.create(0, -1.05)),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
@@ -1076,7 +1070,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(12.8, 1.6, v(0, 0)),
+            hitbox: RectangleHitbox.fromRect(12.8, 1.6, Vec.create(0, 0)),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Wall,
             frames: {
@@ -1095,10 +1089,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 1
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(9.2, 1.4, v(-0.8, 0)),
+            hitbox: RectangleHitbox.fromRect(9.2, 1.4, Vec.create(-0.8, 0)),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Door,
-            hingeOffset: v(-5.5, 0)
+            hingeOffset: Vec.create(-5.5, 0)
         },
         {
             idString: "porta_potty_front_wall",
@@ -1131,7 +1125,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(19.2, 1.9, v(0, 1.25)),
+            hitbox: RectangleHitbox.fromRect(19.2, 1.9, Vec.create(0, 1.25)),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
@@ -1151,7 +1145,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(19.2, 1.7, v(0, -1.15)),
+            hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec.create(0, -1.15)),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
@@ -1224,17 +1218,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(57, 1.8, v(-22, -36.1)), // First topmost wall
-                RectangleHitbox.fromRect(30.75, 1.8, v(35.38, -36.1)), // Wall after the hole
-                RectangleHitbox.fromRect(2, 33.5, v(49.75, -22.25)), // Wall from top right to bottom right
-                RectangleHitbox.fromRect(16.25, 2.05, v(42.63, -6.53)), // Wall to the right of the entrance
-                RectangleHitbox.fromRect(38.5, 2.05, v(2.25, -6.53)), // Wall to the left of the entrance
-                RectangleHitbox.fromRect(2, 21.55, v(-16, 3.23)), // Wall on top of the window
-                RectangleHitbox.fromRect(2, 13.5, v(-16, 30.25)), // Wall bellow the window
-                RectangleHitbox.fromRect(35.5, 2, v(-32.75, 36.25)), // Bottommost wall
-                RectangleHitbox.fromRect(2, 74, v(-49.5, 0)), // Wall from topmost to bottommost
-                RectangleHitbox.fromRect(13.3, 2, v(-43.35, 9)), // inner door walls
-                RectangleHitbox.fromRect(10.5, 2, v(-21.25, 9))
+                RectangleHitbox.fromRect(57, 1.8, Vec.create(-22, -36.1)), // First topmost wall
+                RectangleHitbox.fromRect(30.75, 1.8, Vec.create(35.38, -36.1)), // Wall after the hole
+                RectangleHitbox.fromRect(2, 33.5, Vec.create(49.75, -22.25)), // Wall from top right to bottom right
+                RectangleHitbox.fromRect(16.25, 2.05, Vec.create(42.63, -6.53)), // Wall to the right of the entrance
+                RectangleHitbox.fromRect(38.5, 2.05, Vec.create(2.25, -6.53)), // Wall to the left of the entrance
+                RectangleHitbox.fromRect(2, 21.55, Vec.create(-16, 3.23)), // Wall on top of the window
+                RectangleHitbox.fromRect(2, 13.5, Vec.create(-16, 30.25)), // Wall bellow the window
+                RectangleHitbox.fromRect(35.5, 2, Vec.create(-32.75, 36.25)), // Bottommost wall
+                RectangleHitbox.fromRect(2, 74, Vec.create(-49.5, 0)), // Wall from topmost to bottommost
+                RectangleHitbox.fromRect(13.3, 2, Vec.create(-43.35, 9)), // inner door walls
+                RectangleHitbox.fromRect(10.5, 2, Vec.create(-21.25, 9))
             ),
             rotationMode: RotationMode.Limited,
             particleVariations: 2,
@@ -1313,8 +1307,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new HitboxGroup(
-                new CircleHitbox(5.22, v(0, -0.65)),
-                new CircleHitbox(4.9, v(0, 0.9))
+                new CircleHitbox(5.22, Vec.create(0, -0.65)),
+                new CircleHitbox(4.9, Vec.create(0, 0.9))
             ),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
@@ -1336,17 +1330,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new HitboxGroup(
-                new CircleHitbox(3, v(-11.3, -3.85)), // Main tank rounded corners
-                new CircleHitbox(3, v(-11.3, -6.55)),
-                RectangleHitbox.fromRect(17.5, 3.5, v(-5.55, -5.25)),
-                RectangleHitbox.fromRect(14.2, 8.5, v(-3.9, -5.15)), // Main tank
-                new CircleHitbox(3.15, v(0.72, 5.62)), // Bottom left circle
-                new CircleHitbox(4.4, v(8.95, 5.62)), // Bottom right circle
-                new CircleHitbox(5.35, v(8.95, -4.7)), // Top circle
-                RectangleHitbox.fromRect(1.8, 3.7, v(0.65, 0.85)), // Pipe connected to bottom left circle
-                RectangleHitbox.fromRect(2.6, 1.2, v(8.95, 1)), // Pipe between 2 rightmost circles
-                RectangleHitbox.fromRect(1.6, 1.75, v(4.2, 5.53)), // Pipe between 2 bottommost circles
-                RectangleHitbox.fromRect(1.9, -2.6, v(4.05, -6.65)) // Pipe connected to topmost circle
+                new CircleHitbox(3, Vec.create(-11.3, -3.85)), // Main tank rounded corners
+                new CircleHitbox(3, Vec.create(-11.3, -6.55)),
+                RectangleHitbox.fromRect(17.5, 3.5, Vec.create(-5.55, -5.25)),
+                RectangleHitbox.fromRect(14.2, 8.5, Vec.create(-3.9, -5.15)), // Main tank
+                new CircleHitbox(3.15, Vec.create(0.72, 5.62)), // Bottom left circle
+                new CircleHitbox(4.4, Vec.create(8.95, 5.62)), // Bottom right circle
+                new CircleHitbox(5.35, Vec.create(8.95, -4.7)), // Top circle
+                RectangleHitbox.fromRect(1.8, 3.7, Vec.create(0.65, 0.85)), // Pipe connected to bottom left circle
+                RectangleHitbox.fromRect(2.6, 1.2, Vec.create(8.95, 1)), // Pipe between 2 rightmost circles
+                RectangleHitbox.fromRect(1.6, 1.75, Vec.create(4.2, 5.53)), // Pipe between 2 bottommost circles
+                RectangleHitbox.fromRect(1.9, -2.6, Vec.create(4.05, -6.65)) // Pipe connected to topmost circle
             ),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
@@ -1372,21 +1366,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new HitboxGroup(
                 // Right walls
-                RectangleHitbox.fromRect(2, 9, v(-31, 26)),
-                RectangleHitbox.fromRect(2, 22, v(-31, 0.2)),
-                RectangleHitbox.fromRect(2, 9.8, v(-31, -25)),
+                RectangleHitbox.fromRect(2, 9, Vec.create(-31, 26)),
+                RectangleHitbox.fromRect(2, 22, Vec.create(-31, 0.2)),
+                RectangleHitbox.fromRect(2, 9.8, Vec.create(-31, -25)),
 
                 // Top walls
-                RectangleHitbox.fromRect(19.8, 2, v(22, 29.5)),
-                RectangleHitbox.fromRect(8.2, 2, v(-26.00, 29.5)),
-                RectangleHitbox.fromRect(14, 2, v(-4.6, 29.5)),
+                RectangleHitbox.fromRect(19.8, 2, Vec.create(22, 29.5)),
+                RectangleHitbox.fromRect(8.2, 2, Vec.create(-26.00, 29.5)),
+                RectangleHitbox.fromRect(14, 2, Vec.create(-4.6, 29.5)),
 
                 // Left Wall
-                RectangleHitbox.fromRect(2, 32, v(30.9, 13.5)),
-                RectangleHitbox.fromRect(2, 16, v(30.9, -20.5)),
+                RectangleHitbox.fromRect(2, 32, Vec.create(30.9, 13.5)),
+                RectangleHitbox.fromRect(2, 16, Vec.create(30.9, -20.5)),
 
-                RectangleHitbox.fromRect(12.3, 2, v(25.8, -28.9)), // Bottom Left Wall
-                RectangleHitbox.fromRect(39.4, 2, v(-10.45, -28.9)) // Bottom Right Wall
+                RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)), // Bottom Left Wall
+                RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9)) // Bottom Right Wall
             ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
@@ -1406,13 +1400,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 1.0
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(20.25, 2.15, v(0, 25.1)), // Front bumper
-                RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
-                RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
-                RectangleHitbox.fromRect(4.75, 15.9, v(0, -16.65)), // Fifth wheel
-                RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Front-most back wheels
-                RectangleHitbox.fromRect(17, 6.9, v(0, -20.7)), // Rearmost back wheels
-                RectangleHitbox.fromRect(16.55, 1.6, v(0, -25.35)) // Rear bumper
+                RectangleHitbox.fromRect(20.25, 2.15, Vec.create(0, 25.1)), // Front bumper
+                RectangleHitbox.fromRect(18.96, 9.2, Vec.create(0, 19.4)), // Hood
+                RectangleHitbox.fromRect(16.7, 23.5, Vec.create(0, 3)), // Cab
+                RectangleHitbox.fromRect(4.75, 15.9, Vec.create(0, -16.65)), // Fifth wheel
+                RectangleHitbox.fromRect(17, 6.9, Vec.create(0, -13.2)), // Front-most back wheels
+                RectangleHitbox.fromRect(17, 6.9, Vec.create(0, -20.7)), // Rearmost back wheels
+                RectangleHitbox.fromRect(16.55, 1.6, Vec.create(0, -25.35)) // Rear bumper
             ),
             reflectBullets: true,
             rotationMode: RotationMode.Limited,
@@ -1434,11 +1428,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
-                RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Front-most back wheels
-                RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
-                RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
-                RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
+                RectangleHitbox.fromRect(14.9, 44.7, Vec.create(-0.05, 0)), // Body
+                RectangleHitbox.fromRect(15.9, 6.4, Vec.create(0, -11.2)), // Front-most back wheels
+                RectangleHitbox.fromRect(15.9, 6.4, Vec.create(0, -18.2)), // Rearmost back wheels
+                RectangleHitbox.fromRect(15.5, 1.5, Vec.create(0, -22.5)), // Rear bumper
+                RectangleHitbox.fromRect(9.75, 1, Vec.create(-0.05, 22.75)) // Front part (idk)
             ),
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.ObstaclesLayer4,
@@ -1568,11 +1562,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(6.1, 15.5, v(0, 0)), // Middle big rectangle
-                RectangleHitbox.fromRect(5.3, 6, v(0, 10.97)), // Top small rectangle
-                RectangleHitbox.fromRect(4.2, 1.8, v(0, 14.8)), // Top wheels
-                RectangleHitbox.fromRect(5.3, 6, v(0, -10.97)), // Bottom small rectangle
-                RectangleHitbox.fromRect(4.2, 1.8, v(0, -14.8)) // Bottom wheels
+                RectangleHitbox.fromRect(6.1, 15.5, Vec.create(0, 0)), // Middle big rectangle
+                RectangleHitbox.fromRect(5.3, 6, Vec.create(0, 10.97)), // Top small rectangle
+                RectangleHitbox.fromRect(4.2, 1.8, Vec.create(0, 14.8)), // Top wheels
+                RectangleHitbox.fromRect(5.3, 6, Vec.create(0, -10.97)), // Bottom small rectangle
+                RectangleHitbox.fromRect(4.2, 1.8, Vec.create(0, -14.8)) // Bottom wheels
             ),
             zIndex: ZIndexes.ObstaclesLayer4,
             rotationMode: RotationMode.Limited,
@@ -1594,82 +1588,82 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new HitboxGroup(
                 // Bottom Bottom left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 66.7 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 62.9 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 62.8 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 88.6 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 92.6 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 92.6 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(-29.6, 77.7 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, 66.7 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, 62.9 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, 62.8 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, 88.6 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, 92.6 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, 92.6 + 0.6)), // Bottom Wheels
 
                 // Top Bottom left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 29.5 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 18.5 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 14.7 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 14.7 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 40.4 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 44.4 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 44.4 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(-29.6, 29.5 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, 18.5 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, 40.4 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, 44.4 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, 44.4 + 0.6)), // Bottom Wheels
 
                 // Bottom Bottom Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, 77.7 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 66.7 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, 62.9 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, 62.8 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 88.6 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, 92.6 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, 92.6 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(29.6, 77.7 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, 66.7 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, 62.9 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, 62.8 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, 88.6 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, 92.6 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, 92.6 + 0.6)), // Bottom Wheels
 
                 // Top Bottom Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, 29.5 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 18.5 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, 14.7 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, 14.7 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 40.4 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, 44.4 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, 44.4 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(29.6, 29.5 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, 18.5 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, 40.4 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, 44.4 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, 44.4 + 0.6)), // Bottom Wheels
 
                 // Bottom Top left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -82.2 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -71.2 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -67.4 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -67.3 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -93.1 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -97.1 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -97.1 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(-29.6, -82.2 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, -71.2 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, -67.4 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, -67.3 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, -93.1 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, -97.1 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, -97.1 + 0.6)), // Bottom Wheels
 
                 // Top Top left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -34 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -23 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -19.2 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -19.2 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -44.9 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -48.9 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -48.9 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(-29.6, -34 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, -23 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(-29.6, -44.9 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-30.8, -48.9 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(-28.5, -48.9 + 0.6)), // Bottom Wheels
 
                 // Bottom Top Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, -82.2 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -71.2 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, -67.4 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, -67.3 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -93.1 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, -97.1 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, -97.1 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(29.6, -82.2 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, -71.2 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, -67.4 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, -67.3 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, -93.1 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, -97.1 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, -97.1 + 0.6)), // Bottom Wheels
 
                 // Top Top Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, -34 + 0.6)), // Middle Big rectangle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -23 + 0.6)), // Top Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, -19.2 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, -19.2 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -44.9 + 0.6)), // Bottom Small rectangle
-                RectangleHitbox.fromRect(2, 1.8, v(30.8, -48.9 + 0.6)), // Bottom Wheels
-                RectangleHitbox.fromRect(2, 1.8, v(28.5, -48.9 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(6, 15.5, Vec.create(29.6, -34 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, -23 + 0.6)), // Top Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, Vec.create(29.6, -44.9 + 0.6)), // Bottom Small rectangle
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(30.8, -48.9 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, Vec.create(28.5, -48.9 + 0.6)), // Bottom Wheels
 
-                RectangleHitbox.fromRect(4.3, 1.8, v(29.6, -99.5)),
-                RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, -99.5)),
+                RectangleHitbox.fromRect(4.3, 1.8, Vec.create(29.6, -99.5)),
+                RectangleHitbox.fromRect(4.3, 1.8, Vec.create(-29.6, -99.5)),
 
-                RectangleHitbox.fromRect(4.3, 1.8, v(29.6, 99.5)),
-                RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5)) // Top Wheels
+                RectangleHitbox.fromRect(4.3, 1.8, Vec.create(29.6, 99.5)),
+                RectangleHitbox.fromRect(4.3, 1.8, Vec.create(-29.6, 99.5)) // Top Wheels
 
             ),
             rotationMode: RotationMode.Limited,
@@ -1741,54 +1735,54 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1, 220, v(48, -20)), // Right wall
+                RectangleHitbox.fromRect(1, 220, Vec.create(48, -20)), // Right wall
 
-                RectangleHitbox.fromRect(1, 66, v(-31, 4.8)), // Left wall (middle)
-                RectangleHitbox.fromRect(1, 40, v(-31, 69)), // Left wall (bottom)
-                RectangleHitbox.fromRect(1, 90, v(-31, -85)), // Left wall (top)
+                RectangleHitbox.fromRect(1, 66, Vec.create(-31, 4.8)), // Left wall (middle)
+                RectangleHitbox.fromRect(1, 40, Vec.create(-31, 69)), // Left wall (bottom)
+                RectangleHitbox.fromRect(1, 90, Vec.create(-31, -85)), // Left wall (top)
 
-                RectangleHitbox.fromRect(32.2, 2, v(31.7, 81.6)), // bottom
-                RectangleHitbox.fromRect(33, 2, v(-14.8, 81.6)), // bottom
-                RectangleHitbox.fromRect(80, 1, v(8, -128)), // top
+                RectangleHitbox.fromRect(32.2, 2, Vec.create(31.7, 81.6)), // bottom
+                RectangleHitbox.fromRect(33, 2, Vec.create(-14.8, 81.6)), // bottom
+                RectangleHitbox.fromRect(80, 1, Vec.create(8, -128)), // top
 
                 // Captain's cabin
-                RectangleHitbox.fromRect(46, 2, v(9, -90.2)), // top
-                RectangleHitbox.fromRect(2, 38.6, v(-22.8, -70.2)), // left
-                RectangleHitbox.fromRect(2, 24, v(-13.1, -79.2)),
-                RectangleHitbox.fromRect(2, 9.9, v(31.1, -86.3)), // right
-                RectangleHitbox.fromRect(2, 20.2, v(31.1, -61)),
-                RectangleHitbox.fromRect(10, 2, v(36, -82.3)),
-                RectangleHitbox.fromRect(2, 32.4, v(40.5, -67)),
+                RectangleHitbox.fromRect(46, 2, Vec.create(9, -90.2)), // top
+                RectangleHitbox.fromRect(2, 38.6, Vec.create(-22.8, -70.2)), // left
+                RectangleHitbox.fromRect(2, 24, Vec.create(-13.1, -79.2)),
+                RectangleHitbox.fromRect(2, 9.9, Vec.create(31.1, -86.3)), // right
+                RectangleHitbox.fromRect(2, 20.2, Vec.create(31.1, -61)),
+                RectangleHitbox.fromRect(10, 2, Vec.create(36, -82.3)),
+                RectangleHitbox.fromRect(2, 32.4, Vec.create(40.5, -67)),
 
-                RectangleHitbox.fromRect(55, 2, v(4.4, -51.8)), // bottom
+                RectangleHitbox.fromRect(55, 2, Vec.create(4.4, -51.8)), // bottom
 
                 // Tango room bottom walls
-                RectangleHitbox.fromRect(60, 2, v(8, 104.5)),
-                RectangleHitbox.fromRect(2, 30, v(-18, 96)),
-                RectangleHitbox.fromRect(2, 30, v(35, 96)),
+                RectangleHitbox.fromRect(60, 2, Vec.create(8, 104.5)),
+                RectangleHitbox.fromRect(2, 30, Vec.create(-18, 96)),
+                RectangleHitbox.fromRect(2, 30, Vec.create(35, 96)),
 
                 // bottom hitboxes
                 // HACK: refactor when we support collision with polygon hitboxes
-                new CircleHitbox(12, v(8, 118)),
+                new CircleHitbox(12, Vec.create(8, 118)),
                 ...Array.from({ length: 2 }, (_, i) => {
                     const a = i === 0 ? 1 : -1;
                     const b = i === 0 ? 0 : 17;
                     return [
-                        new CircleHitbox(4, v(0 * a + b, 125)),
-                        new CircleHitbox(4, v(-4 * a + b, 123.5)),
-                        new CircleHitbox(4, v(-6 * a + b, 122.5)),
-                        new CircleHitbox(4, v(-8 * a + b, 121)),
-                        new CircleHitbox(4, v(-10 * a + b, 120)),
-                        new CircleHitbox(4, v(-12 * a + b, 118.5)),
-                        new CircleHitbox(4, v(-14 * a + b, 116.5)),
-                        new CircleHitbox(4, v(-16 * a + b, 114.5)),
-                        new CircleHitbox(4, v(-18 * a + b, 113)),
-                        new CircleHitbox(4, v(-20 * a + b, 110.5)),
-                        new CircleHitbox(4, v(-22 * a + b, 108)),
-                        new CircleHitbox(4, v(-24 * a + b, 104)),
-                        new CircleHitbox(4, v(-26 * a + b, 99.5)),
-                        new CircleHitbox(4, v(-27 * a + b, 95)),
-                        new CircleHitbox(4, v(-28 * a + b, 91))
+                        new CircleHitbox(4, Vec.create(0 * a + b, 125)),
+                        new CircleHitbox(4, Vec.create(-4 * a + b, 123.5)),
+                        new CircleHitbox(4, Vec.create(-6 * a + b, 122.5)),
+                        new CircleHitbox(4, Vec.create(-8 * a + b, 121)),
+                        new CircleHitbox(4, Vec.create(-10 * a + b, 120)),
+                        new CircleHitbox(4, Vec.create(-12 * a + b, 118.5)),
+                        new CircleHitbox(4, Vec.create(-14 * a + b, 116.5)),
+                        new CircleHitbox(4, Vec.create(-16 * a + b, 114.5)),
+                        new CircleHitbox(4, Vec.create(-18 * a + b, 113)),
+                        new CircleHitbox(4, Vec.create(-20 * a + b, 110.5)),
+                        new CircleHitbox(4, Vec.create(-22 * a + b, 108)),
+                        new CircleHitbox(4, Vec.create(-24 * a + b, 104)),
+                        new CircleHitbox(4, Vec.create(-26 * a + b, 99.5)),
+                        new CircleHitbox(4, Vec.create(-27 * a + b, 95)),
+                        new CircleHitbox(4, Vec.create(-28 * a + b, 91))
                     ];
                 }).flat()
             )
@@ -1806,8 +1800,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(8.15, 17.3, v(0, -3.8)),
-                RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
+                RectangleHitbox.fromRect(8.15, 17.3, Vec.create(0, -3.8)),
+                RectangleHitbox.fromRect(9.45, 10.6, Vec.create(0, -4.9))
             ),
             rotationMode: RotationMode.Limited,
             frames: {
@@ -1845,8 +1839,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(8.2, 9.2, v(-0.36, 0)),
-                new CircleHitbox(3.45, v(1, 0))
+                RectangleHitbox.fromRect(8.2, 9.2, Vec.create(-0.36, 0)),
+                new CircleHitbox(3.45, Vec.create(1, 0))
             ),
             rotationMode: RotationMode.Limited,
             frames: {
@@ -1866,9 +1860,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1.2, 31.75, v(-2.2, -2.8)),
-                RectangleHitbox.fromRect(2, 5, v(-2.3, 15.4)),
-                RectangleHitbox.fromRect(4.71, 6.59, v(0.95, 15.4))
+                RectangleHitbox.fromRect(1.2, 31.75, Vec.create(-2.2, -2.8)),
+                RectangleHitbox.fromRect(2, 5, Vec.create(-2.3, 15.4)),
+                RectangleHitbox.fromRect(4.71, 6.59, Vec.create(0.95, 15.4))
             ),
             rotationMode: RotationMode.Limited,
             frames: {
@@ -1889,11 +1883,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
-                RectangleHitbox.fromRect(1.75, 9.2, v(10.23, -11.9)), // Right wall above window
-                RectangleHitbox.fromRect(1.75, 10.7, v(10.23, 7.6)), // Right wall below window
-                RectangleHitbox.fromRect(20, 1.75, v(0, -15.56)), // Top wall
-                RectangleHitbox.fromRect(9, 1.75, v(-5.25, 12.19)) // Bottom wall
+                RectangleHitbox.fromRect(1.75, 29.5, Vec.create(-10.23, -1.7)), // Left wall
+                RectangleHitbox.fromRect(1.75, 9.2, Vec.create(10.23, -11.9)), // Right wall above window
+                RectangleHitbox.fromRect(1.75, 10.7, Vec.create(10.23, 7.6)), // Right wall below window
+                RectangleHitbox.fromRect(20, 1.75, Vec.create(0, -15.56)), // Top wall
+                RectangleHitbox.fromRect(9, 1.75, Vec.create(-5.25, 12.19)) // Bottom wall
             ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
@@ -1954,12 +1948,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.7
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(2, 16.3, v(-29.3, -22.3)),
-                RectangleHitbox.fromRect(60, 2, v(0, -29.4)),
-                RectangleHitbox.fromRect(2, 16.3, v(29.3, -22.3)),
+                RectangleHitbox.fromRect(2, 16.3, Vec.create(-29.3, -22.3)),
+                RectangleHitbox.fromRect(60, 2, Vec.create(0, -29.4)),
+                RectangleHitbox.fromRect(2, 16.3, Vec.create(29.3, -22.3)),
 
-                RectangleHitbox.fromRect(2, 20, v(-29.3, 20.2)),
-                RectangleHitbox.fromRect(2, 20, v(29.3, 20.2))
+                RectangleHitbox.fromRect(2, 20, Vec.create(-29.3, 20.2)),
+                RectangleHitbox.fromRect(2, 20, Vec.create(29.3, 20.2))
             ),
             rotationMode: RotationMode.Limited,
             invisible: true,

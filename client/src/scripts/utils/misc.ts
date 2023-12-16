@@ -1,9 +1,3 @@
-import { normalizeAngle } from "../../../../common/src/utils/math";
-
-export function orientationToRotation(orientation: number): number {
-    return -normalizeAngle(orientation * (Math.PI / 2));
-}
-
 declare global {
     interface Element {
         requestFullscreen: (options?: FullscreenOptions) => Promise<void>
