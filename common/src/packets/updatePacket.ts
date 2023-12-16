@@ -501,7 +501,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.Emotes) {
-            stream.writeBits(this.emotes.size, 13);
+            stream.writeBits(this.emotes.size, 7);
             for (const emote of this.emotes) {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerID);
@@ -638,7 +638,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.Emotes) {
-            const count = stream.readBits(13);
+            const count = stream.readBits(7);
 
             for (let i = 0; i < count; i++) {
                 this.emotes.add({
