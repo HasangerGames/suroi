@@ -14,6 +14,8 @@ export interface CVarTypeMapping {
     readonly cv_loadout_right_emote: ConVar<string>
     readonly cv_loadout_bottom_emote: ConVar<string>
     readonly cv_loadout_left_emote: ConVar<string>
+    readonly cv_loadout_win_emote: ConVar<string>
+    readonly cv_loadout_death_emote: ConVar<string>
     readonly cv_loop_scope_selection: ConVar<boolean>
     readonly cv_anonymize_player_names: ConVar<boolean>
     readonly cv_master_volume: ConVar<number>
@@ -70,6 +72,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_loadout_right_emote: "thumbs_up",
     cv_loadout_bottom_emote: "suroi_logo",
     cv_loadout_left_emote: "sad_face",
+    cv_loadout_death_emote: "skull",
+    cv_loadout_win_emote: "chicken",
     cv_loop_scope_selection: false,
     cv_anonymize_player_names: false,
     cv_master_volume: 1,

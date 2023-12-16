@@ -791,6 +791,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (this.health <= 0 && !this.dead) {
+            this.emote(4)
             if (canTrackStats) {
                 const kills = ++weaponUsed.stats.kills;
 
@@ -800,7 +801,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 }
             }
-
             this.die(source, weaponUsed);
         }
     }
@@ -834,7 +834,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
     die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
-
         this.health = 0;
         this.dead = true;
         this.canDespawn = false;
