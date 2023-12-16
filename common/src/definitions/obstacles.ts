@@ -304,6 +304,36 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Full,
             zIndex: ZIndexes.ObstaclesLayer4
         },
+         {
+            idString: "treasure_pirate_chest",
+            name: "treasure_pirate_chest",
+            material: "wood",
+            health: 150,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -.4)),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            spawnMode: MapObjectSpawnMode.Beach,
+        },
+        {
+            idString: "treasure_viking_chest",
+            name: "treasure_viking_chest",
+            material: "wood",
+            health: 150,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -.4)),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            spawnMode: MapObjectSpawnMode.Beach,
+        },
         {
             idString: "christmas_tree",
             name: "Christmas Tree",

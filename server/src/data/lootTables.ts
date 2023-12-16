@@ -44,6 +44,32 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "winter_skins", weight: 0.4 } // winter mode
         ]
     },
+    treasure_pirate_chest: {
+        min: 2,
+        max: 4,
+        loot: [
+            { item: "aug", weight: 0.7 },
+            { item: "flues", weight: 0.4 },
+            { item: "ak47", weight: 0.8},
+            { item: "arx160", weight: 0.3 },
+            { item: "mini14", weight: 0.5 },
+            { item: "sr25", weight: 0.2 },
+            { item: "stoner_63", weight: 0.01 },
+        ]
+    },
+    treasure_viking_chest: {
+        min: 2,
+        max: 4,
+        loot: [
+            { item: "aug", weight: 0.7 },
+            { item: "flues", weight: 0.4 },
+            { item: "ak47", weight: 0.8},
+            { item: "arx160", weight: 0.3 },
+            { item: "mini14", weight: 0.5 },
+            { item: "sr25", weight: 0.2 },
+            { item: "stoner_63", weight: 0.01 },
+        ]
+    },
     aegis_crate: {
         min: 3,
         max: 5,

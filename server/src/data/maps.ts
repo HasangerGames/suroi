@@ -80,6 +80,8 @@ export const Maps: Record<string, MapDefinition> = {
             birch_tree: 50,
             pine_tree: 30,
             regular_crate: 300,
+            treasure_pirate_chest: 1, //variations, I dont know which one to use
+            treasure_viking_chest: 1,
             flint_crate: 6,
             aegis_crate: 6,
             rock: 200,
