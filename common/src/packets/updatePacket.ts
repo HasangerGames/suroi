@@ -181,7 +181,8 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
 
         data.inventory.weapons = new Array(GameConstants.player.maxWeapons).fill(undefined);
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
+        const maxWeapons = GameConstants.player.maxWeapons;
+        for (let i = 0; i < maxWeapons; i++) {
             const hasItem = stream.readBoolean();
 
             if (hasItem) {
@@ -394,7 +395,7 @@ export class UpdatePacket extends Packet {
 
     gas?: {
         readonly state: GasState
-        readonly initialDuration: number
+        readonly currentDuration: number
         readonly oldPosition: Vector
         readonly newPosition: Vector
         readonly oldRadius: number
@@ -402,7 +403,7 @@ export class UpdatePacket extends Packet {
         readonly dirty: boolean
     };
 
-    gasPercentage?: {
+    gasProgress?: {
         readonly dirty: boolean
         readonly value: number
     };
@@ -440,7 +441,7 @@ export class UpdatePacket extends Packet {
             (+!!this.explosions.size && UpdateFlags.Explosions) |
             (+!!this.emotes.size && UpdateFlags.Emotes) |
             (+!!this.gas?.dirty && UpdateFlags.Gas) |
-            (+!!this.gasPercentage?.dirty && UpdateFlags.GasPercentage) |
+            (+!!this.gasProgress?.dirty && UpdateFlags.GasPercentage) |
             (+!!this.newPlayers.size && UpdateFlags.NewPlayers) |
             (+!!this.deletedPlayers.size && UpdateFlags.DeletedPlayers) |
             (+!!this.aliveCountDirty && UpdateFlags.AliveCount) |
@@ -503,7 +504,7 @@ export class UpdatePacket extends Packet {
         if (flags & UpdateFlags.Gas) {
             const gas = this.gas!;
             stream.writeBits(gas.state, 2);
-            stream.writeBits(gas.initialDuration, 7);
+            stream.writeBits(gas.currentDuration, 7);
             stream.writePosition(gas.oldPosition);
             stream.writePosition(gas.newPosition);
             stream.writeFloat(gas.oldRadius, 0, 2048, 16);
@@ -511,7 +512,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.GasPercentage) {
-            stream.writeFloat(this.gasPercentage!.value, 0, 1, 16);
+            stream.writeFloat(this.gasProgress!.value, 0, 1, 16);
         }
 
         if (flags & UpdateFlags.NewPlayers) {
@@ -644,7 +645,7 @@ export class UpdatePacket extends Packet {
             this.gas = {
                 dirty: true,
                 state: stream.readBits(2),
-                initialDuration: stream.readBits(7),
+                currentDuration: stream.readBits(7),
                 oldPosition: stream.readPosition(),
                 newPosition: stream.readPosition(),
                 oldRadius: stream.readFloat(0, 2048, 16),
@@ -653,7 +654,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.GasPercentage) {
-            this.gasPercentage = {
+            this.gasProgress = {
                 dirty: true,
                 value: stream.readFloat(0, 1, 16)
             };

@@ -34,12 +34,10 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         super(game, position);
 
         this.definition = Loots.reify(definition);
-
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
-
         this.count = count ?? 1;
 
-        this.push(randomRotation(), 1);
+        this.push(randomRotation(), 0.003);
 
         this.game.addTimeout(() => { this.isNew = false; }, 100);
     }
@@ -54,23 +52,24 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         this._oldPosition = Vec.clone(this.position);
 
         if (this.game.map.terrain.groundRect.isPointInside(this.position)) {
-            const rivers = this.game.map.terrain.getRiversInPosition(this.position);
-            for (const river of rivers) {
+            for (const river of this.game.map.terrain.getRiversInPosition(this.position)) {
                 if (river.waterHitbox.isPointInside(this.position)) {
-                    const t = river.getClosestT(this.position);
+                    const tangent = river.getTangent(
+                        river.getClosestT(this.position)
+                    );
 
-                    const tangent = river.getTangent(t);
-
-                    this.push(Math.atan2(tangent.y, tangent.x), -1);
+                    this.push(Math.atan2(tangent.y, tangent.x), -0.001);
                     break;
                 }
             }
         }
 
         this.velocity = Vec.scale(this.velocity, 0.9);
-        const velocity = Vec.scale(this.velocity, 1 / GameConstants.tps);
+
+        const velocity = Vec.scale(this.velocity, GameConstants.msPerTick);
         velocity.x = Numeric.clamp(velocity.x, -1, 1);
         velocity.y = Numeric.clamp(velocity.y, -1, 1);
+
         this.position = Vec.add(this.position, velocity);
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
@@ -89,7 +88,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
-                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.45));
+                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
                 }
 
                 const dist = Math.max(Geometry.distance(object.position, this.position), 1);
@@ -101,10 +100,10 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
                 if (speed < 0) continue;
 
-                this.velocity.x -= (speed * vecCollisionNorm.x);
-                this.velocity.y -= (speed * vecCollisionNorm.y);
-                object.velocity.x += (speed * vecCollisionNorm.x);
-                object.velocity.y += (speed * vecCollisionNorm.y);
+                this.velocity.x -= speed * vecCollisionNorm.x;
+                this.velocity.y -= speed * vecCollisionNorm.y;
+                object.velocity.x += speed * vecCollisionNorm.x;
+                object.velocity.y += speed * vecCollisionNorm.y;
             }
         }
 
@@ -178,7 +177,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     interact(player: Player, noPickup = false): void {
         if (this.dead) return;
         const createNewItem = (type: LootDefinition = this.definition): void => {
-            this.game.addLoot(type, this.position, this.count).push(player.rotation + Math.PI, 6);
+            this.game
+                .addLoot(type, this.position, this.count)
+                .push(player.rotation + Math.PI, 0.0007);
         };
 
         if (noPickup) {
@@ -207,9 +208,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                     ) {
                         player.dirty.weapons = true;
                         player.game.fullDirtyObjects.add(player);
+
                         const wasReloading = player.action?.type === PlayerActions.Reload;
-                        if (wasReloading) player.action!.cancel();
+                        if (wasReloading) {
+                            player.action!.cancel();
+                        }
+
                         player.inventory.upgradeToDual(i);
+
                         if (wasReloading) {
                             (player.activeItem as GunItem).reload(true);
                         }
@@ -222,11 +228,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
                     const slot = inventory.appendWeapon(this.definition);
+
                     if (inventory.activeWeaponIndex > 1) {
                         inventory.setActiveWeaponIndex(slot);
                     }
                 } else if (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition) {
-                    if (player.action?.type === PlayerActions.Reload) player.action.cancel();
+                    if (player.action?.type === PlayerActions.Reload) {
+                        player.action.cancel();
+                    }
 
                     inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition);
                 }

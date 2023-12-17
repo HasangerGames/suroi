@@ -165,8 +165,8 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
                 if (collision) {
                     this.position = Vec.sub(this.position, Vec.scale(collision.dir, collision.pen));
                 }
-            }
                 break;
+            }
             case HitboxType.Rect: {
                 const collision = Collision.rectCircleIntersection(that.min, that.max, this.position, this.radius);
                 if (collision) {
@@ -176,12 +176,15 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
             }
             case HitboxType.Group: {
                 for (const hitbox of that.hitboxes) {
-                    if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+                    if (this.collidesWith(hitbox)) {
+                        this.resolveCollision(hitbox);
+                    }
                 }
                 break;
             }
-            default:
+            default: {
                 this.throwUnknownSubclassError(that);
+            }
         }
     }
 
@@ -352,7 +355,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    override toRectangle(): RectangleHitbox {
+    override toRectangle(): this {
         return this;
     }
 

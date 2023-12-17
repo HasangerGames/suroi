@@ -105,13 +105,13 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
     DEFAULT_INVENTORY[item.idString] = amount;
 }
 
-export const GameConstants = {
+export const GameConstants = Object.freeze({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 10,
+    protocolVersion: 11,
     gridSize: 32,
-    // ticks per second
-    tps: 30,
+    tickrate: 35,
+    get msPerTick() { return 1000 / this.tickrate; },
     maxPosition: 1632,
     player: {
         radius: 2.25,
@@ -119,7 +119,7 @@ export const GameConstants = {
         defaultName: "Player",
         defaultHealth: 100,
         maxAdrenaline: 100,
-        maxWeapons: 3,
+        maxWeapons: 4,
         killLeaderMinKills: 3,
         maxMouseDist: 128
     },
@@ -128,7 +128,7 @@ export const GameConstants = {
         flyTime: 30000,
         damage: 300
     }
-};
+});
 
 export enum ZIndexes {
     Ground,

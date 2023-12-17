@@ -575,7 +575,8 @@ Video evidence is required.`)) {
     });
 
     // Switch weapon slots by clicking
-    for (let slot = 0; slot < GameConstants.player.maxWeapons; slot++) {
+    const maxWeapons = GameConstants.player.maxWeapons;
+    for (let slot = 0; slot < maxWeapons; slot++) {
         const slotElement = $(`#weapon-slot-${slot + 1}`);
         slotElement[0].addEventListener(
             "pointerdown",

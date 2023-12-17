@@ -138,8 +138,6 @@ export class Game {
 
     tickTimes: number[] = [];
 
-    tickDelta = 1000 / GameConstants.tps;
-
     constructor(id: number) {
         this._id = id;
 
@@ -156,7 +154,7 @@ export class Game {
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
-        this.tick(GameConstants.tps);
+        this.tick(GameConstants.msPerTick);
     }
 
     handlePacket(stream: SuroiBitStream, player: Player): void {
@@ -205,6 +203,7 @@ export class Game {
                     this._timeouts.delete(timeout);
                     continue;
                 }
+
                 if (this.now > timeout.end) {
                     timeout.callback();
                     this._timeouts.delete(timeout);
@@ -275,7 +274,7 @@ export class Game {
             this.mapPings.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
-            this.gas.percentageDirty = false;
+            this.gas.completionRatioDirty = false;
             this.updateObjects = false;
 
             // Winning logic
@@ -309,11 +308,11 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.tps) * 100).toFixed(1)}%`);
+                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, GameConstants.tps - tickTime));
+            this.tick(Math.max(0, GameConstants.msPerTick - tickTime));
         }, delay);
     }
 
@@ -456,7 +455,7 @@ export class Game {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;
-                this.gas.advanceGas();
+                this.gas.advanceGasStage();
 
                 this.addTimeout(() => {
                     newGame();
@@ -494,6 +493,7 @@ export class Game {
             this.startTimeout?.kill();
             this.startTimeout = undefined;
         }
+
         try {
             player.socket.close();
         } catch (e) { }
@@ -627,12 +627,15 @@ export class Game {
 
         this.planes.add({ position: planePos, direction });
 
-        this.addTimeout(() => {
-            const parachute = new Parachute(this, position, airdrop);
-            this.grid.addObject(parachute);
-            this.objects.add(parachute);
-            this.mapPings.add(position);
-        }, GameConstants.airdrop.flyTime);
+        this.addTimeout(
+            () => {
+                const parachute = new Parachute(this, position, airdrop);
+                this.grid.addObject(parachute);
+                this.objects.add(parachute);
+                this.mapPings.add(position);
+            },
+            GameConstants.airdrop.flyTime
+        );
     }
 
     get aliveCount(): number {

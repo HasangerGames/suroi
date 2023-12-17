@@ -203,7 +203,7 @@ export class Game {
 
             this.map.indicator.setFrame("player_indicator");
 
-            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.tps);
+            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.msPerTick);
         };
 
         // Handle incoming messages
