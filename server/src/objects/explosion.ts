@@ -1,12 +1,12 @@
 import { Explosions, type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/math";
+import { Angle, Geometry } from "../../../common/src/utils/math";
 import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { randomRotation } from "../../../common/src/utils/random";
-import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type GameObject } from "./gameObject";
 import { Decal } from "./decal";
+import { type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
@@ -37,7 +37,7 @@ export class Explosion {
                 readonly squareDistance: number
             }> = [];
 
-            const lineEnd = vAdd(this.position, vRotate(v(this.definition.radius.max, 0), angle));
+            const lineEnd = Vec.add(this.position, Vec.rotate(Vec.create(this.definition.radius.max, 0), angle));
 
             for (const object of objects) {
                 if (object.dead || !object.hitbox || !(object instanceof Obstacle || object instanceof Player || object instanceof Loot)) continue;
@@ -48,7 +48,7 @@ export class Explosion {
                     lineCollisions.push({
                         pos: intersection.point,
                         object,
-                        squareDistance: distanceSquared(this.position, intersection.point)
+                        squareDistance: Geometry.distanceSquared(this.position, intersection.point)
                     });
                 }
             }
@@ -76,7 +76,7 @@ export class Explosion {
                     }
 
                     if (object instanceof Loot) {
-                        object.push(angleBetweenPoints(object.position, this.position), (max - dist) * 5);
+                        object.push(Angle.angleBetweenPoints(object.position, this.position), (max - dist) * 5);
                     }
                 }
                 if (object instanceof Obstacle && !object.definition.noCollisions) break;

@@ -1,4 +1,4 @@
-import { lerp } from "./math";
+import { Numeric } from "./math";
 import { type Vector } from "./vector";
 
 /**
@@ -97,7 +97,7 @@ export class SeededRandom {
 
     get(min = 0, max = 1): number {
         this.rng = this.rng * 16807 % 2147483647;
-        return lerp(min, max, (this.rng / 2147483647));
+        return Numeric.lerp(min, max, (this.rng / 2147483647));
     }
 
     getInt(min?: number, max?: number): number {

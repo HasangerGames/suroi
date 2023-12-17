@@ -1,21 +1,21 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type ObstacleDefinition, Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
-import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { addAdjust, angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
+import { Angle, calculateDoorHitboxes } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
-import { vAdd, type Vector } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
-import { GameObject } from "./gameObject";
 import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
+import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
@@ -168,7 +168,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 const loot = this.game.addLoot(
                     item.idString,
                     this.lootSpawnOffset
-                        ? vAdd(this.position, this.lootSpawnOffset)
+                        ? Vec.add(this.position, this.lootSpawnOffset)
                         : this.loot.length > 1
                             ? this.hitbox.randomPoint()
                             : this.position,
@@ -177,7 +177,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
                 if (source.position === undefined && position === undefined) continue;
 
-                loot.push(angleBetweenPoints(this.position, position ?? source.position), 7);
+                loot.push(Angle.angleBetweenPoints(this.position, position ?? source.position), 7);
             }
 
             if (this.definition.role === ObstacleSpecialRoles.Wall) {
@@ -196,7 +196,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             }
                             case "swivel":
                             default: {
-                                const detectionHitbox = new CircleHitbox(1, addAdjust(object.position, definition.hingeOffset, object.rotation as Orientation));
+                                const detectionHitbox = new CircleHitbox(1, Vec.addAdjust(object.position, definition.hingeOffset, object.rotation as Orientation));
 
                                 if (this.hitbox.collidesWith(detectionHitbox)) {
                                     object.damage(Infinity, source, weaponUsed);
@@ -240,10 +240,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
-                if (this.parentBuilding && definition.interactType) {
+                if (this.parentBuilding && definition.triggerInteractOn) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
-                        if (obstacle.definition.idString === definition.interactType) {
-                            this.game.addTimeout(() => { obstacle.interact(); }, definition.interactDelay);
+                        if (obstacle.definition.idString === definition.triggerInteractOn) {
+                            this.game.addTimeout(() => {
+                                obstacle.interact();
+                                this.parentBuilding!.puzzleSolved = true;
+                                this.game.fullDirtyObjects.add(this.parentBuilding!);
+                            }, definition.interactDelay);
                         }
                     }
                 }

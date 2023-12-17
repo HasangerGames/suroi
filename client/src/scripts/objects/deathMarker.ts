@@ -1,11 +1,12 @@
 import { Text, type Container } from "pixi.js";
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
@@ -38,8 +39,6 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
 
-        this.container.zIndex = ZIndexes.DeathMarkers;
-
         this.updateFromData(data, true);
     }
 
@@ -48,6 +47,11 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
 
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
+
+        this.container.zIndex = ZIndexes.DeathMarkers;
+        if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
+            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
+        }
 
         const player = this.game.playerNames.get(data.playerID);
 

@@ -108,7 +108,7 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
 export const GameConstants = {
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 9,
+    protocolVersion: 10,
     gridSize: 32,
     // ticks per second
     tps: 30,
@@ -132,7 +132,8 @@ export const GameConstants = {
 
 export enum ZIndexes {
     Ground,
-    UnderwaterDeadObstacles,
+    UnderWaterDeathMarkers,
+    UnderWaterDeadObstacles,
     UnderWaterObstacles,
     UnderWaterLoot,
     UnderwaterPlayers,

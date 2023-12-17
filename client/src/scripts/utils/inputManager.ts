@@ -1,18 +1,17 @@
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-
-import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
-import { v, vDiv } from "../../../../common/src/utils/vector";
+import { InputActions } from "../../../../common/src/constants";
+import { Loots } from "../../../../common/src/definitions/loots";
+import { Scopes } from "../../../../common/src/definitions/scopes";
+import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
+import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { InputActions } from "../../../../common/src/constants";
-import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { type InputAction, InputPacket } from "../../../../common/src/packets/inputPacket";
 
 export class InputManager {
     readonly game: Game;
@@ -36,7 +35,7 @@ export class InputManager {
     mouseY = 0;
 
     emoteWheelActive = false;
-    emoteWheelPosition = v(0, 0);
+    emoteWheelPosition = Vec.create(0, 0);
 
     rotation = 0;
 
@@ -106,8 +105,8 @@ export class InputManager {
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
             searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
-                ? absMod(searchIndex + offset, Scopes.definitions.length)
-                : clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
+                ? Numeric.absMod(searchIndex + offset, Scopes.definitions.length)
+                : Numeric.clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
 
             const scopeCandidate = Scopes.definitions[searchIndex].idString;
 
@@ -154,9 +153,9 @@ export class InputManager {
             this.mouseY = e.clientY;
 
             if (this.emoteWheelActive) {
-                const mousePosition = v(e.clientX, e.clientY);
-                if (distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
-                    const angle = angleBetweenPoints(this.emoteWheelPosition, mousePosition);
+                const mousePosition = Vec.create(e.clientX, e.clientY);
+                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
+                    const angle = Angle.angleBetweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
 
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
@@ -182,10 +181,10 @@ export class InputManager {
             this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
 
             if (!game.gameOver && game.activePlayer) {
-                const globalPos = v(e.clientX, e.clientY);
+                const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
-                const gamePos = vDiv(pixiPos, PIXI_SCALE);
-                this.distanceToMouse = distance(game.activePlayer.position, gamePos);
+                const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+                this.distanceToMouse = Geometry.distance(game.activePlayer.position, gamePos);
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
@@ -420,6 +419,7 @@ export class InputManager {
         cancel_action: "Cancel Action",
         toggle_map: "Toggle Fullscreen Map",
         toggle_minimap: "Toggle Minimap",
+        toggle_hud: "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
         toggle_console: "Toggle Console"
     };

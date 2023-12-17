@@ -1,6 +1,6 @@
 import { ObjectCategory, PacketType } from "../constants";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
-import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { type Variation } from "../typings";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";

@@ -1,16 +1,16 @@
-import { ObjectCategory, PlayerActions, AnimationType } from "../constants";
+import { AnimationType, ObjectCategory, PlayerActions } from "../constants";
+import { Armors, type ArmorDefinition } from "../definitions/armors";
+import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
+import { Buildings, type BuildingDefinition } from "../definitions/buildings";
+import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
-import { type LootDefinition, Loots } from "../definitions/loots";
-import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles";
+import { Loots, type LootDefinition } from "../definitions/loots";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
-import { Decals, type DecalDefinition } from "../definitions/decals";
-import { type BuildingDefinition, Buildings } from "../definitions/buildings";
-import { Armors, type ArmorDefinition } from "../definitions/armors";
-import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 
 const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
@@ -29,7 +29,6 @@ export interface ObjectsNetData {
         full?: {
             invulnerable: boolean
             activeItem: LootDefinition
-            activeItemIsdual?: boolean
             skin: SkinDefinition
             helmet?: ArmorDefinition
             vest?: ArmorDefinition
@@ -93,6 +92,7 @@ export interface ObjectsNetData {
             definition: BuildingDefinition
             position: Vector
             rotation: Orientation
+            puzzleSolved: boolean
         }
     }
     //
@@ -144,9 +144,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             if (full.action.item) {
                 Loots.writeToStream(stream, full.action.item);
             }
-            if ("dual" in full.activeItem && full.activeItemIsdual !== undefined) {
-                stream.writeBoolean(full.activeItemIsdual);
-            }
 
             stream.writeBoolean(full.helmet !== undefined);
             if (full.helmet) {
@@ -184,10 +181,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             if (full.action && full.action.type === PlayerActions.UseItem) {
                 full.action.item = Loots.readFromStream(stream);
-            }
-
-            if ("dual" in full.activeItem) {
-                full.activeItemIsdual = stream.readBoolean();
             }
 
             if (stream.readBoolean()) {
@@ -324,6 +317,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Buildings.writeToStream(stream, data.full.definition);
             stream.writePosition(data.full.position);
             stream.writeBits(data.full.rotation, 2);
+            stream.writeBoolean(data.full.puzzleSolved);
         },
         deserializePartial(stream) {
             return {
@@ -336,7 +330,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 full: {
                     definition: Buildings.readFromStream(stream),
                     position: stream.readPosition(),
-                    rotation: stream.readBits(2) as Orientation
+                    rotation: stream.readBits(2) as Orientation,
+                    puzzleSolved: stream.readBoolean()
                 }
             };
         }

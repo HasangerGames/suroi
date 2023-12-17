@@ -1,5 +1,5 @@
 import { type Stringable } from "./gameConsole";
-import { type CVarFlags, type ExtractConVarValue, type ConVar } from "./variables";
+import { type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
@@ -143,6 +143,7 @@ export const defaultBinds = Object.freeze({
     cancel_action: ["X"],
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],
+    toggle_hud: [] as string[],
     "+emote_wheel": ["Mouse2"],
     toggle_console: [] as string[]
 });

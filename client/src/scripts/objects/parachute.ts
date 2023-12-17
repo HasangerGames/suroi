@@ -1,23 +1,23 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { lerp } from "../../../../common/src/utils/math";
-import type { ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { Numeric } from "../../../../common/src/utils/math";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector } from "../../../../common/src/utils/vector";
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import type { Sound } from "../utils/soundManager";
+import { type GameSound } from "../utils/soundManager";
 import { Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
 
-    image = new SuroiSprite("airdrop_parachute");
+    private readonly image = new SuroiSprite("airdrop_parachute");
 
-    scaleAnim?: Tween<Vector>;
+    private scaleAnim?: Tween<Vector>;
 
-    fallSound!: Sound;
+    private fallSound?: GameSound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Parachute]>) {
         super(game, id);
@@ -32,10 +32,17 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         if (data.full) {
             this.position = data.full.position;
             this.container.position = toPixiCoords(this.position);
-            this.fallSound = this.playSound("airdrop_fall", 1, 128, true);
+            this.fallSound = this.playSound(
+                "airdrop_fall",
+                {
+                    fallOff: 1,
+                    maxRange: 128,
+                    dynamic: true
+                }
+            );
         }
 
-        const scale = lerp(0.5, 1, data.height);
+        const scale = Numeric.lerp(0.5, 1, data.height);
         if (isNew) {
             this.container.scale.set(scale);
         } else {
@@ -61,7 +68,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     zIndex: ZIndexes.Ground,
                     position: randomPointInsideCircle(this.position, 6),
                     lifetime: 1000,
-                    speed: v(0, 0),
+                    speed: Vec.create(0, 0),
                     scale: {
                         start: randomFloat(0.45, 0.55),
                         end: randomFloat(2.95, 3.05)
@@ -78,6 +85,6 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
     destroy(): void {
         super.destroy();
         this.scaleAnim?.kill();
-        this.game.soundManager.stop(this.fallSound);
+        this.fallSound?.stop();
     }
 }

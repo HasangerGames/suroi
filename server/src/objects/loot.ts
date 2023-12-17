@@ -3,11 +3,11 @@ import { ArmorType } from "../../../common/src/definitions/armors";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
+import { Geometry, Numeric, Collision } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
-import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { GameObject } from "./gameObject";
@@ -21,30 +21,23 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     readonly definition: LootDefinition;
 
-    count = 1;
-
+    count;
     isNew = true;
+    velocity = Vec.create(0, 0);
 
-    velocity = v(0, 0);
+    get position(): Vector { return this.hitbox.position; }
+    set position(pos: Vector) { this.hitbox.position = pos; }
 
-    get position(): Vector {
-        return this.hitbox.position;
-    }
-
-    set position(pos: Vector) {
-        this.hitbox.position = pos;
-    }
-
-    private oldPosition = v(0, 0);
+    private _oldPosition = Vec.create(0, 0);
 
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
         super(game, position);
 
         this.definition = Loots.reify(definition);
 
-        this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], vClone(position));
+        this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
 
-        if (count !== undefined) this.count = count;
+        this.count = count ?? 1;
 
         this.push(randomRotation(), 1);
 
@@ -54,11 +47,11 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     update(): void {
         const moving = Math.abs(this.velocity.x) > 0.001 ||
             Math.abs(this.velocity.y) > 0.001 ||
-            !vEqual(this.oldPosition, this.position);
+            !Vec.equals(this._oldPosition, this.position);
 
         if (!moving) return;
 
-        this.oldPosition = vClone(this.position);
+        this._oldPosition = Vec.clone(this.position);
 
         if (this.game.map.terrain.groundRect.isPointInside(this.position)) {
             const rivers = this.game.map.terrain.getRiversInPosition(this.position);
@@ -74,33 +67,35 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
         }
 
-        this.velocity = vMul(this.velocity, 0.9);
-        const velocity = vMul(this.velocity, 1 / GameConstants.tps);
-        velocity.x = clamp(velocity.x, -1, 1);
-        velocity.y = clamp(velocity.y, -1, 1);
-        this.position = vAdd(this.position, velocity);
-        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.velocity = Vec.scale(this.velocity, 0.9);
+        const velocity = Vec.scale(this.velocity, 1 / GameConstants.tps);
+        velocity.x = Numeric.clamp(velocity.x, -1, 1);
+        velocity.y = Numeric.clamp(velocity.y, -1, 1);
+        this.position = Vec.add(this.position, velocity);
+        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
-            if (moving &&
+            if (
+                moving &&
                 object instanceof Obstacle &&
                 object.collidable &&
-                object.hitbox.collidesWith(this.hitbox)) {
+                object.hitbox.collidesWith(this.hitbox)
+            ) {
                 this.hitbox.resolveCollision(object.hitbox);
             }
 
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
-                const collision = circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
+                const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
-                    this.velocity = vSub(this.velocity, vMul(collision.dir, 0.45));
+                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.45));
                 }
 
-                const dist = Math.max(distance(object.position, this.position), 1);
-                const vecCollision = v(object.position.x - this.position.x, object.position.y - this.position.y);
-                const vecCollisionNorm = v(vecCollision.x / dist, vecCollision.y / dist);
-                const vRelativeVelocity = v(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
+                const dist = Math.max(Geometry.distance(object.position, this.position), 1);
+                const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
+                const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
+                const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
 
                 const speed = vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y;
 
@@ -113,14 +108,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
         }
 
-        if (!vEqual(this.oldPosition, this.position)) {
+        if (!Vec.equals(this._oldPosition, this.position)) {
             this.game.partialDirtyObjects.add(this);
             this.game.grid.addObject(this);
         }
     }
 
     push(angle: number, velocity: number): void {
-        this.velocity = vAdd(this.velocity, velFromAngle(angle, velocity));
+        this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, velocity));
     }
 
     canInteract(player: Player): boolean {
@@ -130,10 +125,12 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         switch (this.definition.itemType) {
             case ItemType.Gun: {
                 for (const weapon of inventory.weapons) {
-                    if (weapon instanceof GunItem &&
-                        weapon.definition.dual &&
-                        !weapon.dual &&
-                        this.definition.idString === weapon.definition.idString) {
+                    if (
+                        weapon instanceof GunItem &&
+                        !weapon.definition.isDual &&
+                        weapon.definition.dualVariant &&
+                        weapon.definition === this.definition
+                    ) {
                         return true;
                     }
                 }
@@ -195,36 +192,43 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         switch (this.definition.itemType) {
             case ItemType.Melee: {
-                inventory.addOrReplaceWeapon(2, this.definition.idString);
+                inventory.addOrReplaceWeapon(2, this.definition);
                 break;
             }
             case ItemType.Gun: {
                 let gotDual = false;
-                for (const weapon of inventory.weapons) {
-                    if (weapon instanceof GunItem &&
-                        weapon?.definition.idString === this.definition.idString &&
-                        weapon.definition.dual && !weapon.dual) {
-                        weapon.dual = true;
+                for (let i = 0, l = inventory.weapons.length; i < l; i++) {
+                    const weapon = inventory.weapons[i];
+
+                    if (
+                        weapon instanceof GunItem &&
+                        weapon.definition.dualVariant &&
+                        weapon.definition === this.definition
+                    ) {
                         player.dirty.weapons = true;
                         player.game.fullDirtyObjects.add(player);
-                        if (player.action?.type === PlayerActions.Reload &&
-                            player.activeItem === weapon) {
-                            player.action?.cancel();
-                            if ((player.activeItem as GunItem).ammo <= 0) {
-                                (player.activeItem as GunItem).reload();
-                            }
+                        const wasReloading = player.action?.type === PlayerActions.Reload;
+                        if (wasReloading) player.action!.cancel();
+                        player.inventory.upgradeToDual(i);
+                        if (wasReloading) {
+                            (player.activeItem as GunItem).reload(true);
                         }
+
                         gotDual = true;
+                        break;
                     }
                 }
                 if (gotDual) break;
 
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
-                    const slot = inventory.appendWeapon(this.definition.idString);
-                    if (inventory.activeWeaponIndex > 1) inventory.setActiveWeaponIndex(slot);
+                    const slot = inventory.appendWeapon(this.definition);
+                    if (inventory.activeWeaponIndex > 1) {
+                        inventory.setActiveWeaponIndex(slot);
+                    }
                 } else if (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition) {
-                    if (player.action?.type === PlayerActions.Reload) player.action?.cancel();
-                    inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition.idString);
+                    if (player.action?.type === PlayerActions.Reload) player.action.cancel();
+
+                    inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition);
                 }
                 break;
             }

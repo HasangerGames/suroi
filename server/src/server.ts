@@ -1,24 +1,14 @@
-import { Config } from "./config";
-import { version } from "../../package.json";
-
-import {
-    App,
-    DEDICATED_COMPRESSOR_256KB,
-    type HttpRequest,
-    type HttpResponse,
-    SSLApp,
-    type WebSocket
-} from "uWebSockets.js";
-
 import { existsSync, readFile, writeFile, writeFileSync } from "fs";
-import os from "os";
-
 import { URLSearchParams } from "node:url";
+import os from "os";
+import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
+import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { version } from "../../package.json";
+import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
-import { clamp } from "../../common/src/utils/math";
 
 /**
  * Apply CORS headers to a response.
@@ -109,10 +99,11 @@ function removePunishment(ip: string): void {
     }
 }
 
-let playerCount = 0;
-
 app.get("/api/playerCount", (res) => {
     cors(res);
+    const playerCount = games.reduce((a, b) => {
+        return a + (b ? b.connectedPlayers.size : 0);
+    }, 0);
     res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
 });
 
@@ -158,7 +149,7 @@ app.get("/api/getGame", async(res, req) => {
                 // Join the game that most recently started
                 const game = games
                     .filter(g => g && !g.over)
-                    .reduce((a, b) => (a as Game).startedTime > (b as Game).startedTime ? a : b);
+                    .reduce((a, b) => (a!).startedTime > (b!).startedTime ? a : b);
 
                 if (game) response = { success: true, gameID: game.id };
                 else response = { success: false };
@@ -280,7 +271,7 @@ app.ws("/play", {
 
             try {
                 const colorString = searchParams.get("nameColor");
-                if (colorString) nameColor = clamp(parseInt(colorString), 0, 0xffffff);
+                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
             } catch { }
         }
 
@@ -314,7 +305,6 @@ app.ws("/play", {
         const game = games[data.gameID];
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
-        playerCount++;
         // data.player.sendGameOverPacket(false) // uncomment to test game over screen
     },
 
@@ -340,11 +330,10 @@ app.ws("/play", {
      */
     close(socket: WebSocket<PlayerContainer>) {
         const data = socket.getUserData();
-        if (Config.protection) simultaneousConnections[data.ip as string]--;
+        if (Config.protection) simultaneousConnections[data.ip!]--;
         const game = games[data.gameID];
         const player = data.player;
         if (game === undefined || player === undefined) return;
-        playerCount--;
         Logger.log(`Game ${data.gameID} | "${player.name}" left`);
         game.removePlayer(player);
     }

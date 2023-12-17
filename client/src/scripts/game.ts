@@ -1,61 +1,76 @@
+import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
-
-import { Application, Color, Container } from "pixi.js";
-import { GameConstants, InputActions, ObjectCategory, PacketType, ZIndexes } from "../../../common/src/constants";
+import { Application, Color } from "pixi.js";
+import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
+import { ArmorType } from "../../../common/src/definitions/armors";
+import { Emotes } from "../../../common/src/definitions/emotes";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { MapPacket } from "../../../common/src/packets/mapPacket";
+import { type Packet } from "../../../common/src/packets/packet";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
+import { PingPacket } from "../../../common/src/packets/pingPacket";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { Geometry } from "../../../common/src/utils/math";
+import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type Packet } from "../../../common/src/packets/packet";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { UpdatePacket } from "../../../common/src/packets/updatePacket";
-import { JoinPacket } from "../../../common/src/packets/joinPacket";
 import { enablePlayButton } from "./main";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
 import { Decal } from "./objects/decal";
+import { explosion } from "./objects/explosion";
+import { type GameObject } from "./objects/gameObject";
 import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
+import { Parachute } from "./objects/parachute";
 import { ParticleManager } from "./objects/particles";
+import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
-import { type GameObject } from "./types/gameObject";
-
-import { UIManager } from "./utils/uiManager";
-import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
-import { SoundManager } from "./utils/soundManager";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap, Ping } from "./rendering/minimap";
-import { type Tween } from "./utils/tween";
-import { GameConsole } from "./utils/console/gameConsole";
-import { setUpCommands } from "./utils/console/commands";
 import { setupUI } from "./ui";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { explosion } from "./objects/explosion";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
-import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { distanceSquared } from "../../../common/src/utils/math";
-import { Plane } from "./objects/plane";
-import { Timeout } from "../../../common/src/utils/misc";
-import { Parachute } from "./objects/parachute";
+import { setUpCommands } from "./utils/console/commands";
+import { GameConsole } from "./utils/console/gameConsole";
+import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { InputManager } from "./utils/inputManager";
+import { SoundManager } from "./utils/soundManager";
+import { type Tween } from "./utils/tween";
+import { UIManager } from "./utils/uiManager";
 
-interface ObjectMapping {
-    [ObjectCategory.Player]: Player
-    [ObjectCategory.Obstacle]: Obstacle
-    [ObjectCategory.DeathMarker]: DeathMarker
-    [ObjectCategory.Loot]: Loot
-    [ObjectCategory.Building]: Building
-    [ObjectCategory.Decal]: Decal
-    [ObjectCategory.Parachute]: Parachute
+interface ObjectClassMapping {
+    readonly [ObjectCategory.Player]: typeof Player
+    readonly [ObjectCategory.Obstacle]: typeof Obstacle
+    readonly [ObjectCategory.DeathMarker]: typeof DeathMarker
+    readonly [ObjectCategory.Loot]: typeof Loot
+    readonly [ObjectCategory.Building]: typeof Building
+    readonly [ObjectCategory.Decal]: typeof Decal
+    readonly [ObjectCategory.Parachute]: typeof Parachute
 }
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+const ObjectClassMapping: ObjectClassMapping = {
+    [ObjectCategory.Player]: Player,
+    [ObjectCategory.Obstacle]: Obstacle,
+    [ObjectCategory.DeathMarker]: DeathMarker,
+    [ObjectCategory.Loot]: Loot,
+    [ObjectCategory.Building]: Building,
+    [ObjectCategory.Decal]: Decal,
+    [ObjectCategory.Parachute]: Parachute
+};
+
+type ObjectMapping = {
+    readonly [Cat in keyof ObjectClassMapping]: InstanceType<ObjectClassMapping[Cat]>
+};
 
 export class Game {
     socket!: WebSocket;
@@ -63,11 +78,8 @@ export class Game {
     readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
-    // Since all bullets have the same zIndex
-    // Add all to a container so pixi has to do less sorting of zIndexes
-    readonly bulletsContainer = new Container();
 
-    readonly playerNames = new Map<number, { name: string, hasColor: boolean, nameColor: Color }>();
+    readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color }>();
 
     activePlayerID = -1;
     get activePlayer(): Player | undefined {
@@ -96,8 +108,7 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    readonly music: Howl;
-    musicPlaying = false;
+    readonly music: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -135,11 +146,12 @@ export class Game {
         this.camera = new Camera(this);
         this.map = new Minimap(this);
 
-        this.bulletsContainer.zIndex = ZIndexes.Bullets;
-
-        this.music = new Howl({
-            src: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
-            loop: true
+        this.music = sound.add("menu_music", {
+            url: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: true,
+            volume: this.console.getBuiltInCVar("cv_music_volume")
         });
 
         setInterval(() => {
@@ -147,14 +159,6 @@ export class Game {
                 $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
-
-        if (!this.musicPlaying) {
-            const musicVolume = this.console.getBuiltInCVar("cv_music_volume");
-
-            this.music.play();
-            this.music.volume(musicVolume);
-            this.musicPlaying = true;
-        }
     }
 
     connect(address: string): void {
@@ -167,7 +171,6 @@ export class Game {
 
         this.socket.onopen = (): void => {
             this.music.stop();
-            this.musicPlaying = false;
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -196,7 +199,7 @@ export class Game {
 
             this.sendPacket(joinPacket);
 
-            this.camera.addObject(this.bulletsContainer, this.gasRender.graphics);
+            this.camera.addObject(this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
 
@@ -204,7 +207,7 @@ export class Game {
         };
 
         // Handle incoming messages
-        this.socket.onmessage = (message: MessageEvent): void => {
+        this.socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
@@ -265,8 +268,7 @@ export class Game {
                             soundID = "scope_pickup";
                             break;
                         case ItemType.Armor:
-                            // fixme idString check
-                            if (packet.item.idString.includes("helmet")) soundID = "helmet_pickup";
+                            if (packet.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
                             else soundID = "vest_pickup";
                             break;
                         case ItemType.Backpack:
@@ -331,9 +333,7 @@ export class Game {
     endGame(): void {
         clearTimeout(this._tickTimeoutID);
 
-        if (this.activePlayer?.actionSound) {
-            this.soundManager.stop(this.activePlayer.actionSound);
-        }
+        this.soundManager.stopAll();
 
         $("#action-container").hide();
         $("#game-menu").hide();
@@ -353,7 +353,6 @@ export class Game {
         this.bullets.clear();
         this.planes.clear();
         this.camera.container.removeChildren();
-        this.bulletsContainer.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
         this.map.pings.clear();
@@ -363,11 +362,7 @@ export class Game {
 
         this.camera.zoom = Scopes.definitions[0].zoomLevel;
 
-        if (!this.musicPlaying) {
-            this.music.stop().play();
-            this.music.volume(this.console.getBuiltInCVar("cv_music_volume"));
-            this.musicPlaying = true;
-        }
+        void this.music.play();
     }
 
     sendPacket(packet: Packet): void {
@@ -465,6 +460,13 @@ export class Game {
                 )(this, id, data);
 
                 this.objects.add(newObject as ObjectMapping[ObjectCategory]);
+                // type K = typeof type;
+
+                // this.objects.add(
+                //     new (
+                //         ObjectClassMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
+                //     )(this, id, data) as ObjectMapping[ObjectCategory]
+                // );
             }
 
             if (object) {
@@ -526,55 +528,62 @@ export class Game {
         }
     }
 
-    /**
-     * Context: rerendering ui elements needlessly is bad, so we
-     * determine the information that should trigger a re-render if
-     * changed, and cache them in order to detect such changes
-     *
-     * In the case of the pickup message thingy, those informations are:
-     * - the item the pickup message concerns
-     * - its quantity
-     * - the bind to interact has changed
-     * - whether the user can interact with it
-    */
-    private readonly _cache: {
-        object?: Loot | Obstacle
-        offset?: number
-        isAction?: boolean
-        bind?: string
-        canInteract?: boolean
-    } = {};
+    // yes this might seem evil. but the two local variables really only need to
+    // exist so this method can use them: therefore, making them attributes on the
+    // enclosing instance is pointless and might induce people into thinking they
+    // can use them to do something when they probably can't and shouldn't
+    readonly tick = (() => {
+        /**
+         * Context: rerendering ui elements needlessly is bad, so we
+         * determine the information that should trigger a re-render if
+         * changed, and cache them in order to detect such changes
+         *
+         * In the case of the pickup message thingy, those informations are:
+         * - the item the pickup message concerns
+         * - its quantity
+         * - the bind to interact has changed
+         * - whether the user can interact with it
+        */
+        const cache: {
+            object?: Loot | Obstacle
+            offset?: number
+            isAction?: boolean
+            bind?: string
+            canInteract?: boolean
+        } = {};
 
-    /**
-     * When a bind is changed, the corresponding html won't
-     * get changed because rendering only occurs when an item
-     * is interactable. We thus store whether the intent to
-     * change was acknowledged here.
-     */
-    private _bindChangeAcknowledged = false;
+        /**
+         * When a bind is changed, the corresponding html won't
+         * get changed because rendering only occurs when an item
+         * is interactable. We thus store whether the intent to
+         * change was acknowledged here.
+         */
+        let bindChangeAcknowledged = false;
 
-    tick(): void {
-        if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
-        this.inputManager.update();
-        this.soundManager.update();
+        return () => {
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+            this.inputManager.update();
+            this.soundManager.update();
 
-        const player = this.activePlayer;
-        if (!player) return;
+            const player = this.activePlayer;
+            if (!player) return;
 
-        for (const building of this.objects.getCategory(ObjectCategory.Building)) {
-            building.toggleCeiling();
-        }
+            for (const building of this.objects.getCategory(ObjectCategory.Building)) {
+                building.toggleCeiling();
+            }
 
-        let object: Obstacle | Loot | undefined;
-        let offset: number | undefined;
-        const isAction = this.uiManager.action.active;
-        const bind = this.inputManager.binds.getInputsBoundToAction(isAction ? "cancel_action" : "interact")[0];
-        let canInteract = true;
+            const isAction = this.uiManager.action.active;
+            let canInteract = true;
 
-        if (isAction) {
-            this.uiManager.updateAction();
-        } else {
-            interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
+            if (isAction) {
+                this.uiManager.updateAction();
+            }
+
+            interface CloseObject {
+                object?: Loot | Obstacle
+                minDist: number
+            }
+
             const interactable: CloseObject = {
                 object: undefined,
                 minDist: Number.MAX_VALUE
@@ -590,7 +599,7 @@ export class Game {
                     (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
                     object.hitbox.collidesWith(detectionHitbox)
                 ) {
-                    const dist = distanceSquared(object.position, player.position);
+                    const dist = Geometry.distanceSquared(object.position, player.position);
                     if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;
@@ -601,115 +610,123 @@ export class Game {
                 }
             }
 
-            object = interactable.object ?? uninteractable.object;
-            offset = object instanceof Obstacle ? object.door?.offset : undefined;
+            const object = interactable.object ?? uninteractable.object;
+            const offset = object instanceof Obstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
-        }
 
-        const differences = {
-            object: this._cache.object?.id !== object?.id,
-            offset: this._cache.offset !== offset,
-            isAction: this._cache.isAction !== isAction,
-            bind: this._cache.bind !== bind,
-            canInteract: this._cache.canInteract !== canInteract
-        };
+            const bind = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 
-        if (differences.bind) this._bindChangeAcknowledged = false;
+            const differences = {
+                object: cache.object?.id !== object?.id,
+                offset: cache.offset !== offset,
+                isAction: cache.isAction !== isAction,
+                bind: cache.bind !== bind,
+                canInteract: cache.canInteract !== canInteract
+            };
 
-        if (
-            differences.object ||
-            differences.offset ||
-            differences.isAction ||
-            differences.bind ||
-            differences.canInteract
-        ) {
-            // Cache miss, rerender
-            this._cache.object = object;
-            this._cache.offset = offset;
-            this._cache.isAction = isAction;
-            this._cache.bind = bind;
-            this._cache.canInteract = canInteract;
+            if (differences.bind) bindChangeAcknowledged = false;
 
-            const interactKey = this.uiManager.ui.interactKey;
-            const interactMsg = this.uiManager.ui.interactMsg;
-
-            const type = (object?.definition as LootDefinition)?.itemType;
-
-            // Update interact message
             if (
-                (
-                    this.inputManager.isMobile
-                        // Only show interact message on mobile if object needs to be tapped to pick up
-                        ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee || type === ItemType.Skin)) || object instanceof Obstacle)
-                        : object !== undefined
-                ) ||
-                isAction
+                differences.object ||
+                differences.offset ||
+                differences.isAction ||
+                differences.bind ||
+                differences.canInteract
             ) {
-                if (differences.object || differences.offset || differences.isAction) { // If the loot object hasn't changed, we don't need to redo the text
-                    let interactText;
-                    if (object instanceof Obstacle) {
-                        switch (object.definition.role) {
-                            case ObstacleSpecialRoles.Door:
-                                interactText = object.door?.offset === 0 ? "Open Door" : "Close Door";
-                                break;
-                            case ObstacleSpecialRoles.Activatable:
-                                interactText = `${object.definition.interactText} ${object.definition.name}`;
-                                break;
-                        }
-                    } else if (object instanceof Loot) {
-                        interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
-                    } else if (isAction) {
-                        interactText = "Cancel";
-                    }
+                // Cache miss, rerender
+                cache.object = object;
+                cache.offset = offset;
+                cache.isAction = isAction;
+                cache.bind = bind;
+                cache.canInteract = canInteract;
 
-                    if (interactText) $("#interact-text").text(interactText);
-                }
+                const { interactKey, interactMsg } = this.uiManager.ui;
+                const type = (object?.definition as LootDefinition)?.itemType;
 
-                if (!this.inputManager.isMobile && !this._bindChangeAcknowledged) {
-                    this._bindChangeAcknowledged = true;
-
-                    const icon = InputManager.getIconFromInputName(bind);
-
-                    if (icon === undefined) {
-                        interactKey.text(bind);
-                    } else {
-                        interactKey.html(`<img src="${icon}" alt="${bind}"/>`);
-                    }
-                }
-
-                if (canInteract) {
-                    interactKey.addClass("active").show();
-                } else {
-                    interactKey.removeClass("active").hide();
-                }
-
-                interactMsg.show();
-            } else {
-                interactMsg.hide();
-            }
-
-            // Mobile stuff
-            if (
-                this.inputManager.isMobile &&
-                canInteract &&
-                (
-                    ( // Auto pickup
-                        object instanceof Loot &&
-                        // Only pick up melees if no melee is equipped
-                        (type !== ItemType.Melee || this.uiManager.inventory.weapons[2]?.definition.idString === "fists") &&
-                        // Only pick up guns if there's a free slot
-                        (type !== ItemType.Gun || (!this.uiManager.inventory.weapons[0] || !this.uiManager.inventory.weapons[1])) &&
-                        type !== ItemType.Skin
+                // Update interact message
+                if (
+                    (
+                        this.inputManager.isMobile
+                            // Only show interact message on mobile if object needs to be tapped to pick up
+                            ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee || type === ItemType.Skin)) || object instanceof Obstacle)
+                            : object !== undefined
                     ) ||
-                    ( // Auto open doors
-                        object instanceof Obstacle &&
-                        object.canInteract(player) &&
-                        object.door?.offset === 0
+                    isAction
+                ) {
+                    // If the loot object hasn't changed, we don't need to redo the text
+                    if (differences.object || differences.offset || differences.isAction) {
+                        let interactText;
+                        switch (true) {
+                            case object instanceof Obstacle: {
+                                switch (object.definition.role) {
+                                    case ObstacleSpecialRoles.Door:
+                                        interactText = object.door?.offset === 0 ? "Open Door" : "Close Door";
+                                        break;
+                                    case ObstacleSpecialRoles.Activatable:
+                                        interactText = `${object.definition.interactText} ${object.definition.name}`;
+                                        break;
+                                }
+                                break;
+                            }
+                            case object instanceof Loot: {
+                                interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                break;
+                            }
+                            case isAction: {
+                                interactText = "Cancel";
+                                break;
+                            }
+                        }
+
+                        if (interactText) $("#interact-text").text(interactText);
+                    }
+
+                    if (!this.inputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {
+                        bindChangeAcknowledged = true;
+
+                        const icon = InputManager.getIconFromInputName(bind);
+
+                        if (icon === undefined) {
+                            interactKey.text(bind);
+                        } else {
+                            interactKey.html(`<img src="${icon}" alt="${bind}"/>`);
+                        }
+                    }
+
+                    if (canInteract || (object === undefined && isAction)) {
+                        interactKey.addClass("active").show();
+                    } else {
+                        interactKey.removeClass("active").hide();
+                    }
+
+                    interactMsg.show();
+                } else {
+                    interactMsg.hide();
+                }
+
+                // Mobile stuff
+                if (
+                    this.inputManager.isMobile &&
+                    canInteract &&
+                    (
+                        ( // Auto pickup
+                            object instanceof Loot &&
+                            // Only pick up melees if no melee is equipped
+                            (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+                            // Only pick up guns if there's a free slot
+                            (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+                            type !== ItemType.Skin
+                        ) ||
+                        ( // Auto open doors
+                            object instanceof Obstacle &&
+                            object.canInteract(player) &&
+                            object.door?.offset === 0
+                        )
                     )
-                )
-            ) {
-                this.inputManager.addAction(InputActions.Interact);
+                ) {
+                    this.inputManager.addAction(InputActions.Interact);
+                }
             }
-        }
-    }
+        };
+    })();
 }

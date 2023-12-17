@@ -25,6 +25,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
     // @ts-expect-error it makes the typings work :3
     declare rotation: Orientation;
 
+    puzzleSolved = false;
+
     constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, position);
 
@@ -57,7 +59,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
             full: {
                 definition: this.definition,
                 position: this.position,
-                rotation: this.rotation
+                rotation: this.rotation,
+                puzzleSolved: this.puzzleSolved
             }
         };
     }

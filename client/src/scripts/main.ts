@@ -1,13 +1,12 @@
 import $ from "jquery";
+import { Color } from "pixi.js";
+import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { loadTextures } from "./utils/pixi";
 import { stringIsPositiveNumber } from "./utils/misc";
-
-import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
-import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
-import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
-import { Color } from "pixi.js";
+import { loadTextures } from "./utils/pixi";
 
 const playButton: JQuery = $("#btn-play-solo");
 
@@ -156,10 +155,10 @@ $(async(): Promise<void> => {
                 const nameColor = game.console.getBuiltInCVar("dv_name_color");
                 if (nameColor) {
                     try {
-                        const finalColor = new Color(game.console.getBuiltInCVar("dv_name_color")).toNumber();
+                        const finalColor = new Color(nameColor).toNumber();
                         address += `&nameColor=${finalColor}`;
                     } catch (e) {
-                        alert("Nice try kenos.");
+                        game.console.setBuiltInCVar("dv_name_color", "");
                         console.error(e);
                     }
                 }

@@ -1,4 +1,4 @@
-import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
 import { Guns } from "./guns";
 
@@ -13,29 +13,33 @@ const bulletColors: Record<string, number> = {
     shrapnel: 0x1d1d1d
 };
 
-export const Bullets = new ObjectDefinitions<BulletDefinition>([
-    ...Guns,
-    ...Explosions.definitions
-].map(def => {
-    let tracerColor = def.ballistics.tracer?.color;
+export const Bullets = new ObjectDefinitions<BulletDefinition>(
+    [
+        ...Guns,
+        ...Explosions.definitions
+    ]
+        .filter(def => !("isDual" in def) || !def.isDual)
+        .map(def => {
+            let tracerColor = def.ballistics.tracer?.color;
 
-    // if this bullet definition doesn't override the tracer color
-    // calculate it based on ammo type or if its a shrapnel
-    if (!tracerColor) {
-        if ("ammoType" in def && def.ammoType in bulletColors) {
-            tracerColor = bulletColors[def.ammoType];
-        } else if (def.ballistics.shrapnel) {
-            tracerColor = bulletColors.shrapnel;
-        }
-    }
+            // if this bullet definition doesn't override the tracer color
+            // calculate it based on ammo type or if it's shrapnel
+            if (!tracerColor) {
+                if ("ammoType" in def && def.ammoType in bulletColors) {
+                    tracerColor = bulletColors[def.ammoType];
+                } else if (def.ballistics.shrapnel) {
+                    tracerColor = bulletColors.shrapnel;
+                }
+            }
 
-    return {
-        idString: `${def.idString}_bullet`,
-        name: `${def.name} Bullet`,
-        ...def.ballistics,
-        tracer: {
-            color: tracerColor,
-            ...def.ballistics.tracer
-        }
-    };
-}));
+            return {
+                idString: `${def.idString}_bullet`,
+                name: `${def.name} Bullet`,
+                ...def.ballistics,
+                tracer: {
+                    color: tracerColor,
+                    ...(def.ballistics.tracer ?? {})
+                }
+            };
+        })
+);

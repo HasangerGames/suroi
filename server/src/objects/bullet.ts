@@ -1,14 +1,16 @@
 import { GameConstants } from "../../../common/src/constants";
 import { Bullets } from "../../../common/src/definitions/bullets";
+import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
+import { Loots } from "../../../common/src/definitions/loots";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { normalizeAngle } from "../../../common/src/utils/math";
+import { Angle } from "../../../common/src/utils/math";
 import { randomFloat } from "../../../common/src/utils/random";
-import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type GunItem } from "../inventory/gunItem";
-import { type GameObject } from "./gameObject";
+import { GunItem } from "../inventory/gunItem";
 import { type Explosion } from "./explosion";
+import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
@@ -47,12 +49,13 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const definition = Bullets.fromString(`${source.definition.idString}_bullet`);
+        const reference = source instanceof GunItem && source.definition.isDual ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant) : source.definition;
+        const definition = Bullets.fromString(`${reference.idString}_bullet`);
         const variance = definition.rangeVariance;
 
         super({
             ...options,
-            rotation: normalizeAngle(options.rotation),
+            rotation: Angle.normalizeAngle(options.rotation),
             source: definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
@@ -63,11 +66,11 @@ export class Bullet extends BaseBullet {
         this.sourceGun = source;
         this.shooter = shooter;
 
-        this.finalPosition = vAdd(this.position, vMul(this.direction, this.maxDistance));
+        this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
     }
 
     update(): DamageRecord[] {
-        const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, GameConstants.tps)));
+        const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, GameConstants.tps)));
 
         const objects = this.game.grid.intersectsHitbox(lineRect);
         const collisions = this.updateAndGetCollisions(GameConstants.tps, objects);
@@ -140,7 +143,7 @@ export class Bullet extends BaseBullet {
             this.shooter,
             {
                 // move it a bit so it won't collide again with the same hitbox
-                position: vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation))),
+                position: Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation))),
                 rotation,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,

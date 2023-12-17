@@ -1,31 +1,31 @@
-import { vAdd, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "../utils/pixi";
-import { type Game } from "../game";
-import { distanceSquared, vLerp, velFromAngle } from "../../../../common/src/utils/math";
-import { PIXI_SCALE } from "../utils/constants";
 import { GameConstants, ZIndexes } from "../../../../common/src/constants";
-import { type Sound } from "../utils/soundManager";
+import { Geometry } from "../../../../common/src/utils/math";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite } from "../utils/pixi";
+import { type GameSound } from "../utils/soundManager";
 
 export class Plane {
-    game: Game;
+    readonly game: Game;
 
-    startPosition: Vector;
-    endPosition: Vector;
-    image: SuroiSprite;
-    sound: Sound;
+    readonly startPosition: Vector;
+    readonly endPosition: Vector;
+    readonly image: SuroiSprite;
+    readonly sound: GameSound;
 
-    startTime = Date.now();
+    readonly startTime = Date.now();
 
-    static maxDistance = (GameConstants.maxPosition * 2) ** 2;
+    static readonly maxDistanceSquared = (GameConstants.maxPosition * 2) ** 2;
 
     constructor(game: Game, startPosition: Vector, direction: number) {
         this.game = game;
 
         this.startPosition = startPosition;
 
-        this.endPosition = vAdd(
+        this.endPosition = Vec.add(
             this.startPosition,
-            velFromAngle(direction, GameConstants.maxPosition * 2)
+            Vec.fromPolar(direction, GameConstants.maxPosition * 2)
         );
 
         this.image = new SuroiSprite("airdrop_plane")
@@ -33,24 +33,29 @@ export class Plane {
             .setRotation(direction)
             .setScale(2);
 
-        this.sound = game.soundManager.play("airdrop_plane", startPosition, 0.5, 256, true);
+        this.sound = game.soundManager.play(
+            "airdrop_plane",
+            {
+                position: startPosition,
+                fallOff: 0.5,
+                maxRange: 256,
+                dynamic: true
+            }
+        );
 
         game.camera.addObject(this.image);
     }
 
     update(): void {
-        const now = Date.now();
-        const timeElapsed = now - this.startTime;
-
-        const position = this.sound.position = vLerp(
+        const position = this.sound.position = Vec.lerp(
             this.startPosition,
             this.endPosition,
-            timeElapsed / (GameConstants.airdrop.flyTime * 2)
+            (Date.now() - this.startTime) / (GameConstants.airdrop.flyTime * 2)
         );
 
-        this.image.setVPos(vMul(position, PIXI_SCALE));
+        this.image.setVPos(Vec.scale(position, PIXI_SCALE));
 
-        if (distanceSquared(position, this.startPosition) > Plane.maxDistance) {
+        if (Geometry.distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();
             this.game.planes.delete(this);
         }

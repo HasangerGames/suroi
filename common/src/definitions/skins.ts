@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
@@ -232,27 +232,44 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     {
         idString: "peppermint",
         name: "Peppermint",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "spearmint",
         name: "Spearmint",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "coal",
         name: "Coal",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "henrys_little_helper",
         name: "Henry's Little Helper",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "candy_cane",
         name: "Candy Cane",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
+    },
+    {
+        idString: "christmas_tree_skin",
+        name: "Christmas Tree",
+        itemType: ItemType.Skin,
+        notInLoadout: true
+    },
+    {
+        idString: "gingerbread",
+        name: "Gingerbread",
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "verified",

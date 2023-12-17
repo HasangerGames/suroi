@@ -3,13 +3,14 @@ import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammo
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { HealType, type HealingItemDefinition, HealingItems } from "../../../common/src/definitions/healingItems";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { absMod } from "../../../common/src/utils/math";
+import { Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
@@ -32,7 +33,7 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    readonly items = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
+    readonly items = JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY;
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
@@ -297,14 +298,17 @@ export class Inventory {
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
-        this.owner.game
-            .addLoot(item.definition, this.owner.position)
-            .push(this.owner.rotation, pushForce);
-
-        if (item instanceof GunItem && item.dual) {
+        const dropItem = (toDrop: Parameters<Game["addLoot"]>[0] = item.definition, position = this.owner.position, count = 1): void => {
             this.owner.game
-                .addLoot(item.definition, this.owner.position)
+                .addLoot(toDrop, position, count)
                 .push(this.owner.rotation, pushForce);
+        };
+
+        if (item instanceof GunItem && item.definition.isDual) {
+            dropItem(item.definition.singleVariant);
+            dropItem(item.definition.singleVariant);
+        } else {
+            dropItem();
         }
 
         if (item instanceof GunItem && item.ammo > 0) {
@@ -336,9 +340,7 @@ export class Inventory {
             if (overAmount > 0) {
                 this.items[ammoType] -= overAmount;
 
-                this.owner.game
-                    .addLoot(ammoType, this.owner.position, overAmount)
-                    .push(this.owner.rotation, pushForce);
+                dropItem(ammoType, this.owner.position, overAmount);
             }
 
             this.owner.dirty.items = true;
@@ -388,6 +390,21 @@ export class Inventory {
         return this.weapons[index];
     }
 
+    upgradeToDual(slot: number): boolean {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to upgrade to dual weapon in invalid slot '${slot}'`);
+        if (!this.hasWeapon(slot) || !(this.weapons[slot] instanceof GunItem)) return false;
+
+        const gun = this.weapons[slot] as GunItem;
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
+
+        const dualGun = this._reifyItem(gun.definition.dualVariant) as GunItem;
+        this._setWeapon(slot, dualGun);
+        dualGun.ammo = gun.ammo;
+
+        return true;
+    }
+
     /**
      * Forcefully sets a weapon in a given slot. Note that this operation will never leave the inventory empty:
      * in the case of the attempted removal of this inventory's only item, the operation will be cancelled, and fists will be put in
@@ -413,7 +430,7 @@ export class Inventory {
             } else if (slot === this._activeWeaponIndex) {
                 let target = this._activeWeaponIndex;
                 while (!this.hasWeapon(target)) {
-                    target = absMod(target + 1, this.weapons.length);
+                    target = Numeric.absMod(target + 1, this.weapons.length);
                 }
                 this.setActiveWeaponIndex(target);
             }
@@ -427,7 +444,7 @@ export class Inventory {
             ? 0
             : this._lastWeaponIndex;
         while (!this.hasWeapon(target)) {
-            target = absMod(target - 1, this.weapons.length);
+            target = Numeric.absMod(target - 1, this.weapons.length);
         }
         this._lastWeaponIndex = target;
 

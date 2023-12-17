@@ -1,32 +1,118 @@
-import { Howl } from "howler";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
-import { clamp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "./constants";
-import { Reskins } from "../../../../common/src/definitions/modes";
+// add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
+import * as PixiSound from "@pixi/sound";
 
-export interface Sound {
-    readonly name: string
-    readonly id: number
+export interface SoundOptions {
     position?: Vector
-    readonly fallOff: number
-    readonly maxRange: number
+    fallOff: number
+    maxRange: number
+    loop: boolean
+    /**
+     * If the sound volume and panning will be updated
+     * when the camera position changes after it started playing
+     */
+    dynamic: boolean
+    onEnd?: () => void
+}
+
+PixiSound.sound.disableAutoPause = true;
+
+export class GameSound {
+    readonly manager: SoundManager;
+
+    name: string;
+    position?: Vector;
+    fallOff: number;
+    maxRange: number;
+    onEnd?: () => void;
+
+    readonly dynamic: boolean;
+
+    instance?: PixiSound.IMediaInstance;
+    readonly stereoFilter: PixiSound.filters.StereoFilter;
+
+    ended = false;
+
+    constructor(name: string, options: SoundOptions, manager: SoundManager) {
+        this.name = name;
+        this.manager = manager;
+        this.position = options.position;
+        this.fallOff = options.fallOff;
+        this.maxRange = options.maxRange;
+        this.dynamic = options.dynamic;
+        this.onEnd = options.onEnd;
+        this.stereoFilter = new PixiSound.filters.StereoFilter(0);
+
+        if (!PixiSound.sound.exists(name)) {
+            console.warn(`Unknown sound with name ${name}`);
+            return;
+        }
+
+        const instanceOrPromise = PixiSound.sound.play(name, {
+            loaded: (_err, _sound, instance) => {
+                if (instance) this.init(instance);
+            },
+            filters: [this.stereoFilter],
+            loop: options.loop,
+            volume: this.manager.volume
+        });
+
+        // PixiSound.sound.play returns a promise if the sound has not finished loading
+        if (!(instanceOrPromise instanceof Promise)) {
+            this.init(instanceOrPromise);
+        }
+    }
+
+    init(instance: PixiSound.IMediaInstance): void {
+        this.instance = instance;
+        instance.on("end", () => {
+            this.onEnd?.();
+            this.ended = true;
+        });
+        instance.on("stop", () => {
+            this.ended = true;
+        });
+        this.update();
+    }
+
+    update(): void {
+        if (this.instance && this.position) {
+            const diff = Vec.sub(this.manager.position, this.position);
+
+            this.instance.volume = (1 -
+                Numeric.clamp(
+                    Math.abs(Vec.length(diff) / this.maxRange),
+                    0,
+                    1
+                )) ** (1 + this.fallOff * 2) * this.manager.volume;
+
+            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
+        }
+    }
+
+    stop(): void {
+        // trying to stop a sound that already ended or was stopped will stop a random sound
+        // (maybe a bug? idk)
+        if (this.ended) return;
+        this.instance?.stop();
+        this.ended = true;
+    }
 }
 
 export class SoundManager {
-    private readonly sounds: Record<string, Howl> = {};
-
-    game: Game;
+    readonly game: Game;
+    readonly dynamicSounds = new Set<GameSound>();
 
     volume: number;
-
-    position = v(0, 0);
-
-    dynamicSounds = new Set<Sound>();
+    position = Vec.create(0, 0);
 
     constructor(game: Game) {
         this.game = game;
@@ -34,228 +120,111 @@ export class SoundManager {
         this.loadSounds();
     }
 
-    load(name: string, path: string): void {
-        if (MODE.reskin && Reskins[MODE.reskin]?.sounds?.includes(name)) path += `_${MODE.reskin}`;
-        this.sounds[name] = new Howl({ src: `./${path}.mp3` }).load();
-    }
+    play(name: string, options?: Partial<SoundOptions>): GameSound {
+        const sound = new GameSound(name, {
+            fallOff: 1,
+            maxRange: 256,
+            dynamic: false,
+            loop: false,
+            ...options
+        }, this);
 
-    play(
-        name: string,
-        position?: Vector,
-        fallOff = 1,
-        maxRange = 256,
-        dynamic?: boolean,
-        onend?: () => void
-    ): Sound {
-        const howl = this.sounds[name];
-        let id = -1;
-
-        const sound = {
-            name,
-            id,
-            position,
-            fallOff,
-            maxRange
-        };
-
-        if (howl) {
-            if (this.volume > 0) {
-                id = sound.id = howl.play();
-                howl.on("end", () => {
-                    if (sound.position && dynamic) this.dynamicSounds.delete(sound);
-                    onend?.();
-                }, id);
-            }
-
-            if (sound.position) {
-                if (dynamic) this.dynamicSounds.add(sound);
-                this.update(sound, howl);
-            }
-        } else {
-            console.warn(`Sound with name '${name}' not found`);
-        }
+        if (sound.dynamic) this.dynamicSounds.add(sound);
 
         return sound;
     }
 
-    update(sound?: Sound, howl?: Howl): void {
-        if (sound && howl) {
-            if (sound.position) {
-                const diff = vSub(this.position, sound.position);
-                howl.volume((1 - clamp(Math.abs(vLength(diff) / sound.maxRange), 0, 1)) ** (1 + sound.fallOff * 2) * this.volume, sound.id);
-                howl.stereo(clamp(diff.x / sound.maxRange * -1.0, -1.0, 1.0), sound.id);
+    update(): void {
+        for (const sound of this.dynamicSounds) {
+            if (sound.ended) {
+                this.dynamicSounds.delete(sound);
+                continue;
             }
-        } else {
-            for (const sound of this.dynamicSounds) {
-                const howl = this.sounds[sound.name];
-                if (!howl) continue;
-                this.update(sound, howl);
-            }
+            sound.update();
         }
     }
 
-    stop(sound: Sound): void {
-        if (this.sounds[sound.name]?.stop(sound.id) === undefined) {
-            console.warn(`Couldn't stop sound with name '${sound.name}' because it was never playing to begin with`);
-        }
-    }
-
-    get(name: string): Howl {
-        return this.sounds[name];
+    stopAll(): void {
+        PixiSound.sound.stopAll();
     }
 
     loadSounds(): void {
-        const soundsToLoad = [
-            [
-                "gun_click",
-                "audio/sfx/gun_click"
-            ],
-            [
-                "swing",
-                "audio/sfx/swing"
-            ],
-            [
-                "emote",
-                "audio/sfx/emote"
-            ],
-            [
-                "door_open",
-                "audio/sfx/door_open"
-            ],
-            [
-                "door_close",
-                "audio/sfx/door_close"
-            ],
-            [
-                "vault_door_open",
-                "audio/sfx/vault_door_open"
-            ],
-            [
-                "airdrop_crate_open",
-                "audio/sfx/airdrop_crate_open"
-            ],
-            [
-                "generator_starting",
-                "audio/sfx/generator_starting"
-            ],
-            [
-                "generator_running",
-                "audio/sfx/generator_running"
-            ],
-            [
-                "ceiling_collapse",
-                "audio/sfx/ceiling_collapse"
-            ],
-            [
-                "player_hit_1",
-                "audio/sfx/hits/player_hit_1"
-            ],
-            [
-                "player_hit_2",
-                "audio/sfx/hits/player_hit_2"
-            ],
-            [
-                "pickup",
-                "audio/sfx/pickup/pickup"
-            ],
-            [
-                "ammo_pickup",
-                "audio/sfx/pickup/ammo_pickup"
-            ],
-            [
-                "scope_pickup",
-                "audio/sfx/pickup/scope_pickup"
-            ],
-            [
-                "helmet_pickup",
-                "audio/sfx/pickup/helmet_pickup"
-            ],
-            [
-                "vest_pickup",
-                "audio/sfx/pickup/vest_pickup"
-            ],
-            [
-                "backpack_pickup",
-                "audio/sfx/pickup/backpack_pickup"
-            ],
-            [
-                "gauze_pickup",
-                "audio/sfx/pickup/gauze_pickup"
-            ],
-            [
-                "medikit_pickup",
-                "audio/sfx/pickup/medikit_pickup"
-            ],
-            [
-                "cola_pickup",
-                "audio/sfx/pickup/cola_pickup"
-            ],
-            [
-                "tablets_pickup",
-                "audio/sfx/pickup/tablets_pickup"
-            ],
-            [
-                "usas_explosion",
-                "audio/sfx/usas_explosion"
-            ],
-            [
-                "kill_leader_assigned",
-                "audio/sfx/kill_leader_assigned"
-            ],
-            [
-                "kill_leader_dead",
-                "audio/sfx/kill_leader_dead"
-            ],
-            [
-                "airdrop_ping",
-                "audio/sfx/airdrop/airdrop_ping"
-            ],
-            [
-                "airdrop_plane",
-                "audio/sfx/airdrop/airdrop_plane"
-            ],
-            [
-                "airdrop_fall",
-                "audio/sfx/airdrop/airdrop_fall"
-            ],
-            [
-                "airdrop_unlock",
-                "audio/sfx/airdrop/airdrop_unlock"
-            ],
-            [
-                "airdrop_land",
-                "audio/sfx/airdrop/airdrop_land"
-            ],
-            [
-                "airdrop_land_water",
-                "audio/sfx/airdrop/airdrop_land_water"
-            ]
-        ];
+        const soundsToLoad: Record<string, string> = {
+            player_hit_2: "audio/sfx/hits/player_hit_2",
+            player_hit_1: "audio/sfx/hits/player_hit_1",
+            gun_click: "audio/sfx/gun_click",
+            swing: "audio/sfx/swing",
+            emote: "audio/sfx/emote",
+
+            door_open: "audio/sfx/door_open",
+            door_close: "audio/sfx/door_close",
+            vault_door_open: "audio/sfx/vault_door_open",
+            airdrop_crate_open: "audio/sfx/airdrop_crate_open",
+            generator_starting: "audio/sfx/generator_starting",
+            generator_running: "audio/sfx/generator_running",
+            ceiling_collapse: "audio/sfx/ceiling_collapse",
+
+            pickup: "audio/sfx/pickup/pickup",
+            ammo_pickup: "audio/sfx/pickup/ammo_pickup",
+            scope_pickup: "audio/sfx/pickup/scope_pickup",
+            helmet_pickup: "audio/sfx/pickup/helmet_pickup",
+            vest_pickup: "audio/sfx/pickup/vest_pickup",
+            backpack_pickup: "audio/sfx/pickup/backpack_pickup",
+            gauze_pickup: "audio/sfx/pickup/gauze_pickup",
+            medikit_pickup: "audio/sfx/pickup/medikit_pickup",
+            cola_pickup: "audio/sfx/pickup/cola_pickup",
+            tablets_pickup: "audio/sfx/pickup/tablets_pickup",
+
+            usas_explosion: "audio/sfx/usas_explosion",
+
+            kill_leader_assigned: "audio/sfx/kill_leader_assigned",
+            kill_leader_dead: "audio/sfx/kill_leader_dead",
+
+            airdrop_ping: "audio/sfx/airdrop/airdrop_ping",
+            airdrop_plane: "audio/sfx/airdrop/airdrop_plane",
+            airdrop_fall: "audio/sfx/airdrop/airdrop_fall",
+            airdrop_unlock: "audio/sfx/airdrop/airdrop_unlock",
+            airdrop_land: "audio/sfx/airdrop/airdrop_land",
+            airdrop_land_water: "audio/sfx/airdrop/airdrop_land_water"
+        };
 
         for (const material of Materials) {
-            soundsToLoad.push([`${material}_hit_1`, `audio/sfx/hits/${material}_hit_1`]);
-            soundsToLoad.push([`${material}_hit_2`, `audio/sfx/hits/${material}_hit_2`]);
-            soundsToLoad.push([`${material}_destroyed`, `audio/sfx/hits/${material}_destroyed`]);
+            soundsToLoad[`${material}_hit_1`] = `audio/sfx/hits/${material}_hit_1`;
+            soundsToLoad[`${material}_hit_2`] = `audio/sfx/hits/${material}_hit_2`;
+            soundsToLoad[`${material}_destroyed`] = `audio/sfx/hits/${material}_destroyed`;
         }
 
         for (const gun of Guns) {
-            soundsToLoad.push([`${gun.idString}_fire`, `audio/sfx/weapons/${gun.idString}_fire`]);
-            soundsToLoad.push([`${gun.idString}_switch`, `audio/sfx/weapons/${gun.idString}_switch`]);
-            soundsToLoad.push([`${gun.idString}_reload`, `audio/sfx/weapons/${gun.idString}_reload`]);
-            if (gun.ballistics.lastShotFX) soundsToLoad.push([`${gun.idString}_last_shot`, `audio/sfx/weapons/${gun.idString}_last_shot`]);
+            if (!gun.isDual) {
+                soundsToLoad[`${gun.idString}_fire`] = `audio/sfx/weapons/${gun.idString}_fire`;
+                soundsToLoad[`${gun.idString}_switch`] = `audio/sfx/weapons/${gun.idString}_switch`;
+            }
+
+            soundsToLoad[`${gun.idString}_reload`] = `audio/sfx/weapons/${gun.idString}_reload`;
+            if (gun.ballistics.lastShotFX) soundsToLoad[`${gun.idString}_last_shot`] = `audio/sfx/weapons/${gun.idString}_last_shot`;
         }
 
         for (const healingItem of HealingItems) {
-            soundsToLoad.push([healingItem.idString, `audio/sfx/healing/${healingItem.idString}`]);
+            soundsToLoad[healingItem.idString] = `audio/sfx/healing/${healingItem.idString}`;
         }
 
         for (const floorType in FloorTypes) {
-            soundsToLoad.push([`${floorType}_step_1`, `audio/sfx/footsteps/${floorType}_1`]);
-            soundsToLoad.push([`${floorType}_step_2`, `audio/sfx/footsteps/${floorType}_2`]);
+            soundsToLoad[`${floorType}_step_1`] = `audio/sfx/footsteps/${floorType}_1`;
+            soundsToLoad[`${floorType}_step_2`] = `audio/sfx/footsteps/${floorType}_2`;
         }
 
-        for (const [name, path] of soundsToLoad) {
-            this.load(name, `./${path}`);
+        for (const key in soundsToLoad) {
+            let path = soundsToLoad[key];
+
+            if (MODE.reskin && Reskins[MODE.reskin]?.sounds?.includes(key)) {
+                path += `_${MODE.reskin}`;
+            }
+
+            soundsToLoad[key] = `./${path}.mp3`;
         }
+
+        PixiSound.sound.add(soundsToLoad, {
+            preload: true
+        });
     }
 }

@@ -37,9 +37,12 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     }
 
     writeToStream(stream: SuroiBitStream, type: ReifiableDef<T>): void {
-        stream.writeBits(this.idStringToNumber[
-            typeof type === "string" ? type : type.idString
-        ], this.bitCount);
+        stream.writeBits(
+            this.idStringToNumber[
+                typeof type === "string" ? type : type.idString
+            ],
+            this.bitCount
+        );
     }
 
     readFromStream<U extends T = T>(stream: SuroiBitStream): U {
@@ -126,6 +129,10 @@ export interface BaseBulletDefinition {
         readonly length?: number
         readonly color?: number
         readonly image?: string
+        // used by the radio bullet
+        // this will make it scale and fade in and out
+        readonly particle?: boolean
+        readonly zIndex?: number
     }
 
     readonly rangeVariance?: number
@@ -133,6 +140,7 @@ export interface BaseBulletDefinition {
     readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
     readonly goToMouse?: boolean
     readonly lastShotFX?: boolean
+    readonly noCollision?: boolean
 }
 
 export interface WearerAttributes {

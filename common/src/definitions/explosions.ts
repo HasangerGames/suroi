@@ -1,4 +1,4 @@
-import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions, type ReferenceTo } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {

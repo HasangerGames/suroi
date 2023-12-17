@@ -1,13 +1,12 @@
 import { Container, Graphics } from "pixi.js";
 import { GameConstants, type ObjectCategory } from "../../../../common/src/constants";
-import { vLerp } from "../../../../common/src/utils/math";
+import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
-import { type Sound } from "../utils/soundManager";
-import type { Timeout } from "../../../../common/src/utils/misc";
+import { type GameSound, type SoundOptions } from "../utils/soundManager";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
@@ -25,7 +24,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(position: Vector) {
-        if (this._position !== undefined) this.oldPosition = vClone(this._position);
+        if (this._position !== undefined) this.oldPosition = Vec.clone(this._position);
         this.lastPositionChange = Date.now();
         this._position = position;
     }
@@ -33,7 +32,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
         const interpFactor = (Date.now() - this.lastPositionChange) / GameConstants.tps;
-        this.container.position = toPixiCoords(vLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
+        this.container.position = toPixiCoords(Vec.lerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
     oldRotation!: Vector;
@@ -43,18 +42,18 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     get rotation(): number { return this._rotation; }
     set rotation(rotation: number) {
         if (this._rotation !== undefined) {
-            this.oldRotation = v(Math.cos(this._rotation), Math.sin(this._rotation));
+            this.oldRotation = Vec.create(Math.cos(this._rotation), Math.sin(this._rotation));
         }
         this.lastRotationChange = Date.now();
         this._rotation = rotation;
-        this.rotationVector = v(Math.cos(this.rotation), Math.sin(this.rotation));
+        this.rotationVector = Vec.create(Math.cos(this.rotation), Math.sin(this.rotation));
     }
 
     updateContainerRotation(): void {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
         const interpFactor = (Date.now() - this.lastRotationChange) / GameConstants.tps;
 
-        const interpolated = vLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
+        const interpolated = Vec.lerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
 
         this.container.rotation = Math.atan2(interpolated.y, interpolated.x);
     }
@@ -97,14 +96,11 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         this.container.destroy();
     }
 
-    playSound(
-        key: string,
-        fallOff?: number,
-        maxDistance?: number,
-        dynamic?: boolean,
-        onend?: () => void
-    ): Sound {
-        return this.game.soundManager.play(key, this.position, fallOff, maxDistance, dynamic, onend);
+    playSound(name: string, options?: Partial<Omit<SoundOptions, "position">>): GameSound {
+        return this.game.soundManager.play(name, {
+            position: this.position,
+            ...options
+        });
     }
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;

@@ -1,54 +1,43 @@
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Gas } from "./gas";
-import { Grid } from "./utils/grid";
-import { type GameObject } from "./objects/gameObject";
-import { type Emote } from "./objects/emote";
-import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import {
-    GameConstants,
-    KillFeedMessageType,
-    KillType,
-    ObjectCategory,
-    PacketType
-} from "../../common/src/constants";
-import { Maps } from "./data/maps";
-import { Config, SpawnMode } from "./config";
-import { Map } from "./map";
-import { endGame, newGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
-import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { v, vAdd, type Vector } from "../../common/src/utils/vector";
-import { clamp, distanceSquared, velFromAngle } from "../../common/src/utils/math";
-import { Logger, removeFrom } from "./utils/misc";
-import { type LootDefinition } from "../../common/src/definitions/loots";
-import { type GunItem } from "./inventory/gunItem";
-import { IDAllocator } from "./utils/idAllocator";
-import {
-    ItemType,
-    MapObjectSpawnMode,
-    type ReferenceTo,
-    type ReifiableDef
-} from "../../common/src/utils/objectDefinitions";
+import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketType } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { hasBadWords } from "./utils/badWordFilter";
-import { JoinedPacket } from "../../common/src/packets/joinedPacket";
+import { type LootDefinition } from "../../common/src/definitions/loots";
+import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { InputPacket } from "../../common/src/packets/inputPacket";
+import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
-import { Obstacle } from "./objects/obstacle";
-import { type ObstacleDefinition, Obstacles } from "../../common/src/definitions/obstacles";
+import { CircleHitbox } from "../../common/src/utils/hitbox";
+import { Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
-import { Explosion } from "./objects/explosion";
-import { Player } from "./objects/player";
-import { Loot } from "./objects/loot";
+import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { ObjectPool } from "../../common/src/utils/objectPool";
+import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { Vec, type Vector } from "../../common/src/utils/vector";
+import { Config, SpawnMode } from "./config";
+import { Maps } from "./data/maps";
+import { Gas } from "./gas";
+import { type GunItem } from "./inventory/gunItem";
+import { Map } from "./map";
 import { Building } from "./objects/building";
-import { Parachute } from "./objects/parachute";
+import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type DeathMarker } from "./objects/deathMarker";
 import { type Decal } from "./objects/decal";
-import { ObjectPool } from "../../common/src/utils/objectPool";
+import { type Emote } from "./objects/emote";
+import { Explosion } from "./objects/explosion";
+import { type GameObject } from "./objects/gameObject";
+import { Loot } from "./objects/loot";
+import { Obstacle } from "./objects/obstacle";
+import { Parachute } from "./objects/parachute";
+import { Player } from "./objects/player";
+import { endGame, newGame, type PlayerContainer } from "./server";
+import { hasBadWords } from "./utils/badWordFilter";
+import { Grid } from "./utils/grid";
+import { IDAllocator } from "./utils/idAllocator";
+import { Logger, removeFrom } from "./utils/misc";
 
 interface ObjectMapping {
     [ObjectCategory.Player]: Player
@@ -79,7 +68,7 @@ export class Game {
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
-    readonly spectablePlayers: Player[] = [];
+    readonly spectatablePlayers: Player[] = [];
     /**
      * New players created this tick
      */
@@ -163,12 +152,6 @@ export class Game {
         this.gas = new Gas(this);
 
         this.allowJoin = true;
-
-        this.addTimeout(() => {
-            newGame();
-            Logger.log(`Game ${this.id} | Preventing new players from joining`);
-            this.allowJoin = false;
-        }, Config.preventJoinAfter);
 
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
@@ -363,7 +346,7 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<KillFeedMessage>): void {
+    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
         if (this._killLeader === undefined) return;
         this.killFeedMessages.add({
             messageType,
@@ -374,7 +357,7 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
-        let spawnPosition = v(this.map.width / 2, this.map.height / 2);
+        let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -386,7 +369,7 @@ export class Game {
                         maxAttempts: 500,
                         spawnMode: MapObjectSpawnMode.GrassAndSand,
                         collides: (position) => {
-                            return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
                         }
                     }) ?? spawnPosition;
 
@@ -406,7 +389,7 @@ export class Game {
                     maxAttempts: 500,
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
                     collides: (position) => {
-                        return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                        return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
                     }
                 }) ?? spawnPosition;
                 break;
@@ -452,7 +435,7 @@ export class Game {
 
         this.livingPlayers.add(player);
         this.objects.add(player);
-        this.spectablePlayers.push(player);
+        this.spectatablePlayers.push(player);
         this.connectedPlayers.add(player);
         this.newPlayers.add(player);
         this.grid.addObject(player);
@@ -474,6 +457,12 @@ export class Game {
                 this._started = true;
                 this.startedTime = this.now;
                 this.gas.advanceGas();
+
+                this.addTimeout(() => {
+                    newGame();
+                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
+                    this.allowJoin = false;
+                }, Config.preventJoinAfter);
             }, 3000);
         }
 
@@ -489,7 +478,7 @@ export class Game {
             this.livingPlayers.delete(player);
             this.removeObject(player);
             this.deletedPlayers.add(player.id);
-            removeFrom(this.spectablePlayers, player);
+            removeFrom(this.spectatablePlayers, player);
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
@@ -621,15 +610,15 @@ export class Game {
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;
             const height = max.y - min.y;
-            position.x = clamp(position.x, width, this.map.width - width);
-            position.y = clamp(position.y, height, this.map.height - height);
+            position.x = Numeric.clamp(position.x, width, this.map.width - width);
+            position.y = Numeric.clamp(position.y, height, this.map.height - height);
         }
 
         const direction = randomRotation();
 
-        const planePos = vAdd(
+        const planePos = Vec.add(
             position,
-            velFromAngle(direction, -GameConstants.maxPosition)
+            Vec.fromPolar(direction, -GameConstants.maxPosition)
         );
 
         const airdrop = { position, type: crateDef };
