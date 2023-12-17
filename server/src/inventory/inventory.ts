@@ -263,7 +263,7 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        this.dropWeapon(slot, -5);
+        this.dropWeapon(slot, -0.01);
         this._setWeapon(slot, this._reifyItem(item));
 
         if (index !== undefined) {
@@ -277,7 +277,8 @@ export class Inventory {
      * @returns The slot in which the item was added, or `-1` if it could not be added
      */
     appendWeapon(item: ReifiableItem): number {
-        for (let slot = 0; slot < GameConstants.player.maxWeapons; slot++) {
+        const maxWeapons = GameConstants.player.maxWeapons;
+        for (let slot = 0; slot < maxWeapons; slot++) {
             if (this.weapons[slot] === undefined) {
                 this._setWeapon(slot, this._reifyItem(item));
                 return slot;
@@ -290,10 +291,10 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
-     * @param pushForce The velocity to push the loot, defaults to -10
+     * @param pushForce The velocity to push the loot, defaults to -0.03
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushForce = -10): InventoryItem | undefined {
+    dropWeapon(slot: number, pushForce = -0.03): InventoryItem | undefined {
         const item = this.weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;

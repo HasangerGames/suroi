@@ -365,6 +365,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     update(): void {
+        const dt = GameConstants.msPerTick;
+
         // This system allows opposite movement keys to cancel each other out.
         const movement = Vec.create(0, 0);
 
@@ -402,7 +404,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
-        this.position = Vec.add(this.position, Vec.create(movement.x * speed, movement.y * speed));
+        this.position = Vec.add(
+            this.position,
+            Vec.scale(
+                Vec.create(movement.x, movement.y),
+                speed * dt
+            )
+        );
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -442,14 +450,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Drain adrenaline
         if (this.adrenaline > 0) {
-            this.adrenaline -= 0.015;
+            this.adrenaline -= 0.0005 * dt;
         }
 
         // Regenerate health
-        if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
-        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
-        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
-        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+        if (this.adrenaline >= 87.5) this.health += GameConstants.msPerTick * 2.75 / (30 ** 2);
+        else if (this.adrenaline >= 50) this.health += GameConstants.msPerTick * 2.125 / (30 ** 2);
+        else if (this.adrenaline >= 25) this.health += GameConstants.msPerTick * 1.125 / (30 ** 2);
+        else if (this.adrenaline > 0) this.health += GameConstants.msPerTick * 0.625 / (30 ** 2);
 
         // Shoot gun/use melee
         if (this.startedAttacking) {
@@ -587,9 +595,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             dirty: this.game.gas.dirty || this._firstPacket
         };
 
-        packet.gasPercentage = {
-            dirty: this.game.gas.percentageDirty || this._firstPacket,
-            value: this.game.gas.percentage
+        packet.gasProgress = {
+            dirty: this.game.gas.completionRatioDirty || this._firstPacket,
+            value: this.game.gas.completionRatio
         };
 
         // new and deleted players
@@ -804,7 +812,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             minAdrenaline: 0
         };
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
+        const maxWeapons = GameConstants.player.maxWeapons;
+        for (let i = 0; i < maxWeapons; i++) {
             const weapon = this.inventory.getWeapon(i);
 
             if (weapon === undefined) continue;

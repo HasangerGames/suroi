@@ -76,7 +76,10 @@ export class Explosion {
                     }
 
                     if (object instanceof Loot) {
-                        object.push(Angle.angleBetweenPoints(object.position, this.position), (max - dist) * 5);
+                        object.push(
+                            Angle.angleBetweenPoints(object.position, this.position),
+                            (max - dist) * 0.05
+                        );
                     }
                 }
                 if (object instanceof Obstacle && !object.definition.noCollisions) break;

@@ -177,7 +177,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
                 if (source.position === undefined && position === undefined) continue;
 
-                loot.push(Angle.angleBetweenPoints(this.position, position ?? source.position), 7);
+                loot.push(
+                    Angle.angleBetweenPoints(this.position, position ?? source.position),
+                    0.02
+                );
             }
 
             if (this.definition.role === ObstacleSpecialRoles.Wall) {

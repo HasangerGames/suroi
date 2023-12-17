@@ -53,7 +53,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     x: scale,
                     y: scale
                 },
-                duration: GameConstants.tps
+                duration: GameConstants.msPerTick
             });
         }
 

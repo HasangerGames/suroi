@@ -13,7 +13,7 @@ const kSegments = 512;
 
 export class Gas {
     state = GasState.Inactive;
-    initialDuration = 0;
+    currentDuration = 0;
     oldPosition = Vec.create(0, 0);
     lastPosition = Vec.create(0, 0);
     position = Vec.create(0, 0);
@@ -43,11 +43,11 @@ export class Gas {
     updateFrom(data: UpdatePacket): void {
         const gas = data.gas;
 
-        const gasPercentage = data.gasPercentage?.value;
+        const gasProgress = data.gasProgress?.value;
 
         if (gas) {
             this.state = gas.state;
-            this.initialDuration = gas.initialDuration;
+            this.currentDuration = gas.currentDuration;
             this.oldPosition = gas.oldPosition;
             this.newPosition = gas.newPosition;
             this.oldRadius = gas.oldRadius;
@@ -58,7 +58,7 @@ export class Gas {
                 gas.state === GasState.Advancing
             ];
 
-            const time = this.initialDuration - Math.round(this.initialDuration * (gasPercentage ?? 1));
+            const time = this.currentDuration - Math.round(this.currentDuration * (gasProgress ?? 1));
 
             let gasMessage = "";
             switch (this.state) {
@@ -85,7 +85,7 @@ export class Gas {
             }
 
             if (
-                (isInactive || gas.initialDuration !== 0) &&
+                (isInactive || gas.currentDuration !== 0) &&
                 !UI_DEBUG_MODE &&
                 (!this.game.gameOver || this.game.spectating)
             ) {
@@ -100,8 +100,8 @@ export class Gas {
             }
         }
 
-        if (gasPercentage !== undefined) {
-            const time = this.initialDuration - Math.round(this.initialDuration * gasPercentage);
+        if (gasProgress !== undefined) {
+            const time = this.currentDuration - Math.round(this.currentDuration * gasProgress);
             this._ui.timerText.text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
 
             if (this.state !== GasState.Advancing) {
@@ -112,8 +112,8 @@ export class Gas {
             if (this.state === GasState.Advancing) {
                 this.lastPosition = Vec.clone(this.position);
                 this.lastRadius = this.radius;
-                this.position = Vec.lerp(this.oldPosition, this.newPosition, gasPercentage);
-                this.radius = Numeric.lerp(this.oldRadius, this.newRadius, gasPercentage);
+                this.position = Vec.lerp(this.oldPosition, this.newPosition, gasProgress);
+                this.radius = Numeric.lerp(this.oldRadius, this.newRadius, gasProgress);
                 this.lastUpdateTime = Date.now();
             }
         }
@@ -162,7 +162,7 @@ export class GasRender {
         let radius: number;
 
         if (gas.state === GasState.Advancing) {
-            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / GameConstants.tps, 0, 1);
+            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / GameConstants.msPerTick, 0, 1);
             position = Vec.lerp(gas.lastPosition, gas.position, interpFactor);
             radius = Numeric.lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {

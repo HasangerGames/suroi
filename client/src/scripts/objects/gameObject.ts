@@ -31,7 +31,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
-        const interpFactor = (Date.now() - this.lastPositionChange) / GameConstants.tps;
+        const interpFactor = (Date.now() - this.lastPositionChange) / GameConstants.msPerTick;
         this.container.position = toPixiCoords(Vec.lerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
@@ -51,7 +51,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     updateContainerRotation(): void {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
-        const interpFactor = (Date.now() - this.lastRotationChange) / GameConstants.tps;
+        const interpFactor = (Date.now() - this.lastRotationChange) / GameConstants.msPerTick;
 
         const interpolated = Vec.lerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
 

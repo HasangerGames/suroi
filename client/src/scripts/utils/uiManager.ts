@@ -272,9 +272,7 @@ export class UIManager {
 
     updateWeapons(): void {
         const inventory = this.inventory;
-
         const activeIndex = inventory.activeWeaponIndex;
-
         const activeWeapon = inventory.weapons[activeIndex];
 
         if (activeWeapon?.ammo === undefined || UI_DEBUG_MODE) {
@@ -282,7 +280,10 @@ export class UIManager {
         } else {
             this.ui.activeWeapon.show();
             const ammo = activeWeapon?.ammo;
-            this.ui.activeAmmo.text(ammo).css("color", ammo > 0 ? "inherit" : "red");
+
+            this.ui.activeAmmo
+                .text(ammo)
+                .css("color", ammo > 0 ? "inherit" : "red");
 
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
@@ -295,7 +296,9 @@ export class UIManager {
                     }
                 }
 
-                this.ui.weaponInventoryAmmo.text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
+                this.ui.weaponInventoryAmmo
+                    .text(totalAmmo)
+                    .css("visibility", totalAmmo === 0 ? "hidden" : "visible");
             }
         }
 
