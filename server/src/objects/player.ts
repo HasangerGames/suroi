@@ -791,7 +791,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (this.health <= 0 && !this.dead) {
-            this.emote(4)
+            this.emote(4);
             if (canTrackStats) {
                 const kills = ++weaponUsed.stats.kills;
 
@@ -902,8 +902,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
-        this.emote(4)
-        setTimeout(() => {this.game.grid.removeObject(this)}, 1)
+        this.emote(4);
+        setTimeout(() => { this.game.grid.removeObject(this); }, 1);
         this.game.updateObjects = true;
         removeFrom(this.game.spectatablePlayers, this);
 
