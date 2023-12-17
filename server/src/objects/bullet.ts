@@ -107,6 +107,7 @@ export class Bullet extends BaseBullet {
 
             if (object instanceof Obstacle) {
                 this.damagedIDs.add(object.id);
+                
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
@@ -118,7 +119,7 @@ export class Bullet extends BaseBullet {
                 if (this.definition.penetration?.obstacles && !object.definition.impenetrable) continue;
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
-                if (!object.definition.noCollisions) {
+                if (!object.definition.noBulletCollision) {
                     this.position = collision.intersection.point;
 
                     if (object.definition.reflectBullets && this.reflectionCount < 3) {
