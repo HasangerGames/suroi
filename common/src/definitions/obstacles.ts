@@ -534,7 +534,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             noBulletCollision: true,
             noCollisions: false,
-            reflectBullets: false
+            reflectBullets: false,
+            spawnMode: MapObjectSpawnMode.River
         },
         {
             idString: "airdrop_crate_locked",
