@@ -294,6 +294,8 @@ export class Game {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
+                    lastManStanding.emote(5)
+                    // setTimeout(()=>{},1)
                     lastManStanding.movement.up = false;
                     lastManStanding.movement.down = false;
                     lastManStanding.movement.left = false;

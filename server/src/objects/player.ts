@@ -902,7 +902,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
-        this.game.grid.removeObject(this);
+        this.emote(4)
+        setTimeout(() => {this.game.grid.removeObject(this)}, 1)
         this.game.updateObjects = true;
         removeFrom(this.game.spectatablePlayers, this);
 
