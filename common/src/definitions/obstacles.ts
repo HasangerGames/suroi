@@ -351,6 +351,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true
         },
         {
+            idString: "river_rock",
+            name: "river_rock",
+            material: "stone",
+            health: 250,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.5
+            },
+            hitbox: new CircleHitbox(6.1),
+            spawnMode: MapObjectSpawnMode.River,
+            spawnHitbox: new CircleHitbox(6),
+            rotationMode: RotationMode.Full,
+            variations: 3,
+            zIndex: ZIndexes.ObstaclesLayer5
+        },
+        {
             idString: "rock",
             name: "Rock",
             material: "stone",

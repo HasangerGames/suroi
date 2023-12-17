@@ -90,6 +90,7 @@ export const Maps: Record<string, MapDefinition> = {
             barrel: 80,
             super_barrel: 30,
             melee_crate: 1,
+            river_rock: 100,
             gold_rock: 1,
             flint_stone: 1
         },
