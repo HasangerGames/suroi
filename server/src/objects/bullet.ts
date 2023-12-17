@@ -119,7 +119,7 @@ export class Bullet extends BaseBullet {
                 if (this.definition.penetration?.obstacles && !object.definition.impenetrable) continue;
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
-                if (!object.definition.noBulletCollision) {
+                if (!object.definition.noCollisions) {
                     this.position = collision.intersection.point;
 
                     if (object.definition.reflectBullets && this.reflectionCount < 3) {
