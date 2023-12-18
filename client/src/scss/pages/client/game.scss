@@ -853,7 +853,7 @@
 
     @media screen and (max-width: $screen_medium) {
         right: 3px;
-        top: 50%;
+        top: 75%;
         transform: translateY(-50%);
         flex-direction: column;
         height: fit-content;
@@ -863,6 +863,16 @@
         height: 85px;
         width: 230px;
         opacity: 0.75;
+
+        @media screen and (max-width: $screen_large) {
+            height: 60px;
+            width: 170px;
+        }
+
+        @media screen and (max-width: $screen_medium) {
+            height: 40px;
+            width: 100px;
+        }
 
         .slot-number, .item-name {
             right: 8px !important;
@@ -903,11 +913,11 @@
     gap: 25px;
     flex-direction: column;
 
-    @media screen and (max-width: $screen_large) {
-        bottom: 3px;
-        left: 3px;
-        gap: 3px;
-    }
+    bottom: 3px;
+    left: 3px;
+    gap: 3px;
+
+    flex-direction: row-reverse;
 
     @media screen and (max-width: $screen_small) {
         flex-direction: row-reverse;
@@ -948,7 +958,16 @@
 
     .inventory-container {
         flex-direction: column;
-        justify-content: start;
+        justify-content: end;
+        position: relative;
+
+        //bottom: 450px;
+        bottom: max(50%, 450px);
+
+        @media screen and (max-width: $screen_large) {
+            //bottom: 300px;
+            bottom: min(70%, 300px);
+        }
 
         .item-image {
             width: 40px;
