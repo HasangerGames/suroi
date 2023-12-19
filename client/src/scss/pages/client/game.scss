@@ -65,21 +65,36 @@
     top: 16px;
 }
 
+/*
 #top-left-container {
     position: absolute;
-    top: 10px;
-    left: 10px;
-}
+    top: 235px;
+    left: 15px;
 
+    @media screen and (max-width: $screen_large) {
+        top: 150px;
+        left: 15px;
+    }
+}
+*/
+
+#top-left-container {
+    margin-top: -10px;
+    @media screen and (max-width: $screen_large) {
+        margin-left: 10px;
+    }
+}
 #bottom-left-container {
     position: absolute;
-    bottom: 10px;
+    top: 10px;
+    //bottom: 10px;
     left: 10px;
 
     display: flex;
     flex-direction: column;
     align-items: center;
 
+    /*
     @media screen and (max-width: $screen_large) {
         top: 5px;
         left: 5px;
@@ -88,6 +103,7 @@
             margin-bottom: 5px;
         }
     }
+    */
 }
 
 #minimap-border {
@@ -108,13 +124,18 @@
 #gas-timer {
     width: 80px;
     padding: 6px 9px 6px 9px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-left: 135px;
     display: flex;
     border-radius: 6px;
     align-items: center;
     background-color: $transparent_bg;
     font-size: 17px;
     @include text-shadow;
+
+    @media screen and (max-width: $screen_large) {
+        margin-left: 70px;
+    }
 
     &.advancing {
         animation: advancing 2s linear infinite;
@@ -805,7 +826,7 @@
     .item-ammo {
         position: absolute;
         bottom: 5px;
-        margin-left: -55px;
+        margin-left: -75px;
         text-align: center;
         z-index: 1;
         font-size: 18px;
@@ -813,6 +834,7 @@
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
+            margin-left: -55px;
         }
     }
 
@@ -836,6 +858,9 @@
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
+        }
+        @media screen and (max-width: $screen_medium) {
+            font-size: 10px;
         }
     }
 }
@@ -871,7 +896,7 @@
 
         @media screen and (max-width: $screen_medium) {
             height: 40px;
-            width: 100px;
+            width: 120px;
         }
 
         .slot-number, .item-name {
@@ -1005,23 +1030,17 @@
 
 #equipment-container {
     position: absolute;
-    bottom: 10px;
-    right: 25%;
+    //bottom: 10px;
+    bottom: 4%;
+    left: 10%;
+    flex-direction: row;
+    //width: fit-content;
 
-    @media screen and (max-width: 1500px) {
-        bottom: 130px;
-        right: 10px;
-    }
-
-    @media screen and (max-width: $screen_large) {
-        bottom: 85px;
-        right: -37px;
-    }
 
     @media screen and (max-width: $screen_medium) {
         flex-direction: row;
-        left: 5px;
-        bottom: 58px;
+        //left: 5px;
+        //bottom: 58px;
         width: fit-content;
     }
 
@@ -1032,6 +1051,7 @@
     .inventory-slot {
         width: 55px;
         height: 78px;
+        margin-left: 3px;
 
         &.has-item {
             background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
