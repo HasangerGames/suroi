@@ -1,6 +1,8 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
 import { Scopes } from "./definitions/scopes";
+import { Throwables } from "./definitions/throwables";
+import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
 export enum ObjectCategory {
@@ -30,6 +32,8 @@ export enum PacketType {
 export enum AnimationType {
     None,
     Melee,
+    ThrowableCook,
+    ThrowableThrow,
     Gun,
     GunAlt,
     GunClick,
@@ -94,7 +98,7 @@ export enum KillType {
 
 export const DEFAULT_INVENTORY: Record<string, number> = {};
 
-for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
+for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
     let amount = 0;
 
     switch (true) {
@@ -105,13 +109,19 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
     DEFAULT_INVENTORY[item.idString] = amount;
 }
 
-export const GameConstants = Object.freeze({
+Object.freeze(DEFAULT_INVENTORY);
+
+const tickrate = 35;
+const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
+export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
     protocolVersion: 11,
     gridSize: 32,
-    tickrate: 35,
-    get msPerTick() { return 1000 / this.tickrate; },
+    tickrate,
+    // this is fine cause the object is frozen anyways, so
+    // these two attributes can't ever be desynced
+    msPerTick: 1000 / tickrate,
     maxPosition: 1632,
     player: {
         radius: 2.25,
@@ -119,7 +129,8 @@ export const GameConstants = Object.freeze({
         defaultName: "Player",
         defaultHealth: 100,
         maxAdrenaline: 100,
-        maxWeapons: 4,
+        inventorySlotTypings,
+        maxWeapons: inventorySlotTypings.length,
         killLeaderMinKills: 3,
         maxMouseDist: 128
     },

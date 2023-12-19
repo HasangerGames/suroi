@@ -15,20 +15,25 @@ export async function loadTextures(): Promise<void> {
 
         console.log(`Loading atlas ${location.origin}/${image}`);
 
-        promises.push(new Promise<void>((resolve) => {
-            Texture.fromURL(image).then((texture) => {
-                const spriteSheet = new Spritesheet(texture, atlas);
+        promises.push(
+            new Promise<void>(resolve => {
+                Texture.fromURL(image)
+                    .then(texture => {
+                        new Spritesheet(texture, atlas)
+                            .parse()
+                            .then(sheetTextures => {
+                                for (const frame in sheetTextures) {
+                                    textures[frame] = sheetTextures[frame];
+                                }
+                                console.log(`Atlas ${image} loaded.`);
 
-                spriteSheet.parse().then((sheetTextures) => {
-                    for (const frame in sheetTextures) {
-                        textures[frame] = sheetTextures[frame];
-                    }
-                    console.log(`Atlas ${image} loaded.`);
-
-                    resolve();
-                }).catch(console.error);
-            }).catch(console.error);
-        }));
+                                resolve();
+                            })
+                            .catch(console.error);
+                    })
+                    .catch(console.error);
+            })
+        );
     }
 
     await Promise.all(promises);

@@ -1,10 +1,10 @@
 import { FireMode, ZIndexes } from "../constants";
 import { mergeDeep } from "../utils/misc";
-import { ItemType, type BaseBulletDefinition, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
-type BaseGunDefinition = ItemDefinition & {
+type BaseGunDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Gun
 
     readonly ammoType: ReferenceTo<AmmoDefinition>
@@ -17,7 +17,6 @@ type BaseGunDefinition = ItemDefinition & {
     readonly fireDelay: number
     readonly switchDelay: number
 
-    readonly speedMultiplier: number
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
@@ -28,7 +27,6 @@ type BaseGunDefinition = ItemDefinition & {
     readonly noQuickswitch?: boolean
     readonly bulletCount?: number
     readonly length: number
-    readonly killstreak?: boolean
     readonly shootOnRelease?: boolean
     readonly summonAirdrop?: boolean
 
@@ -73,10 +71,7 @@ type BaseGunDefinition = ItemDefinition & {
     }
 }) & ({
     readonly isDual?: false
-    readonly fists: {
-        readonly left: Vector
-        readonly right: Vector
-    }
+    readonly fists?: InventoryItemDefinition["fists"]
     readonly image: {
         readonly position: Vector
     }

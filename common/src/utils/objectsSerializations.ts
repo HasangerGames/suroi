@@ -4,7 +4,7 @@ import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
-import { Loots, type LootDefinition } from "../definitions/loots";
+import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
@@ -28,7 +28,7 @@ export interface ObjectsNetData {
         }
         full?: {
             invulnerable: boolean
-            activeItem: LootDefinition
+            activeItem: WeaponDefinition
             skin: SkinDefinition
             helmet?: ArmorDefinition
             vest?: ArmorDefinition

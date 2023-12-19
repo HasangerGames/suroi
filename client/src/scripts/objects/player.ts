@@ -6,7 +6,7 @@ import { type BackpackDefinition } from "../../../../common/src/definitions/back
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import { Loots } from "../../../../common/src/definitions/loots";
+import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
@@ -19,7 +19,7 @@ import { random, randomBoolean, randomFloat, randomSign, randomVector } from "..
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -32,7 +32,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     name!: string;
 
-    activeItem = Loots.fromString("fists");
+    activeItem: WeaponDefinition = Loots.fromString("fists");
 
     oldItem = this.activeItem;
 
@@ -312,16 +312,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (floorType !== this.floorType) {
             if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);
             this.waterOverlayAnim?.kill();
-            this.waterOverlayAnim = new Tween(this.game, {
-                target: this.images.waterOverlay,
-                to: {
-                    alpha: FloorTypes[floorType].overlay ? 1 : 0
-                },
-                duration: 200,
-                onComplete: () => {
-                    if (!FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(false);
+            this.waterOverlayAnim = new Tween(
+                this.game,
+                {
+                    target: this.images.waterOverlay,
+                    to: {
+                        alpha: FloorTypes[floorType].overlay ? 1 : 0
+                    },
+                    duration: 200,
+                    onComplete: () => {
+                        if (!FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(false);
+                    }
                 }
-            });
+            );
         }
         this.floorType = floorType;
 
@@ -395,9 +398,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.oldItem = this.activeItem;
             this.activeItem = full.activeItem;
-            if (this.isActivePlayer && !UI_DEBUG_MODE) {
-                $("#weapon-ammo-container").toggle(this.activeItem.itemType === ItemType.Gun);
-            }
 
             const skinID = full.skin.idString;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
@@ -517,16 +517,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    private _getItemReference(): SingleGunNarrowing | MeleeDefinition {
-        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
+    private _getItemReference(): SingleGunNarrowing & WeaponDefinition {
+        const weaponDef = this.activeItem;
 
         return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
             ? Loots.fromString<SingleGunNarrowing>(weaponDef.singleVariant)
-            : weaponDef as SingleGunNarrowing | MeleeDefinition;
+            : weaponDef as SingleGunNarrowing & WeaponDefinition;
     }
 
     private _getOffset(): number {
-        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem;
 
         return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
             ? weaponDef.leftRightOffset * PIXI_SCALE
@@ -539,16 +539,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.anims.weaponAnim?.kill();
 
         const reference = this._getItemReference();
-        const fists = reference.fists;
+        const fists = reference.fists ?? {
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35)
+        };
         const offset = this._getOffset();
 
         if (anim) {
+            const duration = "animationDuration" in fists ? fists.animationDuration : 150;
+
             this.anims.leftFistAnim = new Tween(
                 this.game,
                 {
                     target: this.images.leftFist,
                     to: { x: fists.left.x, y: fists.left.y - offset },
-                    duration: fists.animationDuration
+                    duration
                 }
             );
 
@@ -557,7 +562,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 {
                     target: this.images.rightFist,
                     to: { x: fists.right.x, y: fists.right.y + offset },
-                    duration: fists.animationDuration
+                    duration
                 }
             );
         } else {
@@ -573,7 +578,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateWeapon(isNew = false): void {
-        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem;
         const reference = this._getItemReference();
 
         this.images.weapon.setVisible(reference.image !== undefined);
@@ -601,18 +606,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
 
-        if (weaponDef.itemType === ItemType.Gun) {
-            this.images.rightFist.setZIndex((reference as SingleGunNarrowing).fists.rightZIndex ?? 1);
-            this.images.leftFist.setZIndex((reference as SingleGunNarrowing).fists.leftZIndex ?? 1);
-            this.images.weapon.setZIndex(2);
-            this.images.altWeapon.setZIndex(2);
-            this.images.body.setZIndex(3);
-        } else if (weaponDef.itemType === ItemType.Melee) {
-            this.images.leftFist.setZIndex(4);
-            this.images.rightFist.setZIndex(4);
-            this.images.body.setZIndex(2);
-            this.images.weapon.setZIndex(1);
+        switch (weaponDef.itemType) {
+            case ItemType.Gun: {
+                this.images.rightFist.setZIndex((reference as SingleGunNarrowing).fists.rightZIndex ?? 1);
+                this.images.leftFist.setZIndex((reference as SingleGunNarrowing).fists.leftZIndex ?? 1);
+                this.images.weapon.setZIndex(2);
+                this.images.altWeapon.setZIndex(2);
+                this.images.body.setZIndex(3);
+                break;
+            }
+            case ItemType.Melee: {
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
+                this.images.body.setZIndex(2);
+                this.images.weapon.setZIndex(1);
+                break;
+            }
+            case ItemType.Throwable: {
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
+                this.images.body.setZIndex(2);
+                this.images.weapon.setZIndex(5);
+                break;
+            }
         }
+
         this.images.waterOverlay.setZIndex(this.images.body.zIndex + 1);
         this.container.sortChildren();
     }
@@ -648,8 +666,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             container.children(".item-tooltip").html(itemTooltip);
         }
+
         container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
-        if (equipmentType === "backpack") this.game.uiManager.updateItems();
+
+        if (equipmentType === "backpack") {
+            this.game.uiManager.updateItems();
+        }
     }
 
     emote(type: EmoteDefinition): void {
@@ -669,15 +691,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
-        this.anims.emoteAnim = new Tween(this.game, {
-            target: this.emoteContainer,
-            to: { alpha: 1 },
-            duration: 250,
-            ease: EaseFunctions.backOut,
-            onUpdate: () => {
-                this.emoteContainer.scale.set(this.emoteContainer.alpha);
+        this.anims.emoteAnim = new Tween(
+            this.game,
+            {
+                target: this.emoteContainer,
+                to: { alpha: 1 },
+                duration: 250,
+                ease: EaseFunctions.backOut,
+                onUpdate: () => {
+                    this.emoteContainer.scale.set(this.emoteContainer.alpha);
+                }
             }
-        });
+        );
 
         this._emoteHideTimeout = this.addTimeout(() => {
             this.anims.emoteHideAnim = new Tween(this.game, {
@@ -896,6 +921,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 );
                 break;
             }
+            // todo throwables
         }
     }
 

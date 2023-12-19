@@ -650,6 +650,6 @@ export class Game {
 }
 
 export interface Airdrop {
-    position: Vector
-    type: ObstacleDefinition
+    readonly position: Vector
+    readonly type: ObstacleDefinition
 }

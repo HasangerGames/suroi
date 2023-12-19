@@ -3,7 +3,7 @@ import { ArmorType } from "../../../common/src/definitions/armors";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Geometry, Numeric, Collision } from "../../../common/src/utils/math";
+import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
@@ -21,7 +21,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     readonly definition: LootDefinition;
 
-    count;
+    private _count;
+    get count(): number { return this._count; }
+
     isNew = true;
     velocity = Vec.create(0, 0);
 
@@ -35,7 +37,10 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         this.definition = Loots.reify(definition);
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
-        this.count = count ?? 1;
+
+        if ((this._count = count ?? 1) <= 0) {
+            throw new RangeError("Loot 'count' cannot be less than or equal to 0");
+        }
 
         this.push(randomRotation(), 0.003);
 
@@ -123,7 +128,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         switch (this.definition.itemType) {
             case ItemType.Gun: {
-                for (const weapon of inventory.weapons) {
+                for (const slot of inventory.weapons) {
+                    const weapon = slot;
+
                     if (
                         weapon instanceof GunItem &&
                         !weapon.definition.isDual &&
@@ -139,10 +146,11 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                     (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition);
             }
             case ItemType.Healing:
-            case ItemType.Ammo: {
+            case ItemType.Ammo:
+            case ItemType.Throwable: {
                 const idString = this.definition.idString;
 
-                return inventory.items[idString] + 1 <= (inventory.backpack?.maxCapacity[idString] ?? 0);
+                return inventory.items.getItem(idString) + 1 <= (inventory.backpack?.maxCapacity[idString] ?? 0);
             }
             case ItemType.Melee: {
                 return this.definition !== inventory.getWeapon(2)?.definition;
@@ -166,7 +174,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 return this.definition.level > (inventory.backpack?.level ?? 0);
             }
             case ItemType.Scope: {
-                return inventory.items[this.definition.idString] === 0;
+                return !inventory.items.hasItem(this.definition.idString);
             }
             case ItemType.Skin: {
                 return true;
@@ -178,7 +186,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         if (this.dead) return;
         const createNewItem = (type: LootDefinition = this.definition): void => {
             this.game
-                .addLoot(type, this.position, this.count)
+                .addLoot(type, this.position, this._count)
                 .push(player.rotation + Math.PI, 0.0007);
         };
 
@@ -189,11 +197,24 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         }
 
         const inventory = player.inventory;
-        let deleteItem = true;
+        let countToRemove = 1;
 
-        switch (this.definition.itemType) {
+        const definition = this.definition;
+        const idString = definition.idString;
+
+        switch (definition.itemType) {
             case ItemType.Melee: {
-                inventory.addOrReplaceWeapon(2, this.definition);
+                const slot: number | undefined = (inventory.slotsByItemType[ItemType.Melee] ?? [])[0];
+
+                // No melee slot? Nothing to do
+                if (slot === undefined) {
+                    countToRemove = 0;
+                    break;
+                }
+
+                // Operation is safe because `slot` is guaranteed to point to a melee slot
+                inventory.addOrReplaceWeapon(slot, definition);
+
                 break;
             }
             case ItemType.Gun: {
@@ -204,7 +225,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                     if (
                         weapon instanceof GunItem &&
                         weapon.definition.dualVariant &&
-                        weapon.definition === this.definition
+                        weapon.definition === definition
                     ) {
                         player.dirty.weapons = true;
                         player.game.fullDirtyObjects.add(player);
@@ -226,48 +247,89 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 }
                 if (gotDual) break;
 
-                if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
-                    const slot = inventory.appendWeapon(this.definition);
+                const slot = inventory.appendWeapon(definition);
 
-                    if (inventory.activeWeaponIndex > 1) {
-                        inventory.setActiveWeaponIndex(slot);
-                    }
-                } else if (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition) {
-                    if (player.action?.type === PlayerActions.Reload) {
-                        player.action.cancel();
-                    }
+                if (slot === -1) { // If it wasn't added, then either there are no gun slots or they're all occupied
+                    /*
+                        From here, the only way for the gun to make it into the inventory is for it to replace the active
+                        weapon, which must be a different gun (dual weapons are already handled when we get here, so we ignore them)
+                    */
+                    if (inventory.activeWeapon instanceof GunItem && definition !== inventory.activeWeapon.definition) {
+                        if (player.action?.type === PlayerActions.Reload) {
+                            player.action.cancel();
+                        }
 
-                    inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition);
+                        // Let's replace the active item then
+                        // This operation is safe because if the active item is a gun, then the current slot must be a gun slot
+                        inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, definition);
+                    } else {
+                        /*
+                            Being here means that the active weapon isn't a gun, but all the gun slots (if any) are occupied
+                            The loot item shouldn't be destroyed though, it should just… do nothing
+                        */
+                        countToRemove = 0;
+                    }
+                    break;
+                }
+
+                // Swap to gun slot if current slot is melee
+                if (GameConstants.player.inventorySlotTypings[inventory.activeWeaponIndex] === ItemType.Melee) {
+                    inventory.setActiveWeaponIndex(slot);
                 }
                 break;
             }
             case ItemType.Healing:
-            case ItemType.Ammo: {
-                const idString = this.definition.idString;
-                const currentCount = inventory.items[idString];
+            case ItemType.Ammo:
+            case ItemType.Throwable: {
+                const currentCount = inventory.items.getItem(idString);
                 const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
 
-                if (currentCount + 1 <= maxCapacity) {
-                    if (currentCount + this.count <= maxCapacity) {
-                        inventory.items[idString] += this.count;
-                    } else /* if (currentCount + this.count > maxCapacity) */ {
-                        inventory.items[idString] = maxCapacity;
-                        this.count = currentCount + this.count - maxCapacity;
-                        this.game.fullDirtyObjects.add(this);
-                        deleteItem = false;
+                const modifyItemCollections = (): void => {
+                    if (currentCount + 1 <= maxCapacity) {
+                        if (currentCount + this._count <= maxCapacity) {
+                            inventory.items.incrementItem(idString, this._count);
+                            countToRemove = this._count;
+                        } else /* if (currentCount + this.count > maxCapacity) */ {
+                            inventory.items.setItem(idString, maxCapacity);
+                            countToRemove = maxCapacity - currentCount;
+                            this.game.fullDirtyObjects.add(this);
+                        }
                     }
+                };
+
+                if (definition.itemType === ItemType.Throwable) {
+                    const slot: number | undefined = (inventory.slotsByItemType[ItemType.Throwable] ?? [])[0];
+
+                    // No grenade slot? Nothing to do, don't even add it to the inventory's item collection
+                    if (slot === undefined) {
+                        countToRemove = 0;
+                        break;
+                    }
+
+                    modifyItemCollections();
+
+                    inventory.useItem(idString);
+                    inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
+                    // const throwable = new ThrowableItem(definition, inventory.owner, inventory.items.getItem(idString));
+
+                    // // Operation is safe because `slot` is guaranteed to point to a throwable slot
+                    // // We only do it if there isn't already a throwable
+                    // inventory.addOrReplaceWeapon(slot, throwable);
+                    // inventory.throwable ??= definition;
+                } else {
+                    modifyItemCollections();
                 }
                 break;
             }
             case ItemType.Armor: {
-                switch (this.definition.armorType) {
+                switch (definition.armorType) {
                     case ArmorType.Helmet:
                         if (player.inventory.helmet) createNewItem(player.inventory.helmet);
-                        player.inventory.helmet = this.definition;
+                        player.inventory.helmet = definition;
                         break;
                     case ArmorType.Vest:
                         if (player.inventory.vest) createNewItem(player.inventory.vest);
-                        player.inventory.vest = this.definition;
+                        player.inventory.vest = definition;
                 }
 
                 this.game.fullDirtyObjects.add(player);
@@ -275,28 +337,30 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
             case ItemType.Backpack: {
                 if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
-                player.inventory.backpack = this.definition;
+                player.inventory.backpack = definition;
 
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
             case ItemType.Scope: {
-                inventory.items[this.definition.idString] = 1;
+                inventory.items.setItem(idString, 1);
 
-                if (this.definition.zoomLevel > player.inventory.scope.zoomLevel) {
-                    player.inventory.scope = this.definition.idString;
+                if (definition.zoomLevel > player.inventory.scope.zoomLevel) {
+                    player.inventory.scope = idString;
                 }
 
                 break;
             }
             case ItemType.Skin: {
                 createNewItem(player.loadout.skin);
-                player.loadout.skin = this.definition;
+                player.loadout.skin = definition;
 
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
         }
+
+        this._count -= countToRemove;
 
         player.dirty.items = true;
 
@@ -309,14 +373,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         player.sendPacket(packet);
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
-        if (!deleteItem) createNewItem();
+        if (this._count > 0) createNewItem();
 
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;
         if (
             activeWeapon instanceof GunItem &&
             activeWeapon.ammo === 0 &&
-            this.definition.idString === activeWeapon.definition.ammoType
+            idString === activeWeapon.definition.ammoType
         ) {
             activeWeapon.reload();
         }
@@ -327,7 +391,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             position: this.position,
             full: {
                 definition: this.definition,
-                count: this.count,
+                count: this._count,
                 isNew: this.isNew
             }
         };
