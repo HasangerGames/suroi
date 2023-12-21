@@ -34,6 +34,7 @@ export class UIManager {
         activeWeaponIndex: 0,
         weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"] & object,
         items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
+        throwable: undefined as PlayerData["inventory"]["throwable"],
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
 
@@ -41,9 +42,9 @@ export class UIManager {
     get gameOverScreenTimeout(): number | undefined { return this._gameOverScreenTimeout; }
 
     readonly ui = {
-        activeWeapon: $("#weapon-ammo-container"),
+        ammoCounterContainer: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
-        weaponInventoryAmmo: $("#weapon-inventory-ammo"),
+        reserveAmmo: $("#weapon-inventory-ammo"),
         killStreakIndicator: $("#killstreak-indicator-container"),
         killStreakCounter: $("#killstreak-indicator-counter"),
 
@@ -257,15 +258,21 @@ export class UIManager {
         if (inventory.weapons) {
             this.inventory.weapons = inventory.weapons;
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
-            if (!inventory.items) { // No need to update weapons here if items are also updated
-                this.updateWeapons();
-            }
         }
 
         if (inventory.items) {
             this.inventory.items = inventory.items;
             this.inventory.scope = inventory.scope;
             this.updateItems();
+        }
+
+        if (inventory.throwable) {
+            this.inventory.throwable = inventory.throwable;
+        }
+
+        // idiot
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        if (inventory.weapons || inventory.items || inventory.throwable) {
             this.updateWeapons();
         }
     }
@@ -274,17 +281,18 @@ export class UIManager {
         const inventory = this.inventory;
         const activeIndex = inventory.activeWeaponIndex;
         const activeWeapon = inventory.weapons[activeIndex];
+        const count = activeWeapon?.count;
 
-        if (activeWeapon?.ammo === undefined || UI_DEBUG_MODE) {
-            this.ui.activeWeapon.hide();
+        if (activeWeapon === undefined || count === undefined || UI_DEBUG_MODE) {
+            this.ui.ammoCounterContainer.hide();
         } else {
-            this.ui.activeWeapon.show();
-            const ammo = activeWeapon?.ammo;
+            this.ui.ammoCounterContainer.show();
 
             this.ui.activeAmmo
-                .text(ammo)
-                .css("color", ammo > 0 ? "inherit" : "red");
+                .text(count)
+                .css("color", count > 0 ? "inherit" : "red");
 
+            let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
                 let totalAmmo: number | string = this.inventory.items[ammoType];
@@ -296,10 +304,14 @@ export class UIManager {
                     }
                 }
 
-                this.ui.weaponInventoryAmmo
-                    .text(totalAmmo)
-                    .css("visibility", totalAmmo === 0 ? "hidden" : "visible");
+                showReserve = totalAmmo !== 0;
+
+                this.ui.reserveAmmo
+                    .show()
+                    .text(totalAmmo);
             }
+
+            this.ui.reserveAmmo.css("visibility", showReserve ? "visible" : "hidden");
         }
 
         if (activeWeapon?.stats?.kills === undefined) { // killstreaks
@@ -325,11 +337,11 @@ export class UIManager {
                     .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
                     .show();
 
-                if (weapon.ammo !== undefined) {
+                if (weapon.count !== undefined) {
                     container
                         .children(".item-ammo")
-                        .text(weapon.ammo)
-                        .css("color", weapon.ammo > 0 ? "inherit" : "red");
+                        .text(weapon.count)
+                        .css("color", weapon.count > 0 ? "inherit" : "red");
                 }
             } else {
                 container.removeClass("has-item");

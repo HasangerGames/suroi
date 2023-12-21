@@ -4,10 +4,10 @@ import { Graphics, Rectangle, Sprite } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
-import { Scopes } from "../../../../../common/src/definitions/scopes";
+import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { Numeric } from "../../../../../common/src/utils/math";
-import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { COLORS } from "../constants";
@@ -436,7 +436,7 @@ export function setUpCommands(game: Game): void {
         function(offset) {
             const step = +(offset ?? "");
 
-            //                         ______________|> decimal check
+            //                        _______________|> decimal check
             if (Number.isNaN(step) || step % 1 !== 0) {
                 return {
                     err: `Attempted to cycle scopes by an invalid offset of '${offset}'`
@@ -449,7 +449,7 @@ export function setUpCommands(game: Game): void {
             short: "Switches to the scope <em>n</em> slots over, where <em>n</em> is some integer.",
             long:
                 "When invoked with an integer argument <em>n</em>, the scope offset from the current one by <em>n</em> slots will be " +
-                "switched to. If the offset is beyond the slots' range (< 0 or > 2), wrap-around is performed if the user has " +
+                "switched to. If the offset is beyond the slots' range, wrap-around is performed if the user has " +
                 "<code>cl_loop_scope_selection</code> set to <code>true</code>.",
             signatures: [
                 {
@@ -465,7 +465,54 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<ReferenceTo<HealingItemDefinition>>(
+    Command.createCommand<string>(
+        "equip_or_cycle_throwables",
+        function(offset) {
+            // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
+            if (this.activePlayer?.activeItem.itemType === ItemType.Throwable) {
+                const step = +(offset ?? "");
+
+                //                        _______________|> decimal check
+                if (Number.isNaN(step) || step % 1 !== 0) {
+                    return {
+                        err: `Attempted to cycle throwables by an invalid offset of '${offset}'`
+                    };
+                }
+
+                game.inputManager.cycleThrowable(step);
+            } else {
+                const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === ItemType.Throwable);
+
+                if (throwableSlot !== -1) {
+                    this.inputManager.addAction({
+                        type: InputActions.EquipItem,
+                        slot: throwableSlot
+                    });
+                }
+            }
+        },
+        game,
+        {
+            short: "Switches to the throwable <em>n</em> slots over, where <em>n</em> is some integer.",
+            long:
+                "When invoked with an integer argument <em>n</em>, the throwable offset from the current one by <em>n</em> slots will be " +
+                "selected (but the active item won't). If the offset is beyond the slots' range (< 0 or > 2), wrap-around is performed.",
+            signatures: [
+                {
+                    args: [
+                        {
+                            name: "offset",
+                            type: ["integer"],
+                            optional: true
+                        }
+                    ],
+                    noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<ReferenceTo<HealingItemDefinition | ScopeDefinition>>(
         "use_consumable",
         function(idString) {
             // This is technically unneeded, since "undefined in {}" returns false, but
@@ -862,13 +909,12 @@ export function setUpCommands(game: Game): void {
                 actions: Array<Command<boolean, Stringable> | string>
             ): void => {
                 if (key === "") return;
-                gameConsole.log({
+
+                gameConsole.log.raw({
                     main: `Actions bound to input '${key}'`,
                     detail: actions
-                        .map((bind) =>
-                            bind instanceof Command ? bind.name : bind
-                        )
-                        .join("\n")
+                        .map(bind => bind instanceof Command ? bind.name : bind)
+                        .join("<br>")
                 });
             };
 

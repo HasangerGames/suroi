@@ -144,7 +144,7 @@ export const Maps: Record<string, MapDefinition> = {
             // Generate all Loots
             const itemPos = Vec.create(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(item, itemPos, 511);
+                map.game.addLoot(item, itemPos, Infinity);
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -233,6 +233,18 @@ export const Maps: Record<string, MapDefinition> = {
                 startPos.x -= width / 2;
                 const itemPos = Vec.clone(startPos);
 
+                const countMap = {
+                    [ItemType.Gun]: 1,
+                    [ItemType.Ammo]: Infinity,
+                    [ItemType.Melee]: 1,
+                    [ItemType.Throwable]: Infinity,
+                    [ItemType.Healing]: Infinity,
+                    [ItemType.Armor]: 1,
+                    [ItemType.Backpack]: 1,
+                    [ItemType.Scope]: 1,
+                    [ItemType.Skin]: 1
+                };
+
                 for (const item of Loots.definitions) {
                     if (
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop === true) ||
@@ -241,7 +253,7 @@ export const Maps: Record<string, MapDefinition> = {
                         item.itemType === ItemType.Skin
                     ) continue;
 
-                    map.game.addLoot(item, itemPos, Infinity);
+                    map.game.addLoot(item, itemPos, countMap[item.itemType] ?? 1).velocity = Vec.create(0, 0);
 
                     itemPos.x += xOff;
                     if (
@@ -339,7 +351,7 @@ export const Maps: Record<string, MapDefinition> = {
                 const gun = Guns[i];
                 player.inventory.addOrReplaceWeapon(0, gun.idString);
                 (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
-                player.inventory.items[gun.ammoType] = Infinity;
+                player.inventory.items.setItem(gun.ammoType, Infinity);
                 player.disableInvulnerability();
                 // setInterval(() => player.activeItem.useItem(), 30);
                 map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));

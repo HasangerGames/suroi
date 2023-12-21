@@ -460,13 +460,6 @@ export class Game {
                 )(this, id, data);
 
                 this.objects.add(newObject as ObjectMapping[ObjectCategory]);
-                // type K = typeof type;
-
-                // this.objects.add(
-                //     new (
-                //         ObjectClassMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
-                //     )(this, id, data) as ObjectMapping[ObjectCategory]
-                // );
             }
 
             if (object) {
