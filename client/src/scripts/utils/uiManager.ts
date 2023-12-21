@@ -34,7 +34,6 @@ export class UIManager {
         activeWeaponIndex: 0,
         weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"] & object,
         items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
-        throwable: undefined as PlayerData["inventory"]["throwable"],
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
 
@@ -265,14 +264,9 @@ export class UIManager {
             this.inventory.scope = inventory.scope;
             this.updateItems();
         }
-
-        if (inventory.throwable) {
-            this.inventory.throwable = inventory.throwable;
-        }
-
         // idiot
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        if (inventory.weapons || inventory.items || inventory.throwable) {
+        if (inventory.weapons || inventory.items) {
             this.updateWeapons();
         }
     }

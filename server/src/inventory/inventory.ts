@@ -60,7 +60,6 @@ export class Inventory {
     get throwable(): ThrowableDefinition | undefined { return this._throwable; }
     set throwable(throwable: ReifiableDef<ThrowableDefinition>) {
         this._throwable = Loots.reify<ThrowableDefinition>(throwable);
-        this.owner.dirty.throwable = true;
     }
 
     /**
@@ -390,7 +389,6 @@ export class Inventory {
                 (item as ThrowableItem).count -= removalAmount;
             }
 
-            this.owner.dirty.throwable = true;
         } else {
             if (item instanceof GunItem && (definition as DualGunNarrowing).isDual) {
                 dropItem({ toDrop: (definition as DualGunNarrowing).singleVariant });

@@ -30,7 +30,6 @@ export interface PlayerData {
         adrenaline: boolean
         weapons: boolean
         items: boolean
-        throwable: boolean
         id: boolean
         zoom: boolean
     }
@@ -57,7 +56,6 @@ export interface PlayerData {
             }
         }>
         items: typeof DEFAULT_INVENTORY
-        throwable?: ThrowableDefinition
         scope: ScopeDefinition
     }
 }
@@ -119,7 +117,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 
     stream.writeBoolean(dirty.items);
     if (dirty.items) {
-        for (const item in inventory.items) {
+        for (const item in DEFAULT_INVENTORY) {
             const count = inventory.items[item];
 
             stream.writeBoolean(count > 0);
@@ -130,14 +128,6 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         }
 
         Scopes.writeToStream(stream, inventory.scope);
-    }
-
-    stream.writeBoolean(dirty.throwable);
-    if (dirty.throwable) {
-        stream.writeBoolean(inventory.throwable !== undefined);
-        if (inventory.throwable !== undefined) {
-            Loots.writeToStream(stream, inventory.throwable);
-        }
     }
 }
 
@@ -210,10 +200,6 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         }
 
         data.inventory.scope = Scopes.readFromStream(stream);
-    }
-
-    if (data.dirty.throwable = stream.readBoolean()) {
-        data.inventory.throwable = stream.readBoolean() ? Loots.readFromStream<ThrowableDefinition>(stream) : undefined;
     }
 
     return data;

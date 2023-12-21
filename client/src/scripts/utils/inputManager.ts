@@ -11,7 +11,7 @@ import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { Throwables } from "../../../../common/src/definitions/throwables";
+import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 
 export class InputManager {
     readonly game: Game;
@@ -425,7 +425,8 @@ export class InputManager {
     }
 
     cycleThrowable(offset: number): void {
-        const throwable = this.game.uiManager.inventory.throwable;
+        const throwable = this.game.uiManager.inventory.weapons
+            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)?.definition as ThrowableDefinition;
 
         if (!throwable) return;
 
