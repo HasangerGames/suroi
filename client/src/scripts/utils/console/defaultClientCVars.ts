@@ -126,7 +126,7 @@ export const defaultBinds = Object.freeze({
     "slot 0": ["1"],
     "slot 1": ["2"],
     "slot 2": ["3", "E"],
-    "equip_or_cycle_throwables 1": ["5"],
+    "equip_or_cycle_throwables 1": ["4"],
     last_item: ["Q"],
     other_weapon: ["Space"],
     swap_gun_slots: ["T"],

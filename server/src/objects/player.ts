@@ -342,7 +342,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.inventory.addOrReplaceWeapon(1, "revitalizer");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.inventory.items.setItem("12_gauge", 15);
+            this.inventory.items.setItem("12g", 15);
 
             this.inventory.addOrReplaceWeapon(2, "heap_sword");
 
