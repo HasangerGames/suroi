@@ -78,7 +78,7 @@ export class Explosion {
                     if (object instanceof Loot) {
                         object.push(
                             Angle.angleBetweenPoints(object.position, this.position),
-                            (max - dist) * 0.05
+                            (max - dist) * 0.01
                         );
                     }
                 }
