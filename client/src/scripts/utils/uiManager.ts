@@ -311,7 +311,9 @@ export class UIManager {
                     .text(totalAmmo);
             }
 
-            this.ui.reserveAmmo.css("visibility", showReserve ? "visible" : "hidden");
+            if (!showReserve) {
+                this.ui.reserveAmmo.hide();
+            }
         }
 
         if (activeWeapon?.stats?.kills === undefined) { // killstreaks

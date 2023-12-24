@@ -393,10 +393,10 @@
     top: 3px;
 }
 
-#weapon-ammo-container {
+#weapon-ammo-container {    
     position: absolute;
     bottom: 91px;
-    left: calc(50% + (65px / 2));
+    left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: baseline;
@@ -414,12 +414,11 @@
 
     @media screen and (max-width: $screen_large) {
         bottom: 60px;
-        left: calc(50% + (48px / 2));
-        width: 120px;
+        left: 50%;
     }
 
-    @media screen and (max-width: $screen_medium) {
-        display: none !important;
+    @media screen and (max-width: $screen_small) {
+        //display: none !important;
     }
 
     #weapon-clip-ammo {
@@ -470,12 +469,14 @@
         border-width: 5px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    /*
+    @media screen and (max-width: $screen_small) {
         bottom: 3px;
         left: unset;
         right: 3px;
         transform: none;
     }
+    */
 
     display: flex;
     justify-content: space-between;
@@ -561,11 +562,13 @@
         bottom: 42px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    /*
+    @media screen and (max-width: $screen_small) {
         left: unset;
         right: 3px;
         transform: none;
     }
+    */
 
     display: flex;
     justify-content: space-between;
@@ -760,6 +763,7 @@
         @media screen and (max-width: $screen_medium) {
             width: 60px;
             height: 60px;
+            border-radius: 5px;
         }
 
         position: relative;
@@ -822,16 +826,23 @@
 
     .item-ammo {
         position: absolute;
-        bottom: 5px;
-        margin-left: -75px;
+        bottom: 59px;
+        margin-left: -195px;
+        float: left;
         text-align: center;
         z-index: 1;
         font-size: 18px;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
-            font-size: 12px;
+            font-size: 13px;
             margin-left: -55px;
+            bottom: 5px;
+        }
+        @media screen and (max-width: $screen_medium) {
+            font-size: 11px;
+            margin-left: -100px;
+            bottom: 25px;
         }
     }
 
@@ -937,7 +948,8 @@
         //top: 100px;
         //bottom: max(50%, 100px);
         //bottom: 50%;
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: $screen_small) {
+            top: max(40%, 80px);
             //bottom: 250px;
             //bottom: min(70%, 300px);
         }
@@ -1059,7 +1071,7 @@
     }
 
     @media screen and (max-width: $screen_small) {
-        bottom: 115px;
+        bottom: 60px;
     }
 
     .inventory-slot {
