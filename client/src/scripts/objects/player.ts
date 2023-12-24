@@ -936,7 +936,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const pinImage = this.images.altWeapon;
                 pinImage.visible = true;
                 pinImage.setFrame(def.animation.cook.leftImage);
-                pinImage.setVPos(def.animation.cook.leftFist);
+                pinImage.setVPos(def.animation.cook.leftImagePos);
                 projImage.setFrame(def.animation.cook.liveImage);
 
                 this.anims.leftFistAnim = new Tween(
