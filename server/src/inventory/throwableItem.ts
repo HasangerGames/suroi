@@ -45,6 +45,9 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     override stopUse(): void {
         console.log("yeet");
+        this.owner.animation.type = AnimationType.ThrowableThrow;
+        this.owner.animation.seq = !this.owner.animation.seq;
+        this.owner.game.partialDirtyObjects.add(this.owner);
     }
 
     override useItem(): void {

@@ -722,8 +722,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
     playAnimation(anim: AnimationType): void {
         switch (anim) {
             case AnimationType.Melee: {
+                if (this.activeItem.itemType !== ItemType.Melee) {
+                    console.warn(`Attempted to play melee animation with non melee item ${this.activeItem.idString}`);
+                    return;
+                }
                 this.updateFistsPosition(false);
-                const weaponDef = this.activeItem as MeleeDefinition;
+                const weaponDef = this.activeItem;
                 if (weaponDef.fists.useLeft === undefined) break;
 
                 let altFist = Math.random() < 0.5;
@@ -811,7 +815,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.Gun:
             case AnimationType.GunAlt:
             case AnimationType.LastShot: {
-                const weaponDef = this.activeItem as GunDefinition;
+                if (this.activeItem.itemType !== ItemType.Gun) {
+                    console.warn(`Attempted to play gun animation with non gun item ${this.activeItem.idString}`);
+                    return;
+                }
+                const weaponDef = this.activeItem;
                 const reference = this._getItemReference();
 
                 this.playSound(
@@ -830,84 +838,81 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     );
                 }
 
-                if (weaponDef.itemType === ItemType.Gun) {
-                    const isAltFire = weaponDef.isDual
-                        ? anim === AnimationType.GunAlt
-                        : undefined;
+                const isAltFire = weaponDef.isDual
+                    ? anim === AnimationType.GunAlt
+                    : undefined;
 
-                    this.updateFistsPosition(false);
-                    const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
-                    const reference = this._getItemReference() as SingleGunNarrowing;
+                this.updateFistsPosition(false);
+                const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
-                    this.anims.weaponAnim = new Tween(this.game, {
-                        target: isAltFire ? this.images.altWeapon : this.images.weapon,
-                        to: { x: reference.image.position.x - recoilAmount },
-                        duration: 50,
-                        yoyo: true
-                    });
+                this.anims.weaponAnim = new Tween(this.game, {
+                    target: isAltFire ? this.images.altWeapon : this.images.weapon,
+                    to: { x: reference.image.position.x - recoilAmount },
+                    duration: 50,
+                    yoyo: true
+                });
 
-                    if (!weaponDef.noMuzzleFlash) {
-                        const muzzleFlash = this.images.muzzleFlash;
+                if (!weaponDef.noMuzzleFlash) {
+                    const muzzleFlash = this.images.muzzleFlash;
 
-                        muzzleFlash.x = weaponDef.length * PIXI_SCALE;
-                        muzzleFlash.y = (isAltFire ? -1 : 1) * this._getOffset();
-                        muzzleFlash.setVisible(true);
-                        muzzleFlash.alpha = 0.95;
-                        muzzleFlash.scale = Vec.create(
-                            randomFloat(0.75, 1.25),
-                            randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
-                        );
+                    muzzleFlash.x = weaponDef.length * PIXI_SCALE;
+                    muzzleFlash.y = (isAltFire ? -1 : 1) * this._getOffset();
+                    muzzleFlash.setVisible(true);
+                    muzzleFlash.alpha = 0.95;
+                    muzzleFlash.scale = Vec.create(
+                        randomFloat(0.75, 1.25),
+                        randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
+                    );
 
-                        this.anims.muzzleFlashFadeAnim?.kill();
-                        this.anims.muzzleFlashRecoilAnim?.kill();
-                        this.anims.muzzleFlashFadeAnim = new Tween(
-                            this.game,
-                            {
-                                target: muzzleFlash,
-                                to: { alpha: 0 },
-                                duration: 100,
-                                onComplete: () => muzzleFlash.setVisible(false)
-                            }
-                        );
+                    this.anims.muzzleFlashFadeAnim?.kill();
+                    this.anims.muzzleFlashRecoilAnim?.kill();
+                    this.anims.muzzleFlashFadeAnim = new Tween(
+                        this.game,
+                        {
+                            target: muzzleFlash,
+                            to: { alpha: 0 },
+                            duration: 100,
+                            onComplete: () => muzzleFlash.setVisible(false)
+                        }
+                    );
 
-                        this.anims.muzzleFlashRecoilAnim = new Tween(
-                            this.game,
-                            {
-                                target: muzzleFlash,
-                                to: { x: muzzleFlash.x - recoilAmount },
-                                duration: 50,
-                                yoyo: true
-                            }
-                        );
-                    }
+                    this.anims.muzzleFlashRecoilAnim = new Tween(
+                        this.game,
+                        {
+                            target: muzzleFlash,
+                            to: { x: muzzleFlash.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
+                }
 
-                    if (isAltFire !== false) {
-                        this.anims.leftFistAnim = new Tween(
-                            this.game,
-                            {
-                                target: this.images.leftFist,
-                                to: { x: reference.fists.left.x - recoilAmount },
-                                duration: 50,
-                                yoyo: true
-                            }
-                        );
-                    }
+                if (isAltFire !== false) {
+                    this.anims.leftFistAnim = new Tween(
+                        this.game,
+                        {
+                            target: this.images.leftFist,
+                            to: { x: reference.fists.left.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
+                }
 
-                    if (isAltFire !== true) {
-                        this.anims.rightFistAnim = new Tween(
-                            this.game,
-                            {
-                                target: this.images.rightFist,
-                                to: { x: reference.fists.right.x - recoilAmount },
-                                duration: 50,
-                                yoyo: true
-                            }
-                        );
-                    }
+                if (isAltFire !== true) {
+                    this.anims.rightFistAnim = new Tween(
+                        this.game,
+                        {
+                            target: this.images.rightFist,
+                            to: { x: reference.fists.right.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
+                }
 
-                    if (!reference.casingParticles?.spawnOnReload) {
-                        this.spawnCasingParticles(isAltFire);
-                    }
+                if (!reference.casingParticles?.spawnOnReload) {
+                    this.spawnCasingParticles(isAltFire);
                 }
                 break;
             }
@@ -921,7 +926,55 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 );
                 break;
             }
-            // todo throwables
+            case AnimationType.ThrowableCook: {
+                if (this.activeItem.itemType !== ItemType.Throwable) {
+                    console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
+                    return;
+                }
+                const def = this.activeItem;
+                const projImage = this.images.weapon;
+                const pinImage = this.images.altWeapon;
+                pinImage.visible = true;
+                pinImage.setFrame(def.animation.cook.leftImage);
+                pinImage.setVPos(def.animation.cook.leftFist);
+
+                this.anims.leftFistAnim = new Tween(
+                    this.game,
+                    {
+                        target: this.images.leftFist,
+                        to: { x: def.animation.cook.leftFist.x },
+                        duration: 50
+                    }
+                );
+
+                this.anims.weaponAnim = new Tween(
+                    this.game,
+                    {
+                        target: projImage,
+                        to: { x: def.animation.cook.rightFist.x },
+                        duration: 50
+                    }
+                );
+
+                this.anims.rightFistAnim = new Tween(
+                    this.game,
+                    {
+                        target: this.images.rightFist,
+                        to: { x: def.animation.cook.rightFist.x },
+                        duration: 50
+                    }
+                );
+
+                break;
+            }
+            case AnimationType.ThrowableThrow: {
+                if (this.activeItem.itemType !== ItemType.Throwable) {
+                    console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
+                    return;
+                }
+                this.updateFistsPosition(true);
+                break;
+            }
         }
     }
 

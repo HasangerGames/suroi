@@ -8,6 +8,13 @@ export interface ThrowableDefinition extends InventoryItemDefinition {
         readonly angle?: number
     }
     readonly fireDelay?: number
+    readonly animation: {
+        readonly cook: {
+            readonly leftImage: string
+            readonly leftFist: Vector
+            readonly rightFist: Vector
+        }
+    }
 }
 
 export const Throwables: ThrowableDefinition[] = [
@@ -19,6 +26,13 @@ export const Throwables: ThrowableDefinition[] = [
         image: {
             position: Vec.create(60, 43),
             angle: 60
+        },
+        animation: {
+            cook: {
+                leftImage: "proj_frag_pin",
+                leftFist: Vec.create(60, 43),
+                rightFist: Vec.create(-60, 43)
+            }
         }
     },
     {
@@ -29,6 +43,13 @@ export const Throwables: ThrowableDefinition[] = [
         image: {
             position: Vec.create(60, 43),
             angle: 60
+        },
+        animation: {
+            cook: {
+                leftImage: "proj_smoke_pin",
+                leftFist: Vec.create(40, 50),
+                rightFist: Vec.create(-10, 43)
+            }
         }
     }
 ];
