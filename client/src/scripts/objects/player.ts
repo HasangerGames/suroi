@@ -937,13 +937,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 pinImage.visible = true;
                 pinImage.setFrame(def.animation.cook.leftImage);
                 pinImage.setVPos(def.animation.cook.leftFist);
+                projImage.setFrame(def.animation.cook.liveImage);
 
                 this.anims.leftFistAnim = new Tween(
                     this.game,
                     {
                         target: this.images.leftFist,
                         to: { x: def.animation.cook.leftFist.x },
-                        duration: 50
+                        duration: 60
                     }
                 );
 
@@ -952,7 +953,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: projImage,
                         to: { x: def.animation.cook.rightFist.x },
-                        duration: 50
+                        duration: 60
                     }
                 );
 
@@ -961,7 +962,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.rightFist,
                         to: { x: def.animation.cook.rightFist.x },
-                        duration: 50
+                        duration: 60
                     }
                 );
 
