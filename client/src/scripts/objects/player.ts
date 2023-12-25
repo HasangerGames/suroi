@@ -962,7 +962,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                     to: {
                                         ...Vec.add(def.animation.cook.leftFist, Vec.create(15, 0))
                                     },
-                                    onUpdate: () => { pinImage.visible = true; }
+                                    onUpdate: () => {
+                                        pinImage.visible = true;
+                                        // TODO: Spawn lever particle for cookables
+                                    }
                                 }
                             );
                         }
