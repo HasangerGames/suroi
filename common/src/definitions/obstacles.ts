@@ -1985,12 +1985,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.7
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(2, 16.3, Vec.create(-29.3, -22.3)),
+                RectangleHitbox.fromRect(2, 18, Vec.create(-29.3, -21)),
                 RectangleHitbox.fromRect(60, 2, Vec.create(0, -29.4)),
-                RectangleHitbox.fromRect(2, 16.3, Vec.create(29.3, -22.3)),
+                RectangleHitbox.fromRect(2, 18, Vec.create(29.3, -21)),
 
-                RectangleHitbox.fromRect(2, 20, Vec.create(-29.3, 20.2)),
-                RectangleHitbox.fromRect(2, 20, Vec.create(29.3, 20.2))
+                RectangleHitbox.fromRect(2, 18, Vec.create(-29.3, 21)),
+                RectangleHitbox.fromRect(2, 18, Vec.create(29.3, 21))
             ),
             rotationMode: RotationMode.Limited,
             invisible: true,

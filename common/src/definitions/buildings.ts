@@ -563,8 +563,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "port_warehouse",
-        name: "Port Warehouse",
+        idString: "port_warehouse_red",
+        name: "Red Port Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(70, 130),
         scopeHitbox: RectangleHitbox.fromRect(58, 115),
         floorImages: [
@@ -579,8 +579,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         ceilingImages: [{
-            key: "port_warehouse_ceiling",
-            position: Vec.create(0, 0)
+            key: "port_warehouse_ceiling_red",
+            position: Vec.create(0, 0), 
         }],
         obstacles: [
             {
@@ -595,12 +595,134 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "port_warehouse_windows",
-                position: Vec.create(-29.3, -31.9),
+                position: Vec.create(-29.3, -30),
                 rotation: 0
             },
             {
                 idString: "port_warehouse_windows",
-                position: Vec.create(-29.3, 31.9),
+                position: Vec.create(-29.3, 30),
+                rotation: 0
+            },
+            {
+                idString: "port_warehouse_wall_short",
+                position: Vec.create(21, 16.3),
+                rotation: 1
+            },
+            {
+                idString: "port_warehouse_wall_short",
+                position: Vec.create(-21, 16.3),
+                rotation: 1
+            },
+            {
+                idString: "super_barrel",
+                position: Vec.create(-10, -52)
+            },
+            {
+                idString: "regular_crate",
+                position: Vec.create(-22, -52)
+            },
+            {
+                idString: "forklift",
+                position: Vec.create(15, -52),
+                rotation: 3
+            },
+            {
+                idString: "regular_crate",
+                position: Vec.create(-22, -10)
+            },
+            {
+                idString: "regular_crate",
+                position: Vec.create(-20, 0)
+            },
+            {
+                idString: "regular_crate",
+                position: Vec.create(-22, 10)
+            },
+            {
+                idString: "forklift",
+                position: Vec.create(-8, -2),
+                rotation: 2
+            },
+            {
+                idString: {
+                    regular_crate: 0.3,
+                    flint_crate: 1
+                },
+                position: Vec.create(-11, 50)
+            },
+            {
+                idString: "regular_crate",
+                position: Vec.create(-22, 52)
+            },
+            {
+                idString: "barrel",
+                position: Vec.create(1, 52)
+            },
+            {
+                idString: "super_barrel",
+                position: Vec.create(10, 48)
+            },
+            {
+                idString: "barrel",
+                position: Vec.create(23, 52)
+            },
+            {
+                idString: "barrel",
+                position: Vec.create(17, 5)
+            },
+            {
+                idString: "barrel",
+                position: Vec.create(24, 0)
+            },
+            {
+                idString: "box",
+                position: Vec.create(24, 9)
+            },
+            {
+                idString: "box",
+                position: Vec.create(19, 12)
+            }
+        ]
+    },
+    {
+        idString: "port_warehouse_blue",
+        name: "Blue Port Warehouse",
+        spawnHitbox: RectangleHitbox.fromRect(70, 130),
+        scopeHitbox: RectangleHitbox.fromRect(58, 115),
+        floorImages: [
+            {
+                key: "port_warehouse_floor",
+                position: Vec.create(0, -30.2)
+            },
+            {
+                key: "port_warehouse_floor",
+                position: Vec.create(0, 30.2),
+                rotation: Math.PI
+            }
+        ],
+        ceilingImages: [{
+            key: "port_warehouse_ceiling_blue",
+            position: Vec.create(0, 0), 
+        }],
+        obstacles: [
+            {
+                idString: "port_warehouse_walls",
+                position: Vec.create(0, -30),
+                rotation: 0
+            },
+            {
+                idString: "port_warehouse_walls",
+                position: Vec.create(0, 30),
+                rotation: 2
+            },
+            {
+                idString: "port_warehouse_windows",
+                position: Vec.create(-29.3, -30),
+                rotation: 0
+            },
+            {
+                idString: "port_warehouse_windows",
+                position: Vec.create(-29.3, 30),
                 rotation: 0
             },
             {
@@ -1145,33 +1267,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "crane",
         name: "Crane",
-        spawnHitbox: RectangleHitbox.fromRect(210, 220, Vec.create(55, 0)),
-        ceilingHitbox: RectangleHitbox.fromRect(210, 220, Vec.create(55, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
+        ceilingHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
         ceilingImages: [
             {
                 key: "crane_ceiling",
-                position: Vec.create(55.5, -60)
+                position: Vec.create(50.25, -60)
             },
-            {
-                key: "crane_ceiling",
-                position: Vec.create(55.5, 60)
-            }
         ],
         ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
         obstacles: [
-            { idString: "crane_base_end", position: Vec.create(-31.6, -106.15), rotation: 0 },
             { idString: "crane_base_part", position: Vec.create(-31.55, -87.3), rotation: 0 },
             { idString: "crane_base_part", position: Vec.create(-31.55, -35.6), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(-31.55, 32), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(-31.55, 83.7), rotation: 0 },
-            { idString: "crane_base_end", position: Vec.create(-31.6, 106.15), rotation: 0 },
+            { idString: "crane_base_end", position: Vec.create(-31.6, -13.5), rotation: 0 },
 
-            { idString: "crane_base_end", position: Vec.create(31.5, -106.15), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(31.55, -87.3), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(31.55, -35.6), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(31.55, 32), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(31.55, 83.7), rotation: 0 },
-            { idString: "crane_base_end", position: Vec.create(31.5, 106.15), rotation: 0 }
+            { idString: "crane_base_end", position: Vec.create(28, -106.15), rotation: 0 },
+            { idString: "crane_base_part", position: Vec.create(28.05, -87.3), rotation: 0 },
+            { idString: "crane_base_part", position: Vec.create(28.05, -35.6), rotation: 0 },
         ]
     },
     {
@@ -1312,7 +1424,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec.create(-4, 61) },
 
             // Captain's cabin
-            { idString: "panel_with_a_button", position: Vec.create(24, -57), rotation: 2 },
             { idString: "panel_without_button_small", position: Vec.create(14.5, -57), rotation: 2 },
             { idString: "panel_without_button", position: Vec.create(5, -57), rotation: 2 },
             { idString: "regular_crate", position: Vec.create(-7, -84) },
@@ -1372,6 +1483,75 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(10, -73),
             table: "gas_can"
         }]
+    },
+    {
+        idString: "oil_tanker_ship_tanks",
+        name: "Oil Tanker",
+        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(100, 100, Vec.create(0, 0)),
+        ceilingImages: [
+            {
+                key: "oil_tanker_ship_tank_ceiling",
+                position: Vec.create(10.5, 20)
+            }
+        ],
+        floors: [
+           
+        ],
+        obstacles: [
+            { idString: "large_oil_tanker_tank", position: Vec.create(10, -46.5) },
+            { idString: "large_oil_tanker_tank", position: Vec.create(10, 20) },
+            { idString: "large_oil_tanker_tank", position: Vec.create(10, 88) },
+        ],
+    },
+    {
+        idString: "oil_tanker_ship",
+        name: "Oil Tanker",
+        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
+        scopeHitbox: 
+        new HitboxGroup(
+            RectangleHitbox.fromRect(65, 29, Vec.create(4.5, -102.5)),
+            RectangleHitbox.fromRect(7.5, 28, Vec.create(41.7, -101.5))
+        ),
+        floorImages: [
+            {
+            key: "oil_tanker_ship_floor",
+            position: Vec.create(0, 0)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "oil_tanker_ship_ceiling",
+                position: Vec.create(7, -99.5)
+            }
+        ],
+        floors: [
+           
+        ],
+        obstacles: [
+            // Main Ship Hitbox
+            { idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
+
+            // Cabin Windows
+            { idString: "ship_cabin_window", position: Vec.create(-0.25, -87.5), rotation: 1 },
+            { idString: "ship_cabin_window", position: Vec.create(9.75, -87.5), rotation: 1 },
+
+            { idString: "ship_cabin_window", position: Vec.create(22, -87.5), rotation: 1 },
+            { idString: "ship_cabin_window", position: Vec.create(31, -87.5), rotation: 1 },
+
+            // Cabin Furniture
+            { idString: "panel_without_button_small", position: Vec.create(-1, -93.8), rotation: 2 },
+            { idString: "large_drawer", position: Vec.create(9.5, -93.5), rotation: 2 },
+
+            { idString: "panel_with_a_button", position: Vec.create(22, -93.8), rotation: 2 },
+            { idString: "panel_without_button_small", position: Vec.create(31.7, -93.8), rotation: 2 },
+
+            // Vector Vault
+            { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
+        ],
+        subBuildings: [
+            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0)  },
+        ],
     },
     {
         idString: "port",
@@ -1760,8 +1940,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "porta_potty", position: Vec.create(151.2, -12.34), orientation: 1 },
             { idString: "porta_potty", position: Vec.create(131.2, -12.34), orientation: 1 },
             { idString: "port_shed", position: Vec.create(15.68, -136.56), orientation: 1 },
-            { idString: "port_warehouse", position: Vec.create(-10, -132), orientation: 2 },
-            { idString: "port_warehouse", position: Vec.create(-100, 132) },
+            //{ idString: "port_warehouse", position: Vec.create(-10, -132), orientation: 2 },
+            //{ idString: "port_warehouse", position: Vec.create(-100, 132) },
 
             // Containers on trucks
             { idString: "container_2", position: Vec.create(-40, 140) },
@@ -1945,6 +2125,53 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(-25.67, -101.15),
                 orientation: 1
             }
+        ]
+    },
+    {
+        idString: "new_port",
+        name: "Port",
+        spawnHitbox: RectangleHitbox.fromRect(315, 425, Vec.create(0, 0)),
+        floorImages: [
+            {
+                key: "port_floor",
+                position: Vec.create(-4.5, 0)
+            },
+        ],
+        floors: [{
+            type: "stone",
+            hitbox: RectangleHitbox.fromRect(315, 425, Vec.create(0, 0))
+        }],
+        decals: [
+    
+
+        ],
+        obstacles: [
+            { idString: "truck", position: Vec.create(72.5, 34), rotation: 3 },
+            { idString: "trailer", position: Vec.create(100, 34), rotation: 1 },
+
+            { idString: "forklift", position: Vec.create(95, 64), rotation: 1 },
+            { idString: "pallet", position: Vec.create(107.5, 64), rotation: 1 },
+            { idString: "barrel", position: Vec.create(107.5, 64), rotation: 1 },
+
+            { idString: "trailer", position: Vec.create(100, 81), rotation: 1 },
+
+            { idString: "regular_crate", position: Vec.create(100, 110), rotation: 1 },
+            { idString: "regular_crate", position: Vec.create(110, 115), rotation: 1 },
+            { idString: "regular_crate", position: Vec.create(113, 103), rotation: 1 },
+
+            { idString: "box", position: Vec.create(37, 113), rotation: 1 },
+            { idString: "box", position: Vec.create(42, 110), rotation: 1 },
+            { idString: "box", position: Vec.create(35, 107), rotation: 1 },
+            { idString: "box", position: Vec.create(42, 104), rotation: 1 },
+
+            { idString: "forklift", position: Vec.create(20, 102.5), rotation: 2 },
+            { idString: "pallet", position: Vec.create(20, 90), rotation: 2 },
+        ],
+        subBuildings: [
+            { idString: "container_1", position: Vec.create(-81, 100), orientation: 1},
+            { idString: "crane", position: Vec.create(97, 25) },
+            { idString: "port_warehouse_red", position: Vec.create(-95, -60), orientation: 1 },
+            { idString: "port_warehouse_blue", position: Vec.create(-97, 15), orientation: 3 }
         ]
     },
     {
