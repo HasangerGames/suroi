@@ -23,18 +23,14 @@ export const Angle = Object.freeze({
         return Numeric.absMod(radians - π, 2 * π) - π;
     },
     /**
-     * Find the smallest angle between two vertices
-     * @param start The initial vertex, in radians
-     * @param end The final vertex, in radians
+     * Find the smallest difference between two angles
+     * (the difference between 10º and 350º can be either -340º or 20º—chances are, you're looking for the latter)
+     * @param start The initial angle, in radians
+     * @param end The final angle, in radians
      */
     minimizeAngle(start: number, end: number): number {
-        start = this.normalizeAngle(start);
-        end = this.normalizeAngle(end);
-
-        const cw = end - start;
-        const ccw = cw - 2 * Math.PI;
-
-        return Math.abs(cw) < Math.abs(ccw) ? cw : ccw;
+        const π = Math.PI;
+        return Numeric.absMod(end - start + π, 2 * π) - π;
     },
     /**
      * Converts degrees to radians
@@ -486,8 +482,13 @@ export const Collision = Object.freeze({
                 };
         }
 
-        const cpt = Vec.create(Numeric.clamp(pos.x, min.x, max.x), Numeric.clamp(pos.y, min.y, max.y));
-        const dir = Vec.sub(cpt, pos);
+        const dir = Vec.sub(
+            Vec.create(
+                Numeric.clamp(pos.x, min.x, max.x),
+                Numeric.clamp(pos.y, min.y, max.y)
+            ),
+            pos
+        );
         const dstSqr = Vec.squaredLength(dir);
 
         if (dstSqr < radius * radius) {

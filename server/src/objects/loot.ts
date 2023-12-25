@@ -32,6 +32,13 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     private _oldPosition = Vec.create(0, 0);
 
+    /**
+     * Ensures that the drag experienced is not dependant on tickrate
+     *
+     * This particular exponent results in a 10% loss every 28.63ms (or a 50% loss every 188.4ms)
+     */
+    private static readonly _dragConstant = Math.exp(-3.69 / GameConstants.tickrate);
+
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
         super(game, position);
 
@@ -70,12 +77,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         }
 
         this.velocity = Vec.scale(this.velocity, 0.9);
+        this.position = Vec.add(this.position, Vec.scale(this.velocity, GameConstants.msPerTick * 0.5));
 
-        const velocity = Vec.scale(this.velocity, GameConstants.msPerTick);
-        velocity.x = Numeric.clamp(velocity.x, -1, 1);
-        velocity.y = Numeric.clamp(velocity.y, -1, 1);
+        let velocity = Vec.scale(this.velocity, GameConstants.msPerTick);
+        if (Vec.squaredLength(velocity) >= 1) {
+            velocity = Vec.normalizeSafe(velocity);
+        }
 
-        this.position = Vec.add(this.position, velocity);
+        this.position = Vec.add(this.position, Vec.scale(velocity, 0.5));
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
@@ -310,12 +319,6 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
                     inventory.useItem(idString);
                     inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
-                    // const throwable = new ThrowableItem(definition, inventory.owner, inventory.items.getItem(idString));
-
-                    // // Operation is safe because `slot` is guaranteed to point to a throwable slot
-                    // // We only do it if there isn't already a throwable
-                    // inventory.addOrReplaceWeapon(slot, throwable);
-                    // inventory.throwable ??= definition;
                 } else {
                     modifyItemCollections();
                 }

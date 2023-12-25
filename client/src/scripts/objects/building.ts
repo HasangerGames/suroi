@@ -191,16 +191,20 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     loop: true
                 };
 
-                if (sounds.normal &&
+                if (
+                    sounds.normal &&
                     !full.puzzleSolved &&
-                    this.sound?.name !== sounds.normal) {
+                    this.sound?.name !== sounds.normal
+                ) {
                     this.sound?.stop();
                     this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
                 }
 
-                if (sounds.solved &&
+                if (
+                    sounds.solved &&
                     full.puzzleSolved &&
-                    this.sound?.name !== sounds.solved) {
+                    this.sound?.name !== sounds.solved
+                ) {
                     this.sound?.stop();
                     this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
                 }
@@ -294,8 +298,9 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
     }
 
-    destroy(): void {
+    override destroy(): void {
         super.destroy();
+
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();

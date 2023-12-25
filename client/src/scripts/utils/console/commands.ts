@@ -639,7 +639,7 @@ export function setUpCommands(game: Game): void {
             const { mouseX, mouseY } = this.inputManager;
 
             $("#emote-wheel")
-                //                              ___|> mystery constant (hint: use translate(-50%, 50%) if you're trynna center)
+                //                       ___|> mystery constant (hint: use translate(-50%, 50%) if you're trynna center)
                 .css("left", `${mouseX - 143}px`)
                 .css("top", `${mouseY - 143}px`)
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
@@ -730,6 +730,19 @@ export function setUpCommands(game: Game): void {
             short: "Screenshot the game camera and open it on a new tab as a blob image",
             long: "Attempts to take a screenshot of the game without any of its HUD elements, and then attempts to open this image in a new tab",
             signatures: [{ args: [], noexcept: false }]
+        }
+    );
+
+    Command.createCommand(
+        "disconnect",
+        function(): undefined {
+            this.endGame();
+        },
+        game,
+        {
+            short: "Leaves the current game",
+            long: "When invoked, the player is disconnected from their current game",
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 

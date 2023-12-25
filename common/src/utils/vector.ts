@@ -100,6 +100,15 @@ export const Vec = Object.freeze({
         return a.x * b.x + a.y * b.y;
     },
     /**
+     * Projects a `Vector` onto another
+     * @param projected The `Vector` to be projected
+     * @param projectOnto The `Vector` that will be projected onto
+     * @returns A new `Vector` parallel to `projectOnto` which is the projection of `projected`
+     */
+    project(projected: Vector, projectOnto: Vector): Vector {
+        return this.scale(projectOnto, this.dotProduct(projected, projectOnto) / this.squaredLength(projectOnto));
+    },
+    /**
      * Creates a new `Vector` parallel to the original, but whose length is 1
      * @param a The `Vector` to normalize
      * @param fallback A `Vector` to clone and return in case the normalization operation fails

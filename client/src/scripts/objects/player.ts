@@ -91,6 +91,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         weaponAnim?: Tween<SuroiSprite>
         muzzleFlashFadeAnim?: Tween<SuroiSprite>
         muzzleFlashRecoilAnim?: Tween<SuroiSprite>
+        waterOverlayAnim?: Tween<SuroiSprite>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -104,7 +105,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hitbox = new CircleHitbox(GameConstants.player.radius);
 
     floorType = "grass";
-    waterOverlayAnim?: Tween<SuroiSprite>;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Player]>) {
         super(game, id);
@@ -282,7 +282,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         // Position and rotation
-        if (this.position !== undefined) this.oldPosition = Vec.clone(this.position);
+        const oldPosition = Vec.clone(this.position);
         this.position = data.position;
         this.hitbox.position = this.position;
 
@@ -311,8 +311,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (floorType !== this.floorType) {
             if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);
-            this.waterOverlayAnim?.kill();
-            this.waterOverlayAnim = new Tween(
+            this.anims.waterOverlayAnim?.kill();
+            this.anims.waterOverlayAnim = new Tween(
                 this.game,
                 {
                     target: this.images.waterOverlay,
@@ -328,8 +328,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
         this.floorType = floorType;
 
-        if (this.oldPosition !== undefined) {
-            this.distSinceLastFootstep += Geometry.distanceSquared(this.oldPosition, this.position);
+        if (oldPosition !== undefined) {
+            this.distSinceLastFootstep += Geometry.distance(oldPosition, this.position);
 
             if (this.distSinceLastFootstep > 7) {
                 this.footstepSound = this.playSound(
@@ -953,17 +953,35 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
+
+        const images = this.images;
+        images.aimTrail.destroy();
+        images.vest.destroy();
+        images.body.destroy();
+        images.leftFist.destroy();
+        images.rightFist.destroy();
+        images.backpack.destroy();
+        images.helmet.destroy();
+        images.weapon.destroy();
+        images.altWeapon.destroy();
+        images.muzzleFlash.destroy();
+        images.emoteBackground.destroy();
+        images.emoteImage.destroy();
+        images.waterOverlay.destroy();
+
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();
         if (this.isActivePlayer) $("#action-container").hide();
-        this.waterOverlayAnim?.kill();
-        this.anims.emoteHideAnim?.kill();
-        this.anims.emoteAnim?.kill();
         this.emoteContainer.destroy();
-        this.anims.leftFistAnim?.kill();
-        this.anims.rightFistAnim?.kill();
-        this.anims.weaponAnim?.kill();
-        this.anims.muzzleFlashFadeAnim?.kill();
-        this.anims.muzzleFlashRecoilAnim?.kill();
+
+        const anims = this.anims;
+        anims.emoteHideAnim?.kill();
+        anims.waterOverlayAnim?.kill();
+        anims.emoteAnim?.kill();
+        anims.leftFistAnim?.kill();
+        anims.rightFistAnim?.kill();
+        anims.weaponAnim?.kill();
+        anims.muzzleFlashFadeAnim?.kill();
+        anims.muzzleFlashRecoilAnim?.kill();
     }
 }

@@ -137,52 +137,6 @@ export class Inventory {
 
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
-        const applySwitchPenalties = (): void => {
-            const item = this.weapons[slot]!;
-            // nna is fine cuz of the hasWeapon call above
-            const owner = this.owner;
-
-            this._reloadTimeout?.kill();
-            if (this.activeWeapon.category === ItemType.Gun) {
-                (this.activeWeapon as GunItem).cancelAllTimers();
-            }
-            owner.bufferedAttack?.kill();
-
-            item.isActive = true;
-
-            const now = owner.game.now;
-
-            let effectiveSwitchDelay: number;
-
-            if (
-                item.definition.itemType !== ItemType.Gun || (
-                    now - owner.lastFreeSwitch >= 1000 &&
-                    !item.definition.noQuickswitch
-                )
-            ) {
-                effectiveSwitchDelay = 250;
-                owner.lastFreeSwitch = now;
-            } else {
-                effectiveSwitchDelay = item.definition.switchDelay;
-            }
-
-            owner.effectiveSwitchDelay = effectiveSwitchDelay;
-            owner.lastSwitch = item.switchDate = now;
-
-            if (item instanceof GunItem && item.ammo <= 0) {
-                this._reloadTimeout = this.owner.game.addTimeout(
-                    item.reload.bind(item),
-                    owner.effectiveSwitchDelay
-                );
-            }
-
-            owner.attacking = false;
-            owner.recoil.active = false;
-            owner.dirty.weapons = true;
-            owner.game.fullDirtyObjects.add(this.owner);
-
-            owner.updateAndApplyModifiers();
-        };
 
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
@@ -190,9 +144,53 @@ export class Inventory {
         this._lastWeaponIndex = old;
 
         const oldItem = this.weapons[old];
-        if (oldItem) oldItem.isActive = false;
+        if (oldItem) {
+            oldItem.isActive = false;
+            oldItem.stopUse();
+        }
 
-        applySwitchPenalties();
+        const item = this.weapons[slot]!;
+        // nna is fine cuz of the hasWeapon call above
+        const owner = this.owner;
+
+        this._reloadTimeout?.kill();
+        if (this.activeWeapon.category === ItemType.Gun) {
+            (this.activeWeapon as GunItem).cancelAllTimers();
+        }
+        owner.bufferedAttack?.kill();
+
+        item.isActive = true;
+
+        const now = owner.game.now;
+
+        let effectiveSwitchDelay: number;
+
+        if (item.definition.itemType !== ItemType.Gun || (
+            now - owner.lastFreeSwitch >= 1000 &&
+            !item.definition.noQuickswitch
+        )) {
+            effectiveSwitchDelay = 250;
+            owner.lastFreeSwitch = now;
+        } else {
+            effectiveSwitchDelay = item.definition.switchDelay;
+        }
+
+        owner.effectiveSwitchDelay = effectiveSwitchDelay;
+        owner.lastSwitch = item.switchDate = now;
+
+        if (item instanceof GunItem && item.ammo <= 0) {
+            this._reloadTimeout = this.owner.game.addTimeout(
+                item.reload.bind(item),
+                owner.effectiveSwitchDelay
+            );
+        }
+
+        owner.attacking = false;
+        owner.recoil.active = false;
+        owner.dirty.weapons = true;
+        owner.game.fullDirtyObjects.add(this.owner);
+
+        owner.updateAndApplyModifiers();
 
         return true;
     }
@@ -343,6 +341,48 @@ export class Inventory {
         return -1;
     }
 
+    private _dropItem(toDrop: Parameters<Game["addLoot"]>[0], options?: { readonly position?: Vector, readonly count?: number, readonly pushForce?: number }): void {
+        this.owner.game
+            .addLoot(toDrop, options?.position ?? this.owner.position, options?.count ?? 1)
+            .push(this.owner.rotation, options?.pushForce ?? -0.03);
+    }
+
+    removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
+        const definition = Loots.reify(type);
+
+        const itemAmount = this.items.getItem(definition.idString);
+        const removalAmount = removalCount ?? Math.ceil(itemAmount / 2);
+
+        if (drop) {
+            this._dropItem(definition, { count: removalAmount });
+        }
+        this.items.decrementItem(definition.idString, removalAmount);
+
+        if (itemAmount === removalAmount) { // Everything's been dropped, we need to a) discard the ThrowableItem instance b) equip a new one, if any
+            this.throwableItemMap.delete(definition.idString);
+
+            // now we gotta find a new throwable to equip
+            let found = false;
+            for (const def of Throwables) {
+                if (this.items.getItem(def.idString) > 0) {
+                    found = true;
+                    this.useItem(def);
+                    break;
+                }
+            }
+
+            if (!found) {
+                // welp, time to swap to another slot
+                this.weapons[this.slotsByItemType[ItemType.Throwable]![0]] = undefined;
+                this.setActiveWeaponIndex(this._findNextPopulatedSlot());
+            }
+        } else {
+            this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
+        }
+
+        this.owner.dirty.throwable = true;
+    }
+
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
@@ -355,48 +395,14 @@ export class Inventory {
         if (item === undefined || item.definition.noDrop) return undefined;
         const definition = item.definition;
 
-        const dropItem = (options?: { readonly toDrop?: Parameters<Game["addLoot"]>[0], readonly position?: Vector, readonly count?: number }): void => {
-            this.owner.game
-                .addLoot(options?.toDrop ?? definition, options?.position ?? this.owner.position, options?.count ?? 1)
-                .push(this.owner.rotation, pushForce);
-        };
-
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
-            const itemAmount = this.items.getItem(definition.idString);
-            const removalAmount = Math.ceil(itemAmount / 2);
-
-            dropItem({ count: removalAmount });
-            this.items.decrementItem(definition.idString, removalAmount);
-
-            if (itemAmount === removalAmount) { // Everything's been dropped, we need to a) discard the ThrowableItem instance b) equip a new one, if any
-                this.throwableItemMap.delete(definition.idString);
-
-                // now we gotta find a new throwable to equip
-                let found = false;
-                for (const def of Throwables) {
-                    if (this.items.getItem(def.idString) > 0) {
-                        found = true;
-                        this.useItem(def);
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    // welp, time to swap to another slot
-                    this.weapons[slot] = undefined;
-                    this.setActiveWeaponIndex(this._findNextPopulatedSlot());
-                }
-            } else {
-                (item as ThrowableItem).count -= removalAmount;
-            }
-
-            this.owner.dirty.throwable = true;
+            this.removeThrowable(definition as ThrowableDefinition);
         } else {
             if (item instanceof GunItem && (definition as DualGunNarrowing).isDual) {
-                dropItem({ toDrop: (definition as DualGunNarrowing).singleVariant });
-                dropItem({ toDrop: (definition as DualGunNarrowing).singleVariant });
+                this._dropItem((definition as DualGunNarrowing).singleVariant);
+                this._dropItem((definition as DualGunNarrowing).singleVariant);
             } else {
-                dropItem();
+                this._dropItem(definition);
             }
 
             this._setWeapon(slot, undefined);
@@ -430,10 +436,7 @@ export class Inventory {
                 if (overAmount > 0) {
                     this.items.decrementItem(ammoType, overAmount);
 
-                    dropItem({
-                        toDrop: ammoType,
-                        count: overAmount
-                    });
+                    this._dropItem(ammoType, { count: overAmount });
                 }
             }
         }
@@ -587,10 +590,18 @@ export class Inventory {
                 // Let's hope there's only one throwable slot…
 
                 if (slot !== undefined) {
-                    this.weapons[slot] = this.throwableItemMap.getAndSetIfAbsent(
+                    const old = this.weapons[slot];
+                    if (old) {
+                        old.isActive = false;
+                        old.stopUse();
+                    }
+
+                    const item = this.throwableItemMap.getAndSetIfAbsent(
                         idString,
                         () => new ThrowableItem(definition, this.owner, this.items.getItem(idString))
                     );
+                    item.isActive = true;
+                    this.weapons[slot] = item;
                 }
             }
         }
