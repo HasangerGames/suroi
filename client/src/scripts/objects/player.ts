@@ -944,21 +944,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.leftFist,
                         to: { x: def.animation.cook.leftFist.x, y: 0 },
-                        duration: 100,
+                        duration: 200,
                         onComplete: () => {
                             this.anims.leftFistAnim = new Tween(
                                 this.game,
                                 {
                                     target: this.images.leftFist,
                                     to: { x: def.animation.cook.leftFist.x, y: def.animation.cook.leftFist.y },
-                                    duration: 70
+                                    duration: 100
                                 }
                             );
 
                             this.anims.pinAnim = new Tween(
                                 this.game, {
                                     target: pinImage,
-                                    duration: 70,
+                                    duration: 100,
                                     to: {
                                         ...Vec.add(def.animation.cook.leftFist, Vec.create(15, 0))
                                     },
@@ -968,6 +968,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                     }
                                 }
                             );
+
+                            if (def.cookable) {
+                                this.game.particleManager.spawnParticle({
+                                    frames: def.animation.cook.leverImage,
+                                    lifetime: 800,
+                                    position: def.animation.cook.rightFist,
+                                    zIndex: ZIndexes.Players,
+                                    speed: Vec.create(0, 0)
+                                });
+                            }
                         }
                     }
                 );
@@ -977,7 +987,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: projImage,
                         to: { x: def.animation.cook.rightFist.x, y: 10 },
-                        duration: 70
+                        duration: 100
                     }
                 );
 
@@ -986,14 +996,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.rightFist,
                         to: { x: def.animation.cook.rightFist.x, y: 10 },
-                        duration: 70,
+                        duration: 100,
                         onComplete: () => {
                             this.anims.weaponAnim = new Tween(
                                 this.game,
                                 {
                                     target: projImage,
                                     to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
-                                    duration: 70
+                                    duration: 100
                                 }
                             );
 
@@ -1002,7 +1012,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 {
                                     target: this.images.rightFist,
                                     to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
-                                    duration: 70
+                                    duration: 100
                                 }
                             );
                         }
@@ -1016,7 +1026,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
                     return;
                 }
+                const pinImage = this.images.altWeapon;
+
                 this.updateFistsPosition(true);
+                pinImage.destroy(true);
                 break;
             }
         }
