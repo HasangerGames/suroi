@@ -944,7 +944,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.leftFist,
                         to: { x: def.animation.cook.leftFist.x },
-                        duration: 60
+                        duration: 70
                     }
                 );
 
@@ -953,7 +953,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: projImage,
                         to: { x: def.animation.cook.rightFist.x },
-                        duration: 60
+                        duration: 70
                     }
                 );
 
@@ -962,7 +962,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.rightFist,
                         to: { x: def.animation.cook.rightFist.x },
-                        duration: 60
+                        duration: 70
                     }
                 );
 

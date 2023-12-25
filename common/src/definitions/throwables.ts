@@ -35,7 +35,7 @@ export const Throwables: ThrowableDefinition[] = [
                 liveImage: "proj_frag",
                 leftImagePos: Vec.create(70, -43),
                 leftFist: Vec.create(60, 43),
-                rightFist: Vec.create(-60, 43)
+                rightFist: Vec.create(-10, 43)
             }
         }
     },
