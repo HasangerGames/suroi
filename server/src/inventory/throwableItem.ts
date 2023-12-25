@@ -1,13 +1,19 @@
 import { AnimationType } from "../../../common/src/constants";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
+import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { Vec } from "../../../common/src/utils/vector";
+import { type Game } from "../game";
 import { type Player } from "../objects/player";
+import { type Projectile } from "../objects/projectile";
 import { CountableInventoryItem } from "./inventoryItem";
 
 export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
     declare readonly category: ItemType.Throwable;
 
     count: number;
+
+    private _activeHandler?: GrenadeHandler;
 
     constructor(definition: ReifiableDef<ThrowableDefinition>, owner: Player, count = 1) {
         super(definition, owner);
@@ -21,7 +27,6 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
         const owner = this.owner;
-        // const definition = this.definition;
 
         this._lastUse = owner.game.now;
         owner.animation.type = AnimationType.ThrowableCook;
@@ -38,16 +43,14 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
         }
 
         owner.action?.cancel();
-        owner.dirty.weapons = true;
 
-        console.log("cook");
+        this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this);
+        this._activeHandler.cook();
     }
 
     override stopUse(): void {
-        console.log("yeet");
-        this.owner.animation.type = AnimationType.ThrowableThrow;
-        this.owner.animation.seq = !this.owner.animation.seq;
-        this.owner.game.partialDirtyObjects.add(this.owner);
+        this._activeHandler?.throw(!this.isActive);
+        this._activeHandler = undefined;
     }
 
     override useItem(): void {
@@ -55,5 +58,98 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
             this.definition.fireDelay ?? 150,
             this._useItemNoDelayCheck.bind(this, true)
         );
+    }
+}
+
+class GrenadeHandler {
+    private _cooking = false;
+    private _thrown = false;
+    private _timer?: Timeout;
+    private _projectile?: Projectile;
+
+    constructor(
+        readonly definition: ThrowableDefinition,
+        readonly game: Game,
+        readonly parent: ThrowableItem
+    ) {}
+
+    private _removeFromInventory(): void {
+        const owner = this.parent.owner;
+        owner.dirty.weapons = true;
+        owner.inventory.removeThrowable(this.definition, false, 1);
+    }
+
+    private _detonate(): void {
+        if (this.definition.detonation.explosion !== undefined) {
+            this.game.addExplosion(
+                this.definition.detonation.explosion,
+                this._projectile?.position ?? this.parent.owner.position,
+                this._projectile ?? this.parent.owner
+            );
+        }
+    }
+
+    cook(): void {
+        if (this.definition.cookable) {
+            this._timer = this.game.addTimeout(
+                () => {
+                    if (!this._thrown) {
+                        this._removeFromInventory();
+                    }
+
+                    this.destroy();
+                    this._detonate();
+                },
+                this.definition.fuseTime
+            );
+        }
+
+        this._cooking = true;
+    }
+
+    throw(soft = false): void {
+        if (!this._cooking || this._thrown) { return; }
+        this._thrown = true;
+
+        this._timer ??= this.game.addTimeout(
+            () => {
+                this.destroy();
+                this._detonate();
+            },
+            this.definition.fuseTime
+        );
+
+        const owner = this.parent.owner;
+        const definition = this.definition;
+        const projectile = this._projectile = this.game.addProjectile(definition, owner.position);
+
+        /**
+         * Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
+         *
+         * For most ranges, the error is below 0.1%, and it behaves itself acceptably at different tickrates (low tickrates
+         * go slightly further, high tickrates go very very slightly less far)
+         *
+         * At very close range (the range most people would call "dropping at one's feet"), this prediction loses accuracy, but
+         * it's not a big deal because the affected range is when the desired distance is < 0.6 units
+         */
+        const superStrangeMysteryConstant = 370.15;
+
+        projectile.velocity = Vec.fromPolar(
+            owner.rotation,
+            soft
+                ? 0
+                : Math.min(
+                    definition.maxThrowDistance,
+                    owner.distanceToMouse
+                ) / superStrangeMysteryConstant
+        );
+
+        this._removeFromInventory();
+    }
+
+    destroy(): void {
+        this._cooking = false;
+        this._timer?.kill();
+        this._projectile && this.game.removeProjectile(this._projectile);
     }
 }

@@ -101,7 +101,10 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
 
     /**
      * A method which *does nothing*, but that can be overridden by subclasses if desired. This method is called
-     * whenever the player stops attacking while having this weapon equipped.
+     * whenever the player stops attacking while having this weapon equipped _or_ when the user starts attacking
+     * with a weapon and switches off of it. In the latter case, this method will always be called _after_ the switch
+     * has been done (so `this.owner.activeItem !== this` and `this.isActive === false`). Subclasses can use these facts
+     * to differentiate the two cases.
      *
      * It is usually the case that subclasses overriding this method are interested in the cases where a player starts
      * attacking with this item and then stops attacking; for example, a throwable would show the cooking animation and start

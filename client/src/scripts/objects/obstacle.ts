@@ -385,7 +385,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         });
     }
 
-    destroy(): void {
+    override destroy(): void {
         super.destroy();
         this.image.destroy();
         this.smokeEmitter?.destroy();

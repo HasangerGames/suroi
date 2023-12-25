@@ -140,8 +140,10 @@ export class Loot extends GameObject {
     }
 
     destroy(): void {
-        this.animation?.kill();
         super.destroy();
+        this.images.background.destroy();
+        this.images.item.destroy();
+        this.animation?.kill();
     }
 
     canInteract(player: Player): boolean {

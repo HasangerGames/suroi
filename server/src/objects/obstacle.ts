@@ -52,7 +52,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     parentBuilding?: Building;
 
-    hitbox: Hitbox;
+    declare hitbox: Hitbox;
 
     constructor(
         game: Game,
