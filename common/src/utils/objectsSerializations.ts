@@ -7,6 +7,7 @@ import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
@@ -118,7 +119,7 @@ export interface ObjectsNetData {
         rotation: number
         dead: boolean
         full?: {
-            definition: WeaponDefinition
+            definition: ThrowableDefinition
             hitboxRadius: number
         }
     }
