@@ -4,7 +4,6 @@ import { Explosions, type ExplosionDefinition } from "../definitions/explosions"
 import { type GunDefinition } from "../definitions/guns";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
-import { type ThrowableDefinition } from "../definitions/throwables";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
@@ -32,6 +31,7 @@ export interface PlayerData {
         items: boolean
         id: boolean
         zoom: boolean
+        throwable: boolean
     }
 
     id: number
