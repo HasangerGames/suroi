@@ -12,7 +12,8 @@ export enum ObjectCategory {
     Loot,
     Building,
     Decal,
-    Parachute
+    Parachute,
+    Projectile
 }
 
 export enum PacketType {
@@ -111,7 +112,7 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
 
 Object.freeze(DEFAULT_INVENTORY);
 
-const tickrate = 35;
+const tickrate = 100;
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master

@@ -3,6 +3,7 @@ import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketTyp
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
@@ -33,6 +34,7 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player } from "./objects/player";
+import { Projectile } from "./objects/projectile";
 import { endGame, newGame, type PlayerContainer } from "./server";
 import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
@@ -47,6 +49,7 @@ interface ObjectMapping {
     [ObjectCategory.Building]: Building
     [ObjectCategory.Decal]: Decal
     [ObjectCategory.Parachute]: Parachute
+    [ObjectCategory.Projectile]: Projectile
 }
 
 export class Game {
@@ -66,20 +69,20 @@ export class Game {
 
     readonly objects = new ObjectPool<ObjectMapping>();
 
-    readonly livingPlayers: Set<Player> = new Set<Player>();
-    readonly connectedPlayers: Set<Player> = new Set<Player>();
+    readonly livingPlayers = new Set<Player>();
+    readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
     /**
      * New players created this tick
      */
-    readonly newPlayers: Set<Player> = new Set<Player>();
+    readonly newPlayers = new Set<Player>();
     /**
     * Players deleted this tick
     */
-    readonly deletedPlayers: Set<number> = new Set<number>();
+    readonly deletedPlayers = new Set<number>();
 
-    readonly explosions: Set<Explosion> = new Set<Explosion>();
-    readonly emotes: Set<Emote> = new Set<Emote>();
+    readonly explosions = new Set<Explosion>();
+    readonly emotes = new Set<Emote>();
     readonly parachutes = new Set<Parachute>();
 
     /**
@@ -104,7 +107,7 @@ export class Game {
     /**
      * All planes this tick
      */
-    readonly planes = new Set<{ position: Vector, direction: number }>();
+    readonly planes = new Set<{ readonly position: Vector, readonly direction: number }>();
 
     /**
      * All map pings this tick
@@ -217,6 +220,10 @@ export class Game {
 
             for (const parachute of this.objects.getCategory(ObjectCategory.Parachute)) {
                 parachute.update();
+            }
+
+            for (const projectile of this.objects.getCategory(ObjectCategory.Projectile)) {
+                projectile.update();
             }
 
             // Update bullets
@@ -546,6 +553,20 @@ export class Game {
         return explosion;
     }
 
+    addProjectile(definition: ThrowableDefinition, position: Vector): Projectile {
+        const projectile = new Projectile(this, Vec.clone(position), definition);
+
+        this.objects.add(projectile);
+        this.grid.addObject(projectile);
+
+        return projectile;
+    }
+
+    removeProjectile(projectile: Projectile): void {
+        this.removeObject(projectile);
+        projectile.dead = true;
+    }
+
     /**
      * Delete an object and give the id back to the allocator
      * @param object The object to delete
@@ -584,10 +605,12 @@ export class Game {
             thisHitbox = crateHitbox.transform(position);
 
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Obstacle &&
+                if (
+                    object instanceof Obstacle &&
                     !object.dead &&
                     object.definition.indestructible &&
-                    object.spawnHitbox.collidesWith(thisHitbox)) {
+                    object.spawnHitbox.collidesWith(thisHitbox)
+                ) {
                     collided = true;
                     thisHitbox.resolveCollision(object.spawnHitbox);
                 }
