@@ -524,9 +524,34 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(1.3, Vec.create(-10.09, -6.7)),
                 new CircleHitbox(1.3, Vec.create(0.1, -6.7)),
                 new CircleHitbox(1.3, Vec.create(10.30, -6.7)),
-                new CircleHitbox(1.3, Vec.create(22, -6.7)),
+                new CircleHitbox(1.3, Vec.create(22, -6.7))
             ),
             spawnHitbox: RectangleHitbox.fromRect(28, 18),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            },
+            noBulletCollision: true,
+            noCollisions: false,
+            reflectBullets: false,
+            spawnMode: MapObjectSpawnMode.River
+        },
+        {
+            idString: "sand_bag",
+            name: "Sand Bag",
+            material: "wood",
+            health: 2500,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(14, 8, Vec.create(0, 0))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(16, 10),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {

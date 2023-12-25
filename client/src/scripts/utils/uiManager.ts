@@ -47,7 +47,6 @@ export class UIManager {
 
         let name: string;
 
-
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
             name = "[Unknown Player]";
@@ -428,7 +427,7 @@ export class UIManager {
 
         switch (messageType) {
             case KillFeedMessageType.Kill: {
-                const hasKillstreak = killstreak as number > 1;
+                const hasKillstreak = killstreak! > 1;
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         let message = "";
@@ -437,7 +436,7 @@ export class UIManager {
                                 message = `${playerName} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                message = `${this.getPlayerName(killerID as number)} killed ${playerName}`;
+                                message = `${this.getPlayerName(killerID!)} killed ${playerName}`;
                                 break;
                             case KillType.Gas:
                                 message = `${playerName} died to the gas`;
@@ -454,7 +453,7 @@ export class UIManager {
                         break;
                     }
                     case "icon": {
-                        const killerName = killType === KillType.TwoPartyInteraction ? this.getPlayerName(killerID as number) : "";
+                        const killerName = killType === KillType.TwoPartyInteraction ? this.getPlayerName(killerID!) : "";
                         let iconName = "";
                         switch (killType) {
                             case KillType.Gas:
@@ -491,7 +490,7 @@ export class UIManager {
                     }
                     case killerID === this.game.activePlayerID: { // killed other
                         classes.push("kill-feed-item-killer");
-                        this._addKillMessage(kills as number, playerName, weaponUsed?.name ?? "", killstreak);
+                        this._addKillMessage(kills!, playerName, weaponUsed?.name ?? "", killstreak);
                         break;
                     }
                 }
@@ -502,7 +501,7 @@ export class UIManager {
                 if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
 
                 $("#kill-leader-leader").html(playerName);
-                $("#kill-leader-kills-counter").text(kills as number);
+                $("#kill-leader-kills-counter").text(kills!);
 
                 if (!hideInKillFeed) {
                     messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
@@ -513,7 +512,7 @@ export class UIManager {
             }
 
             case KillFeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(kills as number);
+                $("#kill-leader-kills-counter").text(kills!);
                 break;
             }
 
