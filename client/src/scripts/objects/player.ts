@@ -971,18 +971,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 );
 
-                // TODO: Spawn lever particle for cookables
-
                 if (def.cookable) {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.cook.leverImage,
-                        lifetime: 800,
+                        lifetime: 600,
                         position: this.position,
                         zIndex: ZIndexes.Players + 1,
-                        speed: Vec.create(-5, -5),
-                        rotation: this.rotation
+                        speed: Vec.rotate(Vec.create(8, 8), this.rotation),
+                        rotation: this.rotation,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: 0.8,
+                            end: 1
+                        }
                     });
-                    // debugger;
                 }
 
                 this.anims.weaponAnim = new Tween(
@@ -1022,8 +1027,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 );
 
-                // this.updateFistsPosition(true)
-
                 break;
             }
             case AnimationType.ThrowableThrow: {
@@ -1034,6 +1037,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const pinImage = this.images.altWeapon;
                 const projImage = this.images.weapon;
                 const def = this.activeItem;
+
+                if (!def.cookable) {
+                    this.game.particleManager.spawnParticle({
+                        frames: def.animation.cook.leverImage,
+                        lifetime: 600,
+                        position: this.position,
+                        zIndex: ZIndexes.Players + 1,
+                        speed: Vec.rotate(Vec.create(8, 8), this.rotation),
+                        rotation: this.rotation,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: 0.8,
+                            end: 1
+                        }
+                    });
+                }
 
                 this.updateFistsPosition(true);
                 pinImage.visible = false;
