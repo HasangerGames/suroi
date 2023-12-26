@@ -937,57 +937,60 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const pinImage = this.images.altWeapon;
                 pinImage.setFrame(def.animation.cook.leftImage);
                 pinImage.setPos(def.animation.cook.leftFist.x, 0);
-                projImage.setFrame(def.animation.cook.liveImage);
+                projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.cook.liveImage);
 
                 this.anims.leftFistAnim = new Tween(
                     this.game,
                     {
                         target: this.images.leftFist,
                         to: { x: def.animation.cook.leftFist.x, y: 0 },
-                        duration: 200,
+                        duration: 150,
                         onComplete: () => {
                             this.anims.leftFistAnim = new Tween(
                                 this.game,
                                 {
                                     target: this.images.leftFist,
                                     to: { x: def.animation.cook.leftFist.x, y: def.animation.cook.leftFist.y },
-                                    duration: 100
+                                    duration: 150
                                 }
                             );
 
                             this.anims.pinAnim = new Tween(
                                 this.game, {
                                     target: pinImage,
-                                    duration: 100,
+                                    duration: 150,
                                     to: {
                                         ...Vec.add(def.animation.cook.leftFist, Vec.create(15, 0))
                                     },
                                     onUpdate: () => {
                                         pinImage.visible = true;
-                                        // TODO: Spawn lever particle for cookables
                                     }
                                 }
                             );
-
-                            if (def.cookable) {
-                                this.game.particleManager.spawnParticle({
-                                    frames: def.animation.cook.leverImage,
-                                    lifetime: 800,
-                                    position: def.animation.cook.rightFist,
-                                    zIndex: ZIndexes.Players,
-                                    speed: Vec.create(0, 0)
-                                });
-                            }
                         }
                     }
                 );
+
+                // TODO: Spawn lever particle for cookables
+
+                if (def.cookable) {
+                    this.game.particleManager.spawnParticle({
+                        frames: def.animation.cook.leverImage,
+                        lifetime: 800,
+                        position: this.position,
+                        zIndex: ZIndexes.Players + 1,
+                        speed: Vec.create(-5, -5),
+                        rotation: this.rotation
+                    });
+                    // debugger;
+                }
 
                 this.anims.weaponAnim = new Tween(
                     this.game,
                     {
                         target: projImage,
                         to: { x: def.animation.cook.rightFist.x, y: 10 },
-                        duration: 100
+                        duration: 150
                     }
                 );
 
@@ -996,14 +999,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.rightFist,
                         to: { x: def.animation.cook.rightFist.x, y: 10 },
-                        duration: 100,
+                        duration: 150,
                         onComplete: () => {
                             this.anims.weaponAnim = new Tween(
                                 this.game,
                                 {
                                     target: projImage,
                                     to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
-                                    duration: 100
+                                    duration: 150
                                 }
                             );
 
@@ -1012,7 +1015,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 {
                                     target: this.images.rightFist,
                                     to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
-                                    duration: 100
+                                    duration: 150
                                 }
                             );
                         }

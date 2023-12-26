@@ -25,6 +25,7 @@ export interface ThrowableDefinition extends InventoryItemDefinition {
         readonly cook: {
             readonly leftImage: string
             readonly liveImage: string
+            readonly cookingImage?: string
             readonly leverImage: string
             readonly leftFist: Vector
             readonly rightFist: Vector
@@ -77,6 +78,7 @@ export const Throwables: ThrowableDefinition[] = [
             cook: {
                 leftImage: "proj_smoke_pin",
                 liveImage: "proj_smoke",
+                cookingImage: "proj_smoke_nopin",
                 leverImage: "proj_smoke_lever",
                 leftFist: Vec.create(38, -35),
                 rightFist: Vec.create(-10, 43)
