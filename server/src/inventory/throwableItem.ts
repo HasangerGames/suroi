@@ -5,7 +5,7 @@ import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDef
 import { Vec } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
-import { type Projectile } from "../objects/projectile";
+import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
 
 export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
@@ -65,7 +65,7 @@ class GrenadeHandler {
     private _cooking = false;
     private _thrown = false;
     private _timer?: Timeout;
-    private _projectile?: Projectile;
+    private _projectile?: ThrowableProjectile;
 
     constructor(
         readonly definition: ThrowableDefinition,
@@ -80,16 +80,25 @@ class GrenadeHandler {
     }
 
     private _detonate(): void {
-        if (this.definition.detonation.explosion !== undefined) {
+        this.parent.owner.recoil.active = false;
+
+        const explosion = this.definition.detonation.explosion;
+
+        if (explosion !== undefined) {
             this.game.addExplosion(
-                this.definition.detonation.explosion,
+                explosion,
                 this._projectile?.position ?? this.parent.owner.position,
-                this._projectile ?? this.parent.owner
+                this.parent.owner
             );
         }
     }
 
     cook(): void {
+        const recoil = this.parent.owner.recoil;
+        recoil.active = true;
+        recoil.multiplier = this.definition.cookSpeedMultiplier;
+        recoil.time = Infinity;
+
         if (this.definition.cookable) {
             this._timer = this.game.addTimeout(
                 () => {
@@ -109,6 +118,7 @@ class GrenadeHandler {
 
     throw(soft = false): void {
         if (!this._cooking || this._thrown) { return; }
+        this.parent.owner.recoil.active = false;
         this._thrown = true;
 
         this._timer ??= this.game.addTimeout(
@@ -121,7 +131,7 @@ class GrenadeHandler {
 
         const owner = this.parent.owner;
         const definition = this.definition;
-        const projectile = this._projectile = this.game.addProjectile(definition, owner.position);
+        const projectile = this._projectile = this.game.addProjectile(definition, owner.position, this.parent);
 
         /**
          * Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
@@ -132,7 +142,7 @@ class GrenadeHandler {
          * At very close range (the range most people would call "dropping at one's feet"), this prediction loses accuracy, but
          * it's not a big deal because the affected range is when the desired distance is < 0.6 units
          */
-        const superStrangeMysteryConstant = 370.15;
+        const superStrangeMysteryConstant = 787.245;
 
         projectile.velocity = Vec.fromPolar(
             owner.rotation,

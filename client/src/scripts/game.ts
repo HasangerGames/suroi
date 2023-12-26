@@ -35,7 +35,7 @@ import { Parachute } from "./objects/parachute";
 import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
-import { Projectile } from "./objects/projectile";
+import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap, Ping } from "./rendering/minimap";
@@ -56,7 +56,7 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.Building]: typeof Building
     readonly [ObjectCategory.Decal]: typeof Decal
     readonly [ObjectCategory.Parachute]: typeof Parachute
-    readonly [ObjectCategory.Projectile]: typeof Projectile
+    readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -68,7 +68,7 @@ const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Building]: Building,
     [ObjectCategory.Decal]: Decal,
     [ObjectCategory.Parachute]: Parachute,
-    [ObjectCategory.Projectile]: Projectile
+    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile
 };
 
 type ObjectMapping = {

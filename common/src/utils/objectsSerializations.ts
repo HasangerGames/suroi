@@ -7,6 +7,7 @@ import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
@@ -113,12 +114,12 @@ export interface ObjectsNetData {
     //
     // Throwable data
     //
-    [ObjectCategory.Projectile]: {
+    [ObjectCategory.ThrowableProjectile]: {
         position: Vector & { z: number }
         rotation: number
         dead: boolean
         full?: {
-            definition: WeaponDefinition
+            definition: ThrowableDefinition
             hitboxRadius: number
         }
     }
@@ -394,7 +395,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         }
     },
-    [ObjectCategory.Projectile]: {
+    [ObjectCategory.ThrowableProjectile]: {
         serializePartial(stream, data) {
             stream.writePosition(data.position);
             stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);

@@ -12,11 +12,13 @@ export interface ThrowableDefinition extends InventoryItemDefinition {
      * Whether cooking the grenade will run down the fuse
      */
     readonly cookable: boolean
+    readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
         readonly position: Vector
         readonly angle?: number
     }
+    readonly impactDamage?: number
     readonly fireDelay?: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
@@ -29,6 +31,8 @@ export const Throwables: ThrowableDefinition[] = [
         name: "Frag Grenade",
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
+        cookSpeedMultiplier: 0.7,
+        impactDamage: 1,
         fuseTime: 4000,
         cookable: true,
         maxThrowDistance: 96,
@@ -37,7 +41,7 @@ export const Throwables: ThrowableDefinition[] = [
             angle: 60
         },
         detonation: {
-            explosion: "barrel_explosion"
+            explosion: "frag_explosion"
         }
     },
     {
@@ -45,6 +49,8 @@ export const Throwables: ThrowableDefinition[] = [
         name: "Smoke Grenade",
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
+        cookSpeedMultiplier: 0.7,
+        impactDamage: 1,
         cookable: false,
         fuseTime: 2000,
         maxThrowDistance: 96,
@@ -53,7 +59,7 @@ export const Throwables: ThrowableDefinition[] = [
             angle: 60
         },
         detonation: {
-            explosion: "barrel_explosion"
+            explosion: "smoke_explosion"
         }
     }
 ];
