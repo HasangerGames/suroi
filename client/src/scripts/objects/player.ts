@@ -1019,6 +1019,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 );
 
+                // this.updateFistsPosition(true)
+
                 break;
             }
             case AnimationType.ThrowableThrow: {
@@ -1027,9 +1029,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     return;
                 }
                 const pinImage = this.images.altWeapon;
+                const projImage = this.images.weapon;
+                const def = this.activeItem;
 
                 this.updateFistsPosition(true);
-                pinImage.destroy(true);
+                pinImage.visible = false;
+                projImage.setFrame(def.idString);
                 break;
             }
         }

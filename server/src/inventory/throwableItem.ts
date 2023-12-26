@@ -145,6 +145,9 @@ class GrenadeHandler {
         );
 
         this._removeFromInventory();
+
+        owner.animation.type = AnimationType.ThrowableThrow;
+        owner.animation.seq = !owner.animation.seq;
     }
 
     destroy(): void {
