@@ -1349,7 +1349,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "oil_tanker_ship_tanks",
         name: "Oil Tanker",
-        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
+        spawnHitbox: RectangleHitbox.fromRect( 110, 300 , Vec.create(0, 0)),
         scopeHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
         ceilingImages: [
             {
@@ -1528,7 +1528,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             // Main Ship Hitbox
-            //{ idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
 
             // Cabin Windows
             { idString: "ship_cabin_window", position: Vec.create(-0.25, -87.5), rotation: 1 },
@@ -2190,6 +2190,32 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "container_mark",
                 position: Vec.create(35, -25)
             },
+
+            // Group 3
+            {
+                id: "container_mark",
+                position: Vec.create(-100, -60)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-115, -60)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-130, -60)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-100, -90)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-115, -90)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-130, -90)
+            },
         ],
         obstacles: [
             // Parking lot
@@ -2370,6 +2396,31 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 idString: randomContainer2,
                 position: Vec.create(35, -25)
+            },
+            // Group 3
+            {
+                idString: randomContainer2,
+                position: Vec.create(-100, -60)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-115, -60)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-130, -60)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-100, -90)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-115, -90)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-130, -90)
             },
         ]
     },

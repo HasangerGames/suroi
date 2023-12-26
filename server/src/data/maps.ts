@@ -317,7 +317,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("port_complex", Vec.create(this.width / 2, this.height / 2 - 40), 0);
+            map.generateBuilding("oil_tanker_ship", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -327,6 +327,16 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 8,
         genCallback(map) {
             map.generateObstacle("large_oil_tank", Vec.create(this.width / 2, this.height / 2 - 10), 0);
+        }
+    },
+    singleGun: {
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
+        genCallback(map) {
+            map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
         }
     },
     guns_test: {

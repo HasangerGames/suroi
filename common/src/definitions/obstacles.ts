@@ -1538,7 +1538,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "panel_with_a_button",
-            name: "Panel with a button",
+            name: "Control Panel",
             material: "metal",
             health: 200,
             reflectBullets: true,
@@ -1550,6 +1550,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(11, 8),
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
+            role: ObstacleSpecialRoles.Activatable,
+            interactText: "Activate",
+            replaceWith: {
+                idString: "panel_with_the_button_pressed",
+                delay: 0
+            },
+            triggerInteractOn: "vault_door",
             frames: {
                 particle: "barrel_particle",
                 residue: "barrel_residue"
@@ -1866,6 +1873,31 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                         new CircleHitbox(4, Vec.create(-28 * a + b, 91))
                     ];
                 }).flat()
+            )
+        },
+        {
+            idString: "oil_tanker_ship",
+            name: "Oil Tanker",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+              RectangleHitbox.fromRect(1, 190, Vec.create(49, -22)), // Port
+              RectangleHitbox.fromRect(1, 130, Vec.create(-32, -51.5)), // Starboard Top
+              RectangleHitbox.fromRect(1, 30, Vec.create(-32, 39)), // Starboard middle
+              RectangleHitbox.fromRect(1, 10, Vec.create(-32, 69)), // Starboard middle
+              RectangleHitbox.fromRect(85, 1, Vec.create(8, -118.5)), // Stern
             )
         },
         {
