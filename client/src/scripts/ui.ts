@@ -7,6 +7,7 @@ import { Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
+import { SpawnMelees } from "../../../common/src/definitions/melee";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
@@ -270,6 +271,49 @@ Video evidence is required.`)) {
     }
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
+
+
+  function loadMeleeItem(meleeID: string): void {
+    $("#skin-base").css(
+        "background-image",
+        `url("./img/game/melee/${meleeID}_base.svg")`
+    );
+    $("#skin-left-fist, #skin-right-fist").css(
+        "background-image",
+        `url("./img/game/melee/${meleeID}_fist.svg")`
+    );
+}
+
+updateSplashCustomize(game.console.getBuiltInCVar("cvLoadoutMelee"));
+
+for (const melee of SpawnMelees) {
+    if (melee.notInLoadout ?? (melee.roleRequired !== undefined &&
+        melee.roleRequired !== game.console.getBuiltInCVar("dv_role"))) continue;
+
+    const meleeItem = $(`<div id="melee-${melee.idString}" class="melee-list-item-container">
+        <div class="melee-list-item">
+            <div class="melee-base" style="background-image: url('./img/game/melee/${melee.idString}_base.svg')"></div>
+            <div class="melee-left-fist" style="background-image: url('./img/game/melee/${melee.idString}_fist.svg')"></div>
+            <div class="melee-right-fist" style="background-image: url('./img/game/melee/${melee.idString}_fist.svg')"></div>
+        </div>
+        <span class="melee-name">${melee.name}</span>
+    </div>`);
+
+    meleeItem.on("click", function() {
+        game.console.setBuiltInCVar("cvLoadoutMelee", melee.idString);
+        $(this).addClass("selected").siblings().removeClass("selected");
+        updateSplashCustomize(melee.idString);
+    });
+
+    $("#melee-list").append(meleeItem);
+}
+
+$(`#melee-${game.console.getBuiltInCVar("cvLoadoutMelee")}`).addClass("selected");
+
+
+
+
+    
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
     for (const emote of Emotes.definitions) {

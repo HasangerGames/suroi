@@ -111,6 +111,7 @@ export const LootRadius: Record<ItemType, number> = {
     [ItemType.Backpack]: 3,
     [ItemType.Scope]: 3,
     [ItemType.Skin]: 3
+    
 };
 
 export interface BaseBulletDefinition {
