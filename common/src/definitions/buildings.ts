@@ -580,7 +580,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         ceilingImages: [{
             key: "port_warehouse_ceiling_red",
-            position: Vec.create(0, 0), 
+            position: Vec.create(0, 0),
         }],
         obstacles: [
             {
@@ -702,7 +702,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         ceilingImages: [{
             key: "port_warehouse_ceiling_blue",
-            position: Vec.create(0, 0), 
+            position: Vec.create(0, 0),
         }],
         obstacles: [
             {
@@ -1347,6 +1347,26 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(16, 30)
     },
     {
+        idString: "oil_tanker_ship_tanks",
+        name: "Oil Tanker",
+        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
+        ceilingImages: [
+            {
+                key: "oil_tanker_ship_tank_ceiling",
+                position: Vec.create(10.5, 20)
+            }
+        ],
+        floors: [
+
+        ],
+        obstacles: [
+            { idString: "large_oil_tank", position: Vec.create(10, -46.5) },
+            { idString: "large_oil_tank", position: Vec.create(10, 20) },
+            { idString: "large_oil_tank", position: Vec.create(10, 88) },
+        ],
+    },
+    {
         idString: "ship",
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
@@ -1483,38 +1503,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "oil_tanker_ship_tanks",
-        name: "Oil Tanker",
-        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
-        scopeHitbox: RectangleHitbox.fromRect(100, 100, Vec.create(0, 0)),
-        ceilingImages: [
-            {
-                key: "oil_tanker_ship_tank_ceiling",
-                position: Vec.create(10.5, 20)
-            }
-        ],
-        floors: [
-           
-        ],
-        obstacles: [
-            { idString: "large_oil_tanker_tank", position: Vec.create(10, -46.5) },
-            { idString: "large_oil_tanker_tank", position: Vec.create(10, 20) },
-            { idString: "large_oil_tanker_tank", position: Vec.create(10, 88) },
-        ],
-    },
-    {
         idString: "oil_tanker_ship",
         name: "Oil Tanker",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
-        scopeHitbox: 
-        new HitboxGroup(
-            RectangleHitbox.fromRect(65, 29, Vec.create(4.5, -102.5)),
-            RectangleHitbox.fromRect(7.5, 28, Vec.create(41.7, -101.5))
-        ),
+        scopeHitbox:
+            new HitboxGroup(
+                RectangleHitbox.fromRect(65, 29, Vec.create(4.5, -102.5)),
+                RectangleHitbox.fromRect(7.5, 28, Vec.create(41.7, -101.5))
+            ),
         floorImages: [
             {
-            key: "oil_tanker_ship_floor",
-            position: Vec.create(0, 0)
+                key: "oil_tanker_ship_floor",
+                position: Vec.create(0, 0)
             }
         ],
         ceilingImages: [
@@ -1524,11 +1524,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         floors: [
-           
+
         ],
         obstacles: [
             // Main Ship Hitbox
-            { idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
+            //{ idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
 
             // Cabin Windows
             { idString: "ship_cabin_window", position: Vec.create(-0.25, -87.5), rotation: 1 },
@@ -1548,7 +1548,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
         ],
         subBuildings: [
-            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0)  },
+            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) },
         ],
     },
     {
@@ -2140,21 +2140,59 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             hitbox: RectangleHitbox.fromRect(315, 425, Vec.create(0, 0))
         }],
         decals: [
-    // Group 1
-    {
-        id: "container_mark",
-        position: Vec.create(-50, 0)
-    },
-    {
-        id: "container_mark",
-        position: Vec.create(-35, 0)
-    },
-    {
-        id: "container_mark",
-        position: Vec.create(-20, 0)
-    },
+            // Group 1
+            {
+                id: "container_mark",
+                position: Vec.create(-60, 5)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-45, 5)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-30, 5)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-60, -25)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-45, -25)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(-30, -25)
+            },
+            // Group 2
+            {
+                id: "container_mark",
+                position: Vec.create(5, 5)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(20, 5)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(35, 5)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(5, -25)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(20, -25)
+            },
+            {
+                id: "container_mark",
+                position: Vec.create(35, -25)
+            },
         ],
         obstacles: [
+            // Parking lot
             { idString: "truck", position: Vec.create(72.5, 34), rotation: 3 },
             { idString: "trailer", position: Vec.create(100, 34), rotation: 1 },
 
@@ -2176,11 +2214,35 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "forklift", position: Vec.create(20, 102.5), rotation: 2 },
             { idString: "pallet", position: Vec.create(20, 90), rotation: 2 },
 
+
+            // The main entrance
             { idString: "barrier", position: Vec.create(-124, -10), rotation: 0 },
 
             { idString: "sand_bag", position: Vec.create(-135, -5), rotation: 1 },
             { idString: "sand_bag", position: Vec.create(-135, -20), rotation: 2 },
 
+
+            // Secret loot area sort of
+            { idString: "oil_tank", position: Vec.create(-137, 60), rotation: 0 },
+
+            { idString: "super_barrel", position: Vec.create(-137, 75), rotation: 0 },
+            { idString: "barrel", position: Vec.create(-147, 80), rotation: 0 },
+
+            { idString: "super_barrel", position: Vec.create(-134, 90), rotation: 0 },
+            { idString: "barrel", position: Vec.create(-126, 85), rotation: 0 },
+
+            { idString: {
+                aegis_crate: 0.5,
+                flint_crate: 0.5
+            }, position: Vec.create(-126, 100), rotation: 0 },
+            { idString: {
+                aegis_crate: 0.5,
+                flint_crate: 0.5
+            }, position: Vec.create(-136, 105), rotation: 0 },
+
+            { idString: "sand_bag", position: Vec.create(-132, 117), rotation: 2 },
+            { idString: "barrel", position: Vec.create(-145, 117), rotation: 2 },
+            
             ...(() => Array.from(
                 { length: 5 },
                 (_, i) => ({
@@ -2188,14 +2250,127 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     position: Vec.create(140, 50 - (41.5 * i)),
                     rotation: 0
                 })
-            ))()
+            ))(),
+
+            // Fence to the bottom of the parking lot
+            ...(() => Array.from(
+                { length: 19 },
+                (_, i) => ({
+                    idString: "port_fence",
+                    position: Vec.create(-0.75 - (7.8 * i), 135),
+                    rotation: 0
+                })
+            ))(),
+
+            // Fence to the bottom of the red warehouse
+            ...(() => Array.from(
+                { length: 13 },
+                (_, i) => ({
+                    idString: "port_fence",
+                    position: Vec.create(120 - (7.8 * i), 135),
+                    rotation: 0
+                })
+            ))(),
+
+            // Fence to the left of the red warehouse
+            ...(() => Array.from(
+                { length: 16 },
+                (_, i) => ({
+                    idString: "port_fence",
+                    position: Vec.create(-152.3, 131.8 - (7.8 * i)),
+                    rotation: 1
+                })
+            ))(),
+
+            // Fence going north of the main entrance to the left.
+            ...(() => Array.from(
+                { length: 13 },
+                (_, i) => ({
+                    idString: "port_fence",
+                    position: Vec.create(-152.3, -37.8 - (7.8 * i)),
+                    rotation: 1
+                })
+            ))(),
+
+            // Fence directly north of the main entrance
+            ...(() => Array.from(
+                { length: 26 },
+                (_, i) => ({
+                    idString: "port_fence",
+                    position: Vec.create(46 - (7.8 * i), -135),
+                    rotation: 0
+                })
+            ))(),
+
+            // Fence north of the crane
+            ...(() => Array.from(
+                { length: 9 },
+                (_, i) => ({
+                    idString: "port_fence",
+                    position: Vec.create(132.2 - (7.8 * i), -135),
+                    rotation: 0
+                })
+            ))(),
+
+            { idString: "port_fence_side", position: Vec.create(140, -131.8), rotation: 1 },
         ],
         subBuildings: [
-            { idString: "container_1", position: Vec.create(-84, 100), orientation: 1},
+            { idString: "container_1", position: Vec.create(-84, 100), orientation: 1 },
             { idString: "crane", position: Vec.create(97, 25) },
             { idString: "port_warehouse_red", position: Vec.create(-95, -60), orientation: 1 },
             { idString: "port_warehouse_blue", position: Vec.create(-97, 15), orientation: 3 },
             { idString: "port_shed", position: Vec.create(-25, -134), orientation: 1 },
+
+            // Group 1
+            {
+                idString: randomContainer2,
+                position: Vec.create(-60, 5)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-45, 5)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-30, 5)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-60, -25)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-45, -25)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(-30, -25)
+            },
+            // Group 2
+            {
+                idString: randomContainer2,
+                position: Vec.create(5, 5)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(20, 5)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(35, 5)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(5, -25)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(20, -25)
+            },
+            {
+                idString: randomContainer2,
+                position: Vec.create(35, -25)
+            },
         ]
     },
     {
@@ -2204,9 +2379,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(430, 425, Vec.create(-63, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: Vec.create(-120, 0) },
-            { idString: "ship", position: Vec.create(82, -50) },
-            { idString: "crane", position: Vec.create(-20, -95) }
+            { idString: "new_port", position: Vec.create(-120, 0) },
+            { idString: { "ship": 1, "oil_tanker_ship": 1}, position: Vec.create(74, -65) },
         ]
     }
 

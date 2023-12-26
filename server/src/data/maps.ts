@@ -317,7 +317,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("new_port", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("port_complex", Vec.create(this.width / 2, this.height / 2 - 40), 0);
         }
     },
     singleObstacle: {
@@ -326,9 +326,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("sand_bag", Vec.create(this.width / 2, this.height / 2), 0);
-            map.game.addLoot("ak47", Vec.create(this.width / 2 + 10, this.height / 2));
-            map.game.addLoot("762mm", Vec.create(this.width / 2 + 10, this.height / 2), Infinity);
+            map.generateObstacle("large_oil_tank", Vec.create(this.width / 2, this.height / 2 - 10), 0);
         }
     },
     guns_test: {

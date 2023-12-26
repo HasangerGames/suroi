@@ -1338,6 +1338,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
+            idString: "large_oil_tank",
+            name: "Large Oil Tank",
+            material: "large_refinery_barrel",
+            health: 3500,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
+            },
+            hitbox: new CircleHitbox(28),
+            rotationMode: RotationMode.Full,
+            explosion: "large_refinery_barrel_explosion",
+            reflectBullets: true,
+            zIndex: ZIndexes.ObstaclesLayer1,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
             idString: "smokestack",
             name: "Smokestack",
             material: "metal",
@@ -1956,6 +1975,41 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             particleVariations: 2,
             frames: {
                 particle: "rock_particle"
+            }
+        },
+        {
+            idString: "port_fence",
+            name: "Port Fence",
+            material: "metal",
+            health: 80,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 0)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "port_fence_side",
+            name: "Port Fence Side",
+            material: "metal",
+            health: 80,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 3.2)),
+                RectangleHitbox.fromRect(1.3, 7.75, Vec.create(3.2, 0)),
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
             }
         },
         {
