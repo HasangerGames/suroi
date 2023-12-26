@@ -49,6 +49,11 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
     }
 
     override stopUse(): void {
+        const owner = this.owner;
+        owner.animation.type = AnimationType.ThrowableThrow;
+        owner.animation.seq = !this.owner.animation.seq;
+        owner.game.partialDirtyObjects.add(owner);
+
         this._activeHandler?.throw(!this.isActive);
         this._activeHandler = undefined;
     }
@@ -111,6 +116,8 @@ class GrenadeHandler {
         if (!this._cooking || this._thrown) { return; }
         this._thrown = true;
 
+        const owner = this.parent.owner;
+
         this._timer ??= this.game.addTimeout(
             () => {
                 this.destroy();
@@ -119,7 +126,6 @@ class GrenadeHandler {
             this.definition.fuseTime
         );
 
-        const owner = this.parent.owner;
         const definition = this.definition;
         const projectile = this._projectile = this.game.addProjectile(definition, owner.position);
 
@@ -145,9 +151,6 @@ class GrenadeHandler {
         );
 
         this._removeFromInventory();
-
-        owner.animation.type = AnimationType.ThrowableThrow;
-        owner.animation.seq = !owner.animation.seq;
     }
 
     destroy(): void {
