@@ -3,6 +3,7 @@ import $ from "jquery";
 import { isMobile } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
+import { SpawnMelees } from "../../../common/src/definitions/spawnmelees";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
@@ -270,6 +271,9 @@ Video evidence is required.`)) {
     }
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
+
+
+    
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
     for (const emote of Emotes.definitions) {
