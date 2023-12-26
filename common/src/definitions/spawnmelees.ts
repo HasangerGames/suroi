@@ -12,8 +12,7 @@ export const SpawnMelees = new ObjectDefinitions<SpawnMeleeDefinition>([
     {
         idString: "plzwork",
         name: "plzwork",
-        itemType: ItemType.Melee,
-        roleRequired: "hasanger"
+        itemType: ItemType.Melee
     },
  
 ]);
