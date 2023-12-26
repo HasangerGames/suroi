@@ -6,13 +6,13 @@ import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
-export class Projectile extends GameObject<ObjectCategory.Projectile> {
-    override readonly type = ObjectCategory.Projectile;
+export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProjectile> {
+    override readonly type = ObjectCategory.ThrowableProjectile;
 
     readonly image = new SuroiSprite();
     radius?: number;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Projectile]) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
         super(game, id);
 
         this.container.addChild(this.image);
@@ -20,7 +20,7 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
         this.updateFromData(data);
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.Projectile], isNew = false): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.ThrowableProjectile], isNew = false): void {
         if (data.full) {
             this.image.setFrame(data.full.definition.animation.cook.liveImage);
             this.radius = data.full.hitboxRadius;

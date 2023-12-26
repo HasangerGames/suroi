@@ -77,9 +77,11 @@ export class Bullet extends BaseBullet {
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
-        if (this.shooter.dead ||
+        if (
+            this.shooter.dead ||
             this.position.x < 0 || this.position.x > this.game.map.width ||
-            this.position.y < 0 || this.position.y > this.game.map.height) {
+            this.position.y < 0 || this.position.y > this.game.map.height
+        ) {
             this.dead = true;
             return [];
         }

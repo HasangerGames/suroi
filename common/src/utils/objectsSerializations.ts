@@ -114,7 +114,7 @@ export interface ObjectsNetData {
     //
     // Throwable data
     //
-    [ObjectCategory.Projectile]: {
+    [ObjectCategory.ThrowableProjectile]: {
         position: Vector & { z: number }
         rotation: number
         dead: boolean
@@ -395,7 +395,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         }
     },
-    [ObjectCategory.Projectile]: {
+    [ObjectCategory.ThrowableProjectile]: {
         serializePartial(stream, data) {
             stream.writePosition(data.position);
             stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);

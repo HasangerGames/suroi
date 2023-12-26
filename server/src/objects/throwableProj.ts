@@ -1,17 +1,19 @@
 import { GameConstants, ObjectCategory } from "../../../common/src/constants";
-import { type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type ThrowableItem } from "../inventory/throwableItem";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
+import { Player } from "./player";
 
-export class Projectile extends GameObject<ObjectCategory.Projectile> {
-    readonly type = ObjectCategory.Projectile;
+export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProjectile> {
+    readonly type = ObjectCategory.ThrowableProjectile;
 
-    readonly definition: WeaponDefinition;
+    readonly definition: ThrowableDefinition;
 
     declare readonly hitbox: CircleHitbox;
 
@@ -27,7 +29,9 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
         this._velocity.z = velocity.z ?? this._velocity.z;
     }
 
-    _angularVelocity = 0.0035;
+    angularVelocity = 0.0035;
+
+    private readonly source: ThrowableItem;
 
     /**
      * Ensures that the drag experienced is not dependant on tickrate.
@@ -35,18 +39,23 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
      *
      * Precise results obviously depend on the tickrate
      */
-    private static readonly _dragConstant = Math.exp(-2.7 / GameConstants.tickrate);
+    private static readonly _dragConstant = Math.pow(1.6, -2.7 / GameConstants.tickrate);
 
     override get position(): Vector { return this.hitbox.position; }
     private _height = 0;
 
-    constructor(game: Game, position: Vector, definition: WeaponDefinition, radius?: number) {
+    constructor(game: Game, position: Vector, definition: ThrowableDefinition, source: ThrowableItem, radius?: number) {
         super(game, position);
         this.definition = definition;
+        this.source = source;
         this.hitbox = new CircleHitbox(radius ?? 1, Vec.clone(position));
     }
 
     damage(amount: number, source?: GameObject<ObjectCategory> | undefined): void { }
+
+    push(angle: number, velocity: number): void {
+        this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, velocity));
+    }
 
     update(): void {
         const deltaTime = GameConstants.msPerTick;
@@ -55,7 +64,7 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
         this.hitbox.position.x += this._velocity.x * halfDt;
         this.hitbox.position.y += this._velocity.y * halfDt;
 
-        this._velocity = { ...Vec.scale(this._velocity, Projectile._dragConstant), z: this._velocity.z };
+        this._velocity = { ...Vec.scale(this._velocity, ThrowableProjectile._dragConstant), z: this._velocity.z };
 
         this._velocity.z -= 9.8 * deltaTime;
 
@@ -63,13 +72,16 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
         this.hitbox.position.y += this._velocity.y * halfDt;
         this._height += this._velocity.z * deltaTime;
 
-        this.rotation = Angle.normalizeAngle(this.rotation + this._angularVelocity * deltaTime);
+        this.rotation = Angle.normalizeAngle(this.rotation + this.angularVelocity * deltaTime);
 
-        const objects = this.game.grid.intersectsHitbox(this.hitbox);
-        for (const object of objects) {
+        const shouldCollideWithPlayers = this.definition.impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0036;
+
+        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             if (
-                object instanceof Obstacle &&
-                object.collidable &&
+                (
+                    (object instanceof Obstacle && object.collidable) ||
+                    (object instanceof Player && shouldCollideWithPlayers)
+                ) &&
                 object.hitbox.collidesWith(this.hitbox)
             ) {
                 const hitbox = object.hitbox;
@@ -81,6 +93,14 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
                 const { position: oldPosition } = this.hitbox.clone();
 
                 this.hitbox.resolveCollision(hitbox);
+
+                if (object instanceof Player) {
+                    object.damage(
+                        this.definition.impactDamage!,
+                        this.source.owner,
+                        this.source
+                    );
+                }
 
                 const handleCircle = (hitbox: CircleHitbox): void => {
                     const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
@@ -180,14 +200,14 @@ export class Projectile extends GameObject<ObjectCategory.Projectile> {
                     }
                 }
 
-                this._angularVelocity *= 0.6;
+                this.angularVelocity *= 0.6;
             }
         }
 
         this.game.partialDirtyObjects.add(this);
     }
 
-    get data(): Required<ObjectsNetData[ObjectCategory.Projectile]> {
+    get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
         return {
             position: {
                 ...this.position,

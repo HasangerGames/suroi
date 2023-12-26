@@ -34,12 +34,13 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player } from "./objects/player";
-import { Projectile } from "./objects/projectile";
+import { ThrowableProjectile } from "./objects/throwableProj";
 import { endGame, newGame, type PlayerContainer } from "./server";
 import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
+import { type ThrowableItem } from "./inventory/throwableItem";
 
 interface ObjectMapping {
     [ObjectCategory.Player]: Player
@@ -49,7 +50,7 @@ interface ObjectMapping {
     [ObjectCategory.Building]: Building
     [ObjectCategory.Decal]: Decal
     [ObjectCategory.Parachute]: Parachute
-    [ObjectCategory.Projectile]: Projectile
+    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile
 }
 
 export class Game {
@@ -222,7 +223,7 @@ export class Game {
                 parachute.update();
             }
 
-            for (const projectile of this.objects.getCategory(ObjectCategory.Projectile)) {
+            for (const projectile of this.objects.getCategory(ObjectCategory.ThrowableProjectile)) {
                 projectile.update();
             }
 
@@ -553,8 +554,8 @@ export class Game {
         return explosion;
     }
 
-    addProjectile(definition: ThrowableDefinition, position: Vector): Projectile {
-        const projectile = new Projectile(this, Vec.clone(position), definition);
+    addProjectile(definition: ThrowableDefinition, position: Vector, source: ThrowableItem): ThrowableProjectile {
+        const projectile = new ThrowableProjectile(this, Vec.clone(position), definition, source);
 
         this.objects.add(projectile);
         this.grid.addObject(projectile);
@@ -562,7 +563,7 @@ export class Game {
         return projectile;
     }
 
-    removeProjectile(projectile: Projectile): void {
+    removeProjectile(projectile: ThrowableProjectile): void {
         this.removeObject(projectile);
         projectile.dead = true;
     }

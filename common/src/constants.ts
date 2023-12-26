@@ -13,7 +13,7 @@ export enum ObjectCategory {
     Building,
     Decal,
     Parachute,
-    Projectile
+    ThrowableProjectile
 }
 
 export enum PacketType {

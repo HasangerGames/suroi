@@ -76,15 +76,18 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
         }
 
-        this.velocity = Vec.scale(this.velocity, 0.9);
-        this.position = Vec.add(this.position, Vec.scale(this.velocity, GameConstants.msPerTick * 0.5));
+        const dt = GameConstants.msPerTick;
+        const halfDt = dt * 0.5;
 
-        let velocity = Vec.scale(this.velocity, GameConstants.msPerTick);
-        if (Vec.squaredLength(velocity) >= 1) {
-            velocity = Vec.normalizeSafe(velocity);
+        this.position = Vec.add(this.position, Vec.scale(this.velocity, halfDt));
+        this.velocity = Vec.scale(this.velocity, Loot._dragConstant);
+
+        let displacement = Vec.scale(this.velocity, halfDt);
+        if (Vec.squaredLength(displacement) >= 1) {
+            displacement = Vec.normalizeSafe(displacement);
         }
 
-        this.position = Vec.add(this.position, Vec.scale(velocity, 0.5));
+        this.position = Vec.add(this.position, displacement);
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
