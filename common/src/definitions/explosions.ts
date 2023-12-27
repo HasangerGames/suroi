@@ -226,7 +226,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         },
         {
             idString: "frag_explosion",
-            name: "Frag grenade",
+            name: "Frag Grenade",
             damage: 150,
             obstacleMultiplier: 2,
             radius: {
