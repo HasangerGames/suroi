@@ -243,7 +243,11 @@ export class Map {
         }
         if (riverPoints.length < 20 || riverPoints.length > 59) return;
 
-        rivers.push(new River(width, riverPoints, rivers));
+        const mapBounds = new RectangleHitbox(
+            Vec.create(this.oceanSize, this.oceanSize),
+            Vec.create(this.width - this.oceanSize, this.height - this.oceanSize)
+        );
+        rivers.push(new River(width, riverPoints, rivers, mapBounds));
     }
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
