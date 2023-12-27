@@ -60,7 +60,6 @@ export class Inventory {
     get throwable(): ThrowableDefinition | undefined { return this._throwable; }
     set throwable(throwable: ReifiableDef<ThrowableDefinition>) {
         this._throwable = Loots.reify<ThrowableDefinition>(throwable);
-        this.owner.dirty.throwable = true;
     }
 
     /**

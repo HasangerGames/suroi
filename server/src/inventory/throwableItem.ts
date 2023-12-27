@@ -121,6 +121,11 @@ class GrenadeHandler {
         this.parent.owner.recoil.active = false;
         this._thrown = true;
 
+        const owner = this.parent.owner;
+        owner.animation.type = AnimationType.ThrowableThrow;
+        owner.animation.seq = !owner.animation.seq;
+        owner.game.partialDirtyObjects.add(owner);
+
         this._timer ??= this.game.addTimeout(
             () => {
                 this.destroy();
@@ -129,9 +134,11 @@ class GrenadeHandler {
             this.definition.fuseTime
         );
 
-        const owner = this.parent.owner;
         const definition = this.definition;
-        const projectile = this._projectile = this.game.addProjectile(definition, owner.position, this.parent);
+        const projectile = this._projectile = this.game.addProjectile(definition, Vec.sub(owner.position, {
+            x: definition.animation.cook.rightFist.x / 20,
+            y: definition.animation.cook.rightFist.y / 20
+        }), this.parent);
 
         /**
          * Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance

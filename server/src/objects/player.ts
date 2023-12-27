@@ -582,7 +582,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         stats: item.stats
                     }) satisfies (PlayerData["inventory"]["weapons"] & object)[number];
                 }),
-                throwable: inventory.throwable,
                 items: inventory.items.asRecord()
             }
         };

@@ -448,6 +448,7 @@ export class Game {
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
+        this.updateObjects = true;
 
         player.joined = true;
 
