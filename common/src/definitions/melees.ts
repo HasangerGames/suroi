@@ -85,7 +85,7 @@ export const Melees: MeleeDefinition[] = [
         obstacleMultiplier: 1.25,
         radius: 2.7,
         offset: Vec.create(3.1, 0.9),
-        cooldown: 200,
+        cooldown: 225,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
@@ -108,25 +108,25 @@ export const Melees: MeleeDefinition[] = [
         name: "Maul",
         itemType: ItemType.Melee,
         damage: 40,
-        obstacleMultiplier: 2,
+        obstacleMultiplier: 1.9,
         piercingMultiplier: 1,
         radius: 2.7,
-        offset: Vec.create(4.9, -1),
+        offset: Vec.create(5.4, -0.5),
         cooldown: 450,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
             animationDuration: 150,
-            left: Vec.create(35, -25),
-            right: Vec.create(35, 5),
-            useLeft: Vec.create(35, -15),
-            useRight: Vec.create(65, -15)
+            left: Vec.create(40, -25),
+            right: Vec.create(40, 15),
+            useLeft: Vec.create(35, -35),
+            useRight: Vec.create(75, -20)
         },
         image: {
-            position: Vec.create(40, 20),
+            position: Vec.create(45, 20),
             usePosition: Vec.create(85, -25),
             angle: 135,
-            useAngle: 45,
+            useAngle: 65,
             lootScale: 0.6
         }
     },
@@ -181,6 +181,33 @@ export const Melees: MeleeDefinition[] = [
             usePosition: Vec.create(140, -30),
             angle: 50,
             useAngle: -20,
+            lootScale: 0.6
+        }
+    },
+    {
+        idString: "ice_pick",
+        name: "Ice Pick",
+        itemType: ItemType.Melee,
+        damage: 35,
+        obstacleMultiplier: 1.9,
+        piercingMultiplier: 1,
+        radius: 2.8,
+        offset: Vec.create(5.4, -0.5),
+        cooldown: 420,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        fists: {
+            animationDuration: 150,
+            left: Vec.create(40, -30),
+            right: Vec.create(40, 10),
+            useLeft: Vec.create(33, -36),
+            useRight: Vec.create(68, -20)
+        },
+        image: {
+            position: Vec.create(47, 25),
+            usePosition: Vec.create(85, -25),
+            angle: 130,
+            useAngle: 65,
             lootScale: 0.6
         }
     }
