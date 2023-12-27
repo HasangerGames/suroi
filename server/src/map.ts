@@ -556,7 +556,7 @@ export class Map {
             for (const object of objects) {
                 let objectHitbox: Hitbox | undefined;
                 if ("spawnHitbox" in object) {
-                    objectHitbox = object.spawnHitbox as Hitbox;
+                    objectHitbox = object.spawnHitbox;
                 } else if (object.hitbox) {
                     objectHitbox = object.hitbox;
                 }

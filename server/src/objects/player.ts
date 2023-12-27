@@ -34,11 +34,11 @@ import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
-import { GameObject } from "./gameObject";
+import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 
-export class Player extends GameObject<ObjectCategory.Player> {
+export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
     override readonly damageable = true;
 
@@ -428,7 +428,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
 
-        if (this.isMoving) this.game.grid.addObject(this);
+        if (this.isMoving) this.game.grid.updateObject(this);
 
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
@@ -593,7 +593,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         };
 
         // new and deleted players
-        if (this._firstPacket) packet.newPlayers = this.game.objects.getCategory(ObjectCategory.Player);
+        if (this._firstPacket) packet.newPlayers = this.game.grid.pool.getCategory(ObjectCategory.Player);
         else packet.newPlayers = this.game.newPlayers;
 
         packet.deletedPlayers = this.game.deletedPlayers;
