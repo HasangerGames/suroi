@@ -87,7 +87,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 }
 
                 if (direction) {
-                    if (HITBOX_DEBUG_MODE) {
+                    /*if (HITBOX_DEBUG_MODE) {
                         graphics?.lineStyle({
                             color: 0xff0000,
                             width: 0.1
@@ -99,7 +99,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         this.addTimeout(() => {
                             graphics?.destroy();
                         }, 30);
-                    }
+                    } */
 
                     const angle = Math.atan2(direction.y, direction.x);
 

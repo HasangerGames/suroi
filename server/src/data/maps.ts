@@ -317,7 +317,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("oil_tanker_ship", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("oil_tanker_ship", Vec.create(this.width / 2, this.height / 2 + 80), 0);
         }
     },
     singleObstacle: {

@@ -1898,6 +1898,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
               RectangleHitbox.fromRect(1, 30, Vec.create(-32, 39)), // Starboard middle
               RectangleHitbox.fromRect(1, 10, Vec.create(-32, 69)), // Starboard middle
               RectangleHitbox.fromRect(85, 1, Vec.create(8, -118.5)), // Stern
+              RectangleHitbox.fromRect(69, 1.5, Vec.create(3.5, -88.5)), // Front of the cabin
+              RectangleHitbox.fromRect(1.5, 17.5, Vec.create(37, -96.5)), // Left wall of the entrance to the cabin
+              RectangleHitbox.fromRect(1.5, 29, Vec.create(46.5, -102.5)), // Right wall of the entrance to the cabin
+              RectangleHitbox.fromRect(75, 1.5, Vec.create(9, -117)), // Back of the cabin
+              RectangleHitbox.fromRect(1.5, 29, Vec.create(-29, -102.5)), // Right wall of the cabin
+              RectangleHitbox.fromRect(1.5, 17.5, Vec.create(37, -96.5)), // Right wall of the vector room
             )
         },
         {

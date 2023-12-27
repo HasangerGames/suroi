@@ -347,8 +347,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.inventory.items["4x_scope"] = 1;
             this.inventory.scope = "4x_scope";
         } else {
-            this.inventory.items["8x_scope"] = 1;
-            this.inventory.scope = "8x_scope";
+            this.inventory.items["15x_scope"] = 1;
+            this.inventory.scope = "15x_scope";
         }
 
         this.updateAndApplyModifiers();
