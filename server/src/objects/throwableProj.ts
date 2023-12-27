@@ -1,7 +1,7 @@
 import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Collision, Geometry, Numeric } from "../../../common/src/utils/math";
+import { Angle, Collision, type CollisionResponse, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -51,8 +51,6 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         this.hitbox = new CircleHitbox(radius ?? 1, Vec.clone(position));
     }
 
-    damage(amount: number, source?: GameObject<ObjectCategory> | undefined): void { }
-
     push(angle: number, velocity: number): void {
         this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, velocity));
     }
@@ -92,8 +90,6 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                  */
                 const { position: oldPosition } = this.hitbox.clone();
 
-                this.hitbox.resolveCollision(hitbox);
-
                 if (object instanceof Player) {
                     object.damage(
                         this.definition.impactDamage!,
@@ -102,12 +98,15 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                     );
                 }
 
+                const handleCollision = (collision: NonNullable<CollisionResponse>): void => {
+                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0001));
+                    this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
+                };
+
                 const handleCircle = (hitbox: CircleHitbox): void => {
                     const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
 
-                    if (collision) {
-                        this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
-                    }
+                    if (collision) handleCollision(collision);
 
                     const reflectionReference = Vec.scale(
                         Vec.create(hitbox.position.x - this.position.x, hitbox.position.y - this.position.y),
@@ -116,7 +115,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
                     const speed = Vec.dotProduct(this.velocity, reflectionReference);
 
-                    if (speed < 0) return;
+                    if (speed < 0 || Number.isNaN(speed)) return;
 
                     this._velocity.x -= speed * reflectionReference.x;
                     this._velocity.y -= speed * reflectionReference.y;
@@ -124,11 +123,9 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
                 const handleRectangle = (hitbox: RectangleHitbox): void => {
                     // if anyone can make this math more correct, feel free to do so
-                    const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, oldPosition, this.hitbox.radius);
+                    const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
 
-                    if (collision) {
-                        this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
-                    }
+                    if (collision) handleCollision(collision);
 
                     const effectiveDifference = Vec.project(
                         Vec.sub(hitbox.getCenter(), this.position),
@@ -147,8 +144,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                     );
 
                     const speed = Vec.dotProduct(this.velocity, reflectionReference);
-
-                    if (speed < 0) return;
+                    if (speed < 0 || Number.isNaN(speed)) return;
 
                     this._velocity.x -= speed * reflectionReference.x;
                     this._velocity.y -= speed * reflectionReference.y;
@@ -164,38 +160,13 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                         break;
                     }
                     case HitboxType.Group: {
-                        const target = hitbox.hitboxes
-                            .map(hitbox => (
-                                hitbox instanceof CircleHitbox
-                                    ? Collision.circleCircleIntersection(oldPosition, this.hitbox.radius, hitbox.position, hitbox.radius)
-                                    : Collision.rectCircleIntersection(hitbox.min, hitbox.max, oldPosition, this.hitbox.radius)
-                            ) !== null
-                                ? hitbox
-                                : null
-                            )
-                            .filter(
-                                (target => target !== null) as (target: CircleHitbox | RectangleHitbox | null) => target is CircleHitbox | RectangleHitbox
-                            )
-                            .at(0);
-
-                        if (target) {
-                            target instanceof CircleHitbox
-                                ? handleCircle(target)
-                                : handleRectangle(target);
+                        for (const target of hitbox.hitboxes) {
+                            if (target.collidesWith(this.hitbox)) {
+                                target instanceof CircleHitbox
+                                    ? handleCircle(target)
+                                    : handleRectangle(target);
+                            }
                         }
-
-                        break;
-                    }
-                    case HitboxType.Polygon: {
-                        // return [
-                        //     hitbox,
-                        //     hitbox.points
-                        //         .map((v, i, a) => [v, a[(i + 1) % a.length]] as const)
-                        //         .map(([start, end]) => Collision.lineIntersectsCircle(start, end, this.position, this.hitbox.radius))
-                        //         .filter((res => res !== null) as (res: IntersectionResponse) => res is NonNullable<IntersectionResponse>)
-                        //         .at(0)
-                        // ] as const;
-                        // fixme implement this case ig
                         break;
                     }
                 }
@@ -206,6 +177,8 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
         this.game.partialDirtyObjects.add(this);
     }
+
+    damage(_amount: number, _source?: GameObject<ObjectCategory> | undefined): void { }
 
     get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
         return {
