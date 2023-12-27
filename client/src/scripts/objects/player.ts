@@ -932,6 +932,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
                     return;
                 }
+
+                this.playSound("throwable_pin");
+
                 const def = this.activeItem;
                 const projImage = this.images.weapon;
                 const pinImage = this.images.altWeapon;
@@ -1034,6 +1037,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
                     return;
                 }
+
+                this.playSound("throwable_throw");
+
                 const pinImage = this.images.altWeapon;
                 const projImage = this.images.weapon;
                 const def = this.activeItem;

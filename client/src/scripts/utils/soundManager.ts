@@ -185,7 +185,11 @@ export class SoundManager {
             airdrop_fall: "audio/sfx/airdrop/airdrop_fall",
             airdrop_unlock: "audio/sfx/airdrop/airdrop_unlock",
             airdrop_land: "audio/sfx/airdrop/airdrop_land",
-            airdrop_land_water: "audio/sfx/airdrop/airdrop_land_water"
+            airdrop_land_water: "audio/sfx/airdrop/airdrop_land_water",
+
+            throwable_pin: "audio/sfx/throwable_pin",
+            throwable_throw: "audio/sfx/throwable_throw",
+            explosion: "audio/sfx/explosion"
         };
 
         for (const material of Materials) {
