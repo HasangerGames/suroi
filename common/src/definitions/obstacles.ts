@@ -441,6 +441,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
+            idString: "grenade_crate",
+            name: "Grenade Crate",
+            material: "crate",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hitbox: RectangleHitbox.fromRect(6.5, 6.5),
+            rotationMode: RotationMode.None,
+            hasLoot: true,
+        },
+        {
             idString: "barrel",
             name: "Barrel",
             material: "metal",

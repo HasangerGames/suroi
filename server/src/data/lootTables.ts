@@ -41,7 +41,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
             { tier: "melee", weight: 0.04 },
-            { tier: "winter_skins", weight: 0.4 } // winter mode
+            { tier: "winter_skins", weight: 0.4 }, // winter mode
+            { tier: "grenade", weight: 0.3 }
         ]
     },
     aegis_crate: {
@@ -69,6 +70,13 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "melee", weight: 1 }
+        ]
+    },
+    grenade_crate: {
+        min: 3,
+        max: 4,
+        loot: [
+            { tier: "grenade", weight: 1 }
         ]
     },
     tango_crate: {
@@ -377,6 +385,14 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "556mm", count: 60, weight: 1 },
         { item: "762mm", count: 60, weight: 1 },
         { item: "9mm", count: 60, weight: 1 }
+    ],
+    grenade: [
+        { item: "frag_grenade", count: 3, weight: 0.5 },
+        { item: "frag_grenade", count: 2, weight: 1 },
+        { item: "frag_grenade", count: 1, weight: 1 },
+        { item: "smoke_grenade", count: 3, weight: 0.5 },
+        { item: "smoke_grenade", count: 2, weight: 1 },
+        { item: "smoke_grenade", count: 1, weight: 1 },
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },
