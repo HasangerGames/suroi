@@ -1,11 +1,18 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { isMobile } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
+import {
+    GameConstants,
+    InputActions,
+    SpectateActions
+} from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { SpawnMelees } from "../../../common/src/definitions/spawnmelees";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
+import {
+    HealType,
+    HealingItems
+} from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
@@ -134,7 +141,10 @@ export function setupUI(game: Game): void {
                 .replace(/[^\x00-\x7F]/g, "")
         );
 
-        game.console.setBuiltInCVar("cv_player_name", usernameField.val() as string);
+        game.console.setBuiltInCVar(
+            "cv_player_name",
+            usernameField.val() as string
+        );
     });
 
     createDropdown("#server-select");
@@ -163,9 +173,16 @@ export function setupUI(game: Game): void {
         location.href = "/rules/";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-menu").on("click", () => { game.endGame(); });
-    $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
+    $("#btn-quit-game").on("click", () => {
+        game.endGame();
+    });
+    $("#btn-menu").on("click", () => {
+        game.endGame();
+    });
+    $("#btn-play-again").on("click", () => {
+        game.endGame();
+        $("#btn-play-solo").trigger("click");
+    });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         const packet = new SpectatePacket();
@@ -188,9 +205,11 @@ export function setupUI(game: Game): void {
     });
 
     $("#btn-report").on("click", () => {
-        if (confirm(`Are you sure you want to report this player?
+        if (
+            confirm(`Are you sure you want to report this player?
 Players should only be reported for teaming or hacking.
-Video evidence is required.`)) {
+Video evidence is required.`)
+        ) {
             sendSpectatePacket(SpectateActions.Report);
         }
     });
@@ -248,8 +267,12 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        if (skin.notInLoadout ?? (skin.roleRequired !== undefined &&
-            skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))) continue;
+        if (
+            skin.notInLoadout ??
+            (skin.roleRequired !== undefined &&
+                skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))
+        )
+            continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -262,18 +285,17 @@ Video evidence is required.`)) {
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function() {
+        skinItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_skin", skin.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             updateSplashCustomize(skin.idString);
         });
         $("#skins-list").append(skinItem);
     }
-    $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
+    $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass(
+        "selected"
+    );
 
-
-
-    
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
     for (const emote of Emotes.definitions) {
@@ -283,9 +305,12 @@ Video evidence is required.`)) {
   <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
   <span class="emote-name">${emote.name}</span>
 </div>`);
-        emoteItem.on("click", function() {
+        emoteItem.on("click", function () {
             if (selectedEmoteSlot === undefined) return;
-            game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
+            game.console.setBuiltInCVar(
+                `cv_loadout_${selectedEmoteSlot}_emote`,
+                emote.idString
+            );
             $(this).addClass("selected").siblings().removeClass("selected");
             $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
                 "background-image",
@@ -303,8 +328,13 @@ Video evidence is required.`)) {
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
-                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
+                    $("#emote-customize-wheel").css(
+                        "background-image",
+                        `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
+                    );
+                    $(".emotes-list-item-container")
+                        .removeClass("selected")
+                        .css("cursor", "pointer");
                     $(`#emote-${emote}`).addClass("selected");
                 } else {
                     selectedEmoteSlot = undefined;
@@ -337,7 +367,10 @@ Video evidence is required.`)) {
             height: size
         });
 
-        $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]);
+        $("#crosshair-controls").toggleClass(
+            "disabled",
+            !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]
+        );
 
         $("#crosshair-preview, #game-ui").css({ cursor });
     }
@@ -361,7 +394,7 @@ Video evidence is required.`)) {
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function() {
+        crosshairItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
@@ -370,34 +403,94 @@ Video evidence is required.`)) {
         $("#crosshairs-list").append(crosshairItem);
     });
 
-    $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+    $(
+        `#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`
+    ).addClass("selected");
 
-    addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
-        game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
-        loadCrosshair();
-    });
-    $("#slider-crosshair-size").val(game.console.getBuiltInCVar("cv_crosshair_size") / 20);
+    addSliderListener(
+        "#slider-crosshair-size",
+        "cv_crosshair_size",
+        (value: number) => {
+            game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
+            loadCrosshair();
+        }
+    );
+    $("#slider-crosshair-size").val(
+        game.console.getBuiltInCVar("cv_crosshair_size") / 20
+    );
 
-    addSliderListener("#slider-crosshair-stroke-size", "cv_crosshair_stroke_size", () => {
-        loadCrosshair();
-    });
-    $("#slider-crosshair-stroke-size").val(game.console.getBuiltInCVar("cv_crosshair_stroke_size"));
+    addSliderListener(
+        "#slider-crosshair-stroke-size",
+        "cv_crosshair_stroke_size",
+        () => {
+            loadCrosshair();
+        }
+    );
+    $("#slider-crosshair-stroke-size").val(
+        game.console.getBuiltInCVar("cv_crosshair_stroke_size")
+    );
 
-    $<HTMLInputElement>("#crosshair-color-picker").on("input", e => {
-        game.console.setBuiltInCVar("cv_crosshair_color", e.target.value);
-        loadCrosshair();
-    }).val(game.console.getBuiltInCVar("cv_crosshair_color"));
+    $<HTMLInputElement>("#crosshair-color-picker")
+        .on("input", (e) => {
+            game.console.setBuiltInCVar("cv_crosshair_color", e.target.value);
+            loadCrosshair();
+        })
+        .val(game.console.getBuiltInCVar("cv_crosshair_color"));
 
-    $<HTMLInputElement>("#crosshair-stroke-picker").on("input", (e) => {
-        game.console.setBuiltInCVar("cv_crosshair_stroke_color", e.target.value);
-        loadCrosshair();
-    }).val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
+    $<HTMLInputElement>("#crosshair-stroke-picker")
+        .on("input", (e) => {
+            game.console.setBuiltInCVar(
+                "cv_crosshair_stroke_color",
+                e.target.value
+            );
+            loadCrosshair();
+        })
+        .val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
+
+    // Load Spawn Melees
+    for (const spawnmelee of SpawnMelees) {
+        if (
+            spawnmelee.notInLoadout ??
+            (spawnmelee.roleRequired !== undefined &&
+                spawnmelee.roleRequired !==
+                    game.console.getBuiltInCVar("dv_role"))
+        )
+            continue;
+
+        /* eslint-disable @typescript-eslint/restrict-template-expressions */
+        // noinspection CssUnknownTarget
+        const spawnmeleeItem =
+            $(`<div id="spawnmelee-${spawnmelee.idString}" class="spawnmelees-list-item-container">
+  <div class="spawnmelees-list-item">
+    <div class="spawnmelee-base" style="background-image: url('./img/game/spawnmelee/${spawnmelee.idString}.svg')"></div>
+  </div>
+  <span class="spawnmelee-name">${spawnmelee.name}</span>
+</div>`);
+        spawnmeleeItem.on("click", function () {
+            game.console.setBuiltInCVar(
+                "cv_loadout_spawnmelee",
+                spawnmelee.idString
+            );
+            $(this).addClass("selected").siblings().removeClass("selected");
+            updateSplashCustomize(spawnmelee.idString);
+        });
+        $("#spawnmelees-list").append(spawnmeleeItem);
+    }
+    $(
+        `#spawnmelee-${game.console.getBuiltInCVar("cv_loadout_spawnmelee")}`
+    ).addClass("selected");
 
     // Disable context menu
-    $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
+    $("#game-ui").on("contextmenu", (e) => {
+        e.preventDefault();
+    });
 
     // Load settings values and event listeners
-    function addSliderListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: number) => void): void {
+    function addSliderListener(
+        elementId: string,
+        settingName: keyof CVarTypeMapping,
+        callback?: (value: number) => void
+    ): void {
         const element = $(elementId)[0] as HTMLInputElement;
         if (!element) console.error("Invalid element id");
 
@@ -408,10 +501,16 @@ Video evidence is required.`)) {
             callback?.(value);
         });
 
-        element.value = (game.console.getBuiltInCVar(settingName) as number).toString();
+        element.value = (
+            game.console.getBuiltInCVar(settingName) as number
+        ).toString();
     }
 
-    function addCheckboxListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: boolean) => void): void {
+    function addCheckboxListener(
+        elementId: string,
+        settingName: keyof CVarTypeMapping,
+        callback?: (value: boolean) => void
+    ): void {
         const element = $(elementId)[0] as HTMLInputElement;
 
         element.addEventListener("input", () => {
@@ -427,22 +526,37 @@ Video evidence is required.`)) {
     // Scope looping toggle
     addCheckboxListener("#toggle-scope-looping", "cv_loop_scope_selection");
 
-    addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
+    addCheckboxListener(
+        "#toggle-anonymous-player",
+        "cv_anonymize_player_names"
+    );
 
     // Music volume
-    addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {
-        game.music.volume = value;
-    });
+    addSliderListener(
+        "#slider-music-volume",
+        "cv_music_volume",
+        (value: number) => {
+            game.music.volume = value;
+        }
+    );
 
     // SFX volume
-    addSliderListener("#slider-sfx-volume", "cv_sfx_volume", (value: number) => {
-        game.soundManager.volume = value;
-    });
+    addSliderListener(
+        "#slider-sfx-volume",
+        "cv_sfx_volume",
+        (value: number) => {
+            game.soundManager.volume = value;
+        }
+    );
 
     // Master volume
-    addSliderListener("#slider-master-volume", "cv_master_volume", (value: number) => {
-        sound.volumeAll = value;
-    });
+    addSliderListener(
+        "#slider-master-volume",
+        "cv_master_volume",
+        (value: number) => {
+            sound.volumeAll = value;
+        }
+    );
     sound.volumeAll = game.console.getBuiltInCVar("cv_master_volume");
 
     // Old menu music
@@ -464,9 +578,13 @@ Video evidence is required.`)) {
     $("#ping-counter").toggle(game.console.getBuiltInCVar("pf_show_ping"));
 
     // Coordinates toggle
-    addCheckboxListener("#toggle-coordinates", "pf_show_pos", (value: boolean) => {
-        $("#coordinates-hud").toggle(value);
-    });
+    addCheckboxListener(
+        "#toggle-coordinates",
+        "pf_show_pos",
+        (value: boolean) => {
+            $("#coordinates-hud").toggle(value);
+        }
+    );
     $("#coordinates-hud").toggle(game.console.getBuiltInCVar("pf_show_pos"));
 
     // Text kill feed toggle
@@ -474,10 +592,14 @@ Video evidence is required.`)) {
         const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
 
         element.addEventListener("input", () => {
-            game.console.setBuiltInCVar("cv_killfeed_style", element.checked ? "text" : "icon");
+            game.console.setBuiltInCVar(
+                "cv_killfeed_style",
+                element.checked ? "text" : "icon"
+            );
         });
 
-        element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
+        element.checked =
+            game.console.getBuiltInCVar("cv_killfeed_style") === "text";
     }
 
     // Anti-aliasing toggle
@@ -487,21 +609,35 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-movement-smoothing", "cv_movement_smoothing");
 
     // Responsive rotation toggle
-    addCheckboxListener("#toggle-responsive-rotation", "cv_responsive_rotation");
+    addCheckboxListener(
+        "#toggle-responsive-rotation",
+        "cv_responsive_rotation"
+    );
 
     // Mobile controls stuff
     addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
-    addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
+    addSliderListener(
+        "#slider-joystick-transparency",
+        "mb_joystick_transparency"
+    );
 
     // Minimap stuff
-    addSliderListener("#slider-minimap-transparency", "cv_minimap_transparency", () => {
-        game.map.updateTransparency();
-    });
+    addSliderListener(
+        "#slider-minimap-transparency",
+        "cv_minimap_transparency",
+        () => {
+            game.map.updateTransparency();
+        }
+    );
 
-    addSliderListener("#slider-big-map-transparency", "cv_map_transparency", () => {
-        game.map.updateTransparency();
-    });
+    addSliderListener(
+        "#slider-big-map-transparency",
+        "cv_map_transparency",
+        () => {
+            game.map.updateTransparency();
+        }
+    );
 
     addCheckboxListener("#toggle-hide-minimap", "cv_minimap_minimized", () => {
         game.map.toggleMinimap(true);
@@ -511,23 +647,39 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
     // Hide rules button
-    addCheckboxListener("#toggle-hide-rules", "cv_hide_rules_button", (value: boolean) => {
-        $("#btn-rules, #rules-close-btn").toggle(!value);
-    });
+    addCheckboxListener(
+        "#toggle-hide-rules",
+        "cv_hide_rules_button",
+        (value: boolean) => {
+            $("#btn-rules, #rules-close-btn").toggle(!value);
+        }
+    );
     rulesBtn.toggle(!game.console.getBuiltInCVar("cv_hide_rules_button"));
 
     // Hide option to hide rules if rules haven't been acknowledged
-    $(".checkbox-setting").has("#toggle-hide-rules").toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
+    $(".checkbox-setting")
+        .has("#toggle-hide-rules")
+        .toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
 
-    $("#rules-close-btn").on("click", () => {
-        $("#btn-rules, #rules-close-btn").hide();
-        game.console.setBuiltInCVar("cv_hide_rules_button", true);
-        $("#toggle-hide-rules").prop("checked", true);
-    }).toggle(game.console.getBuiltInCVar("cv_rules_acknowledged") && !game.console.getBuiltInCVar("cv_hide_rules_button"));
+    $("#rules-close-btn")
+        .on("click", () => {
+            $("#btn-rules, #rules-close-btn").hide();
+            game.console.setBuiltInCVar("cv_hide_rules_button", true);
+            $("#toggle-hide-rules").prop("checked", true);
+        })
+        .toggle(
+            game.console.getBuiltInCVar("cv_rules_acknowledged") &&
+                !game.console.getBuiltInCVar("cv_hide_rules_button")
+        );
 
     // Import settings
     $("#import-settings-btn").on("click", () => {
-        if (!confirm("This option will overwrite all settings and reload the page. Continue?")) return;
+        if (
+            !confirm(
+                "This option will overwrite all settings and reload the page. Continue?"
+            )
+        )
+            return;
         const error = (): void => {
             alert("Invalid config.");
         };
@@ -556,7 +708,9 @@ Video evidence is required.`)) {
     $("#export-settings-btn").on("click", () => {
         const exportedSettings = localStorage.getItem("suroi_config");
         const error = (): void => {
-            alert('Unable to copy settings. To export settings manually, open the dev tools with Ctrl+Shift+I and type in the following: localStorage.getItem("suroi_config")');
+            alert(
+                'Unable to copy settings. To export settings manually, open the dev tools with Ctrl+Shift+I and type in the following: localStorage.getItem("suroi_config")'
+            );
         };
         if (exportedSettings === null) {
             error();
@@ -572,7 +726,12 @@ Video evidence is required.`)) {
 
     // Reset settings
     $("#reset-settings-btn").on("click", () => {
-        if (!confirm("This option will reset all settings and reload the page. Continue?")) return;
+        if (
+            !confirm(
+                "This option will reset all settings and reload the page. Continue?"
+            )
+        )
+            return;
         if (!confirm("Are you sure? This action cannot be undone.")) return;
         localStorage.removeItem("suroi_config");
         window.location.reload();
@@ -587,7 +746,10 @@ Video evidence is required.`)) {
                 if (slotElement.hasClass("has-item")) {
                     e.stopImmediatePropagation();
                     game.inputManager.addAction({
-                        type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
+                        type:
+                            e.button === 2
+                                ? InputActions.DropItem
+                                : InputActions.EquipItem,
                         slot
                     });
                 }
@@ -598,18 +760,25 @@ Video evidence is required.`)) {
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
         $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
+        <div class="inventory-slot item-slot" id="${
+            scope.idString
+        }-slot" style="display: none;">
+            <img class="item-image" src="./img/game/loot/${
+                scope.idString
+            }.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.inputManager.addAction({
-                type: InputActions.UseItem,
-                item: scope
-            });
-            e.stopPropagation();
-        });
+        $(`#${scope.idString}-slot`)[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent) => {
+                game.inputManager.addAction({
+                    type: InputActions.UseItem,
+                    item: scope
+                });
+                e.stopPropagation();
+            }
+        );
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
         }
@@ -618,22 +787,29 @@ Video evidence is required.`)) {
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
+            <img class="item-image" src="./img/game/loot/${
+                item.idString
+            }.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
-                Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
+                Restores ${item.restoreAmount}${
+            item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
+        }
             </div>
         </div>`);
 
-        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.inputManager.addAction({
-                type: InputActions.UseItem,
-                item
-            });
-            e.stopPropagation();
-        });
+        $(`#${item.idString}-slot`)[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent) => {
+                game.inputManager.addAction({
+                    type: InputActions.UseItem,
+                    item
+                });
+                e.stopPropagation();
+            }
+        );
     }
 
     for (const ammo of Ammos) {
@@ -653,10 +829,14 @@ Video evidence is required.`)) {
     if (game.inputManager.isMobile) {
         // Interact message
         $("#interact-message").on("click", () => {
-            game.console.handleQuery(game.uiManager.action.active ? "cancel_action" : "interact");
+            game.console.handleQuery(
+                game.uiManager.action.active ? "cancel_action" : "interact"
+            );
         });
         // noinspection HtmlUnknownTarget
-        $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
+        $("#interact-key").html(
+            '<img src="./img/misc/tap-icon.svg" alt="Tap">'
+        );
 
         // Reload button
         $("#btn-reload")
@@ -670,11 +850,16 @@ Video evidence is required.`)) {
             .css("top", "50%")
             .css("left", "50%")
             .css("transform", "translate(-50%, -50%)");
-        $("#btn-emotes").show().on("click", () => {
-            $("#emote-wheel").show();
-        });
+        $("#btn-emotes")
+            .show()
+            .on("click", () => {
+                $("#emote-wheel").show();
+            });
 
-        const createEmoteWheelListener = (slot: string, action: InputActions): void => {
+        const createEmoteWheelListener = (
+            slot: string,
+            action: InputActions
+        ): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 $("#emote-wheel").hide();
                 game.inputManager.addAction(action);
@@ -695,7 +880,11 @@ Video evidence is required.`)) {
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if ($("canvas").hasClass("active") && game.console.getBuiltInCVar("cv_leave_warning") && !game.gameOver) {
+        if (
+            $("canvas").hasClass("active") &&
+            game.console.getBuiltInCVar("cv_leave_warning") &&
+            !game.gameOver
+        ) {
             e.preventDefault();
         }
     });
@@ -743,8 +932,11 @@ Video evidence is required.`)) {
         tabContent.show();
     });
 
-    $("#warning-modal-agree-checkbox").on("click", function() {
-        $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !$(this).prop("checked"));
+    $("#warning-modal-agree-checkbox").on("click", function () {
+        $("#warning-btn-play-solo, #btn-play-solo").toggleClass(
+            "btn-disabled",
+            !$(this).prop("checked")
+        );
     });
     $("#warning-btn-play-solo").on("click", () => {
         $("#warning-modal").hide();
