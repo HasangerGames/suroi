@@ -41,8 +41,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         vest?: ArmorDefinition
         backpack: BackpackDefinition
     } = {
-            backpack: Loots.fromString("bag")
-        };
+        backpack: Loots.fromString("bag")
+    };
 
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
@@ -73,7 +73,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly altWeapon: SuroiSprite
         readonly muzzleFlash: SuroiSprite
         readonly emoteBackground: SuroiSprite
-        readonly emoteImage: SuroiSprite
+        readonly emote: SuroiSprite
         readonly waterOverlay: SuroiSprite
     };
 
@@ -83,16 +83,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
     healingParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
-        emoteAnim?: Tween<Container>
-        emoteHideAnim?: Tween<Container>
+        emote?: Tween<Container>
+        emoteHide?: Tween<Container>
 
-        leftFistAnim?: Tween<SuroiSprite>
-        rightFistAnim?: Tween<SuroiSprite>
-        weaponAnim?: Tween<SuroiSprite>
-        pinAnim?: Tween<SuroiSprite>
-        muzzleFlashFadeAnim?: Tween<SuroiSprite>
-        muzzleFlashRecoilAnim?: Tween<SuroiSprite>
-        waterOverlayAnim?: Tween<SuroiSprite>
+        leftFist?: Tween<SuroiSprite>
+        rightFist?: Tween<SuroiSprite>
+        weapon?: Tween<SuroiSprite>
+        pin?: Tween<SuroiSprite>
+        muzzleFlashFade?: Tween<SuroiSprite>
+        muzzleFlashRecoil?: Tween<SuroiSprite>
+        waterOverlay?: Tween<SuroiSprite>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -122,7 +122,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
-            emoteImage: new SuroiSprite().setPos(0, 0),
+            emote: new SuroiSprite().setPos(0, 0),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
         };
 
@@ -148,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.emoteContainer = new Container();
         this.game.camera.addObject(this.emoteContainer);
-        this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
+        this.emoteContainer.addChild(this.images.emoteBackground, this.images.emote);
         this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
 
@@ -312,8 +312,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (floorType !== this.floorType) {
             if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);
-            this.anims.waterOverlayAnim?.kill();
-            this.anims.waterOverlayAnim = new Tween(
+            this.anims.waterOverlay?.kill();
+            this.anims.waterOverlay = new Tween(
                 this.game,
                 {
                     target: this.images.waterOverlay,
@@ -535,9 +535,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateFistsPosition(anim: boolean): void {
-        this.anims.leftFistAnim?.kill();
-        this.anims.rightFistAnim?.kill();
-        this.anims.weaponAnim?.kill();
+        this.anims.leftFist?.kill();
+        this.anims.rightFist?.kill();
+        this.anims.weapon?.kill();
 
         const reference = this._getItemReference();
         const fists = reference.fists ?? {
@@ -549,7 +549,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (anim) {
             const duration = "animationDuration" in fists ? fists.animationDuration : 150;
 
-            this.anims.leftFistAnim = new Tween(
+            this.anims.leftFist = new Tween(
                 this.game,
                 {
                     target: this.images.leftFist,
@@ -558,7 +558,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
             );
 
-            this.anims.rightFistAnim = new Tween(
+            this.anims.rightFist = new Tween(
                 this.game,
                 {
                     target: this.images.rightFist,
@@ -594,8 +594,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.altWeapon.setAngle(reference.image.angle ?? 0); // there's an ambiguity here as to whether the angle should be inverted or the same
 
             if (this.activeItem !== this.oldItem) {
-                this.anims.muzzleFlashFadeAnim?.kill();
-                this.anims.muzzleFlashRecoilAnim?.kill();
+                this.anims.muzzleFlashFade?.kill();
+                this.anims.muzzleFlashRecoil?.kill();
                 this.images.muzzleFlash.alpha = 0;
                 if (this.isActivePlayer && !isNew) this.game.soundManager.play(`${reference.idString}_switch`);
             }
@@ -676,8 +676,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     emote(type: EmoteDefinition): void {
-        this.anims.emoteAnim?.kill();
-        this.anims.emoteHideAnim?.kill();
+        this.anims.emote?.kill();
+        this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
         this.playSound(
             "emote",
@@ -686,13 +686,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 maxRange: 128
             }
         );
-        this.images.emoteImage.setFrame(`${type.idString}`);
+        this.images.emote.setFrame(`${type.idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
-        this.anims.emoteAnim = new Tween(
+        this.anims.emote = new Tween(
             this.game,
             {
                 target: this.emoteContainer,
@@ -706,7 +706,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         );
 
         this._emoteHideTimeout = this.addTimeout(() => {
-            this.anims.emoteHideAnim = new Tween(this.game, {
+            this.anims.emoteHide = new Tween(this.game, {
                 target: this.emoteContainer,
                 to: { alpha: 0 },
                 duration: 200,
@@ -737,7 +737,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const duration = weaponDef.fists.animationDuration;
 
                 if (!weaponDef.fists.randomFist || !altFist) {
-                    this.anims.leftFistAnim = new Tween(this.game, {
+                    this.anims.leftFist = new Tween(this.game, {
                         target: this.images.leftFist,
                         to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
                         duration,
@@ -746,7 +746,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
                 if (altFist) {
-                    this.anims.rightFistAnim = new Tween(this.game, {
+                    this.anims.rightFist = new Tween(this.game, {
                         target: this.images.rightFist,
                         to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
                         duration,
@@ -756,7 +756,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 if (weaponDef.image !== undefined) {
-                    this.anims.weaponAnim = new Tween(this.game, {
+                    this.anims.weapon = new Tween(this.game, {
                         target: this.images.weapon,
                         to: {
                             x: weaponDef.image.usePosition.x,
@@ -846,7 +846,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateFistsPosition(false);
                 const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
-                this.anims.weaponAnim = new Tween(this.game, {
+                this.anims.weapon = new Tween(this.game, {
                     target: isAltFire ? this.images.altWeapon : this.images.weapon,
                     to: { x: reference.image.position.x - recoilAmount },
                     duration: 50,
@@ -865,9 +865,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
                     );
 
-                    this.anims.muzzleFlashFadeAnim?.kill();
-                    this.anims.muzzleFlashRecoilAnim?.kill();
-                    this.anims.muzzleFlashFadeAnim = new Tween(
+                    this.anims.muzzleFlashFade?.kill();
+                    this.anims.muzzleFlashRecoil?.kill();
+                    this.anims.muzzleFlashFade = new Tween(
                         this.game,
                         {
                             target: muzzleFlash,
@@ -877,7 +877,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         }
                     );
 
-                    this.anims.muzzleFlashRecoilAnim = new Tween(
+                    this.anims.muzzleFlashRecoil = new Tween(
                         this.game,
                         {
                             target: muzzleFlash,
@@ -889,7 +889,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 if (isAltFire !== false) {
-                    this.anims.leftFistAnim = new Tween(
+                    this.anims.leftFist = new Tween(
                         this.game,
                         {
                             target: this.images.leftFist,
@@ -901,7 +901,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 if (isAltFire !== true) {
-                    this.anims.rightFistAnim = new Tween(
+                    this.anims.rightFist = new Tween(
                         this.game,
                         {
                             target: this.images.rightFist,
@@ -939,14 +939,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 pinImage.setPos(def.animation.cook.leftFist.x, 0);
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.cook.liveImage);
 
-                this.anims.leftFistAnim = new Tween(
+                this.anims.leftFist = new Tween(
                     this.game,
                     {
                         target: this.images.leftFist,
                         to: { x: def.animation.cook.leftFist.x, y: 0 },
                         duration: 150,
                         onComplete: () => {
-                            this.anims.leftFistAnim = new Tween(
+                            this.anims.leftFist = new Tween(
                                 this.game,
                                 {
                                     target: this.images.leftFist,
@@ -955,7 +955,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 }
                             );
 
-                            this.anims.pinAnim = new Tween(
+                            this.anims.pin = new Tween(
                                 this.game, {
                                     target: pinImage,
                                     duration: 150,
@@ -990,7 +990,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
 
-                this.anims.weaponAnim = new Tween(
+                this.anims.weapon = new Tween(
                     this.game,
                     {
                         target: projImage,
@@ -999,14 +999,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 );
 
-                this.anims.rightFistAnim = new Tween(
+                this.anims.rightFist = new Tween(
                     this.game,
                     {
                         target: this.images.rightFist,
                         to: { x: def.animation.cook.rightFist.x, y: 10 },
                         duration: 150,
                         onComplete: () => {
-                            this.anims.weaponAnim = new Tween(
+                            this.anims.weapon = new Tween(
                                 this.game,
                                 {
                                     target: projImage,
@@ -1015,7 +1015,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 }
                             );
 
-                            this.anims.rightFistAnim = new Tween(
+                            this.anims.rightFist = new Tween(
                                 this.game,
                                 {
                                     target: this.images.rightFist,
@@ -1106,7 +1106,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         images.altWeapon.destroy();
         images.muzzleFlash.destroy();
         images.emoteBackground.destroy();
-        images.emoteImage.destroy();
+        images.emote.destroy();
         images.waterOverlay.destroy();
 
         this.healingParticlesEmitter.destroy();
@@ -1115,13 +1115,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer.destroy();
 
         const anims = this.anims;
-        anims.emoteHideAnim?.kill();
-        anims.waterOverlayAnim?.kill();
-        anims.emoteAnim?.kill();
-        anims.leftFistAnim?.kill();
-        anims.rightFistAnim?.kill();
-        anims.weaponAnim?.kill();
-        anims.muzzleFlashFadeAnim?.kill();
-        anims.muzzleFlashRecoilAnim?.kill();
+        anims.emoteHide?.kill();
+        anims.waterOverlay?.kill();
+        anims.emote?.kill();
+        anims.leftFist?.kill();
+        anims.rightFist?.kill();
+        anims.weapon?.kill();
+        anims.muzzleFlashFade?.kill();
+        anims.muzzleFlashRecoil?.kill();
     }
 }
