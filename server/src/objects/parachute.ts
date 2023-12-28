@@ -5,12 +5,12 @@ import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializat
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { Building } from "./building";
-import { GameObject } from "./gameObject";
+import { BaseGameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
-export class Parachute extends GameObject<ObjectCategory.Parachute> {
+export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
 
     height = 1;
