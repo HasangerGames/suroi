@@ -2,6 +2,7 @@ import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Collision, type CollisionResponse, Geometry, Numeric } from "../../../common/src/utils/math";
+import { ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -82,6 +83,11 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                 ) &&
                 object.hitbox.collidesWith(this.hitbox)
             ) {
+                if (object instanceof Obstacle && object.definition.role === ObstacleSpecialRoles.Window) {
+                    object.damage(Infinity, this.source.owner);
+                    continue;
+                }
+
                 const hitbox = object.hitbox;
 
                 /**
