@@ -23,7 +23,7 @@
             RectangleHitbox.fromRect(2, 16, Vec.create(30.9, -20.5)),
             RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)),
             RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9))
-        ).toJSON().hitboxes
+        ).transform(Vec.create(0, 0), 1, 2).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -62,6 +62,20 @@
             hitboxes = JSON.parse(target.value);
         } catch {}
     }
+
+    async function loadImage(src: string): Promise<{ width: number, height: number}> {
+        const img = new Image()
+        img.src = src
+
+        return new Promise((resolve) => {
+            img.onload = () => {
+                resolve(img);
+            }
+        })
+    }
+
+    const bgImage = loadImage("/img/game/buildings/house_floor_small.svg");
+
 </script>
 
 <main>
@@ -145,6 +159,10 @@
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
+                {#await bgImage}
+                {:then img}
+                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}"></image>
+                {/await}
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
                         on:pointerdown={() => {
