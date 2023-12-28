@@ -369,7 +369,7 @@ export class UIManager {
             itemSlot.toggleClass("has-item", count > 0);
 
             if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
-                itemSlot.css("visibility", count > 0 ? "visible" : "hidden")
+                itemSlot.css("visibility", count > 0 ? "visible" : "hidden");
             }
 
             if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
@@ -434,6 +434,11 @@ export class UIManager {
             hideInKillfeed
         } = message;
 
+        const weaponPresent = weaponUsed === undefined;
+        const isGrenadeImpactKill = "itemType" in weaponUsed! && weaponUsed.itemType === ItemType.Throwable;
+        // this nna is okay, because even if ts doesn't allow `"a" in undefined`, the runtime is quite
+        // happy in accepting it before promptly returning `false`, which is what we want
+
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
 
         let messageText: string | undefined;
@@ -460,10 +465,18 @@ export class UIManager {
                                 break;
                         }
 
+                        const fullyQualifiedName = weaponPresent ? "" : `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}`;
+                        /**
+                         * English being complicated means that this will sometimes return bad results (ex: "hour", "NSA", "one" and "university")
+                         * but to be honest, short of downloading a library off of somewhere, this'll have to do
+                         */
+                        const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
+                        const weaponNameText = weaponPresent ? "" : ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${"dual" in message && message.dual ? "Dual " : ""}${fullyQualifiedName}`;
+
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
                         <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
-                        ${killMessage}${weaponUsed === undefined ? "" : ` with ${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}`}`;
+                        ${killMessage}${weaponNameText}`;
                         break;
                     }
                     case "icon": {

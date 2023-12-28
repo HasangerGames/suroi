@@ -25,7 +25,7 @@ export interface ThrowableDefinition extends InventoryItemDefinition {
     }
     readonly animation: {
         readonly cook: {
-            readonly leftImage: string
+            readonly pinImage: string
             readonly liveImage: string
             readonly cookingImage?: string
             readonly leverImage: string
@@ -55,10 +55,10 @@ export const Throwables: ThrowableDefinition[] = [
         },
         animation: {
             cook: {
-                leftImage: "proj_frag_pin",
+                pinImage: "proj_frag_pin",
                 liveImage: "proj_frag",
                 leverImage: "proj_frag_lever",
-                leftFist: Vec.create(38, -35),
+                leftFist: Vec.create(50, 0),
                 rightFist: Vec.create(-10, 43)
             }
         }
@@ -82,11 +82,11 @@ export const Throwables: ThrowableDefinition[] = [
         },
         animation: {
             cook: {
-                leftImage: "proj_smoke_pin",
+                pinImage: "proj_smoke_pin",
                 liveImage: "proj_smoke",
                 cookingImage: "proj_smoke_nopin",
                 leverImage: "proj_smoke_lever",
-                leftFist: Vec.create(38, -35),
+                leftFist: Vec.create(50, 0),
                 rightFist: Vec.create(-10, 43)
             }
         }

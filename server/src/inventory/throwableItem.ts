@@ -76,7 +76,10 @@ class GrenadeHandler {
     private _removeFromInventory(): void {
         const owner = this.parent.owner;
         owner.dirty.weapons = true;
-        owner.inventory.removeThrowable(this.definition, false, 1);
+
+        if (!owner.dead) {
+            owner.inventory.removeThrowable(this.definition, false, 1);
+        }
     }
 
     private _detonate(): void {
@@ -135,10 +138,18 @@ class GrenadeHandler {
         );
 
         const definition = this.definition;
-        const projectile = this._projectile = this.game.addProjectile(definition, Vec.sub(owner.position, {
-            x: definition.animation.cook.rightFist.x / 20,
-            y: definition.animation.cook.rightFist.y / 20
-        }), this.parent);
+        const rightFist = definition.animation.cook.rightFist;
+        const projectile = this._projectile = this.game.addProjectile(
+            definition,
+            Vec.sub(
+                owner.position,
+                {
+                    x: rightFist.x / 20,
+                    y: rightFist.y / 20
+                }
+            ),
+            this.parent
+        );
 
         /**
          * Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
@@ -151,14 +162,17 @@ class GrenadeHandler {
          */
         const superStrangeMysteryConstant = 787.245;
 
-        projectile.velocity = Vec.fromPolar(
-            owner.rotation,
-            soft
-                ? 0
-                : Math.min(
-                    definition.maxThrowDistance,
-                    owner.distanceToMouse
-                ) / superStrangeMysteryConstant
+        projectile.velocity = Vec.add(
+            Vec.fromPolar(
+                owner.rotation,
+                soft
+                    ? 0
+                    : Math.min(
+                        definition.maxThrowDistance,
+                        owner.distanceToMouse
+                    ) / superStrangeMysteryConstant
+            ),
+            owner.movementVector
         );
 
         this._removeFromInventory();

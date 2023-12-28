@@ -234,8 +234,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 max: 25
             },
             cameraShake: {
-                duration: 250,
-                intensity: 50
+                duration: 200,
+                intensity: 30
             },
             animation: {
                 duration: 1000,

@@ -33,6 +33,14 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
     private readonly source: ThrowableItem;
 
+    private readonly _spawnTime: number;
+
+    /**
+     * Grace period to prevent impact damage and collision logic
+     * from instantly being applied to the grenade's owner
+     */
+    private _collideWithOwner = false;
+
     /**
      * Ensures that the drag experienced is not dependant on tickrate.
      * This particular exponent results in a 10% loss every 38.7ms (or a 50% loss every 254.8ms)
@@ -48,6 +56,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         super(game, position);
         this.definition = definition;
         this.source = source;
+        this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, Vec.clone(position));
     }
 
@@ -72,27 +81,28 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
         this.rotation = Angle.normalizeAngle(this.rotation + this.angularVelocity * deltaTime);
 
-        const shouldCollideWithPlayers = this.definition.impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0036;
+        const impactDamage = this.definition.impactDamage;
+        const shouldCollideWithPlayers = impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0016;
 
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             if (
                 (
                     (object instanceof Obstacle && object.collidable) ||
-                    (object instanceof Player && shouldCollideWithPlayers)
+                    (object instanceof Player && shouldCollideWithPlayers && (this._collideWithOwner || object !== this.source.owner))
                 ) &&
                 object.hitbox.collidesWith(this.hitbox)
             ) {
                 const hitbox = object.hitbox;
 
                 /**
-                 * Kept around because #resolveCollision mutates
+                 * Kept around because handleCollision mutates
                  * the instance, but we want it for later
                  */
                 const { position: oldPosition } = this.hitbox.clone();
 
                 if (object instanceof Player) {
                     object.damage(
-                        this.definition.impactDamage!,
+                        impactDamage!,
                         this.source.owner,
                         this.source
                     );
@@ -127,16 +137,93 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
                     if (collision) handleCollision(collision);
 
-                    const effectiveDifference = Vec.project(
-                        Vec.sub(hitbox.getCenter(), this.position),
-                        Vec.sub(
-                            Vec.create(
+                    const positionDiff = Vec.sub(
+                        hitbox.isPointInside(oldPosition)
+                            ? (() => {
+                                // aw [expletive redacted], we gotta find the closest side…
+
+                                const compareAndReturn = <T>(
+                                    a: number,
+                                    b: number,
+                                    lessThan: () => T,
+                                    equal: () => T,
+                                    greaterThan: () => T
+                                ): T => {
+                                    switch (Math.sign(a - b) as -1 | 0 | 1) {
+                                        case -1: return lessThan();
+                                        case 0: return equal();
+                                        case 1: return greaterThan();
+                                    }
+                                };
+
+                                // distance to all four sides
+                                const dl = hitbox.min.x - oldPosition.x;
+                                const dr = hitbox.max.x - oldPosition.x;
+                                const du = hitbox.min.y - oldPosition.y;
+                                const db = hitbox.max.y - oldPosition.y;
+
+                                const leftSide = Vec.create(hitbox.min.x, oldPosition.y);
+                                const upSide = Vec.create(oldPosition.x, hitbox.min.y);
+                                const bottomSide = Vec.create(oldPosition.x, hitbox.max.y);
+                                const rightSide = Vec.create(hitbox.max.x, oldPosition.y);
+
+                                const compareVerticals = (): Vector => compareAndReturn(
+                                    du, db,
+                                    () => upSide,
+                                    () => Vec.create(0, 0),
+                                    () => bottomSide
+                                );
+
+                                return compareAndReturn(
+                                    dl, dr,
+                                    // somewhere on the left side
+                                    () => compareAndReturn(
+                                        dl, Math.min(du, db),
+                                        // the left distance is the smallest one
+                                        () => leftSide,
+                                        // shit
+                                        () => Vec.create(0, 0),
+                                        // either the top or bottom distance is smaller
+                                        compareVerticals
+                                    ),
+                                    // somewhere in the middle
+                                    compareVerticals,
+                                    // somewhere on the right side
+                                    () => compareAndReturn(
+                                        dr, Math.min(du, db),
+                                        // thr right side distance is the smallest one
+                                        () => rightSide,
+                                        () => Vec.create(0, 0),
+                                        // either the top or bottom distance is smaller
+                                        compareVerticals
+                                    )
+                                );
+                            })()
+                            : Vec.create(
                                 Numeric.clamp(oldPosition.x, hitbox.min.x, hitbox.max.x),
                                 Numeric.clamp(oldPosition.y, hitbox.min.y, hitbox.max.y)
                             ),
-                            oldPosition
-                        )
+                        oldPosition
                     );
+
+                    const centerDiff = Vec.sub(hitbox.getCenter(), this.position);
+                    const effectiveDifference = Vec.squaredLength(positionDiff)
+                        ? Vec.project(centerDiff, positionDiff)
+                        : (() => {
+                            // Ok, so positionDiff is 0, meaning that oldPosition
+                            // is on one of the four sides… let's see which one
+                            switch (true) {
+                                case oldPosition.x === hitbox.min.x:
+                                case oldPosition.x === hitbox.max.x: {
+                                    return Vec.create(centerDiff.x, 0);
+                                }
+                                case oldPosition.y === hitbox.min.y:
+                                case oldPosition.y === hitbox.max.y: {
+                                    return Vec.create(0, centerDiff.y);
+                                }
+                                default: return Vec.create(0, 0); // never
+                            }
+                        })();
 
                     const reflectionReference = Vec.scale(
                         effectiveDifference,
@@ -175,6 +262,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
             }
         }
 
+        this._collideWithOwner ||= this.game.now - this._spawnTime >= 100;
         this.game.partialDirtyObjects.add(this);
     }
 

@@ -27,7 +27,7 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { type ThrowableItem } from "../inventory/throwableItem";
+import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
@@ -304,6 +304,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.hitbox.position = position;
     }
 
+    private _movementVector = Vec.create(0, 0);
+    get movementVector(): Vector { return Vec.clone(this._movementVector); }
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
@@ -412,12 +415,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
+        const movementVector = Vec.scale(movement, speed);
+        this._movementVector = movementVector;
         this.position = Vec.add(
             this.position,
-            Vec.scale(
-                Vec.create(movement.x, movement.y),
-                speed * dt
-            )
+            Vec.scale(movementVector, dt)
         );
 
         // Find and resolve collisions
@@ -938,6 +940,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.grid.removeObject(this);
         this.game.updateObjects = true;
         removeFrom(this.game.spectatablePlayers, this);
+
+        if (this.activeItem instanceof ThrowableItem) {
+            this.activeItem.stopUse();
+        }
 
         //
         // Drop loot
