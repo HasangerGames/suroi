@@ -6,7 +6,7 @@ import { type BackpackDefinition } from "../../../../common/src/definitions/back
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import { Loots } from "../../../../common/src/definitions/loots";
+import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
@@ -19,7 +19,7 @@ import { random, randomBoolean, randomFloat, randomSign, randomVector } from "..
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -32,7 +32,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     name!: string;
 
-    activeItem = Loots.fromString("fists");
+    activeItem: WeaponDefinition = Loots.fromString("fists");
 
     oldItem = this.activeItem;
 
@@ -41,8 +41,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         vest?: ArmorDefinition
         backpack: BackpackDefinition
     } = {
-            backpack: Loots.fromString("bag")
-        };
+        backpack: Loots.fromString("bag")
+    };
 
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
@@ -73,7 +73,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly altWeapon: SuroiSprite
         readonly muzzleFlash: SuroiSprite
         readonly emoteBackground: SuroiSprite
-        readonly emoteImage: SuroiSprite
+        readonly emote: SuroiSprite
         readonly waterOverlay: SuroiSprite
     };
 
@@ -83,14 +83,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
     healingParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
-        emoteAnim?: Tween<Container>
-        emoteHideAnim?: Tween<Container>
+        emote?: Tween<Container>
+        emoteHide?: Tween<Container>
 
-        leftFistAnim?: Tween<SuroiSprite>
-        rightFistAnim?: Tween<SuroiSprite>
-        weaponAnim?: Tween<SuroiSprite>
-        muzzleFlashFadeAnim?: Tween<SuroiSprite>
-        muzzleFlashRecoilAnim?: Tween<SuroiSprite>
+        leftFist?: Tween<SuroiSprite>
+        rightFist?: Tween<SuroiSprite>
+        weapon?: Tween<SuroiSprite>
+        pin?: Tween<SuroiSprite>
+        muzzleFlashFade?: Tween<SuroiSprite>
+        muzzleFlashRecoil?: Tween<SuroiSprite>
+        waterOverlay?: Tween<SuroiSprite>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -104,7 +106,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hitbox = new CircleHitbox(GameConstants.player.radius);
 
     floorType = "grass";
-    waterOverlayAnim?: Tween<SuroiSprite>;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Player]>) {
         super(game, id);
@@ -121,7 +122,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
-            emoteImage: new SuroiSprite().setPos(0, 0),
+            emote: new SuroiSprite().setPos(0, 0),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
         };
 
@@ -147,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.emoteContainer = new Container();
         this.game.camera.addObject(this.emoteContainer);
-        this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
+        this.emoteContainer.addChild(this.images.emoteBackground, this.images.emote);
         this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
 
@@ -282,7 +283,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         // Position and rotation
-        if (this.position !== undefined) this.oldPosition = Vec.clone(this.position);
+        const oldPosition = Vec.clone(this.position);
         this.position = data.position;
         this.hitbox.position = this.position;
 
@@ -311,22 +312,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (floorType !== this.floorType) {
             if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);
-            this.waterOverlayAnim?.kill();
-            this.waterOverlayAnim = new Tween(this.game, {
-                target: this.images.waterOverlay,
-                to: {
-                    alpha: FloorTypes[floorType].overlay ? 1 : 0
-                },
-                duration: 200,
-                onComplete: () => {
-                    if (!FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(false);
+            this.anims.waterOverlay?.kill();
+            this.anims.waterOverlay = new Tween(
+                this.game,
+                {
+                    target: this.images.waterOverlay,
+                    to: {
+                        alpha: FloorTypes[floorType].overlay ? 1 : 0
+                    },
+                    duration: 200,
+                    onComplete: () => {
+                        if (!FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(false);
+                    }
                 }
-            });
+            );
         }
         this.floorType = floorType;
 
-        if (this.oldPosition !== undefined) {
-            this.distSinceLastFootstep += Geometry.distanceSquared(this.oldPosition, this.position);
+        if (oldPosition !== undefined) {
+            this.distSinceLastFootstep += Geometry.distance(oldPosition, this.position);
 
             if (this.distSinceLastFootstep > 7) {
                 this.footstepSound = this.playSound(
@@ -395,9 +399,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.oldItem = this.activeItem;
             this.activeItem = full.activeItem;
-            if (this.isActivePlayer && !UI_DEBUG_MODE) {
-                $("#weapon-ammo-container").toggle(this.activeItem.itemType === ItemType.Gun);
-            }
 
             const skinID = full.skin.idString;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
@@ -517,16 +518,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    private _getItemReference(): SingleGunNarrowing | MeleeDefinition {
-        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
+    private _getItemReference(): SingleGunNarrowing & WeaponDefinition {
+        const weaponDef = this.activeItem;
 
         return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
             ? Loots.fromString<SingleGunNarrowing>(weaponDef.singleVariant)
-            : weaponDef as SingleGunNarrowing | MeleeDefinition;
+            : weaponDef as SingleGunNarrowing & WeaponDefinition;
     }
 
     private _getOffset(): number {
-        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem;
 
         return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
             ? weaponDef.leftRightOffset * PIXI_SCALE
@@ -534,30 +535,35 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateFistsPosition(anim: boolean): void {
-        this.anims.leftFistAnim?.kill();
-        this.anims.rightFistAnim?.kill();
-        this.anims.weaponAnim?.kill();
+        this.anims.leftFist?.kill();
+        this.anims.rightFist?.kill();
+        this.anims.weapon?.kill();
 
         const reference = this._getItemReference();
-        const fists = reference.fists;
+        const fists = reference.fists ?? {
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35)
+        };
         const offset = this._getOffset();
 
         if (anim) {
-            this.anims.leftFistAnim = new Tween(
+            const duration = "animationDuration" in fists ? fists.animationDuration : 150;
+
+            this.anims.leftFist = new Tween(
                 this.game,
                 {
                     target: this.images.leftFist,
                     to: { x: fists.left.x, y: fists.left.y - offset },
-                    duration: fists.animationDuration
+                    duration
                 }
             );
 
-            this.anims.rightFistAnim = new Tween(
+            this.anims.rightFist = new Tween(
                 this.game,
                 {
                     target: this.images.rightFist,
                     to: { x: fists.right.x, y: fists.right.y + offset },
-                    duration: fists.animationDuration
+                    duration
                 }
             );
         } else {
@@ -573,7 +579,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateWeapon(isNew = false): void {
-        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem;
         const reference = this._getItemReference();
 
         this.images.weapon.setVisible(reference.image !== undefined);
@@ -588,8 +594,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.altWeapon.setAngle(reference.image.angle ?? 0); // there's an ambiguity here as to whether the angle should be inverted or the same
 
             if (this.activeItem !== this.oldItem) {
-                this.anims.muzzleFlashFadeAnim?.kill();
-                this.anims.muzzleFlashRecoilAnim?.kill();
+                this.anims.muzzleFlashFade?.kill();
+                this.anims.muzzleFlashRecoil?.kill();
                 this.images.muzzleFlash.alpha = 0;
                 if (this.isActivePlayer && !isNew) this.game.soundManager.play(`${reference.idString}_switch`);
             }
@@ -601,18 +607,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
 
-        if (weaponDef.itemType === ItemType.Gun) {
-            this.images.rightFist.setZIndex((reference as SingleGunNarrowing).fists.rightZIndex ?? 1);
-            this.images.leftFist.setZIndex((reference as SingleGunNarrowing).fists.leftZIndex ?? 1);
-            this.images.weapon.setZIndex(2);
-            this.images.altWeapon.setZIndex(2);
-            this.images.body.setZIndex(3);
-        } else if (weaponDef.itemType === ItemType.Melee) {
-            this.images.leftFist.setZIndex(4);
-            this.images.rightFist.setZIndex(4);
-            this.images.body.setZIndex(2);
-            this.images.weapon.setZIndex(1);
+        switch (weaponDef.itemType) {
+            case ItemType.Gun: {
+                this.images.rightFist.setZIndex((reference as SingleGunNarrowing).fists.rightZIndex ?? 1);
+                this.images.leftFist.setZIndex((reference as SingleGunNarrowing).fists.leftZIndex ?? 1);
+                this.images.weapon.setZIndex(2);
+                this.images.altWeapon.setZIndex(2);
+                this.images.body.setZIndex(3);
+                break;
+            }
+            case ItemType.Melee: {
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
+                this.images.body.setZIndex(2);
+                this.images.weapon.setZIndex(1);
+                break;
+            }
+            case ItemType.Throwable: {
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
+                this.images.body.setZIndex(2);
+                this.images.weapon.setZIndex(5);
+                break;
+            }
         }
+
         this.images.waterOverlay.setZIndex(this.images.body.zIndex + 1);
         this.container.sortChildren();
     }
@@ -648,13 +667,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             container.children(".item-tooltip").html(itemTooltip);
         }
+
         container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
-        if (equipmentType === "backpack") this.game.uiManager.updateItems();
+
+        if (equipmentType === "backpack") {
+            this.game.uiManager.updateItems();
+        }
     }
 
     emote(type: EmoteDefinition): void {
-        this.anims.emoteAnim?.kill();
-        this.anims.emoteHideAnim?.kill();
+        this.anims.emote?.kill();
+        this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
         this.playSound(
             "emote",
@@ -663,24 +686,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 maxRange: 128
             }
         );
-        this.images.emoteImage.setFrame(`${type.idString}`);
+        this.images.emote.setFrame(`${type.idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
-        this.anims.emoteAnim = new Tween(this.game, {
-            target: this.emoteContainer,
-            to: { alpha: 1 },
-            duration: 250,
-            ease: EaseFunctions.backOut,
-            onUpdate: () => {
-                this.emoteContainer.scale.set(this.emoteContainer.alpha);
+        this.anims.emote = new Tween(
+            this.game,
+            {
+                target: this.emoteContainer,
+                to: { alpha: 1 },
+                duration: 250,
+                ease: EaseFunctions.backOut,
+                onUpdate: () => {
+                    this.emoteContainer.scale.set(this.emoteContainer.alpha);
+                }
             }
-        });
+        );
 
         this._emoteHideTimeout = this.addTimeout(() => {
-            this.anims.emoteHideAnim = new Tween(this.game, {
+            this.anims.emoteHide = new Tween(this.game, {
                 target: this.emoteContainer,
                 to: { alpha: 0 },
                 duration: 200,
@@ -697,8 +723,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
     playAnimation(anim: AnimationType): void {
         switch (anim) {
             case AnimationType.Melee: {
+                if (this.activeItem.itemType !== ItemType.Melee) {
+                    console.warn(`Attempted to play melee animation with non melee item ${this.activeItem.idString}`);
+                    return;
+                }
                 this.updateFistsPosition(false);
-                const weaponDef = this.activeItem as MeleeDefinition;
+                const weaponDef = this.activeItem;
                 if (weaponDef.fists.useLeft === undefined) break;
 
                 let altFist = Math.random() < 0.5;
@@ -707,7 +737,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const duration = weaponDef.fists.animationDuration;
 
                 if (!weaponDef.fists.randomFist || !altFist) {
-                    this.anims.leftFistAnim = new Tween(this.game, {
+                    this.anims.leftFist = new Tween(this.game, {
                         target: this.images.leftFist,
                         to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
                         duration,
@@ -716,7 +746,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
                 if (altFist) {
-                    this.anims.rightFistAnim = new Tween(this.game, {
+                    this.anims.rightFist = new Tween(this.game, {
                         target: this.images.rightFist,
                         to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
                         duration,
@@ -726,7 +756,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 if (weaponDef.image !== undefined) {
-                    this.anims.weaponAnim = new Tween(this.game, {
+                    this.anims.weapon = new Tween(this.game, {
                         target: this.images.weapon,
                         to: {
                             x: weaponDef.image.usePosition.x,
@@ -786,7 +816,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.Gun:
             case AnimationType.GunAlt:
             case AnimationType.LastShot: {
-                const weaponDef = this.activeItem as GunDefinition;
+                if (this.activeItem.itemType !== ItemType.Gun) {
+                    console.warn(`Attempted to play gun animation with non gun item ${this.activeItem.idString}`);
+                    return;
+                }
+                const weaponDef = this.activeItem;
                 const reference = this._getItemReference();
 
                 this.playSound(
@@ -805,84 +839,81 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     );
                 }
 
-                if (weaponDef.itemType === ItemType.Gun) {
-                    const isAltFire = weaponDef.isDual
-                        ? anim === AnimationType.GunAlt
-                        : undefined;
+                const isAltFire = weaponDef.isDual
+                    ? anim === AnimationType.GunAlt
+                    : undefined;
 
-                    this.updateFistsPosition(false);
-                    const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
-                    const reference = this._getItemReference() as SingleGunNarrowing;
+                this.updateFistsPosition(false);
+                const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
-                    this.anims.weaponAnim = new Tween(this.game, {
-                        target: isAltFire ? this.images.altWeapon : this.images.weapon,
-                        to: { x: reference.image.position.x - recoilAmount },
-                        duration: 50,
-                        yoyo: true
-                    });
+                this.anims.weapon = new Tween(this.game, {
+                    target: isAltFire ? this.images.altWeapon : this.images.weapon,
+                    to: { x: reference.image.position.x - recoilAmount },
+                    duration: 50,
+                    yoyo: true
+                });
 
-                    if (!weaponDef.noMuzzleFlash) {
-                        const muzzleFlash = this.images.muzzleFlash;
+                if (!weaponDef.noMuzzleFlash) {
+                    const muzzleFlash = this.images.muzzleFlash;
 
-                        muzzleFlash.x = weaponDef.length * PIXI_SCALE;
-                        muzzleFlash.y = (isAltFire ? -1 : 1) * this._getOffset();
-                        muzzleFlash.setVisible(true);
-                        muzzleFlash.alpha = 0.95;
-                        muzzleFlash.scale = Vec.create(
-                            randomFloat(0.75, 1.25),
-                            randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
-                        );
+                    muzzleFlash.x = weaponDef.length * PIXI_SCALE;
+                    muzzleFlash.y = (isAltFire ? -1 : 1) * this._getOffset();
+                    muzzleFlash.setVisible(true);
+                    muzzleFlash.alpha = 0.95;
+                    muzzleFlash.scale = Vec.create(
+                        randomFloat(0.75, 1.25),
+                        randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
+                    );
 
-                        this.anims.muzzleFlashFadeAnim?.kill();
-                        this.anims.muzzleFlashRecoilAnim?.kill();
-                        this.anims.muzzleFlashFadeAnim = new Tween(
-                            this.game,
-                            {
-                                target: muzzleFlash,
-                                to: { alpha: 0 },
-                                duration: 100,
-                                onComplete: () => muzzleFlash.setVisible(false)
-                            }
-                        );
+                    this.anims.muzzleFlashFade?.kill();
+                    this.anims.muzzleFlashRecoil?.kill();
+                    this.anims.muzzleFlashFade = new Tween(
+                        this.game,
+                        {
+                            target: muzzleFlash,
+                            to: { alpha: 0 },
+                            duration: 100,
+                            onComplete: () => muzzleFlash.setVisible(false)
+                        }
+                    );
 
-                        this.anims.muzzleFlashRecoilAnim = new Tween(
-                            this.game,
-                            {
-                                target: muzzleFlash,
-                                to: { x: muzzleFlash.x - recoilAmount },
-                                duration: 50,
-                                yoyo: true
-                            }
-                        );
-                    }
+                    this.anims.muzzleFlashRecoil = new Tween(
+                        this.game,
+                        {
+                            target: muzzleFlash,
+                            to: { x: muzzleFlash.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
+                }
 
-                    if (isAltFire !== false) {
-                        this.anims.leftFistAnim = new Tween(
-                            this.game,
-                            {
-                                target: this.images.leftFist,
-                                to: { x: reference.fists.left.x - recoilAmount },
-                                duration: 50,
-                                yoyo: true
-                            }
-                        );
-                    }
+                if (isAltFire !== false) {
+                    this.anims.leftFist = new Tween(
+                        this.game,
+                        {
+                            target: this.images.leftFist,
+                            to: { x: reference.fists.left.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
+                }
 
-                    if (isAltFire !== true) {
-                        this.anims.rightFistAnim = new Tween(
-                            this.game,
-                            {
-                                target: this.images.rightFist,
-                                to: { x: reference.fists.right.x - recoilAmount },
-                                duration: 50,
-                                yoyo: true
-                            }
-                        );
-                    }
+                if (isAltFire !== true) {
+                    this.anims.rightFist = new Tween(
+                        this.game,
+                        {
+                            target: this.images.rightFist,
+                            to: { x: reference.fists.right.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
+                }
 
-                    if (!reference.casingParticles?.spawnOnReload) {
-                        this.spawnCasingParticles(isAltFire);
-                    }
+                if (!reference.casingParticles?.spawnOnReload) {
+                    this.spawnCasingParticles(isAltFire);
                 }
                 break;
             }
@@ -894,6 +925,147 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         maxRange: 48
                     }
                 );
+                break;
+            }
+            case AnimationType.ThrowableCook: {
+                if (this.activeItem.itemType !== ItemType.Throwable) {
+                    console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
+                    return;
+                }
+
+                this.playSound("throwable_pin");
+
+                const def = this.activeItem;
+                const projImage = this.images.weapon;
+                const pinImage = this.images.altWeapon;
+                pinImage.setFrame(def.animation.cook.leftImage);
+                pinImage.setPos(def.animation.cook.leftFist.x, 0);
+                projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.cook.liveImage);
+
+                this.anims.leftFist = new Tween(
+                    this.game,
+                    {
+                        target: this.images.leftFist,
+                        to: { x: def.animation.cook.leftFist.x, y: 0 },
+                        duration: 150,
+                        onComplete: () => {
+                            this.anims.leftFist = new Tween(
+                                this.game,
+                                {
+                                    target: this.images.leftFist,
+                                    to: { x: def.animation.cook.leftFist.x, y: def.animation.cook.leftFist.y },
+                                    duration: 150
+                                }
+                            );
+
+                            this.anims.pin = new Tween(
+                                this.game, {
+                                    target: pinImage,
+                                    duration: 150,
+                                    to: {
+                                        ...Vec.add(def.animation.cook.leftFist, Vec.create(15, 0))
+                                    },
+                                    onUpdate: () => {
+                                        pinImage.visible = true;
+                                    }
+                                }
+                            );
+                        }
+                    }
+                );
+
+                if (def.cookable) {
+                    this.game.particleManager.spawnParticle({
+                        frames: def.animation.cook.leverImage,
+                        lifetime: 600,
+                        position: this.position,
+                        zIndex: ZIndexes.Players + 1,
+                        speed: Vec.rotate(Vec.create(8, 8), this.rotation),
+                        rotation: this.rotation,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: 0.8,
+                            end: 1
+                        }
+                    });
+                }
+
+                this.anims.weapon = new Tween(
+                    this.game,
+                    {
+                        target: projImage,
+                        to: { x: def.animation.cook.rightFist.x, y: 10 },
+                        duration: 150
+                    }
+                );
+
+                this.anims.rightFist = new Tween(
+                    this.game,
+                    {
+                        target: this.images.rightFist,
+                        to: { x: def.animation.cook.rightFist.x, y: 10 },
+                        duration: 150,
+                        onComplete: () => {
+                            this.anims.weapon = new Tween(
+                                this.game,
+                                {
+                                    target: projImage,
+                                    to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
+                                    duration: 150
+                                }
+                            );
+
+                            this.anims.rightFist = new Tween(
+                                this.game,
+                                {
+                                    target: this.images.rightFist,
+                                    to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
+                                    duration: 150
+                                }
+                            );
+                        }
+                    }
+                );
+
+                break;
+            }
+            case AnimationType.ThrowableThrow: {
+                if (this.activeItem.itemType !== ItemType.Throwable) {
+                    console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
+                    return;
+                }
+
+                this.playSound("throwable_throw");
+
+                const pinImage = this.images.altWeapon;
+                const projImage = this.images.weapon;
+                const def = this.activeItem;
+
+                if (!def.cookable) {
+                    this.game.particleManager.spawnParticle({
+                        frames: def.animation.cook.leverImage,
+                        lifetime: 600,
+                        position: this.position,
+                        zIndex: ZIndexes.Players + 1,
+                        speed: Vec.rotate(Vec.create(8, 8), this.rotation),
+                        rotation: this.rotation,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: 0.8,
+                            end: 1
+                        }
+                    });
+                }
+
+                this.updateFistsPosition(true);
+                pinImage.visible = false;
+                projImage.setFrame(def.idString);
                 break;
             }
         }
@@ -927,17 +1099,35 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
+
+        const images = this.images;
+        images.aimTrail.destroy();
+        images.vest.destroy();
+        images.body.destroy();
+        images.leftFist.destroy();
+        images.rightFist.destroy();
+        images.backpack.destroy();
+        images.helmet.destroy();
+        images.weapon.destroy();
+        images.altWeapon.destroy();
+        images.muzzleFlash.destroy();
+        images.emoteBackground.destroy();
+        images.emote.destroy();
+        images.waterOverlay.destroy();
+
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();
         if (this.isActivePlayer) $("#action-container").hide();
-        this.waterOverlayAnim?.kill();
-        this.anims.emoteHideAnim?.kill();
-        this.anims.emoteAnim?.kill();
         this.emoteContainer.destroy();
-        this.anims.leftFistAnim?.kill();
-        this.anims.rightFistAnim?.kill();
-        this.anims.weaponAnim?.kill();
-        this.anims.muzzleFlashFadeAnim?.kill();
-        this.anims.muzzleFlashRecoilAnim?.kill();
+
+        const anims = this.anims;
+        anims.emoteHide?.kill();
+        anims.waterOverlay?.kill();
+        anims.emote?.kill();
+        anims.leftFist?.kill();
+        anims.rightFist?.kill();
+        anims.weapon?.kill();
+        anims.muzzleFlashFade?.kill();
+        anims.muzzleFlashRecoil?.kill();
     }
 }

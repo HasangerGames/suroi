@@ -10,28 +10,28 @@ export enum HitboxType {
     Polygon
 }
 
-export interface HitboxJsonMapping {
+export interface HitboxJSONMapping {
     [HitboxType.Circle]: {
-        type: HitboxType.Circle
-        radius: number
-        position: Vector
+        readonly type: HitboxType.Circle
+        readonly radius: number
+        readonly position: Vector
     }
     [HitboxType.Rect]: {
-        type: HitboxType.Rect
-        min: Vector
-        max: Vector
+        readonly type: HitboxType.Rect
+        readonly min: Vector
+        readonly max: Vector
     }
     [HitboxType.Group]: {
-        type: HitboxType.Group
-        hitboxes: Array<HitboxJsonMapping[HitboxType.Circle | HitboxType.Rect]>
+        readonly type: HitboxType.Group
+        readonly hitboxes: Array<HitboxJSONMapping[HitboxType.Circle | HitboxType.Rect]>
     }
     [HitboxType.Polygon]: {
-        type: HitboxType.Polygon
-        points: Vector[]
+        readonly type: HitboxType.Polygon
+        readonly points: Vector[]
     }
 }
 
-export type HitboxJson = HitboxJsonMapping[HitboxType];
+export type HitboxJSON = HitboxJSONMapping[HitboxType];
 
 export interface HitboxMapping {
     [HitboxType.Circle]: CircleHitbox
@@ -45,9 +45,9 @@ export type Hitbox = HitboxMapping[HitboxType];
 export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
     abstract type: HitboxType;
 
-    abstract toJSON(): HitboxJsonMapping[T];
+    abstract toJSON(): HitboxJSONMapping[T];
 
-    static fromJSON(data: HitboxJson): Hitbox {
+    static fromJSON(data: HitboxJSON): Hitbox {
         switch (data.type) {
             case HitboxType.Circle:
                 return new CircleHitbox(data.radius, data.position);
@@ -135,7 +135,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
         this.radius = radius;
     }
 
-    override toJSON(): HitboxJsonMapping[HitboxType.Circle] {
+    override toJSON(): HitboxJSONMapping[HitboxType.Circle] {
         return {
             type: this.type,
             radius: this.radius,
@@ -165,8 +165,8 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
                 if (collision) {
                     this.position = Vec.sub(this.position, Vec.scale(collision.dir, collision.pen));
                 }
-            }
                 break;
+            }
             case HitboxType.Rect: {
                 const collision = Collision.rectCircleIntersection(that.min, that.max, this.position, this.radius);
                 if (collision) {
@@ -176,12 +176,15 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
             }
             case HitboxType.Group: {
                 for (const hitbox of that.hitboxes) {
-                    if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+                    if (this.collidesWith(hitbox)) {
+                        this.resolveCollision(hitbox);
+                    }
                 }
                 break;
             }
-            default:
+            default: {
                 this.throwUnknownSubclassError(that);
+            }
         }
     }
 
@@ -241,7 +244,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         this.max = max;
     }
 
-    toJSON(): HitboxJsonMapping[HitboxType.Rect] {
+    toJSON(): HitboxJSONMapping[HitboxType.Rect] {
         return {
             type: this.type,
             min: Vec.clone(this.min),
@@ -337,6 +340,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override scale(scale: number): void {
         const centerX = (this.min.x + this.max.x) / 2;
         const centerY = (this.min.y + this.max.y) / 2;
+
         this.min = Vec.create((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
         this.max = Vec.create((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
@@ -352,7 +356,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    override toRectangle(): RectangleHitbox {
+    override toRectangle(): this {
         return this;
     }
 
@@ -378,7 +382,7 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
         this.hitboxes = hitboxes;
     }
 
-    toJSON(): HitboxJsonMapping[HitboxType.Group] {
+    toJSON(): HitboxJSONMapping[HitboxType.Group] {
         return {
             type: HitboxType.Group,
             hitboxes: this.hitboxes.map(hitbox => hitbox.toJSON())
@@ -497,7 +501,7 @@ export class PolygonHitbox extends BaseHitbox {
         this.points = points;
     }
 
-    override toJSON(): HitboxJsonMapping[HitboxType.Polygon] {
+    override toJSON(): HitboxJSONMapping[HitboxType.Polygon] {
         return {
             type: this.type,
             points: this.points.map(point => Vec.clone(point))
@@ -506,17 +510,20 @@ export class PolygonHitbox extends BaseHitbox {
 
     override collidesWith(that: Hitbox): boolean {
         switch (that.type) {
-            case HitboxType.Rect:
+            case HitboxType.Rect: {
                 if (this.isPointInside(that.min) || this.isPointInside(that.max)) return true;
-                for (let i = 0; i < this.points.length; i++) {
+                const length = this.points.length;
+                for (let i = 0; i < length; i++) {
                     const a = this.points[i];
                     if (that.isPointInside(a)) return true;
-                    const b = i === this.points.length - 1 ? this.points[0] : this.points[i + 1];
+                    const b = this.points[(i + 1) % length];
+
                     if (Collision.lineIntersectsRectTest(b, a, that.min, that.max)) {
                         return true;
                     }
                 }
                 return false;
+            }
         }
         this.throwUnknownSubclassError(that);
     }

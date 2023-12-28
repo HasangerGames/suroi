@@ -12,6 +12,7 @@ import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
+import { type ThrowableItem } from "../inventory/throwableItem";
 import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
@@ -52,7 +53,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     parentBuilding?: Building;
 
-    hitbox: Hitbox;
+    declare hitbox: Hitbox;
 
     constructor(
         game: Game,
@@ -133,7 +134,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         }
     }
 
-    damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion, position?: Vector): void {
+    damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion, position?: Vector): void {
         const definition = this.definition;
 
         if (this.health === 0 || definition.indestructible) return;
@@ -177,7 +178,10 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
                 if (source.position === undefined && position === undefined) continue;
 
-                loot.push(Angle.angleBetweenPoints(this.position, position ?? source.position), 7);
+                loot.push(
+                    Angle.angleBetweenPoints(this.position, position ?? source.position),
+                    0.02
+                );
             }
 
             if (this.definition.role === ObstacleSpecialRoles.Wall) {

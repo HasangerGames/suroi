@@ -41,9 +41,9 @@ export class UIManager {
     get gameOverScreenTimeout(): number | undefined { return this._gameOverScreenTimeout; }
 
     readonly ui = {
-        activeWeapon: $("#weapon-ammo-container"),
+        ammoCounterContainer: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
-        weaponInventoryAmmo: $("#weapon-inventory-ammo"),
+        reserveAmmo: $("#weapon-inventory-ammo"),
         killStreakIndicator: $("#killstreak-indicator-container"),
         killStreakCounter: $("#killstreak-indicator-counter"),
 
@@ -257,33 +257,36 @@ export class UIManager {
         if (inventory.weapons) {
             this.inventory.weapons = inventory.weapons;
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
-            if (!inventory.items) { // No need to update weapons here if items are also updated
-                this.updateWeapons();
-            }
         }
 
         if (inventory.items) {
             this.inventory.items = inventory.items;
             this.inventory.scope = inventory.scope;
             this.updateItems();
+        }
+        // idiot
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        if (inventory.weapons || inventory.items) {
             this.updateWeapons();
         }
     }
 
     updateWeapons(): void {
         const inventory = this.inventory;
-
         const activeIndex = inventory.activeWeaponIndex;
-
         const activeWeapon = inventory.weapons[activeIndex];
+        const count = activeWeapon?.count;
 
-        if (activeWeapon?.ammo === undefined || UI_DEBUG_MODE) {
-            this.ui.activeWeapon.hide();
+        if (activeWeapon === undefined || count === undefined || UI_DEBUG_MODE) {
+            this.ui.ammoCounterContainer.hide();
         } else {
-            this.ui.activeWeapon.show();
-            const ammo = activeWeapon?.ammo;
-            this.ui.activeAmmo.text(ammo).css("color", ammo > 0 ? "inherit" : "red");
+            this.ui.ammoCounterContainer.show();
 
+            this.ui.activeAmmo
+                .text(count)
+                .css("color", count > 0 ? "inherit" : "red");
+
+            let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
                 let totalAmmo: number | string = this.inventory.items[ammoType];
@@ -295,7 +298,15 @@ export class UIManager {
                     }
                 }
 
-                this.ui.weaponInventoryAmmo.text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
+                showReserve = totalAmmo !== 0;
+
+                this.ui.reserveAmmo
+                    .show()
+                    .text(totalAmmo);
+            }
+
+            if (!showReserve) {
+                this.ui.reserveAmmo.hide();
             }
         }
 
@@ -322,11 +333,11 @@ export class UIManager {
                     .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
                     .show();
 
-                if (weapon.ammo !== undefined) {
+                if (weapon.count !== undefined) {
                     container
                         .children(".item-ammo")
-                        .text(weapon.ammo)
-                        .css("color", weapon.ammo > 0 ? "inherit" : "red");
+                        .text(weapon.count)
+                        .css("color", weapon.count > 0 ? "inherit" : "red");
                 }
             } else {
                 container.removeClass("has-item");
@@ -358,7 +369,7 @@ export class UIManager {
             itemSlot.toggleClass("has-item", count > 0);
 
             if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
-                itemSlot.toggle(count > 0);
+                itemSlot.css("visibility", count > 0 ? "visible" : "hidden");
             }
 
             if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {

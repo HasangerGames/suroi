@@ -38,4 +38,8 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
             this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
         }
     }
+
+    override destroy(): void {
+        this.image.destroy();
+    }
 }
