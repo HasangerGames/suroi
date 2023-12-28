@@ -10,11 +10,11 @@ import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { GameObject } from "./gameObject";
+import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
 
-export class Loot extends GameObject<ObjectCategory.Loot> {
+export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     override readonly type = ObjectCategory.Loot;
 
     declare readonly hitbox: CircleHitbox;
@@ -126,7 +126,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         if (!Vec.equals(this._oldPosition, this.position)) {
             this.game.partialDirtyObjects.add(this);
-            this.game.grid.addObject(this);
+            this.game.grid.updateObject(this);
         }
     }
 
