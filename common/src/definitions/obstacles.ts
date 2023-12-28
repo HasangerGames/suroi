@@ -924,7 +924,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
-                particle: "metal_particle"
+                particle: "white_metal_particle"
             }
         },
         {

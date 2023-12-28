@@ -75,7 +75,6 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 10,
-            small_bridge: 5,
             christmas_tree: 1, // winter mode
             oak_tree: 310,
             birch_tree: 50,
