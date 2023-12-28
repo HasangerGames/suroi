@@ -421,6 +421,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.None,
             hideOnMap: true
         }),
+        makeCrate("grenade_crate", "Grenade Crate", {
+            hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+            rotationMode: RotationMode.None,
+            hideOnMap: true
+        }),
         {
             idString: "melee_crate",
             name: "Melee Crate",
@@ -441,19 +446,41 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "grenade_crate",
-            name: "Grenade Crate",
-            material: "crate",
-            health: 100,
+            idString: "ammo_crate",
+            name: "Ammo Crate",
+            material: "cardboard",
+            health: 160,
+            impenetrable: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
                 destroy: 0.6
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: RectangleHitbox.fromRect(6.5, 6.5),
-            rotationMode: RotationMode.None,
+            hitbox: RectangleHitbox.fromRect(8.5, 8.5),
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
+            frames: {
+                particle: "crate_particle"
+            }
+        },
+        {
+            idString: "tear_gas_crate",
+            name: "Tear Gas Crate",
+            material: "crate",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hitbox: RectangleHitbox.fromRect(8.4, 5.7),
+            rotationMode: RotationMode.None,
+            frames: {
+                particle: "crate_particle"
+            }
         },
         {
             idString: "barrel",
@@ -1016,6 +1043,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "bunk_bed",
+            name: "Bunk Bed",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(8.2, 15.6, Vec.create(0.4, 0)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
             }
         },
         {
@@ -1981,6 +2027,112 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeContainerWalls(3, "open1", ContainerTints.Blue),
         makeContainerWalls(4, "open2", ContainerTints.Blue),
         makeContainerWalls(5, "open1", ContainerTints.Yellow),
-        makeContainerWalls(6, "open2", ContainerTints.Yellow)
+        makeContainerWalls(6, "open2", ContainerTints.Yellow),
+        {
+            idString: "sandbags",
+            name: "Sandbags",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: RectangleHitbox.fromRect(12.8, 7.7),
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "gun_case",
+            name: "Gun Case",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(9.5, 4.4),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true
+        },
+        {
+            idString: "m1117",
+            name: "M1117",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(17.2, 30, Vec.create(0, -4.8)),   // Body
+                RectangleHitbox.fromRect(18.3, 6.2, Vec.create(0, -10.1)), // Back wheels
+                RectangleHitbox.fromRect(18.3, 6.2, Vec.create(0, 10.3)),  // Front wheels
+                RectangleHitbox.fromRect(16, 5, Vec.create(0, 15)),        // Back of hood
+                RectangleHitbox.fromRect(14, 5, Vec.create(0, 18.5))       // Front of hood
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "cabinet",
+            name: "Cabinet",
+            material: "appliance",
+            health: 100,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(13.5, 4, Vec.create(0, -0.2)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hasLoot: true
+        },
+        {
+            idString: "briefcase",
+            name: "Briefcase",
+            material: "wood",
+            health: 100,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(9.9, 6.9, Vec.create(0, 0.4)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "porta_potty_door_particle"
+            },
+            hasLoot: true
+        },
+        {
+            idString: "button",
+            name: "Button",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(2, 1.4),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        }
     ]
 );
