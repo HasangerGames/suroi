@@ -7,7 +7,10 @@ import {
     SpectateActions
 } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
-import { type SpawnMeleeDefinition, Melees } from "../../../common/src/definitions/melees";
+import {
+    type SpawnMeleeDefinition,
+    Melees
+} from "../../../common/src/definitions/melees";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import {
     HealType,
@@ -271,8 +274,9 @@ Video evidence is required.`)
             skin.notInLoadout ??
             (skin.roleRequired !== undefined &&
                 skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))
-        )
+        ) {
             continue;
+        }
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -457,15 +461,16 @@ Video evidence is required.`)
             (spawnmelee.roleRequired !== undefined &&
                 spawnmelee.roleRequired !==
                     game.console.getBuiltInCVar("dv_role"))
-        )
+        ) {
             continue;
+        }
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
         const spawnmeleeItem =
             $(`<div id="spawnmelee-${spawnmelee.idString}" class="spawnmelees-list-item-container">
   <div class="spawnmelees-list-item">
-    <div class="spawnmelee-base" style="background-image: url('./img/game/spawnmelee/${spawnmelee.idString}.svg')"></div>
+    <div class="spawnmelee" style="background-image: url('./img/game/weapons/${spawnmelee.idString}.svg'); background-size: 100% 100%"></div>
   </div>
   <span class="spawnmelee-name">${spawnmelee.name}</span>
 </div>`);
@@ -681,8 +686,9 @@ Video evidence is required.`)
             !confirm(
                 "This option will overwrite all settings and reload the page. Continue?"
             )
-        )
+        ) {
             return;
+        }
         const error = (): void => {
             alert("Invalid config.");
         };
@@ -733,8 +739,9 @@ Video evidence is required.`)
             !confirm(
                 "This option will reset all settings and reload the page. Continue?"
             )
-        )
+        ) {
             return;
+        }
         if (!confirm("Are you sure? This action cannot be undone.")) return;
         localStorage.removeItem("suroi_config");
         window.location.reload();

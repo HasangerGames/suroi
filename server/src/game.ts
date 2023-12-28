@@ -431,6 +431,15 @@ export class Game {
         ) {
             player.loadout.skin = skin;
         }
+        const melee = packet.melee
+        if (
+            skin.itemType === ItemType.Skin &&
+            !skin.notInLoadout &&
+            (skin.roleRequired === undefined ||
+                skin.roleRequired === player.role)
+        ) {
+            player.inventory.addOrReplaceWeapon(2, melee)
+        }
         player.loadout.emotes = packet.emotes;
 
         this.livingPlayers.add(player);

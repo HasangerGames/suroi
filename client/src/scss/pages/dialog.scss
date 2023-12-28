@@ -12,7 +12,8 @@
     margin-left: 5px;
 }
 
-#report-modal-content, #warning-modal-content {
+#report-modal-content,
+#warning-modal-content {
     padding: 1rem;
 
     p {
@@ -299,6 +300,63 @@
         }
     }
 
+    #spawnmelee-name {
+        position: absolute;
+        bottom: 0;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        z-index: 1000;
+        background-color: #49993e;
+        width: 100%;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    #spawnmelees-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 100%;
+
+        .spawnmelees-list-item-container {
+            width: 140px;
+            height: 170px;
+            padding: 8px;
+            margin: 8px;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .spawnmelees-list-item {
+            position: relative;
+            width: 102px;
+            height: 98px;
+
+            .spawnmelee {
+                position: relative;
+                top: 0;
+                left: 6px;
+                width: 90px;
+                height: 90px;
+            }
+        }
+
+        .spawnmelee-name {
+            font-weight: bold;
+            @include text-shadow;
+            text-align: center;
+        }
+    }
+
     @media screen and (max-width: 654px) {
         #emotes-list {
             gap: 5px;
@@ -319,7 +377,7 @@
             height: 191px;
             background-size: contain;
 
-            &>div {
+            & > div {
                 width: 56px;
                 height: 56px;
                 background-size: contain;
@@ -352,7 +410,7 @@
             width: 143px;
             height: 143px;
 
-            &>div {
+            & > div {
                 width: 42px;
                 height: 42px;
             }
@@ -443,7 +501,7 @@
             background: #49993e;
         }
 
-        &>img {
+        & > img {
             position: relative;
             top: 3px;
             margin-right: 5px;
@@ -468,7 +526,6 @@
     }
 
     .modal-item {
-
         &.checkbox-setting {
             margin-bottom: 20px;
         }

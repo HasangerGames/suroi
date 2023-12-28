@@ -192,6 +192,7 @@ export class Game {
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
+            joinPacket.melee = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_spawnmelee"));
 
             for (const emote of ["top", "right", "bottom", "left"] as const) {
                 joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
