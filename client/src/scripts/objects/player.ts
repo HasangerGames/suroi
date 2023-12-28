@@ -332,7 +332,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (oldPosition !== undefined) {
             this.distSinceLastFootstep += Geometry.distance(oldPosition, this.position);
 
-            if (this.distSinceLastFootstep > 7) {
+            if (this.distSinceLastFootstep > 10) {
                 this.footstepSound = this.playSound(
                     `${this.floorType}_step_${random(1, 2)}`,
                     {
