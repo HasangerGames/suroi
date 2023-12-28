@@ -392,7 +392,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "frag_grenade", count: 1, weight: 1 },
         { item: "smoke_grenade", count: 3, weight: 0.5 },
         { item: "smoke_grenade", count: 2, weight: 1 },
-        { item: "smoke_grenade", count: 1, weight: 1 },
+        { item: "smoke_grenade", count: 1, weight: 1 }
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },

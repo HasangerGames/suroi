@@ -16,10 +16,10 @@ import { type ThrowableItem } from "../inventory/throwableItem";
 import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
-import { GameObject } from "./gameObject";
+import { BaseGameObject, type GameObject } from "./gameObject";
 import { type Player } from "./player";
 
-export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
+export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
     override readonly damageable = true;
 

@@ -2,15 +2,16 @@ import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Collision, type CollisionResponse, Geometry, Numeric } from "../../../common/src/utils/math";
+import { ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { GameObject } from "./gameObject";
+import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
-export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProjectile> {
+export class ThrowableProjectile extends BaseGameObject<ObjectCategory.ThrowableProjectile> {
     readonly type = ObjectCategory.ThrowableProjectile;
 
     readonly definition: ThrowableDefinition;
@@ -92,6 +93,11 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                 ) &&
                 object.hitbox.collidesWith(this.hitbox)
             ) {
+                if (object instanceof Obstacle && object.definition.role === ObstacleSpecialRoles.Window) {
+                    object.damage(Infinity, this.source.owner);
+                    continue;
+                }
+
                 const hitbox = object.hitbox;
 
                 /**
@@ -266,7 +272,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         this.game.partialDirtyObjects.add(this);
     }
 
-    damage(_amount: number, _source?: GameObject<ObjectCategory> | undefined): void { }
+    damage(): void { }
 
     get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
         return {
