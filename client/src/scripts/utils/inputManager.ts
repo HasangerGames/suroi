@@ -64,10 +64,22 @@ export class InputManager {
 
     turning = false;
 
+    private _lastInputPacket: InputPacket | undefined;
+    private _inputPacketTimer = 0;
+
     update(): void {
         if (this.game.gameOver) return;
         const packet = new InputPacket();
-        packet.movement = this.movement;
+
+        // assigning it directly breaks comparing last and current input packet
+        // since javascript will pass it by reference
+        packet.movement = {
+            up: this.movement.up,
+            down: this.movement.down,
+            left: this.movement.left,
+            right: this.movement.right
+        };
+
         packet.attacking = this.attacking;
 
         packet.turning = this.turning;
@@ -91,7 +103,18 @@ export class InputManager {
         }
         packet.actions = this.actions;
 
-        this.game.sendPacket(packet);
+        this._inputPacketTimer++;
+
+        if (!this._lastInputPacket ||
+            packet.didChange(this._lastInputPacket) ||
+            this._inputPacketTimer >= GameConstants.tickrate
+        ) {
+            this.game.sendPacket(packet);
+            this._lastInputPacket = packet;
+        }
+
+        this._inputPacketTimer %= GameConstants.tickrate;
+
         this.actions.length = 0;
     }
 

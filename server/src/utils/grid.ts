@@ -1,8 +1,10 @@
+import { ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { Numeric } from "../../../common/src/utils/math";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
+import { Logger } from "./misc";
 
 /**
  * A Grid to filter collision detection of game objects
@@ -35,6 +37,10 @@ export class Grid {
      * Add an object to the grid system and pool
      */
     addObject(object: GameObject): void {
+        if (this.pool.has(object)) {
+            Logger.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
+            return;
+        }
         this.pool.add(object);
         this.updateObject(object);
     }

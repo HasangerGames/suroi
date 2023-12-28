@@ -128,4 +128,28 @@ export class InputPacket extends Packet {
             this.actions.push({ type, item, slot });
         }
     }
+
+    /**
+     * Compare two input packets to test if they need to be resent
+     * @param that The previous input packet
+     */
+    didChange(that: InputPacket): boolean {
+        if (this.actions.length) return true;
+
+        for (const k in this.movement) {
+            const key = k as keyof InputPacket["movement"];
+            if (that.movement[key] !== this.movement[key]) return true;
+        }
+
+        for (const k in this.mobile) {
+            const key = k as keyof InputPacket["mobile"];
+            if (that.mobile[key] !== this.mobile[key]) return true;
+        }
+
+        for (const key of ["attacking", "turning", "rotation", "distanceToMouse"] as const) {
+            if (that[key] !== this[key]) return true;
+        }
+
+        return false;
+    }
 }

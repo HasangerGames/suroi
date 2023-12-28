@@ -333,7 +333,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             this.hitbox = this.door.closedHitbox.clone();
         }
         this.spawnHitbox = this.hitbox;
-        this.game.grid.addObject(this);
+        this.game.grid.updateObject(this);
     }
 
     override get data(): Required<ObjectsNetData[ObjectCategory.Obstacle]> {
