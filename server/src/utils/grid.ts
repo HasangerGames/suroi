@@ -1,28 +1,27 @@
+import { ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox, type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Numeric } from "../../../common/src/utils/math";
+import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
-
-interface GameObject {
-    readonly id: number
-    readonly hitbox?: Hitbox
-    readonly position: Vector
-}
+import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 
 /**
  * A Grid to filter collision detection of game objects
  */
-export class Grid<T extends GameObject> {
+export class Grid {
     readonly width: number;
     readonly height: number;
     readonly cellSize = 32;
 
     //                        X     Y     Object ID
     //                      __^__ __^__     ___^__
-    private readonly _grid: Array<Array<Map<number, T>>>;
+    private readonly _grid: Array<Array<Map<number, GameObject>>>;
 
     // store the cells each game object is occupying
     // so removing the object from the grid is faster
     private readonly _objectsCells = new Map<number, Vector[]>();
+
+    readonly pool = new ObjectPool<ObjectMapping>();
 
     constructor(width: number, height: number) {
         this.width = Math.floor(width / this.cellSize);
@@ -34,11 +33,20 @@ export class Grid<T extends GameObject> {
     }
 
     /**
-     * Add an object to the grid system
+     * Add an object to the grid system and pool
      */
-    addObject(object: T): void {
-        this.removeObject(object);
+    addObject(object: GameObject): void {
+        if (this.pool.has(object)) console.warn(`readding object${ObjectCategory[object.type]}`);
+        this.pool.add(object);
+        this.updateObject(object);
+    }
 
+    /**
+     * Update an object position on the grid system
+     * This removes it from the grid and re adds it
+     */
+    updateObject(object: GameObject): void {
+        this._removeFromGrid(object);
         const cells: Vector[] = [];
 
         if (object.hitbox === undefined) {
@@ -48,7 +56,7 @@ export class Grid<T extends GameObject> {
         } else {
             let rect: RectangleHitbox;
             if ("spawnHitbox" in object) {
-                rect = (object.spawnHitbox as Hitbox).toRectangle();
+                rect = (object.spawnHitbox).toRectangle();
             } else {
                 rect = object.hitbox.toRectangle();
             }
@@ -80,10 +88,7 @@ export class Grid<T extends GameObject> {
         this._objectsCells.set(object.id, cells);
     }
 
-    /**
-     * Remove an object from the grid system
-     */
-    removeObject(object: T): void {
+    private _removeFromGrid(object: GameObject): void {
         const cells = this._objectsCells.get(object.id);
         if (!cells) return;
 
@@ -94,19 +99,27 @@ export class Grid<T extends GameObject> {
     }
 
     /**
+     * Remove an object from the grid system and object pool
+     */
+    removeObject(object: GameObject): void {
+        this._removeFromGrid(object);
+        this.pool.delete(object);
+    }
+
+    /**
      * Get all objects near this hitbox
      * This transforms the hitbox into a rectangle
      * and gets all objects intersecting it after rounding it to grid cells
      * @param hitbox The hitbox
      * @return A set with the objects near this hitbox
      */
-    intersectsHitbox(hitbox: Hitbox): Set<T> {
+    intersectsHitbox(hitbox: Hitbox): Set<GameObject> {
         const rect = hitbox.toRectangle();
 
         const min = this._roundToCells(rect.min);
         const max = this._roundToCells(rect.max);
 
-        const objects = new Set<T>();
+        const objects = new Set<GameObject>();
 
         for (
             let x = min.x, maxX = max.x;

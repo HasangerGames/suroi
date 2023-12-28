@@ -4,8 +4,27 @@ import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type Building } from "./building";
+import { type DeathMarker } from "./deathMarker";
+import { type Decal } from "./decal";
+import { type Loot } from "./loot";
+import { type Obstacle } from "./obstacle";
+import { type Parachute } from "./parachute";
+import { type Player } from "./player";
 
-export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
+export interface ObjectMapping {
+    [ObjectCategory.Player]: Player
+    [ObjectCategory.Obstacle]: Obstacle
+    [ObjectCategory.DeathMarker]: DeathMarker
+    [ObjectCategory.Loot]: Loot
+    [ObjectCategory.Building]: Building
+    [ObjectCategory.Decal]: Decal
+    [ObjectCategory.Parachute]: Parachute
+}
+
+export type GameObject = ObjectMapping[ObjectCategory];
+
+export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
     abstract readonly type: Cat;
     readonly id: number;
     readonly game: Game;
