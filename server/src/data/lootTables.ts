@@ -139,6 +139,13 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 1 }
         ]
     },
+    vector_briefcase: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "vector", weight: 1 }
+        ]
+    },
     small_table: {
         min: 1,
         max: 1,
