@@ -4,14 +4,23 @@ import { isMobile } from "pixi.js";
 import { InputActions } from "../../../../common/src/constants";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../common/src/definitions/scopes";
-import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
+import {
+    InputPacket,
+    type InputAction
+} from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
-import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
+import {
+    FIRST_EMOTE_ANGLE,
+    FOURTH_EMOTE_ANGLE,
+    PIXI_SCALE,
+    SECOND_EMOTE_ANGLE,
+    THIRD_EMOTE_ANGLE
+} from "./constants";
 
 export class InputManager {
     readonly game: Game;
@@ -72,7 +81,9 @@ export class InputManager {
 
         packet.turning = this.turning;
         if (this.turning) {
-            packet.rotation = this.resetAttacking ? this.shootOnReleaseAngle : this.rotation;
+            packet.rotation = this.resetAttacking
+                ? this.shootOnReleaseAngle
+                : this.rotation;
             packet.distanceToMouse = this.distanceToMouse;
             this.turning = false;
         }
@@ -104,9 +115,18 @@ export class InputManager {
         let iterationCount = 0;
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
-            searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
-                ? Numeric.absMod(searchIndex + offset, Scopes.definitions.length)
-                : Numeric.clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
+            searchIndex = this.game.console.getBuiltInCVar(
+                "cv_loop_scope_selection"
+            )
+                ? Numeric.absMod(
+                      searchIndex + offset,
+                      Scopes.definitions.length
+                  )
+                : Numeric.clamp(
+                      searchIndex + offset,
+                      0,
+                      Scopes.definitions.length - 1
+                  );
 
             const scopeCandidate = Scopes.definitions[searchIndex].idString;
 
@@ -133,18 +153,35 @@ export class InputManager {
     setupInputs(): void {
         // @ts-expect-error init code
         // noinspection JSConstantReassignment
-        this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
+        this.isMobile =
+            isMobile.any &&
+            this.game.console.getBuiltInCVar("mb_controls_enabled");
 
         const game = this.game;
 
         const gameUi = $("#game-ui")[0];
 
         // different event targets… why?
-        window.addEventListener("keydown", this.handleInputEvent.bind(this, true));
-        window.addEventListener("keyup", this.handleInputEvent.bind(this, false));
-        gameUi.addEventListener("pointerdown", this.handleInputEvent.bind(this, true));
-        gameUi.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
-        gameUi.addEventListener("wheel", this.handleInputEvent.bind(this, true));
+        window.addEventListener(
+            "keydown",
+            this.handleInputEvent.bind(this, true)
+        );
+        window.addEventListener(
+            "keyup",
+            this.handleInputEvent.bind(this, false)
+        );
+        gameUi.addEventListener(
+            "pointerdown",
+            this.handleInputEvent.bind(this, true)
+        );
+        gameUi.addEventListener(
+            "pointerup",
+            this.handleInputEvent.bind(this, false)
+        );
+        gameUi.addEventListener(
+            "wheel",
+            this.handleInputEvent.bind(this, true)
+        );
 
         gameUi.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
@@ -154,37 +191,73 @@ export class InputManager {
 
             if (this.emoteWheelActive) {
                 const mousePosition = Vec.create(e.clientX, e.clientY);
-                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
-                    const angle = Angle.angleBetweenPoints(this.emoteWheelPosition, mousePosition);
+                if (
+                    Geometry.distanceSquared(
+                        this.emoteWheelPosition,
+                        mousePosition
+                    ) > 500
+                ) {
+                    const angle = Angle.angleBetweenPoints(
+                        this.emoteWheelPosition,
+                        mousePosition
+                    );
                     let slotName: string | undefined;
 
-                    if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
+                    if (
+                        SECOND_EMOTE_ANGLE <= angle &&
+                        angle <= FOURTH_EMOTE_ANGLE
+                    ) {
                         this.selectedEmote = InputActions.TopEmoteSlot;
                         slotName = "top";
-                    } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
+                    } else if (
+                        !(
+                            angle >= FIRST_EMOTE_ANGLE &&
+                            angle <= FOURTH_EMOTE_ANGLE
+                        )
+                    ) {
                         this.selectedEmote = InputActions.RightEmoteSlot;
                         slotName = "right";
-                    } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
+                    } else if (
+                        FIRST_EMOTE_ANGLE <= angle &&
+                        angle <= THIRD_EMOTE_ANGLE
+                    ) {
                         this.selectedEmote = InputActions.BottomEmoteSlot;
                         slotName = "bottom";
-                    } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
+                    } else if (
+                        THIRD_EMOTE_ANGLE <= angle &&
+                        angle <= SECOND_EMOTE_ANGLE
+                    ) {
                         this.selectedEmote = InputActions.LeftEmoteSlot;
                         slotName = "left";
                     }
-                    $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
+                    $("#emote-wheel").css(
+                        "background-image",
+                        `url("./img/misc/emote_wheel_highlight_${
+                            slotName ?? "top"
+                        }.svg"), url("./img/misc/emote_wheel.svg")`
+                    );
                 } else {
                     this.selectedEmote = undefined;
-                    $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
+                    $("#emote-wheel").css(
+                        "background-image",
+                        'url("./img/misc/emote_wheel.svg")'
+                    );
                 }
             }
 
-            this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+            this.rotation = Math.atan2(
+                e.clientY - window.innerHeight / 2,
+                e.clientX - window.innerWidth / 2
+            );
 
             if (!game.gameOver && game.activePlayer) {
                 const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
                 const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-                this.distanceToMouse = Geometry.distance(game.activePlayer.position, gamePos);
+                this.distanceToMouse = Geometry.distance(
+                    game.activePlayer.position,
+                    gamePos
+                );
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
@@ -198,7 +271,9 @@ export class InputManager {
         // Mobile joysticks
         if (this.isMobile) {
             const size = game.console.getBuiltInCVar("mb_joystick_size");
-            const transparency = game.console.getBuiltInCVar("mb_joystick_transparency");
+            const transparency = game.console.getBuiltInCVar(
+                "mb_joystick_transparency"
+            );
 
             const leftJoyStick = nipplejs.create({
                 zone: $("#left-joystick-container")[0],
@@ -224,7 +299,11 @@ export class InputManager {
                 if (!rightJoyStickUsed && !shootOnRelease) {
                     this.rotation = movementAngle;
                     this.turning = true;
-                    if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
+                    if (
+                        game.console.getBuiltInCVar("cv_responsive_rotation") &&
+                        !game.gameOver &&
+                        game.activePlayer
+                    ) {
                         game.activePlayer.container.rotation = this.rotation;
                         game.map.indicator.rotation = this.rotation;
                     }
@@ -240,7 +319,11 @@ export class InputManager {
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
                 const activePlayer = game.activePlayer;
-                if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && activePlayer) {
+                if (
+                    game.console.getBuiltInCVar("cv_responsive_rotation") &&
+                    !game.gameOver &&
+                    activePlayer
+                ) {
                     game.activePlayer.container.rotation = this.rotation;
                 }
 
@@ -252,7 +335,9 @@ export class InputManager {
                     activePlayer.images.aimTrail.alpha = 1;
                 }
 
-                const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
+                const attacking =
+                    data.distance >
+                    game.console.getBuiltInCVar("mb_joystick_size") / 3;
                 if (def.itemType === ItemType.Gun && def.shootOnRelease) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
@@ -263,7 +348,8 @@ export class InputManager {
 
             rightJoyStick.on("end", () => {
                 rightJoyStickUsed = false;
-                if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
+                if (game.activePlayer)
+                    game.activePlayer.images.aimTrail.alpha = 0;
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
                 shootOnRelease = false;
@@ -271,7 +357,10 @@ export class InputManager {
         }
     }
 
-    private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
+    private handleInputEvent(
+        down: boolean,
+        event: KeyboardEvent | MouseEvent | WheelEvent
+    ): void {
         // Disable pointer events on mobile if mobile controls are enabled
         if (event instanceof PointerEvent && this.isMobile) return;
 
@@ -300,21 +389,19 @@ export class InputManager {
 
         if (event instanceof KeyboardEvent) {
             let modifierCount = 0;
-            (
-                [
-                    "metaKey",
-                    "ctrlKey"
-                ] as Array<keyof KeyboardEvent>
-            ).forEach(modifier => (event[modifier] && modifierCount++));
+            (["metaKey", "ctrlKey"] as Array<keyof KeyboardEvent>).forEach(
+                (modifier) => event[modifier] && modifierCount++
+            );
 
             // As stated before, more than one modifier or a modifier alongside another key should invalidate an input
             if (
-                (
-                    modifierCount > 1 ||
-                    (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
-                ) && down
+                (modifierCount > 1 ||
+                    (modifierCount === 1 &&
+                        !["Control", "Meta"].includes(event.key))) &&
+                down
                 // …but it only invalidates pressing a key, not releasing it
-            ) return;
+            )
+                return;
         }
 
         const key = this.getKeyFromInputEvent(event);
@@ -337,7 +424,10 @@ export class InputManager {
             return;
         }
 
-        actionsFired = this.fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
+        actionsFired = this.fireAllEventsAtKey(
+            key,
+            event.type === "keydown" || event.type === "pointerdown"
+        );
 
         if (actionsFired > 0 && this.game.gameStarted) {
             event.preventDefault();
@@ -349,7 +439,8 @@ export class InputManager {
         for (const action of actions) {
             let query = action;
             if (!down) {
-                if (query.startsWith("+")) { // Invertible action
+                if (query.startsWith("+")) {
+                    // Invertible action
                     query = query.replace("+", "-");
                 } else query = ""; // If the action isn't invertible, then we do nothing
             }
@@ -360,7 +451,9 @@ export class InputManager {
         return actions.length;
     }
 
-    private getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
+    private getKeyFromInputEvent(
+        event: KeyboardEvent | MouseEvent | WheelEvent
+    ): string {
         let key = "";
         if (event instanceof KeyboardEvent) {
             key = event.key.length > 1 ? event.key : event.key.toUpperCase();
@@ -371,16 +464,37 @@ export class InputManager {
 
         if (event instanceof WheelEvent) {
             switch (true) {
-                case event.deltaX > 0: { key = "MWheelRight"; break; }
-                case event.deltaX < 0: { key = "MWheelLeft"; break; }
-                case event.deltaY > 0: { key = "MWheelDown"; break; }
-                case event.deltaY < 0: { key = "MWheelUp"; break; }
-                case event.deltaZ > 0: { key = "MWheelForwards"; break; }
-                case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
+                case event.deltaX > 0: {
+                    key = "MWheelRight";
+                    break;
+                }
+                case event.deltaX < 0: {
+                    key = "MWheelLeft";
+                    break;
+                }
+                case event.deltaY > 0: {
+                    key = "MWheelDown";
+                    break;
+                }
+                case event.deltaY < 0: {
+                    key = "MWheelUp";
+                    break;
+                }
+                case event.deltaZ > 0: {
+                    key = "MWheelForwards";
+                    break;
+                }
+                case event.deltaZ < 0: {
+                    key = "MWheelBackwards";
+                    break;
+                }
             }
 
             if (key === "") {
-                console.error("An unrecognized scroll wheel event was received: ", event);
+                console.error(
+                    "An unrecognized scroll wheel event was received: ",
+                    event
+                );
             }
 
             return key;
@@ -418,6 +532,7 @@ export class InputManager {
         "use_consumable tablets": "Use Tablets",
         cancel_action: "Cancel Action",
         toggle_map: "Toggle Fullscreen Map",
+        "+view_map": "View Map",
         toggle_minimap: "Toggle Minimap",
         toggle_hud: "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
@@ -427,12 +542,10 @@ export class InputManager {
     generateBindsConfigScreen(): void {
         const keybindsContainer = $("#tab-keybinds-content");
         keybindsContainer.html("").append(
-            $("<div>",
-                {
-                    class: "modal-item",
-                    id: "keybind-clear-tooltip"
-                }
-            ).append(
+            $("<div>", {
+                class: "modal-item",
+                id: "keybind-clear-tooltip"
+            }).append(
                 "To remove a keybind, press the keybind and then press either ",
                 $("<kbd>").text("Escape"),
                 " or ",
@@ -443,9 +556,11 @@ export class InputManager {
 
         let activeButton: HTMLButtonElement | undefined;
         for (const a in defaultBinds) {
-            const action = a as keyof (typeof defaultBinds);
+            const action = a as keyof typeof defaultBinds;
 
-            const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
+            const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(
+                keybindsContainer
+            );
 
             $("<div/>", {
                 class: "setting-title",
@@ -458,7 +573,7 @@ export class InputManager {
                 actions.push("None");
             }
 
-            const buttons = actions.map(bind => {
+            const buttons = actions.map((bind) => {
                 return $<HTMLButtonElement>("<button/>", {
                     class: "btn btn-darken btn-lg btn-secondary btn-bind",
                     text: bind || "None"
@@ -469,7 +584,9 @@ export class InputManager {
                 const bindButton = buttons[i];
 
                 // eslint-disable-next-line no-inner-declarations
-                const setKeyBind = (event: KeyboardEvent | MouseEvent | WheelEvent): void => {
+                const setKeyBind = (
+                    event: KeyboardEvent | MouseEvent | WheelEvent
+                ): void => {
                     event.stopImmediatePropagation();
 
                     if (
@@ -504,9 +621,11 @@ export class InputManager {
                 bindButton.addEventListener("keydown", setKeyBind);
                 bindButton.addEventListener("mousedown", setKeyBind);
                 bindButton.addEventListener("wheel", setKeyBind);
-                bindButton.addEventListener("contextmenu", e => { e.preventDefault(); });
+                bindButton.addEventListener("contextmenu", (e) => {
+                    e.preventDefault();
+                });
 
-                bindButton.addEventListener("scroll", evt => {
+                bindButton.addEventListener("scroll", (evt) => {
                     evt.preventDefault();
                     evt.stopPropagation();
                     evt.stopImmediatePropagation();
@@ -515,24 +634,33 @@ export class InputManager {
         }
 
         // Add the reset button
-        $("<div/>", { class: "modal-item" }).append($("<button/>", {
-            class: "btn btn-darken btn-lg btn-danger",
-            html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
-        }).on("click", () => {
-            this.binds.unbindAll();
+        $("<div/>", { class: "modal-item" })
+            .append(
+                $("<button/>", {
+                    class: "btn btn-darken btn-lg btn-danger",
+                    html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
+                }).on("click", () => {
+                    this.binds.unbindAll();
 
-            for (const [action, keys] of Object.entries(defaultBinds)) {
-                this.binds.addInputsToAction(action, ...keys);
-            }
+                    for (const [action, keys] of Object.entries(defaultBinds)) {
+                        this.binds.addInputsToAction(action, ...keys);
+                    }
 
-            this.generateBindsConfigScreen();
-            this.game.console.writeToLocalStorage();
-        })).appendTo(keybindsContainer);
+                    this.generateBindsConfigScreen();
+                    this.game.console.writeToLocalStorage();
+                })
+            )
+            .appendTo(keybindsContainer);
 
         // Change the weapons slots keybind text
         for (let i = 0; i < 3; i++) {
-            const slotKeybinds = this.binds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
-            $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
+            const slotKeybinds = this.binds
+                .getInputsBoundToAction(`slot ${i}`)
+                .filter((a) => a !== "")
+                .slice(0, 2);
+            $(`#weapon-slot-${i + 1}`)
+                .children(".slot-number")
+                .text(slotKeybinds.join(" / "));
         }
     }
 
@@ -540,23 +668,28 @@ export class InputManager {
         let name: string | undefined;
 
         const copy = input.toLowerCase();
-        if ([
-            "mouse",
-            "mwheel",
-            "tab",
-            "enter",
-            "capslock",
-            "shift",
-            "alt",
-            "meta",
-            "control",
-            "arrow",
-            "backspace",
-            "escape",
-            "space"
-        ].some(query => copy.startsWith(query))) {
-            if (copy === "meta") { // "meta" means different things depending on the OS
-                name = navigator.userAgent.match(/mac|darwin/ig) ? "command" : "windows";
+        if (
+            [
+                "mouse",
+                "mwheel",
+                "tab",
+                "enter",
+                "capslock",
+                "shift",
+                "alt",
+                "meta",
+                "control",
+                "arrow",
+                "backspace",
+                "escape",
+                "space"
+            ].some((query) => copy.startsWith(query))
+        ) {
+            if (copy === "meta") {
+                // "meta" means different things depending on the OS
+                name = navigator.userAgent.match(/mac|darwin/gi)
+                    ? "command"
+                    : "windows";
             } else {
                 name = copy.replace(/ /g, "");
             }
@@ -574,21 +707,32 @@ class InputMapper {
     /* eslint-disable @typescript-eslint/indent, indent, no-sequences */
     private static readonly _generateGetAndSetIfAbsent =
         <K, V>(map: Map<K, V>, defaultValue: V) =>
-            (key: K) =>
-                map.get(key) ?? (() => (map.set(key, defaultValue), defaultValue))();
+        (key: K) =>
+            map.get(key) ??
+            (() => (map.set(key, defaultValue), defaultValue))();
 
     private static readonly _generateAdder =
-        <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
-            (key: K, ...values: V[]): T => {
-                const forwardSet = InputMapper._generateGetAndSetIfAbsent(forwardsMap, new Set())(key);
+        <K, V, T>(
+            forwardsMap: Map<K, Set<V>>,
+            backwardsMap: Map<V, Set<K>>,
+            thisValue: T
+        ) =>
+        (key: K, ...values: V[]): T => {
+            const forwardSet = InputMapper._generateGetAndSetIfAbsent(
+                forwardsMap,
+                new Set()
+            )(key);
 
-                for (const value of values) {
-                    forwardSet.add(value);
-                    InputMapper._generateGetAndSetIfAbsent(backwardsMap, new Set())(value).add(key);
-                }
+            for (const value of values) {
+                forwardSet.add(value);
+                InputMapper._generateGetAndSetIfAbsent(
+                    backwardsMap,
+                    new Set()
+                )(value).add(key);
+            }
 
-                return thisValue;
-            };
+            return thisValue;
+        };
 
     /**
      * Binds actions to a certain input. Note that an action (either a `Command` object or
@@ -597,7 +741,11 @@ class InputMapper {
      * @param values A list of actions to be bound
      * @returns This input mapper object
      */
-    readonly addActionsToInput = InputMapper._generateAdder(this._inputToAction, this._actionToInput, this);
+    readonly addActionsToInput = InputMapper._generateAdder(
+        this._inputToAction,
+        this._actionToInput,
+        this
+    );
     /**
      * Binds inputs to a certain action. Note that an action (either a `Command` object or
      * a console query `string`) may only appear once per action
@@ -605,7 +753,11 @@ class InputMapper {
      * @param values A list of inputs to be bound
      * @returns This input mapper object
      */
-    readonly addInputsToAction = InputMapper._generateAdder(this._actionToInput, this._inputToAction, this);
+    readonly addInputsToAction = InputMapper._generateAdder(
+        this._actionToInput,
+        this._inputToAction,
+        this
+    );
 
     /**
      * Removes an action that was bound to an input
@@ -624,29 +776,41 @@ class InputMapper {
     }
 
     private static readonly _generateRemover =
-        <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
-            (key: K) => {
-                forwardsMap.delete(key);
+        <K, V, T>(
+            forwardsMap: Map<K, Set<V>>,
+            backwardsMap: Map<V, Set<K>>,
+            thisValue: T
+        ) =>
+        (key: K) => {
+            forwardsMap.delete(key);
 
-                for (const set of backwardsMap.values()) {
-                    set.delete(key);
-                }
+            for (const set of backwardsMap.values()) {
+                set.delete(key);
+            }
 
-                return thisValue;
-            };
+            return thisValue;
+        };
 
     /**
      * Removes all actions bound to a particular input
      * @param key The input from which to remove all actions
      * @returns This input mapper object
      */
-    readonly unbindInput = InputMapper._generateRemover(this._inputToAction, this._actionToInput, this);
+    readonly unbindInput = InputMapper._generateRemover(
+        this._inputToAction,
+        this._actionToInput,
+        this
+    );
     /**
      * Removes all inputs bound to a particular action
      * @param key The action from which to remove all inputs
      * @returns This input mapper object
      */
-    readonly unbindAction = InputMapper._generateRemover(this._actionToInput, this._inputToAction, this);
+    readonly unbindAction = InputMapper._generateRemover(
+        this._actionToInput,
+        this._inputToAction,
+        this
+    );
 
     /**
      * Removes all bindings
@@ -660,24 +824,30 @@ class InputMapper {
 
     private static readonly _generateGetter =
         <K, V>(map: Map<K, Set<V>>) =>
-            (key: K) => [...(map.get(key)?.values?.() ?? [])];
+        (key: K) =>
+            [...(map.get(key)?.values?.() ?? [])];
 
     /**
      * Gets all the inputs bound to a particular action
      * @param key The action from which to retrieve the inputs
      * @returns An array of inputs bound to the action
      */
-    readonly getInputsBoundToAction = InputMapper._generateGetter(this._actionToInput);
+    readonly getInputsBoundToAction = InputMapper._generateGetter(
+        this._actionToInput
+    );
     /**
      * Gets all the actions bound to a particular input
      * @param key The input from which to retrieve the actions
      * @returns An array of actions bound to the input
      */
-    readonly getActionsBoundToInput = InputMapper._generateGetter(this._inputToAction);
+    readonly getActionsBoundToInput = InputMapper._generateGetter(
+        this._inputToAction
+    );
 
     private static readonly _generateLister =
         <K, V>(map: Map<K, V>) =>
-            () => [...map.keys()];
+        () =>
+            [...map.keys()];
 
     /**
      * Lists all the inputs that are currently bound to at least one action
@@ -692,7 +862,9 @@ class InputMapper {
      * **This list does *not* update in real time, and changes to said list
      * are *not* reflected in the input manager**
      */
-    readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
+    readonly listBoundActions = InputMapper._generateLister(
+        this._actionToInput
+    );
 
     getAll(): GameSettings["binds"] {
         return [...this._actionToInput.entries()].reduce<GameSettings["binds"]>(
