@@ -96,9 +96,13 @@ export class Minimap {
         const width = this.width = mapPacket.width;
         const height = this.height = mapPacket.height;
 
+        const mapBounds = new RectangleHitbox(
+            Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
+            Vec.create(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
+        );
         const rivers: River[] = [];
         for (const riverData of mapPacket.rivers) {
-            rivers.push(new River(riverData.width, riverData.points, rivers));
+            rivers.push(new River(riverData.width, riverData.points, rivers, mapBounds));
         }
 
         const terrain = this.terrain = new Terrain(

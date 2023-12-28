@@ -219,7 +219,7 @@ export class River {
     readonly waterHitbox: PolygonHitbox;
     readonly bankHitbox: PolygonHitbox;
 
-    constructor(width: number, points: Vector[], otherRivers: River[]) {
+    constructor(width: number, points: Vector[], otherRivers: River[], bounds: RectangleHitbox) {
         this.width = width;
         this.points = points;
 
@@ -229,6 +229,8 @@ export class River {
 
         const waterPoints: Vector[] = new Array(length * 2);
         const bankPoints: Vector[] = new Array(length * 2);
+
+        const endsOnMapBounds = !bounds.isPointInside(this.points[this.points.length - 1]);
 
         for (let i = 0; i < this.points.length; i++) {
             const current = this.points[i];
@@ -245,13 +247,18 @@ export class River {
                 if (length < river.width * 2) {
                     bankWidth = Math.max(bankWidth, river.bankWidth);
                 }
-                if ((i === 0 || i === this.points.length - 1) && length < 16) {
+                if ((i === 0 || i === this.points.length - 1) && length < 48) {
                     collidingRiver = river;
                 }
             }
 
+            let width = this.width;
+
             const end = 2 * (Math.max(1 - i / length, i / length) - 0.5);
-            const width = (1 + end ** 3 * 1.5) * this.width;
+            // increase river width near map bounds
+            if (i < (this.points.length / 2) || endsOnMapBounds) {
+                width = (1 + end ** 3 * 1.5) * this.width;
+            }
 
             const clipRayToPoly = (point: Vector, direction: Vector, polygon: PolygonHitbox): Vector => {
                 const end = Vec.add(point, direction);
