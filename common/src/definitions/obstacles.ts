@@ -1921,6 +1921,36 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
               RectangleHitbox.fromRect(75, 1.5, Vec.create(9, -117)), // Back of the cabin
               RectangleHitbox.fromRect(1.5, 29, Vec.create(-29, -102.5)), // Right wall of the cabin
               RectangleHitbox.fromRect(1.5, 13, Vec.create(-6.2, -95.8)), // Right wall of the vector room
+
+              //Bottom Hitboxes
+              // HACK: refactor when we support collision with polygon hitboxes
+              new CircleHitbox(12, Vec.create(8, 107)),
+              ...Array.from({ length: 2 }, (_, i) => {
+                  const a = i === 0 ? 1 : -1;
+                  const b = i === 0 ? 0 : 17;
+                  return [
+                      new CircleHitbox(4, Vec.create(0 * a + b, 114)),
+                      new CircleHitbox(4, Vec.create(-4 * a + b, 112.5)),
+                      new CircleHitbox(4, Vec.create(-6 * a + b, 111.5)),
+                      new CircleHitbox(4, Vec.create(-8 * a + b, 111)),
+                      new CircleHitbox(4, Vec.create(-10 * a + b, 109.8)),
+                      new CircleHitbox(4, Vec.create(-12 * a + b, 108.4)),
+                      new CircleHitbox(4, Vec.create(-14 * a + b, 106.9)),
+                      new CircleHitbox(4, Vec.create(-16 * a + b, 105.2)),
+                      new CircleHitbox(4, Vec.create(-18 * a + b, 103.4)),
+                      new CircleHitbox(4, Vec.create(-20 * a + b, 101.6)),
+                      new CircleHitbox(4, Vec.create(-22 * a + b, 99)),
+                      new CircleHitbox(4, Vec.create(-24 * a + b, 95.3)),
+                      new CircleHitbox(4, Vec.create(-26 * a + b, 92)),
+                      new CircleHitbox(4, Vec.create(-27 * a + b, 89.2)),
+                      new CircleHitbox(4, Vec.create(-28 * a + b, 86.5)),
+                      new CircleHitbox(4, Vec.create(-29 * a + b, 83.8)),
+                      new CircleHitbox(4, Vec.create(-30 * a + b, 80.2)),
+                      new CircleHitbox(4, Vec.create(-30 * a + b, 77))
+                  ];
+              }).flat(),
+
+              RectangleHitbox.fromRect(85, 1.5, Vec.create(8.6, 73.6)),
             )
         },
         {

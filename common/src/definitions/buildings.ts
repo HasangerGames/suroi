@@ -1546,7 +1546,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Vector Vault
             { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
-            { idString: "vector_briefcase", position: Vec.create(-21, -94), rotation: 0 },
+            { idString: "vector_briefcase", position: Vec.create(-22.5, -94), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(-12, -94), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(-22, -102), rotation: 0 },
         ],
         subBuildings: [
             { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) },
