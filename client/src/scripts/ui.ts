@@ -7,7 +7,7 @@ import {
     SpectateActions
 } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
-import { SpawnMelees } from "../../../common/src/definitions/spawnmelees";
+import { type SpawnMeleeDefinition, Melees } from "../../../common/src/definitions/melees";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import {
     HealType,
@@ -448,6 +448,9 @@ Video evidence is required.`)
         .val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
 
     // Load Spawn Melees
+    const SpawnMelees = Melees.filter(
+        (item) => item.canSpawnWith === true
+    ) as SpawnMeleeDefinition[];
     for (const spawnmelee of SpawnMelees) {
         if (
             spawnmelee.notInLoadout ??

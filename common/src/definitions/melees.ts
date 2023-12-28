@@ -31,9 +31,20 @@ export interface MeleeDefinition extends ItemDefinition {
         readonly separateWorldImage?: boolean
     }
     readonly fireMode?: FireMode
+    readonly canSpawnWith?: true
 }
 
-export const Melees: MeleeDefinition[] = [
+// export type SpawnMeleeDefinition = MeleeDefinition & {
+//     readonly canSpawnWith: true;
+// };
+
+export type SpawnMeleeDefinition = MeleeDefinition & {
+    readonly notInLoadout?: boolean
+    readonly roleRequired?: string
+    readonly canSpawnWith: boolean
+};
+
+export const Melees: Array<MeleeDefinition | SpawnMeleeDefinition> = [
     {
         idString: "fists",
         name: "Fists",
@@ -46,6 +57,27 @@ export const Melees: MeleeDefinition[] = [
         noDrop: true,
         speedMultiplier: 1,
         maxTargets: 1,
+        fists: {
+            animationDuration: 125,
+            randomFist: true,
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(75, -10),
+            useRight: Vec.create(75, 10)
+        }
+    },
+    {
+        idString: "spawnmelee",
+        name: "Spawn Melee Test",
+        itemType: ItemType.Melee,
+        damage: 20,
+        obstacleMultiplier: 1,
+        radius: 1.5,
+        offset: Vec.create(2.5, 0),
+        cooldown: 250,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        canSpawnWith: true,
         fists: {
             animationDuration: 125,
             randomFist: true,

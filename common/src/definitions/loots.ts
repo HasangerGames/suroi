@@ -8,18 +8,24 @@ import { Melees, type MeleeDefinition } from "./melees";
 import { Scopes, type ScopeDefinition } from "./scopes";
 import { Skins, type SkinDefinition } from "./skins";
 
-export type LootDefinition = GunDefinition | AmmoDefinition | MeleeDefinition | HealingItemDefinition | ArmorDefinition | BackpackDefinition | ScopeDefinition | SkinDefinition;
+export type LootDefinition =
+    | GunDefinition
+    | AmmoDefinition
+    | MeleeDefinition
+    | HealingItemDefinition
+    | ArmorDefinition
+    | BackpackDefinition
+    | ScopeDefinition
+    | SkinDefinition;
 export type WeaponDefinition = GunDefinition | MeleeDefinition;
 
-export const Loots = new ObjectDefinitions<LootDefinition>(
-    [
-        ...Guns,
-        ...Ammos,
-        ...Melees,
-        ...HealingItems,
-        ...Armors,
-        ...Backpacks,
-        ...Scopes,
-        ...Skins
-    ]
-);
+export const Loots = new ObjectDefinitions<LootDefinition>([
+    ...Guns,
+    ...Ammos,
+    ...Melees,
+    ...HealingItems,
+    ...Armors,
+    ...Backpacks,
+    ...Scopes,
+    ...Skins
+]);
