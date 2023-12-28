@@ -6,10 +6,10 @@ import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "./gameObject";
+import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 
-export class Building extends GameObject<ObjectCategory.Building> {
+export class Building extends BaseGameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
 
     readonly definition: BuildingDefinition;

@@ -13,7 +13,6 @@ import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { ObjectPool } from "../../common/src/utils/objectPool";
 import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
@@ -24,8 +23,6 @@ import { type GunItem } from "./inventory/gunItem";
 import { Map } from "./map";
 import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import { type DeathMarker } from "./objects/deathMarker";
-import { type Decal } from "./objects/decal";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type GameObject } from "./objects/gameObject";
@@ -39,16 +36,6 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 
-interface ObjectMapping {
-    [ObjectCategory.Player]: Player
-    [ObjectCategory.Obstacle]: Obstacle
-    [ObjectCategory.DeathMarker]: DeathMarker
-    [ObjectCategory.Loot]: Loot
-    [ObjectCategory.Building]: Building
-    [ObjectCategory.Decal]: Decal
-    [ObjectCategory.Parachute]: Parachute
-}
-
 export class Game {
     readonly _id: number;
     get id(): number { return this._id; }
@@ -57,14 +44,12 @@ export class Game {
 
     gas: Gas;
 
-    readonly grid: Grid<GameObject>;
+    readonly grid: Grid;
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
 
     updateObjects = false;
-
-    readonly objects = new ObjectPool<ObjectMapping>();
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
@@ -212,11 +197,11 @@ export class Game {
             }
 
             // Update loots
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
+            for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
                 loot.update();
             }
 
-            for (const parachute of this.objects.getCategory(ObjectCategory.Parachute)) {
+            for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
                 parachute.update();
             }
 
@@ -250,7 +235,7 @@ export class Game {
             this.gas.tick();
 
             // First loop over players: Movement, animations, & actions
-            for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+            for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
@@ -443,7 +428,6 @@ export class Game {
         player.loadout.emotes = packet.emotes;
 
         this.livingPlayers.add(player);
-        this.objects.add(player);
         this.spectatablePlayers.push(player);
         this.connectedPlayers.add(player);
         this.newPlayers.add(player);
@@ -524,7 +508,6 @@ export class Game {
             count
         );
 
-        this.objects.add(loot);
         this.grid.addObject(loot);
         return loot;
     }
@@ -562,7 +545,6 @@ export class Game {
         this.grid.removeObject(object);
         this.idAllocator.give(object.id);
         this.updateObjects = true;
-        this.objects.delete(object as ObjectMapping[ObjectCategory]);
     }
 
     summonAirdrop(position: Vector): void {
@@ -639,7 +621,6 @@ export class Game {
         this.addTimeout(() => {
             const parachute = new Parachute(this, position, airdrop);
             this.grid.addObject(parachute);
-            this.objects.add(parachute);
             this.mapPings.add(position);
         }, GameConstants.airdrop.flyTime);
     }
