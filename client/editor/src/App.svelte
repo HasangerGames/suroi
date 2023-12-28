@@ -6,24 +6,23 @@
         PolygonHitbox,
         RectangleHitbox
     } from "../../../common/src/utils/hitbox";
-    import { clamp } from "../../../common/src/utils/math";
-    import { v } from "../../../common/src/utils/vector";
+    import { Numeric } from "../../../common/src/utils/math";
+    import { Vec } from "../../../common/src/utils/vector";
     import Hitbox from "./lib/hitbox.svelte";
 
     // small house hitbox with also a big circle lol
     let hitboxes = [
         ...new HitboxGroup(
-            new CircleHitbox(10, v(0, 0)),
-            RectangleHitbox.fromRect(2, 9, v(-31, 26)),
-            RectangleHitbox.fromRect(2, 22, v(-31, 0.2)),
-            RectangleHitbox.fromRect(2, 9.8, v(-31, -25)),
-            RectangleHitbox.fromRect(19.8, 2, v(22, 29.5)),
-            RectangleHitbox.fromRect(8.2, 2, v(-26.0, 29.5)),
-            RectangleHitbox.fromRect(14, 2, v(-4.6, 29.5)),
-            RectangleHitbox.fromRect(2, 32, v(30.9, 13.5)),
-            RectangleHitbox.fromRect(2, 16, v(30.9, -20.5)),
-            RectangleHitbox.fromRect(12.3, 2, v(25.8, -28.9)),
-            RectangleHitbox.fromRect(39.4, 2, v(-10.45, -28.9))
+            RectangleHitbox.fromRect(2, 9, Vec.create(-31, 26)),
+            RectangleHitbox.fromRect(2, 22, Vec.create(-31, 0.2)),
+            RectangleHitbox.fromRect(2, 9.8, Vec.create(-31, -25)),
+            RectangleHitbox.fromRect(19.8, 2, Vec.create(22, 29.5)),
+            RectangleHitbox.fromRect(8.2, 2, Vec.create(-26.0, 29.5)),
+            RectangleHitbox.fromRect(14, 2, Vec.create(-4.6, 29.5)),
+            RectangleHitbox.fromRect(2, 32, Vec.create(30.9, 13.5)),
+            RectangleHitbox.fromRect(2, 16, Vec.create(30.9, -20.5)),
+            RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)),
+            RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9))
         ).toJSON().hitboxes
     ];
 
@@ -50,7 +49,7 @@
     }
 
     function mouseWheel(e: WheelEvent) {
-        scale = clamp(scale - e.deltaY / 1000, 0.1, 5);
+        scale = Numeric.clamp(scale - e.deltaY / 1000, 0.1, 5);
     }
 
     function updateSelected() {
