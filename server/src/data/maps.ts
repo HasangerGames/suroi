@@ -14,6 +14,7 @@ import { type Map } from "../map";
 import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type LootTables } from "./lootTables";
+import { Decal } from "../objects/decal";
 
 interface MapDefinition {
     readonly width: number
@@ -329,7 +330,8 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("port_complex", Vec.create(this.width / 2, this.height / 2), 0);
+            //map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("armory_vault", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -338,7 +340,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("button", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("gun_mount_maul", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {

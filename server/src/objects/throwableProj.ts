@@ -6,11 +6,11 @@ import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializat
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { GameObject } from "./gameObject";
+import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
-export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProjectile> {
+export class ThrowableProjectile extends BaseGameObject<ObjectCategory.ThrowableProjectile> {
     readonly type = ObjectCategory.ThrowableProjectile;
 
     readonly definition: ThrowableDefinition;
@@ -178,7 +178,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         this.game.partialDirtyObjects.add(this);
     }
 
-    damage(_amount: number, _source?: GameObject<ObjectCategory> | undefined): void { }
+    damage(_amount: number, _source?: BaseGameObject<ObjectCategory> | undefined): void { }
 
     get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
         return {

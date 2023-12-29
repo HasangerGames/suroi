@@ -266,29 +266,23 @@ export class Building extends GameObject<ObjectCategory.Building> {
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
 
-            if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
-
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
-
-            if (definition.scopeHitbox !== undefined) {
+            if (this.ceilingHitbox !== undefined) {
                 drawHitbox(
-                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.ceilingHitbox,
+                    HITBOX_COLORS.buildingScopeCeiling,
                     this.debugGraphics
                 );
             }
 
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
+            if (definition.spawnHitbox !== undefined) {
+                drawHitbox(
+                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.spawnHitbox,
+                    this.debugGraphics
+                );
+            }
 
-            if (definition.scopeHitbox) {
+            if (definition.scopeHitbox !== undefined) {
                 drawHitbox(
                     definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,

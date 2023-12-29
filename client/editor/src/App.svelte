@@ -1,29 +1,31 @@
 <script lang="ts">
     import {
+    BaseHitbox,
         CircleHitbox,
         HitboxGroup,
         HitboxType,
         PolygonHitbox,
-        RectangleHitbox
+        RectangleHitbox,
+
+        type HitboxJSON
+
     } from "../../../common/src/utils/hitbox";
     import { Numeric } from "../../../common/src/utils/math";
     import { Vec } from "../../../common/src/utils/vector";
     import Hitbox from "./lib/hitbox.svelte";
 
-    // small house hitbox with also a big circle lol
     let hitboxes = [
         ...new HitboxGroup(
-            RectangleHitbox.fromRect(2, 9, Vec.create(-31, 26)),
-            RectangleHitbox.fromRect(2, 22, Vec.create(-31, 0.2)),
-            RectangleHitbox.fromRect(2, 9.8, Vec.create(-31, -25)),
-            RectangleHitbox.fromRect(19.8, 2, Vec.create(22, 29.5)),
-            RectangleHitbox.fromRect(8.2, 2, Vec.create(-26.0, 29.5)),
-            RectangleHitbox.fromRect(14, 2, Vec.create(-4.6, 29.5)),
-            RectangleHitbox.fromRect(2, 32, Vec.create(30.9, 13.5)),
-            RectangleHitbox.fromRect(2, 16, Vec.create(30.9, -20.5)),
-            RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)),
-            RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9))
-        ).transform(Vec.create(0, 0), 1, 2).toJSON().hitboxes
+            RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
+            RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
+            RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
+            RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
+            RectangleHitbox.fromRect(8.2, 2, Vec.create(26, -29.5)),
+            RectangleHitbox.fromRect(34.47, 2.09, Vec.create(18.77, -6.66)),
+            RectangleHitbox.fromRect(2.07, 37, Vec.create(-36.01, -2.5)),
+            RectangleHitbox.fromRect(35.39, 2.09, Vec.create(-19.35, 16.52)),
+            RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
+        ).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -61,6 +63,7 @@
         try {
             hitboxes = JSON.parse(target.value);
         } catch {}
+        convertHitboxes();
     }
 
     async function loadImage(src: string): Promise<{ width: number, height: number}> {
@@ -74,7 +77,25 @@
         })
     }
 
-    const bgImage = loadImage("/img/game/buildings/house_floor_small.svg");
+    let hitboxesStr = "";
+    function convertHitboxes() {
+        hitboxesStr = "new HitboxGroup(\n";
+        hitboxesStr += hitboxes.map((hitbox) => {
+            const round = (n: number) => Math.round(n * 100) / 100;
+            if (hitbox.type === HitboxType.Rect) {
+                const width = hitbox.max.x - hitbox.min.x;
+                const height = hitbox.max.y - hitbox.min.y;
+                const center = Vec.create(hitbox.min.x + (width / 2), hitbox.min.y + (height / 2));
+                return `    RectangleHitbox.fromRect(${round(width)}, ${round(height)}, ${(width === 0 && height === 0) ? "" : `Vec.create(${round(center.x)}, ${round(center.y)})`})`;
+            } else {
+                return `    new CircleHitbox(${round(hitbox.radius)}, Vec.create(${round(hitbox.position.x)}, ${round(hitbox.position.y)}))`;
+            }
+        }).join(",\n");
+        hitboxesStr += "\n)";
+    }
+    convertHitboxes();
+
+    const bgImage = loadImage("/img/game/buildings/armory_vault_floor.svg");
 
 </script>
 
@@ -145,9 +166,8 @@
             </div>
         {/if}
 
-        <textarea  id="output" on:keyup={onOutputInput}
-            >{JSON.stringify(hitboxes, null, 1)}
-        </textarea>
+        <textarea class="output" on:keyup={onOutputInput}>{JSON.stringify(hitboxes, null, 1)}</textarea>
+        <textarea class="output">{hitboxesStr}</textarea>  
     </div>
 
     <div
@@ -161,7 +181,7 @@
             <g transform="translate({x} {y}) scale({scale})">
                 {#await bgImage}
                 {:then img}
-                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}"></image>
+                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" onmousedown="return false"></image>
                 {/await}
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
@@ -194,7 +214,7 @@
         display: flex;
         flex-direction: column;
 
-        #output {
+        .output {
             justify-self: flex-end;
             width: 90%;
             height: 500px;

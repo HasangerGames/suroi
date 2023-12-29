@@ -1,15 +1,15 @@
 <script lang="ts">
     import {
         HitboxType,
-        type HitboxJson
+        type HitboxJSON
     } from "../../../../common/src/utils/hitbox";
     import { PIXI_SCALE } from "../../../src/scripts/utils/constants";
 
-    export let data: HitboxJson;
+    export let data: HitboxJSON;
     export let selected: boolean;
 </script>
 
-<g on:pointerdown fill="rgba(255, 0, 0, {selected ? 0.8 : 0.4})">
+<g on:pointerdown fill="rgba({selected ? "255, 0, 0" : "255, 255, 255"}, 0.5)">
     {#if data.type === HitboxType.Circle}
         <circle
             r={data.radius * PIXI_SCALE}
