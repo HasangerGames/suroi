@@ -34,15 +34,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
-    oldItem = this.activeItem;
+    private _oldItem = this.activeItem;
 
     equipment: {
         helmet?: ArmorDefinition
         vest?: ArmorDefinition
         backpack: BackpackDefinition
     } = {
-        backpack: Loots.fromString("bag")
-    };
+            backpack: Loots.fromString("bag")
+        };
 
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
@@ -381,10 +381,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
-            const pos = toPixiCoords(this.position);
-            const emotePos = Vec.add(pos, Vec.create(0, -175));
-            this.container.position.copyFrom(pos);
-            this.emoteContainer.position.copyFrom(emotePos);
+            this.container.position.copyFrom(toPixiCoords(this.position));
+            this.emoteContainer.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
         }
 
         // Animation
@@ -397,7 +395,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const full = data.full;
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
-            this.oldItem = this.activeItem;
+            this._oldItem = this.activeItem;
             this.activeItem = full.activeItem;
 
             const skinID = full.skin.idString;
@@ -593,7 +591,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setAngle(reference.image.angle ?? 0);
             this.images.altWeapon.setAngle(reference.image.angle ?? 0); // there's an ambiguity here as to whether the angle should be inverted or the same
 
-            if (this.activeItem !== this.oldItem) {
+            if (this.activeItem !== this._oldItem) {
                 this.anims.muzzleFlashFade?.kill();
                 this.anims.muzzleFlashRecoil?.kill();
                 this.images.muzzleFlash.alpha = 0;
@@ -938,15 +936,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const def = this.activeItem;
                 const projImage = this.images.weapon;
                 const pinImage = this.images.altWeapon;
-                pinImage.setFrame(def.animation.cook.leftImage);
-                pinImage.setPos(def.animation.cook.leftFist.x, 0);
+
+                pinImage.setFrame(def.animation.cook.pinImage);
+                pinImage.setPos(35, 0);
+                pinImage.setZIndex(ZIndexes.Players + 1);
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.cook.liveImage);
 
                 this.anims.leftFist = new Tween(
                     this.game,
                     {
                         target: this.images.leftFist,
-                        to: { x: def.animation.cook.leftFist.x, y: 0 },
+                        to: { x: 35, y: 0 },
                         duration: 150,
                         onComplete: () => {
                             this.anims.leftFist = new Tween(
@@ -958,15 +958,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 }
                             );
 
+                            pinImage.visible = true;
                             this.anims.pin = new Tween(
                                 this.game, {
                                     target: pinImage,
                                     duration: 150,
                                     to: {
                                         ...Vec.add(def.animation.cook.leftFist, Vec.create(15, 0))
-                                    },
-                                    onUpdate: () => {
-                                        pinImage.visible = true;
                                     }
                                 }
                             );
@@ -997,7 +995,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.game,
                     {
                         target: projImage,
-                        to: { x: def.animation.cook.rightFist.x, y: 10 },
+                        to: { x: 25, y: 10 },
                         duration: 150
                     }
                 );
@@ -1006,7 +1004,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.game,
                     {
                         target: this.images.rightFist,
-                        to: { x: def.animation.cook.rightFist.x, y: 10 },
+                        to: { x: 25, y: 10 },
                         duration: 150,
                         onComplete: () => {
                             this.anims.weapon = new Tween(

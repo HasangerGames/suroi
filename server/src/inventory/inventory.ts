@@ -349,8 +349,10 @@ export class Inventory {
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
         const definition = Loots.reify(type);
 
+        if (!this.items.hasItem(definition.idString)) return;
+
         const itemAmount = this.items.getItem(definition.idString);
-        const removalAmount = removalCount ?? Math.ceil(itemAmount / 2);
+        const removalAmount = Math.min(itemAmount, removalCount ?? Math.ceil(itemAmount / 2));
 
         if (drop) {
             this._dropItem(definition, { count: removalAmount });
@@ -395,13 +397,13 @@ export class Inventory {
         const definition = item.definition;
 
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
-            this.removeThrowable(definition as ThrowableDefinition);
+            this.removeThrowable(definition as ThrowableDefinition, true, Infinity);
         } else {
             if (item instanceof GunItem && (definition as DualGunNarrowing).isDual) {
-                this._dropItem((definition as DualGunNarrowing).singleVariant);
-                this._dropItem((definition as DualGunNarrowing).singleVariant);
+                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
+                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
             } else {
-                this._dropItem(definition);
+                this._dropItem(definition, { pushForce });
             }
 
             this._setWeapon(slot, undefined);
@@ -435,7 +437,7 @@ export class Inventory {
                 if (overAmount > 0) {
                     this.items.decrementItem(ammoType, overAmount);
 
-                    this._dropItem(ammoType, { count: overAmount });
+                    this._dropItem(ammoType, { count: overAmount, pushForce });
                 }
             }
         }

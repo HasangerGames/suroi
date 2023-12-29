@@ -78,11 +78,32 @@ export const Numeric = Object.freeze({
     /**
      * Conform a number to specified bounds
      * @param value The number to conform
-     * @param min The minimum value the number can hold
-     * @param max The maximum value the number can hold
+     * @param min The minimum value the number can be
+     * @param max The maximum value the number can be
      */
     clamp(value: number, min: number, max: number): number {
         return value < max ? value > min ? value : min : max;
+    },
+    /**
+     * Snaps a value to either bounds, unless it's precisely halfway between them
+     * @param value The value to snap
+     * @param min The smallest snap value
+     * @param max The largest snap value
+     * @returns Either the `min`, `max` or the original value if it happens to be
+     * exactly halfway between `min` and `max`
+     */
+    clampToBound(value: number, min: number, max: number): number {
+        const mid = (min + max) / 2;
+        switch (true) {
+            case value >= max:
+            case value > mid:
+                return max;
+            case value <= min:
+            case value < mid:
+                return min;
+            default:
+                return value;
+        }
     },
     /**
      * Add two orientations
@@ -459,11 +480,16 @@ export const Collision = Object.freeze({
             : null;
     },
     rectCircleIntersection(min: Vector, max: Vector, pos: Vector, radius: number): CollisionResponse {
-        if (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y) {
-            const e = Vec.scale(Vec.sub(max, min), 0.5);
-            const p = Vec.sub(pos, Vec.add(min, e));
-            const xp = Math.abs(p.x) - e.x - radius;
-            const yp = Math.abs(p.y) - e.y - radius;
+        if (
+            min.x <= pos.x && pos.x <= max.x &&
+            min.y <= pos.y && pos.y <= max.y
+        ) {
+            // circle center inside rectangle
+
+            const halfDimension = Vec.scale(Vec.sub(max, min), 0.5);
+            const p = Vec.sub(pos, Vec.add(min, halfDimension));
+            const xp = Math.abs(p.x) - halfDimension.x - radius;
+            const yp = Math.abs(p.y) - halfDimension.y - radius;
 
             return xp > yp
                 ? {
@@ -512,8 +538,7 @@ export const Collision = Object.freeze({
                         ab,
                         Numeric.clamp(
                             Vec.dotProduct(Vec.sub(p, a), ab) / Vec.dotProduct(ab, ab),
-                            0,
-                            1
+                            0, 1
                         )
                     )
                 ),
@@ -522,7 +547,7 @@ export const Collision = Object.freeze({
         );
     },
     /**
-     * Sources
+     * Source
      * @link http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
      */
     rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {

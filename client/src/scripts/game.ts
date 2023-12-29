@@ -277,6 +277,9 @@ export class Game {
                         case ItemType.Backpack:
                             soundID = "backpack_pickup";
                             break;
+                        case ItemType.Throwable:
+                            soundID = "throwable_pickup";
+                            break;
                         default:
                             soundID = "pickup";
                             break;
