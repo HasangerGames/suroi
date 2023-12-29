@@ -409,16 +409,16 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     ...stream.readPosition(),
                     z: stream.readFloat(0, GameConstants.maxPosition, 16)
                 },
-                rotation: stream.readRotation(16),
+                rotation: stream.readRotation(16)
             };
         },
         deserializeFull(stream) {
             return {
                 ...this.deserializePartial(stream),
                 full: {
-                    definition: Loots.readFromStream(stream),
+                    definition: Loots.readFromStream(stream)
                 }
-            }
+            };
         }
     }
 };
