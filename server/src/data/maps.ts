@@ -86,6 +86,8 @@ export const Maps: Record<string, MapDefinition> = {
             bush: 120,
             blueberry_bush: 30,
             barrel: 80,
+            treasure_pirate_chest: 100, //variations, I dont know which one to use
+            treasure_viking_chest: 100,
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
