@@ -35,6 +35,7 @@ import { Parachute } from "./objects/parachute";
 import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
+import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap, Ping } from "./rendering/minimap";
@@ -55,6 +56,7 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.Building]: typeof Building
     readonly [ObjectCategory.Decal]: typeof Decal
     readonly [ObjectCategory.Parachute]: typeof Parachute
+    readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -65,7 +67,8 @@ const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Loot]: Loot,
     [ObjectCategory.Building]: Building,
     [ObjectCategory.Decal]: Decal,
-    [ObjectCategory.Parachute]: Parachute
+    [ObjectCategory.Parachute]: Parachute,
+    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile
 };
 
 type ObjectMapping = {
@@ -73,7 +76,7 @@ type ObjectMapping = {
 };
 
 export class Game {
-    socket!: WebSocket;
+    private _socket?: WebSocket;
 
     readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
@@ -166,10 +169,10 @@ export class Game {
 
         if (this.gameStarted) return;
 
-        this.socket = new WebSocket(address);
-        this.socket.binaryType = "arraybuffer";
+        this._socket = new WebSocket(address);
+        this._socket.binaryType = "arraybuffer";
 
-        this.socket.onopen = (): void => {
+        this._socket.onopen = (): void => {
             this.music.stop();
             this.gameStarted = true;
             this.gameOver = false;
@@ -203,11 +206,11 @@ export class Game {
 
             this.map.indicator.setFrame("player_indicator");
 
-            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.tps);
+            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.msPerTick);
         };
 
         // Handle incoming messages
-        this.socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
+        this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
@@ -285,14 +288,14 @@ export class Game {
             }
         };
 
-        this.socket.onerror = (): void => {
+        this._socket.onerror = (): void => {
             this.error = true;
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
             enablePlayButton();
         };
 
-        this.socket.onclose = (): void => {
+        this._socket.onclose = (): void => {
             enablePlayButton();
             if (!this.gameOver) {
                 if (this.gameStarted) {
@@ -344,7 +347,7 @@ export class Game {
         $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
-        this.socket.close();
+        this._socket?.close();
 
         // reset stuff
         for (const object of this.objects) object.destroy();
@@ -372,7 +375,7 @@ export class Game {
 
     sendData(buffer: ArrayBuffer): void {
         try {
-            this.socket.send(buffer);
+            this._socket?.send(buffer);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
@@ -407,7 +410,9 @@ export class Game {
                 this.camera.position = this.activePlayer.container.position;
             }
 
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) loot.updateContainerPosition();
+            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
+                loot.updateContainerPosition();
+            }
         }
 
         for (const tween of this.tweens) tween.update();
@@ -444,29 +449,12 @@ export class Game {
             const object: GameObject | undefined = this.objects.get(id);
 
             if (object === undefined || object.destroyed) {
-                const ObjectsMapping = {
-                    [ObjectCategory.Player]: Player,
-                    [ObjectCategory.Obstacle]: Obstacle,
-                    [ObjectCategory.DeathMarker]: DeathMarker,
-                    [ObjectCategory.Loot]: Loot,
-                    [ObjectCategory.Building]: Building,
-                    [ObjectCategory.Decal]: Decal,
-                    [ObjectCategory.Parachute]: Parachute
-                };
-
                 type K = typeof type;
-                const newObject = new (
-                    ObjectsMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
-                )(this, id, data);
-
-                this.objects.add(newObject as ObjectMapping[ObjectCategory]);
-                // type K = typeof type;
-
-                // this.objects.add(
-                //     new (
-                //         ObjectClassMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
-                //     )(this, id, data) as ObjectMapping[ObjectCategory]
-                // );
+                this.objects.add(
+                    new (
+                        ObjectClassMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => ObjectMapping[K])
+                    )(this, id, data)
+                );
             }
 
             if (object) {
@@ -476,7 +464,9 @@ export class Game {
 
         for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
-            if (object) (object as GameObject).updateFromData(data, false);
+            if (object) {
+                (object as GameObject).updateFromData(data, false);
+            }
         }
 
         for (const id of updateData.deletedObjects) {
@@ -503,7 +493,7 @@ export class Game {
             if (player instanceof Player) {
                 player.emote(emote.definition);
             } else {
-                console.warn("Trying to emote non existing player or invalid object");
+                console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
             }
         }
 

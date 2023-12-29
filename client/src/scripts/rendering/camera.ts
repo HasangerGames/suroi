@@ -65,8 +65,8 @@ export class Camera {
         let position = this.position;
 
         if (this.shaking) {
-            const s = this.shakeIntensity;
-            position = Vec.addComponent(position, randomFloat(-s, s), randomFloat(-s, s));
+            const intensity = this.shakeIntensity;
+            position = Vec.addComponent(position, randomFloat(-intensity, intensity), randomFloat(-intensity, intensity));
             if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
         }
 

@@ -1,12 +1,13 @@
-import { AnimationType, ObjectCategory, PlayerActions } from "../constants";
+import { AnimationType, GameConstants, ObjectCategory, PlayerActions } from "../constants";
 import { Armors, type ArmorDefinition } from "../definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
-import { Loots, type LootDefinition } from "../definitions/loots";
+import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
@@ -28,7 +29,7 @@ export interface ObjectsNetData {
         }
         full?: {
             invulnerable: boolean
-            activeItem: LootDefinition
+            activeItem: WeaponDefinition
             skin: SkinDefinition
             helmet?: ArmorDefinition
             vest?: ArmorDefinition
@@ -109,6 +110,18 @@ export interface ObjectsNetData {
     [ObjectCategory.Parachute]: {
         height: number
         full?: { position: Vector }
+    }
+    //
+    // Throwable data
+    //
+    [ObjectCategory.ThrowableProjectile]: {
+        position: Vector & { z: number }
+        rotation: number
+        dead: boolean
+        full?: {
+            definition: ThrowableDefinition
+            hitboxRadius: number
+        }
     }
 }
 
@@ -378,6 +391,38 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 ...this.deserializePartial(stream),
                 full: {
                     position: stream.readPosition()
+                }
+            };
+        }
+    },
+    [ObjectCategory.ThrowableProjectile]: {
+        serializePartial(stream, data) {
+            stream.writePosition(data.position);
+            stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);
+            stream.writeFloat(data.rotation, -Math.PI, Math.PI, 16);
+            stream.writeBoolean(data.dead);
+        },
+        serializeFull(stream, data) {
+            this.serializePartial(stream, data);
+            Loots.writeToStream(stream, data.full.definition);
+            stream.writeFloat32(data.full.hitboxRadius);
+        },
+        deserializePartial(stream) {
+            return {
+                position: {
+                    ...stream.readPosition(),
+                    z: stream.readFloat(0, GameConstants.maxPosition, 16)
+                },
+                rotation: stream.readFloat(-Math.PI, Math.PI, 16),
+                dead: stream.readBoolean()
+            };
+        },
+        deserializeFull(stream) {
+            return {
+                ...this.deserializePartial(stream),
+                full: {
+                    definition: Loots.readFromStream(stream),
+                    hitboxRadius: stream.readFloat32()
                 }
             };
         }

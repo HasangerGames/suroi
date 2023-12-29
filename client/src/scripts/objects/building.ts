@@ -191,16 +191,20 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     loop: true
                 };
 
-                if (sounds.normal &&
+                if (
+                    sounds.normal &&
                     !full.puzzleSolved &&
-                    this.sound?.name !== sounds.normal) {
+                    this.sound?.name !== sounds.normal
+                ) {
                     this.sound?.stop();
                     this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
                 }
 
-                if (sounds.solved &&
+                if (
+                    sounds.solved &&
                     full.puzzleSolved &&
-                    this.sound?.name !== sounds.solved) {
+                    this.sound?.name !== sounds.solved
+                ) {
                     this.sound?.stop();
                     this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
                 }
@@ -262,29 +266,23 @@ export class Building extends GameObject<ObjectCategory.Building> {
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
 
-            if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
-
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
-
-            if (definition.scopeHitbox !== undefined) {
+            if (this.ceilingHitbox !== undefined) {
                 drawHitbox(
-                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.ceilingHitbox,
+                    HITBOX_COLORS.buildingScopeCeiling,
                     this.debugGraphics
                 );
             }
 
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
+            if (definition.spawnHitbox !== undefined) {
+                drawHitbox(
+                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.spawnHitbox,
+                    this.debugGraphics
+                );
+            }
 
-            if (definition.scopeHitbox) {
+            if (definition.scopeHitbox !== undefined) {
                 drawHitbox(
                     definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,
@@ -294,8 +292,9 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
     }
 
-    destroy(): void {
+    override destroy(): void {
         super.destroy();
+
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();

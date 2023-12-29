@@ -1,9 +1,12 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { type AmmoDefinition } from "./ammos";
+import { type HealingItemDefinition } from "./healingItems";
+import { type ThrowableDefinition } from "./throwables";
 
 export interface BackpackDefinition extends ItemDefinition {
     readonly itemType: ItemType.Backpack
     readonly level: number
-    readonly maxCapacity: Record<string, number>
+    readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
 }
 
 export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
@@ -23,7 +26,9 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 120,
             "127mm": 10,
             power_cell: Infinity,
-            curadell: 1
+            curadell: 1,
+            frag_grenade: 2,
+            smoke_grenade: 2
         },
         noDrop: true
     },
@@ -43,7 +48,9 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 240,
             "127mm": 20,
             power_cell: Infinity,
-            curadell: 2
+            curadell: 2,
+            frag_grenade: 4,
+            smoke_grenade: 4
         }
     },
     {
@@ -62,7 +69,9 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 330,
             "127mm": 40,
             power_cell: Infinity,
-            curadell: 3
+            curadell: 3,
+            frag_grenade: 6,
+            smoke_grenade: 6
         }
     },
     {
@@ -81,7 +90,9 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 420,
             "127mm": 80,
             power_cell: Infinity,
-            curadell: 4
+            curadell: 4,
+            frag_grenade: 8,
+            smoke_grenade: 8
         }
     }
 ]);

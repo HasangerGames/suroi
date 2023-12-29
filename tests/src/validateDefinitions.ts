@@ -17,7 +17,7 @@ import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles"
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
-import { ObstacleSpecialRoles, type ItemDefinition, type ObjectDefinition, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { ObstacleSpecialRoles, type InventoryItemDefinition, type ObjectDefinition, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
@@ -282,7 +282,7 @@ logger.indent("Validating map definitions", () => {
 
 // suck it
 // eslint-disable-next-line no-inner-declarations
-function validateWearerAttributes(baseErrorPath: string, definition: ItemDefinition): void {
+function validateWearerAttributes(baseErrorPath: string, definition: InventoryItemDefinition): void {
     function validateWearerAttributesInternal(baseErrorPath: string, attributes: WearerAttributes): void {
         tester.assertNoPointlessValue({
             obj: attributes,
@@ -488,8 +488,6 @@ logger.indent("Validating armor definitions", () => {
                 includeMax: true,
                 baseErrorPath: errorPath
             });
-
-            validateWearerAttributes(errorPath, armor);
         });
     }
 });
@@ -506,8 +504,6 @@ logger.indent("Validating backpack definitions", () => {
                 field: "level",
                 baseErrorPath: errorPath
             });
-
-            validateWearerAttributes(errorPath, backpack);
 
             logger.indent("Validating maximum capacities", () => {
                 const errorPath2 = tester.createPath(errorPath, "maximum capacities");

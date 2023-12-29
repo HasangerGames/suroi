@@ -17,6 +17,16 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
             rotationMode: RotationMode.Full
         },
         {
+            idString: "frag_explosion_decal",
+            name: "Frag Explosion Decal",
+            rotationMode: RotationMode.Full
+        },
+        {
+            idString: "smoke_explosion_decal",
+            name: "Smoke Explosion Decal",
+            rotationMode: RotationMode.Full
+        },
+        {
             idString: "floor_oil_01",
             name: "Floor Oil 1"
         },
@@ -48,6 +58,11 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
             idString: "container_mark",
             name: "Container mark",
             zIndex: ZIndexes.BuildingsFloor
+        },
+        {
+            idString: "armory_decal",
+            name: "Armory Decal",
+            zIndex: ZIndexes.BuildingsFloor + 1
         }
     ]
 );

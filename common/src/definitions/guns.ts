@@ -1,10 +1,10 @@
 import { FireMode, ZIndexes } from "../constants";
 import { mergeDeep } from "../utils/misc";
-import { ItemType, type BaseBulletDefinition, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
-type BaseGunDefinition = ItemDefinition & {
+type BaseGunDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Gun
 
     readonly ammoType: ReferenceTo<AmmoDefinition>
@@ -17,7 +17,6 @@ type BaseGunDefinition = ItemDefinition & {
     readonly fireDelay: number
     readonly switchDelay: number
 
-    readonly speedMultiplier: number
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
@@ -28,7 +27,6 @@ type BaseGunDefinition = ItemDefinition & {
     readonly noQuickswitch?: boolean
     readonly bulletCount?: number
     readonly length: number
-    readonly killstreak?: boolean
     readonly shootOnRelease?: boolean
     readonly summonAirdrop?: boolean
 
@@ -73,10 +71,7 @@ type BaseGunDefinition = ItemDefinition & {
     }
 }) & ({
     readonly isDual?: false
-    readonly fists: {
-        readonly left: Vector
-        readonly right: Vector
-    }
+    readonly fists?: InventoryItemDefinition["fists"]
     readonly image: {
         readonly position: Vector
     }
@@ -428,6 +423,45 @@ const GunsRaw: RawGunDefinition[] = [
                     randomSign: true
                 }
             }
+        },
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1,
+            speed: 0.16,
+            range: 48,
+            tracer: {
+                length: 0.5
+            }
+        }
+    },
+    {
+        idString: "vepr12",
+        name: "Vepr-12",
+        itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 2.4,
+        fireDelay: 450,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 525,
+        fireMode: FireMode.Single,
+        bulletCount: 10,
+        shotSpread: 11,
+        moveSpread: 14,
+        jitterRadius: 1.5,
+        length: 6.4,
+        fists: {
+            left: Vec.create(90, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(75, 2) },
+        casingParticles: {
+            position: Vec.create(4, 0.6)
         },
         ballistics: {
             damage: 10,

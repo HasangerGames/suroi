@@ -1975,6 +1975,114 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "port", position: Vec.create(-120, 0) },
             { idString: { "ship": 1, "oil_tanker_ship": 1}, position: Vec.create(74, -65) },
         ]
+    },
+    {
+        idString: "armory_barracks",
+        name: "Armory Barracks",
+        spawnHitbox: RectangleHitbox.fromRect(50, 84),
+        scopeHitbox: RectangleHitbox.fromRect(50, 84),
+        floorImages: [{
+            key: "armory_barracks_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "armory_barracks_ceiling",
+            position: Vec.create(0, 0)
+        }],
+        floors: [{
+            type: "wood",
+            hitbox: RectangleHitbox.fromRect(50, 84)
+        }],
+        obstacles: [
+            { idString: "armory_barracks_walls", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "door", position: Vec.create(2.7, -41.3), rotation: 2 },
+            { idString: "fridge", position: Vec.create(-19.8, -35.5), rotation: 1 },
+            { idString: "stove", position: Vec.create(-19.8, -26.1), rotation: 1 },
+            { idString: "bunk_bed", position: Vec.create(18, -31.25), rotation: 0 },
+            { idString: "small_drawer", position: Vec.create(18.4, -18.7), rotation: 0 },
+            { idString: "small_drawer", position: Vec.create(-2, -13.6), rotation: 1 },
+            { idString: "bunk_bed", position: Vec.create(-14.43, -13.21), rotation: 1 },
+            { idString: "bunk_bed", position: Vec.create(-18.1, 7.6), rotation: 2 },
+            { idString: "bunk_bed", position: Vec.create(17.95, 7), rotation: 0 },
+            { idString: "bunk_bed", position: Vec.create(-14.48, 34.83), rotation: 3 },
+            { idString: "cabinet", position: Vec.create(16, 37.6), rotation: 2 },
+            { idString: "cabinet", position: Vec.create(16, 20.9), rotation: 0 },
+            { idString: "door", position: Vec.create(1.15, 41.3), rotation: 0 },
+            { idString: "window", position: Vec.create(24.5, -9.5), rotation: 0 },
+            { idString: "window", position: Vec.create(24.5, 28.75), rotation: 0 },
+            { idString: "window", position: Vec.create(-24.5, 23), rotation: 0 }
+        ]
+    },
+    {
+        idString: "armory_center",
+        name: "Armory Center",
+        spawnHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
+        floorImages: [{
+            key: "armory_center_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "armory_center_ceiling",
+            position: Vec.create(1.25, 0)
+        }],
+        floors: [{
+            type: "wood",
+            hitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0))
+        }],
+        obstacles: [
+            { idString: "armory_center_walls", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "door", position: Vec.create(-13.9, -12.43), rotation: 1 },
+            { idString: "cabinet", position: Vec.create(12.45, -11.6), rotation: 3 },
+            { idString: "table", position: Vec.create(8.85, 1.6), rotation: 1 },
+            { idString: "chair", position: Vec.create(3, 1.7), rotation: 3 },
+            { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
+            { idString: "small_drawer", position: Vec.create(-9.2, 16.8), rotation: 2 },
+            { idString: "gun_mount_maul", position: Vec.create(3, 19.05), rotation: 2 },
+            { idString: "window", position: Vec.create(-13.9, 7.1), rotation: 0 }
+        ]
+    },
+    {
+        idString: "armory_vault",
+        name: "Armory Vault",
+        spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+        scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+        floorImages: [{
+            key: "armory_vault_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "armory_vault_ceiling",
+            position: Vec.create(0, -2.5)
+        }],
+        floors: [{
+            type: "wood",
+            hitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2))
+        }],
+        obstacles: [
+            { idString: "armory_vault_walls", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "door", position: Vec.create(3.8, 16.5), rotation: 0 },
+            { idString: "window", position: Vec.create(18.1, 16.5), rotation: 1 },
+            { idString: "gun_case", position: Vec.create(31.9, 10), rotation: 3 },
+            { idString: "gun_case", position: Vec.create(-7.5, 12.4), rotation: 2 },
+            { idString: "ammo_crate", position: Vec.create(29.5, -0.45), rotation: 0 },
+            { idString: "ammo_crate", position: Vec.create(12.85, -0.45), rotation: 0 },
+            { idString: "tear_gas_crate", position: Vec.create(21.2, -0.45), rotation: 1 },
+            { idString: "grenade_crate", position: Vec.create(-9.1, -15.9), rotation: 0 },
+            ...Array.from(
+                { length: 5 },
+                (_, i) => ({
+                    idString: "button",
+                    position: Vec.create(3.7 + 5.06 * i, -19.2),
+                    rotation: 0
+                })
+            ),
+            { idString: "panel_without_button", position: Vec.create(30.7, -14), rotation: 1 },
+            { idString: "ammo_crate", position: Vec.create(-20, -14.8), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(-29.8, -14.8), rotation: 0 },
+            { idString: "barrel", position: Vec.create(-30.9, 11.3) },
+            { idString: "briefcase", position: Vec.create(-20.7, 10.85), rotation: 0 },
+            { idString: "vault_door", position: Vec.create(-14.1, -3.22), rotation: 3 }
+        ]
     }
-
 ]);

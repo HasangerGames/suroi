@@ -52,13 +52,13 @@ export class ReloadAction extends Action {
         const items = this.player.inventory.items;
         const definition = this.item.definition;
         const difference = Math.min(
-            items[definition.ammoType],
+            items.getItem(definition.ammoType),
             definition.singleReload
                 ? 1
                 : this.item.definition.capacity - this.item.ammo
         );
         this.item.ammo += difference;
-        items[definition.ammoType] -= difference;
+        items.decrementItem(definition.ammoType, difference);
 
         if (definition.singleReload) { // this is to chain single reloads together
             this.item.reload();
@@ -86,7 +86,7 @@ export class HealingAction extends Action {
     execute(): void {
         super.execute();
 
-        this.player.inventory.items[this.item.idString]--;
+        this.player.inventory.items.decrementItem(this.item.idString);
 
         switch (this.item.healType) {
             case HealType.Health:

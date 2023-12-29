@@ -390,6 +390,7 @@ export class Minimap {
                 width: 5,
                 cap: LINE_CAP.ROUND
             });
+
             const now = Date.now();
             for (const ping of this.pings) {
                 if (!ping.initialized) {
@@ -410,13 +411,13 @@ export class Minimap {
         this.gasRender.update(this.game.gas);
         // only re-render gas line and circle if something changed
         if (
-            (
+            this.game.gas.state === GasState.Inactive || (
                 this.position.x === this.lastPosition.x &&
                 this.position.y === this.lastPosition.y &&
                 this.game.gas.newRadius === this.gasRadius &&
                 this.game.gas.newPosition.x === this.gasPos.x &&
                 this.game.gas.newPosition.y === this.gasPos.y
-            ) || this.game.gas.state === GasState.Inactive
+            )
         ) return;
 
         this.lastPosition = this.position;

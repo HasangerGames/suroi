@@ -2,6 +2,7 @@ import { GameConstants, InputActions, PacketType } from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
 import { type ScopeDefinition } from "../definitions/scopes";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
 
@@ -9,7 +10,7 @@ const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 export type InputAction = {
     readonly type: InputActions.UseItem
-    readonly item: HealingItemDefinition | ScopeDefinition
+    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
 } | {
     readonly type: InputActions.EquipItem | InputActions.DropItem
     readonly slot: number

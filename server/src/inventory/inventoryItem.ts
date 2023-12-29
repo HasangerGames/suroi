@@ -8,7 +8,7 @@ import { type Player } from "../objects/player";
  */
 export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinition> {
     /**
-     * The category of item this is, either melee or gun
+     * The category of item this is, either melee, gun or throwable
      */
     readonly category: ItemType;
     /**
@@ -71,7 +71,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
     get stats() { return this._stats; }
 
-    _lastUse = 0;
+    protected _lastUse = 0;
     get lastUse(): number { return this._lastUse; }
 
     switchDate = 0;
@@ -98,6 +98,21 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      * @abstract
      */
     abstract useItem(): void;
+
+    /**
+     * A method which *does nothing*, but that can be overridden by subclasses if desired. This method is called
+     * whenever the player stops attacking while having this weapon equipped _or_ when the user starts attacking
+     * with a weapon and switches off of it. In the latter case, this method will always be called _after_ the switch
+     * has been done (so `this.owner.activeItem !== this` and `this.isActive === false`). Subclasses can use these facts
+     * to differentiate the two cases.
+     *
+     * It is usually the case that subclasses overriding this method are interested in the cases where a player starts
+     * attacking with this item and then stops attacking; for example, a throwable would show the cooking animation and start
+     * the fuse in the `useItem` method and would then launch the projectile in this one. Properly managing and sharing state
+     * between these two methods is thus quite important. As with the `useItem` method, subclasses' overrides are fully responsible
+     * for taking care of any side-effects such as spawning objects and modifying state.
+     */
+    stopUse(): void {}
 
     refreshModifiers(): void {
         const definition = this.definition;
@@ -166,7 +181,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             if (bufferDuration >= 200) return;
 
             owner.bufferedAttack?.kill();
-            owner.bufferedAttack = this.owner.game.addTimeout(
+            owner.bufferedAttack = owner.game.addTimeout(
                 () => {
                     if (
                         owner.activeItem === this &&
@@ -180,4 +195,8 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             );
         }
     }
+}
+
+export abstract class CountableInventoryItem<Def extends WeaponDefinition = WeaponDefinition> extends InventoryItem<Def> {
+    abstract count: number;
 }

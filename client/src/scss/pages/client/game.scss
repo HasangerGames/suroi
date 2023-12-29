@@ -10,17 +10,11 @@
     height: 100%;
 
     // Darkens canvas (for Halloween mode)
-    /*
-    canvas {
+    /*canvas {
         filter: brightness(0.65) saturate(0.85);
         position: relative;
         z-index: -1;
     }*/
-
-    .over-hud {
-        z-index: 1;
-        position: relative;
-    }
 }
 
 #btn-reload {
@@ -70,9 +64,8 @@
     top: 10px;
     left: 10px;
 
-    &>div {
-        margin-bottom: 10px;
-    }
+    display: flex;
+    flex-direction: column;
 
     @media screen and (max-width: $screen_large) {
         top: 5px;
@@ -85,6 +78,7 @@
 }
 
 #minimap-border {
+    display: inline-block;
     width: 220px;
     height: 220px;
 
@@ -99,9 +93,20 @@
     }
 }
 
+#debug-hud {
+    text-shadow: 1px 1px 2px black;
+    font-family: monospace;
+    margin-right: auto;
+
+    @media screen and (max-width: $screen_large) {
+        font-size: 14px;
+    }
+}
+
 #gas-timer {
     width: 80px;
     padding: 6px 9px 6px 9px;
+    margin: 8px 0 8px 0;
     display: flex;
     border-radius: 6px;
     align-items: center;
@@ -147,15 +152,6 @@
         padding: 4px 6px 4px 6px;
         font-size: 14px;
         width: 60px;
-    }
-}
-
-#debug-hud {
-    text-shadow: 1px 1px 2px black;
-    font-family: monospace;
-
-    @media screen and (max-width: $screen_large) {
-        font-size: 14px;
     }
 }
 
@@ -348,7 +344,7 @@
     border-radius: 3px;
     border: 1px solid #b4b4b4;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
-        0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
     color: #333;
     font-size: 25px;
     font-weight: 700;
@@ -706,7 +702,7 @@
 .inventory-container {
     display: flex;
     justify-content: space-between;
-    gap: 8px;
+    gap: 5px;
 
     @media screen and (max-width: $screen_large) {
         gap: 3px;
@@ -788,7 +784,6 @@
     .slot-number {
         position: absolute;
         top: 5px;
-        left: 8px;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
@@ -798,9 +793,11 @@
 
     .item-ammo {
         position: absolute;
-        top: 5px;
-        right: 8px;
+        bottom: 5px;
+        margin-left: -55px;
+        text-align: center;
         z-index: 1;
+        font-size: 18px;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
@@ -819,9 +816,11 @@
 
     .item-name {
         display: block;
-        text-align: center;
         position: absolute;
         bottom: 5px;
+
+        font-size: 20px;
+        font-weight: bold;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
@@ -830,58 +829,96 @@
     }
 }
 
-#weapons-container {
+#bottom-right-container {
     position: absolute;
     bottom: 10px;
     right: 10px;
+    flex-direction: column;
 
-    @media screen and (max-width: $screen_large) {
-        bottom: 5px;
-        right: 5px;
-    }
-
-    @media screen and (max-width: $screen_medium) {
-        right: 3px;
-        top: 50%;
-        transform: translateY(-50%);
+    #ammo-container {
         flex-direction: column;
-        height: fit-content;
+        margin-left: auto;
+        margin-bottom: 25px;
+        width: fit-content;
     }
 
-    .item-image {
-        width: 90px;
-        height: 90px;
-        position: absolute;
+    #weapons-container {
+        flex-direction: column;
 
         @media screen and (max-width: $screen_large) {
-            width: 50px;
-            height: 50px;
+            bottom: 5px;
+            right: 5px;
         }
 
         @media screen and (max-width: $screen_medium) {
-            width: 35px;
-            height: 35px;
+            right: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            flex-direction: column;
+            height: fit-content;
         }
 
-    }
+        .inventory-slot {
+            height: 85px;
+            width: 230px;
+            opacity: 0.75;
 
-    .inventory-slot {
-        opacity: 0.75;
+            .slot-number, .item-name {
+                right: 8px !important;
+            }
 
-        &.has-item {
-            opacity: 1;
-            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+            &.has-item {
+                opacity: 1;
+                background: rgb(197,197,197);
+                background: linear-gradient(90deg, rgba(197,197,197,0.45) 0%, rgba(197,197,197,0.45) 25%, rgba(22,22,22,0.5) 100%);
+            }
+        }
+
+        .item-image {
+            width: 85px;
+            height: 85px;
+            position: absolute;
+            left: 5px;
+
+            &.dual {
+                transform: translate(-12%);
+            }
+
+            &.dual-image {
+                transform: translate(12%);
+            }
+
+            @media screen and (max-width: $screen_large) {
+                width: 50px;
+                height: 50px;
+            }
+
+            @media screen and (max-width: $screen_medium) {
+                width: 35px;
+                height: 35px;
+            }
+
         }
     }
 }
 
-#items-container {
+#healing-items-container {
     position: absolute;
-    bottom: 10px;
+    bottom: 50px;
     left: 10px;
+    flex-direction: column;
+
+    .inventory-slot .item-tooltip {
+        position: absolute;
+        top: 0;
+        left: 110px;
+        height: fit-content;
+    }
+}
+
+.items-container {
     display: flex;
     gap: 5px;
-    flex-direction: column;
 
     @media screen and (max-width: $screen_large) {
         bottom: 3px;
@@ -920,45 +957,39 @@
         }
     }
 
+
     .item-count {
         float: right;
         margin-left: auto;
     }
+}
 
-    .inventory-container {
-        flex-direction: row;
-        justify-content: start;
+.inventory-container {
+    .item-image {
+        width: 40px;
+        height: 30px;
+        @include drop-shadow;
+
+        @media screen and (max-width: $screen_large) {
+            width: 30px;
+            height: 20px;
+        }
+    }
+
+    .inventory-slot .item-tooltip {
+        width: max-content;
+        max-width: 120px;
+
+        left: 0;
+        bottom: 50px;
+
+        @media screen and (max-width: $screen_large) {
+            bottom: 30px;
+        }
 
         @media screen and (max-width: $screen_small) {
-            flex-direction: column;
-        }
-
-        .item-image {
-            width: 40px;
-            height: 30px;
-            @include drop-shadow;
-
-            @media screen and (max-width: $screen_large) {
-                width: 30px;
-                height: 20px;
-            }
-        }
-
-        .inventory-slot .item-tooltip {
-            width: max-content;
-            max-width: 120px;
-
-            left: 0;
-            bottom: 50px;
-
-            @media screen and (max-width: $screen_large) {
-                bottom: 30px;
-            }
-
-            @media screen and (max-width: $screen_small) {
-                left: 70px;
-                bottom: 0;
-            }
+            left: 70px;
+            bottom: 0;
         }
     }
 }
@@ -992,9 +1023,16 @@
     .inventory-slot {
         width: 55px;
         height: 78px;
+        display: flex;
+        align-items: center;
 
         &.has-item {
             background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+        }
+
+        .item-name {
+            font-weight: normal;
+            font-size: 15px;
         }
 
         .item-tooltip {

@@ -81,6 +81,7 @@ export const Reskins: Record<string, ReskinDefinition> = {
             "regular_crate",
             "aegis_crate",
             "flint_crate",
+            "grenade_crate",
             "airdrop_plane",
             "airdrop_parachute",
             "airdrop_crate_locked", "airdrop_crate_unlocking", "airdrop_particle_1", "airdrop_particle_2",

@@ -1,5 +1,6 @@
 import { type ExplosionDefinition } from "../definitions/explosions";
 import { type SuroiBitStream } from "./suroiBitStream";
+import { type Vector } from "./vector";
 
 /**
  * A class representing a list of definitions
@@ -15,7 +16,7 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
 
         this.definitions = definitions;
 
-        for (let i = 0; i < definitions.length; i++) {
+        for (let i = 0, defLength = definitions.length; i < defLength; i++) {
             const idString = definitions[i].idString;
             if (this.idStringToNumber[idString] !== undefined) {
                 throw new Error(`Duplicated idString: ${idString}`);
@@ -25,9 +26,9 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     }
 
     reify<U extends T = T>(type: ReifiableDef<T>): U {
-        return (typeof type === "string"
-            ? this.fromString(type)
-            : type) as U;
+        return typeof type === "string"
+            ? this.fromString<U>(type)
+            : type as U;
     }
 
     fromString<U extends T = T>(idString: ReferenceTo<U>): U {
@@ -48,8 +49,9 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readFromStream<U extends T = T>(stream: SuroiBitStream): U {
         const id = stream.readBits(this.bitCount);
         if (id >= this.definitions.length) {
-            console.warn(`Id out of range: ${id}, Max: ${this.definitions.length - 1}`);
+            console.warn(`ID out of range: ${id} (max: ${this.definitions.length - 1})`);
         }
+
         return this.definitions[id] as U;
     }
 
@@ -72,10 +74,10 @@ export type ReifiableDef<T extends ObjectDefinition> = ReferenceTo<T> | T;
 
 // expand this as needed
 export enum ItemType {
-    None,
     Gun,
     Ammo,
     Melee,
+    Throwable,
     Healing,
     Armor,
     Backpack,
@@ -102,10 +104,10 @@ export enum MapObjectSpawnMode {
 }
 
 export const LootRadius: Record<ItemType, number> = {
-    [ItemType.None]: 1,
     [ItemType.Gun]: 3.4,
     [ItemType.Ammo]: 2,
     [ItemType.Melee]: 3,
+    [ItemType.Throwable]: 3,
     [ItemType.Healing]: 2.5,
     [ItemType.Armor]: 3,
     [ItemType.Backpack]: 3,
@@ -181,6 +183,15 @@ export interface ExtendedWearerAttributes extends WearerAttributes {
 export interface ItemDefinition extends ObjectDefinition {
     readonly itemType: ItemType
     readonly noDrop?: boolean
+}
+
+export interface InventoryItemDefinition extends ItemDefinition {
+    readonly fists?: {
+        readonly left: Vector
+        readonly right: Vector
+    }
+    readonly killstreak?: boolean
+    readonly speedMultiplier: number
     /**
      * A set of attributes to modify the player this item belongs to
      * All attributes stack, and all of them are removed as soon as
