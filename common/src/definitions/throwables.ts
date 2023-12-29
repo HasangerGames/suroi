@@ -18,6 +18,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly position: Vector
         readonly angle?: number
     }
+    readonly radius: number
     readonly fireDelay?: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
@@ -49,6 +50,7 @@ export const Throwables: ThrowableDefinition[] = [
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
         cookSpeedMultiplier: 0.7,
+        radius: 1,
         impactDamage: 1,
         obstacleMultiplier: 20,
         fuseTime: 4000,
@@ -77,6 +79,7 @@ export const Throwables: ThrowableDefinition[] = [
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
         cookSpeedMultiplier: 0.7,
+        radius: 1,
         impactDamage: 1,
         obstacleMultiplier: 20,
         cookable: false,

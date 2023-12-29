@@ -117,10 +117,8 @@ export interface ObjectsNetData {
     [ObjectCategory.ThrowableProjectile]: {
         position: Vector & { z: number }
         rotation: number
-        dead: boolean
         full?: {
             definition: ThrowableDefinition
-            hitboxRadius: number
         }
     }
 }
@@ -399,13 +397,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             stream.writePosition(data.position);
             stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);
-            stream.writeFloat(data.rotation, -Math.PI, Math.PI, 16);
-            stream.writeBoolean(data.dead);
+            stream.writeRotation(data.rotation, 16);
         },
         serializeFull(stream, data) {
             this.serializePartial(stream, data);
             Loots.writeToStream(stream, data.full.definition);
-            stream.writeFloat32(data.full.hitboxRadius);
         },
         deserializePartial(stream) {
             return {
@@ -413,8 +409,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     ...stream.readPosition(),
                     z: stream.readFloat(0, GameConstants.maxPosition, 16)
                 },
-                rotation: stream.readFloat(-Math.PI, Math.PI, 16),
-                dead: stream.readBoolean()
+                rotation: stream.readRotation(16),
             };
         },
         deserializeFull(stream) {
@@ -422,9 +417,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 ...this.deserializePartial(stream),
                 full: {
                     definition: Loots.readFromStream(stream),
-                    hitboxRadius: stream.readFloat32()
                 }
-            };
+            }
         }
     }
 };

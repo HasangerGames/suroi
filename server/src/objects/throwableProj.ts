@@ -177,10 +177,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                 z: this._height
             },
             rotation: this.rotation,
-            dead: this.dead,
             full: {
-                definition: this.definition,
-                hitboxRadius: this.hitbox.radius
+                definition: this.definition
             }
         };
     }
