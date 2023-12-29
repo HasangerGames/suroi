@@ -27,6 +27,7 @@ export interface ObjectsNetData {
             seq: boolean
         }
         full?: {
+            dead: boolean
             invulnerable: boolean
             activeItem: LootDefinition
             skin: SkinDefinition
@@ -134,6 +135,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             this.serializePartial(stream, data);
 
             const full = data.full;
+            stream.writeBoolean(full.dead);
             stream.writeBoolean(full.invulnerable);
             Loots.writeToStream(stream, full.activeItem);
             Skins.writeToStream(stream, full.skin);
@@ -169,6 +171,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const partial = this.deserializePartial(stream);
 
             const full: ObjectsNetData[ObjectCategory.Player]["full"] = {
+                dead: stream.readBoolean(),
                 invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 skin: Skins.readFromStream(stream),
