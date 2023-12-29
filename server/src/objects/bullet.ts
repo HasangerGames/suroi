@@ -107,6 +107,7 @@ export class Bullet extends BaseBullet {
 
             if (object instanceof Obstacle) {
                 this.damagedIDs.add(object.id);
+
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,

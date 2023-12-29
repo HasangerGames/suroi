@@ -1,4 +1,5 @@
 import { type ObjectCategory } from "../../../common/src/constants";
+import { ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";

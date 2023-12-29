@@ -1,4 +1,3 @@
-import $ from "jquery";
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
@@ -9,6 +8,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
 import { formatDate } from "./misc";
+import $ from "jquery";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -30,49 +30,12 @@ export class UIManager {
     minAdrenaline = 0;
     adrenaline = 0;
 
-    readonly inventory = {
+    inventory = {
         activeWeaponIndex: 0,
-        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"] & object,
-        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
+        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"],
+        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
-
-    private _gameOverScreenTimeout: number | undefined;
-    get gameOverScreenTimeout(): number | undefined { return this._gameOverScreenTimeout; }
-
-    readonly ui = {
-        activeWeapon: $("#weapon-ammo-container"),
-        activeAmmo: $("#weapon-clip-ammo"),
-        weaponInventoryAmmo: $("#weapon-inventory-ammo"),
-        killStreakIndicator: $("#killstreak-indicator-container"),
-        killStreakCounter: $("#killstreak-indicator-counter"),
-
-        weaponsContainer: $("#weapons-container"),
-
-        minMaxAdren: $("#adrenaline-bar-min-max"),
-        maxHealth: $("#health-bar-max"),
-
-        healthBar: $("#health-bar"),
-        healthBarAmount: $("#health-bar-percentage"),
-        healthAnim: $("#health-bar-animation"),
-
-        adrenalineBar: $("#adrenaline-bar"),
-        adrenalineBarPercentage: $("#adrenaline-bar-percentage"),
-
-        killModal: $("#kill-msg"),
-        killFeed: $("#kill-feed"),
-
-        interactMsg: $("#interact-message"),
-        interactKey: $("#interact-key")
-    };
-
-    readonly action = {
-        active: false,
-        start: -1,
-        time: 0
-    };
-
-    private _killMessageTimeoutID?: number;
 
     constructor(game: Game) {
         this.game = game;
@@ -100,11 +63,42 @@ export class UIManager {
         return element.prop("outerHTML");
     }
 
+    readonly ui = {
+        activeWeapon: $("#weapon-ammo-container"),
+        activeAmmo: $("#weapon-clip-ammo"),
+        weaponInventoryAmmo: $("#weapon-inventory-ammo"),
+        killStreakIndicator: $("#killstreak-indicator-container"),
+        killStreakCounter: $("#killstreak-indicator-counter"),
+
+        weaponsContainer: $("#weapons-container"),
+
+        minMaxAdren: $("#adrenaline-bar-min-max"),
+        maxHealth: $("#health-bar-max"),
+
+        healthBar: $("#health-bar"),
+        healthBarAmount: $("#health-bar-percentage"),
+        healthAnim: $("#health-bar-animation"),
+
+        adrenalineBar: $("#adrenaline-bar"),
+        adrenalineBarPercentage: $("#adrenaline-bar-percentage"),
+
+        killModal: $("#kill-msg"),
+        killFeed: $("#kill-feed"),
+
+        interactMsg: $("#interact-message"),
+        interactKey: $("#interact-key")
+    };
+
+    action = {
+        active: false,
+        start: -1,
+        time: 0
+    };
+
     animateAction(name: string, time: number): void {
         if (time > 0) {
             this.action.start = Date.now();
-            $("#action-timer-anim")
-                .stop()
+            $("#action-timer-anim").stop()
                 .css({ "stroke-dashoffset": "226" })
                 .animate(
                     { "stroke-dashoffset": "0" },
@@ -113,8 +107,7 @@ export class UIManager {
                     () => {
                         $("#action-container").hide();
                         this.action.active = false;
-                    }
-                );
+                    });
         }
         if (name) {
             $("#action-name").text(name);
@@ -134,13 +127,16 @@ export class UIManager {
         this.action.active = false;
     }
 
+    gameOverScreenTimeout: number | undefined;
+
     showGameOverScreen(packet: GameOverPacket): void {
         const game = this.game;
 
         $("#interact-message").hide();
         $("#spectating-container").hide();
 
-        game.activePlayer?.actionSound?.stop();
+        const activePlayer = game.activePlayer;
+        if (activePlayer?.actionSound) game.soundManager.stop(activePlayer.actionSound);
 
         $("#gas-msg").fadeOut(500);
 
@@ -170,9 +166,17 @@ export class UIManager {
         $("#game-over-damage-taken").text(packet.damageTaken);
         $("#game-over-time").text(formatDate(packet.timeAlive));
 
-        if (packet.won) void game.music.play();
+        if (packet.won) {
+            const volume = game.console.getBuiltInCVar("cv_music_volume");
+            if (volume) {
+                game.music.play();
+            }
+            game.music.loop();
+            game.music.volume(volume);
+            game.musicPlaying = true;
+        }
 
-        this._gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
+        this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
         // Player rank
         $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
@@ -247,8 +251,7 @@ export class UIManager {
 
             this.ui.adrenalineBar.width(`${percentage}%`);
 
-            this.ui.adrenalineBarPercentage
-                .text(safeRound(this.adrenaline))
+            this.ui.adrenalineBarPercentage.text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
@@ -306,26 +309,22 @@ export class UIManager {
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
-        const max = GameConstants.player.maxWeapons;
-        for (let i = 0; i < max; i++) {
+        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
+
             const weapon = inventory.weapons[i];
 
             if (weapon) {
-                container
-                    .addClass("has-item")
-                    .children(".item-name")
-                    .text(weapon.definition.name);
+                container.addClass("has-item");
 
-                container
-                    .children(".item-image")
-                    .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
-                    .show();
+                container.children(".item-name").text((weapon.dual ? "Dual " : "") + weapon.definition.name);
+
+                const imagePath = `./img/game/weapons/${weapon.definition.idString}.svg`;
+                container.children(".item-image").attr("src", imagePath).show().toggleClass("dual", weapon.dual);
+                container.children(".dual-image").toggle(weapon.dual);
 
                 if (weapon.ammo !== undefined) {
-                    container
-                        .children(".item-ammo")
-                        .text(weapon.ammo)
+                    container.children(".item-ammo").text(weapon.ammo)
                         .css("color", weapon.ammo > 0 ? "inherit" : "red");
                 }
             } else {
@@ -336,16 +335,14 @@ export class UIManager {
             }
         }
 
-        this.ui.weaponsContainer
-            .children(".inventory-slot")
-            .removeClass("active");
-
+        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active");
         $(`#weapon-slot-${this.inventory.activeWeaponIndex + 1}`).addClass("active");
     }
 
     updateItems(): void {
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
+
             const itemDef = Loots.fromString(item);
 
             $(`#${item}-count`).text(count);
@@ -362,14 +359,14 @@ export class UIManager {
             }
 
             if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
-                itemSlot
-                    .toggle(count > 0)
-                    .removeClass("active");
+                itemSlot.toggle(count > 0).removeClass("active");
             }
         }
 
         $(`#${this.inventory.scope.idString}-slot`).addClass("active");
     }
+
+    private _killMessageTimeoutID?: number;
 
     private _addKillMessage(kills: number, name: string, weaponUsed: string, streak?: number): void {
         const killText = `Kills: ${kills}`;
@@ -420,7 +417,7 @@ export class UIManager {
             weaponUsed,
             killstreak,
 
-            hideInKillfeed
+            hideInKillFeed
         } = message;
 
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
@@ -433,26 +430,26 @@ export class UIManager {
                 const hasKillstreak = killstreak! > 1;
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
-                        let killMessage = "";
+                        let message = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                killMessage = `${playerName} committed suicide`;
+                                message = `${playerName} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                killMessage = `${this.getPlayerName(killerID!)} killed ${playerName}`;
+                                message = `${this.getPlayerName(killerID!)} killed ${playerName}`;
                                 break;
                             case KillType.Gas:
-                                killMessage = `${playerName} died to the gas`;
+                                message = `${playerName} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                killMessage = `${playerName} was crushed by an airdrop`;
+                                message = `${playerName} was crushed by an airdrop`;
                                 break;
                         }
 
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
                         <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
-                        ${killMessage}${weaponUsed === undefined ? "" : ` with ${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}`}`;
+                        ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`;
                         break;
                     }
                     case "icon": {
@@ -466,12 +463,10 @@ export class UIManager {
                                 iconName = "airdrop";
                                 break;
                             default:
-                                iconName = weaponUsed?.idString === undefined
-                                    ? ""
-                                    : `${weaponUsed.idString}${"dual" in message && message.dual ? "_dual" : ""}`;
+                                iconName = weaponUsed?.idString ?? "";
                                 break;
                         }
-                        const altText = weaponUsed ? `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}` : iconName;
+                        const altText = weaponUsed ? weaponUsed.name : iconName;
                         const killstreakText = hasKillstreak
                             ? `
                             <span style="font-size: 80%">(${killstreak}
@@ -479,10 +474,10 @@ export class UIManager {
                             </span>`
                             : "";
 
-                        messageText = `\
-                        ${killerName}\
-                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
-                        ${killstreakText}\
+                        messageText = `
+                        ${killerName}
+                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">
+                        ${killstreakText}
                         ${playerName}`;
                         break;
                     }
@@ -508,7 +503,7 @@ export class UIManager {
                 $("#kill-leader-leader").html(playerName);
                 $("#kill-leader-kills-counter").text(kills!);
 
-                if (!hideInKillfeed) {
+                if (!hideInKillFeed) {
                     messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
