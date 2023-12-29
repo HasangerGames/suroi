@@ -95,7 +95,8 @@ export const Materials = [
     "porcelain",
     "cardboard",
     "appliance",
-    "large_refinery_barrel"
+    "large_refinery_barrel",
+    "sand"
 ] as const;
 
 export enum RotationMode {
@@ -540,8 +541,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "sand_bag",
             name: "Sand Bag",
-            material: "wood",
-            health: 2500,
+            material: "sand",
+            health: 300,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -554,8 +555,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: RectangleHitbox.fromRect(16, 10),
             rotationMode: RotationMode.Limited,
             noResidue: true,
+            particleVariations: 3,
             frames: {
-                particle: "wall_particle"
+                particle: "sand_particle"
             },
             noBulletCollision: true,
             noCollisions: false,
@@ -913,7 +915,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "vector_briefcase",
             name: "Vector Briefcase",
-            material: "metal",
+            material: "appliance",
             health: 80,
             scale: {
                 spawnMin: 1,
@@ -2065,8 +2067,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "port_fence",
             name: "Port Fence",
-            material: "metal",
-            health: 80,
+            material: "appliance",
+            health: 200,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -2074,6 +2076,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 0)),
             rotationMode: RotationMode.Limited,
+            noResidue: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -2081,8 +2084,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "port_fence_side",
             name: "Port Fence Side",
-            material: "metal",
-            health: 80,
+            material: "appliance",
+            health: 200,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -2092,6 +2095,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 3.2)),
                 RectangleHitbox.fromRect(1.3, 7.75, Vec.create(3.2, 0)),
             ),
+            noResidue: true,
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"

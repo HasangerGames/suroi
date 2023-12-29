@@ -1524,7 +1524,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         floors: [
-
+            {
+                type: "stone",
+                hitbox: RectangleHitbox.fromRect(82, 210, Vec.create(8.5, -13))
+            },
+            {
+                type: "metal",
+                hitbox: RectangleHitbox.fromRect(20, 10, Vec.create(-42, 18.5))
+            },
+            {
+                type: "metal",
+                hitbox: RectangleHitbox.fromRect(20, 10, Vec.create(-42, 58.5))
+            }
         ],
         obstacles: [
             // Main Ship Hitbox
@@ -1549,6 +1560,26 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "vector_briefcase", position: Vec.create(-22.5, -94), rotation: 0 },
             { idString: "regular_crate", position: Vec.create(-12, -94), rotation: 0 },
             { idString: "regular_crate", position: Vec.create(-22, -102), rotation: 0 },
+
+            // Front of ship
+            { idString: "barrel", position: Vec.create(-27, 68), rotation: 2 },
+            { idString: "regular_crate", position: Vec.create(-18, 66), rotation: 2 },
+            { idString: "regular_crate", position: Vec.create(42, 66), rotation: 2 },
+            { idString: {
+                regular_crate: 0.5,
+                aegis_crate: 0.25,
+                flint_crate: 0.25,
+            }, position: Vec.create(32, 60), rotation: 2 },
+
+            // Mid Ship
+            { idString: "sand_bag", position: Vec.create(-22, 1), rotation: 2 },
+            { idString: "super_barrel", position: Vec.create(-27, -20), rotation: 2 },
+            { idString: "barrel", position: Vec.create(-15, -15), rotation: 2 },
+            { idString: "regular_crate", position: Vec.create(-25, -10), rotation: 2 },
+            { idString: "sand_bag", position: Vec.create(43, -20), rotation: 1 },
+            { idString: "super_barrel", position: Vec.create(43, -7.5), rotation: 1 },
+            { idString: "sand_bag", position: Vec.create(30, -16), rotation: 2 },
+            { idString: "flint_crate", position: Vec.create(41, -35), rotation: 2 },
         ],
         subBuildings: [
             { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) },
