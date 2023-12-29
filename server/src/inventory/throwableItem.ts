@@ -46,6 +46,14 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
         this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this);
         this._activeHandler.cook();
+
+        setTimeout(
+            () => {
+                this.stopUse();
+                this._useItemNoDelayCheck(true);
+            },
+            50
+        );
     }
 
     override stopUse(): void {
@@ -55,7 +63,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     override useItem(): void {
         super._bufferAttack(
-            this.definition.fireDelay ?? 150,
+            this.definition.fireDelay ?? 250,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
@@ -67,24 +75,17 @@ class GrenadeHandler {
     private _timer?: Timeout;
     private _projectile?: ThrowableProjectile;
 
+    readonly owner: Player;
+
     constructor(
         readonly definition: ThrowableDefinition,
         readonly game: Game,
         readonly parent: ThrowableItem
-    ) {}
-
-    private _removeFromInventory(): void {
-        const owner = this.parent.owner;
-        owner.dirty.weapons = true;
-
-        if (!owner.dead) {
-            owner.inventory.removeThrowable(this.definition, false, 1);
-        }
+    ) {
+        this.owner = this.parent.owner;
     }
 
     private _detonate(): void {
-        this.parent.owner.recoil.active = false;
-
         const explosion = this.definition.detonation.explosion;
 
         if (explosion !== undefined) {
@@ -96,8 +97,25 @@ class GrenadeHandler {
         }
     }
 
+    private _resetAnimAndRemoveFromInv(): void {
+        const owner = this.owner;
+
+        owner.dirty.weapons = true;
+
+        if (!owner.dead) {
+            owner.inventory.removeThrowable(this.definition, false, 1);
+        }
+
+        const animation = owner.animation;
+
+        animation.type = AnimationType.ThrowableThrow;
+        animation.seq = !animation.seq;
+        owner.game.partialDirtyObjects.add(owner);
+    }
+
     cook(): void {
-        const recoil = this.parent.owner.recoil;
+        const owner = this.parent.owner;
+        const recoil = owner.recoil;
         recoil.active = true;
         recoil.multiplier = this.definition.cookSpeedMultiplier;
         recoil.time = Infinity;
@@ -106,7 +124,8 @@ class GrenadeHandler {
             this._timer = this.game.addTimeout(
                 () => {
                     if (!this._thrown) {
-                        this._removeFromInventory();
+                        recoil.active = false;
+                        this._resetAnimAndRemoveFromInv();
                     }
 
                     this.destroy();
@@ -124,10 +143,7 @@ class GrenadeHandler {
         this.parent.owner.recoil.active = false;
         this._thrown = true;
 
-        const owner = this.parent.owner;
-        owner.animation.type = AnimationType.ThrowableThrow;
-        owner.animation.seq = !owner.animation.seq;
-        owner.game.partialDirtyObjects.add(owner);
+        this._resetAnimAndRemoveFromInv();
 
         this._timer ??= this.game.addTimeout(
             () => {
@@ -142,7 +158,7 @@ class GrenadeHandler {
         const projectile = this._projectile = this.game.addProjectile(
             definition,
             Vec.sub(
-                owner.position,
+                this.owner.position,
                 {
                     x: rightFist.x / 20,
                     y: rightFist.y / 20
@@ -164,18 +180,16 @@ class GrenadeHandler {
 
         projectile.velocity = Vec.add(
             Vec.fromPolar(
-                owner.rotation,
+                this.owner.rotation,
                 soft
                     ? 0
                     : Math.min(
                         definition.maxThrowDistance,
-                        owner.distanceToMouse
+                        this.owner.distanceToMouse
                     ) / superStrangeMysteryConstant
             ),
-            owner.movementVector
+            this.owner.movementVector
         );
-
-        this._removeFromInventory();
     }
 
     destroy(): void {

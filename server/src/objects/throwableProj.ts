@@ -1,13 +1,12 @@
 import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Collision, type CollisionResponse, Geometry, Numeric } from "../../../common/src/utils/math";
-import { ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
+import { Angle, Collision } from "../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { BaseGameObject } from "./gameObject";
+import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
@@ -61,8 +60,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.hitbox = new CircleHitbox(radius ?? 1, Vec.clone(position));
     }
 
-    push(angle: number, velocity: number): void {
-        this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, velocity));
+    push(angle: number, speed: number): void {
+        this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, speed));
     }
 
     update(): void {
@@ -83,164 +82,61 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.rotation = Angle.normalizeAngle(this.rotation + this.angularVelocity * deltaTime);
 
         const impactDamage = this.definition.impactDamage;
-        const shouldCollideWithPlayers = impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0016;
+        const shouldDealImpactDamage = impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0016;
 
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             if (
                 (
                     (object instanceof Obstacle && object.collidable) ||
-                    (object instanceof Player && shouldCollideWithPlayers && (this._collideWithOwner || object !== this.source.owner))
+                    (object instanceof Player && shouldDealImpactDamage && (this._collideWithOwner || object !== this.source.owner))
                 ) &&
                 object.hitbox.collidesWith(this.hitbox)
             ) {
-                if (object instanceof Obstacle && object.definition.role === ObstacleSpecialRoles.Window) {
-                    object.damage(Infinity, this.source.owner);
-                    continue;
-                }
-
                 const hitbox = object.hitbox;
 
-                /**
-                 * Kept around because handleCollision mutates
-                 * the instance, but we want it for later
-                 */
-                const { position: oldPosition } = this.hitbox.clone();
-
-                if (object instanceof Player) {
+                if (shouldDealImpactDamage) {
                     object.damage(
-                        impactDamage!,
+                        impactDamage * ((object instanceof Obstacle ? this.definition.obstacleMultiplier : undefined) ?? 1),
                         this.source.owner,
                         this.source
                     );
                 }
 
-                const handleCollision = (collision: NonNullable<CollisionResponse>): void => {
-                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0001));
-                    this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
-                };
-
                 const handleCircle = (hitbox: CircleHitbox): void => {
                     const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
 
-                    if (collision) handleCollision(collision);
-
-                    const reflectionReference = Vec.scale(
-                        Vec.create(hitbox.position.x - this.position.x, hitbox.position.y - this.position.y),
-                        1 / Math.max(Geometry.distance(hitbox.position, this.position) - this.hitbox.radius, 1)
-                    );
-
-                    const speed = Vec.dotProduct(this.velocity, reflectionReference);
-
-                    if (speed < 0 || Number.isNaN(speed)) return;
-
-                    this._velocity.x -= speed * reflectionReference.x;
-                    this._velocity.y -= speed * reflectionReference.y;
+                    if (collision) {
+                        this.velocity = Vec.sub(this._velocity, Vec.scale(collision.dir, 0.8 * Vec.length(this._velocity)));
+                        this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
+                    }
                 };
 
                 const handleRectangle = (hitbox: RectangleHitbox): void => {
                     // if anyone can make this math more correct, feel free to do so
                     const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
 
-                    if (collision) handleCollision(collision);
+                    if (collision) {
+                        this.velocity = Vec.add(
+                            this._velocity,
+                            Vec.scale(
+                                Vec.project(
+                                    this._velocity,
+                                    Vec.scale(collision.dir, 1)
+                                ),
+                                -1.5
+                            )
+                        );
 
-                    const positionDiff = Vec.sub(
-                        hitbox.isPointInside(oldPosition)
-                            ? (() => {
-                                // aw [expletive redacted], we gotta find the closest side…
-
-                                const compareAndReturn = <T>(
-                                    a: number,
-                                    b: number,
-                                    lessThan: () => T,
-                                    equal: () => T,
-                                    greaterThan: () => T
-                                ): T => {
-                                    switch (Math.sign(a - b) as -1 | 0 | 1) {
-                                        case -1: return lessThan();
-                                        case 0: return equal();
-                                        case 1: return greaterThan();
-                                    }
-                                };
-
-                                // distance to all four sides
-                                const dl = hitbox.min.x - oldPosition.x;
-                                const dr = hitbox.max.x - oldPosition.x;
-                                const du = hitbox.min.y - oldPosition.y;
-                                const db = hitbox.max.y - oldPosition.y;
-
-                                const leftSide = Vec.create(hitbox.min.x, oldPosition.y);
-                                const upSide = Vec.create(oldPosition.x, hitbox.min.y);
-                                const bottomSide = Vec.create(oldPosition.x, hitbox.max.y);
-                                const rightSide = Vec.create(hitbox.max.x, oldPosition.y);
-
-                                const compareVerticals = (): Vector => compareAndReturn(
-                                    du, db,
-                                    () => upSide,
-                                    () => Vec.create(0, 0),
-                                    () => bottomSide
-                                );
-
-                                return compareAndReturn(
-                                    dl, dr,
-                                    // somewhere on the left side
-                                    () => compareAndReturn(
-                                        dl, Math.min(du, db),
-                                        // the left distance is the smallest one
-                                        () => leftSide,
-                                        // shit
-                                        () => Vec.create(0, 0),
-                                        // either the top or bottom distance is smaller
-                                        compareVerticals
-                                    ),
-                                    // somewhere in the middle
-                                    compareVerticals,
-                                    // somewhere on the right side
-                                    () => compareAndReturn(
-                                        dr, Math.min(du, db),
-                                        // thr right side distance is the smallest one
-                                        () => rightSide,
-                                        () => Vec.create(0, 0),
-                                        // either the top or bottom distance is smaller
-                                        compareVerticals
-                                    )
-                                );
-                            })()
-                            : Vec.create(
-                                Numeric.clamp(oldPosition.x, hitbox.min.x, hitbox.max.x),
-                                Numeric.clamp(oldPosition.y, hitbox.min.y, hitbox.max.y)
-                            ),
-                        oldPosition
-                    );
-
-                    const centerDiff = Vec.sub(hitbox.getCenter(), this.position);
-                    const effectiveDifference = Vec.squaredLength(positionDiff)
-                        ? Vec.project(centerDiff, positionDiff)
-                        : (() => {
-                            // Ok, so positionDiff is 0, meaning that oldPosition
-                            // is on one of the four sides… let's see which one
-                            switch (true) {
-                                case oldPosition.x === hitbox.min.x:
-                                case oldPosition.x === hitbox.max.x: {
-                                    return Vec.create(centerDiff.x, 0);
-                                }
-                                case oldPosition.y === hitbox.min.y:
-                                case oldPosition.y === hitbox.max.y: {
-                                    return Vec.create(0, centerDiff.y);
-                                }
-                                default: return Vec.create(0, 0); // never
-                            }
-                        })();
-
-                    const reflectionReference = Vec.scale(
-                        effectiveDifference,
-                        1 / Math.max(Vec.length(effectiveDifference) - this.hitbox.radius, 1)
-                    );
-
-                    const speed = Vec.dotProduct(this.velocity, reflectionReference);
-                    if (speed < 0 || Number.isNaN(speed)) return;
-
-                    this._velocity.x -= speed * reflectionReference.x;
-                    this._velocity.y -= speed * reflectionReference.y;
+                        this.hitbox.position = Vec.sub(
+                            this.hitbox.position,
+                            Vec.scale(
+                                collision.dir,
+                                (hitbox.isPointInside(this.hitbox.position) ? -1 : 1) * collision.pen
+                                // "why?", you ask
+                                // cause it makes the thingy work and rectCircleIntersection is goofy
+                            )
+                        );
+                    }
                 };
 
                 switch (hitbox.type) {
@@ -272,7 +168,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.game.partialDirtyObjects.add(this);
     }
 
-    damage(): void { }
+    override damage(amount: number, source?: GameObject | undefined): void {}
 
     get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
         return {

@@ -464,10 +464,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Regenerate health
-        if (this.adrenaline >= 87.5) this.health += GameConstants.msPerTick * 2.75 / (30 ** 2);
-        else if (this.adrenaline >= 50) this.health += GameConstants.msPerTick * 2.125 / (30 ** 2);
-        else if (this.adrenaline >= 25) this.health += GameConstants.msPerTick * 1.125 / (30 ** 2);
-        else if (this.adrenaline > 0) this.health += GameConstants.msPerTick * 0.625 / (30 ** 2);
+        if (this.adrenaline >= 87.5) this.health += dt * 2.75 / (30 ** 2);
+        else if (this.adrenaline >= 50) this.health += dt * 2.125 / (30 ** 2);
+        else if (this.adrenaline >= 25) this.health += dt * 1.125 / (30 ** 2);
+        else if (this.adrenaline > 0) this.health += dt * 0.625 / (30 ** 2);
 
         // Shoot gun/use item
         if (this.startedAttacking) {
@@ -514,10 +514,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     secondUpdate(): void {
         const packet = new UpdatePacket();
         const player = this.spectating ?? this;
+        const game = this.game;
 
         // Calculate visible objects
         this.ticksSinceLastUpdate++;
-        if (this.ticksSinceLastUpdate > 8 || this.game.updateObjects || this.updateObjects) {
+        if (this.ticksSinceLastUpdate > 8 || game.updateObjects || this.updateObjects) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
@@ -527,7 +528,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 player.position
             );
 
-            const newVisibleObjects = this.game.grid.intersectsHitbox(this.screenHitbox);
+            const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
@@ -544,13 +545,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        for (const object of this.game.fullDirtyObjects) {
+        for (const object of game.fullDirtyObjects) {
             if (this.visibleObjects.has(object)) {
                 packet.fullDirtyObjects.add(object);
             }
         }
 
-        for (const object of this.game.partialDirtyObjects) {
+        for (const object of game.partialDirtyObjects) {
             if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
                 packet.partialDirtyObjects.add(object);
             }
@@ -597,7 +598,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Cull bullets
-        for (const bullet of this.game.newBullets) {
+        for (const bullet of game.newBullets) {
             if (Collision.lineIntersectsRectTest(bullet.initialPosition,
                 bullet.finalPosition,
                 this.screenHitbox.min,
@@ -607,7 +608,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Cull explosions
-        for (const explosion of this.game.explosions) {
+        for (const explosion of game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
                 packet.explosions.add(explosion);
@@ -615,7 +616,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Emotes
-        for (const emote of this.game.emotes) {
+        for (const emote of game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
                 packet.emotes.add(emote);
             }
@@ -623,28 +624,29 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // gas
         packet.gas = {
-            ...this.game.gas,
-            dirty: this.game.gas.dirty || this._firstPacket
+            ...game.gas,
+            dirty: game.gas.dirty || this._firstPacket
         };
 
         packet.gasProgress = {
-            dirty: this.game.gas.completionRatioDirty || this._firstPacket,
-            value: this.game.gas.completionRatio
+            dirty: game.gas.completionRatioDirty || this._firstPacket,
+            value: game.gas.completionRatio
         };
 
         // new and deleted players
-        if (this._firstPacket) packet.newPlayers = this.game.grid.pool.getCategory(ObjectCategory.Player);
-        else packet.newPlayers = this.game.newPlayers;
+        packet.newPlayers = this._firstPacket
+            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            : game.newPlayers;
 
-        packet.deletedPlayers = this.game.deletedPlayers;
+        packet.deletedPlayers = game.deletedPlayers;
 
         // alive count
-        packet.aliveCount = this.game.aliveCount;
-        packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
+        packet.aliveCount = game.aliveCount;
+        packet.aliveCountDirty = game.aliveCountDirty || this._firstPacket;
 
         // kill feed messages
-        packet.killFeedMessages = this.game.killFeedMessages;
-        const killLeader = this.game.killLeader;
+        packet.killFeedMessages = game.killFeedMessages;
+        const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
             packet.killFeedMessages.add({
@@ -655,8 +657,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             });
         }
 
-        packet.planes = this.game.planes;
-        packet.mapPings = this.game.mapPings;
+        packet.planes = game.planes;
+        packet.mapPings = game.mapPings;
 
         // serialize and send update packet
         this.sendPacket(packet);
@@ -998,8 +1000,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.helmet = this.inventory.vest = undefined;
 
         // Create death marker
-        const deathMarker = new DeathMarker(this);
-        this.game.grid.addObject(deathMarker);
+        this.game.grid.addObject(new DeathMarker(this));
 
         // Send game over to dead player
         if (!this.disconnected) {

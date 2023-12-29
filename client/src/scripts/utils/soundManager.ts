@@ -2,6 +2,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
+import { Throwables } from "../../../../common/src/definitions/throwables";
 import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -174,6 +175,7 @@ export class SoundManager {
             medikit_pickup: "audio/sfx/pickup/medikit_pickup",
             cola_pickup: "audio/sfx/pickup/cola_pickup",
             tablets_pickup: "audio/sfx/pickup/tablets_pickup",
+            throwable_pickup: "audio/sfx/pickup/throwable_pickup",
 
             usas_explosion: "audio/sfx/usas_explosion",
 
@@ -208,6 +210,10 @@ export class SoundManager {
             if (gun.ballistics.lastShotFX) soundsToLoad[`${gun.idString}_last_shot`] = `audio/sfx/weapons/${gun.idString}_last_shot`;
         }
 
+        for (const throwable of Throwables) {
+            soundsToLoad[`${throwable.idString}_switch`] = `audio/sfx/weapons/${throwable.idString}_switch`;
+        }
+
         for (const healingItem of HealingItems) {
             soundsToLoad[healingItem.idString] = `audio/sfx/healing/${healingItem.idString}`;
         }
@@ -227,8 +233,27 @@ export class SoundManager {
             soundsToLoad[key] = `./${path}.mp3`;
         }
 
-        PixiSound.sound.add(soundsToLoad, {
-            preload: true
-        });
+        for (const [alias, path] of Object.entries(soundsToLoad)) {
+            /**
+             * For some reason, PIXI will call the `loaded` callback twice
+             * when an error occurs…
+             */
+            let called = false;
+
+            PixiSound.sound.add(
+                alias,
+                {
+                    url: path,
+                    preload: true,
+                    loaded(error) {
+                        if (error !== null && !called) {
+                            called = true;
+                            console.warn(`Failed to load sound '${alias}' (path '${path}')\nError object provided below`);
+                            console.error(error);
+                        }
+                    }
+                }
+            );
+        }
     }
 }

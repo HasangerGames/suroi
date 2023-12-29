@@ -3,11 +3,11 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, Collision } from "../../../../common/src/utils/math";
+import { Angle, Collision, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
@@ -67,24 +67,25 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
             for (const hitbox of hitboxes) {
                 // find the direction to cast rays
-                let direction: Vector | null = null;
+                let collision: CollisionResponse = null;
 
                 if (hitbox instanceof CircleHitbox) {
-                    const intersection = Collision.circleCircleIntersection(
+                    collision = Collision.circleCircleIntersection(
                         hitbox.position,
                         hitbox.radius,
                         playerHitbox.position,
-                        playerHitbox.radius);
-
-                    direction = intersection?.dir ?? null;
+                        playerHitbox.radius
+                    );
                 } else if (hitbox instanceof RectangleHitbox) {
-                    const intersection = Collision.rectCircleIntersection(hitbox.min,
+                    collision = Collision.rectCircleIntersection(
+                        hitbox.min,
                         hitbox.max,
                         playerHitbox.position,
-                        playerHitbox.radius);
-
-                    direction = intersection?.dir ?? null;
+                        playerHitbox.radius
+                    );
                 }
+
+                const direction = collision?.dir;
 
                 if (direction) {
                     if (HITBOX_DEBUG_MODE) {
@@ -133,6 +134,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 } else {
                     visible = false;
                 }
+
                 if (visible) break;
             }
         }

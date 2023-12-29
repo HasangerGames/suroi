@@ -38,7 +38,7 @@ export class Explosion {
                 readonly squareDistance: number
             }> = [];
 
-            const lineEnd = Vec.add(this.position, Vec.rotate(Vec.create(this.definition.radius.max, 0), angle));
+            const lineEnd = Vec.add(this.position, Vec.fromPolar(angle, this.definition.radius.max));
 
             for (const object of objects) {
                 if (

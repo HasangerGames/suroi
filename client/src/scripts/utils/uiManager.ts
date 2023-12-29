@@ -160,8 +160,11 @@ export class UIManager {
 
         $("#chicken-dinner").toggle(packet.won);
 
-        const name = this.game.spectating ? this.getPlayerName(packet.playerID) : "You";
-        $("#game-over-text").html(packet.won ? "Winner winner chicken dinner!" : `${name} died.`);
+        $("#game-over-text").html(
+            packet.won
+                ? "Winner winner chicken dinner!"
+                : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
+        );
 
         $("#game-over-player-name").html(this.getPlayerName(packet.playerID));
 

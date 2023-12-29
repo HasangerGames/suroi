@@ -21,6 +21,7 @@ import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
+import { type ThrowableItem } from "./inventory/throwableItem";
 import { Map } from "./map";
 import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
@@ -37,7 +38,6 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import { type ThrowableItem } from "./inventory/throwableItem";
 
 export class Game {
     readonly _id: number;

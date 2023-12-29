@@ -34,7 +34,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
-    oldItem = this.activeItem;
+    private _oldItem = this.activeItem;
 
     equipment: {
         helmet?: ArmorDefinition
@@ -381,10 +381,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
-            const pos = toPixiCoords(this.position);
-            const emotePos = Vec.add(pos, Vec.create(0, -175));
-            this.container.position.copyFrom(pos);
-            this.emoteContainer.position.copyFrom(emotePos);
+            this.container.position.copyFrom(toPixiCoords(this.position));
+            this.emoteContainer.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
         }
 
         // Animation
@@ -397,7 +395,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const full = data.full;
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
-            this.oldItem = this.activeItem;
+            this._oldItem = this.activeItem;
             this.activeItem = full.activeItem;
 
             const skinID = full.skin.idString;
@@ -593,7 +591,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setAngle(reference.image.angle ?? 0);
             this.images.altWeapon.setAngle(reference.image.angle ?? 0); // there's an ambiguity here as to whether the angle should be inverted or the same
 
-            if (this.activeItem !== this.oldItem) {
+            if (this.activeItem !== this._oldItem) {
                 this.anims.muzzleFlashFade?.kill();
                 this.anims.muzzleFlashRecoil?.kill();
                 this.images.muzzleFlash.alpha = 0;
