@@ -894,8 +894,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
-        this.game.grid.removeObject(this);
-        this.game.updateObjects = true;
+        this.game.fullDirtyObjects.add(this);
         removeFrom(this.game.spectatablePlayers, this);
 
         //
@@ -1131,6 +1130,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             rotation: this.rotation,
             animation: this.animation,
             full: {
+                dead: this.dead,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
