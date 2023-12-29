@@ -352,7 +352,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    override toRectangle(): RectangleHitbox {
+    override toRectangle(): this {
         return this;
     }
 
