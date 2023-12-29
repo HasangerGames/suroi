@@ -340,7 +340,17 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("gun_mount_maul", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("vector_briefcase", Vec.create(this.width / 2, this.height / 2), 0);
+        }
+    },
+    singleGun: {
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
+        genCallback(map) {
+            map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
         }
     },
     gunsTest: {
