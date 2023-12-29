@@ -30,7 +30,7 @@ const config: UserConfig = {
             }],
             options: {
                 outputFormat: "png",
-                margin: 5,
+                margin: 8,
                 removeExtensions: true
             }
         })
