@@ -42,7 +42,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 0.5 },
             { tier: "melee", weight: 0.04 },
             { tier: "winter_skins", weight: 0.4 }, // winter mode
-            { tier: "grenade", weight: 0.3 }
+            { tier: "throwables", weight: 0.3 }
         ]
     },
     aegis_crate: {

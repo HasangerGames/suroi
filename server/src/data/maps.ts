@@ -343,7 +343,7 @@ export const Maps: Record<string, MapDefinition> = {
             map.generateObstacle("gun_mount_maul", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
-    guns_test: {
+    gunsTest: {
         width: 64,
         height: 48 + (16 * Guns.length),
         beachSize: 8,
