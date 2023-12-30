@@ -21,7 +21,7 @@ import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
-import { type ThrowableItem } from "./inventory/throwableItem";
+import { type ThrowableItem } from "./inventory/ThrowableItem";
 import { Map } from "./map";
 import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
@@ -537,7 +537,7 @@ export class Game {
     }
 
     addProjectile(definition: ThrowableDefinition, position: Vector, source: ThrowableItem): ThrowableProjectile {
-        const projectile = new ThrowableProjectile(this, Vec.clone(position), definition, source);
+        const projectile = new ThrowableProjectile(this, position, definition, source);
         this.grid.addObject(projectile);
         return projectile;
     }

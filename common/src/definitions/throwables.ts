@@ -8,6 +8,8 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Specified in *milliseconds*
      */
     readonly fuseTime: number
+    readonly cookTime: number
+    readonly throwTime: number
     /**
      * Whether cooking the grenade will run down the fuse
      */
@@ -24,11 +26,15 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
     }
     readonly animation: {
+        readonly pinImage: string
+        readonly liveImage: string
+        readonly leverImage: string
         readonly cook: {
-            readonly pinImage: string
-            readonly liveImage: string
             readonly cookingImage?: string
-            readonly leverImage: string
+            readonly leftFist: Vector
+            readonly rightFist: Vector
+        }
+        readonly throw: {
             readonly leftFist: Vector
             readonly rightFist: Vector
         }
@@ -54,8 +60,11 @@ export const Throwables: ThrowableDefinition[] = [
         impactDamage: 1,
         obstacleMultiplier: 20,
         fuseTime: 4000,
+        cookTime: 250,
+        throwTime: 150,
         cookable: true,
         maxThrowDistance: 96,
+        fireDelay: 500,
         image: {
             position: Vec.create(60, 43),
             angle: 60
@@ -64,12 +73,16 @@ export const Throwables: ThrowableDefinition[] = [
             explosion: "frag_explosion"
         },
         animation: {
+            pinImage: "proj_frag_pin",
+            liveImage: "proj_frag",
+            leverImage: "proj_frag_lever",
             cook: {
-                pinImage: "proj_frag_pin",
-                liveImage: "proj_frag",
-                leverImage: "proj_frag_lever",
-                leftFist: Vec.create(50, 0),
-                rightFist: Vec.create(-10, 43)
+                leftFist: Vec.create(2.5, 0),
+                rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
             }
         }
     },
@@ -84,6 +97,8 @@ export const Throwables: ThrowableDefinition[] = [
         obstacleMultiplier: 20,
         cookable: false,
         fuseTime: 2000,
+        cookTime: 250,
+        throwTime: 150,
         maxThrowDistance: 96,
         image: {
             position: Vec.create(60, 43),
@@ -93,13 +108,17 @@ export const Throwables: ThrowableDefinition[] = [
             explosion: "smoke_explosion"
         },
         animation: {
+            pinImage: "proj_smoke_pin",
+            liveImage: "proj_smoke",
+            leverImage: "proj_smoke_lever",
             cook: {
-                pinImage: "proj_smoke_pin",
-                liveImage: "proj_smoke",
                 cookingImage: "proj_smoke_nopin",
-                leverImage: "proj_smoke_lever",
-                leftFist: Vec.create(50, 0),
-                rightFist: Vec.create(-10, 43)
+                leftFist: Vec.create(2.5, 0),
+                rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
             }
         }
     }

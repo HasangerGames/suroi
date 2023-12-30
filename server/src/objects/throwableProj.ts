@@ -57,7 +57,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.definition = definition;
         this.source = source;
         this._spawnTime = this.game.now;
-        this.hitbox = new CircleHitbox(radius ?? 1, Vec.clone(position));
+        this.hitbox = new CircleHitbox(radius ?? 1, position);
     }
 
     push(angle: number, speed: number): void {
@@ -173,8 +173,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
         return {
             position: {
-                ...this.position,
-                z: this._height
+                ...this.position
+                // z: this._height
             },
             rotation: this.rotation,
             full: {

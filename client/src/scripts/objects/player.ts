@@ -941,24 +941,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const projImage = this.images.weapon;
                 const pinImage = this.images.altWeapon;
 
-                pinImage.setFrame(def.animation.cook.pinImage);
+                projImage.visible = true;
+                pinImage.setFrame(def.animation.pinImage);
                 pinImage.setPos(35, 0);
                 pinImage.setZIndex(ZIndexes.Players + 1);
-                projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.cook.liveImage);
+                projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
 
                 this.anims.leftFist = new Tween(
                     this.game,
                     {
                         target: this.images.leftFist,
                         to: { x: 35, y: 0 },
-                        duration: 150,
+                        duration: def.cookTime / 2,
                         onComplete: () => {
                             this.anims.leftFist = new Tween(
                                 this.game,
                                 {
                                     target: this.images.leftFist,
-                                    to: { x: def.animation.cook.leftFist.x, y: def.animation.cook.leftFist.y },
-                                    duration: 150
+                                    to: Vec.scale(def.animation.cook.leftFist, PIXI_SCALE),
+                                    duration: def.cookTime / 2
                                 }
                             );
 
@@ -966,9 +967,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             this.anims.pin = new Tween(
                                 this.game, {
                                     target: pinImage,
-                                    duration: 150,
+                                    duration: def.cookTime / 2,
                                     to: {
-                                        ...Vec.add(def.animation.cook.leftFist, Vec.create(15, 0))
+                                        ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
                                     }
                                 }
                             );
@@ -978,7 +979,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 if (def.cookable) {
                     this.game.particleManager.spawnParticle({
-                        frames: def.animation.cook.leverImage,
+                        frames: def.animation.leverImage,
                         lifetime: 600,
                         position: this.position,
                         zIndex: ZIndexes.Players + 1,
@@ -1000,7 +1001,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: projImage,
                         to: { x: 25, y: 10 },
-                        duration: 150
+                        duration: def.cookTime / 2
                     }
                 );
 
@@ -1009,14 +1010,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     {
                         target: this.images.rightFist,
                         to: { x: 25, y: 10 },
-                        duration: 150,
+                        duration: def.cookTime / 2,
                         onComplete: () => {
                             this.anims.weapon = new Tween(
                                 this.game,
                                 {
                                     target: projImage,
-                                    to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
-                                    duration: 150
+                                    to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
+                                    duration: def.cookTime / 2
                                 }
                             );
 
@@ -1024,8 +1025,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 this.game,
                                 {
                                     target: this.images.rightFist,
-                                    to: { x: def.animation.cook.rightFist.x, y: def.animation.cook.rightFist.y },
-                                    duration: 150
+                                    to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
+                                    duration: def.cookTime / 2
                                 }
                             );
                         }
@@ -1039,16 +1040,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
                     return;
                 }
-
                 this.playSound("throwable_throw");
 
-                const pinImage = this.images.altWeapon;
-                const projImage = this.images.weapon;
                 const def = this.activeItem;
+
+                this.images.altWeapon.visible = false;
+                const projImage = this.images.weapon;
+                projImage.visible = false;
+                projImage.setFrame(def.idString);
 
                 if (!def.cookable) {
                     this.game.particleManager.spawnParticle({
-                        frames: def.animation.cook.leverImage,
+                        frames: def.animation.leverImage,
                         lifetime: 600,
                         position: this.position,
                         zIndex: ZIndexes.Players + 1,
@@ -1065,9 +1068,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
 
-                this.updateFistsPosition(true);
-                pinImage.visible = false;
-                projImage.setFrame(def.idString);
+                this.anims.rightFist?.kill();
+                this.anims.leftFist?.kill();
+                this.anims.weapon?.kill();
+
+                this.anims.leftFist = new Tween(
+                    this.game,
+                    {
+                        target: this.images.leftFist,
+                        to: Vec.scale(def.animation.throw.leftFist, PIXI_SCALE),
+                        duration: def.throwTime,
+                        onComplete: () => {
+                            this.updateFistsPosition(true)
+                        }
+                    }
+                );
+
+                this.anims.rightFist = new Tween(
+                    this.game,
+                    {
+                        target: this.images.rightFist,
+                        to: Vec.scale(def.animation.throw.rightFist, PIXI_SCALE),
+                        duration: def.throwTime
+                    }
+                );
+
                 break;
             }
         }

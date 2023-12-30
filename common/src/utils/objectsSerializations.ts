@@ -1,4 +1,4 @@
-import { AnimationType, GameConstants, ObjectCategory, PlayerActions } from "../constants";
+import { AnimationType, ObjectCategory, PlayerActions } from "../constants";
 import { Armors, type ArmorDefinition } from "../definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
@@ -116,7 +116,7 @@ export interface ObjectsNetData {
     // Throwable data
     //
     [ObjectCategory.ThrowableProjectile]: {
-        position: Vector & { z: number }
+        position: Vector
         rotation: number
         full?: {
             definition: ThrowableDefinition
@@ -399,7 +399,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.ThrowableProjectile]: {
         serializePartial(stream, data) {
             stream.writePosition(data.position);
-            stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);
+            // stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);
             stream.writeRotation(data.rotation, 16);
         },
         serializeFull(stream, data) {
@@ -409,8 +409,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             return {
                 position: {
-                    ...stream.readPosition(),
-                    z: stream.readFloat(0, GameConstants.maxPosition, 16)
+                    ...stream.readPosition()
+                    // z: stream.readFloat(0, GameConstants.maxPosition, 16)
                 },
                 rotation: stream.readRotation(16)
             };
