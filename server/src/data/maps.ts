@@ -61,6 +61,7 @@ export const Maps: Record<string, MapDefinition> = {
         },
         buildings: {
             port_complex: 1,
+            armory: 1,
             refinery: 1,
             warehouse: 5,
             small_house: 10,
@@ -331,7 +332,7 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 32,
         genCallback(map) {
             //map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("armory_vault", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {

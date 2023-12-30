@@ -15,7 +15,7 @@ import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../co
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, ObjectDefinition } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
@@ -304,6 +304,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hitbox.position = position;
     }
 
+    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
@@ -315,6 +317,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
+
+        /* Object placing code start //
+        this.objectToPlace = new Building(game, "porta_potty", position, 0);
+        game.grid.addObject(this.objectToPlace);
+        // Object placing code end */
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -414,11 +421,28 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const oldPosition = Vec.clone(this.position);
         this.position = Vec.add(
             this.position,
-            Vec.scale(
-                Vec.create(movement.x, movement.y),
-                speed * dt
-            )
+            Vec.scale(movement, speed * dt)
         );
+
+        /* Object placing code start //
+        const position = Vec.add(
+            this.position,
+            Vec.create(Math.cos(this.rotation) * this.distanceToMouse, Math.sin(this.rotation) * this.distanceToMouse)
+        );
+        const obj = this.objectToPlace;
+        obj.position = position;
+        if (this.game.emotes.size > 0) {
+            obj.rotation += 1;
+            obj.rotation %= 4;
+        }
+        this.game.fullDirtyObjects.add(this.objectToPlace);
+        if (this.startedAttacking) {
+            const map = this.game.map;
+            const round = (n: number) => Math.round(n * 100) / 100;
+            //console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
+            console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
+        }
+        // Object placing code end */
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);

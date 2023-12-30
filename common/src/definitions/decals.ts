@@ -58,11 +58,6 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
             idString: "container_mark",
             name: "Container mark",
             zIndex: ZIndexes.BuildingsFloor
-        },
-        {
-            idString: "armory_decal",
-            name: "Armory Decal",
-            zIndex: ZIndexes.BuildingsFloor + 1
         }
     ]
 );

@@ -95,7 +95,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/armory_vault_floor.svg");
+    const bgImage = loadImage("/img/game/armory_decal.svg");
 
 </script>
 

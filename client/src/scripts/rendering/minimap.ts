@@ -4,7 +4,7 @@ import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, is
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, PolygonHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -216,6 +216,8 @@ export class Minimap {
                             ctx.drawRect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
                         } else if (hitbox instanceof CircleHitbox) {
                             ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
+                        } else if (hitbox instanceof PolygonHitbox) {
+                            ctx.drawPolygon(hitbox.points.map(v => Vec.scale(v, scale)));
                         }
                         ctx.closePath();
                         ctx.endFill();
