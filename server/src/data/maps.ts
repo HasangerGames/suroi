@@ -83,11 +83,11 @@ export const Maps: Record<string, MapDefinition> = {
             flint_crate: 6,
             aegis_crate: 6,
             rock: 200,
+            river_rock: 50,
             bush: 120,
             blueberry_bush: 30,
             barrel: 80,
-            treasure_pirate_chest: 100, //variations, I dont know which one to use
-            treasure_viking_chest: 100,
+            viking_treasure_chest: 1,
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
@@ -327,7 +327,16 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("christmas_tree", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("river_rock", Vec.create(this.width / 2, this.height / 2), 0);
+        }
+    },
+    singleWeapon: {
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
+        genCallback(map) {
+            map.game.addLoot("seax", Vec.create(this.width / 2, this.height / 2));
         }
     },
     guns_test: {

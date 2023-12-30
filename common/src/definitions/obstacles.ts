@@ -275,8 +275,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer4
         },
         {
-            idString: "treasure_pirate_chest",
-            name: "treasure_pirate_chest",
+            idString: "viking_treasure_chest",
+            name: "Viking Treasure Chest",
             material: "wood",
             health: 150,
             scale: {
@@ -287,21 +287,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -.4)),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
-            spawnMode: MapObjectSpawnMode.Beach,
-        },
-        {
-            idString: "treasure_viking_chest",
-            name: "treasure_viking_chest",
-            material: "wood",
-            health: 150,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
-            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -.4)),
-            rotationMode: RotationMode.Limited,
-            hasLoot: true,
+            hideOnMap: true,
             spawnMode: MapObjectSpawnMode.Beach,
         },
         {
@@ -366,6 +352,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Full,
             variations: 7,
             particleVariations: 2
+        },
+        {
+            idString: "river_rock",
+            name: "River Rock",
+            material: "stone",
+            health: 400,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.5
+            },
+            spawnMode: MapObjectSpawnMode.River,
+            hitbox: new CircleHitbox(7),
+            spawnHitbox: new CircleHitbox(8),
+            rotationMode: RotationMode.Full,
+            variations: 6,
+            particleVariations: 2,
         },
         {
             idString: "pumpkin",
