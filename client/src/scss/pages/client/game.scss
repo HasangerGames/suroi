@@ -10,11 +10,17 @@
     height: 100%;
 
     // Darkens canvas (for Halloween mode)
-    /*canvas {
+    /*
+    canvas {
         filter: brightness(0.65) saturate(0.85);
         position: relative;
         z-index: -1;
     }*/
+
+    .over-hud {
+        z-index: 1;
+        position: relative;
+    }
 }
 
 #btn-reload {
@@ -23,14 +29,14 @@
 
     @media screen and (max-width: 1500px) {
         bottom: 5px;
-        right: 240px;
+        right: 210px;
     }
 
     @media screen and (min-width: $screen_large) {
         width: 70px;
         height: 60px;
         bottom: 130px;
-        right: 290px;
+        right: 260px;
     }
 
     @media screen and (max-width: $screen_medium) {
@@ -38,11 +44,11 @@
         height: 40px;
         font-size: 20px;
         bottom: 3px;
-        right: 240px;
+        right: 150px;
     }
 
     @media screen and (max-width: $screen_small) {
-        bottom: 62px;
+        bottom: 3px;
         right: 3px;
     }
 
@@ -67,6 +73,9 @@
     display: flex;
     flex-direction: column;
 
+    //align-items: center;
+
+    /*
     @media screen and (max-width: $screen_large) {
         top: 5px;
         left: 5px;
@@ -75,6 +84,7 @@
             margin-bottom: 5px;
         }
     }
+    */
 }
 
 #minimap-border {
@@ -92,17 +102,15 @@
         border-radius: 5px;
     }
 }
-
 #debug-hud {
+    //margin-top: -10px;
     text-shadow: 1px 1px 2px black;
     font-family: monospace;
-    margin-right: auto;
 
     @media screen and (max-width: $screen_large) {
         font-size: 14px;
     }
 }
-
 #gas-timer {
     width: 80px;
     padding: 6px 9px 6px 9px;
@@ -166,15 +174,16 @@
     border-radius: 8px;
     padding: 8px 12px 8px 12px;
     gap: 10px;
-
     @media screen and (max-width: $screen_large) {
-        display: none;
-        /*top: 7px;
-        width: 140px;
+        top: 7px;
         right: 80px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
-        height: 30px;*/
+        height: 22px;
+    }
+
+    @media screen and (max-width: $screen_medium) {
+        display: none;
     }
 
     #kill-leader-leader-container {
@@ -182,9 +191,9 @@
         font-size: 25px;
         @include text-shadow;
 
-        /*@media screen and (max-width: $screen_large) {
-            font-size: 15px;
-        }*/
+        @media screen and (max-width: $screen_large) {
+            font-size: 12px;
+        }
     }
 
 }
@@ -240,6 +249,13 @@
     }
 
     #kill-feed {
+        margin-right: 180px;
+        @media screen and (max-width: $screen_large) {
+            margin-right: 80px;
+        }
+        @media screen and (max-width: $screen_medium) and (max-height: 500px){
+            margin-top: -40px;
+        }
         .kill-feed-item {
             max-width: fit-content;
             padding: 8px 10px 8px 10px;
@@ -344,7 +360,7 @@
     border-radius: 3px;
     border: 1px solid #b4b4b4;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
-    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+        0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
     color: #333;
     font-size: 25px;
     font-weight: 700;
@@ -364,10 +380,10 @@
     top: 3px;
 }
 
-#weapon-ammo-container {
+#weapon-ammo-container {    
     position: absolute;
     bottom: 91px;
-    left: calc(50% + (65px / 2));
+    left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: baseline;
@@ -385,12 +401,7 @@
 
     @media screen and (max-width: $screen_large) {
         bottom: 60px;
-        left: calc(50% + (48px / 2));
-        width: 120px;
-    }
-
-    @media screen and (max-width: $screen_medium) {
-        display: none !important;
+        left: 50%;
     }
 
     #weapon-clip-ammo {
@@ -419,6 +430,9 @@
             height: 22px;
             font-size: 14px;
         }
+        @media screen and (max-width: $screen_small) {
+            display: none !important;
+        }
     }
 }
 
@@ -441,12 +455,14 @@
         border-width: 5px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    /*
+    @media screen and (max-width: $screen_small) {
         bottom: 3px;
         left: unset;
         right: 3px;
         transform: none;
     }
+    */
 
     display: flex;
     justify-content: space-between;
@@ -532,11 +548,13 @@
         bottom: 42px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    /*
+    @media screen and (max-width: $screen_small) {
         left: unset;
         right: 3px;
         transform: none;
     }
+    */
 
     display: flex;
     justify-content: space-between;
@@ -731,6 +749,7 @@
         @media screen and (max-width: $screen_medium) {
             width: 60px;
             height: 60px;
+            border-radius: 5px;
         }
 
         position: relative;
@@ -793,15 +812,23 @@
 
     .item-ammo {
         position: absolute;
-        bottom: 5px;
-        margin-left: -55px;
+        bottom: 59px;
+        margin-left: -195px;
+        float: left;
         text-align: center;
         z-index: 1;
         font-size: 18px;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
-            font-size: 12px;
+            font-size: 13px;
+            margin-left: -55px;
+            bottom: 5px;
+        }
+        @media screen and (max-width: $screen_medium) {
+            font-size: 11px;
+            margin-left: -100px;
+            bottom: 25px;
         }
     }
 
@@ -826,105 +853,128 @@
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
         }
+        @media screen and (max-width: $screen_medium) {
+            font-size: 10px;
+        }
     }
 }
 
-#bottom-right-container {
+#weapons-container {
     position: absolute;
     bottom: 10px;
     right: 10px;
     flex-direction: column;
 
-    #ammo-container {
-        flex-direction: column;
-        margin-left: auto;
-        margin-bottom: 25px;
-        width: fit-content;
+    @media screen and (max-width: $screen_large) {
+        bottom: 5px;
+        right: 5px;
     }
 
-    #weapons-container {
-        flex-direction: column;
+    @media screen and (max-width: $screen_small) {
+        right: 3px;
+        bottom: 70px;
+        //top: 75%;
+        //transform: translateY(-50%);
+        height: fit-content;
+    }
+
+    .inventory-slot {
+        height: 85px;
+        width: 230px;
+        opacity: 0.75;
 
         @media screen and (max-width: $screen_large) {
-            bottom: 5px;
-            right: 5px;
+            height: 60px;
+            width: 170px;
         }
 
         @media screen and (max-width: $screen_medium) {
-            right: 3px;
-            top: 50%;
-            transform: translateY(-50%);
-            flex-direction: column;
-            height: fit-content;
+            height: 40px;
+            width: 120px;
         }
 
-        .inventory-slot {
-            height: 85px;
-            width: 230px;
-            opacity: 0.75;
-
-            .slot-number, .item-name {
-                right: 8px !important;
-            }
-
-            &.has-item {
-                opacity: 1;
-                background: rgb(197,197,197);
-                background: linear-gradient(90deg, rgba(197,197,197,0.45) 0%, rgba(197,197,197,0.45) 25%, rgba(22,22,22,0.5) 100%);
-            }
+        .slot-number, .item-name {
+            right: 8px !important;
         }
 
-        .item-image {
-            width: 85px;
-            height: 85px;
-            position: absolute;
-            left: 5px;
-
-            &.dual {
-                transform: translate(-12%);
-            }
-
-            &.dual-image {
-                transform: translate(12%);
-            }
-
-            @media screen and (max-width: $screen_large) {
-                width: 50px;
-                height: 50px;
-            }
-
-            @media screen and (max-width: $screen_medium) {
-                width: 35px;
-                height: 35px;
-            }
-
+        &.has-item {
+            opacity: 1;
+            background: rgb(197,197,197);
+            background: linear-gradient(90deg, rgba(197,197,197,0.45) 0%, rgba(197,197,197,0.45) 25%, rgba(22,22,22,0.5) 100%);
         }
+    }
+
+    .item-image {
+        width: 85px;
+        height: 85px;
+        position: absolute;
+        left: 5px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 50px;
+            height: 50px;
+        }
+
+        @media screen and (max-width: $screen_medium) {
+            width: 35px;
+            height: 35px;
+        }
+
     }
 }
 
-#healing-items-container {
-    position: absolute;
-    bottom: 50px;
+.items-container#healing {
+    flex-direction: row;
     left: 10px;
+
+    .inventory-container {
+        justify-content: end;
+
+        bottom: 50px;
+        @media screen and (max-width: $screen_medium) {
+            bottom: 100px;
+            left: -7px;
+        }
+        @media screen and (max-height: 400px) {
+            bottom: 10px;
+        }
+    }
+}
+.items-container#ammo {
+    flex-direction: row-reverse;
+    right: 10px;
+
+    .inventory-container {
+        justify-content: end;
+        bottom: 450px;
+        @media screen and (max-width: $screen_large) {
+            bottom: 300px;
+        }
+        @media screen and (max-width: $screen_medium) {
+            bottom: 190px;
+            right: -7px;
+        }
+        @media screen and (max-height: 500px)and (max-width: $screen_large) {
+            bottom: 260px;
+        }
+        @media screen and (max-width: $screen_small) {
+            bottom: 240px;
+        }
+        @media screen and (max-height: 500px)and (max-width: $screen_medium) {
+            bottom: 180px;
+        }
+    }
+}
+.items-container {
+    position: absolute;
+    top: 120px;
+
+    display: flex;
+    gap: 25px;
     flex-direction: column;
 
-    .inventory-slot .item-tooltip {
-        position: absolute;
-        top: 0;
-        left: 110px;
-        height: fit-content;
-    }
-}
-
-.items-container {
-    display: flex;
-    gap: 5px;
-
-    @media screen and (max-width: $screen_large) {
-        bottom: 3px;
-        left: 3px;
-        gap: 3px;
-    }
+    bottom: 3px;
+    gap: 3px;
 
     @media screen and (max-width: $screen_small) {
         flex-direction: row-reverse;
@@ -946,13 +996,7 @@
 
         @media screen and (max-width: $screen_large) {
             height: 25px;
-            width: 75px;
-            border-radius: 8px;
-        }
-
-        @media screen and (max-width: $screen_large) {
-            height: 25px;
-            width: 64px;
+            width: 70px;
             border-radius: 5px;
         }
     }
@@ -962,77 +1006,76 @@
         float: right;
         margin-left: auto;
     }
-}
 
-.inventory-container {
-    .item-image {
-        width: 40px;
-        height: 30px;
-        @include drop-shadow;
+    .inventory-container {
+        flex-direction: column;
+        position: relative;
 
-        @media screen and (max-width: $screen_large) {
-            width: 30px;
-            height: 20px;
-        }
-    }
+        .item-image {
+            width: 40px;
+            height: 30px;
+            @include drop-shadow;
 
-    .inventory-slot .item-tooltip {
-        width: max-content;
-        max-width: 120px;
-
-        left: 0;
-        bottom: 50px;
-
-        @media screen and (max-width: $screen_large) {
-            bottom: 30px;
+            @media screen and (max-width: $screen_large) {
+                width: 30px;
+                height: 20px;
+            }
         }
 
-        @media screen and (max-width: $screen_small) {
-            left: 70px;
-            bottom: 0;
+        .inventory-slot .item-tooltip {
+            width: max-content;
+            max-width: 120px;
+
+            left: 110px;
+
+            @media screen and (max-width: $screen_large) {
+                //bottom: 30px;
+                left: 75px;
+            }
+
+            @media screen and (max-width: $screen_small) {
+                //left: 70px;
+                //bottom: 0;
+            }
+        }
+
+        .item-name {
+            right: 5px;
         }
     }
 }
 
 #equipment-container {
     position: absolute;
-    bottom: 10px;
-    right: 25%;
+    //bottom: 10px;
+    bottom: 4%;
+    left: 15%;
+    flex-direction: row;
+    //width: fit-content;
 
-    @media screen and (max-width: 1500px) {
-        bottom: 130px;
-        right: 10px;
-    }
-
-    @media screen and (max-width: $screen_large) {
-        bottom: 85px;
-        right: -37px;
-    }
 
     @media screen and (max-width: $screen_medium) {
+        left: 10%;
         flex-direction: row;
-        left: 5px;
-        bottom: 58px;
+        //left: 5px;
+        //bottom: 58px;
         width: fit-content;
     }
 
     @media screen and (max-width: $screen_small) {
-        bottom: 115px;
+        bottom: 60px;
+    }
+    @media screen and (max-height: 400px) and (max-width: $screen_medium) {
+        left: 80px;
     }
 
     .inventory-slot {
         width: 55px;
         height: 78px;
-        display: flex;
-        align-items: center;
+        margin-left: 3px;
 
         &.has-item {
             background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
-        }
-
-        .item-name {
-            font-weight: normal;
-            font-size: 15px;
         }
 
         .item-tooltip {
@@ -1050,7 +1093,7 @@
             }
 
             &:last-child .item-tooltip {
-                right: 0;
+                //right: 0;
             }
         }
 
