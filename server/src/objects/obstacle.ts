@@ -4,7 +4,7 @@ import { type Orientation, type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Angle, calculateDoorHitboxes } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "../data/lootTables";
@@ -52,6 +52,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     activated?: boolean;
 
     parentBuilding?: Building;
+
+    scale = 1;
 
     declare hitbox: Hitbox;
 
@@ -336,7 +338,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         this.game.grid.updateObject(this);
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Obstacle]> {
+    override get data(): FullData<ObjectCategory.Obstacle> {
         return {
             scale: this.scale,
             dead: this.dead,

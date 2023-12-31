@@ -20,7 +20,7 @@ import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { enablePlayButton } from "./main";
 import { Building } from "./objects/building";
@@ -35,6 +35,7 @@ import { Parachute } from "./objects/parachute";
 import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
+import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
@@ -57,6 +58,7 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.Decal]: typeof Decal
     readonly [ObjectCategory.Parachute]: typeof Parachute
     readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
+    readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -68,7 +70,8 @@ const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Building]: Building,
     [ObjectCategory.Decal]: Decal,
     [ObjectCategory.Parachute]: Parachute,
-    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile
+    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
+    [ObjectCategory.SyncedParticle]: SyncedParticle
 };
 
 type ObjectMapping = {
@@ -455,7 +458,7 @@ export class Game {
                 type K = typeof type;
                 this.objects.add(
                     new (
-                        ObjectClassMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => ObjectMapping[K])
+                        ObjectClassMapping[type] as (new (game: Game, id: number, data: FullData<K>) => ObjectMapping[K])
                     )(this, id, data)
                 );
             }

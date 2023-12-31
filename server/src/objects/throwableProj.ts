@@ -2,7 +2,7 @@ import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Collision } from "../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
@@ -100,6 +100,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                         this.source.owner,
                         this.source
                     );
+
+                    if (object.dead) {
+                        continue;
+                    }
                 }
 
                 const handleCircle = (hitbox: CircleHitbox): void => {
@@ -170,7 +174,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
     override damage(amount: number, source?: GameObject | undefined): void {}
 
-    get data(): Required<ObjectsNetData[ObjectCategory.ThrowableProjectile]> {
+    get data(): FullData<ObjectCategory.ThrowableProjectile> {
         return {
             position: {
                 ...this.position

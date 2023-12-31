@@ -5,7 +5,7 @@ import { type GunDefinition } from "../definitions/guns";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
+import { type FullData, ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
@@ -13,7 +13,7 @@ import { Packet } from "./packet";
 interface ObjectFullData {
     readonly id: number
     readonly type: ObjectCategory
-    readonly data: Required<ObjectsNetData[ObjectFullData["type"]]>
+    readonly data: FullData<ObjectFullData["type"]>
 }
 
 interface ObjectPartialData {

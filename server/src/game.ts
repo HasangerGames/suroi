@@ -21,7 +21,7 @@ import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
-import { type ThrowableItem } from "./inventory/ThrowableItem";
+import { type ThrowableItem } from "./inventory/throwableItem";
 import { Map } from "./map";
 import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";

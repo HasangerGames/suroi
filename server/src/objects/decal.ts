@@ -1,7 +1,7 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Decals, type DecalDefinition } from "../../../common/src/definitions/decals";
 import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -20,7 +20,7 @@ export class Decal extends BaseGameObject<ObjectCategory.Decal> {
         this.rotation = rotation ?? randomRotation();
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Decal]> {
+    override get data(): FullData<ObjectCategory.Decal> {
         return this;
     }
 

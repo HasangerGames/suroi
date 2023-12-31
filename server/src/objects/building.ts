@@ -3,7 +3,7 @@ import { Buildings, type BuildingDefinition } from "../../../common/src/definiti
 import { type Orientation } from "../../../common/src/typings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
@@ -53,7 +53,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         }
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Building]> {
+    override get data(): FullData<ObjectCategory.Building> {
         return {
             dead: this.dead,
             full: {

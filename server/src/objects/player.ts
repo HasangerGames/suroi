@@ -16,7 +16,7 @@ import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox"
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -1063,7 +1063,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         : inventory.lastWeaponIndex;
 
                     // If a user is reloading the gun in slot 2, then we don't cancel the reload if they "switch" to slot 2
-                    if (this.action?.type !== PlayerActions.Reload || target !== this.activeItemIndex) {
+                    if (this.action?.type !== PlayerActions.Reload || (target !== this.activeItemIndex && inventory.hasWeapon(target))) {
                         this.action?.cancel();
                     }
 
@@ -1173,7 +1173,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.action = action;
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Player]> {
+    override get data(): FullData<ObjectCategory.Player> {
         return {
             position: this.position,
             rotation: this.rotation,

@@ -5,7 +5,7 @@ import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -392,7 +392,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         }
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Loot]> {
+    override get data(): FullData<ObjectCategory.Loot> {
         return {
             position: this.position,
             full: {

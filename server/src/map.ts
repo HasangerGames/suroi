@@ -86,30 +86,25 @@ export class Map {
 
         if (mapDefinition.rivers) {
             const riverDef = mapDefinition.rivers;
-
             const riverPadding = 64;
+            const randomGenerator = new SeededRandom(this.seed);
+            const amount = randomGenerator.getInt(riverDef.minAmount, riverDef.maxAmount);
 
+            // generate a list of widths and sort by biggest, to make sure wide rivers generate first
+            const widths = Array.from(
+                { length: amount },
+                () => randomGenerator.get() < riverDef.wideChance
+                    ? randomGenerator.getInt(riverDef.minWideWidth, riverDef.maxWideWidth)
+                    : randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth)
+            ).sort((a, b) => b - a);
+
+            // extracted form loop
+            const halfWidth = this.width / 2;
+            const halfHeight = this.height / 2;
             const riverRect = new RectangleHitbox(
                 Vec.create(riverPadding, riverPadding),
                 Vec.create(this.width - riverPadding, this.height - riverPadding)
             );
-
-            const randomGenerator = new SeededRandom(this.seed);
-
-            const widths: number[] = [];
-            const amount = randomGenerator.getInt(riverDef.minAmount, riverDef.maxAmount);
-
-            // generate a list of widths and sort by biggest, to make sure wide rivers generate first
-            for (let i = 0; i < amount; i++) {
-                const wide = randomGenerator.get() < riverDef.wideChance;
-                widths.push(wide
-                    ? randomGenerator.getInt(riverDef.minWideWidth, riverDef.maxWideWidth)
-                    : randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth));
-            }
-            widths.sort((a, b) => b - a);
-
-            const halfWidth = this.width / 2;
-            const halfHeight = this.height / 2;
             const center = Vec.create(halfWidth, halfHeight);
             const width = this.width - riverPadding;
             const height = this.height - riverPadding;
@@ -145,7 +140,8 @@ export class Map {
             }
         }
 
-        this.packet.rivers = rivers;
+        this.packet.rivers.length = 0;
+        this.packet.rivers.push(...rivers);
 
         this.terrain = new Terrain(
             this.width,

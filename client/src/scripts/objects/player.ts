@@ -747,6 +747,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
                 }
+
                 if (altFist) {
                     this.anims.rightFist = new Tween(this.game, {
                         target: this.images.rightFist,
@@ -809,7 +810,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             return a.hitbox.distanceTo(this.hitbox).distance - b.hitbox.distanceTo(this.hitbox).distance;
                         })
                         .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
-                        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
                         .forEach(target => target.hitEffect(position, Angle.angleBetweenPoints(this.position, position)));
                 }, 50);
 
@@ -1079,7 +1079,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         to: Vec.scale(def.animation.throw.leftFist, PIXI_SCALE),
                         duration: def.throwTime,
                         onComplete: () => {
-                            this.updateFistsPosition(true)
+                            projImage.setVisible(true);
+                            this.updateFistsPosition(true);
                         }
                     }
                 );
