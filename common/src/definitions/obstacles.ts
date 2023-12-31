@@ -367,7 +367,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(8),
             rotationMode: RotationMode.Full,
-            variations: 6,
+            variations: 5,
             particleVariations: 2,
         },
         {
