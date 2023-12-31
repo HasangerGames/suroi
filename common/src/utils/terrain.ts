@@ -151,6 +151,7 @@ export class Terrain {
                 if (river.bankHitbox.isPointInside(position)) {
                     floor = "sand";
                 }
+
                 if (river.waterHitbox.isPointInside(position)) {
                     floor = "water";
                     break;

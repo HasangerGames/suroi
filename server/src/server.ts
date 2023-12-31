@@ -43,7 +43,8 @@ export function newGame(id?: number): number {
             return id;
         }
     } else {
-        for (let i = 0; i < Config.maxGames; i++) {
+        const maxGames = Config.maxGames;
+        for (let i = 0; i < maxGames; i++) {
             if (!games[i] || games[i]?.stopped) return newGame(i);
         }
     }
@@ -132,7 +133,8 @@ app.get("/api/getGame", async(res, req) => {
         }
     } else {
         let foundGame = false;
-        for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+        const maxGames = Config.maxGames;
+        for (let gameID = 0; gameID < maxGames; gameID++) {
             const game = games[gameID];
             if (canJoin(game) && game?.allowJoin) {
                 response = { success: true, gameID };
@@ -140,6 +142,7 @@ app.get("/api/getGame", async(res, req) => {
                 break;
             }
         }
+
         if (!foundGame) {
             // Create a game if there's a free slot
             const gameID = newGame();
@@ -148,11 +151,12 @@ app.get("/api/getGame", async(res, req) => {
             } else {
                 // Join the game that most recently started
                 const game = games
-                    .filter(g => g && !g.over)
-                    .reduce((a, b) => (a!).startedTime > (b!).startedTime ? a : b);
+                    .filter((g => g && !g.over) as (g?: Game) => g is Game)
+                    .reduce((a, b) => a.startedTime > b.startedTime ? a : b);
 
-                if (game) response = { success: true, gameID: game.id };
-                else response = { success: false };
+                response = game
+                    ? { success: true, gameID: game.id }
+                    : { success: false };
             }
         }
     }

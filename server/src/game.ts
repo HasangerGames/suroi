@@ -43,10 +43,8 @@ export class Game {
     readonly _id: number;
     get id(): number { return this._id; }
 
-    map: Map;
-
-    gas: Gas;
-
+    readonly map: Map;
+    readonly gas: Gas;
     readonly grid: Grid;
 
     readonly partialDirtyObjects = new Set<GameObject>();
