@@ -18,7 +18,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "arena",
 
     spawn: { mode: SpawnMode.Random },
 
@@ -35,6 +35,8 @@ export const Config = {
     roles: {
         dev: { password: "dev" },
         artist: { password: "artist", noPrivileges: true },
+        youtuber: { password: "youtuber", noPrivileges: true },
+        streamer: { password: "streamer", noPrivileges: true },
         hasanger: { password: "hasanger" },
         leia: { password: "leia" },
         katie: { password: "katie" },

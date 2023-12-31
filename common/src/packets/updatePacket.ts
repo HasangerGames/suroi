@@ -10,6 +10,7 @@ import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSeria
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
+import { type BadgeDefinition } from "../definitions/badges";
 
 interface ObjectFullData {
     readonly id: number
@@ -276,9 +277,10 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
 export type KillFeedMessage = {
     messageType: KillFeedMessageType
     playerID?: number
-
+    playerBadge?: string
     killType?: KillType
     killerID?: number
+    killerBadge?: string
     kills?: number
     killstreak?: number
     hideInKillfeed?: boolean
@@ -408,6 +410,7 @@ export class UpdatePacket extends Packet {
     };
 
     newPlayers = new Set<{
+        badge: BadgeDefinition
         readonly id: number
         readonly name: string
         readonly hasColor: boolean

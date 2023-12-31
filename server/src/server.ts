@@ -9,6 +9,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
+import { type BadgeDefinition } from "../../common/src/definitions/badges";
 
 /**
  * Apply CORS headers to a response.
@@ -193,6 +194,7 @@ export interface PlayerContainer {
     readonly role?: string
     readonly isDev: boolean
     readonly nameColor?: number
+    readonly badge?: BadgeDefinition
     readonly lobbyClearing: boolean
 }
 

@@ -25,9 +25,7 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     }
 
     reify<U extends T = T>(type: ReifiableDef<T>): U {
-        return (typeof type === "string"
-            ? this.fromString(type)
-            : type) as U;
+        return (typeof type === "string" ? this.fromString(type) : type) as U;
     }
 
     fromString<U extends T = T>(idString: ReferenceTo<U>): U {
@@ -48,7 +46,9 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readFromStream<U extends T = T>(stream: SuroiBitStream): U {
         const id = stream.readBits(this.bitCount);
         if (id >= this.definitions.length) {
-            console.warn(`Id out of range: ${id}, Max: ${this.definitions.length - 1}`);
+            console.warn(
+                `Id out of range: ${id}, Max: ${this.definitions.length - 1}`
+            );
         }
         return this.definitions[id] as U;
     }

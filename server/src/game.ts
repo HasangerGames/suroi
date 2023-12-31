@@ -1,8 +1,17 @@
 import { type WebSocket } from "uWebSockets.js";
-import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketType } from "../../common/src/constants";
+import {
+    GameConstants,
+    KillFeedMessageType,
+    KillType,
+    ObjectCategory,
+    PacketType
+} from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
-import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import {
+    Obstacles,
+    type ObstacleDefinition
+} from "../../common/src/definitions/obstacles";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
@@ -12,9 +21,20 @@ import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import {
+    ItemType,
+    MapObjectSpawnMode,
+    type ReferenceTo,
+    type ReifiableDef
+} from "../../common/src/utils/objectDefinitions";
+import {
+    randomPointInsideCircle,
+    randomRotation
+} from "../../common/src/utils/random";
+import {
+    OBJECT_ID_BITS,
+    type SuroiBitStream
+} from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
@@ -22,7 +42,11 @@ import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { Map } from "./map";
 import { Building } from "./objects/building";
-import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
+import {
+    Bullet,
+    type DamageRecord,
+    type ServerBulletOptions
+} from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type GameObject } from "./objects/gameObject";
@@ -35,10 +59,16 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
+import {
+    type BadgeDefinition,
+    Badges
+} from "../../common/src/definitions/badges";
 
 export class Game {
     readonly _id: number;
-    get id(): number { return this._id; }
+    get id(): number {
+        return this._id;
+    }
 
     map: Map;
 
@@ -59,8 +89,8 @@ export class Game {
      */
     readonly newPlayers: Set<Player> = new Set<Player>();
     /**
-    * Players deleted this tick
-    */
+     * Players deleted this tick
+     */
     readonly deletedPlayers: Set<number> = new Set<number>();
 
     readonly explosions: Set<Explosion> = new Set<Explosion>();
@@ -89,7 +119,7 @@ export class Game {
     /**
      * All planes this tick
      */
-    readonly planes = new Set<{ position: Vector, direction: number }>();
+    readonly planes = new Set<{ position: Vector; direction: number }>();
 
     /**
      * All map pings this tick
@@ -119,7 +149,9 @@ export class Game {
      * The value of `Date.now()`, as of the start of the tick.
      */
     private _now = Date.now();
-    get now(): number { return this._now; }
+    get now(): number {
+        return this._now;
+    }
 
     tickTimes: number[] = [];
 
@@ -131,7 +163,10 @@ export class Game {
         const start = Date.now();
 
         // Generate map
-        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height);
+        this.grid = new Grid(
+            Maps[Config.mapName].width,
+            Maps[Config.mapName].height
+        );
         this.map = new Map(this, Config.mapName);
 
         this.gas = new Gas(this);
@@ -197,11 +232,15 @@ export class Game {
             }
 
             // Update loots
-            for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
+            for (const loot of this.grid.pool.getCategory(
+                ObjectCategory.Loot
+            )) {
                 loot.update();
             }
 
-            for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
+            for (const parachute of this.grid.pool.getCategory(
+                ObjectCategory.Parachute
+            )) {
                 parachute.update();
             }
 
@@ -212,7 +251,11 @@ export class Game {
 
                 if (bullet.dead) {
                     if (bullet.definition.onHitExplosion && !bullet.reflected) {
-                        this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
+                        this.addExplosion(
+                            bullet.definition.onHitExplosion,
+                            bullet.position,
+                            bullet.shooter
+                        );
                     }
                     this.bullets.delete(bullet);
                 }
@@ -222,7 +265,13 @@ export class Game {
             // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
             // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
             // while on the server, without this, some bullets won't because the first bullets will kill the crate
-            for (const { object, damage, source, weapon, position } of records) {
+            for (const {
+                object,
+                damage,
+                source,
+                weapon,
+                position
+            } of records) {
                 object.damage(damage, source, weapon, position);
             }
 
@@ -235,7 +284,9 @@ export class Game {
             this.gas.tick();
 
             // First loop over players: Movement, animations, & actions
-            for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
+            for (const player of this.grid.pool.getCategory(
+                ObjectCategory.Player
+            )) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
@@ -282,7 +333,10 @@ export class Game {
                 this.allowJoin = false;
                 this.over = true;
 
-                this.addTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
+                this.addTimeout(
+                    () => endGame(this._id, shouldCreateNewGame),
+                    1000
+                );
             }
 
             // Record performance and start the next tick
@@ -292,9 +346,17 @@ export class Game {
             this.tickTimes.push(tickTime);
 
             if (this.tickTimes.length >= 200) {
-                const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
+                const mspt =
+                    this.tickTimes.reduce((a, b) => a + b) /
+                    this.tickTimes.length;
 
-                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.tps) * 100).toFixed(1)}%`);
+                Logger.log(
+                    `Game ${this._id} | Avg ms/tick: ${mspt.toFixed(
+                        2
+                    )} | Load: ${((mspt / GameConstants.tps) * 100).toFixed(
+                        1
+                    )}%`
+                );
                 this.tickTimes = [];
             }
 
@@ -303,16 +365,25 @@ export class Game {
     }
 
     private _killLeader: Player | undefined;
-    get killLeader(): Player | undefined { return this._killLeader; }
+    get killLeader(): Player | undefined {
+        return this._killLeader;
+    }
 
     updateKillLeader(player: Player): void {
         const oldKillLeader = this._killLeader;
 
-        if (player.kills > (this._killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+        if (
+            player.kills >
+                (this._killLeader?.kills ??
+                    GameConstants.player.killLeaderMinKills - 1) &&
+            !player.dead
+        ) {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
-                this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
+                this._sendKillFeedMessage(
+                    KillFeedMessageType.KillLeaderAssigned
+                );
             }
         } else if (player === oldKillLeader) {
             this._sendKillFeedMessage(KillFeedMessageType.KillLeaderUpdated);
@@ -320,10 +391,18 @@ export class Game {
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { killType: KillType.TwoPartyInteraction, killerID: killer?.id });
+        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, {
+            killType: KillType.TwoPartyInteraction,
+            killerID: killer?.id
+        });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+            if (
+                player.kills >
+                    (newKillLeader?.kills ??
+                        GameConstants.player.killLeaderMinKills - 1) &&
+                !player.dead
+            ) {
                 newKillLeader = player;
             }
         }
@@ -331,7 +410,12 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
+    private _sendKillFeedMessage(
+        messageType: KillFeedMessageType,
+        options?: Partial<
+            Omit<KillFeedMessage, "messageType" | "playerID" | "kills">
+        >
+    ): void {
         if (this._killLeader === undefined) return;
         this.killFeedMessages.add({
             messageType,
@@ -350,16 +434,24 @@ export class Game {
                 let foundPosition = false;
                 let tries = 0;
                 while (!foundPosition && tries < 100) {
-                    spawnPosition = this.map.getRandomPosition(hitbox, {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: (position) => {
-                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                        }
-                    }) ?? spawnPosition;
+                    spawnPosition =
+                        this.map.getRandomPosition(hitbox, {
+                            maxAttempts: 500,
+                            spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            collides: (position) => {
+                                return (
+                                    Geometry.distanceSquared(
+                                        position,
+                                        this.gas.currentPosition
+                                    ) >= gasRadius
+                                );
+                            }
+                        }) ?? spawnPosition;
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
-                    for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
+                    for (const object of this.grid.intersectsHitbox(
+                        radiusHitbox
+                    )) {
                         if (object instanceof Player) {
                             foundPosition = false;
                         }
@@ -370,13 +462,19 @@ export class Game {
             }
             case SpawnMode.Random: {
                 const gasRadius = this.gas.newRadius ** 2;
-                spawnPosition = this.map.getRandomPosition(hitbox, {
-                    maxAttempts: 500,
-                    spawnMode: MapObjectSpawnMode.GrassAndSand,
-                    collides: (position) => {
-                        return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                    }
-                }) ?? spawnPosition;
+                spawnPosition =
+                    this.map.getRandomPosition(hitbox, {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: (position) => {
+                            return (
+                                Geometry.distanceSquared(
+                                    position,
+                                    this.gas.currentPosition
+                                ) >= gasRadius
+                            );
+                        }
+                    }) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Radius: {
@@ -404,7 +502,8 @@ export class Game {
             (Config.censorUsernames && hasBadWords(name)) ||
             // eslint-disable-next-line no-control-regex
             /[^\x00-\x7F]/g.test(name) // extended ASCII chars
-        ) name = GameConstants.player.defaultName;
+        )
+            name = GameConstants.player.defaultName;
         player.name = name;
 
         player.isMobile = packet.isMobile;
@@ -412,9 +511,18 @@ export class Game {
         if (
             skin.itemType === ItemType.Skin &&
             !skin.notInLoadout &&
-            (skin.roleRequired === undefined || skin.roleRequired === player.role)
+            (skin.roleRequired === undefined ||
+                skin.roleRequired === player.role)
         ) {
             player.loadout.skin = skin;
+        }
+        const badge = packet.badge;
+        if (
+            !badge.notInLoadout &&
+            (badge.roleRequired === undefined ||
+                badge.roleRequired === player.role)
+        ) {
+            player.badge = packet.badge;
         }
         player.loadout.emotes = packet.emotes;
 
@@ -434,9 +542,15 @@ export class Game {
 
         player.sendData(this.map.buffer);
 
-        this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
+        this.addTimeout(() => {
+            player.disableInvulnerability();
+        }, 5000);
 
-        if (this.aliveCount > 1 && !this._started && this.startTimeout === undefined) {
+        if (
+            this.aliveCount > 1 &&
+            !this._started &&
+            this.startTimeout === undefined
+        ) {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;
@@ -444,7 +558,9 @@ export class Game {
 
                 this.addTimeout(() => {
                     newGame();
-                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
+                    Logger.log(
+                        `Game ${this.id} | Preventing new players from joining`
+                    );
                     this.allowJoin = false;
                 }, Config.preventJoinAfter);
             }, 3000);
@@ -465,7 +581,11 @@ export class Game {
             removeFrom(this.spectatablePlayers, player);
         } else {
             player.rotation = 0;
-            player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
+            player.movement.up =
+                player.movement.down =
+                player.movement.left =
+                player.movement.right =
+                    false;
             player.attacking = false;
             this.partialDirtyObjects.add(player);
         }
@@ -480,7 +600,7 @@ export class Game {
         }
         try {
             player.socket.close();
-        } catch (e) { }
+        } catch (e) {}
     }
 
     /**
@@ -491,13 +611,12 @@ export class Game {
      * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
      * @returns The created loot object
      */
-    addLoot(definition: ReifiableDef<LootDefinition>, position: Vector, count?: number): Loot {
-        const loot = new Loot(
-            this,
-            definition,
-            position,
-            count
-        );
+    addLoot(
+        definition: ReifiableDef<LootDefinition>,
+        position: Vector,
+        count?: number
+    ): Loot {
+        const loot = new Loot(this, definition, position, count);
 
         this.grid.addObject(loot);
         return loot;
@@ -508,13 +627,12 @@ export class Game {
         this.removeObject(loot);
     }
 
-    addBullet(source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions): Bullet {
-        const bullet = new Bullet(
-            this,
-            source,
-            shooter,
-            options
-        );
+    addBullet(
+        source: GunItem | Explosion,
+        shooter: GameObject,
+        options: ServerBulletOptions
+    ): Bullet {
+        const bullet = new Bullet(this, source, shooter, options);
 
         this.bullets.add(bullet);
         this.newBullets.add(bullet);
@@ -522,7 +640,11 @@ export class Game {
         return bullet;
     }
 
-    addExplosion(type: ReferenceTo<ExplosionDefinition> | ExplosionDefinition, position: Vector, source: GameObject): Explosion {
+    addExplosion(
+        type: ReferenceTo<ExplosionDefinition> | ExplosionDefinition,
+        position: Vector,
+        source: GameObject
+    ): Explosion {
         const explosion = new Explosion(this, type, position, source);
         this.explosions.add(explosion);
         return explosion;
@@ -552,7 +674,9 @@ export class Game {
 
             for (const airdrop of this.airdrops) {
                 thisHitbox = crateHitbox.transform(position);
-                const thatHitbox = (airdrop.type.spawnHitbox ?? airdrop.type.hitbox).transform(airdrop.position);
+                const thatHitbox = (
+                    airdrop.type.spawnHitbox ?? airdrop.type.hitbox
+                ).transform(airdrop.position);
 
                 if (thisHitbox.collidesWith(thatHitbox)) {
                     collided = true;
@@ -565,10 +689,12 @@ export class Game {
             thisHitbox = crateHitbox.transform(position);
 
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Obstacle &&
+                if (
+                    object instanceof Obstacle &&
                     !object.dead &&
                     object.definition.indestructible &&
-                    object.spawnHitbox.collidesWith(thisHitbox)) {
+                    object.spawnHitbox.collidesWith(thisHitbox)
+                ) {
                     collided = true;
                     thisHitbox.resolveCollision(object.spawnHitbox);
                 }
@@ -577,9 +703,11 @@ export class Game {
 
             // second loop, buildings
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Building &&
+                if (
+                    object instanceof Building &&
                     object.scopeHitbox &&
-                    object.definition.wallsToDestroy === undefined) {
+                    object.definition.wallsToDestroy === undefined
+                ) {
                     const hitbox = object.scopeHitbox.clone();
                     hitbox.scale(1.5);
                     if (!thisHitbox.collidesWith(hitbox)) continue;
@@ -592,8 +720,16 @@ export class Game {
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;
             const height = max.y - min.y;
-            position.x = Numeric.clamp(position.x, width, this.map.width - width);
-            position.y = Numeric.clamp(position.y, height, this.map.height - height);
+            position.x = Numeric.clamp(
+                position.x,
+                width,
+                this.map.width - width
+            );
+            position.y = Numeric.clamp(
+                position.y,
+                height,
+                this.map.height - height
+            );
         }
 
         const direction = randomRotation();
@@ -628,6 +764,6 @@ export class Game {
 }
 
 export interface Airdrop {
-    position: Vector
-    type: ObstacleDefinition
+    position: Vector;
+    type: ObstacleDefinition;
 }

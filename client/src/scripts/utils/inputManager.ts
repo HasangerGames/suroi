@@ -119,14 +119,14 @@ export class InputManager {
                 "cv_loop_scope_selection"
             )
                 ? Numeric.absMod(
-                      searchIndex + offset,
-                      Scopes.definitions.length
-                  )
+                    searchIndex + offset,
+                    Scopes.definitions.length
+                )
                 : Numeric.clamp(
-                      searchIndex + offset,
-                      0,
-                      Scopes.definitions.length - 1
-                  );
+                    searchIndex + offset,
+                    0,
+                    Scopes.definitions.length - 1
+                );
 
             const scopeCandidate = Scopes.definitions[searchIndex].idString;
 
@@ -348,8 +348,7 @@ export class InputManager {
 
             rightJoyStick.on("end", () => {
                 rightJoyStickUsed = false;
-                if (game.activePlayer)
-                    game.activePlayer.images.aimTrail.alpha = 0;
+                if (game.activePlayer) { game.activePlayer.images.aimTrail.alpha = 0; }
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
                 shootOnRelease = false;
@@ -400,8 +399,7 @@ export class InputManager {
                         !["Control", "Meta"].includes(event.key))) &&
                 down
                 // …but it only invalidates pressing a key, not releasing it
-            )
-                return;
+            ) { return; }
         }
 
         const key = this.getKeyFromInputEvent(event);
@@ -746,6 +744,7 @@ class InputMapper {
         this._actionToInput,
         this
     );
+
     /**
      * Binds inputs to a certain action. Note that an action (either a `Command` object or
      * a console query `string`) may only appear once per action
@@ -801,6 +800,7 @@ class InputMapper {
         this._actionToInput,
         this
     );
+
     /**
      * Removes all inputs bound to a particular action
      * @param key The action from which to remove all inputs
@@ -835,6 +835,7 @@ class InputMapper {
     readonly getInputsBoundToAction = InputMapper._generateGetter(
         this._actionToInput
     );
+
     /**
      * Gets all the actions bound to a particular input
      * @param key The input from which to retrieve the actions

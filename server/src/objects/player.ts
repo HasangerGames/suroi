@@ -37,6 +37,7 @@ import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
+import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -56,14 +57,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     disconnected = false;
 
     private _kills = 0;
-    get kills(): number { return this._kills; }
+    get kills(): number {
+        return this._kills;
+    }
+
     set kills(k: number) {
         this._kills = k;
         this.game.updateKillLeader(this);
     }
 
     private _maxHealth = GameConstants.player.defaultHealth;
-    get maxHealth(): number { return this._maxHealth; }
+    get maxHealth(): number {
+        return this._maxHealth;
+    }
+
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
         this.dirty.maxMinStats = true;
@@ -71,7 +78,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     private _health = this._maxHealth;
-    get health(): number { return this._health; }
+    get health(): number {
+        return this._health;
+    }
+
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
 
@@ -79,7 +89,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     private _maxAdrenaline = GameConstants.player.maxAdrenaline;
-    get maxAdrenaline(): number { return this._maxAdrenaline; }
+    get maxAdrenaline(): number {
+        return this._maxAdrenaline;
+    }
+
     set maxAdrenaline(maxAdrenaline: number) {
         this._maxAdrenaline = maxAdrenaline;
         this.dirty.maxMinStats = true;
@@ -87,7 +100,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     private _minAdrenaline = 0;
-    get minAdrenaline(): number { return this._minAdrenaline; }
+    get minAdrenaline(): number {
+        return this._minAdrenaline;
+    }
+
     set minAdrenaline(minAdrenaline: number) {
         this._minAdrenaline = Math.min(minAdrenaline, this._maxAdrenaline);
         this.dirty.maxMinStats = true;
@@ -95,9 +111,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     private _adrenaline = this._minAdrenaline;
-    get adrenaline(): number { return this._adrenaline; }
+    get adrenaline(): number {
+        return this._adrenaline;
+    }
+
     set adrenaline(adrenaline: number) {
-        this._adrenaline = Math.min(Math.max(adrenaline, this._minAdrenaline), this._maxAdrenaline);
+        this._adrenaline = Math.min(
+            Math.max(adrenaline, this._minAdrenaline),
+            this._maxAdrenaline
+        );
 
         this.dirty.adrenaline = true;
     }
@@ -112,7 +134,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         minAdrenaline: 0
     };
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
-    get modifiers() { return this._modifiers; }
+    get modifiers() {
+        return this._modifiers;
+    }
 
     killedBy?: Player;
 
@@ -223,7 +247,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     ticksSinceLastUpdate = 0;
 
     private _zoom!: number;
-    get zoom(): number { return this._zoom; }
+    get zoom(): number {
+        return this._zoom;
+    }
+
     set zoom(zoom: number) {
         if (this._zoom === zoom) return;
 
@@ -240,7 +267,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly socket: WebSocket<PlayerContainer>;
 
     private _action?: Action | undefined;
-    get action(): Action | undefined { return this._action; }
+    get action(): Action | undefined {
+        return this._action;
+    }
+
     set action(value: Action | undefined) {
         const wasReload = this._action?.type === PlayerActions.Reload;
         this._action = value;
@@ -252,7 +282,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             value === undefined &&
             this.activeItem instanceof GunItem &&
             this.activeItem.ammo <= 0 &&
-            this.inventory.items[(this.activeItemDefinition as GunDefinition).ammoType] !== 0
+            this.inventory.items[
+                (this.activeItemDefinition as GunDefinition).ammoType
+            ] !== 0
         ) {
             this._action = new ReloadAction(this, this.activeItem);
         }
@@ -268,6 +300,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly isDev: boolean;
     readonly hasColor: boolean;
     readonly nameColor: number;
+    badge?: BadgeDefinition;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move
@@ -298,7 +331,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hitbox.position = position;
     }
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
+    constructor(
+        game: Game,
+        socket: WebSocket<PlayerContainer>,
+        position: Vector
+    ) {
         super(game, position);
 
         const userData = socket.getUserData();
@@ -308,6 +345,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.role = userData.role;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
+        this.badge = userData.badge; // More fuckery here
         this.hasColor = userData.nameColor !== undefined;
 
         this.loadout = {
@@ -333,7 +371,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // this.inventory.scope = "15x_scope";
 
         // Inventory preset
-        if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
+        if (
+            this.isDev &&
+            userData.lobbyClearing &&
+            !Config.disableLobbyClearing
+        ) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
 
@@ -357,7 +399,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const primaryItem = this.inventory.getWeapon(slot) as GunItem;
         const primaryDefinition = primaryItem.definition;
         primaryItem.ammo = primaryDefinition.capacity;
-        this.inventory.items[primaryDefinition.ammoType] = this.inventory.backpack.maxCapacity[primaryDefinition.ammoType];
+        this.inventory.items[primaryDefinition.ammoType] =
+            this.inventory.backpack.maxCapacity[primaryDefinition.ammoType];
     }
 
     emote(slot: number): void {
@@ -378,7 +421,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             if (this.movement.right) movement.x++;
         }
 
-        if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+        if (movement.x * movement.y !== 0) {
+            // If the product is non-zero, then both of the components must be non-zero
             movement.x *= Math.SQRT1_2;
             movement.y *= Math.SQRT1_2;
         }
@@ -393,16 +437,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *                // Base speed
+        const speed =
+            Config.movementSpeed * // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
-            recoilMultiplier *                              // Recoil from items
-            (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
-            (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
-            this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
-            this.modifiers.baseSpeed;                       // Current on-wearer modifier
+            recoilMultiplier * // Recoil from items
+            (this.action?.speedMultiplier ?? 1) * // Speed modifier from performing actions
+            (1 + this.adrenaline / 1000) * // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier * // Active item speed modifier
+            this.modifiers.baseSpeed; // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
-        this.position = Vec.add(this.position, Vec.create(movement.x * speed, movement.y * speed));
+        this.position = Vec.add(
+            this.position,
+            Vec.create(movement.x * speed, movement.y * speed)
+        );
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -423,8 +471,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // World boundaries
-        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(
+            this.position.x,
+            this.hitbox.radius,
+            this.game.map.width - this.hitbox.radius
+        );
+        this.position.y = Numeric.clamp(
+            this.position.y,
+            this.hitbox.radius,
+            this.game.map.height - this.hitbox.radius
+        );
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
 
@@ -447,9 +503,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Regenerate health
         if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
-        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
-        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
-        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+        else if (this.adrenaline >= 50) {
+            this.health += 2.125 / this.game.tickDelta;
+        } else if (this.adrenaline >= 25) {
+            this.health += 1.125 / this.game.tickDelta;
+        } else if (this.adrenaline > 0) {
+            this.health += 0.625 / this.game.tickDelta;
+        }
 
         // Shoot gun/use melee
         if (this.startedAttacking) {
@@ -495,7 +555,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Calculate visible objects
         this.ticksSinceLastUpdate++;
-        if (this.ticksSinceLastUpdate > 8 || this.game.updateObjects || this.updateObjects) {
+        if (
+            this.ticksSinceLastUpdate > 8 ||
+            this.game.updateObjects ||
+            this.updateObjects
+        ) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
@@ -505,7 +569,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 player.position
             );
 
-            const newVisibleObjects = this.game.grid.intersectsHitbox(this.screenHitbox);
+            const newVisibleObjects = this.game.grid.intersectsHitbox(
+                this.screenHitbox
+            );
 
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
@@ -529,7 +595,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         for (const object of this.game.partialDirtyObjects) {
-            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
+            if (
+                this.visibleObjects.has(object) &&
+                !packet.fullDirtyObjects.has(object)
+            ) {
                 packet.partialDirtyObjects.add(object);
             }
         }
@@ -550,7 +619,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         if (this.startedSpectating && this.spectating) {
             for (const key in packet.playerData.dirty) {
-                packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
+                packet.playerData.dirty[key as keyof PlayerData["dirty"]] =
+                    true;
             }
             packet.fullDirtyObjects.add(this.spectating);
             this.startedSpectating = false;
@@ -558,18 +628,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Cull bullets
         for (const bullet of this.game.newBullets) {
-            if (Collision.lineIntersectsRectTest(bullet.initialPosition,
-                bullet.finalPosition,
-                this.screenHitbox.min,
-                this.screenHitbox.max)) {
+            if (
+                Collision.lineIntersectsRectTest(
+                    bullet.initialPosition,
+                    bullet.finalPosition,
+                    this.screenHitbox.min,
+                    this.screenHitbox.max
+                )
+            ) {
                 packet.bullets.add(bullet);
             }
         }
 
         // Cull explosions
         for (const explosion of this.game.explosions) {
-            if (this.screenHitbox.isPointInside(explosion.position) ||
-                Geometry.distanceSquared(explosion.position, this.position) < 16384) {
+            if (
+                this.screenHitbox.isPointInside(explosion.position) ||
+                Geometry.distanceSquared(explosion.position, this.position) <
+                    16384
+            ) {
                 packet.explosions.add(explosion);
             }
         }
@@ -593,8 +670,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         };
 
         // new and deleted players
-        if (this._firstPacket) packet.newPlayers = this.game.grid.pool.getCategory(ObjectCategory.Player);
-        else packet.newPlayers = this.game.newPlayers;
+        if (this._firstPacket) {
+            packet.newPlayers = this.game.grid.pool.getCategory(
+                ObjectCategory.Player
+            );
+        } else packet.newPlayers = this.game.newPlayers;
 
         packet.deletedPlayers = this.game.deletedPlayers;
 
@@ -639,32 +719,39 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const spectatablePlayers = game.spectatablePlayers;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
-                if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
-                else if (spectatablePlayers.length > 1) toSpectate = pickRandomInArray(spectatablePlayers);
+                if (this.killedBy !== undefined && !this.killedBy.dead) {
+                    toSpectate = this.killedBy;
+                } else if (spectatablePlayers.length > 1) {
+                    toSpectate = pickRandomInArray(spectatablePlayers);
+                }
                 break;
             }
             case SpectateActions.SpectatePrevious:
                 if (this.spectating !== undefined) {
-                    toSpectate = spectatablePlayers[
-                        Math.max(
-                            0,
-                            spectatablePlayers.indexOf(this.spectating) - 1
-                        )
-                    ];
+                    toSpectate =
+                        spectatablePlayers[
+                            Math.max(
+                                0,
+                                spectatablePlayers.indexOf(this.spectating) - 1
+                            )
+                        ];
                 }
                 break;
             case SpectateActions.SpectateNext:
                 if (this.spectating !== undefined) {
-                    toSpectate = spectatablePlayers[
-                        Math.min(
-                            spectatablePlayers.length,
-                            spectatablePlayers.indexOf(this.spectating) + 1
-                        )
-                    ];
+                    toSpectate =
+                        spectatablePlayers[
+                            Math.min(
+                                spectatablePlayers.length,
+                                spectatablePlayers.indexOf(this.spectating) + 1
+                            )
+                        ];
                 }
                 break;
             case SpectateActions.SpectateSpecific: {
-                toSpectate = spectatablePlayers.find(player => player.id === packet.playerID);
+                toSpectate = spectatablePlayers.find(
+                    (player) => player.id === packet.playerID
+                );
                 break;
             }
             case SpectateActions.SpectateKillLeader: {
@@ -674,11 +761,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             case SpectateActions.Report: {
                 if (!existsSync("reports")) mkdirSync("reports");
                 const reportID = randomBytes(4).toString("hex");
-                writeFileSync(`reports/${reportID}.json`, JSON.stringify({
-                    ip: this.spectating?.ip,
-                    name: this.spectating?.name,
-                    time: this.game.now
-                }));
+                writeFileSync(
+                    `reports/${reportID}.json`,
+                    JSON.stringify({
+                        ip: this.spectating?.ip,
+                        name: this.spectating?.name,
+                        time: this.game.now
+                    })
+                );
                 const packet = new ReportPacket();
                 packet.playerName = this.spectating?.name ?? "";
                 packet.reportID = reportID;
@@ -729,13 +819,18 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    override damage(
+        amount: number,
+        source?: GameObject,
+        weaponUsed?: GunItem | MeleeItem | Explosion
+    ): void {
         if (this.invulnerable) return;
 
         // Reductions are merged additively
-        amount *= 1 - (
-            (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-        );
+        amount *=
+            1 -
+            ((this.inventory.helmet?.damageReduction ?? 0) +
+                (this.inventory.vest?.damageReduction ?? 0));
 
         amount = this._clampDamageAmount(amount);
 
@@ -745,13 +840,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    piercingDamage(
+        amount: number,
+        source?: GameObject | KillType.Gas | KillType.Airdrop,
+        weaponUsed?: GunItem | MeleeItem | Explosion
+    ): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
 
-        const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
-        const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
+        const canTrackStats =
+            weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
+        const attributes = canTrackStats
+            ? weaponUsed.definition.wearerAttributes?.on
+            : undefined;
         const applyPlayerFX = (modifiers: ExtendedWearerAttributes): void => {
             if (source instanceof Player) {
                 source.health += modifiers.healthRestored ?? 0;
@@ -765,7 +867,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.damageTaken += amount;
 
             if (canTrackStats && !this.dead) {
-                const damageDealt = weaponUsed.stats.damage += amount;
+                const damageDealt = (weaponUsed.stats.damage += amount);
 
                 for (const entry of attributes?.damageDealt ?? []) {
                     if (damageDealt < (entry.limit ?? Infinity)) {
@@ -816,13 +918,18 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         this._modifiers = newModifiers;
-        this.maxHealth = GameConstants.player.defaultHealth * this._modifiers.maxHealth;
-        this.maxAdrenaline = GameConstants.player.maxAdrenaline * this._modifiers.maxAdrenaline;
+        this.maxHealth =
+            GameConstants.player.defaultHealth * this._modifiers.maxHealth;
+        this.maxAdrenaline =
+            GameConstants.player.maxAdrenaline * this._modifiers.maxAdrenaline;
         this.minAdrenaline = this.modifiers.minAdrenaline;
     }
 
     // dies of death
-    die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    die(
+        source?: GameObject | KillType.Gas | KillType.Airdrop,
+        weaponUsed?: GunItem | MeleeItem | Explosion
+    ): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -858,11 +965,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             */
         }
 
-        if (source instanceof Player || source === KillType.Gas || source === KillType.Airdrop) {
+        if (
+            source instanceof Player ||
+            source === KillType.Gas ||
+            source === KillType.Airdrop
+        ) {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillFeedMessageType.Kill,
                 playerID: this.id,
-                weaponUsed: weaponUsed?.definition
+                weaponUsed: weaponUsed?.definition,
+                playerBadge: this.badge
             };
 
             if (source instanceof Player) {
@@ -871,8 +983,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     killFeedMessage.killerID = source.id;
                     killFeedMessage.kills = source.kills;
 
+                    if (source.badge) {
+                        killFeedMessage.killerBadge = source.badge;
+                    }
+
                     if (source.activeItem.definition.killstreak) {
-                        killFeedMessage.killstreak = source.activeItem.stats.kills;
+                        killFeedMessage.killstreak =
+                            source.activeItem.stats.kills;
                     }
                 }
             } else {
@@ -914,14 +1031,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 if (
                     def.noDrop === true ||
                     ("ephemeral" in def && def.ephemeral)
-                ) continue;
+                ) {
+                    continue;
+                }
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
                     let left = count;
                     let subtractAmount = 0;
 
                     do {
-                        left -= subtractAmount = Math.min(left, def.maxStackSize);
+                        left -= subtractAmount = Math.min(
+                            left,
+                            def.maxStackSize
+                        );
                         this.game.addLoot(item, this.position, subtractAmount);
                     } while (left > 0);
 
@@ -941,15 +1063,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        if (this.loadout.skin.notInLoadout && this.loadout.skin.noDrop !== true) {
-            this.game.addLoot(
-                this.loadout.skin,
-                this.position
-            );
+        if (
+            this.loadout.skin.notInLoadout &&
+            this.loadout.skin.noDrop !== true
+        ) {
+            this.game.addLoot(this.loadout.skin, this.position);
         }
 
         this.inventory.helmet = this.inventory.vest = undefined;
-
         // Create death marker
         const deathMarker = new DeathMarker(this);
         this.game.grid.addObject(deathMarker);
@@ -961,7 +1082,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Remove player from kill leader
         if (this === this.game.killLeader) {
-            this.game.killLeaderDead(source instanceof Player ? source : undefined);
+            this.game.killLeaderDead(
+                source instanceof Player ? source : undefined
+            );
         }
     }
 
@@ -1010,12 +1133,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
                 case InputActions.EquipLastItem:
                 case InputActions.EquipItem: {
-                    const target = action.type === InputActions.EquipItem
-                        ? action.slot
-                        : inventory.lastWeaponIndex;
+                    const target =
+                        action.type === InputActions.EquipItem
+                            ? action.slot
+                            : inventory.lastWeaponIndex;
 
                     // If a user is reloading the gun in slot 2, then we don't cancel the reload if they "switch" to slot 2
-                    if (this.action?.type !== PlayerActions.Reload || target !== this.activeItemIndex) {
+                    if (
+                        this.action?.type !== PlayerActions.Reload ||
+                        target !== this.activeItemIndex
+                    ) {
                         this.action?.cancel();
                     }
 
@@ -1049,15 +1176,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         minDist: Number.MAX_VALUE
                     };
                     const detectionHitbox = new CircleHitbox(3, this.position);
-                    const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
+                    const nearObjects =
+                        this.game.grid.intersectsHitbox(detectionHitbox);
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
+                            (object instanceof Loot ||
+                                (object instanceof Obstacle &&
+                                    object.canInteract(this))) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
-                            const dist = Geometry.distanceSquared(object.position, this.position);
-                            if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
+                            const dist = Geometry.distanceSquared(
+                                object.position,
+                                this.position
+                            );
+                            if (
+                                (object instanceof Obstacle ||
+                                    object.canInteract(this)) &&
+                                dist < interactable.minDist
+                            ) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
                             } else if (
@@ -1141,8 +1278,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     seq: this.actionSeq,
                     ...(() => {
                         return this.action instanceof HealingAction
-                            ? { type: PlayerActions.UseItem, item: this.action.item }
-                            : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
+                            ? {
+                                type: PlayerActions.UseItem,
+                                item: this.action.item
+                            }
+                            : {
+                                type: (this.action?.type ??
+                                      PlayerActions.None) as Exclude<
+                                PlayerActions,
+                                PlayerActions.UseItem
+                                >
+                            };
                     })()
                 }
             }

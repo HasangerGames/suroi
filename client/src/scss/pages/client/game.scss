@@ -273,6 +273,16 @@
                 }
             }
 
+            .badge-icon {
+                position: relative;
+                bottom: -2px;
+                margin-right: 2px;
+
+                @media screen and (max-width: $screen_large) {
+                    height: 12px;
+                }
+            }
+
             &.kill-feed-item-victim {
                 background-color: #cc000075;
             }

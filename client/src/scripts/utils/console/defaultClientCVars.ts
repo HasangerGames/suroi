@@ -6,70 +6,72 @@ import {
 } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
-    readonly value: Value;
-    readonly flags: Partial<CVarFlags>;
+    readonly value: Value
+    readonly flags: Partial<CVarFlags>
 }
 
 export interface CVarTypeMapping {
-    readonly cv_player_name: ConVar<string>;
-    readonly cv_loadout_skin: ConVar<string>;
-    readonly cv_loadout_crosshair: ConVar<number>;
-    readonly cv_loadout_top_emote: ConVar<string>;
-    readonly cv_loadout_right_emote: ConVar<string>;
-    readonly cv_loadout_bottom_emote: ConVar<string>;
-    readonly cv_loadout_left_emote: ConVar<string>;
-    readonly cv_loop_scope_selection: ConVar<boolean>;
-    readonly cv_anonymize_player_names: ConVar<boolean>;
-    readonly cv_master_volume: ConVar<number>;
-    readonly cv_music_volume: ConVar<number>;
-    readonly cv_sfx_volume: ConVar<number>;
-    readonly cv_mute_audio: ConVar<boolean>;
-    readonly cv_use_old_menu_music: ConVar<boolean>;
-    readonly cv_language: ConVar<string>;
-    readonly cv_region: ConVar<string | undefined>;
-    readonly cv_camera_shake_fx: ConVar<boolean>;
-    readonly cv_killfeed_style: ConVar<"text" | "icon">;
-    readonly cv_movement_smoothing: ConVar<boolean>;
-    readonly cv_responsive_rotation: ConVar<boolean>;
-    readonly cv_antialias: ConVar<boolean>;
-    readonly cv_minimap_minimized: ConVar<boolean>;
-    readonly cv_leave_warning: ConVar<boolean>;
-    readonly cv_minimap_transparency: ConVar<number>;
-    readonly cv_map_transparency: ConVar<number>;
-    readonly cv_draw_hud: ConVar<boolean>;
-    readonly cv_rules_acknowledged: ConVar<boolean>;
-    readonly cv_hide_rules_button: ConVar<boolean>;
-    readonly cv_console_width: ConVar<number>;
-    readonly cv_console_height: ConVar<number>;
-    readonly cv_console_left: ConVar<number>;
-    readonly cv_console_top: ConVar<number>;
-    readonly cv_crosshair_color: ConVar<string>;
-    readonly cv_crosshair_size: ConVar<number>;
-    readonly cv_crosshair_stroke_color: ConVar<string>;
-    readonly cv_crosshair_stroke_size: ConVar<number>;
+    readonly cv_player_name: ConVar<string>
+    readonly cv_player_badge: ConVar<string>
+    readonly cv_loadout_skin: ConVar<string>
+    readonly cv_loadout_crosshair: ConVar<number>
+    readonly cv_loadout_top_emote: ConVar<string>
+    readonly cv_loadout_right_emote: ConVar<string>
+    readonly cv_loadout_bottom_emote: ConVar<string>
+    readonly cv_loadout_left_emote: ConVar<string>
+    readonly cv_loop_scope_selection: ConVar<boolean>
+    readonly cv_anonymize_player_names: ConVar<boolean>
+    readonly cv_master_volume: ConVar<number>
+    readonly cv_music_volume: ConVar<number>
+    readonly cv_sfx_volume: ConVar<number>
+    readonly cv_mute_audio: ConVar<boolean>
+    readonly cv_use_old_menu_music: ConVar<boolean>
+    readonly cv_language: ConVar<string>
+    readonly cv_region: ConVar<string | undefined>
+    readonly cv_camera_shake_fx: ConVar<boolean>
+    readonly cv_killfeed_style: ConVar<"text" | "icon">
+    readonly cv_movement_smoothing: ConVar<boolean>
+    readonly cv_responsive_rotation: ConVar<boolean>
+    readonly cv_antialias: ConVar<boolean>
+    readonly cv_minimap_minimized: ConVar<boolean>
+    readonly cv_leave_warning: ConVar<boolean>
+    readonly cv_minimap_transparency: ConVar<number>
+    readonly cv_map_transparency: ConVar<number>
+    readonly cv_draw_hud: ConVar<boolean>
+    readonly cv_rules_acknowledged: ConVar<boolean>
+    readonly cv_hide_rules_button: ConVar<boolean>
+    readonly cv_console_width: ConVar<number>
+    readonly cv_console_height: ConVar<number>
+    readonly cv_console_left: ConVar<number>
+    readonly cv_console_top: ConVar<number>
+    readonly cv_crosshair_color: ConVar<string>
+    readonly cv_crosshair_size: ConVar<number>
+    readonly cv_crosshair_stroke_color: ConVar<string>
+    readonly cv_crosshair_stroke_size: ConVar<number>
 
-    readonly pf_show_fps: ConVar<boolean>;
-    readonly pf_show_ping: ConVar<boolean>;
-    readonly pf_show_pos: ConVar<boolean>;
+    readonly pf_show_fps: ConVar<boolean>
+    readonly pf_show_ping: ConVar<boolean>
+    readonly pf_show_pos: ConVar<boolean>
 
-    readonly mb_controls_enabled: ConVar<boolean>;
-    readonly mb_joystick_size: ConVar<number>;
-    readonly mb_joystick_transparency: ConVar<number>;
+    readonly mb_controls_enabled: ConVar<boolean>
+    readonly mb_joystick_size: ConVar<number>
+    readonly mb_joystick_transparency: ConVar<number>
 
-    readonly dv_password: ConVar<string>;
-    readonly dv_role: ConVar<string>;
-    readonly dv_name_color: ConVar<string>;
-    readonly dv_lobby_clearing: ConVar<boolean>;
+    readonly dv_password: ConVar<string>
+    readonly dv_role: ConVar<string>
+    readonly dv_name_color: ConVar<string>
+    readonly dv_lobby_clearing: ConVar<boolean>
 }
 
 type SimpleCVarMapping = {
     [K in keyof CVarTypeMapping]:
-        | ExtractConVarValue<CVarTypeMapping[K]>
-        | JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>>;
+    | ExtractConVarValue<CVarTypeMapping[K]>
+    | JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>>;
 };
 
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
+    cv_player_badge: "",
     cv_loadout_skin: "hazel_jumpsuit",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",
