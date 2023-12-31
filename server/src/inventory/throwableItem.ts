@@ -46,14 +46,6 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
         this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this);
         this._activeHandler.cook();
-
-        setTimeout(
-            () => {
-                this.stopUse();
-                this._useItemNoDelayCheck(true);
-            },
-            50
-        );
     }
 
     override stopUse(): void {
@@ -157,12 +149,9 @@ class GrenadeHandler {
         const rightFist = definition.animation.cook.rightFist;
         const projectile = this._projectile = this.game.addProjectile(
             definition,
-            Vec.sub(
+            Vec.add(
                 this.owner.position,
-                {
-                    x: rightFist.x / 20,
-                    y: rightFist.y / 20
-                }
+                Vec.rotate(rightFist, this.owner.rotation)
             ),
             this.parent
         );

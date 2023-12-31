@@ -240,7 +240,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             animation: {
                 duration: 1000,
                 tint: 0x91140b,
-                scale: 2.5
+                scale: 1.5
             },
             shrapnelCount: 15,
             ballistics: {
