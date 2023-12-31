@@ -302,7 +302,8 @@ export class Map {
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
                 lootSpawnOffset,
-                building
+                building,
+                obstacleData.puzzlePiece
             );
 
             if (obstacleDef.role === ObstacleSpecialRoles.Activatable ||
@@ -389,7 +390,8 @@ export class Map {
         scale?: number,
         variation?: Variation,
         lootSpawnOffset?: Vector,
-        parentBuilding?: Building
+        parentBuilding?: Building,
+        puzzlePiece?: string
     ): Obstacle {
         definition = Obstacles.reify(definition);
 
@@ -408,7 +410,8 @@ export class Map {
             scale,
             variation,
             lootSpawnOffset,
-            parentBuilding
+            parentBuilding,
+            puzzlePiece
         );
 
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);

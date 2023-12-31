@@ -38,7 +38,10 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
         readonly opened?: string
+        readonly activated?: string
     }
+
+    readonly imageAnchor?: Vector
 
     readonly spawnMode?: MapObjectSpawnMode
 
@@ -63,8 +66,8 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly sound?: {
         readonly name: string
-        readonly maxRange: number
-        readonly fallOff: number
+        readonly maxRange?: number
+        readonly fallOff?: number
     }
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly interactText?: string
@@ -478,7 +481,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.6
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: RectangleHitbox.fromRect(8.4, 5.7),
+            hitbox: RectangleHitbox.fromRect(9.15, 6.3),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "crate_particle"
@@ -952,23 +955,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true,
             frames: {
                 particle: "furniture_particle"
-            }
-        },
-        {
-            idString: "vector_briefcase",
-            name: "Vector Briefcase",
-            material: "appliance",
-            health: 80,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.8
-            },
-            hitbox: RectangleHitbox.fromRect(10, 6.9, Vec.create(0, 0.5)),
-            rotationMode: RotationMode.Limited,
-            hasLoot: true,
-            frames: {
-                particle: "white_metal_particle"
             }
         },
         {
@@ -2239,7 +2225,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             hideOnMap: true,
             indestructible: true,
-            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -2274,7 +2259,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             hideOnMap: true,
             indestructible: true,
-            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -2302,7 +2286,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             hideOnMap: true,
             indestructible: true,
-            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -2314,7 +2297,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
                 RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
                 RectangleHitbox.fromRect(2.09, 11.07, Vec.create(-13.96, 10.47)),
-                RectangleHitbox.fromRect(34.47, 2.09, Vec.create(18.77, -6.66)),
+                RectangleHitbox.fromRect(29, 2.09, Vec.create(21.9, -6.66)),
                 RectangleHitbox.fromRect(2.07, 37, Vec.create(-36.01, -2.5)),
                 RectangleHitbox.fromRect(35.39, 2.09, Vec.create(-19.35, 16.52)),
                 RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
@@ -2405,9 +2388,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "briefcase",
             name: "Briefcase",
-            material: "wood",
+            material: "appliance",
             health: 100,
-            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -2415,18 +2397,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(10.65, 7.42, Vec.create(0, 0.43)),
             rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "porta_potty_door_particle"
-            },
             hasLoot: true
         },
         {
             idString: "button",
             name: "Button",
-            material: "metal",
+            material: "stone",
             health: 1000,
             indestructible: true,
-            reflectBullets: true,
+            role: ObstacleSpecialRoles.Activatable,
+            interactText: "Press",
+            sound: {
+                name: "button_press"
+            },
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -2435,7 +2418,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(2.15, 1.51),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "metal_particle"
+                particle: "metal_particle",
+                activated: "button_activated"
             }
         }
     ]

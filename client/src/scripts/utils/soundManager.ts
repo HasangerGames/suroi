@@ -150,8 +150,8 @@ export class SoundManager {
 
     loadSounds(): void {
         const soundsToLoad: Record<string, string> = {
-            player_hit_2: "audio/sfx/hits/player_hit_2",
             player_hit_1: "audio/sfx/hits/player_hit_1",
+            player_hit_2: "audio/sfx/hits/player_hit_2",
             gun_click: "audio/sfx/gun_click",
             swing: "audio/sfx/swing",
             emote: "audio/sfx/emote",
@@ -189,7 +189,11 @@ export class SoundManager {
 
             throwable_pin: "audio/sfx/throwable_pin",
             throwable_throw: "audio/sfx/throwable_throw",
-            explosion: "audio/sfx/explosion"
+            explosion: "audio/sfx/explosion",
+
+            button_press: "audio/sfx/button_press",
+            puzzle_error: "audio/sfx/puzzle_error",
+            puzzle_solved: "audio/sfx/puzzle_solved"
         };
 
         for (const material of Materials) {

@@ -13,6 +13,7 @@ interface BuildingObstacle {
     readonly variation?: Variation
     readonly scale?: number
     readonly lootSpawnOffset?: Vector
+    readonly puzzlePiece?: string
 }
 
 interface LootSpawner {
@@ -44,6 +45,14 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly lootSpawners?: LootSpawner[]
     readonly subBuildings?: SubBuilding[]
     readonly decals?: BuildingDecal[]
+
+    readonly puzzle?: {
+        triggerInteractOn: ReferenceTo<ObstacleDefinition>
+        completeInteractDelay: number
+        errorResetDelay: number
+        pieceResetDelay: number
+        order: string[]
+    }
 
     readonly sounds?: {
         readonly normal?: string
@@ -1557,7 +1566,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Vector Vault
             { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
-            { idString: "vector_briefcase", position: Vec.create(-22.5, -94), rotation: 0 },
+            { idString: "briefcase", position: Vec.create(-22.5, -94), rotation: 0 },
             { idString: "regular_crate", position: Vec.create(-12, -94), rotation: 0 },
             { idString: "regular_crate", position: Vec.create(-22, -102), rotation: 0 },
 
@@ -2047,6 +2056,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Armory Vault",
         spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
         scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+        puzzle: {
+            triggerInteractOn: "vault_door",
+            completeInteractDelay: 1500,
+            errorResetDelay: 1000,
+            pieceResetDelay: 10000,
+            order: ["y", "o", "j", "l"]
+        },
         floorImages: [{
             key: "armory_vault_floor",
             position: Vec.create(0, 0)
@@ -2058,6 +2074,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [{
             type: "wood",
             hitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2))
+        }],
+        subBuildings: [{
+            idString: "armory_inner_vault",
+            position: Vec.create(-25, -2.25)
         }],
         obstacles: [
             { idString: "armory_vault_walls", position: Vec.create(0, 0), rotation: 0 },
@@ -2074,7 +2094,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 (_, i) => ({
                     idString: "button",
                     position: Vec.create(8.76 + 5.06 * i, -19.2),
-                    rotation: 0
+                    rotation: 0,
+                    puzzlePiece: ["y", "o", "j", "l"][i]
                 })
             ),
             { idString: "panel_without_button", position: Vec.create(30.7, -14), rotation: 1 },
@@ -2084,6 +2105,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "briefcase", position: Vec.create(-20.7, 10.85), rotation: 0 },
             { idString: "vault_door", position: Vec.create(-14.1, -3.22), rotation: 3 }
         ]
+    },
+    {
+        idString: "armory_inner_vault",
+        name: "Armory Inner Vault",
+        spawnHitbox: RectangleHitbox.fromRect(20.87, 36.34),
+        scopeHitbox: RectangleHitbox.fromRect(20.87, 36.34),
+        ceilingImages: [{
+            key: "armory_inner_vault_ceiling",
+            position: Vec.create(0, 0)
+        }]
     },
     {
         idString: "armory",
@@ -2187,6 +2218,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 ])
             }
         ],
+        floors: [{
+            type: "stone",
+            hitbox: new PolygonHitbox([
+                Vec.create(5.54, -80.63),
+                Vec.create(62.37, -80.63),
+                Vec.create(62.37, -24.57),
+                Vec.create(48.11, -15.97),
+                Vec.create(34.01, -15.97),
+                Vec.create(34.01, 84.86),
+                Vec.create(-8.82, 84.86),
+                Vec.create(-8.82, -32.87),
+                Vec.create(5.54, -41.2)
+            ])
+        }],
         obstacles: [
             { idString: "regular_crate", position: Vec.create(63.13, -15.17) },
             { idString: "regular_crate", position: Vec.create(-7.99, 2.28) },

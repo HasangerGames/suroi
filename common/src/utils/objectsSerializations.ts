@@ -89,11 +89,14 @@ export interface ObjectsNetData {
     //
     [ObjectCategory.Building]: {
         dead: boolean
+        puzzle: undefined | {
+            solved: boolean
+            errorSeq: boolean
+        }
         full?: {
             definition: BuildingDefinition
             position: Vector
             rotation: Orientation
-            puzzleSolved: boolean
         }
     }
     //
@@ -324,17 +327,27 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Building]: {
         serializePartial(stream, data): void {
             stream.writeBoolean(data.dead);
+            stream.writeBoolean(!!data.puzzle);
+            if (data.puzzle) {
+                stream.writeBoolean(data.puzzle.solved);
+                stream.writeBoolean(data.puzzle.errorSeq);
+            }
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
             Buildings.writeToStream(stream, data.full.definition);
             stream.writePosition(data.full.position);
             stream.writeBits(data.full.rotation, 2);
-            stream.writeBoolean(data.full.puzzleSolved);
         },
         deserializePartial(stream) {
             return {
-                dead: stream.readBoolean()
+                dead: stream.readBoolean(),
+                puzzle: stream.readBoolean() // is puzzle
+                    ? {
+                        solved: stream.readBoolean(),
+                        errorSeq: stream.readBoolean()
+                    }
+                    : undefined
             };
         },
         deserializeFull(stream) {
@@ -343,8 +356,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 full: {
                     definition: Buildings.readFromStream(stream),
                     position: stream.readPosition(),
-                    rotation: stream.readBits(2) as Orientation,
-                    puzzleSolved: stream.readBoolean()
+                    rotation: stream.readBits(2) as Orientation
                 }
             };
         }

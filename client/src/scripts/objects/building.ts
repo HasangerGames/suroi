@@ -29,6 +29,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
     ceilingVisible = false;
 
+    errorSeq?: boolean;
+
     sound?: GameSound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Building]>) {
@@ -193,7 +195,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                 if (
                     sounds.normal &&
-                    !full.puzzleSolved &&
+                    !data.puzzle?.solved &&
                     this.sound?.name !== sounds.normal
                 ) {
                     this.sound?.stop();
@@ -202,7 +204,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                 if (
                     sounds.solved &&
-                    full.puzzleSolved &&
+                    data.puzzle?.solved &&
                     this.sound?.name !== sounds.solved
                 ) {
                     this.sound?.stop();
@@ -252,6 +254,17 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
         }
         this.dead = data.dead;
+
+        if (data.puzzle) {
+            if (!isNew && data.puzzle.errorSeq !== this.errorSeq) {
+                this.playSound("puzzle_error");
+            }
+            this.errorSeq = data.puzzle.errorSeq;
+
+            if (!isNew && data.puzzle.solved) {
+                this.playSound("puzzle_solved");
+            }
+        }
 
         this.ceilingContainer.removeChildren();
         for (const image of definition.ceilingImages ?? []) {

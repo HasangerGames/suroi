@@ -13,7 +13,7 @@ import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
+import { getLootTableLoot, getRandomIdString as getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
@@ -55,6 +55,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     declare hitbox: Hitbox;
 
+    puzzlePiece?: string;
+
     constructor(
         game: Game,
         type: ReifiableDef<ObstacleDefinition>,
@@ -63,7 +65,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         scale: number,
         variation: Variation = 0,
         lootSpawnOffset?: Vector,
-        parentBuilding?: Building
+        parentBuilding?: Building,
+        puzzlePiece?: string
     ) {
         super(game, position);
 
@@ -131,6 +134,11 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 openAltHitbox: hitboxes.openAltHitbox,
                 offset: 0
             };
+        }
+
+        this.puzzlePiece = puzzlePiece;
+        if (puzzlePiece) {
+            this.parentBuilding?.puzzlePieces.push(this);
         }
     }
 
@@ -223,9 +231,11 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     canInteract(player?: Player): boolean {
         return !this.dead && (
             (this.isDoor && (!this.door?.locked || player === undefined)) ||
-            (this.definition.role === ObstacleSpecialRoles.Activatable &&
+            (
+                this.definition.role === ObstacleSpecialRoles.Activatable &&
                 (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem) &&
-                !this.activated)
+                !this.activated
+            )
         );
     }
 
@@ -244,15 +254,11 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
-                if (this.parentBuilding && definition.triggerInteractOn) {
-                    for (const obstacle of this.parentBuilding.interactableObstacles) {
-                        if (obstacle.definition.idString === definition.triggerInteractOn) {
-                            this.game.addTimeout(() => {
-                                obstacle.interact();
-                                this.parentBuilding!.puzzleSolved = true;
-                                this.game.fullDirtyObjects.add(this.parentBuilding!);
-                            }, definition.interactDelay);
-                        }
+                if (this.parentBuilding) {
+                    if (definition.triggerInteractOn) {
+                        this.parentBuilding.solvePuzzle();
+                    } else if (this.puzzlePiece) {
+                        this.parentBuilding.togglePuzzlePiece(this);
                     }
                 }
 
@@ -264,7 +270,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                         this.game.fullDirtyObjects.add(this);
 
                         this.game.map.generateObstacle(
-                            getRandomIdString(replaceWith.idString),
+                            getRandomIDString(replaceWith.idString),
                             this.position,
                             this.rotation
                         );

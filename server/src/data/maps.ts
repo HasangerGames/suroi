@@ -341,7 +341,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("vector_briefcase", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("button", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
@@ -374,7 +374,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
         }
     },
-    obstacles_test: {
+    obstaclesTest: {
         width: 128,
         height: 48 + (32 * Obstacles.definitions.length),
         beachSize: 4,
@@ -387,7 +387,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
         }
     },
-    players_test: {
+    playersTest: {
         width: 256,
         height: 256,
         beachSize: 16,
