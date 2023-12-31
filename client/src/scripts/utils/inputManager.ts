@@ -125,7 +125,7 @@ export class InputManager {
             if (this.emoteWheelActive) {
                 const mousePosition = Vec.create(e.clientX, e.clientY);
                 if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
-                    const angle = Angle.angleBetweenPoints(this.emoteWheelPosition, mousePosition);
+                    const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
 
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {

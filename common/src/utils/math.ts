@@ -11,14 +11,14 @@ export const Angle = Object.freeze({
      * @param b The second point, used as the tail of the vector
      * @returns The angle, in radians, of the line going from b to a
      */
-    angleBetweenPoints(a: Vector, b: Vector): number {
+    betweenPoints(a: Vector, b: Vector): number {
         return Math.atan2(a.y - b.y, a.x - b.x);
     },
     /**
      * Normalize an angle to a value between -π and π
      * @param radians The angle, in radians
      */
-    normalizeAngle(radians: number): number {
+    normalize(radians: number): number {
         const π = Math.PI;
         return Numeric.absMod(radians - π, 2 * π) - π;
     },
@@ -28,7 +28,7 @@ export const Angle = Object.freeze({
      * @param start The initial angle, in radians
      * @param end The final angle, in radians
      */
-    minimizeAngle(start: number, end: number): number {
+    minimize(start: number, end: number): number {
         const π = Math.PI;
         return Numeric.absMod(end - start + π, 2 * π) - π;
     },
@@ -49,7 +49,7 @@ export const Angle = Object.freeze({
         return (radians / Math.PI) * 180;
     },
     orientationToRotation(orientation: number): number {
-        return -this.normalizeAngle(orientation * (Math.PI / 2));
+        return -this.normalize(orientation * (Math.PI / 2));
     }
 });
 

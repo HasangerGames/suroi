@@ -808,7 +808,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         })
                         .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
                         // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-                        .forEach(target => target.hitEffect(position, Angle.angleBetweenPoints(this.position, position)));
+                        .forEach(target => target.hitEffect(position, Angle.betweenPoints(this.position, position)));
                 }, 50);
 
                 break;

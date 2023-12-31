@@ -79,7 +79,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
         this.container.rotation = Numeric.lerp(
             this._oldRotation,
-            this._oldRotation + Angle.minimizeAngle(this._oldRotation, this._rotation),
+            this._oldRotation + Angle.minimize(this._oldRotation, this._rotation),
             Math.min(((Date.now() - this._lastRotationChange) / GameConstants.msPerTick), 1)
         );
     }

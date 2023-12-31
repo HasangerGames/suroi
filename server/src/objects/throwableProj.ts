@@ -70,7 +70,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.hitbox.position.y += this._velocity.y * halfDt;
         this._height += this._velocity.z * deltaTime;
 
-        this.rotation = Angle.normalizeAngle(this.rotation + this.angularVelocity * deltaTime);
+        this.rotation = Angle.normalize(this.rotation + this.angularVelocity * deltaTime);
 
         const shouldCollideWithPlayers = this.definition.impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0036;
 

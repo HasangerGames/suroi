@@ -187,7 +187,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 if (source.position === undefined && position === undefined) continue;
 
                 loot.push(
-                    Angle.angleBetweenPoints(this.position, position ?? source.position),
+                    Angle.betweenPoints(this.position, position ?? source.position),
                     0.02
                 );
             }

@@ -132,7 +132,7 @@ export class Map {
                     start = Vec.create(reverse ? rightHalf : leftHalf, riverPadding);
                 }
 
-                const startAngle = Angle.angleBetweenPoints(center, start) + (reverse ? 0 : Math.PI);
+                const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
 
                 this.generateRiver(
                     start,

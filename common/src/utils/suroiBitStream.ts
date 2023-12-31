@@ -221,7 +221,7 @@ export class SuroiBitStream extends BitStream {
                 break;
             case RotationMode.Limited: // 4 possible orientations
                 orientation = this.readBits(2) as Orientation;
-                rotation = -Angle.normalizeAngle(orientation) * (Math.PI / 2);
+                rotation = -Angle.normalize(orientation) * (Math.PI / 2);
                 break;
             case RotationMode.Binary: // 2 possible orientations
                 if (this.readBoolean()) {

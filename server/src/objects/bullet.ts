@@ -55,7 +55,7 @@ export class Bullet extends BaseBullet {
 
         super({
             ...options,
-            rotation: Angle.normalizeAngle(options.rotation),
+            rotation: Angle.normalize(options.rotation),
             source: definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
