@@ -13,7 +13,7 @@ import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { getLootTableLoot, getRandomIdString as getRandomIDString, type LootItem } from "../utils/misc";
+import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
@@ -223,7 +223,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             const oldScale = this.scale;
 
             // Calculate new scale & scale hitbox
-            this.scale = this.health / this.maxHealth * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
+            const destroyScale = definition.scale?.destroy ?? 1;
+            this.scale = this.health / this.maxHealth * (this.maxScale - destroyScale) + destroyScale;
             this.hitbox.scale(this.scale / oldScale);
         }
     }

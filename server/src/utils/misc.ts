@@ -74,7 +74,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     return loot;
 }
 
-export function getRandomIdString<T extends ObjectDefinition>(table: Record<ReferenceTo<T>, number> | ReferenceTo<T>): ReferenceTo<T> {
+export function getRandomIDString<T extends ObjectDefinition>(table: Record<ReferenceTo<T>, number> | ReferenceTo<T>): ReferenceTo<T> {
     if (typeof table === "string") return table;
 
     const items: string[] = [];
