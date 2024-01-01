@@ -38,12 +38,6 @@ importers:
       '@fortawesome/fontawesome-free':
         specifier: ^6.5.1
         version: 6.5.1
-      '@pixi/compressed-textures':
-        specifier: ^7.3.3
-        version: 7.3.3(@pixi/assets@7.3.3)(@pixi/core@7.3.3)
-      '@pixi/graphics-extras':
-        specifier: ^7.3.3
-        version: 7.3.3(@pixi/core@7.3.3)(@pixi/graphics@7.3.3)
       '@pixi/sound':
         specifier: ^5.2.2
         version: 5.2.2(@pixi/assets@7.3.3)(@pixi/core@7.3.3)
@@ -1123,16 +1117,6 @@ packages:
       '@pixi/core': 7.3.3
     dependencies:
       '@pixi/core': 7.3.3
-    dev: false
-
-  /@pixi/graphics-extras@7.3.3(@pixi/core@7.3.3)(@pixi/graphics@7.3.3):
-    resolution: {integrity: sha512-L96njktQ0SvfJ/bBWwBQ/ykzii3hEFM7PMK+FG5HRQVUlGZHrdT2vuX+lf7+rcMKBy9O4aGLHaeVJVQyKrVW3A==}
-    peerDependencies:
-      '@pixi/core': 7.3.3
-      '@pixi/graphics': 7.3.3
-    dependencies:
-      '@pixi/core': 7.3.3
-      '@pixi/graphics': 7.3.3(@pixi/core@7.3.3)(@pixi/display@7.3.3)(@pixi/sprite@7.3.3)
     dev: false
 
   /@pixi/graphics@7.3.3(@pixi/core@7.3.3)(@pixi/display@7.3.3)(@pixi/sprite@7.3.3):
