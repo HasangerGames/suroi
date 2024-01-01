@@ -29,8 +29,10 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         this.position = data.position;
         this.rotation = data.rotation;
 
-        this.container.position.copyFrom(toPixiCoords(this.position));
-        this.container.rotation = this.rotation;
+        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || _isNew) {
+            this.container.position = toPixiCoords(this.position);
+            this.container.rotation = this.rotation;
+        }
 
         if (HITBOX_DEBUG_MODE && this.radius) {
             this.debugGraphics.clear();

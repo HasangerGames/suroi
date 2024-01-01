@@ -419,6 +419,11 @@ export class Game {
             for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
                 loot.updateContainerPosition();
             }
+
+            for (const projectile of this.objects.getCategory(ObjectCategory.ThrowableProjectile)) {
+                projectile.updateContainerPosition();
+                projectile.updateContainerRotation();
+            }
         }
 
         for (const tween of this.tweens) tween.update();
