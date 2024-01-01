@@ -1752,29 +1752,31 @@ logger.indent("Validating obstacles", () => {
             logger.indent("Validating scaling", () => {
                 const errorPath2 = tester.createPath(errorPath, "scaling");
 
-                tester.assertInBounds({
-                    obj: obstacle.scale,
-                    field: "spawnMin",
-                    min: -Infinity,
-                    max: obstacle.scale.spawnMax,
-                    includeMax: true,
-                    baseErrorPath: errorPath2
-                });
+                if (obstacle.scale) {
+                    tester.assertInBounds({
+                        obj: obstacle.scale,
+                        field: "spawnMin",
+                        min: -Infinity,
+                        max: obstacle.scale.spawnMax,
+                        includeMax: true,
+                        baseErrorPath: errorPath2
+                    });
 
-                tester.assertInBounds({
-                    obj: obstacle.scale,
-                    field: "spawnMax",
-                    min: obstacle.scale.spawnMin,
-                    max: Infinity,
-                    includeMin: true,
-                    baseErrorPath: errorPath2
-                });
+                    tester.assertInBounds({
+                        obj: obstacle.scale,
+                        field: "spawnMax",
+                        min: obstacle.scale.spawnMin,
+                        max: Infinity,
+                        includeMin: true,
+                        baseErrorPath: errorPath2
+                    });
 
-                tester.assertIsFiniteRealNumber({
-                    obj: obstacle.scale,
-                    field: "destroy",
-                    baseErrorPath: errorPath2
-                });
+                    tester.assertIsFiniteRealNumber({
+                        obj: obstacle.scale,
+                        field: "destroy",
+                        baseErrorPath: errorPath2
+                    });
+                }
             });
 
             validators.hitbox(errorPath, obstacle.hitbox);
