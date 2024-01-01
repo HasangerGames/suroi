@@ -7,6 +7,7 @@ import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
+import { type SyncedParticleDefinition, SyncedParticles } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
@@ -16,7 +17,17 @@ import { type Vector } from "./vector";
 const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
 
-export interface ObjectsNetData {
+export interface Fullable<T> {
+    full?: T
+}
+
+type BaseObjectsNetData = {
+    [K in ObjectCategory]: Fullable<object> | object
+};
+
+export type FullData<Cat extends ObjectCategory> = ObjectsNetData[Cat] & (ObjectsNetData[Cat] extends Fullable<infer S> ? { full: S } : object);
+
+export interface ObjectsNetData extends BaseObjectsNetData {
     //
     // Player Data
     //
@@ -113,7 +124,9 @@ export interface ObjectsNetData {
     //
     [ObjectCategory.Parachute]: {
         height: number
-        full?: { position: Vector }
+        full?: {
+            position: Vector
+        }
     }
     //
     // Throwable data
@@ -125,13 +138,25 @@ export interface ObjectsNetData {
             definition: ThrowableDefinition
         }
     }
+    //
+    // Synced particle data
+    //
+    [ObjectCategory.SyncedParticle]: {
+        position: Vector
+        rotation: number
+        scale?: number
+        alpha?: number
+        full?: {
+            definition: SyncedParticleDefinition
+        }
+    }
 }
 
 interface ObjectSerialization<T extends ObjectCategory> {
     serializePartial: (stream: SuroiBitStream, data: ObjectsNetData[T]) => void
-    serializeFull: (stream: SuroiBitStream, data: Required<ObjectsNetData[T]>) => void
+    serializeFull: (stream: SuroiBitStream, data: FullData<T>) => void
     deserializePartial: (stream: SuroiBitStream) => ObjectsNetData[T]
-    deserializeFull: (stream: SuroiBitStream) => Required<ObjectsNetData[T]>
+    deserializeFull: (stream: SuroiBitStream) => FullData<T>
 }
 
 export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<K> } = {
@@ -432,6 +457,52 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 ...this.deserializePartial(stream),
                 full: {
                     definition: Loots.readFromStream(stream)
+                }
+            };
+        }
+    },
+    [ObjectCategory.SyncedParticle]: {
+        serializePartial(stream, data) {
+            stream.writePosition(data.position);
+            stream.writeRotation(data.rotation, 16);
+
+            const writeScale = data.scale !== undefined;
+            stream.writeBoolean(writeScale);
+            if (writeScale) {
+                stream.writeFloat32(data.scale!);
+            }
+
+            const writeAlpha = data.alpha !== undefined;
+            stream.writeBoolean(writeAlpha);
+            if (writeScale) {
+                stream.writeFloat(data.alpha!, 0, 1, 16);
+            }
+        },
+        serializeFull(stream, data) {
+            this.serializePartial(stream, data);
+            SyncedParticles.writeToStream(stream, data.full.definition);
+        },
+        deserializePartial(stream) {
+            const data: ObjectsNetData[ObjectCategory.SyncedParticle] = {
+                position: stream.readPosition(),
+                rotation: stream.readRotation(16)
+            };
+
+            if (stream.readBoolean()) { // scale
+                data.scale = stream.readFloat32();
+            }
+
+            if (stream.readBoolean()) { // alpha
+                data.alpha = stream.readFloat(0, 1, 16);
+            }
+
+            return data;
+        },
+        deserializeFull(stream) {
+            return {
+                ...this.deserializePartial(stream),
+                full: {
+                    definition: SyncedParticles.readFromStream(stream)
                 }
             };
         }

@@ -1,6 +1,6 @@
 import { type ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Building } from "./building";
@@ -10,6 +10,7 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type Parachute } from "./parachute";
 import { type Player } from "./player";
+import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
 
 export interface ObjectMapping {
@@ -21,6 +22,7 @@ export interface ObjectMapping {
     [ObjectCategory.Decal]: Decal
     [ObjectCategory.Parachute]: Parachute
     [ObjectCategory.ThrowableProjectile]: ThrowableProjectile
+    [ObjectCategory.SyncedParticle]: SyncedParticle
 }
 
 export type GameObject = ObjectMapping[ObjectCategory];
@@ -39,7 +41,6 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     set rotation(rotation: number) { this._rotation = rotation; }
 
     damageable = false;
-    scale = 1;
     dead = false;
     hitbox?: Hitbox;
 
@@ -52,5 +53,5 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     abstract damage(amount: number, source?: GameObject): void;
 
-    abstract get data(): Required<ObjectsNetData[Cat]>;
+    abstract get data(): FullData<Cat>;
 }

@@ -151,6 +151,7 @@ export class Terrain {
                 if (river.bankHitbox.isPointInside(position)) {
                     floor = "sand";
                 }
+
                 if (river.waterHitbox.isPointInside(position)) {
                     floor = "water";
                     break;
@@ -238,15 +239,20 @@ export class River {
 
             let bankWidth = this.bankWidth;
 
-            // find closest collding river to adjust the bank width and clip this river
+            // find closest colliding river to adjust the bank width and clip this river
             let collidingRiver: River | null = null;
             for (const river of otherRivers) {
-                const t = river.getClosestT(current);
-                const p = river.getPosition(t);
-                const length = Vec.length(Vec.sub(p, current));
+                const length = Vec.length(
+                    Vec.sub(
+                        river.getPosition(river.getClosestT(current)),
+                        current
+                    )
+                );
+
                 if (length < river.width * 2) {
                     bankWidth = Math.max(bankWidth, river.bankWidth);
                 }
+
                 if ((i === 0 || i === this.points.length - 1) && length < 48) {
                     collidingRiver = river;
                 }

@@ -100,6 +100,7 @@ export class Minimap {
             Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
             Vec.create(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
         );
+
         const rivers: River[] = [];
         for (const riverData of mapPacket.rivers) {
             rivers.push(new River(riverData.width, riverData.points, rivers, mapBounds));
@@ -230,13 +231,16 @@ export class Minimap {
 
         // drawn map borders
         const margin = 5120;
+        const doubleMargin = margin * 2;
+
         const realWidth = width * PIXI_SCALE;
         const realHeight = height * PIXI_SCALE;
+
         terrainGraphics.beginFill(COLORS.border);
-        terrainGraphics.drawRect(-margin, -margin, realWidth + margin * 2, margin);
-        terrainGraphics.drawRect(-margin, realHeight, realWidth + margin * 2, margin);
-        terrainGraphics.drawRect(-margin, -margin, margin, realHeight + margin * 2);
-        terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + margin * 2);
+        terrainGraphics.drawRect(-margin, -margin, realWidth + doubleMargin, margin);
+        terrainGraphics.drawRect(-margin, realHeight, realWidth + doubleMargin, margin);
+        terrainGraphics.drawRect(-margin, -margin, margin, realHeight + doubleMargin);
+        terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + doubleMargin);
         terrainGraphics.endFill();
 
         this.game.camera.addObject(terrainGraphics);
@@ -259,7 +263,7 @@ export class Minimap {
                         .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
 
                     if (definition.tint !== undefined) image.setTint(definition.tint);
-                    image.scale.set(mapObject.scale * (1 / PIXI_SCALE));
+                    image.scale.set((mapObject.scale ?? 1) * (1 / PIXI_SCALE));
 
                     mapRender.addChild(image);
                 }
@@ -322,21 +326,25 @@ export class Minimap {
         // Add the places
         this.placesContainer.removeChildren();
         for (const place of mapPacket.places) {
-            const text = new Text(place.name, {
-                fill: "white",
-                fontFamily: "Inter",
-                fontWeight: "600",
-                stroke: "black",
-                strokeThickness: 2,
-                fontSize: 18,
-                dropShadow: true,
-                dropShadowAlpha: 0.8,
-                dropShadowColor: "black",
-                dropShadowBlur: 2
-            });
+            const text = new Text(
+                place.name,
+                {
+                    fill: "white",
+                    fontFamily: "Inter",
+                    fontWeight: "600",
+                    stroke: "black",
+                    strokeThickness: 2,
+                    fontSize: 18,
+                    dropShadow: true,
+                    dropShadowAlpha: 0.8,
+                    dropShadowColor: "black",
+                    dropShadowBlur: 2
+                }
+            );
             text.alpha = 0.7;
             text.anchor.set(0.5);
             text.position.copyFrom(place.position);
+
             this.placesContainer.addChild(text);
         }
         this.resize();

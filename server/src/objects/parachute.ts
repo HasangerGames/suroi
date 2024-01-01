@@ -1,7 +1,7 @@
 import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { Building } from "./building";
@@ -81,7 +81,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         this.game.partialDirtyObjects.add(this);
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Parachute]> {
+    override get data(): FullData<ObjectCategory.Parachute> {
         return {
             height: this._height,
             full: {

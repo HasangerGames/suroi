@@ -747,6 +747,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
                 }
+
                 if (altFist) {
                     this.anims.rightFist = new Tween(this.game, {
                         target: this.images.rightFist,
@@ -1079,7 +1080,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         to: Vec.scale(def.animation.throw.leftFist, PIXI_SCALE),
                         duration: def.throwTime,
                         onComplete: () => {
-                            this.updateFistsPosition(true)
+                            projImage.setVisible(true);
+                            this.updateFistsPosition(true);
                         }
                     }
                 );
