@@ -104,7 +104,9 @@ export class InputPacket extends Packet {
         this.turning = stream.readBoolean();
         if (this.turning) {
             this.rotation = stream.readRotation(16);
-            if (!this.isMobile) this.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 8);
+            if (!this.isMobile) {
+                this.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 8);
+            }
         }
 
         // Actions

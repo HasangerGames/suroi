@@ -60,6 +60,7 @@ export const Maps: Record<string, MapDefinition> = {
         },
         buildings: {
             port_complex: 1,
+            armory: 1,
             refinery: 1,
             warehouse: 5,
             small_house: 10,
@@ -75,7 +76,7 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 10,
-            christmas_tree: 1, // winter mode
+            // christmas_tree: 1, // winter mode
             oak_tree: 310,
             birch_tree: 50,
             pine_tree: 30,
@@ -329,7 +330,8 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("port_complex", Vec.create(this.width / 2, this.height / 2), 0);
+            // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -338,10 +340,20 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("christmas_tree", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("port_fence", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
-    guns_test: {
+    singleGun: {
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
+        genCallback(map) {
+            map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
+        }
+    },
+    gunsTest: {
         width: 64,
         height: 48 + (16 * Guns.length),
         beachSize: 8,
@@ -361,7 +373,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
         }
     },
-    obstacles_test: {
+    obstaclesTest: {
         width: 128,
         height: 48 + (32 * Obstacles.definitions.length),
         beachSize: 4,
@@ -374,7 +386,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
         }
     },
-    players_test: {
+    playersTest: {
         width: 256,
         height: 256,
         beachSize: 16,

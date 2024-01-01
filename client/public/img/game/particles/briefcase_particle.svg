@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="56.795681"
+   height="34.681858"
+   viewBox="0 0 15.02719 9.1762437"
+   version="1.1"
+   id="svg901"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="metal_particle.svg"
+   inkscape:export-xdpi="120.95238"
+   inkscape:export-ydpi="120.95238"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview903"
+     pagecolor="#505050"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="5.9437713"
+     inkscape:cx="-6.8979774"
+     inkscape:cy="13.291225"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g858"
+     width="175px"
+     units="px"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs898" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-4.6352054,-4.6554146)">
+    <path
+       style="fill:#c7c7c7;fill-opacity:1;stroke:none;stroke-width:1.37726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 5.3134571,6.3175095 0.7847882,4.4690435 3.6824658,-0.852646 4.7389109,3.234176 4.557806,-1.264269 c 0,0 -2.173257,-3.498791 -2.203442,-3.645798 C 16.860212,8.190936 15.859781,7.560678 14.77597,6.8951559 13.484531,6.1021382 12.074706,5.2590518 12.074706,5.2590518 L 8.7544501,7.0819511 Z"
+       id="path2"
+       sodipodi:nodetypes="cccccssccc" />
+    <path
+       style="fill:#a2a2a2;fill-opacity:1;stroke:none;stroke-width:1.45521;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 18.253181,11.768445 -1.82509,-3.7169513 -0.500786,2.9156923 -2.325877,1.66929 z"
+       id="path5"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#a2a2a2;fill-opacity:1;stroke:none;stroke-width:1.45521;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="M 5.3197877,6.6775423 5.6817665,8.928106 9.1363039,7.6533115 Z"
+       id="path6" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#666666;stroke-width:1.37726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 5.3134571,6.3175095 0.7847882,4.4690435 3.6824658,-0.852646 4.7389109,3.234176 4.557806,-1.264269 c 0,0 -2.173257,-3.498791 -2.203442,-3.645798 C 16.860212,8.190936 15.859781,7.560678 14.77597,6.8951559 13.484531,6.1021382 12.074706,5.2590518 12.074706,5.2590518 L 8.7544501,7.0819511 Z"
+       id="path3"
+       sodipodi:nodetypes="cccccssccc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:none;stroke-width:1.45521;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 17.919324,10.216005 -3.116007,-0.801259 -3.383093,1.357689 2.937949,2.448291 4.184352,-1.201888 z"
+       id="path4" />
+  </g>
+  <metadata
+     id="metadata5819">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

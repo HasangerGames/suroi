@@ -435,6 +435,45 @@ const GunsRaw: RawGunDefinition[] = [
         }
     },
     {
+        idString: "vepr12",
+        name: "Vepr-12",
+        itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 2.4,
+        fireDelay: 450,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 525,
+        fireMode: FireMode.Single,
+        bulletCount: 10,
+        shotSpread: 11,
+        moveSpread: 14,
+        jitterRadius: 1.5,
+        length: 6.4,
+        fists: {
+            left: Vec.create(90, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(75, 2) },
+        casingParticles: {
+            position: Vec.create(4, 0.6)
+        },
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1,
+            speed: 0.16,
+            range: 48,
+            tracer: {
+                length: 0.5
+            }
+        }
+    },
+    {
         idString: "mosin",
         name: "Mosin-Nagant",
         itemType: ItemType.Gun,
@@ -861,6 +900,40 @@ const GunsRaw: RawGunDefinition[] = [
             damage: 7.75,
             obstacleMultiplier: 1,
             speed: 0.16,
+            range: 85
+        }
+    },
+    {
+        idString: "vector",
+        name: "Vector",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: Infinity,
+        capacity: 33,
+        reloadTime: 1.7,
+        fireDelay: 35,
+        switchDelay: 300,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 60,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 7,
+        length: 5.8,
+        fists: {
+            left: Vec.create(85, -6),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        casingParticles: {
+            position: Vec.create(3.5, 0.6)
+        },
+        image: { position: Vec.create(80, 0) },
+        ballistics: {
+            damage: 6.75,
+            obstacleMultiplier: 1,
+            speed: 0.25,
             range: 85
         }
     },

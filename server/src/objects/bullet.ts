@@ -55,7 +55,7 @@ export class Bullet extends BaseBullet {
 
         super({
             ...options,
-            rotation: Angle.normalizeAngle(options.rotation),
+            rotation: Angle.normalize(options.rotation),
             source: definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
@@ -109,6 +109,7 @@ export class Bullet extends BaseBullet {
 
             if (object instanceof Obstacle) {
                 this.damagedIDs.add(object.id);
+
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,

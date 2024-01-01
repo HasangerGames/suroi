@@ -16,7 +16,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
-import { Logger, getLootTableLoot, getRandomIdString } from "./utils/misc";
+import { Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
 export class Map {
     readonly game: Game;
@@ -132,7 +132,7 @@ export class Map {
                     start = Vec.create(reverse ? rightHalf : leftHalf, riverPadding);
                 }
 
-                const startAngle = Angle.angleBetweenPoints(center, start) + (reverse ? 0 : Math.PI);
+                const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
 
                 this.generateRiver(
                     start,
@@ -284,7 +284,7 @@ export class Map {
         const building = new Building(this.game, definition, Vec.clone(position), orientation);
 
         for (const obstacleData of definition.obstacles ?? []) {
-            const obstacleDef = Obstacles.fromString(getRandomIdString(obstacleData.idString));
+            const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
@@ -302,7 +302,8 @@ export class Map {
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
                 lootSpawnOffset,
-                building
+                building,
+                obstacleData.puzzlePiece
             );
 
             if (obstacleDef.role === ObstacleSpecialRoles.Activatable ||
@@ -332,7 +333,7 @@ export class Map {
         for (const subBuilding of definition.subBuildings ?? []) {
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                getRandomIdString(subBuilding.idString),
+                getRandomIDString(subBuilding.idString),
                 Vec.addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
@@ -355,7 +356,7 @@ export class Map {
         definition = Obstacles.reify(definition);
 
         for (let i = 0; i < count; i++) {
-            const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
+            const scale = randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
             const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
             const rotation = Map.getRandomRotation(definition.rotationMode);
 
@@ -389,11 +390,12 @@ export class Map {
         scale?: number,
         variation?: Variation,
         lootSpawnOffset?: Vector,
-        parentBuilding?: Building
+        parentBuilding?: Building,
+        puzzlePiece?: string
     ): Obstacle {
         definition = Obstacles.reify(definition);
 
-        scale ??= randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
+        scale ??= randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
         if (variation === undefined && definition.variations) {
             variation = random(0, definition.variations - 1) as Variation;
         }
@@ -408,7 +410,8 @@ export class Map {
             scale,
             variation,
             lootSpawnOffset,
-            parentBuilding
+            parentBuilding,
+            puzzlePiece
         );
 
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);

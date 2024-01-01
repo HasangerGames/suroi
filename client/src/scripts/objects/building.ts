@@ -9,7 +9,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -28,6 +28,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
     orientation!: Orientation;
 
     ceilingVisible = false;
+
+    errorSeq?: boolean;
 
     sound?: GameSound;
 
@@ -88,7 +90,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 const direction = collision?.dir;
 
                 if (direction) {
-                    if (HITBOX_DEBUG_MODE) {
+                    /* if (HITBOX_DEBUG_MODE) {
                         graphics?.lineStyle({
                             color: 0xff0000,
                             width: 0.1
@@ -100,7 +102,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         this.addTimeout(() => {
                             graphics?.destroy();
                         }, 30);
-                    }
+                    } */
 
                     const angle = Math.atan2(direction.y, direction.x);
 
@@ -195,7 +197,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                 if (
                     sounds.normal &&
-                    !full.puzzleSolved &&
+                    !data.puzzle?.solved &&
                     this.sound?.name !== sounds.normal
                 ) {
                     this.sound?.stop();
@@ -204,7 +206,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                 if (
                     sounds.solved &&
-                    full.puzzleSolved &&
+                    data.puzzle?.solved &&
                     this.sound?.name !== sounds.solved
                 ) {
                     this.sound?.stop();
@@ -255,6 +257,17 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
         this.dead = data.dead;
 
+        if (data.puzzle) {
+            if (!isNew && data.puzzle.errorSeq !== this.errorSeq) {
+                this.playSound("puzzle_error");
+            }
+            this.errorSeq = data.puzzle.errorSeq;
+
+            if (!isNew && data.puzzle.solved) {
+                this.playSound("puzzle_solved");
+            }
+        }
+
         this.ceilingContainer.removeChildren();
         for (const image of definition.ceilingImages ?? []) {
             let key = image.key;
@@ -268,29 +281,23 @@ export class Building extends GameObject<ObjectCategory.Building> {
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
 
-            if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
-
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
-
-            if (definition.scopeHitbox !== undefined) {
+            if (this.ceilingHitbox !== undefined) {
                 drawHitbox(
-                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.ceilingHitbox,
+                    HITBOX_COLORS.buildingScopeCeiling,
                     this.debugGraphics
                 );
             }
 
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
+            if (definition.spawnHitbox !== undefined) {
+                drawHitbox(
+                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.spawnHitbox,
+                    this.debugGraphics
+                );
+            }
 
-            if (definition.scopeHitbox) {
+            if (definition.scopeHitbox !== undefined) {
                 drawHitbox(
                     definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,
