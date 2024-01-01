@@ -6,7 +6,7 @@ import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { BaseGameObject, type GameObject } from "./gameObject";
+import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
@@ -79,7 +79,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.hitbox.position.y += this._velocity.y * halfDt;
         this._height += this._velocity.z * deltaTime;
 
-        this.rotation = Angle.normalizeAngle(this.rotation + this.angularVelocity * deltaTime);
+        this.rotation = Angle.normalize(this.rotation + this.angularVelocity * deltaTime);
 
         const impactDamage = this.definition.impactDamage;
         const shouldDealImpactDamage = impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0016;
@@ -172,7 +172,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.game.partialDirtyObjects.add(this);
     }
 
-    override damage(amount: number, source?: GameObject | undefined): void {}
+    damage(_amount: number, _source?: BaseGameObject<ObjectCategory> | undefined): void { }
 
     get data(): FullData<ObjectCategory.ThrowableProjectile> {
         return {

@@ -14,7 +14,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly noResidue?: boolean
     readonly invisible?: boolean
     readonly hideOnMap?: boolean
-    readonly scale: {
+    readonly scale?: {
         readonly spawnMin: number
         readonly spawnMax: number
         readonly destroy: number
@@ -30,6 +30,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
     readonly noMeleeCollision?: boolean
+    readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
 
     readonly frames?: {
@@ -37,7 +38,10 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
         readonly opened?: string
+        readonly activated?: string
     }
+
+    readonly imageAnchor?: Vector
 
     readonly spawnMode?: MapObjectSpawnMode
 
@@ -62,8 +66,8 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly sound?: {
         readonly name: string
-        readonly maxRange: number
-        readonly fallOff: number
+        readonly maxRange?: number
+        readonly fallOff?: number
     }
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly interactText?: string
@@ -94,7 +98,8 @@ export const Materials = [
     "porcelain",
     "cardboard",
     "appliance",
-    "large_refinery_barrel"
+    "large_refinery_barrel",
+    "sand"
 ] as const;
 
 export enum RotationMode {
@@ -212,11 +217,6 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
         noResidue: true,
         hideOnMap: invisible || undefined,
         invisible: invisible || undefined,
-        scale: {
-            spawnMin: 1.0,
-            spawnMax: 1.0,
-            destroy: 1.0
-        },
         hitbox,
         rotationMode: RotationMode.Limited,
         role: ObstacleSpecialRoles.Wall,
@@ -230,7 +230,7 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
     };
 }
 
-function makeGunMount(idString: string, name: string): ObstacleDefinition {
+function makeGunMount(idString: string, name: string, hitbox?: Hitbox): ObstacleDefinition {
     return {
         idString,
         name,
@@ -242,7 +242,7 @@ function makeGunMount(idString: string, name: string): ObstacleDefinition {
             destroy: 0.95
         },
         hasLoot: true,
-        hitbox: new HitboxGroup(
+        hitbox: hitbox ?? new HitboxGroup(
             RectangleHitbox.fromRect(8.2, 0.95, Vec.create(0, -1.32)), // Base
             RectangleHitbox.fromRect(0.75, 2.75, Vec.create(0, 0.48)), // Center post
             RectangleHitbox.fromRect(0.75, 2.75, Vec.create(-3.11, 0.48)), // Left post
@@ -421,6 +421,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.None,
             hideOnMap: true
         }),
+        makeCrate("grenade_crate", "Grenade Crate", {
+            hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+            rotationMode: RotationMode.None,
+            hideOnMap: true
+        }),
         {
             idString: "melee_crate",
             name: "Melee Crate",
@@ -441,19 +446,41 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "grenade_crate",
-            name: "Grenade Crate",
-            material: "crate",
-            health: 100,
+            idString: "ammo_crate",
+            name: "Ammo Crate",
+            material: "cardboard",
+            health: 160,
+            impenetrable: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
                 destroy: 0.6
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: RectangleHitbox.fromRect(6.5, 6.5),
-            rotationMode: RotationMode.None,
-            hasLoot: true
+            hitbox: RectangleHitbox.fromRect(8.5, 8.5),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            frames: {
+                particle: "crate_particle"
+            }
+        },
+        {
+            idString: "tear_gas_crate",
+            name: "Tear Gas Crate",
+            material: "crate",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hitbox: RectangleHitbox.fromRect(9.15, 6.3),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "crate_particle"
+            }
         },
         {
             idString: "barrel",
@@ -492,12 +519,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "oil_tank",
             name: "Oil Tank",
             material: "metal",
-            health: 2500,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
+            health: 1000,
             indestructible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(16.8, 13.6),
@@ -516,17 +538,64 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             reflectBullets: true
         },
         {
+            idString: "small_bridge",
+            name: "Small Bridge",
+            material: "wood",
+            health: 1000,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(44, 2, Vec.create(0, 6)),
+                RectangleHitbox.fromRect(44, 2, Vec.create(0, -6)),
+                new CircleHitbox(1.3, Vec.create(-22, 6.6)),
+                new CircleHitbox(1.3, Vec.create(-10.09, 6.6)),
+                new CircleHitbox(1.3, Vec.create(0.1, 6.6)),
+                new CircleHitbox(1.3, Vec.create(10.30, 6.6)),
+                new CircleHitbox(1.3, Vec.create(22, 6.6)),
+                new CircleHitbox(1.3, Vec.create(-22, -6.7)),
+                new CircleHitbox(1.3, Vec.create(-10.09, -6.7)),
+                new CircleHitbox(1.3, Vec.create(0.1, -6.7)),
+                new CircleHitbox(1.3, Vec.create(10.30, -6.7)),
+                new CircleHitbox(1.3, Vec.create(22, -6.7))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(28, 18),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            },
+            noBulletCollision: true,
+            noCollisions: false,
+            reflectBullets: false,
+            spawnMode: MapObjectSpawnMode.River
+        },
+        {
+            idString: "sand_bag",
+            name: "Sand Bag",
+            material: "sand",
+            health: 300,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(14, 8, Vec.create(0, 0))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(16, 10),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            particleVariations: 3,
+            frames: {
+                particle: "sand_particle"
+            },
+            noBulletCollision: true,
+            noCollisions: false,
+            reflectBullets: false,
+            spawnMode: MapObjectSpawnMode.River
+        },
+        {
             idString: "airdrop_crate_locked",
             name: "Airdrop",
             material: "metal",
             health: 10000,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
             hitbox: RectangleHitbox.fromRect(8.7, 8.7),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
             rotationMode: RotationMode.None,
@@ -610,11 +679,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             hideOnMap: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.95
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.7, 70.6),
                 RectangleHitbox.fromRect(12, 1.7, Vec.create(5.5, -34.5)),
@@ -652,11 +716,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             noMeleeCollision: true,
             hideOnMap: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.8
-            },
             hitbox: RectangleHitbox.fromRect(25.5, 6.6),
             rotationMode: RotationMode.Limited,
             noResidue: true,
@@ -730,11 +789,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hideOnMap: true,
             invisible: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 // Comments assume the building is not rotated (rotation = 0)
                 RectangleHitbox.fromRect(14.33, 2, Vec.create(-41.16, -34.15)), // First Topmost wall
@@ -785,11 +839,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 1
-            },
             reflectBullets: true,
             hitbox: RectangleHitbox.fromRect(14.2, 1.9, Vec.create(1.1, -0.4)),
             rotationMode: RotationMode.Limited,
@@ -1019,6 +1068,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
+            idString: "bunk_bed",
+            name: "Bunk Bed",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(8.2, 15.6, Vec.create(0.4, 0)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
             idString: "garage_door",
             name: "Garage Door",
             material: "wood",
@@ -1227,11 +1290,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hideOnMap: true,
             invisible: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(57, 1.8, Vec.create(-22, -36.1)), // First topmost wall
                 RectangleHitbox.fromRect(30.75, 1.8, Vec.create(35.38, -36.1)), // Wall after the hole
@@ -1291,16 +1349,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "smokestack",
-            name: "Smokestack",
-            material: "metal",
-            health: 500,
-            indestructible: true,
+            idString: "large_oil_tank",
+            name: "Large Oil Tank",
+            material: "large_refinery_barrel",
+            health: 3500,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
                 destroy: 0.5
             },
+            hitbox: new CircleHitbox(28),
+            rotationMode: RotationMode.Full,
+            explosion: "large_refinery_barrel_explosion",
+            reflectBullets: true,
+            zIndex: ZIndexes.ObstaclesLayer1,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "smokestack",
+            name: "Smokestack",
+            material: "metal",
+            health: 500,
+            indestructible: true,
             hitbox: new CircleHitbox(8.9),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
@@ -1316,11 +1388,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 500,
             indestructible: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.5
-            },
             hitbox: new HitboxGroup(
                 new CircleHitbox(5.22, Vec.create(0, -0.65)),
                 new CircleHitbox(4.9, Vec.create(0, 0.9))
@@ -1339,11 +1406,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 500,
             indestructible: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.5
-            },
             hitbox: new HitboxGroup(
                 new CircleHitbox(3, Vec.create(-11.3, -3.85)), // Main tank rounded corners
                 new CircleHitbox(3, Vec.create(-11.3, -6.55)),
@@ -1366,6 +1428,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         makeGunMount("gun_mount_mcx_spear", "Gun Mount MCX Spear"),
         makeGunMount("gun_mount_stoner_63", "Gun Mount Stoner 63"),
+        makeGunMount("gun_mount_maul", "Gun Mount Maul", new HitboxGroup(
+            RectangleHitbox.fromRect(5.05, 1, Vec.create(0, -1.3)),
+            RectangleHitbox.fromRect(0.8, 3, Vec.create(-1.55, 0.35)),
+            RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
+        )),
         {
             idString: "small_house_exterior",
             name: "Small House Exterior",
@@ -1374,11 +1441,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hideOnMap: true,
             invisible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 // Right walls
                 RectangleHitbox.fromRect(2, 9, Vec.create(-31, 26)),
@@ -1409,11 +1471,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 1.0
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(20.25, 2.15, Vec.create(0, 25.1)), // Front bumper
                 RectangleHitbox.fromRect(18.96, 9.2, Vec.create(0, 19.4)), // Hood
@@ -1437,11 +1494,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(14.9, 44.7, Vec.create(-0.05, 0)), // Body
                 RectangleHitbox.fromRect(15.9, 6.4, Vec.create(0, -11.2)), // Front-most back wheels
@@ -1472,7 +1524,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "panel_with_a_button",
-            name: "Panel with a button",
+            name: "Control Panel",
             material: "metal",
             health: 200,
             reflectBullets: true,
@@ -1484,6 +1536,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(11, 8),
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
+            role: ObstacleSpecialRoles.Activatable,
+            interactText: "Activate",
+            replaceWith: {
+                idString: "panel_with_the_button_pressed",
+                delay: 0
+            },
+            triggerInteractOn: "vault_door",
             frames: {
                 particle: "barrel_particle",
                 residue: "barrel_residue"
@@ -1552,11 +1611,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 10000,
             indestructible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             zIndex: ZIndexes.BuildingsFloor,
             hitbox: RectangleHitbox.fromRect(4.5, 1.8),
             rotationMode: RotationMode.Limited,
@@ -1571,11 +1625,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 10000,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(6.1, 15.5, Vec.create(0, 0)), // Middle big rectangle
                 RectangleHitbox.fromRect(5.3, 6, Vec.create(0, 10.97)), // Top small rectangle
@@ -1596,11 +1645,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 10000,
             indestructible: true,
             invisible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 // Bottom Bottom left
                 RectangleHitbox.fromRect(6, 15.5, Vec.create(-29.6, 77.7 + 0.6)), // Middle Big rectangle
@@ -1693,11 +1737,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 200,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1721,11 +1760,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 200,
             indestructible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1740,11 +1774,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             reflectBullets: true,
             invisible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1803,17 +1832,68 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             )
         },
         {
+            idString: "oil_tanker_ship",
+            name: "Oil Tanker",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1, 190, Vec.create(49, -22)), // Port
+                RectangleHitbox.fromRect(1, 130, Vec.create(-32, -51.5)), // Starboard Top
+                RectangleHitbox.fromRect(1, 30, Vec.create(-32, 39)), // Starboard middle
+                RectangleHitbox.fromRect(1, 10, Vec.create(-32, 69)), // Starboard middle
+                RectangleHitbox.fromRect(85, 1, Vec.create(8, -118.5)), // Stern
+                RectangleHitbox.fromRect(69, 1.5, Vec.create(3.3, -88.5)), // Front of the cabin
+                RectangleHitbox.fromRect(1.5, 17.5, Vec.create(37, -96.5)), // Left wall of the entrance to the cabin
+                RectangleHitbox.fromRect(1.5, 29, Vec.create(46.5, -102.5)), // Right wall of the entrance to the cabin
+                RectangleHitbox.fromRect(75, 1.5, Vec.create(9, -117)), // Back of the cabin
+                RectangleHitbox.fromRect(1.5, 29, Vec.create(-29, -102.5)), // Right wall of the cabin
+                RectangleHitbox.fromRect(1.5, 13, Vec.create(-6.2, -95.8)), // Right wall of the vector room
+
+                // Bottom Hitboxes
+                // HACK: refactor when we support collision with polygon hitboxes
+                new CircleHitbox(12, Vec.create(8, 107)),
+                ...Array.from({ length: 2 }, (_, i) => {
+                    const a = i === 0 ? 1 : -1;
+                    const b = i === 0 ? 0 : 17;
+                    return [
+                        new CircleHitbox(4, Vec.create(0 * a + b, 114)),
+                        new CircleHitbox(4, Vec.create(-4 * a + b, 112.5)),
+                        new CircleHitbox(4, Vec.create(-6 * a + b, 111.5)),
+                        new CircleHitbox(4, Vec.create(-8 * a + b, 111)),
+                        new CircleHitbox(4, Vec.create(-10 * a + b, 109.8)),
+                        new CircleHitbox(4, Vec.create(-12 * a + b, 108.4)),
+                        new CircleHitbox(4, Vec.create(-14 * a + b, 106.9)),
+                        new CircleHitbox(4, Vec.create(-16 * a + b, 105.2)),
+                        new CircleHitbox(4, Vec.create(-18 * a + b, 103.4)),
+                        new CircleHitbox(4, Vec.create(-20 * a + b, 101.6)),
+                        new CircleHitbox(4, Vec.create(-22 * a + b, 99)),
+                        new CircleHitbox(4, Vec.create(-24 * a + b, 95.3)),
+                        new CircleHitbox(4, Vec.create(-26 * a + b, 92)),
+                        new CircleHitbox(4, Vec.create(-27 * a + b, 89.2)),
+                        new CircleHitbox(4, Vec.create(-28 * a + b, 86.5)),
+                        new CircleHitbox(4, Vec.create(-29 * a + b, 83.8)),
+                        new CircleHitbox(4, Vec.create(-30 * a + b, 80.2)),
+                        new CircleHitbox(4, Vec.create(-30 * a + b, 77))
+                    ];
+                }).flat(),
+
+                RectangleHitbox.fromRect(85, 1.5, Vec.create(8.6, 73.6))
+            )
+        },
+        {
             idString: "forklift",
             name: "Forklift",
             material: "metal",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(8.15, 17.3, Vec.create(0, -3.8)),
                 RectangleHitbox.fromRect(9.45, 10.6, Vec.create(0, -4.9))
@@ -1829,11 +1909,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "wood",
             health: 120,
             indestructible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
             hitbox: RectangleHitbox.fromRect(0, 0),
             rotationMode: RotationMode.Limited,
             frames: {
@@ -1848,11 +1923,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(8.2, 9.2, Vec.create(-0.36, 0)),
                 new CircleHitbox(3.45, Vec.create(1, 0))
@@ -1869,11 +1939,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.2, 31.75, Vec.create(-2.2, -2.8)),
                 RectangleHitbox.fromRect(2, 5, Vec.create(-2.3, 15.4)),
@@ -1892,11 +1957,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hideOnMap: true,
             invisible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.75, 29.5, Vec.create(-10.23, -1.7)), // Left wall
                 RectangleHitbox.fromRect(1.75, 9.2, Vec.create(10.23, -11.9)), // Right wall above window
@@ -1912,6 +1972,43 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
+            idString: "port_fence",
+            name: "Port Fence",
+            material: "appliance",
+            health: 200,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: RectangleHitbox.fromRect(8.45, 1.6),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "port_fence_side",
+            name: "Port Fence Side",
+            material: "appliance",
+            health: 200,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 3.2)),
+                RectangleHitbox.fromRect(1.3, 7.75, Vec.create(3.2, 0))
+            ),
+            noResidue: true,
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
             idString: "port_warehouse_windows",
             name: "Port warehouse windows",
             material: "metal",
@@ -1919,11 +2016,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
             hitbox: RectangleHitbox.fromRect(1.5, 24),
             rotationMode: RotationMode.Limited,
             frames: {
@@ -1938,11 +2030,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
             hitbox: RectangleHitbox.fromRect(1.8, 14.5),
             rotationMode: RotationMode.Limited,
             frames: {
@@ -1957,18 +2044,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             indestructible: true,
             reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(2, 16.3, Vec.create(-29.3, -22.3)),
+                RectangleHitbox.fromRect(2, 18, Vec.create(-29.3, -21)),
                 RectangleHitbox.fromRect(60, 2, Vec.create(0, -29.4)),
-                RectangleHitbox.fromRect(2, 16.3, Vec.create(29.3, -22.3)),
+                RectangleHitbox.fromRect(2, 18, Vec.create(29.3, -21)),
 
-                RectangleHitbox.fromRect(2, 20, Vec.create(-29.3, 20.2)),
-                RectangleHitbox.fromRect(2, 20, Vec.create(29.3, 20.2))
+                RectangleHitbox.fromRect(2, 18, Vec.create(-29.3, 21)),
+                RectangleHitbox.fromRect(2, 18, Vec.create(29.3, 21))
             ),
             rotationMode: RotationMode.Limited,
             invisible: true,
@@ -1976,11 +2058,179 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "barrel_particle"
             }
         },
+        {
+            idString: "armory_barracks_walls",
+            name: "Armory Barracks Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                new RectangleHitbox(Vec.create(23.44, -41), Vec.create(25.54, -15.1)),
+                new RectangleHitbox(Vec.create(23.44, -4), Vec.create(25.54, 23.13)),
+                new RectangleHitbox(Vec.create(23.44, 34.23), Vec.create(25.54, 41)),
+                new RectangleHitbox(Vec.create(-25.51, -42.34), Vec.create(-1.91, -40.25)),
+                new RectangleHitbox(Vec.create(7, 16.1), Vec.create(24, 18.2)),
+                new RectangleHitbox(Vec.create(8.18, -42.34), Vec.create(25.54, -40.25)),
+                new RectangleHitbox(Vec.create(-25.51, -41), Vec.create(-23.42, 17.54)),
+                new RectangleHitbox(Vec.create(-25.51, 28.57), Vec.create(-23.42, 42.35)),
+                new RectangleHitbox(Vec.create(-24, 40.25), Vec.create(-4.33, 42.35)),
+                new RectangleHitbox(Vec.create(5.76, 40.25), Vec.create(25.54, 42.35)),
+                new RectangleHitbox(Vec.create(4.05, 15.59), Vec.create(7.06, 18.77)),
+                new RectangleHitbox(Vec.create(-4.12, -21.39), Vec.create(-1.11, -18.21)),
+                new RectangleHitbox(Vec.create(-24, -20.85), Vec.create(-4, -18.76))
+            ),
+            rotationMode: RotationMode.Limited,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
+            idString: "armory_center_walls",
+            name: "Armory Center Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(2.09, 42, Vec.create(16.38, 0)),
+                RectangleHitbox.fromRect(32.34, 2.08, Vec.create(1.24, -21.87)),
+                RectangleHitbox.fromRect(2.09, 3.97, Vec.create(-13.88, -19.01)),
+                RectangleHitbox.fromRect(2.09, 8.27, Vec.create(-13.88, 16.87)),
+                RectangleHitbox.fromRect(2.09, 8.58, Vec.create(-13.88, -2.64)),
+                RectangleHitbox.fromRect(32.34, 2.07, Vec.create(1.24, 21.88))
+            ),
+            rotationMode: RotationMode.Limited,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
+            idString: "armory_vault_walls",
+            name: "Armory Vault Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
+                RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
+                RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
+                RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
+                RectangleHitbox.fromRect(2.09, 11.07, Vec.create(-13.96, 10.47)),
+                RectangleHitbox.fromRect(29, 2.09, Vec.create(21.9, -6.66)),
+                RectangleHitbox.fromRect(2.07, 37, Vec.create(-36.01, -2.5)),
+                RectangleHitbox.fromRect(35.39, 2.09, Vec.create(-19.35, 16.52)),
+                RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
+            ),
+            rotationMode: RotationMode.Limited,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
         makeContainerWalls(1, "closed"),
         makeContainerWalls(2, "open1", ContainerTints.Green),
         makeContainerWalls(3, "open1", ContainerTints.Blue),
         makeContainerWalls(4, "open2", ContainerTints.Blue),
         makeContainerWalls(5, "open1", ContainerTints.Yellow),
-        makeContainerWalls(6, "open2", ContainerTints.Yellow)
+        makeContainerWalls(6, "open2", ContainerTints.Yellow),
+        {
+            idString: "sandbags",
+            name: "Sandbags",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hitbox: RectangleHitbox.fromRect(13.5, 8.1),
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "gun_case",
+            name: "Gun Case",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.22, 4.73),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true
+        },
+        {
+            idString: "m1117",
+            name: "M1117",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(18.51, 32.28, Vec.create(0, -5.17)), // Body
+                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, -10.87)), // Back wheels
+                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, 10.8)), // Front wheels
+                RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)), // Back of hood
+                RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "cabinet",
+            name: "Cabinet",
+            material: "appliance",
+            health: 100,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(14.53, 4.3, Vec.create(0, -0.22)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hasLoot: true
+        },
+        {
+            idString: "briefcase",
+            name: "Briefcase",
+            material: "appliance",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.65, 7.42, Vec.create(0, 0.43)),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true
+        },
+        {
+            idString: "button",
+            name: "Button",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            role: ObstacleSpecialRoles.Activatable,
+            interactText: "Press",
+            sound: {
+                name: "button_press"
+            },
+            hitbox: RectangleHitbox.fromRect(2.15, 1.51),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle",
+                activated: "button_activated"
+            }
+        }
     ]
 );

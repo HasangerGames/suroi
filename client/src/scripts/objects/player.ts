@@ -810,7 +810,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             return a.hitbox.distanceTo(this.hitbox).distance - b.hitbox.distanceTo(this.hitbox).distance;
                         })
                         .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
-                        .forEach(target => target.hitEffect(position, Angle.angleBetweenPoints(this.position, position)));
+                        .forEach(target => target.hitEffect(position, Angle.betweenPoints(this.position, position)));
                 }, 50);
 
                 break;

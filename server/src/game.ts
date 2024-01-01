@@ -99,8 +99,8 @@ export class Game {
 
     private readonly _timeouts = new Set<Timeout>();
 
-    addTimeout(callback: () => void, delay?: number): Timeout {
-        const timeout = new Timeout(callback, this.now + (delay ?? 0));
+    addTimeout(callback: () => void, delay = 0): Timeout {
+        const timeout = new Timeout(callback, this.now + delay);
         this._timeouts.add(timeout);
         return timeout;
     }

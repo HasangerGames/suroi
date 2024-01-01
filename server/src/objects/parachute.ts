@@ -65,7 +65,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                     }
 
                     loot.push(
-                        Angle.angleBetweenPoints(this.position, loot.position),
+                        Angle.betweenPoints(this.position, loot.position),
                         -0.03
                     );
                 }
