@@ -167,7 +167,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
             if (this.definition.role !== ObstacleSpecialRoles.Window) this.collidable = false;
 
-            this.scale = definition.scale.spawnMin;
+            this.scale = definition.scale?.spawnMin ?? 1;
 
             if (definition.explosion !== undefined) {
                 this.game.addExplosion(definition.explosion, this.position, source);

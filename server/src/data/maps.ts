@@ -340,7 +340,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("button", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("port_fence", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

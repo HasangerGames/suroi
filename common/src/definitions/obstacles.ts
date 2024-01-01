@@ -1981,7 +1981,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.8
             },
-            hitbox: RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 0)),
+            hitbox: RectangleHitbox.fromRect(8.45, 1.6),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
@@ -2146,7 +2146,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "stone",
             health: 1000,
             indestructible: true,
-            hitbox: RectangleHitbox.fromRect(13.77, 8.29),
+            hitbox: RectangleHitbox.fromRect(13.5, 8.1),
             rotationMode: RotationMode.Limited
         },
         {

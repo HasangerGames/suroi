@@ -148,7 +148,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         this.scale = data.scale;
 
-        const scaleFactor = (this.scale - definition.scale.destroy) / (definition.scale.spawnMax - definition.scale.destroy);
+        const destroyScale = definition.scale?.destroy ?? 1;
+        const scaleFactor = (this.scale - destroyScale) / ((definition.scale?.spawnMax ?? 1) - destroyScale);
 
         if (this.smokeEmitter) {
             this.smokeEmitter.active = !this.dead &&

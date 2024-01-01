@@ -67,7 +67,6 @@ export class MapPacket extends Packet {
             switch (object.type) {
                 case ObjectCategory.Obstacle: {
                     Obstacles.writeToStream(stream, object.definition);
-                    stream.writeScale(object.definition.scale.spawnMax);
                     stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
                     if (object.definition.variations !== undefined && object.variation !== undefined) {
                         stream.writeVariation(object.variation);
@@ -115,7 +114,7 @@ export class MapPacket extends Packet {
             switch (type) {
                 case ObjectCategory.Obstacle: {
                     const definition = Obstacles.readFromStream(stream);
-                    const scale = stream.readScale();
+                    const scale = definition.scale?.spawnMax ?? 1;
                     const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
                     let variation: Variation | undefined;
