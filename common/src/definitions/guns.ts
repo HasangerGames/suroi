@@ -452,14 +452,14 @@ const GunsRaw: RawGunDefinition[] = [
         shotSpread: 11,
         moveSpread: 14,
         jitterRadius: 1.5,
-        length: 6.8,
+        length: 7.1,
         fists: {
-            left: Vec.create(90, -2),
+            left: Vec.create(98, -2),
             right: Vec.create(40, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(75, 2) },
+        image: { position: Vec.create(81, 2) },
         casingParticles: {
             position: Vec.create(3.7, 0.6)
         },
