@@ -15,7 +15,7 @@ import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../co
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, ObjectDefinition } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
@@ -304,7 +304,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hitbox.position = position;
     }
 
-    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);

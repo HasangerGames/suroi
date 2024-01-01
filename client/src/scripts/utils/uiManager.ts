@@ -169,7 +169,7 @@ export class UIManager {
         if (packet.won) {
             const volume = game.console.getBuiltInCVar("cv_music_volume");
             if (volume) {
-                game.music.play();
+                void game.music.play();
             }
             game.music.loop();
             game.music.volume(volume);

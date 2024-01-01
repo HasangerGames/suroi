@@ -9,7 +9,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -89,7 +89,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 }
 
                 if (direction) {
-                    /*if (HITBOX_DEBUG_MODE) {
+                    /* if (HITBOX_DEBUG_MODE) {
                         graphics?.lineStyle({
                             color: 0xff0000,
                             width: 0.1

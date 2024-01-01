@@ -1844,47 +1844,47 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             },
             hitbox: new HitboxGroup(
-              RectangleHitbox.fromRect(1, 190, Vec.create(49, -22)), // Port
-              RectangleHitbox.fromRect(1, 130, Vec.create(-32, -51.5)), // Starboard Top
-              RectangleHitbox.fromRect(1, 30, Vec.create(-32, 39)), // Starboard middle
-              RectangleHitbox.fromRect(1, 10, Vec.create(-32, 69)), // Starboard middle
-              RectangleHitbox.fromRect(85, 1, Vec.create(8, -118.5)), // Stern
-              RectangleHitbox.fromRect(69, 1.5, Vec.create(3.3, -88.5)), // Front of the cabin
-              RectangleHitbox.fromRect(1.5, 17.5, Vec.create(37, -96.5)), // Left wall of the entrance to the cabin
-              RectangleHitbox.fromRect(1.5, 29, Vec.create(46.5, -102.5)), // Right wall of the entrance to the cabin
-              RectangleHitbox.fromRect(75, 1.5, Vec.create(9, -117)), // Back of the cabin
-              RectangleHitbox.fromRect(1.5, 29, Vec.create(-29, -102.5)), // Right wall of the cabin
-              RectangleHitbox.fromRect(1.5, 13, Vec.create(-6.2, -95.8)), // Right wall of the vector room
+                RectangleHitbox.fromRect(1, 190, Vec.create(49, -22)), // Port
+                RectangleHitbox.fromRect(1, 130, Vec.create(-32, -51.5)), // Starboard Top
+                RectangleHitbox.fromRect(1, 30, Vec.create(-32, 39)), // Starboard middle
+                RectangleHitbox.fromRect(1, 10, Vec.create(-32, 69)), // Starboard middle
+                RectangleHitbox.fromRect(85, 1, Vec.create(8, -118.5)), // Stern
+                RectangleHitbox.fromRect(69, 1.5, Vec.create(3.3, -88.5)), // Front of the cabin
+                RectangleHitbox.fromRect(1.5, 17.5, Vec.create(37, -96.5)), // Left wall of the entrance to the cabin
+                RectangleHitbox.fromRect(1.5, 29, Vec.create(46.5, -102.5)), // Right wall of the entrance to the cabin
+                RectangleHitbox.fromRect(75, 1.5, Vec.create(9, -117)), // Back of the cabin
+                RectangleHitbox.fromRect(1.5, 29, Vec.create(-29, -102.5)), // Right wall of the cabin
+                RectangleHitbox.fromRect(1.5, 13, Vec.create(-6.2, -95.8)), // Right wall of the vector room
 
-              //Bottom Hitboxes
-              // HACK: refactor when we support collision with polygon hitboxes
-              new CircleHitbox(12, Vec.create(8, 107)),
-              ...Array.from({ length: 2 }, (_, i) => {
-                  const a = i === 0 ? 1 : -1;
-                  const b = i === 0 ? 0 : 17;
-                  return [
-                      new CircleHitbox(4, Vec.create(0 * a + b, 114)),
-                      new CircleHitbox(4, Vec.create(-4 * a + b, 112.5)),
-                      new CircleHitbox(4, Vec.create(-6 * a + b, 111.5)),
-                      new CircleHitbox(4, Vec.create(-8 * a + b, 111)),
-                      new CircleHitbox(4, Vec.create(-10 * a + b, 109.8)),
-                      new CircleHitbox(4, Vec.create(-12 * a + b, 108.4)),
-                      new CircleHitbox(4, Vec.create(-14 * a + b, 106.9)),
-                      new CircleHitbox(4, Vec.create(-16 * a + b, 105.2)),
-                      new CircleHitbox(4, Vec.create(-18 * a + b, 103.4)),
-                      new CircleHitbox(4, Vec.create(-20 * a + b, 101.6)),
-                      new CircleHitbox(4, Vec.create(-22 * a + b, 99)),
-                      new CircleHitbox(4, Vec.create(-24 * a + b, 95.3)),
-                      new CircleHitbox(4, Vec.create(-26 * a + b, 92)),
-                      new CircleHitbox(4, Vec.create(-27 * a + b, 89.2)),
-                      new CircleHitbox(4, Vec.create(-28 * a + b, 86.5)),
-                      new CircleHitbox(4, Vec.create(-29 * a + b, 83.8)),
-                      new CircleHitbox(4, Vec.create(-30 * a + b, 80.2)),
-                      new CircleHitbox(4, Vec.create(-30 * a + b, 77))
-                  ];
-              }).flat(),
+                // Bottom Hitboxes
+                // HACK: refactor when we support collision with polygon hitboxes
+                new CircleHitbox(12, Vec.create(8, 107)),
+                ...Array.from({ length: 2 }, (_, i) => {
+                    const a = i === 0 ? 1 : -1;
+                    const b = i === 0 ? 0 : 17;
+                    return [
+                        new CircleHitbox(4, Vec.create(0 * a + b, 114)),
+                        new CircleHitbox(4, Vec.create(-4 * a + b, 112.5)),
+                        new CircleHitbox(4, Vec.create(-6 * a + b, 111.5)),
+                        new CircleHitbox(4, Vec.create(-8 * a + b, 111)),
+                        new CircleHitbox(4, Vec.create(-10 * a + b, 109.8)),
+                        new CircleHitbox(4, Vec.create(-12 * a + b, 108.4)),
+                        new CircleHitbox(4, Vec.create(-14 * a + b, 106.9)),
+                        new CircleHitbox(4, Vec.create(-16 * a + b, 105.2)),
+                        new CircleHitbox(4, Vec.create(-18 * a + b, 103.4)),
+                        new CircleHitbox(4, Vec.create(-20 * a + b, 101.6)),
+                        new CircleHitbox(4, Vec.create(-22 * a + b, 99)),
+                        new CircleHitbox(4, Vec.create(-24 * a + b, 95.3)),
+                        new CircleHitbox(4, Vec.create(-26 * a + b, 92)),
+                        new CircleHitbox(4, Vec.create(-27 * a + b, 89.2)),
+                        new CircleHitbox(4, Vec.create(-28 * a + b, 86.5)),
+                        new CircleHitbox(4, Vec.create(-29 * a + b, 83.8)),
+                        new CircleHitbox(4, Vec.create(-30 * a + b, 80.2)),
+                        new CircleHitbox(4, Vec.create(-30 * a + b, 77))
+                    ];
+                }).flat(),
 
-              RectangleHitbox.fromRect(85, 1.5, Vec.create(8.6, 73.6)),
+                RectangleHitbox.fromRect(85, 1.5, Vec.create(8.6, 73.6))
             )
         },
         {
@@ -2000,7 +2000,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 3.2)),
-                RectangleHitbox.fromRect(1.3, 7.75, Vec.create(3.2, 0)),
+                RectangleHitbox.fromRect(1.3, 7.75, Vec.create(3.2, 0))
             ),
             noResidue: true,
             rotationMode: RotationMode.Limited,
@@ -2173,9 +2173,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(18.51, 32.28, Vec.create(0, -5.17)), // Body
                 RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, -10.87)), // Back wheels
-                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, 10.8)),   // Front wheels
-                RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)),     // Back of hood
-                RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7))    // Front of hood
+                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, 10.8)), // Front wheels
+                RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)), // Back of hood
+                RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
             ),
             rotationMode: RotationMode.Limited,
             frames: {

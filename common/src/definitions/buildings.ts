@@ -589,7 +589,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         ceilingImages: [{
             key: "port_warehouse_ceiling_red",
-            position: Vec.create(0, 0),
+            position: Vec.create(0, 0)
         }],
         obstacles: [
             {
@@ -711,7 +711,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         ceilingImages: [{
             key: "port_warehouse_ceiling_blue",
-            position: Vec.create(0, 0),
+            position: Vec.create(0, 0)
         }],
         obstacles: [
             {
@@ -1282,7 +1282,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "crane_ceiling",
                 position: Vec.create(55.5, -60)
-            },
+            }
         ],
         ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
         obstacles: [
@@ -1290,7 +1290,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "crane_base_part", position: Vec.create(-31.55, -35.6), rotation: 0 },
 
             { idString: "crane_base_part", position: Vec.create(32, -87.3), rotation: 0 },
-            { idString: "crane_base_part", position: Vec.create(32, -35.6), rotation: 0 },
+            { idString: "crane_base_part", position: Vec.create(32, -35.6), rotation: 0 }
         ]
     },
     {
@@ -1358,7 +1358,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "oil_tanker_ship_tanks",
         name: "Oil Tanker",
-        spawnHitbox: RectangleHitbox.fromRect( 110, 300 , Vec.create(0, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
         scopeHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
         ceilingImages: [
             {
@@ -1372,8 +1372,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             { idString: "large_oil_tank", position: Vec.create(10, -46.5) },
             { idString: "large_oil_tank", position: Vec.create(10, 20) },
-            { idString: "large_oil_tank", position: Vec.create(10, 88) },
-        ],
+            { idString: "large_oil_tank", position: Vec.create(10, 88) }
+        ]
     },
     {
         idString: "ship",
@@ -1574,11 +1574,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barrel", position: Vec.create(-27, 68), rotation: 2 },
             { idString: "regular_crate", position: Vec.create(-18, 66), rotation: 2 },
             { idString: "regular_crate", position: Vec.create(42, 66), rotation: 2 },
-            { idString: {
-                regular_crate: 0.5,
-                aegis_crate: 0.25,
-                flint_crate: 0.25,
-            }, position: Vec.create(32, 60), rotation: 2 },
+            {
+                idString: {
+                    regular_crate: 0.5,
+                    aegis_crate: 0.25,
+                    flint_crate: 0.25
+                },
+                position: Vec.create(32, 60),
+                rotation: 2
+            },
 
             // Mid Ship
             { idString: "sand_bag", position: Vec.create(-22, 1), rotation: 2 },
@@ -1588,11 +1592,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sand_bag", position: Vec.create(43, -20), rotation: 1 },
             { idString: "super_barrel", position: Vec.create(43, -7.5), rotation: 1 },
             { idString: "sand_bag", position: Vec.create(30, -16), rotation: 2 },
-            { idString: "flint_crate", position: Vec.create(41, -35), rotation: 2 },
+            { idString: "flint_crate", position: Vec.create(41, -35), rotation: 2 }
         ],
         subBuildings: [
-            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) },
-        ],
+            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) }
+        ]
     },
     {
         idString: "port",
@@ -1602,7 +1606,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "port_floor",
                 position: Vec.create(-4.5, 0)
-            },
+            }
         ],
         floors: [{
             type: "stone",
@@ -1710,7 +1714,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "container_mark",
                 position: Vec.create(112.5, -30)
-            },
+            }
         ],
         obstacles: [
             // Parking lot
@@ -1736,15 +1740,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pallet", position: Vec.create(20, 90), rotation: 2 },
 
             // Above red warehouse
-            { idString: "truck",  position: Vec.create(-50, 50), rotation: 1 },
-
+            { idString: "truck", position: Vec.create(-50, 50), rotation: 1 },
 
             // The main entrance
             { idString: "barrier", position: Vec.create(-124, -10), rotation: 0 },
 
             { idString: "sand_bag", position: Vec.create(-135, -5), rotation: 1 },
             { idString: "sand_bag", position: Vec.create(-135, -20), rotation: 2 },
-
 
             // Secret loot area sort of
             { idString: "sand_bag", position: Vec.create(-144, 65), rotation: 1 },
@@ -1756,14 +1758,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "super_barrel", position: Vec.create(-134, 90), rotation: 0 },
             { idString: "barrel", position: Vec.create(-126, 85), rotation: 0 },
 
-            { idString: {
-                aegis_crate: 0.5,
-                flint_crate: 0.5
-            }, position: Vec.create(-126, 100), rotation: 0 },
-            { idString: {
-                aegis_crate: 0.5,
-                flint_crate: 0.5
-            }, position: Vec.create(-136, 105), rotation: 0 },
+            {
+                idString: {
+                    aegis_crate: 0.5,
+                    flint_crate: 0.5
+                },
+                position: Vec.create(-126, 100),
+                rotation: 0
+            },
+            {
+                idString: {
+                    aegis_crate: 0.5,
+                    flint_crate: 0.5
+                },
+                position: Vec.create(-136, 105),
+                rotation: 0
+            },
 
             // Top left corner above group 3 of the port.
             { idString: "sand_bag", position: Vec.create(-132, 117), rotation: 2 },
@@ -1774,11 +1784,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             /* Fixme: change to grenade crate */ { idString: "barrel", position: Vec.create(-122.5, -120), rotation: 1 },
 
             { idString: "regular_crate", position: Vec.create(-135, -125), rotation: 1 },
-            { idString: {
-                regular_crate: 0.5,
-                flint_crate: 0.25,
-                aegis_crate: 0.25,
-            }, position: Vec.create(-140, -115), rotation: 1 },
+            {
+                idString: {
+                    regular_crate: 0.5,
+                    flint_crate: 0.25,
+                    aegis_crate: 0.25
+                },
+                position: Vec.create(-140, -115),
+                rotation: 1
+            },
 
             { idString: "barrel", position: Vec.create(-142, -95), rotation: 1 },
             { idString: "super_barrel", position: Vec.create(-147, -87), rotation: 1 },
@@ -1859,7 +1873,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 })
             ))(),
 
-            { idString: "port_fence_side", position: Vec.create(140, -131.8), rotation: 1 },
+            { idString: "port_fence_side", position: Vec.create(140, -131.8), rotation: 1 }
         ],
         subBuildings: [
             { idString: "container_1", position: Vec.create(-84, 100), orientation: 1 },
@@ -1972,7 +1986,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 idString: randomContainer2,
                 position: Vec.create(112.5, -30)
-            },
+            }
         ]
     },
     {
@@ -1982,7 +1996,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
             { idString: "port", position: Vec.create(-120, 0) },
-            { idString: { "ship": 1, "oil_tanker_ship": 1}, position: Vec.create(74, -65) },
+            { idString: { ship: 1, oil_tanker_ship: 1 }, position: Vec.create(74, -65) }
         ]
     },
     {
@@ -2156,7 +2170,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     Vec.create(34.01, 84.86),
                     Vec.create(-8.82, 84.86),
                     Vec.create(-8.82, -32.87),
-                    Vec.create(5.54, -41.2),
+                    Vec.create(5.54, -41.2)
                 ])
             },
             ...Array.from(
@@ -2205,7 +2219,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     Vec.create(5.05, -40.17),
                     Vec.create(5.05, -16.47),
                     Vec.create(-8.06, -16.47),
-                    Vec.create(-8.06, -32.29),
+                    Vec.create(-8.06, -32.29)
                 ])
             },
             {
@@ -2214,7 +2228,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     Vec.create(61.82, -40.67),
                     Vec.create(61.75, -24.97),
                     Vec.create(48.71, -16.97),
-                    Vec.create(48.71, -40.73),
+                    Vec.create(48.71, -40.73)
                 ])
             }
         ],
@@ -2334,5 +2348,5 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 })
             )
         ]
-    },
+    }
 ]);

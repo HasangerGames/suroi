@@ -1,6 +1,4 @@
 import { type ObjectCategory } from "../../../common/src/constants";
-import { ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
@@ -12,7 +10,7 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type Parachute } from "./parachute";
 import { type Player } from "./player";
-import { ThrowableProjectile } from "./throwableProj";
+import { type ThrowableProjectile } from "./throwableProj";
 
 export interface ObjectMapping {
     [ObjectCategory.Player]: Player

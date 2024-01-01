@@ -14,7 +14,6 @@ import { type Map } from "../map";
 import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type LootTables } from "./lootTables";
-import { Decal } from "../objects/decal";
 
 interface MapDefinition {
     readonly width: number
@@ -77,7 +76,7 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 10,
-            //christmas_tree: 1, // winter mode
+            // christmas_tree: 1, // winter mode
             oak_tree: 310,
             birch_tree: 50,
             pine_tree: 30,
@@ -331,7 +330,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            //map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
             map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
