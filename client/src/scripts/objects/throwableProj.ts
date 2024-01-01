@@ -29,7 +29,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         this.position = data.position;
         this.rotation = data.rotation;
 
-        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || _isNew) {
+        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
             this.container.rotation = this.rotation;
         }
