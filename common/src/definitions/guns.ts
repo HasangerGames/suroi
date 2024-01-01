@@ -452,7 +452,7 @@ const GunsRaw: RawGunDefinition[] = [
         shotSpread: 11,
         moveSpread: 14,
         jitterRadius: 1.5,
-        length: 6.4,
+        length: 6.8,
         fists: {
             left: Vec.create(90, -2),
             right: Vec.create(40, 0),
@@ -461,7 +461,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(75, 2) },
         casingParticles: {
-            position: Vec.create(4, 0.6)
+            position: Vec.create(3.7, 0.6)
         },
         ballistics: {
             damage: 10,
@@ -919,7 +919,7 @@ const GunsRaw: RawGunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 7,
-        length: 5.8,
+        length: 7.1,
         fists: {
             left: Vec.create(85, -6),
             right: Vec.create(40, 0),
@@ -927,7 +927,7 @@ const GunsRaw: RawGunDefinition[] = [
             animationDuration: 100
         },
         casingParticles: {
-            position: Vec.create(3.5, 0.6)
+            position: Vec.create(4.5, 0.6)
         },
         image: { position: Vec.create(80, 0) },
         ballistics: {

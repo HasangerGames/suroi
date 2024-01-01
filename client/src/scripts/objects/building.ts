@@ -3,7 +3,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, Collision, type CollisionResponse } from "../../../../common/src/utils/math";
+import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -12,7 +12,7 @@ import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
 export class Building extends GameObject<ObjectCategory.Building> {

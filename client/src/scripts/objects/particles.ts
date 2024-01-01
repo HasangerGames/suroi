@@ -8,7 +8,7 @@ export class ParticleManager {
     readonly particles = new Set<Particle>();
     readonly emitters = new Set<ParticleEmitter>();
 
-    game: Game;
+    readonly game: Game;
 
     constructor(game: Game) {
         this.game = game;

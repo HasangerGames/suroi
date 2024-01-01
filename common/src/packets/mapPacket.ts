@@ -116,11 +116,11 @@ export class MapPacket extends Packet {
                 const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
                 const position = stream.readPosition();
 
-            switch (type) {
-                case ObjectCategory.Obstacle: {
-                    const definition = Obstacles.readFromStream(stream);
-                    const scale = definition.scale?.spawnMax ?? 1;
-                    const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
+                switch (type) {
+                    case ObjectCategory.Obstacle: {
+                        const definition = Obstacles.readFromStream(stream);
+                        const scale = definition.scale?.spawnMax ?? 1;
+                        const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
                         let variation: Variation | undefined;
                         if (definition.variations !== undefined) {

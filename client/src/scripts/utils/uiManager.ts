@@ -30,9 +30,9 @@ export class UIManager {
     minAdrenaline = 0;
     adrenaline = 0;
 
-    inventory = {
+    readonly inventory = {
         activeWeaponIndex: 0,
-        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"],
+        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"] & object,
         items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
@@ -135,8 +135,7 @@ export class UIManager {
         $("#interact-message").hide();
         $("#spectating-container").hide();
 
-        const activePlayer = game.activePlayer;
-        if (activePlayer?.actionSound) game.soundManager.stop(activePlayer.actionSound);
+        game.activePlayer?.actionSound?.stop();
 
         $("#gas-msg").fadeOut(500);
 
@@ -169,15 +168,7 @@ export class UIManager {
         $("#game-over-damage-taken").text(packet.damageTaken);
         $("#game-over-time").text(formatDate(packet.timeAlive));
 
-        if (packet.won) {
-            const volume = game.console.getBuiltInCVar("cv_music_volume");
-            if (volume) {
-                void game.music.play();
-            }
-            game.music.loop();
-            game.music.volume(volume);
-            game.musicPlaying = true;
-        }
+        if (packet.won) void game.music.play();
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
@@ -323,19 +314,22 @@ export class UIManager {
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
+        const max = GameConstants.player.maxWeapons;
+        for (let i = 0; i < max; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
-
             const weapon = inventory.weapons[i];
 
             if (weapon) {
-                container.addClass("has-item");
+                container
+                    .addClass("has-item")
+                    .children(".item-name")
+                    .text(weapon.definition.name);
 
-                container.children(".item-name").text((weapon.dual ? "Dual " : "") + weapon.definition.name);
+                container
+                    .children(".item-image")
+                    .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
+                    .show();
 
-                const imagePath = `./img/game/weapons/${weapon.definition.idString}.svg`;
-                container.children(".item-image").attr("src", imagePath).show().toggleClass("dual", weapon.dual);
-                container.children(".dual-image").toggle(weapon.dual);
                 if (weapon.count !== undefined) {
                     container
                         .children(".item-ammo")
@@ -432,7 +426,7 @@ export class UIManager {
             weaponUsed,
             killstreak,
 
-            hideInKillFeed
+            hideInKillfeed
         } = message;
 
         const weaponPresent = weaponUsed === undefined;
@@ -450,19 +444,19 @@ export class UIManager {
                 const hasKillstreak = killstreak! > 1;
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
-                        let message = "";
+                        let killMessage = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                message = `${playerName} committed suicide`;
+                                killMessage = `${playerName} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                message = `${this.getPlayerName(killerID!)} killed ${playerName}`;
+                                killMessage = `${this.getPlayerName(killerID!)} killed ${playerName}`;
                                 break;
                             case KillType.Gas:
-                                message = `${playerName} died to the gas`;
+                                killMessage = `${playerName} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                message = `${playerName} was crushed by an airdrop`;
+                                killMessage = `${playerName} was crushed by an airdrop`;
                                 break;
                         }
 
@@ -472,7 +466,7 @@ export class UIManager {
                          * but to be honest, short of downloading a library off of somewhere, this'll have to do
                          */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
-                        const weaponNameText = weaponPresent ? "" : ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${"dual" in message && message.dual ? "Dual " : ""}${fullyQualifiedName}`;
+                        const weaponNameText = weaponPresent ? "" : ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}`;
 
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
@@ -531,7 +525,7 @@ export class UIManager {
                 $("#kill-leader-leader").html(playerName);
                 $("#kill-leader-kills-counter").text(kills!);
 
-                if (!hideInKillFeed) {
+                if (!hideInKillfeed) {
                     messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }

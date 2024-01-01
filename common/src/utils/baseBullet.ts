@@ -23,13 +23,12 @@ type GameObject = {
     readonly dead: boolean
     readonly damageable: boolean
     readonly id: number
-} & (({
+} & ({
     readonly type: ObjectCategory.Obstacle
     readonly definition: ObstacleDefinition
-}) | ({
-    readonly type: ObjectCategory
-    readonly definition: ObstacleDefinition
-}));
+} | {
+    readonly type: Exclude<ObjectCategory, ObjectCategory.Obstacle>
+});
 
 interface Collision {
     readonly intersection: {

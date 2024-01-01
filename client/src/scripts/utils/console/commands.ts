@@ -284,9 +284,10 @@ export function setUpCommands(game: Game): void {
         "other_weapon",
         function(): undefined {
             let index =
-                this.uiManager.inventory.activeWeaponIndex === 0 ||
-                (this.uiManager.inventory.weapons[0] === undefined &&
-                    this.uiManager.inventory.activeWeaponIndex !== 1)
+                this.uiManager.inventory.activeWeaponIndex === 0 || (
+                    this.uiManager.inventory.weapons[0] === undefined &&
+                    this.uiManager.inventory.activeWeaponIndex !== 1
+                )
                     ? 1
                     : 0;
 

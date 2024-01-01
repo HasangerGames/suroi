@@ -3,6 +3,7 @@ import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketTyp
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -32,6 +33,7 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player } from "./objects/player";
+import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { endGame, newGame, type PlayerContainer } from "./server";
 import { hasBadWords } from "./utils/badWordFilter";
@@ -207,6 +209,10 @@ export class Game {
 
             for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
                 projectile.update();
+            }
+
+            for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
+                syncedParticle.update();
             }
 
             // Update bullets
@@ -543,6 +549,17 @@ export class Game {
     removeProjectile(projectile: ThrowableProjectile): void {
         this.removeObject(projectile);
         projectile.dead = true;
+    }
+
+    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, definition, position);
+        this.grid.addObject(syncedParticle);
+        return syncedParticle;
+    }
+
+    removeSyncedParticle(syncedParticle: SyncedParticle): void {
+        this.removeObject(syncedParticle);
+        syncedParticle.dead = true;
     }
 
     /**

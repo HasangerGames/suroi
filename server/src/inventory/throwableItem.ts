@@ -1,4 +1,5 @@
 import { AnimationType } from "../../../common/src/constants";
+import { SyncedParticles } from "../../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
@@ -87,6 +88,8 @@ class GrenadeHandler {
                 this.parent.owner
             );
         }
+
+        this.game.addSyncedParticle(SyncedParticles.fromString("smoke_grenade_particle"), this._projectile?.position ?? this.parent.owner.position);
     }
 
     private _resetAnimAndRemoveFromInv(): void {

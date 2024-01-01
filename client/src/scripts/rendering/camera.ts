@@ -2,7 +2,8 @@ import { Container, type Application, type DisplayObject } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
+import { EaseFunctions } from "../../../../common/src/utils/math";
 
 export class Camera {
     pixi: Application;

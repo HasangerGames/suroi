@@ -1,6 +1,6 @@
 import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox, PolygonHitbox } from "../utils/hitbox";
+import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type FloorTypes } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";

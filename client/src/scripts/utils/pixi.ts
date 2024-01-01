@@ -125,7 +125,8 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
         case HitboxType.Rect: {
             const min = toPixiCoords(hitbox.min);
             const max = toPixiCoords(hitbox.max);
-            graphics.moveTo(min.x, min.y)
+            graphics
+                .moveTo(min.x, min.y)
                 .lineTo(max.x, min.y)
                 .lineTo(max.x, max.y)
                 .lineTo(min.x, max.y)

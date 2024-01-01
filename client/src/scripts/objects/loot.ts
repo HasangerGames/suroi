@@ -3,6 +3,7 @@ import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { EaseFunctions } from "../../../../common/src/utils/math";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
@@ -10,7 +11,7 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 

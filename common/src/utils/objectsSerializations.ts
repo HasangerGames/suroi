@@ -7,7 +7,7 @@ import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
-import { type SyncedParticleDefinition, SyncedParticles } from "../definitions/syncedParticles";
+import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
@@ -148,6 +148,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         alpha?: number
         full?: {
             definition: SyncedParticleDefinition
+            variant?: Variation
         }
     }
 }
@@ -480,7 +481,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, data) {
             this.serializePartial(stream, data);
-            SyncedParticles.writeToStream(stream, data.full.definition);
+            const full = data.full;
+            SyncedParticles.writeToStream(stream, full.definition);
+
+            const variant = full.variant;
+            stream.writeBoolean(variant !== undefined);
+            if (variant !== undefined) {
+                stream.writeVariation(variant);
+            }
         },
         deserializePartial(stream) {
             const data: ObjectsNetData[ObjectCategory.SyncedParticle] = {
@@ -502,7 +510,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 ...this.deserializePartial(stream),
                 full: {
-                    definition: SyncedParticles.readFromStream(stream)
+                    definition: SyncedParticles.readFromStream(stream),
+                    variant: stream.readBoolean() ? stream.readVariation() : undefined
                 }
             };
         }
