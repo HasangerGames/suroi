@@ -2108,7 +2108,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 { length: 4 },
                 (_, i) => ({
                     idString: "button",
-                    position: Vec.create(8.76 + 5.06 * i, -19.2),
+                    position: Vec.create(10 + 5.2 * i, -19.2),
                     rotation: 0,
                     puzzlePiece: ["y", "o", "j", "l"][i]
                 })
