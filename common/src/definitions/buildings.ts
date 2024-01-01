@@ -2085,6 +2085,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "armory_vault_ceiling",
             position: Vec.create(0, -2.5)
         }],
+        ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
         floors: [{
             type: "wood",
             hitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2))
