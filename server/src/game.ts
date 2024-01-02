@@ -59,10 +59,6 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import {
-    type BadgeDefinition,
-    Badges
-} from "../../common/src/definitions/badges";
 
 export class Game {
     readonly _id: number;
@@ -119,7 +115,7 @@ export class Game {
     /**
      * All planes this tick
      */
-    readonly planes = new Set<{ position: Vector; direction: number }>();
+    readonly planes = new Set<{ position: Vector, direction: number }>();
 
     /**
      * All map pings this tick
@@ -413,7 +409,7 @@ export class Game {
     private _sendKillFeedMessage(
         messageType: KillFeedMessageType,
         options?: Partial<
-            Omit<KillFeedMessage, "messageType" | "playerID" | "kills">
+        Omit<KillFeedMessage, "messageType" | "playerID" | "kills">
         >
     ): void {
         if (this._killLeader === undefined) return;
@@ -502,8 +498,7 @@ export class Game {
             (Config.censorUsernames && hasBadWords(name)) ||
             // eslint-disable-next-line no-control-regex
             /[^\x00-\x7F]/g.test(name) // extended ASCII chars
-        )
-            name = GameConstants.player.defaultName;
+        ) { name = GameConstants.player.defaultName; }
         player.name = name;
 
         player.isMobile = packet.isMobile;
@@ -764,6 +759,6 @@ export class Game {
 }
 
 export interface Airdrop {
-    position: Vector;
-    type: ObstacleDefinition;
+    position: Vector
+    type: ObstacleDefinition
 }

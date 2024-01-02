@@ -251,6 +251,10 @@
             background: $transparent_bg;
             border-radius: 4px;
             font-weight: 600;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 2px;
             @include text-shadow;
 
             @media screen and (max-width: $screen_large) {
@@ -264,8 +268,6 @@
             }
 
             .kill-icon {
-                position: relative;
-                bottom: -2px;
                 margin-right: 2px;
 
                 @media screen and (max-width: $screen_large) {
@@ -274,10 +276,7 @@
             }
 
             .badge-icon {
-                position: relative;
-                bottom: -2px;
-                margin-right: 2px;
-
+                width: 18px;
                 @media screen and (max-width: $screen_large) {
                     height: 12px;
                 }

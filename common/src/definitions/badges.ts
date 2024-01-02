@@ -28,6 +28,6 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     {
         name: "Owner",
         idString: "owner",
-        roleRequired: "owner"
+        roleRequired: "hasanger"
     }
 ]);

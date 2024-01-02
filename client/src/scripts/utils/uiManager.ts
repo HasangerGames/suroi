@@ -519,8 +519,15 @@ export class UIManager {
         const playerBadge =
             playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
 
-        const badgeText = playerBadge
-            ? `<img class="badge-icon src="./img/game/badge/${playerBadge.idString}.svg" alt="Badge">`
+        const playerBadgeText = playerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="Badge">`
+            : "";
+
+        const killerBadge =
+            killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
+
+        const killerBadgeText = killerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${killerBadge.idString}.svg" alt="Badge">`
             : "";
 
         let messageText: string | undefined;
@@ -534,18 +541,18 @@ export class UIManager {
                         let killMessage = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                killMessage = `${playerName} committed suicide`;
+                                killMessage = `${playerBadgeText}${playerName} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                killMessage = `${this.getPlayerName(
+                                killMessage = `${killerBadgeText}${this.getPlayerName(
                                     killerID!
-                                )} killed ${playerName}`;
+                                )} killed ${playerBadgeText}${playerName}`;
                                 break;
                             case KillType.Gas:
-                                killMessage = `${playerName} died to the gas`;
+                                killMessage = `${playerBadgeText}${playerName} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                killMessage = `${playerName} was crushed by an airdrop`;
+                                killMessage = `${playerBadgeText}${playerName} was crushed by an airdrop`;
                                 break;
                         }
 
@@ -602,10 +609,11 @@ export class UIManager {
                             : "";
 
                         messageText = `\
+                        ${killerBadgeText}
                         ${killerName}\
                         <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
-                        ${playerBadge?.idString ?? "No badge found"}
                         ${killstreakText}
+                        ${playerBadgeText}
                         ${playerName}`;
                         break;
                     }

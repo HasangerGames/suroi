@@ -1,5 +1,9 @@
 import { Text, type Container } from "pixi.js";
-import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import {
+    GameConstants,
+    ObjectCategory,
+    ZIndexes
+} from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
@@ -8,6 +12,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { Vec } from "../../../../common/src/utils/vector";
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
 
@@ -21,12 +26,18 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.DeathMarker]>) {
+    constructor(
+        game: Game,
+        id: number,
+        data: Required<ObjectsNetData[ObjectCategory.DeathMarker]>
+    ) {
         super(game, id);
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? GameConstants.player.defaultName : "",
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names")
+                ? GameConstants.player.defaultName
+                : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",
@@ -43,7 +54,10 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         this.updateFromData(data, true);
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
+    override updateFromData(
+        data: ObjectsNetData[ObjectCategory.DeathMarker],
+        isNew = false
+    ): void {
         this.position = data.position;
 
         const pos = toPixiCoords(this.position);
@@ -60,6 +74,18 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
             this.playerName = player.name;
             this.playerNameText.text = this.playerName;
 
+            if (player.badge) {
+                const badgeSprite = new SuroiSprite(player.badge.idString);
+                badgeSprite.width = this.playerNameText.height;
+                badgeSprite.height = this.playerNameText.height;
+                badgeSprite.position = Vec.create(
+                    -(this.playerNameText.width / 2 + 25),
+                    95
+                );
+
+                this.container.addChild(badgeSprite);
+            }
+
             if (player.hasColor) {
                 this.nameColor = player.nameColor.toNumber();
             }
@@ -71,23 +97,17 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(
-                this.game,
-                {
-                    target: this.container.scale,
-                    to: { x: 1, y: 1 },
-                    duration: 400
-                }
-            );
+            this.scaleAnim = new Tween(this.game, {
+                target: this.container.scale,
+                to: { x: 1, y: 1 },
+                duration: 400
+            });
 
-            this.alphaAnim = new Tween(
-                this.game,
-                {
-                    target: this.container,
-                    to: { alpha: 1 },
-                    duration: 400
-                }
-            );
+            this.alphaAnim = new Tween(this.game, {
+                target: this.container,
+                to: { alpha: 1 },
+                duration: 400
+            });
         }
     }
 
