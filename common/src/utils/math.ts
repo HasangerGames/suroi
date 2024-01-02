@@ -90,7 +90,7 @@ export const Numeric = Object.freeze({
      * @param n2 The second orientation
      * @return The sum of the two `Orientation`s
      */
-    addOrientations(n1: Orientation, n2: Orientation): Orientation {
+    addOrientations(n1: Orientation | number, n2: Orientation | number): Orientation {
         return (n1 + n2) % 4 as Orientation;
     }
 });

@@ -2009,34 +2009,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "port_warehouse_windows",
-            name: "Port warehouse windows",
-            material: "metal",
-            health: 1000,
-            hideOnMap: true,
-            indestructible: true,
-            reflectBullets: true,
-            hitbox: RectangleHitbox.fromRect(1.5, 24),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "barrel_particle"
-            }
-        },
-        {
-            idString: "port_warehouse_wall_short",
-            name: "Port warehouse short wall",
-            material: "metal",
-            health: 1000,
-            hideOnMap: true,
-            indestructible: true,
-            reflectBullets: true,
-            hitbox: RectangleHitbox.fromRect(1.8, 14.5),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "barrel_particle"
-            }
-        },
-        {
             idString: "port_warehouse_walls",
             name: "Port warehouse walls",
             material: "metal",
@@ -2045,12 +2017,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             reflectBullets: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(2, 18, Vec.create(-29.3, -21)),
-                RectangleHitbox.fromRect(60, 2, Vec.create(0, -29.4)),
-                RectangleHitbox.fromRect(2, 18, Vec.create(29.3, -21)),
-
-                RectangleHitbox.fromRect(2, 18, Vec.create(-29.3, 21)),
-                RectangleHitbox.fromRect(2, 18, Vec.create(29.3, 21))
+                RectangleHitbox.fromRect(2, 18.11, Vec.create(-31.23, -20.94)),
+                RectangleHitbox.fromRect(60, 2.19, Vec.create(-2.23, -29.12)),
+                RectangleHitbox.fromRect(2, 18.35, Vec.create(27.23, -21.05)),
+                RectangleHitbox.fromRect(2, 17.61, Vec.create(-31.23, 21.44)),
+                RectangleHitbox.fromRect(2, 17.81, Vec.create(27.23, 21.34)),
+                RectangleHitbox.fromRect(13.33, 1.86, Vec.create(20.34, 13.35)),
+                RectangleHitbox.fromRect(1.73, 24.52, Vec.create(-31.36, 0.38))
             ),
             rotationMode: RotationMode.Limited,
             invisible: true,

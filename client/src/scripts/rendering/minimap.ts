@@ -1,10 +1,10 @@
 import "@pixi/graphics-extras";
 import $ from "jquery";
-import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
+import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, PolygonHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -207,10 +207,9 @@ export class Minimap {
 
                 const definition = building.definition;
                 if (definition.groundGraphics) {
-                    for (const ground of definition.groundGraphics) {
-                        ctx.beginFill(ground.color);
-
-                        const hitbox = ground.hitbox.transform(building.position, 1, building.rotation as Orientation);
+                    const drawGroundGraphics = (color: ColorSource, hitbox: Hitbox): void => {
+                        // TODO Make this code prettier
+                        if (!(hitbox instanceof HitboxGroup)) ctx.beginFill(color);
                         if (hitbox instanceof RectangleHitbox) {
                             const width = hitbox.max.x - hitbox.min.x;
                             const height = hitbox.max.y - hitbox.min.y;
@@ -219,9 +218,18 @@ export class Minimap {
                             ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
                         } else if (hitbox instanceof PolygonHitbox) {
                             ctx.drawPolygon(hitbox.points.map(v => Vec.scale(v, scale)));
+                        } else if (hitbox instanceof HitboxGroup) {
+                            for (const hitBox of hitbox.hitboxes) {
+                                drawGroundGraphics(color, hitBox);
+                            }
                         }
-                        ctx.closePath();
-                        ctx.endFill();
+                        if (!(hitbox instanceof HitboxGroup)) {
+                            ctx.closePath();
+                            ctx.endFill();
+                        }
+                    };
+                    for (const ground of definition.groundGraphics) {
+                        drawGroundGraphics(ground.color, ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
                     }
                 }
             }
@@ -276,11 +284,11 @@ export class Minimap {
                     for (const image of definition.floorImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
-                            .setRotation(rotation)
+                            .setRotation(rotation + (image.rotation ?? 0))
                             .setZIndex(ZIndexes.BuildingsFloor);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
-                        sprite.scale.set(1 / PIXI_SCALE);
+                        sprite.scale = Vec.scale(image.scale ?? Vec.create(1, 1), 1 / PIXI_SCALE);
                         mapRender.addChild(sprite);
                     }
 

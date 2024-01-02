@@ -169,6 +169,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 sprite.setVPos(toPixiCoords(image.position));
                 if (image.tint !== undefined) sprite.setTint(image.tint);
                 if (image.rotation) sprite.setRotation(image.rotation);
+                if (image.scale) sprite.scale = image.scale;
                 this.container.addChild(sprite);
             }
 

@@ -1,14 +1,8 @@
 <script lang="ts">
     import {
-    BaseHitbox,
-        CircleHitbox,
         HitboxGroup,
         HitboxType,
-        PolygonHitbox,
-        RectangleHitbox,
-
-        type HitboxJSON
-
+        RectangleHitbox
     } from "../../../common/src/utils/hitbox";
     import { Numeric } from "../../../common/src/utils/math";
     import { Vec } from "../../../common/src/utils/vector";
@@ -16,16 +10,25 @@
 
     let hitboxes = [
         ...new HitboxGroup(
-            RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
-            RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
-            RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
-            RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
-            RectangleHitbox.fromRect(8.2, 2, Vec.create(26, -29.5)),
-            RectangleHitbox.fromRect(34.47, 2.09, Vec.create(18.77, -6.66)),
-            RectangleHitbox.fromRect(2.07, 37, Vec.create(-36.01, -2.5)),
-            RectangleHitbox.fromRect(35.39, 2.09, Vec.create(-19.35, 16.52)),
-            RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
-        ).toJSON().hitboxes
+            RectangleHitbox.fromRect(1.47, 102.18, Vec.create(129.93, 73.42)),
+            RectangleHitbox.fromRect(126.01, 1.5, Vec.create(67.66, 123.77)),
+            RectangleHitbox.fromRect(84.61, 1.48, Vec.create(88.35, 74.7)),
+            RectangleHitbox.fromRect(74.74, 1.52, Vec.create(-113.86, -33.25)),
+            RectangleHitbox.fromRect(1.49, 8.59, Vec.create(-15.17, 65.39)),
+            RectangleHitbox.fromRect(84.61, 1.49, Vec.create(88.35, 49.55)),
+            RectangleHitbox.fromRect(1.51, 56, Vec.create(-77.24, -5)),
+            RectangleHitbox.fromRect(207.5, 1.5, Vec.create(25.75, 23.08)),
+            RectangleHitbox.fromRect(84.61, 1.49, Vec.create(88.35, 98.77)),
+            RectangleHitbox.fromRect(21.42, 1.48, Vec.create(-5.21, 61.83)),
+            RectangleHitbox.fromRect(1.47, 63.43, Vec.create(5.4, 92.81)),
+            RectangleHitbox.fromRect(1.49, 8.6, Vec.create(-42.55, 65.39)),
+            RectangleHitbox.fromRect(33, 1.48, Vec.create(-59, 61.83)),
+            RectangleHitbox.fromRect(1.44, 8.6, Vec.create(-75.61, 65.39)),
+            RectangleHitbox.fromRect(1.46, 8.6, Vec.create(-102.97, 65.39)),
+            RectangleHitbox.fromRect(13, 1.48, Vec.create(-110, 61.83)),
+            RectangleHitbox.fromRect(1.46, 55.47, Vec.create(-116.51, 34.84)),
+            RectangleHitbox.fromRect(35.45, 1.47, Vec.create(-133.5, 7.85))
+        ).transform(Vec.create(4.5, 0)).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -95,7 +98,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/armory_decal.svg");
+    const bgImage = loadImage("/img/game/buildings/port_floor.svg");
 
 </script>
 
@@ -167,7 +170,7 @@
         {/if}
 
         <textarea class="output" on:keyup={onOutputInput}>{JSON.stringify(hitboxes, null, 1)}</textarea>
-        <textarea class="output">{hitboxesStr}</textarea>  
+        <textarea class="output">{hitboxesStr}</textarea>
     </div>
 
     <div
