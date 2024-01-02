@@ -1,4 +1,4 @@
-import { Vec, type Vector } from "../../common/src/utils/vector";
+import { type Vector } from "../../common/src/utils/vector";
 import { type Maps } from "./data/maps";
 
 export enum SpawnMode {

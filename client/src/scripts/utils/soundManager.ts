@@ -191,7 +191,8 @@ export class SoundManager {
 
             throwable_pin: "audio/sfx/throwable_pin",
             throwable_throw: "audio/sfx/throwable_throw",
-            explosion: "audio/sfx/explosion",
+            frag_grenade: "audio/sfx/frag_grenade",
+            smoke_grenade: "audio/sfx/smoke_grenade",
 
             button_press: "audio/sfx/button_press",
             puzzle_error: "audio/sfx/puzzle_error",

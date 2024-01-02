@@ -251,7 +251,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 rangeVariance: 1,
                 shrapnel: true
             },
-            sound: "explosion",
+            sound: "frag_grenade",
             decal: "frag_explosion_decal"
         },
         {
@@ -281,6 +281,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 rangeVariance: 0,
                 shrapnel: false
             },
+            sound: "smoke_grenade",
             decal: "smoke_explosion_decal"
         }
     ]
