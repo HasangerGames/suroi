@@ -85,27 +85,6 @@ export const Numeric = Object.freeze({
         return value < max ? value > min ? value : min : max;
     },
     /**
-     * Snaps a value to either bounds, unless it's precisely halfway between them
-     * @param value The value to snap
-     * @param min The smallest snap value
-     * @param max The largest snap value
-     * @returns Either the `min`, `max` or the original value if it happens to be
-     * exactly halfway between `min` and `max`
-     */
-    clampToBound(value: number, min: number, max: number): number {
-        const mid = (min + max) / 2;
-        switch (true) {
-            case value >= max:
-            case value > mid:
-                return max;
-            case value <= min:
-            case value < mid:
-                return min;
-            default:
-                return value;
-        }
-    },
-    /**
      * Add two orientations
      * @param n1 The first orientation
      * @param n2 The second orientation
@@ -686,30 +665,71 @@ export function calculateDoorHitboxes<
     }
 }
 
-// Credit to https://easings.net/
+type NameGenerator<T extends string> = `${T}In` | `${T}Out` | `${T}InOut`;
+
+function generatePolynomialEasingTriplet<T extends string>(degree: number, type: T): { readonly [K in NameGenerator<T>]: (t: number) => number } {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return Object.freeze({
+        [`${type}In`]: (t: number) => t ** degree,
+        [`${type}Out`]: (t: number) => 1 - (1 - t) ** degree,
+        [`${type}InOut`]: (t: number) => t < 0.5
+            ? (2 * t) ** degree / 2
+            : 1 - (2 * (1 - t)) ** degree / 2
+    } as { [K in NameGenerator<T>]: (t: number) => number });
+}
+
+export type EasingFunction = (t: number) => number;
+
+/**
+ * A collection of functions for easing, based on
+ * [this helpful reference](https://easings.net) and others
+ */
 export const EaseFunctions = Object.freeze({
-    linear: (x: number) => x,
-    quartIn: (x: number) => x * x * x * x,
-    sextIn: (x: number) => Math.pow(x, 6),
-    sineIn: (x: number) => 1 - Math.cos(x * Math.PI / 2),
-    sineOut: (x: number) => Math.sin(x * Math.PI / 2),
-    expoOut: (x: number): number => x === 1 ? 1 : 1 - Math.pow(2, -10 * x),
-    elasticOut: (x: number): number => {
-        const c4 = (2 * Math.PI) / 3;
+    linear: (t: number) => t,
 
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
-    },
-    backOut: (x: number): number => {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
+    sineIn: (t: number) => 1 - Math.cos(t * Math.PI / 2),
+    sineOut: (t: number) => Math.sin(t * Math.PI / 2),
+    sineInOut: (t: number) => (1 - Math.cos(Math.PI * t)) / 2,
 
-        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-    },
-    outCubic: (x: number): number => {
-        return 1 - Math.pow(1 - x, 3);
-    }
+    circIn: (t: number) => 1 - Math.sqrt(1 - (t * t)),
+    circOut: (t: number) => Math.sqrt(1 - (t - 1) ** 2),
+    circInOut: (t: number) => t < 0.5
+        ? (1 - Math.sqrt(1 - (2 * t) ** 2)) / 2
+        : (Math.sqrt(1 - (-2 * (1 - t)) ** 2) + 1) / 2,
+
+    elasticIn: (t: number) => t === 0 || t === 1
+        ? t
+        : -(2 ** (10 * (t - 1))) * Math.sin(Math.PI * (40 * (t - 1) - 3) / 6),
+    elasticOut: (t: number) => t === 0 || t === 1
+        ? t
+        : 2 ** (-10 * t) * Math.sin(Math.PI * (40 * t - 3) / 6) + 1,
+    elasticInOut: (t: number) => t === 0 || t === 1
+        ? t
+        : t < 0.5
+            ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(Math.PI * (80 * (2 * t - 1) - 9) / 18)
+            : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(Math.PI * (80 * (2 * t - 1) - 9) / 18) + 1,
+
+    ...generatePolynomialEasingTriplet(2, "quadratic"),
+    ...generatePolynomialEasingTriplet(3, "cubic"),
+    ...generatePolynomialEasingTriplet(4, "quartic"),
+    ...generatePolynomialEasingTriplet(5, "quintic"),
+    ...generatePolynomialEasingTriplet(6, "sextic"),
+
+    expoIn: (t: number) => t <= 0
+        ? 0
+        : 2 ** (-10 * (1 - t)),
+    expoOut: (t: number) => t >= 1
+        ? 1
+        : 1 - 2 ** -(10 * t),
+    expoInOut: (t: number) => t === 0 || t === 1
+        ? t
+        : t < 0.5
+            ? 2 ** (10 * (2 * t - 1) - 1)
+            : 1 - 2 ** (-10 * (2 * t - 1) - 1),
+
+    backIn: (t: number) => (Math.sqrt(3) * (t - 1) + t) * t ** 2,
+    backOut: (t: number) => 1 + ((Math.sqrt(3) + 1) * t - 1) * (t - 1) ** 2,
+    backInOut: (t: number) => t < 0.5
+        ? 4 * t * t * (3.6 * t - 1.3)
+        : 4 * (t - 1) ** 2 * (3.6 * t - 2.3) + 1
 });

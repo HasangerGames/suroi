@@ -235,7 +235,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     alpha: {
                         start: 1,
                         end: 0,
-                        ease: EaseFunctions.sextIn
+                        ease: EaseFunctions.sexticIn
                     },
                     scale: { start: 1, end: 0.2 },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))

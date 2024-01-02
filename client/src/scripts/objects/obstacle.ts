@@ -107,12 +107,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             scale: {
                                 start: randomFloat(0.85, 0.95),
                                 end: 0,
-                                ease: EaseFunctions.quartIn
+                                ease: EaseFunctions.quarticIn
                             },
                             alpha: {
                                 start: 1,
                                 end: 0,
-                                ease: EaseFunctions.sextIn
+                                ease: EaseFunctions.sexticIn
                             },
                             rotation: { start: randomRotation(), end: randomRotation() },
                             speed: Vec.fromPolar(randomRotation(), randomFloat(minSpeed, maxSpeed))
@@ -200,12 +200,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     scale: {
                         start: randomFloat(0.85, 0.95),
                         end: 0,
-                        ease: EaseFunctions.quartIn
+                        ease: EaseFunctions.quarticIn
                     },
                     alpha: {
                         start: 1,
                         end: 0,
-                        ease: EaseFunctions.sextIn
+                        ease: EaseFunctions.sexticIn
                     },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
                 }));

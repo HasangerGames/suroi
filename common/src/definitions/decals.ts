@@ -5,7 +5,10 @@ import { RotationMode } from "./obstacles";
 export interface DecalDefinition extends ObjectDefinition {
     readonly image?: string
     readonly scale?: number
-    readonly rotationMode?: RotationMode // default is Limited
+    /**
+     * @default {RotationMode.Limited}
+     */
+    readonly rotationMode?: RotationMode
     readonly zIndex?: number
 }
 

@@ -246,7 +246,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         alpha: {
                             start: 1,
                             end: 0,
-                            ease: EaseFunctions.sextIn
+                            ease: EaseFunctions.sexticIn
                         },
                         rotation: {
                             start: initialRotation,

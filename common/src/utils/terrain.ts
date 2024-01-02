@@ -2,11 +2,12 @@ import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
 import { Vec, type Vector } from "./vector";
+
 export interface FloorDefinition {
-    debugColor: number
-    speedMultiplier?: number
-    overlay?: boolean
-    particles?: boolean
+    readonly debugColor: number
+    readonly speedMultiplier?: number
+    readonly overlay?: boolean
+    readonly particles?: boolean
 }
 
 export const FloorTypes: Record<string, FloorDefinition> = {

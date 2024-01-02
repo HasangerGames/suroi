@@ -9,30 +9,37 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
 
     readonly image = new SuroiSprite();
 
+    private _alpha = 1;
+    private _scale = 1;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.SyncedParticle]) {
         super(game, id);
 
         this.container.addChild(this.image);
-        this.updateFromData(data);
+        this.updateFromData(data, true);
     }
 
-    updateFromData(data: ObjectsNetData[ObjectCategory.SyncedParticle], isNew = false): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.SyncedParticle], isNew = false): void {
         const full = data.full;
         if (full) {
             const { variant, definition } = full;
 
             this.image.setFrame(`${definition.idString}${variant !== undefined ? `_${variant}` : ""}`);
-            this.image.setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+            this.container.zIndex = definition.zIndex ?? ZIndexes.ObstaclesLayer1;
         }
+
+        console.log(data.rotation);
 
         this.position = data.position;
         this.rotation = data.rotation;
 
-        this.container.position.copyFrom(toPixiCoords(this.position));
-        this.container.rotation = this.rotation;
+        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
+            this.container.position = toPixiCoords(this.position);
+            this.container.rotation = this.rotation;
+        }
 
-        this.image.setAlpha(data.alpha ?? 1);
-        this.image.setScale(data.scale ?? 1);
+        this.container.alpha = this._alpha = data.alpha ?? this._alpha;
+        this.container.scale.set(this._scale = data.scale ?? this._scale);
     }
 
     override destroy(): void {

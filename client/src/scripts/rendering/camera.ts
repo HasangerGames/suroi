@@ -55,7 +55,7 @@ export class Camera {
                 target: this.container.scale,
                 to: { x: scale, y: scale },
                 duration: 800,
-                ease: EaseFunctions.outCubic
+                ease: EaseFunctions.cubicOut
             });
         } else {
             this.container.scale.set(scale);
