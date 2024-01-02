@@ -18,20 +18,22 @@ export type ValueSpecifier<T> = T | MinMax<T> | MeanDeviation<T>;
 export type NumericSpecifier = ValueSpecifier<number>;
 export type VectorSpecifier = ValueSpecifier<Vector>;
 
-export interface Animation<T> extends MinMax<T> {
-    readonly duration: NumericSpecifier | "lifetime"
-    readonly easing: keyof typeof EaseFunctions
+export interface Animated<T> {
+    readonly start: ValueSpecifier<T>
+    readonly end: ValueSpecifier<T>
+    readonly duration?: NumericSpecifier | "lifetime"
+    readonly easing?: keyof typeof EaseFunctions
 }
 
 export interface SyncedParticleDefinition extends ObjectDefinition {
     /**
      * @default {1}
      */
-    readonly scale?: Animation<number> | NumericSpecifier
+    readonly scale?: Animated<number> | NumericSpecifier
     /**
      * @default {1}
      */
-    readonly alpha?: Animation<number> | NumericSpecifier
+    readonly alpha?: Animated<number> | NumericSpecifier
     /**
      * @default {Infinity}
      */
@@ -43,7 +45,7 @@ export interface SyncedParticleDefinition extends ObjectDefinition {
     /**
      * @default {Vec.create(0,0)}
      */
-    readonly velocity?: Animation<Vector> | VectorSpecifier
+    readonly velocity?: Animated<Vector> | VectorSpecifier
     /**
      * @default {undefined}
      */
@@ -58,6 +60,42 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
     {
         idString: "smoke_grenade_particle",
         name: "Smoke grenade particle",
+        scale: {
+            start: {
+                min: 1.5,
+                max: 2
+            },
+            end: {
+                min: 1.75,
+                max: 2.25
+            }
+        },
+        alpha: {
+            start: {
+                min: 0.95,
+                max: 1
+            },
+            end: 0,
+            easing: "expoIn"
+        },
+        angularVelocity: {
+            min: -0.0005,
+            max: 0.0005
+        },
+        velocity: {
+            min: {
+                x: -0.0002,
+                y: -0.0002
+            },
+            max: {
+                x: 0.0002,
+                y: 0.0002
+            }
+        },
+        lifetime: {
+            mean: 20000,
+            deviation: 1000
+        },
         zIndex: ZIndexes.ObstaclesLayer4
     }
 ]);

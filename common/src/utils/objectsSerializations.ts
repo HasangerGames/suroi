@@ -475,7 +475,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             const writeAlpha = data.alpha !== undefined;
             stream.writeBoolean(writeAlpha);
-            if (writeScale) {
+            if (writeAlpha) {
                 stream.writeFloat(data.alpha!, 0, 1, 16);
             }
         },

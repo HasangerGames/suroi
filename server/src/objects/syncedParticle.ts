@@ -1,7 +1,7 @@
 import { GameConstants, ObjectCategory } from "../../../common/src/constants";
-import { type Animation, type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "../../../common/src/definitions/syncedParticles";
+import { type Animated, type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "../../../common/src/definitions/syncedParticles";
 import { type Variation } from "../../../common/src/typings";
-import { EaseFunctions, Numeric } from "../../../common/src/utils/math";
+import { Angle, EaseFunctions, Numeric, type EasingFunction } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { random, randomFloat } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -34,38 +34,45 @@ function resolveVectorSpecifier(vectorSpecifier: VectorSpecifier): Vector {
     );
 }
 
+interface InternalAnimation<T> {
+    readonly start: T
+    readonly end: T
+    readonly duration: number
+    readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
+}
+
 export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle> {
     readonly type = ObjectCategory.SyncedParticle;
 
     alpha: number;
     alphaActive = false;
-    private readonly _alphaAnim?: Omit<Animation<number>, "duration" | "easing"> & {
-        readonly duration: number
-        readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
-    };
+    private readonly _alphaAnim?: InternalAnimation<number>;
 
     scale: number;
     scaleActive = false;
-    private readonly _scaleAnim?: Omit<Animation<number>, "duration" | "easing"> & {
-        readonly duration: number
-        readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
-    };
+    private readonly _scaleAnim?: InternalAnimation<number>;
 
     angularVelocity = 0;
 
+    private _firstPacket = true;
+
     readonly definition: SyncedParticleDefinition;
 
-    private readonly _creationDate: number;
-    private readonly _lifetime: number;
-
-    private readonly _velocityAnim?: Omit<Animation<Vector>, "duration" | "easing"> & {
-        readonly duration: number
-        readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
-    };
+    readonly _creationDate: number;
+    readonly _lifetime: number;
 
     private _velocity: Vector;
+    private readonly _velocityAnim?: InternalAnimation<Vector>;
 
     private readonly variant?: Variation;
+
+    private _target?: {
+        readonly target: Vector
+        readonly _currentPosition: Vector
+        readonly _start: number
+        readonly easing: EasingFunction
+        readonly duration: number
+    };
 
     constructor(game: Game, definition: SyncedParticleDefinition, position: Vector) {
         super(game, position);
@@ -74,42 +81,56 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
 
         this._lifetime = resolveNumericSpecifier(definition.lifetime ?? Infinity);
 
-        if (typeof definition.alpha === "object" && "duration" in definition.alpha) {
+        const resolveDuration = (duration: Animated<unknown>["duration"]): number => duration === "lifetime" || duration === undefined
+            ? this._lifetime
+            : resolveNumericSpecifier(duration);
+
+        const { alpha, scale, velocity } = definition;
+
+        if (typeof alpha === "object" && "start" in alpha) {
+            const easingFn = EaseFunctions[alpha.easing ?? "linear"];
             this._alphaAnim = {
-                ...definition.alpha,
-                easing: EaseFunctions[definition.alpha.easing],
-                duration: definition.alpha.duration === "lifetime" ? this._lifetime : resolveNumericSpecifier(definition.alpha.duration)
+                start: resolveNumericSpecifier(alpha.start),
+                end: resolveNumericSpecifier(alpha.end),
+                easing: easingFn,
+                duration: resolveDuration(alpha.duration)
             };
 
-            this.alpha = Numeric.lerp(definition.alpha.min, definition.alpha.max, EaseFunctions[definition.alpha.easing](0));
+            this.alpha = Numeric.lerp(this._alphaAnim.start, this._alphaAnim.end, easingFn(0));
+            this.alphaActive = true;
         } else {
-            this.alpha = resolveNumericSpecifier(definition.alpha ?? 1);
+            this.alpha = resolveNumericSpecifier(alpha ?? 1);
         }
 
-        if (typeof definition.scale === "object" && "duration" in definition.scale) {
+        if (typeof scale === "object" && "start" in scale) {
+            const easingFn = EaseFunctions[scale.easing ?? "linear"];
             this._scaleAnim = {
-                ...definition.scale,
-                easing: EaseFunctions[definition.scale.easing],
-                duration: definition.scale.duration === "lifetime" ? this._lifetime : resolveNumericSpecifier(definition.scale.duration)
+                start: resolveNumericSpecifier(scale.start),
+                end: resolveNumericSpecifier(scale.end),
+                easing: easingFn,
+                duration: resolveDuration(scale.duration)
             };
 
-            this.scale = Numeric.lerp(definition.scale.min, definition.scale.max, EaseFunctions[definition.scale.easing](0));
+            this.scale = Numeric.lerp(this._scaleAnim.start, this._scaleAnim.end, easingFn(0));
+            this.scaleActive = true;
         } else {
-            this.scale = resolveNumericSpecifier(definition.scale ?? 1);
+            this.scale = resolveNumericSpecifier(scale ?? 1);
         }
 
         this.angularVelocity = resolveNumericSpecifier(definition.angularVelocity ?? 0);
 
-        if (typeof definition.velocity === "object" && "duration" in definition.velocity) {
+        if (typeof velocity === "object" && "start" in velocity) {
+            const easingFn = EaseFunctions[velocity.easing ?? "linear"];
             this._velocityAnim = {
-                ...definition.velocity,
-                easing: EaseFunctions[definition.velocity.easing],
-                duration: definition.velocity.duration === "lifetime" ? this._lifetime : resolveNumericSpecifier(definition.velocity.duration)
+                start: resolveVectorSpecifier(velocity.start),
+                end: resolveVectorSpecifier(velocity.end),
+                easing: easingFn,
+                duration: resolveDuration(velocity.duration)
             };
 
-            this._velocity = Vec.lerp(definition.velocity.min, definition.velocity.max, EaseFunctions[definition.velocity.easing](0));
+            this._velocity = Vec.lerp(this._velocityAnim.start, this._velocityAnim.end, easingFn(0));
         } else {
-            this._velocity = resolveVectorSpecifier(definition.velocity ?? Vec.create(0, 0));
+            this._velocity = resolveVectorSpecifier(velocity ?? Vec.create(0, 0));
         }
 
         if (definition.variations !== undefined) {
@@ -119,46 +140,76 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
 
     override damage(amount: number, source?: unknown): void {}
 
+    setTarget(target: Vector, timespan: number, easing: EasingFunction): void {
+        this._target = {
+            target,
+            _start: this.game.now,
+            _currentPosition: Vec.clone(this._position),
+            easing,
+            duration: timespan
+        };
+    }
+
+    deleteTarget(): void {
+        this._target = undefined;
+    }
+
     update(): void {
         const age = this.game.now - this._creationDate;
         if (age > this._lifetime) {
             this.game.removeSyncedParticle(this);
+            return;
         }
+
+        this.game.partialDirtyObjects.add(this);
 
         const dt = GameConstants.msPerTick;
 
-        this._rotation += this.angularVelocity * dt;
+        this._rotation = Angle.normalize(this._rotation + this.angularVelocity * dt);
 
-        const velocityAnim = this._velocityAnim;
-        if (velocityAnim) {
-            const halfDt = dt / 2;
+        const target = this._target;
+        if (target) {
+            const targetInterp = (this.game.now - target._start) / target.duration;
 
-            this._position = Vec.add(
-                this._position,
-                Vec.scale(this._velocity, halfDt)
+            this._position = Vec.lerp(
+                target._currentPosition,
+                target.target,
+                target.easing(targetInterp)
             );
 
-            this._velocity = Vec.lerp(velocityAnim.min, velocityAnim.max, velocityAnim.easing(age / velocityAnim.duration));
-
-            this._position = Vec.add(
-                this._position,
-                Vec.scale(this._velocity, halfDt)
-            );
+            if (targetInterp >= 1) this.deleteTarget();
         } else {
-            this._position = Vec.add(
-                this._position,
-                Vec.scale(this._velocity, dt)
-            );
+            const velocityAnim = this._velocityAnim;
+            if (velocityAnim) {
+                const halfDt = dt / 2;
+
+                this._position = Vec.add(
+                    this._position,
+                    Vec.scale(this._velocity, halfDt)
+                );
+
+                this._velocity = Vec.lerp(velocityAnim.start, velocityAnim.end, velocityAnim.easing(age / velocityAnim.duration));
+
+                this._position = Vec.add(
+                    this._position,
+                    Vec.scale(this._velocity, halfDt)
+                );
+            } else {
+                this._position = Vec.add(
+                    this._position,
+                    Vec.scale(this._velocity, dt)
+                );
+            }
         }
 
         const alphaAnim = this._alphaAnim;
         if (alphaAnim) {
-            this.alpha = Numeric.lerp(alphaAnim.min, alphaAnim.max, alphaAnim.easing(age / alphaAnim.duration));
+            this.alpha = Numeric.lerp(alphaAnim.start, alphaAnim.end, alphaAnim.easing(age / alphaAnim.duration));
         }
 
         const scaleAnim = this._scaleAnim;
         if (scaleAnim) {
-            this.scale = Numeric.lerp(scaleAnim.min, scaleAnim.max, scaleAnim.easing(age / scaleAnim.duration));
+            this.scale = Numeric.lerp(scaleAnim.start, scaleAnim.end, scaleAnim.easing(age / scaleAnim.duration));
         }
     }
 
@@ -172,8 +223,10 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         };
 
         if (this.variant !== undefined) data.full.variant = this.variant;
-        if (this.alphaActive) data.alpha = this.alpha;
-        if (this.scaleActive) data.scale = this.scale;
+        if (this.alphaActive || this._firstPacket) data.alpha = this.alpha;
+        if (this.scaleActive || this._firstPacket) data.scale = this.scale;
+
+        this._firstPacket = false;
 
         return data;
     }

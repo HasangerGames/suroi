@@ -424,6 +424,11 @@ export class Game {
                 projectile.updateContainerPosition();
                 projectile.updateContainerRotation();
             }
+
+            for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
+                syncedParticle.updateContainerPosition();
+                syncedParticle.updateContainerRotation();
+            }
         }
 
         for (const tween of this.tweens) tween.update();
