@@ -908,7 +908,7 @@ const GunsRaw: RawGunDefinition[] = [
         name: "Vector",
         itemType: ItemType.Gun,
         ammoType: "9mm",
-        ammoSpawnAmount: Infinity,
+        ammoSpawnAmount: 99,
         capacity: 33,
         reloadTime: 1.7,
         fireDelay: 35,
