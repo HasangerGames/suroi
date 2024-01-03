@@ -12,6 +12,10 @@ export type DeepRequired<T> = T extends Array<infer R>
         [K in keyof T]-?: DeepRequired<NonNullable<T[K]>>;
     };
 
+export type DeepReadonly<T> = {
+    readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+
 export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPartial<T>>): T {
     if (!sources.length) return target;
 
@@ -45,6 +49,20 @@ export function cloneDeep<T>(object: T): T {
     }
 
     return clone;
+}
+
+export function freezeDeep<T>(object: T): DeepReadonly<T> {
+    Object.freeze(object);
+
+    for (const key in object) {
+        const value = object[key];
+
+        if (typeof value === "object" && value !== null) {
+            freezeDeep(value);
+        }
+    }
+
+    return object;
 }
 
 export class Timeout {

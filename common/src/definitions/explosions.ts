@@ -19,9 +19,9 @@ export interface ExplosionDefinition extends ObjectDefinition {
     }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
 
+    readonly decal?: ReferenceTo<DecalDefinition>
     readonly shrapnelCount: number
     readonly ballistics: BaseBulletDefinition
-    readonly decal?: ReferenceTo<DecalDefinition>
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
@@ -223,6 +223,65 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             sound: "usas_explosion",
             decal: "explosion_decal"
+        },
+        {
+            idString: "frag_explosion",
+            name: "Frag Grenade",
+            damage: 150,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 10,
+                max: 25
+            },
+            cameraShake: {
+                duration: 200,
+                intensity: 30
+            },
+            animation: {
+                duration: 1000,
+                tint: 0x91140b,
+                scale: 1.5
+            },
+            shrapnelCount: 15,
+            ballistics: {
+                damage: 4,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            sound: "frag_grenade",
+            decal: "frag_explosion_decal"
+        },
+        {
+            idString: "smoke_explosion",
+            name: "Smoke grenade",
+            damage: 0,
+            obstacleMultiplier: 0,
+            radius: {
+                min: 0,
+                max: 0
+            },
+            cameraShake: {
+                duration: 0,
+                intensity: 0
+            },
+            animation: {
+                duration: 500,
+                tint: 0x8A7C7B,
+                scale: 0.5
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 0,
+                obstacleMultiplier: 0,
+                speed: 0,
+                range: 0,
+                shrapnel: false
+            },
+            sound: "smoke_grenade",
+            decal: "smoke_explosion_decal"
         }
     ]
 );

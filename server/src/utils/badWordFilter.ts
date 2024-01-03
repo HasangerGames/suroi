@@ -1,6 +1,6 @@
 /* eslint-disable no-multi-spaces */
 const badWordRegexes: RegExp[] = [
-    /n[i1l!]+[g693]+[e3]*[ra@]*/i,     // N word
+    /n[i1l!]+[g693]+[e3]*[ra@]*/i,    // N word
     /f[a@4]+[g9]+[s$5z2]+[o0]+[t+]*/i // F slur
 ];
 

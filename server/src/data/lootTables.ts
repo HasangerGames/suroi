@@ -41,7 +41,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
             { tier: "melee", weight: 0.04 },
-            { tier: "winter_skins", weight: 0.4 } // winter mode
+            //{ tier: "winter_skins", weight: 0.4 }, // winter mode
+            { tier: "throwables", weight: 0.3 }
         ]
     },
     aegis_crate: {
@@ -69,6 +70,13 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "melee", weight: 1 }
+        ]
+    },
+    grenade_crate: {
+        min: 3,
+        max: 4,
+        loot: [
+            { tier: "throwables", weight: 1 }
         ]
     },
     tango_crate: {
@@ -237,6 +245,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "stoner_63", weight: 1 }
         ]
     },
+    gun_mount_maul: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "maul", weight: 1 }
+        ]
+    },
     gas_can: {
         min: 1,
         max: 1,
@@ -318,6 +333,40 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_scopes", weight: 0.3 },
             { item: "radio", weight: 0.1 }
         ]
+    },
+    gun_case: {
+        min: 2,
+        max: 2,
+        loot: [
+            { tier: "special_guns", weight: 1 }
+        ]
+    },
+    ammo_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 }
+        ]
+    },
+    cabinet: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "special_guns", weight: 1 },
+            { tier: "special_healing_items", weight: 0.65 },
+            { tier: "special_equipment", weight: 0.65 },
+            { tier: "special_scopes", weight: 0.3 }
+        ]
+    },
+    briefcase: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "vector", weight: 3 },
+            { item: "arx160", weight: 1 },
+            { item: "vepr12", weight: 1 },
+            { item: "g19", weight: 0.1 }
+        ]
     }
 };
 
@@ -377,6 +426,10 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "556mm", count: 60, weight: 1 },
         { item: "762mm", count: 60, weight: 1 },
         { item: "9mm", count: 60, weight: 1 }
+    ],
+    throwables: [
+        { item: "frag_grenade", count: 2, weight: 1 },
+        { item: "smoke_grenade", count: 2, weight: 1 }
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },

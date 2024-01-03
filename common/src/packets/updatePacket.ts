@@ -5,8 +5,7 @@ import { type GunDefinition } from "../definitions/guns";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { ItemType } from "../utils/objectDefinitions";
-import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
+import { type FullData, ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
@@ -14,7 +13,7 @@ import { Packet } from "./packet";
 interface ObjectFullData {
     readonly id: number
     readonly type: ObjectCategory
-    readonly data: Required<ObjectsNetData[ObjectFullData["type"]]>
+    readonly data: FullData<ObjectFullData["type"]>
 }
 
 interface ObjectPartialData {
@@ -32,6 +31,7 @@ export interface PlayerData {
         items: boolean
         id: boolean
         zoom: boolean
+        throwable: boolean
     }
 
     id: number
@@ -50,7 +50,7 @@ export interface PlayerData {
         activeWeaponIndex: number
         weapons?: Array<undefined | {
             definition: WeaponDefinition
-            ammo?: number
+            count?: number
             stats?: {
                 kills?: number
             }
@@ -91,18 +91,21 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         stream.writeBoolean(data.spectating);
     }
 
+    const inventory = data.inventory;
     stream.writeBoolean(dirty.weapons);
     if (dirty.weapons) {
-        stream.writeBits(data.inventory.activeWeaponIndex, 2);
+        stream.writeBits(inventory.activeWeaponIndex, 2);
 
-        for (const weapon of data.inventory.weapons ?? []) {
+        for (const weapon of inventory.weapons ?? []) {
             stream.writeBoolean(weapon !== undefined);
 
             if (weapon !== undefined) {
                 Loots.writeToStream(stream, weapon.definition);
 
-                if (weapon.definition.itemType === ItemType.Gun) {
-                    stream.writeUint8(weapon.ammo!);
+                const hasCount = weapon.count !== undefined;
+                stream.writeBoolean(hasCount);
+                if (hasCount) {
+                    stream.writeUint8(weapon.count!);
                 }
 
                 if (weapon.definition.killstreak !== undefined) {
@@ -114,8 +117,8 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 
     stream.writeBoolean(dirty.items);
     if (dirty.items) {
-        for (const item in data.inventory.items) {
-            const count = data.inventory.items[item];
+        for (const item in DEFAULT_INVENTORY) {
+            const count = inventory.items[item];
 
             stream.writeBoolean(count > 0);
 
@@ -124,7 +127,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             }
         }
 
-        Scopes.writeToStream(stream, data.inventory.scope);
+        Scopes.writeToStream(stream, inventory.scope);
     }
 }
 
@@ -135,27 +138,23 @@ interface PreviousData {
 }
 
 function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousData): PlayerData {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions */
+    /* eslint-disable @typescript-eslint/consistent-type-assertions, no-cond-assign */
     const data = {
         dirty: {},
         inventory: {}
     } as PlayerData;
 
-    data.dirty.maxMinStats = stream.readBoolean();
-
-    if (data.dirty.maxMinStats) {
+    if (data.dirty.maxMinStats = stream.readBoolean()) {
         data.maxHealth = stream.readFloat32();
         data.minAdrenaline = stream.readFloat32();
         data.maxAdrenaline = stream.readFloat32();
     }
 
-    data.dirty.health = stream.readBoolean();
-    if (data.dirty.health) {
+    if (data.dirty.health = stream.readBoolean()) {
         data.health = stream.readFloat(0, data.maxHealth ?? previousData.maxHealth, 12);
     }
 
-    data.dirty.adrenaline = stream.readBoolean();
-    if (data.dirty.adrenaline) {
+    if (data.dirty.adrenaline = stream.readBoolean()) {
         data.adrenaline = stream.readFloat(
             data.minAdrenaline ?? previousData.minAdrenaline,
             data.maxAdrenaline ?? previousData.maxAdrenaline,
@@ -163,33 +162,28 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         );
     }
 
-    data.dirty.zoom = stream.readBoolean();
-    if (data.dirty.zoom) {
+    if (data.dirty.zoom = stream.readBoolean()) {
         data.zoom = stream.readUint8();
     }
 
-    data.dirty.id = stream.readBoolean();
-
-    if (data.dirty.id) {
+    if (data.dirty.id = stream.readBoolean()) {
         data.id = stream.readObjectID();
         data.spectating = stream.readBoolean();
     }
 
-    data.dirty.weapons = stream.readBoolean();
-    if (data.dirty.weapons) {
+    if (data.dirty.weapons = stream.readBoolean()) {
         data.inventory.activeWeaponIndex = stream.readBits(2);
 
-        data.inventory.weapons = new Array(GameConstants.player.maxWeapons).fill(undefined);
+        const maxWeapons = GameConstants.player.maxWeapons;
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
-            const hasItem = stream.readBoolean();
-
-            if (hasItem) {
+        data.inventory.weapons = Array.from({ length: maxWeapons }, () => undefined);
+        for (let i = 0; i < maxWeapons; i++) {
+            if (stream.readBoolean()) { // has item
                 const definition = Loots.readFromStream<WeaponDefinition>(stream);
 
                 data.inventory.weapons[i] = {
                     definition,
-                    ammo: definition.itemType === ItemType.Gun ? stream.readUint8() : undefined,
+                    count: stream.readBoolean() ? stream.readUint8() : undefined,
                     stats: {
                         kills: definition.killstreak ? stream.readBits(7) : undefined
                     }
@@ -198,8 +192,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         }
     }
 
-    data.dirty.items = stream.readBoolean();
-    if (data.dirty.items) {
+    if (data.dirty.items = stream.readBoolean()) {
         data.inventory.items = {};
 
         for (const item in DEFAULT_INVENTORY) {
@@ -394,7 +387,7 @@ export class UpdatePacket extends Packet {
 
     gas?: {
         readonly state: GasState
-        readonly initialDuration: number
+        readonly currentDuration: number
         readonly oldPosition: Vector
         readonly newPosition: Vector
         readonly oldRadius: number
@@ -402,7 +395,7 @@ export class UpdatePacket extends Packet {
         readonly dirty: boolean
     };
 
-    gasPercentage?: {
+    gasProgress?: {
         readonly dirty: boolean
         readonly value: number
     };
@@ -440,7 +433,7 @@ export class UpdatePacket extends Packet {
             (+!!this.explosions.size && UpdateFlags.Explosions) |
             (+!!this.emotes.size && UpdateFlags.Emotes) |
             (+!!this.gas?.dirty && UpdateFlags.Gas) |
-            (+!!this.gasPercentage?.dirty && UpdateFlags.GasPercentage) |
+            (+!!this.gasProgress?.dirty && UpdateFlags.GasPercentage) |
             (+!!this.newPlayers.size && UpdateFlags.NewPlayers) |
             (+!!this.deletedPlayers.size && UpdateFlags.DeletedPlayers) |
             (+!!this.aliveCountDirty && UpdateFlags.AliveCount) |
@@ -503,7 +496,7 @@ export class UpdatePacket extends Packet {
         if (flags & UpdateFlags.Gas) {
             const gas = this.gas!;
             stream.writeBits(gas.state, 2);
-            stream.writeBits(gas.initialDuration, 7);
+            stream.writeBits(gas.currentDuration, 7);
             stream.writePosition(gas.oldPosition);
             stream.writePosition(gas.newPosition);
             stream.writeFloat(gas.oldRadius, 0, 2048, 16);
@@ -511,7 +504,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.GasPercentage) {
-            stream.writeFloat(this.gasPercentage!.value, 0, 1, 16);
+            stream.writeFloat(this.gasProgress!.value, 0, 1, 16);
         }
 
         if (flags & UpdateFlags.NewPlayers) {
@@ -644,7 +637,7 @@ export class UpdatePacket extends Packet {
             this.gas = {
                 dirty: true,
                 state: stream.readBits(2),
-                initialDuration: stream.readBits(7),
+                currentDuration: stream.readBits(7),
                 oldPosition: stream.readPosition(),
                 newPosition: stream.readPosition(),
                 oldRadius: stream.readFloat(0, 2048, 16),
@@ -653,7 +646,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.GasPercentage) {
-            this.gasPercentage = {
+            this.gasProgress = {
                 dirty: true,
                 value: stream.readFloat(0, 1, 16)
             };

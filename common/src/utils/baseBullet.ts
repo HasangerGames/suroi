@@ -1,4 +1,6 @@
+import { ObjectCategory } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
+import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Hitbox } from "./hitbox";
 import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
@@ -15,13 +17,18 @@ export interface BulletOptions {
     readonly clipDistance?: number
 }
 
-interface GameObject {
+type GameObject = {
     readonly position: Vector
     readonly hitbox?: Hitbox
     readonly dead: boolean
     readonly damageable: boolean
     readonly id: number
-}
+} & ({
+    readonly type: ObjectCategory.Obstacle
+    readonly definition: ObstacleDefinition
+} | {
+    readonly type: Exclude<ObjectCategory, ObjectCategory.Obstacle>
+});
 
 interface Collision {
     readonly intersection: {
@@ -102,6 +109,8 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
+            if (object.type === ObjectCategory.Obstacle && object.definition.noBulletCollision) continue;
+
             if (
                 object.damageable && !object.dead &&
                 !(!this.canHitShooter && object.id === this.sourceID) &&

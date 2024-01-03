@@ -1,5 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import { GameConstants, type ObjectCategory } from "../../../../common/src/constants";
+import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -19,43 +20,68 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     debugGraphics!: Graphics;
 
-    oldPosition!: Vector;
-    lastPositionChange!: number;
-    _position!: Vector;
+    private _oldPosition?: Vector;
+    private _lastPositionChange?: number;
+    private _position = Vec.create(0, 0);
+    private _positionManuallySet = false;
     get position(): Vector { return this._position; }
     set position(position: Vector) {
-        if (this._position !== undefined) this.oldPosition = Vec.clone(this._position);
-        this.lastPositionChange = Date.now();
+        if (this._positionManuallySet) {
+            this._oldPosition = Vec.clone(this._position);
+        }
+        this._positionManuallySet = true;
+
+        this._lastPositionChange = Date.now();
         this._position = position;
     }
 
     updateContainerPosition(): void {
-        if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
-        const interpFactor = (Date.now() - this.lastPositionChange) / GameConstants.tps;
-        this.container.position = toPixiCoords(Vec.lerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
+        if (
+            this.destroyed ||
+            this._oldPosition === undefined ||
+            this._lastPositionChange === undefined ||
+            this.container.position === undefined
+        ) return;
+
+        this.container.position = toPixiCoords(
+            Vec.lerp(
+                this._oldPosition,
+                this.position,
+                Math.min(
+                    (Date.now() - this._lastPositionChange) / GameConstants.msPerTick,
+                    1
+                )
+            )
+        );
     }
 
-    oldRotation!: Vector;
-    lastRotationChange!: number;
-    _rotation!: number;
-    rotationVector!: Vector;
+    private _oldRotation?: number;
+    private _lastRotationChange?: number;
+    private _rotationManuallySet = false;
+    private _rotation = 0;
     get rotation(): number { return this._rotation; }
     set rotation(rotation: number) {
-        if (this._rotation !== undefined) {
-            this.oldRotation = Vec.create(Math.cos(this._rotation), Math.sin(this._rotation));
+        if (this._rotationManuallySet) {
+            this._oldRotation = this._rotation;
         }
-        this.lastRotationChange = Date.now();
+        this._rotationManuallySet = true;
+
+        this._lastRotationChange = Date.now();
         this._rotation = rotation;
-        this.rotationVector = Vec.create(Math.cos(this.rotation), Math.sin(this.rotation));
     }
 
     updateContainerRotation(): void {
-        if (this.oldRotation === undefined || this.container.rotation === undefined) return;
-        const interpFactor = (Date.now() - this.lastRotationChange) / GameConstants.tps;
+        if (
+            this._oldRotation === undefined ||
+            this._lastRotationChange === undefined ||
+            this.container.rotation === undefined
+        ) return;
 
-        const interpolated = Vec.lerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
-
-        this.container.rotation = Math.atan2(interpolated.y, interpolated.x);
+        this.container.rotation = Numeric.lerp(
+            this._oldRotation,
+            this._oldRotation + Angle.minimize(this._oldRotation, this._rotation),
+            Math.min(((Date.now() - this._lastRotationChange) / GameConstants.msPerTick), 1)
+        );
     }
 
     dead = false;

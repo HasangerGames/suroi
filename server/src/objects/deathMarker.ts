@@ -1,5 +1,5 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
@@ -15,7 +15,7 @@ export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
         this.game.addTimeout(() => { this.isNew = false; }, 100);
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.DeathMarker]> {
+    override get data(): FullData<ObjectCategory.DeathMarker> {
         return {
             position: this.position,
             isNew: this.isNew,

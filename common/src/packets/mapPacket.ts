@@ -9,7 +9,7 @@ import { Packet } from "./packet";
 type MapObject = {
     readonly position: Vector
     readonly rotation: number
-    readonly scale: number
+    readonly scale?: number
     readonly variation?: Variation
 } & ({
     readonly type: ObjectCategory.Obstacle
@@ -29,14 +29,16 @@ export class MapPacket extends Packet {
     oceanSize!: number;
     beachSize!: number;
 
-    rivers: Array<{ width: number, points: Vector[] }> = [];
+    private _rivers: Array<{ readonly width: number, readonly points: Vector[] }> = [];
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    get rivers() { return this._rivers; }
 
-    readonly objects: MapObject[] = [];
+    private _objects: MapObject[] = [];
+    get objects(): MapObject[] { return this._objects; }
 
-    readonly places: Array<{
-        readonly position: Vector
-        readonly name: string
-    }> = [];
+    private _places: Array<{ readonly position: Vector, readonly name: string }> = [];
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    get places() { return this._places; }
 
     override serialize(): void {
         super.serialize();
@@ -48,8 +50,8 @@ export class MapPacket extends Packet {
         stream.writeUint16(this.oceanSize);
         stream.writeUint16(this.beachSize);
 
-        stream.writeBits(this.rivers.length, 4);
-        for (const river of this.rivers) {
+        stream.writeBits(this._rivers.length, 4);
+        for (const river of this._rivers) {
             stream.writeUint8(river.width);
 
             stream.writeUint8(river.points.length);
@@ -58,16 +60,15 @@ export class MapPacket extends Packet {
             }
         }
 
-        stream.writeUint16(this.objects.length);
+        stream.writeUint16(this._objects.length);
 
-        for (const object of this.objects) {
+        for (const object of this._objects) {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
             switch (object.type) {
                 case ObjectCategory.Obstacle: {
                     Obstacles.writeToStream(stream, object.definition);
-                    stream.writeScale(object.definition.scale.spawnMax);
                     stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
                     if (object.definition.variations !== undefined && object.variation !== undefined) {
                         stream.writeVariation(object.variation);
@@ -81,9 +82,9 @@ export class MapPacket extends Packet {
             }
         }
 
-        stream.writeBits(this.places.length, 4);
+        stream.writeBits(this._places.length, 4);
 
-        for (const place of this.places) {
+        for (const place of this._places) {
             stream.writeASCIIString(place.name, 24);
             stream.writePosition(place.position);
         }
@@ -96,67 +97,66 @@ export class MapPacket extends Packet {
         this.oceanSize = stream.readUint16();
         this.beachSize = stream.readUint16();
 
-        const riverCount = stream.readBits(4);
-        for (let i = 0; i < riverCount; i++) {
-            const width = stream.readUint8();
+        this._rivers = Array.from(
+            { length: stream.readBits(4) },
+            () => ({
+                width: stream.readUint8(),
+                points: Array.from(
+                    { length: stream.readUint8() },
+                    () => stream.readPosition()
+                )
+            })
+        );
 
-            const points = new Array(stream.readUint8());
-            for (let i = 0; i < points.length; i++) {
-                points[i] = stream.readPosition();
-            }
-            this.rivers.push({ width, points });
-        }
+        this._objects = Array.from(
+            { length: stream.readUint16() },
+            // are you have stupid
+            // eslint-disable-next-line array-callback-return
+            () => {
+                const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
+                const position = stream.readPosition();
 
-        const objectCount = stream.readUint16();
-        for (let i = 0; i < objectCount; i++) {
-            const type = stream.readObjectType();
-            const position = stream.readPosition();
+                switch (type) {
+                    case ObjectCategory.Obstacle: {
+                        const definition = Obstacles.readFromStream(stream);
+                        const scale = definition.scale?.spawnMax ?? 1;
+                        const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
-            switch (type) {
-                case ObjectCategory.Obstacle: {
-                    const definition = Obstacles.readFromStream(stream);
-                    const scale = stream.readScale();
-                    const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
-
-                    let variation: Variation | undefined;
-                    if (definition.variations !== undefined) {
-                        variation = stream.readVariation();
+                        let variation: Variation | undefined;
+                        if (definition.variations !== undefined) {
+                            variation = stream.readVariation();
+                        }
+                        return {
+                            position,
+                            type,
+                            definition,
+                            scale,
+                            rotation,
+                            variation
+                        };
                     }
+                    case ObjectCategory.Building: {
+                        const definition = Buildings.readFromStream(stream);
+                        const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
 
-                    this.objects.push({
-                        position,
-                        type,
-                        definition,
-                        scale,
-                        rotation,
-                        variation
-                    });
-                    break;
-                }
-                case ObjectCategory.Building: {
-                    const definition = Buildings.readFromStream(stream);
-                    const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
-
-                    this.objects.push({
-                        position,
-                        type,
-                        definition,
-                        rotation: orientation,
-                        scale: 1
-                    });
-                    break;
+                        return {
+                            position,
+                            type,
+                            definition,
+                            rotation: orientation,
+                            scale: 1
+                        };
+                    }
                 }
             }
-        }
+        );
 
-        for (
-            let i = 0, placesSize = stream.readBits(4);
-            i < placesSize;
-            i++
-        ) {
-            const name = stream.readASCIIString(24);
-            const position = stream.readPosition();
-            this.places.push({ position, name });
-        }
+        this._places = Array.from(
+            { length: stream.readBits(4) },
+            () => ({
+                name: stream.readASCIIString(24),
+                position: stream.readPosition()
+            })
+        );
     }
 }

@@ -55,6 +55,8 @@ class Bot {
 
     ws: WebSocket;
 
+    lastInputPacket?: InputPacket;
+
     constructor(id: number) {
         this.id = id;
         this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}`);
@@ -107,7 +109,9 @@ class Bot {
 
         const inputPacket = new InputPacket();
 
-        inputPacket.movement = this.moving;
+        inputPacket.movement = {
+            ...this.moving
+        };
         inputPacket.attacking = this.shootStart;
         inputPacket.turning = true;
         inputPacket.rotation = this.angle;
@@ -134,9 +138,11 @@ class Bot {
 
         if (action) inputPacket.actions = [action];
 
-        inputPacket.serialize();
-
-        this.ws.send(inputPacket.getBuffer());
+        if (!this.lastInputPacket || inputPacket.didChange(this.lastInputPacket)) {
+            inputPacket.serialize();
+            this.ws.send(inputPacket.getBuffer());
+            this.lastInputPacket = inputPacket;
+        }
     }
 
     updateInputs(): void {

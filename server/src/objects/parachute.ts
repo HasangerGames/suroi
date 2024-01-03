@@ -1,7 +1,7 @@
 import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { Building } from "./building";
@@ -13,44 +13,46 @@ import { Player } from "./player";
 export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
 
-    height = 1;
+    private _height = 1;
+    get height(): number { return this._height; }
 
     hitbox = new CircleHitbox(10);
 
-    startTime = Date.now();
-
     endTime = Date.now() + GameConstants.airdrop.fallTime;
 
-    airdrop: Airdrop;
+    private readonly _airdrop: Airdrop;
 
     constructor(game: Game, position: Vector, airdrop: Airdrop) {
         super(game, position);
         this.hitbox.position = position;
-        this.airdrop = airdrop;
+        this._airdrop = airdrop;
 
         this.game.mapPings.add(this.position);
     }
 
     update(): void {
-        if (this.height < 0) {
+        if (this._height < 0) {
             this.game.removeObject(this);
-            this.game.airdrops.delete(this.airdrop);
+            this.game.airdrops.delete(this._airdrop);
 
-            const crate = this.game.map.generateObstacle(this.airdrop.type, this.position);
+            const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
             // Crush damage
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
-                    if (object instanceof Player) {
-                        object.piercingDamage(GameConstants.airdrop.damage, KillType.Airdrop);
-                    } else if (object instanceof Obstacle) {
-                        object.damage(Infinity, crate);
-                    } else if (
-                        object instanceof Building &&
-                        object.scopeHitbox &&
-                        crate.hitbox.collidesWith(object.scopeHitbox)
-                    ) {
-                        object.damage(Infinity);
+                    switch (true) {
+                        case object instanceof Player: {
+                            object.piercingDamage(GameConstants.airdrop.damage, KillType.Airdrop);
+                            break;
+                        }
+                        case object instanceof Obstacle: {
+                            object.damage(Infinity, crate);
+                            break;
+                        }
+                        case object instanceof Building && object.scopeHitbox?.collidesWith(crate.hitbox): {
+                            object.damage(Infinity);
+                            break;
+                        }
                     }
                 }
             }
@@ -61,9 +63,11 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                     if (loot.hitbox.collidesWith(crate.hitbox)) {
                         loot.hitbox.resolveCollision(crate.hitbox);
                     }
-                    const angle = Angle.angleBetweenPoints(this.position, loot.position);
 
-                    loot.push(angle, -10);
+                    loot.push(
+                        Angle.betweenPoints(this.position, loot.position),
+                        -0.03
+                    );
                 }
             }
 
@@ -72,15 +76,17 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
         const elapsed = this.endTime - this.game.now;
 
-        this.height = Numeric.lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
+        this._height = Numeric.lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
 
         this.game.partialDirtyObjects.add(this);
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Parachute]> {
+    override get data(): FullData<ObjectCategory.Parachute> {
         return {
-            height: this.height,
-            full: { position: this.position }
+            height: this._height,
+            full: {
+                position: this.position
+            }
         };
     }
 

@@ -72,7 +72,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (this.ammo <= 0) {
-            if (owner.inventory.items[definition.ammoType] <= 0) {
+            if (owner.inventory.items.hasItem(definition.ammoType)) {
                 owner.animation.type = AnimationType.GunClick;
                 owner.animation.seq = !owner.animation.seq;
             }
@@ -225,7 +225,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (
             this.definition.infiniteAmmo === true ||
             this.ammo >= this.definition.capacity ||
-            this.owner.inventory.items[this.definition.ammoType] <= 0 ||
+            !this.owner.inventory.items.hasItem(this.definition.ammoType) ||
             this.owner.action !== undefined ||
             this.owner.activeItem !== this ||
             (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay)

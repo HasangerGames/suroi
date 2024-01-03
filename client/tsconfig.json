@@ -17,6 +17,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.js",
-    "../common/src/"
+    "../common/src/",
+    "svelte.config.js"
   ]
 }

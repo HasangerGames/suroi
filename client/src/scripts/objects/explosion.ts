@@ -1,11 +1,12 @@
 import { ZIndexes } from "../../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
+import { EaseFunctions } from "../../../../common/src/utils/math";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector): void {
     const pixiPos = toPixiCoords(position);

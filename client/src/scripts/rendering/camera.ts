@@ -2,7 +2,8 @@ import { Container, type Application, type DisplayObject } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
+import { EaseFunctions } from "../../../../common/src/utils/math";
 
 export class Camera {
     pixi: Application;
@@ -54,7 +55,7 @@ export class Camera {
                 target: this.container.scale,
                 to: { x: scale, y: scale },
                 duration: 800,
-                ease: EaseFunctions.outCubic
+                ease: EaseFunctions.cubicOut
             });
         } else {
             this.container.scale.set(scale);
@@ -65,8 +66,8 @@ export class Camera {
         let position = this.position;
 
         if (this.shaking) {
-            const s = this.shakeIntensity;
-            position = Vec.addComponent(position, randomFloat(-s, s), randomFloat(-s, s));
+            const intensity = this.shakeIntensity;
+            position = Vec.addComponent(position, randomFloat(-intensity, intensity), randomFloat(-intensity, intensity));
             if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
         }
 

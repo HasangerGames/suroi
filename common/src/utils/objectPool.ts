@@ -32,9 +32,9 @@ export class ObjectPool<Mapping extends { [Cat in ObjectCategory]: GameObject<Ca
         Object.values(this._byCategory).forEach(e => e.clear());
     }
 
-    add(object: Mapping[ObjectCategory]): void {
+    add<Cat extends ObjectCategory>(object: Mapping[Cat]): void {
         this._objects.set(object.id, object);
-        (this.getCategory(object.type as ObjectCategory)).add(object);
+        this.getCategory(object.type as Cat).add(object);
     }
 
     delete<Cat extends ObjectCategory>(object: Mapping[Cat]): void {

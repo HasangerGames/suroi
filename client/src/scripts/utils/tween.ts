@@ -91,30 +91,3 @@ export class Tween<T> {
         this.game.tweens.delete(this);
     }
 }
-
-// Credit to https://easings.net/
-export const EaseFunctions = {
-    quartIn: (x: number) => x * x * x * x,
-    sextIn: (x: number) => Math.pow(x, 6),
-    sineIn: (x: number) => 1 - Math.cos((x * Math.PI) / 2),
-    sineOut: (x: number) => Math.sin((x * Math.PI) / 2),
-    expoOut: (x: number): number => x === 1 ? 1 : 1 - Math.pow(2, -10 * x),
-    elasticOut: (x: number): number => {
-        const c4 = (2 * Math.PI) / 3;
-
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
-    },
-    backOut: (x: number): number => {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-
-        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-    },
-    outCubic: (x: number): number => {
-        return 1 - Math.pow(1 - x, 3);
-    }
-};
