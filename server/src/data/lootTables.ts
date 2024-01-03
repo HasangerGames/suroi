@@ -49,7 +49,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "seax", weight: 1 },
+            { item: "seax", weight: 1 }
         ]
     },
     aegis_crate: {

@@ -16,7 +16,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly hideOnMap?: boolean
     readonly scale?: {
         readonly spawnMin: number
-        readonly spawnMax: number 
+        readonly spawnMax: number
         readonly destroy: number
     }
     readonly hitbox: Hitbox
@@ -277,11 +277,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -.4)),
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.4)),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             hideOnMap: true,
-            spawnMode: MapObjectSpawnMode.Beach,
+            spawnMode: MapObjectSpawnMode.Beach
         },
         {
             idString: "pine_tree",
@@ -361,7 +361,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(8),
             rotationMode: RotationMode.Full,
             variations: 5,
-            particleVariations: 2,
+            particleVariations: 2
         },
         {
             idString: "pumpkin",
