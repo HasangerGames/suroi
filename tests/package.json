@@ -16,15 +16,14 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.10.6",
     "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.13.2",
-    "@typescript-eslint/parser": "^6.13.2",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
     "typescript": "5.3.3"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.0",
-    "ws": "^8.15.0"
+    "ws": "^8.16.0"
   }
 }
-
