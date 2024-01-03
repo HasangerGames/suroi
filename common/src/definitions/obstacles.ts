@@ -1891,6 +1891,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(8.15, 17.3, Vec.create(0, -3.8)),
                 RectangleHitbox.fromRect(9.45, 10.6, Vec.create(0, -4.9))
             ),
+            zIndex: ZIndexes.ObstaclesLayer1 - 2,
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1903,6 +1904,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 120,
             indestructible: true,
             hitbox: RectangleHitbox.fromRect(0, 0),
+            zIndex: ZIndexes.ObstaclesLayer1 - 1,
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "crate_particle"
