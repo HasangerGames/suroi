@@ -24,7 +24,7 @@
     "@types/jquery": "^3.5.29",
     "@types/node": "^20.10.6",
     "postcss": "^8.4.32",
-    "postcss-import": "^15.1.0",
+    "postcss-import": "^16.0.0",
     "postcss-loader": "^7.3.4",
     "postcss-preset-env": "^9.3.0",
     "sass": "^1.69.6",
