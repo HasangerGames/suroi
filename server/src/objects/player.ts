@@ -345,7 +345,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.role = userData.role;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
-        this.badge = userData.badge; // More fuckery here
+        this.badge = userData.badge;
         this.hasColor = userData.nameColor !== undefined;
 
         this.loadout = {

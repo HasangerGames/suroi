@@ -346,10 +346,10 @@ function serializeKillFeedMessage(
 export type KillFeedMessage = {
     messageType: KillFeedMessageType
     playerID?: number
-    playerBadge?: string
+    playerBadge?: BadgeDefinition
     killType?: KillType
     killerID?: number
-    killerBadge?: string
+    killerBadge?: BadgeDefinition
     kills?: number
     killstreak?: number
     hideInKillfeed?: boolean
