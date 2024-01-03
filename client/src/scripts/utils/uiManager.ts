@@ -560,14 +560,14 @@ export class UIManager {
                         ${hasKillstreak ? killstreak : ""}
                         <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
                         ${killMessage}${
-                            weaponUsed === undefined
-                                ? ""
-                                : ` with ${
-                                      "dual" in message && message.dual
-                                          ? "Dual "
-                                          : ""
-                                  }${weaponUsed.name}`
-                        }`;
+    weaponUsed === undefined
+        ? ""
+        : ` with ${
+            "dual" in message && message.dual
+                ? "Dual "
+                : ""
+        }${weaponUsed.name}`
+}`;
                         break;
                     }
                     case "icon": {
@@ -588,18 +588,18 @@ export class UIManager {
                                     weaponUsed?.idString === undefined
                                         ? ""
                                         : `${weaponUsed.idString}${
-                                              "dual" in message && message.dual
-                                                  ? "_dual"
-                                                  : ""
-                                          }`;
+                                            "dual" in message && message.dual
+                                                ? "_dual"
+                                                : ""
+                                        }`;
                                 break;
                         }
                         const altText = weaponUsed
                             ? `${
-                                  "dual" in message && message.dual
-                                      ? "Dual "
-                                      : ""
-                              }${weaponUsed.name}`
+                                "dual" in message && message.dual
+                                    ? "Dual "
+                                    : ""
+                            }${weaponUsed.name}`
                             : iconName;
                         const killstreakText = hasKillstreak
                             ? `
