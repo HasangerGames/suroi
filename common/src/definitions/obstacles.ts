@@ -64,19 +64,12 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly slideFactor?: number
 })) | {
     readonly role: ObstacleSpecialRoles.Activatable
-    readonly sound?: {
-        readonly name: string
+    readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
         readonly fallOff?: number
     }
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly interactText?: string
-    /**
-     * For a given idString `str`, all obstacles with idString `str` in the same
-     * building containing this one will be interacted with when this obstacle is activated
-     */
-    readonly triggerInteractOn?: ReferenceTo<ObstacleDefinition>
-    readonly interactDelay?: number
     readonly emitParticles?: boolean
     readonly replaceWith?: {
         readonly idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
@@ -1542,9 +1535,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 idString: "panel_with_the_button_pressed",
                 delay: 0
             },
-            triggerInteractOn: "vault_door",
             sound: {
-                name: "button_press"
+                names: ["button_press", "puzzle_solved"]
             },
             frames: {
                 particle: "barrel_particle",
@@ -1753,8 +1745,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             emitParticles: true,
             requiredItem: "gas_can",
             interactText: "Activate",
-            triggerInteractOn: "vault_door",
-            interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)
         },
         {

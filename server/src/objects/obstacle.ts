@@ -57,7 +57,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     declare hitbox: Hitbox;
 
-    puzzlePiece?: string;
+    puzzlePiece?: string | boolean;
 
     constructor(
         game: Game,
@@ -257,12 +257,9 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
-                if (this.parentBuilding) {
-                    if (definition.triggerInteractOn) {
-                        this.parentBuilding.solvePuzzle();
-                    } else if (this.puzzlePiece) {
-                        this.parentBuilding.togglePuzzlePiece(this);
-                    }
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                if (this.parentBuilding && this.puzzlePiece) {
+                    this.parentBuilding.togglePuzzlePiece(this);
                 }
 
                 const replaceWith = definition.replaceWith;

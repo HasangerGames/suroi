@@ -4,7 +4,7 @@ import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox 
 import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type FloorTypes } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
-import { DecalDefinition } from "./decals";
+import { type DecalDefinition } from "./decals";
 import { type ObstacleDefinition, type RotationMode } from "./obstacles";
 
 interface BuildingObstacle {
@@ -14,7 +14,7 @@ interface BuildingObstacle {
     readonly variation?: Variation
     readonly scale?: number
     readonly lootSpawnOffset?: Vector
-    readonly puzzlePiece?: string
+    readonly puzzlePiece?: string | boolean
 }
 
 interface LootSpawner {
@@ -49,10 +49,10 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     readonly puzzle?: {
         triggerInteractOn: ReferenceTo<ObstacleDefinition>
-        completeInteractDelay: number
-        errorResetDelay: number
-        pieceResetDelay: number
-        order: string[]
+        interactDelay: number
+        order?: string[]
+        solvedSound?: boolean
+        setSolvedImmediately?: boolean // Don't wait for the interact delay before setting solved to true
     }
 
     readonly sounds?: {
@@ -1346,6 +1346,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(10, 15, Vec.create(-17, -60)),
             RectangleHitbox.fromRect(50, 24, Vec.create(8, 93.2))
         ),
+        puzzle: {
+            triggerInteractOn: "vault_door",
+            interactDelay: 2000
+        },
         sounds: {
             solved: "generator_running",
             position: Vec.create(23, 75),
@@ -1403,7 +1407,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "ship", position: Vec.create(0, 0), rotation: 0 },
 
             { idString: "ship_thing_1", position: Vec.create(-14, -111), rotation: 0 },
-            { idString: "generator", position: Vec.create(23, 75), rotation: 0 },
+            { idString: "generator", position: Vec.create(23, 75), rotation: 0, puzzlePiece: true },
             { idString: "barrel", position: Vec.create(24, 66) },
             {
                 idString: { barrel: 1, super_barrel: 1 },
@@ -1481,6 +1485,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(65, 29, Vec.create(4.5, -102.5)),
             RectangleHitbox.fromRect(7.5, 28, Vec.create(41.7, -101.5))
         ),
+        puzzle: {
+            triggerInteractOn: "vault_door",
+            interactDelay: 1500
+        },
         floorImages: [
             {
                 key: "oil_tanker_ship_floor_1",
@@ -1526,14 +1534,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "panel_without_button_small", position: Vec.create(-1, -93.8), rotation: 2 },
             { idString: "large_drawer", position: Vec.create(9.5, -93.5), rotation: 2 },
 
-            { idString: "panel_with_a_button", position: Vec.create(22, -93.8), rotation: 2 },
+            { idString: "panel_with_a_button", position: Vec.create(22, -93.8), rotation: 2, puzzlePiece: true },
             { idString: "panel_without_button_small", position: Vec.create(31.7, -93.8), rotation: 2 },
 
             // Vector Vault
             { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
             { idString: "briefcase", position: Vec.create(-22.5, -94), rotation: 0 },
-            { idString: "regular_crate", position: Vec.create(-12, -94), rotation: 0 },
-            { idString: "regular_crate", position: Vec.create(-22, -102), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(-12.19, -94.34), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(-23.1, -102.93), rotation: 0 },
 
             // Front of ship
             { idString: "barrel", position: Vec.create(-27, 68), rotation: 2 },
@@ -2099,10 +2107,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
         puzzle: {
             triggerInteractOn: "vault_door",
-            completeInteractDelay: 1500,
-            errorResetDelay: 1000,
-            pieceResetDelay: 10000,
-            order: ["y", "o", "j", "l"]
+            interactDelay: 1500,
+            order: ["y", "o", "j", "l"],
+            solvedSound: true,
+            setSolvedImmediately: true
         },
         floorImages: [{
             key: "armory_vault_floor",
@@ -2135,7 +2143,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 { length: 4 },
                 (_, i) => ({
                     idString: "button",
-                    position: Vec.create(10 + 5.2 * i, -19.2),
+                    position: Vec.create(10 + 4.75 * i, -19.2),
                     rotation: 0,
                     puzzlePiece: ["y", "o", "j", "l"][i]
                 })

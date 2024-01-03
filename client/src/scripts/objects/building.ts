@@ -184,42 +184,42 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.rotation = this.rotation;
 
             this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
-
-            if (this.definition.sounds) {
-                const sounds = this.definition.sounds;
-
-                const soundOptions = {
-                    position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
-                    fallOff: sounds.fallOff,
-                    maxRange: sounds.maxRange,
-                    dynamic: true,
-                    loop: true
-                };
-
-                if (
-                    sounds.normal &&
-                    !data.puzzle?.solved &&
-                    this.sound?.name !== sounds.normal
-                ) {
-                    this.sound?.stop();
-                    this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
-                }
-
-                if (
-                    sounds.solved &&
-                    data.puzzle?.solved &&
-                    this.sound?.name !== sounds.solved
-                ) {
-                    this.sound?.stop();
-                    this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
-                }
-            }
         }
 
         const definition = this.definition;
 
         if (definition === undefined) {
             console.warn("Building partially updated before being fully updated");
+        }
+
+        if (definition.sounds) {
+            const sounds = this.definition.sounds!;
+
+            const soundOptions = {
+                position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
+                fallOff: sounds.fallOff,
+                maxRange: sounds.maxRange,
+                dynamic: true,
+                loop: true
+            };
+
+            if (
+                sounds.normal &&
+                !data.puzzle?.solved &&
+                this.sound?.name !== sounds.normal
+            ) {
+                this.sound?.stop();
+                this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
+            }
+
+            if (
+                sounds.solved &&
+                data.puzzle?.solved &&
+                this.sound?.name !== sounds.solved
+            ) {
+                this.sound?.stop();
+                this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
+            }
         }
 
         if (data.dead) {
@@ -264,7 +264,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             }
             this.errorSeq = data.puzzle.errorSeq;
 
-            if (!isNew && data.puzzle.solved) {
+            if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
                 this.playSound("puzzle_solved");
             }
         }

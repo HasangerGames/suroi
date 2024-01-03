@@ -1,10 +1,9 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../common/src/typings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type Timeout } from "../../../common/src/utils/misc";
-import { type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -29,11 +28,6 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
     hasPuzzle = false;
     puzzle?: {
-        triggerInteractOn: ReferenceTo<ObstacleDefinition>
-        completeInteractDelay: number
-        errorResetDelay: number
-        pieceResetDelay: number
-        order: string[]
         inputOrder: string[]
         solved: boolean
         errorSeq: boolean
@@ -100,22 +94,29 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
             return;
         }
 
-        this.puzzle.inputOrder.push(piece.puzzlePiece);
+        if (!("order" in this.puzzle)) {
+            this.solvePuzzle();
+            return;
+        }
+
         if (this.puzzle.resetTimeout) this.puzzle.resetTimeout.kill();
 
+        this.puzzle.inputOrder.push(piece.puzzlePiece as string);
+
+        const order = this.definition.puzzle!.order!;
         // hack to compare two arrays :boffy:
-        if (JSON.stringify(this.puzzle.inputOrder) === JSON.stringify(this.puzzle.order)) {
+        if (JSON.stringify(this.puzzle.inputOrder) === JSON.stringify(order)) {
             this.solvePuzzle();
-        } else if (this.puzzle.inputOrder.length >= this.puzzle.order.length) {
+        } else if (this.puzzle.inputOrder.length >= order.length) {
             this.puzzle.errorSeq = !this.puzzle.errorSeq;
             this.game.partialDirtyObjects.add(this);
-            this.puzzle.resetTimeout = this.game.addTimeout(this.resetPuzzle.bind(this), this.puzzle.errorResetDelay);
+            this.puzzle.resetTimeout = this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
         } else {
             this.puzzle.resetTimeout = this.game.addTimeout(() => {
                 this.puzzle!.errorSeq = !this.puzzle!.errorSeq;
                 this.game.partialDirtyObjects.add(this);
-                this.game.addTimeout(this.resetPuzzle.bind(this), this.puzzle!.errorResetDelay);
-            }, this.puzzle.pieceResetDelay);
+                this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
+            }, 10000);
         }
     }
 
@@ -124,13 +125,19 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
             console.warn("Attempting to solve puzzle when no puzzle is present");
             return;
         }
-        this.puzzle.solved = true;
-        for (const obstacle of this.interactableObstacles) {
-            if (obstacle.definition.idString === this.puzzle.triggerInteractOn) {
-                this.game.addTimeout(() => obstacle.interact(), this.puzzle.completeInteractDelay);
+
+        const puzzleDef = this.definition.puzzle!;
+        this.game.addTimeout(() => {
+            this.puzzle!.solved = true;
+            this.game.partialDirtyObjects.add(this);
+        }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.interactDelay);
+        this.game.addTimeout(() => {
+            for (const obstacle of this.interactableObstacles) {
+                if (obstacle.definition.idString === puzzleDef.triggerInteractOn) {
+                    obstacle.interact();
+                }
             }
-        }
-        this.game.partialDirtyObjects.add(this);
+        }, puzzleDef.interactDelay);
     }
 
     resetPuzzle(): void {

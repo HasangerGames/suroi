@@ -96,7 +96,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
                 if (!isNew && !this.destroyed) {
                     if (definition.role === ObstacleSpecialRoles.Activatable && definition.sound) {
-                        this.playSound(definition.sound.name, definition.sound);
+                        if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
+                        else this.playSound(definition.sound.name, definition.sound);
                     }
 
                     // fixme idString check, hard coded behavior
@@ -154,7 +155,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (this.smokeEmitter) {
             this.smokeEmitter.active = !this.dead &&
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
+                (("emitParticles" in definition && this.activated) || (scaleFactor > 0 && scaleFactor < 0.5));
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = Numeric.lerp(150, 3000, scaleFactor);

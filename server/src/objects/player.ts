@@ -307,7 +307,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -322,7 +322,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Building(game, "porta_potty", position, 0);
+        this.objectToPlace = new Obstacle(game, "regular_crate", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -444,8 +444,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (this.startedAttacking) {
             const map = this.game.map;
             const round = (n: number): number => Math.round(n * 100) / 100;
-            //console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
-            console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
+            console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
+            //console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
         }
         // Object placing code end */
 
