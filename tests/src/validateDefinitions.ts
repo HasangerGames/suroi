@@ -16,6 +16,7 @@ import { Modes } from "../../common/src/definitions/modes";
 import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
+import { Throwables } from "../../common/src/definitions/throwables";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
 import { ObstacleSpecialRoles, type InventoryItemDefinition, type ObjectDefinition, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
@@ -513,8 +514,8 @@ logger.indent("Validating backpack definitions", () => {
                         obj: { [item]: item },
                         field: item,
                         baseErrorPath: errorPath2,
-                        collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions),
-                        collectionName: "HealingItems and Ammos"
+                        collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions).concat(Throwables),
+                        collectionName: "HealingItems, Ammos, and Throwables"
                     });
 
                     tester.assertIsNaturalNumber({
@@ -582,7 +583,7 @@ logger.indent("Validating building definitions", () => {
                                         const reference = Obstacles.fromString(idString);
 
                                         if (reference) {
-                                            const rotationMode = reference.rotationMode;
+                                            const rotationMode = typeof obstacle.idString === "string" ? reference.rotationMode : RotationMode.Full;
 
                                             switch (rotationMode) {
                                                 case RotationMode.Full: {
@@ -1002,6 +1003,7 @@ logger.indent("Validating explosions", () => {
                     field: "min",
                     min: 0,
                     max: explosion.radius.max,
+                    includeMin: true,
                     includeMax: true,
                     baseErrorPath: errorPath2
                 });

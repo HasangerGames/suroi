@@ -557,29 +557,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "wall_particle"
             },
             noBulletCollision: true,
-            noCollisions: false,
-            reflectBullets: false,
-            spawnMode: MapObjectSpawnMode.River
-        },
-        {
-            idString: "sand_bag",
-            name: "Sand Bag",
-            material: "sand",
-            health: 300,
-            indestructible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(14, 8, Vec.create(0, 0))
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(16, 10),
-            rotationMode: RotationMode.Limited,
-            noResidue: true,
-            particleVariations: 3,
-            frames: {
-                particle: "sand_particle"
-            },
-            noBulletCollision: true,
-            noCollisions: false,
-            reflectBullets: false,
             spawnMode: MapObjectSpawnMode.River
         },
         {

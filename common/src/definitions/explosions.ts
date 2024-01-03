@@ -278,7 +278,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 0,
                 speed: 0,
                 range: 0,
-                rangeVariance: 0,
                 shrapnel: false
             },
             sound: "smoke_grenade",
