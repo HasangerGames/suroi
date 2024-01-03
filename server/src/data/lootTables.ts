@@ -41,7 +41,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
             { tier: "melee", weight: 0.04 },
-            { tier: "winter_skins", weight: 0.4 }, // winter mode
+            //{ tier: "winter_skins", weight: 0.4 }, // winter mode
             { tier: "throwables", weight: 0.3 }
         ]
     },
