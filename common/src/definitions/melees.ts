@@ -210,5 +210,32 @@ export const Melees: MeleeDefinition[] = [
             useAngle: 65,
             lootScale: 0.6
         }
+    },
+    {
+        idString: "seax",
+        name: "Seax",
+        itemType: ItemType.Melee,
+        damage: 40,
+        obstacleMultiplier: 1.9,
+        piercingMultiplier: 1,
+        radius: 2.7,
+        offset: Vec.create(5.4, -0.5),
+        cooldown: 450,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        fists: {
+            animationDuration: 150,
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(38, -35),
+            useRight: Vec.create(95, 20)
+        },
+        image: {
+            position: Vec.create(90, 35),
+            usePosition: Vec.create(130, -20),
+            angle: 0,
+            useAngle: -45,
+            lootScale: 0.6
+        }
     }
 ];

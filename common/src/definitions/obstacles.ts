@@ -268,6 +268,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer4
         },
         {
+            idString: "viking_treasure_chest",
+            name: "Viking Treasure Chest",
+            material: "wood",
+            health: 150,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.4)),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            hideOnMap: true,
+            spawnMode: MapObjectSpawnMode.Beach
+        },
+        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",
@@ -328,6 +344,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: RotationMode.Full,
             variations: 7,
+            particleVariations: 2
+        },
+        {
+            idString: "river_rock",
+            name: "River Rock",
+            material: "stone",
+            health: 400,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.5
+            },
+            spawnMode: MapObjectSpawnMode.River,
+            hitbox: new CircleHitbox(7),
+            spawnHitbox: new CircleHitbox(8),
+            rotationMode: RotationMode.Full,
+            variations: 5,
             particleVariations: 2
         },
         {

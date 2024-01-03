@@ -45,6 +45,13 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "throwables", weight: 0.3 }
         ]
     },
+    viking_treasure_chest: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "seax", weight: 1 }
+        ]
+    },
     aegis_crate: {
         min: 3,
         max: 5,
