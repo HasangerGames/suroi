@@ -391,6 +391,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (data.full) {
             const full = data.full;
+
+            this.container.visible = !full.dead;
+            this.dead = full.dead;
+
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
             this.oldItem = this.activeItem;
