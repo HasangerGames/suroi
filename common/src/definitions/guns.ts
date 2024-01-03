@@ -447,7 +447,7 @@ const GunsRaw: RawGunDefinition[] = [
         speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 525,
-        fireMode: FireMode.Single,
+        fireMode: FireMode.Auto,
         bulletCount: 10,
         shotSpread: 11,
         moveSpread: 14,
