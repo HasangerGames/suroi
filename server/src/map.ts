@@ -387,7 +387,7 @@ export class Map {
         variation?: Variation,
         lootSpawnOffset?: Vector,
         parentBuilding?: Building,
-        puzzlePiece?: string
+        puzzlePiece?: string | boolean
     ): Obstacle {
         definition = Obstacles.reify(definition);
 

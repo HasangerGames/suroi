@@ -68,7 +68,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         variation: Variation = 0,
         lootSpawnOffset?: Vector,
         parentBuilding?: Building,
-        puzzlePiece?: string
+        puzzlePiece?: string | boolean
     ) {
         super(game, position);
 

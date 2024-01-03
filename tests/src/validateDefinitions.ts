@@ -773,7 +773,7 @@ logger.indent("Validating building definitions", () => {
                         (decal, errorPath) => {
                             tester.assertReferenceExists({
                                 obj: decal,
-                                field: "id",
+                                field: "idString",
                                 collection: Decals,
                                 baseErrorPath: errorPath
                             });
