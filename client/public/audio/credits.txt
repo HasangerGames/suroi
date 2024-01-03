@@ -14,6 +14,9 @@ Guns:
   HP18 fire - "Normal Shotgun" by Soundeffects: https://soundbible.com/2020-Normal-Shotgun.html
   HP18 reload - "Reloading Magazine" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302 -> https://www.fesliyanstudios.com/play-mp3/7550
 
+  Vepr-12 fire - "12 Gauge Pump Action Shotgun Close Gunshot A" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/12-gauge-shotgun-289 -> https://www.fesliyanstudios.com/play-mp3/7122
+  Vepr-12 reload & switch - "Rifle-or-shotgun-reload" from Pixabay: https://pixabay.com/sound-effects/rifle-or-shotgun-reload-6787/
+
   ARX-160 - ARX160 Rifle by oneshotofficial: https://gamebanana.com/sounds/57736
 
   Flues fire - "080902_Shotgun" from Pixabay: https://pixabay.com/sound-effects/080902-shotgun-39753/

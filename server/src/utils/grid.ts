@@ -1,9 +1,10 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type Hitbox, type RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { Numeric } from "../../../common/src/utils/math";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
+import { Logger } from "./misc";
 
 /**
  * A Grid to filter collision detection of game objects
@@ -36,7 +37,10 @@ export class Grid {
      * Add an object to the grid system and pool
      */
     addObject(object: GameObject): void {
-        if (this.pool.has(object)) console.warn(`readding object${ObjectCategory[object.type]}`);
+        if (this.pool.has(object)) {
+            Logger.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
+            return;
+        }
         this.pool.add(object);
         this.updateObject(object);
     }
@@ -54,12 +58,11 @@ export class Grid {
             (this._grid[pos.x][pos.y] ??= new Map()).set(object.id, object);
             cells.push(pos);
         } else {
-            let rect: RectangleHitbox;
-            if ("spawnHitbox" in object) {
-                rect = (object.spawnHitbox).toRectangle();
-            } else {
-                rect = object.hitbox.toRectangle();
-            }
+            const rect = (
+                "spawnHitbox" in object
+                    ? object.spawnHitbox
+                    : object.hitbox
+            ).toRectangle();
 
             // Get the bounds of the hitbox
             // Round it to the grid cells

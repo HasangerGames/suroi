@@ -3,6 +3,7 @@ import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { EaseFunctions } from "../../../../common/src/utils/math";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
@@ -10,7 +11,7 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
@@ -23,7 +24,8 @@ export class Loot extends GameObject {
         readonly item: SuroiSprite
     };
 
-    count = 0;
+    private _count = 0;
+    get count(): number { return this._count; }
 
     hitbox!: CircleHitbox;
 
@@ -46,8 +48,6 @@ export class Loot extends GameObject {
             const itemType = definition.itemType;
 
             this.images.item.setFrame(`${definition.idString}${itemType === ItemType.Skin ? "_base" : ""}`);
-
-            if (itemType === ItemType.Skin) this.images.item.setAngle(90).scale.set(0.75);
 
             this.container.addChild(this.images.background, this.images.item);
 
@@ -79,12 +79,21 @@ export class Loot extends GameObject {
                 case ItemType.Scope:
                 case ItemType.Skin: {
                     backgroundTexture = "loot_background_equipment";
-                    if (definition.itemType === ItemType.Skin && definition.grassTint) {
-                        this.images.item.setTint(GHILLIE_TINT);
+                    if (definition.itemType === ItemType.Skin) {
+                        if (definition.grassTint) {
+                            this.images.item.setTint(GHILLIE_TINT);
+                        }
+
+                        this.images.item.setAngle(90).setScale(0.75);
                     }
                     break;
                 }
+                case ItemType.Throwable: {
+                    backgroundTexture = "loot_background_throwable";
+                    break;
+                }
             }
+
             if (backgroundTexture !== undefined) {
                 this.images.background.setFrame(backgroundTexture);
             } else {
@@ -93,7 +102,14 @@ export class Loot extends GameObject {
 
             this.hitbox = new CircleHitbox(LootRadius[itemType]);
 
-            this.count = data.full.count;
+            /*
+                Infinity is serialized as 0 in the bit stream
+                0 is a valid count value on the server
+                thus
+                If we receive 0 here, it must mean the count on
+                the server is Infinity (or NaN lol)
+            */
+            this._count = data.full.count || Infinity;
 
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
@@ -125,13 +141,14 @@ export class Loot extends GameObject {
     }
 
     destroy(): void {
-        this.animation?.kill();
         super.destroy();
+        this.images.background.destroy();
+        this.images.item.destroy();
+        this.animation?.kill();
     }
 
     canInteract(player: Player): boolean {
         const inventory = this.game.uiManager.inventory;
-
         const definition = this.definition;
 
         switch (definition.itemType) {
@@ -159,7 +176,8 @@ export class Loot extends GameObject {
                 return definition !== inventory.weapons[2]?.definition;
             }
             case ItemType.Healing:
-            case ItemType.Ammo: {
+            case ItemType.Ammo:
+            case ItemType.Throwable: {
                 const idString = definition.idString;
 
                 return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString]);

@@ -81,11 +81,23 @@ export const Reskins: Record<string, ReskinDefinition> = {
             "regular_crate",
             "aegis_crate",
             "flint_crate",
+            "grenade_crate",
             "airdrop_plane",
             "airdrop_parachute",
             "airdrop_crate_locked", "airdrop_crate_unlocking", "airdrop_particle_1", "airdrop_particle_2",
             "airdrop_crate", "airdrop_crate_particle", "airdrop_crate_residue",
-            "gold_airdrop_crate", "gold_airdrop_crate_particle", "gold_airdrop_crate_residue"
+            "gold_airdrop_crate", "gold_airdrop_crate_particle", "gold_airdrop_crate_residue",
+            "barrier",
+            "bollard",
+            "box",
+            "distillation_column",
+            "generator",
+            "crane_base_end",
+            "pallet",
+            "oil_tank",
+            "forklift",
+            "trailer",
+            "truck"
         ],
         sounds: [
             "airdrop_plane"

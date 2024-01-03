@@ -4,8 +4,7 @@ import { type WebSocket } from "uWebSockets.js";
 import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
@@ -17,7 +16,7 @@ import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox"
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -26,8 +25,9 @@ import { type Game } from "../game";
 import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
-import { type InventoryItem } from "../inventory/inventoryItem";
+import { CountableInventoryItem, type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
@@ -153,6 +153,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     startedAttacking = false;
 
     /**
+     * Whether the player stopped attacking last update
+     */
+    stoppedAttacking = false;
+
+    /**
      * Whether the player is turning as of last update
      */
     turning = false;
@@ -174,11 +179,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         adrenaline: true,
         weapons: true,
         items: true,
+        throwable: true,
         zoom: true
     };
 
     // save current tick dirty status to send to spectators
-    thisTickDirty!: this["dirty"];
+    thisTickDirty?: this["dirty"];
 
     readonly inventory = new Inventory(this);
 
@@ -190,7 +196,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         return this.inventory.activeWeapon;
     }
 
-    get activeItemDefinition(): MeleeDefinition | GunDefinition {
+    get activeItemDefinition(): WeaponDefinition {
         return this.activeItem.definition;
     }
 
@@ -252,7 +258,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             value === undefined &&
             this.activeItem instanceof GunItem &&
             this.activeItem.ammo <= 0 &&
-            this.inventory.items[(this.activeItemDefinition as GunDefinition).ammoType] !== 0
+            this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
         ) {
             this._action = new ReloadAction(this, this.activeItem);
         }
@@ -298,6 +304,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hitbox.position = position;
     }
 
+    private _movementVector = Vec.create(0, 0);
+    get movementVector(): Vector { return Vec.clone(this._movementVector); }
+
+    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
@@ -309,6 +320,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
+
+        /* Object placing code start //
+        this.objectToPlace = new Obstacle(game, "regular_crate", position);
+        game.grid.addObject(this.objectToPlace);
+        // Object placing code end */
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -329,8 +345,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
-        // this.inventory.items["15x_scope"] = 1;
-        // this.inventory.scope = "15x_scope";
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -339,12 +353,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             this.inventory.addOrReplaceWeapon(1, "revitalizer");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.inventory.items["12g"] = 15;
+            this.inventory.items.setItem("12g", 15);
 
             this.inventory.addOrReplaceWeapon(2, "heap_sword");
 
-            this.inventory.items["2x_scope"] = 1;
-            this.inventory.items["4x_scope"] = 1;
+            this.inventory.items.setItem("2x_scope", 1);
+            this.inventory.items.setItem("4x_scope", 1);
             this.inventory.scope = "4x_scope";
         }
 
@@ -353,11 +367,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
-        const slot = this.inventory.appendWeapon(idString);
-        const primaryItem = this.inventory.getWeapon(slot) as GunItem;
+        const primaryItem = this.inventory.getWeapon(this.inventory.appendWeapon(idString)) as GunItem;
         const primaryDefinition = primaryItem.definition;
+
         primaryItem.ammo = primaryDefinition.capacity;
-        this.inventory.items[primaryDefinition.ammoType] = this.inventory.backpack.maxCapacity[primaryDefinition.ammoType];
+        this.inventory.items.setItem(
+            primaryDefinition.ammoType,
+            this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
+        );
     }
 
     emote(slot: number): void {
@@ -365,6 +382,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     update(): void {
+        const dt = GameConstants.msPerTick;
+
         // This system allows opposite movement keys to cancel each other out.
         const movement = Vec.create(0, 0);
 
@@ -392,6 +411,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 recoilMultiplier = this.recoil.multiplier;
             }
         }
+
         /* eslint-disable no-multi-spaces */
         const speed = Config.movementSpeed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
@@ -402,7 +422,32 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
-        this.position = Vec.add(this.position, Vec.create(movement.x * speed, movement.y * speed));
+        const movementVector = Vec.scale(movement, speed);
+        this._movementVector = movementVector;
+        this.position = Vec.add(
+            this.position,
+            Vec.scale(movementVector, dt)
+        );
+
+        /* Object placing code start //
+        const position = Vec.add(
+            this.position,
+            Vec.create(Math.cos(this.rotation) * this.distanceToMouse, Math.sin(this.rotation) * this.distanceToMouse)
+        );
+        const obj = this.objectToPlace;
+        obj.position = position;
+        if (this.game.emotes.size > 0) {
+            obj.rotation += 1;
+            obj.rotation %= 4;
+        }
+        this.game.fullDirtyObjects.add(this.objectToPlace);
+        if (this.startedAttacking) {
+            const map = this.game.map;
+            const round = (n: number): number => Math.round(n * 100) / 100;
+            console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
+            //console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
+        }
+        // Object placing code end */
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -442,20 +487,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Drain adrenaline
         if (this.adrenaline > 0) {
-            this.adrenaline -= 0.015;
+            this.adrenaline -= 0.0005 * dt;
         }
 
         // Regenerate health
-        if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
-        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
-        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
-        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+        if (this.adrenaline >= 87.5) this.health += dt * 2.75 / (30 ** 2);
+        else if (this.adrenaline >= 50) this.health += dt * 2.125 / (30 ** 2);
+        else if (this.adrenaline >= 25) this.health += dt * 1.125 / (30 ** 2);
+        else if (this.adrenaline > 0) this.health += dt * 0.625 / (30 ** 2);
 
-        // Shoot gun/use melee
+        // Shoot gun/use item
         if (this.startedAttacking) {
             this.startedAttacking = false;
             this.disableInvulnerability();
-            this.activeItem?.useItem();
+            this.activeItem.useItem();
+        }
+
+        if (this.stoppedAttacking) {
+            this.stoppedAttacking = false;
+            this.activeItem.stopUse();
         }
 
         // Gas damage
@@ -490,12 +540,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     secondUpdate(): void {
         const packet = new UpdatePacket();
-
         const player = this.spectating ?? this;
+        const game = this.game;
 
         // Calculate visible objects
         this.ticksSinceLastUpdate++;
-        if (this.ticksSinceLastUpdate > 8 || this.game.updateObjects || this.updateObjects) {
+        if (this.ticksSinceLastUpdate > 8 || game.updateObjects || this.updateObjects) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
@@ -505,7 +555,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 player.position
             );
 
-            const newVisibleObjects = this.game.grid.intersectsHitbox(this.screenHitbox);
+            const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
@@ -522,18 +572,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        for (const object of this.game.fullDirtyObjects) {
+        for (const object of game.fullDirtyObjects) {
             if (this.visibleObjects.has(object)) {
                 packet.fullDirtyObjects.add(object);
             }
         }
 
-        for (const object of this.game.partialDirtyObjects) {
+        for (const object of game.partialDirtyObjects) {
             if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
                 packet.partialDirtyObjects.add(object);
             }
         }
 
+        const inventory = player.inventory;
         // player data
         packet.playerData = {
             health: player.health,
@@ -545,7 +596,24 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             id: player.id,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
-            inventory: player.inventory
+            inventory: {
+                activeWeaponIndex: inventory.activeWeaponIndex,
+                scope: inventory.scope,
+                weapons: inventory.weapons.map(slot => {
+                    const item = slot;
+
+                    return (item && {
+                        definition: item.definition,
+                        count: item instanceof GunItem
+                            ? item.ammo
+                            : item instanceof CountableInventoryItem
+                                ? item.count
+                                : undefined,
+                        stats: item.stats
+                    }) satisfies (PlayerData["inventory"]["weapons"] & object)[number];
+                }),
+                items: inventory.items.asRecord()
+            }
         };
 
         if (this.startedSpectating && this.spectating) {
@@ -557,7 +625,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Cull bullets
-        for (const bullet of this.game.newBullets) {
+        for (const bullet of game.newBullets) {
             if (Collision.lineIntersectsRectTest(bullet.initialPosition,
                 bullet.finalPosition,
                 this.screenHitbox.min,
@@ -567,15 +635,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Cull explosions
-        for (const explosion of this.game.explosions) {
+        for (const explosion of game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
-                Geometry.distanceSquared(explosion.position, this.position) < 16384) {
+                Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
                 packet.explosions.add(explosion);
             }
         }
 
         // Emotes
-        for (const emote of this.game.emotes) {
+        for (const emote of game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
                 packet.emotes.add(emote);
             }
@@ -583,28 +651,29 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // gas
         packet.gas = {
-            ...this.game.gas,
-            dirty: this.game.gas.dirty || this._firstPacket
+            ...game.gas,
+            dirty: game.gas.dirty || this._firstPacket
         };
 
-        packet.gasPercentage = {
-            dirty: this.game.gas.percentageDirty || this._firstPacket,
-            value: this.game.gas.percentage
+        packet.gasProgress = {
+            dirty: game.gas.completionRatioDirty || this._firstPacket,
+            value: game.gas.completionRatio
         };
 
         // new and deleted players
-        if (this._firstPacket) packet.newPlayers = this.game.grid.pool.getCategory(ObjectCategory.Player);
-        else packet.newPlayers = this.game.newPlayers;
+        packet.newPlayers = this._firstPacket
+            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            : game.newPlayers;
 
-        packet.deletedPlayers = this.game.deletedPlayers;
+        packet.deletedPlayers = game.deletedPlayers;
 
         // alive count
-        packet.aliveCount = this.game.aliveCount;
-        packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
+        packet.aliveCount = game.aliveCount;
+        packet.aliveCountDirty = game.aliveCountDirty || this._firstPacket;
 
         // kill feed messages
-        packet.killFeedMessages = this.game.killFeedMessages;
-        const killLeader = this.game.killLeader;
+        packet.killFeedMessages = game.killFeedMessages;
+        const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
             packet.killFeedMessages.add({
@@ -615,8 +684,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             });
         }
 
-        packet.planes = this.game.planes;
-        packet.mapPings = this.game.mapPings;
+        packet.planes = game.planes;
+        packet.mapPings = game.mapPings;
 
         // serialize and send update packet
         this.sendPacket(packet);
@@ -729,7 +798,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (this.invulnerable) return;
 
         // Reductions are merged additively
@@ -745,7 +814,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
@@ -804,7 +873,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             minAdrenaline: 0
         };
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
+        const maxWeapons = GameConstants.player.maxWeapons;
+        for (let i = 0; i < maxWeapons; i++) {
             const weapon = this.inventory.getWeapon(i);
 
             if (weapon === undefined) continue;
@@ -822,7 +892,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     // dies of death
-    die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -887,7 +957,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.movement.down = false;
         this.movement.left = false;
         this.movement.right = false;
+        this.startedAttacking = false;
         this.attacking = false;
+        this.stoppedAttacking = false;
         this.game.aliveCountDirty = true;
         this.adrenaline = 0;
         this.dirty.items = true;
@@ -897,6 +969,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.game.fullDirtyObjects.add(this);
         removeFrom(this.game.spectatablePlayers, this);
 
+        if (this.activeItem instanceof ThrowableItem) {
+            this.activeItem.stopUse();
+        }
+
         //
         // Drop loot
         //
@@ -905,8 +981,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.dropWeapons();
 
         // Drop inventory items
-        for (const item in this.inventory.items) {
-            const count = this.inventory.items[item];
+        for (const item in this.inventory.items.asRecord()) {
+            const count = this.inventory.items.getItem(item);
             const def = Loots.fromString(item);
 
             if (count > 0) {
@@ -928,7 +1004,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
 
                 this.game.addLoot(item, this.position, count);
-                this.inventory.items[item] = 0;
+                this.inventory.items.setItem(item, 0);
             }
         }
 
@@ -950,8 +1026,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.helmet = this.inventory.vest = undefined;
 
         // Create death marker
-        const deathMarker = new DeathMarker(this);
-        this.game.grid.addObject(deathMarker);
+        this.game.grid.addObject(new DeathMarker(this));
 
         // Send game over to dead player
         if (!this.disconnected) {
@@ -991,7 +1066,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const attackState = packet.attacking;
 
         this.attacking = attackState;
-        if (!oldAttackState && attackState) this.startedAttacking = true;
+        this.startedAttacking ||= !oldAttackState && attackState;
+        this.stoppedAttacking ||= oldAttackState && !attackState;
 
         this.turning = packet.turning;
         if (this.turning) {
@@ -1014,7 +1090,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         : inventory.lastWeaponIndex;
 
                     // If a user is reloading the gun in slot 2, then we don't cancel the reload if they "switch" to slot 2
-                    if (this.action?.type !== PlayerActions.Reload || target !== this.activeItemIndex) {
+                    if (this.action?.type !== PlayerActions.Reload || (target !== this.activeItemIndex && inventory.hasWeapon(target))) {
                         this.action?.cancel();
                     }
 
@@ -1124,7 +1200,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.action = action;
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Player]> {
+    override get data(): FullData<ObjectCategory.Player> {
         return {
             position: this.position,
             rotation: this.rotation,

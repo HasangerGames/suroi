@@ -11,30 +11,26 @@ export const Angle = Object.freeze({
      * @param b The second point, used as the tail of the vector
      * @returns The angle, in radians, of the line going from b to a
      */
-    angleBetweenPoints(a: Vector, b: Vector): number {
+    betweenPoints(a: Vector, b: Vector): number {
         return Math.atan2(a.y - b.y, a.x - b.x);
     },
     /**
      * Normalize an angle to a value between -π and π
      * @param radians The angle, in radians
      */
-    normalizeAngle(radians: number): number {
+    normalize(radians: number): number {
         const π = Math.PI;
         return Numeric.absMod(radians - π, 2 * π) - π;
     },
     /**
-     * Find the smallest angle between two vertices
-     * @param start The initial vertex, in radians
-     * @param end The final vertex, in radians
+     * Find the smallest difference between two angles
+     * (the difference between 10º and 350º can be either -340º or 20º—chances are, you're looking for the latter)
+     * @param start The initial angle, in radians
+     * @param end The final angle, in radians
      */
-    minimizeAngle(start: number, end: number): number {
-        start = this.normalizeAngle(start);
-        end = this.normalizeAngle(end);
-
-        const cw = end - start;
-        const ccw = cw - 2 * Math.PI;
-
-        return Math.abs(cw) < Math.abs(ccw) ? cw : ccw;
+    minimize(start: number, end: number): number {
+        const π = Math.PI;
+        return Numeric.absMod(end - start + π, 2 * π) - π;
     },
     /**
      * Converts degrees to radians
@@ -53,7 +49,7 @@ export const Angle = Object.freeze({
         return (radians / Math.PI) * 180;
     },
     orientationToRotation(orientation: number): number {
-        return -this.normalizeAngle(orientation * (Math.PI / 2));
+        return -this.normalize(orientation * (Math.PI / 2));
     }
 });
 
@@ -82,8 +78,8 @@ export const Numeric = Object.freeze({
     /**
      * Conform a number to specified bounds
      * @param value The number to conform
-     * @param min The minimum value the number can hold
-     * @param max The maximum value the number can hold
+     * @param min The minimum value the number can be
+     * @param max The maximum value the number can be
      */
     clamp(value: number, min: number, max: number): number {
         return value < max ? value > min ? value : min : max;
@@ -94,7 +90,7 @@ export const Numeric = Object.freeze({
      * @param n2 The second orientation
      * @return The sum of the two `Orientation`s
      */
-    addOrientations(n1: Orientation, n2: Orientation): Orientation {
+    addOrientations(n1: Orientation | number, n2: Orientation | number): Orientation {
         return (n1 + n2) % 4 as Orientation;
     }
 });
@@ -463,11 +459,16 @@ export const Collision = Object.freeze({
             : null;
     },
     rectCircleIntersection(min: Vector, max: Vector, pos: Vector, radius: number): CollisionResponse {
-        if (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y) {
-            const e = Vec.scale(Vec.sub(max, min), 0.5);
-            const p = Vec.sub(pos, Vec.add(min, e));
-            const xp = Math.abs(p.x) - e.x - radius;
-            const yp = Math.abs(p.y) - e.y - radius;
+        if (
+            min.x <= pos.x && pos.x <= max.x &&
+            min.y <= pos.y && pos.y <= max.y
+        ) {
+            // circle center inside rectangle
+
+            const halfDimension = Vec.scale(Vec.sub(max, min), 0.5);
+            const p = Vec.sub(pos, Vec.add(min, halfDimension));
+            const xp = Math.abs(p.x) - halfDimension.x - radius;
+            const yp = Math.abs(p.y) - halfDimension.y - radius;
 
             return xp > yp
                 ? {
@@ -486,8 +487,13 @@ export const Collision = Object.freeze({
                 };
         }
 
-        const cpt = Vec.create(Numeric.clamp(pos.x, min.x, max.x), Numeric.clamp(pos.y, min.y, max.y));
-        const dir = Vec.sub(cpt, pos);
+        const dir = Vec.sub(
+            Vec.create(
+                Numeric.clamp(pos.x, min.x, max.x),
+                Numeric.clamp(pos.y, min.y, max.y)
+            ),
+            pos
+        );
         const dstSqr = Vec.squaredLength(dir);
 
         if (dstSqr < radius * radius) {
@@ -511,8 +517,7 @@ export const Collision = Object.freeze({
                         ab,
                         Numeric.clamp(
                             Vec.dotProduct(Vec.sub(p, a), ab) / Vec.dotProduct(ab, ab),
-                            0,
-                            1
+                            0, 1
                         )
                     )
                 ),
@@ -521,7 +526,7 @@ export const Collision = Object.freeze({
         );
     },
     /**
-     * Sources
+     * Source
      * @link http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
      */
     rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {
@@ -659,3 +664,72 @@ export function calculateDoorHitboxes<
         }
     }
 }
+
+type NameGenerator<T extends string> = `${T}In` | `${T}Out` | `${T}InOut`;
+
+function generatePolynomialEasingTriplet<T extends string>(degree: number, type: T): { readonly [K in NameGenerator<T>]: (t: number) => number } {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return Object.freeze({
+        [`${type}In`]: (t: number) => t ** degree,
+        [`${type}Out`]: (t: number) => 1 - (1 - t) ** degree,
+        [`${type}InOut`]: (t: number) => t < 0.5
+            ? (2 * t) ** degree / 2
+            : 1 - (2 * (1 - t)) ** degree / 2
+    } as { [K in NameGenerator<T>]: (t: number) => number });
+}
+
+export type EasingFunction = (t: number) => number;
+
+/**
+ * A collection of functions for easing, based on
+ * [this helpful reference](https://easings.net) and others
+ */
+export const EaseFunctions = Object.freeze({
+    linear: (t: number) => t,
+
+    sineIn: (t: number) => 1 - Math.cos(t * Math.PI / 2),
+    sineOut: (t: number) => Math.sin(t * Math.PI / 2),
+    sineInOut: (t: number) => (1 - Math.cos(Math.PI * t)) / 2,
+
+    circIn: (t: number) => 1 - Math.sqrt(1 - (t * t)),
+    circOut: (t: number) => Math.sqrt(1 - (t - 1) ** 2),
+    circInOut: (t: number) => t < 0.5
+        ? (1 - Math.sqrt(1 - (2 * t) ** 2)) / 2
+        : (Math.sqrt(1 - (-2 * (1 - t)) ** 2) + 1) / 2,
+
+    elasticIn: (t: number) => t === 0 || t === 1
+        ? t
+        : -(2 ** (10 * (t - 1))) * Math.sin(Math.PI * (40 * (t - 1) - 3) / 6),
+    elasticOut: (t: number) => t === 0 || t === 1
+        ? t
+        : 2 ** (-10 * t) * Math.sin(Math.PI * (40 * t - 3) / 6) + 1,
+    elasticInOut: (t: number) => t === 0 || t === 1
+        ? t
+        : t < 0.5
+            ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(Math.PI * (80 * (2 * t - 1) - 9) / 18)
+            : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(Math.PI * (80 * (2 * t - 1) - 9) / 18) + 1,
+
+    ...generatePolynomialEasingTriplet(2, "quadratic"),
+    ...generatePolynomialEasingTriplet(3, "cubic"),
+    ...generatePolynomialEasingTriplet(4, "quartic"),
+    ...generatePolynomialEasingTriplet(5, "quintic"),
+    ...generatePolynomialEasingTriplet(6, "sextic"),
+
+    expoIn: (t: number) => t <= 0
+        ? 0
+        : 2 ** (-10 * (1 - t)),
+    expoOut: (t: number) => t >= 1
+        ? 1
+        : 1 - 2 ** -(10 * t),
+    expoInOut: (t: number) => t === 0 || t === 1
+        ? t
+        : t < 0.5
+            ? 2 ** (10 * (2 * t - 1) - 1)
+            : 1 - 2 ** (-10 * (2 * t - 1) - 1),
+
+    backIn: (t: number) => (Math.sqrt(3) * (t - 1) + t) * t ** 2,
+    backOut: (t: number) => 1 + ((Math.sqrt(3) + 1) * t - 1) * (t - 1) ** 2,
+    backInOut: (t: number) => t < 0.5
+        ? 4 * t * t * (3.6 * t - 1.3)
+        : 4 * (t - 1) ** 2 * (3.6 * t - 2.3) + 1
+});

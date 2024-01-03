@@ -3,16 +3,16 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, Collision } from "../../../../common/src/utils/math";
+import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
 export class Building extends GameObject<ObjectCategory.Building> {
@@ -28,6 +28,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
     orientation!: Orientation;
 
     ceilingVisible = false;
+
+    errorSeq?: boolean;
 
     sound?: GameSound;
 
@@ -67,27 +69,28 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
             for (const hitbox of hitboxes) {
                 // find the direction to cast rays
-                let direction: Vector | null = null;
+                let collision: CollisionResponse = null;
 
                 if (hitbox instanceof CircleHitbox) {
-                    const intersection = Collision.circleCircleIntersection(
+                    collision = Collision.circleCircleIntersection(
                         hitbox.position,
                         hitbox.radius,
                         playerHitbox.position,
-                        playerHitbox.radius);
-
-                    direction = intersection?.dir ?? null;
+                        playerHitbox.radius
+                    );
                 } else if (hitbox instanceof RectangleHitbox) {
-                    const intersection = Collision.rectCircleIntersection(hitbox.min,
+                    collision = Collision.rectCircleIntersection(
+                        hitbox.min,
                         hitbox.max,
                         playerHitbox.position,
-                        playerHitbox.radius);
-
-                    direction = intersection?.dir ?? null;
+                        playerHitbox.radius
+                    );
                 }
 
+                const direction = collision?.dir;
+
                 if (direction) {
-                    if (HITBOX_DEBUG_MODE) {
+                    /* if (HITBOX_DEBUG_MODE) {
                         graphics?.lineStyle({
                             color: 0xff0000,
                             width: 0.1
@@ -99,7 +102,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         this.addTimeout(() => {
                             graphics?.destroy();
                         }, 30);
-                    }
+                    } */
 
                     const angle = Math.atan2(direction.y, direction.x);
 
@@ -133,6 +136,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 } else {
                     visible = false;
                 }
+
                 if (visible) break;
             }
         }
@@ -165,6 +169,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 sprite.setVPos(toPixiCoords(image.position));
                 if (image.tint !== undefined) sprite.setTint(image.tint);
                 if (image.rotation) sprite.setRotation(image.rotation);
+                if (image.scale) sprite.scale = image.scale;
                 this.container.addChild(sprite);
             }
 
@@ -179,38 +184,42 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.rotation = this.rotation;
 
             this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
-
-            if (this.definition.sounds) {
-                const sounds = this.definition.sounds;
-
-                const soundOptions = {
-                    position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
-                    fallOff: sounds.fallOff,
-                    maxRange: sounds.maxRange,
-                    dynamic: true,
-                    loop: true
-                };
-
-                if (sounds.normal &&
-                    !full.puzzleSolved &&
-                    this.sound?.name !== sounds.normal) {
-                    this.sound?.stop();
-                    this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
-                }
-
-                if (sounds.solved &&
-                    full.puzzleSolved &&
-                    this.sound?.name !== sounds.solved) {
-                    this.sound?.stop();
-                    this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
-                }
-            }
         }
 
         const definition = this.definition;
 
         if (definition === undefined) {
             console.warn("Building partially updated before being fully updated");
+        }
+
+        if (definition.sounds) {
+            const sounds = this.definition.sounds!;
+
+            const soundOptions = {
+                position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
+                fallOff: sounds.fallOff,
+                maxRange: sounds.maxRange,
+                dynamic: true,
+                loop: true
+            };
+
+            if (
+                sounds.normal &&
+                !data.puzzle?.solved &&
+                this.sound?.name !== sounds.normal
+            ) {
+                this.sound?.stop();
+                this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
+            }
+
+            if (
+                sounds.solved &&
+                data.puzzle?.solved &&
+                this.sound?.name !== sounds.solved
+            ) {
+                this.sound?.stop();
+                this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
+            }
         }
 
         if (data.dead) {
@@ -227,7 +236,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     alpha: {
                         start: 1,
                         end: 0,
-                        ease: EaseFunctions.sextIn
+                        ease: EaseFunctions.sexticIn
                     },
                     scale: { start: 1, end: 0.2 },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
@@ -249,6 +258,17 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
         this.dead = data.dead;
 
+        if (data.puzzle) {
+            if (!isNew && data.puzzle.errorSeq !== this.errorSeq) {
+                this.playSound("puzzle_error");
+            }
+            this.errorSeq = data.puzzle.errorSeq;
+
+            if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
+                this.playSound("puzzle_solved");
+            }
+        }
+
         this.ceilingContainer.removeChildren();
         for (const image of definition.ceilingImages ?? []) {
             let key = image.key;
@@ -262,29 +282,23 @@ export class Building extends GameObject<ObjectCategory.Building> {
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
 
-            if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
-
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
-
-            if (definition.scopeHitbox !== undefined) {
+            if (this.ceilingHitbox !== undefined) {
                 drawHitbox(
-                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.ceilingHitbox,
+                    HITBOX_COLORS.buildingScopeCeiling,
                     this.debugGraphics
                 );
             }
 
-            drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics
-            );
+            if (definition.spawnHitbox !== undefined) {
+                drawHitbox(
+                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.spawnHitbox,
+                    this.debugGraphics
+                );
+            }
 
-            if (definition.scopeHitbox) {
+            if (definition.scopeHitbox !== undefined) {
                 drawHitbox(
                     definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,
@@ -294,8 +308,9 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
     }
 
-    destroy(): void {
+    override destroy(): void {
         super.destroy();
+
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();
