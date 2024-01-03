@@ -1363,7 +1363,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "ship_floor_2",
-                position: Vec.create(0, 64.8)
+                position: Vec.create(0.02, 64.8)
             }
         ],
         ceilingImages: [
