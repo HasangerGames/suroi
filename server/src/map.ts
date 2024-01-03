@@ -340,7 +340,7 @@ export class Map {
         }
 
         for (const decal of definition.decals ?? []) {
-            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
+            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.idString), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
         }
 
         if (!definition.hideOnMap) this.packet.objects.push(building);

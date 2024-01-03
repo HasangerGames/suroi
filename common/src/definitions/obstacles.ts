@@ -1352,7 +1352,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "large_oil_tank",
             name: "Large Oil Tank",
             material: "large_refinery_barrel",
-            health: 3500,
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -1360,8 +1362,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(28),
             rotationMode: RotationMode.Full,
-            explosion: "large_refinery_barrel_explosion",
-            reflectBullets: true,
             zIndex: ZIndexes.ObstaclesLayer1,
             frames: {
                 particle: "barrel_particle"
@@ -1543,6 +1543,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 delay: 0
             },
             triggerInteractOn: "vault_door",
+            sound: {
+                name: "button_press"
+            },
             frames: {
                 particle: "barrel_particle",
                 residue: "barrel_residue"

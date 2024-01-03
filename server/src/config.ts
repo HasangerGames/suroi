@@ -20,7 +20,7 @@ export const Config = {
 
     mapName: "main",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
     maxGames: 3,
