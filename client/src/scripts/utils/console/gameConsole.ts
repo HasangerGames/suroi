@@ -282,7 +282,6 @@ export class GameConsole {
                 error: nativeError
             } = console;
 
-            // eslint-disable-next-line no-inner-declarations
             function makeOverride<
                 C extends typeof window.console,
                 K extends "log" | "info" | "warn" | "error"

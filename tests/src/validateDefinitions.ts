@@ -16,8 +16,9 @@ import { Modes } from "../../common/src/definitions/modes";
 import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
+import { Throwables } from "../../common/src/definitions/throwables";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
-import { ObstacleSpecialRoles, type ItemDefinition, type ObjectDefinition, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { ObstacleSpecialRoles, type InventoryItemDefinition, type ObjectDefinition, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
@@ -282,7 +283,7 @@ logger.indent("Validating map definitions", () => {
 
 // suck it
 // eslint-disable-next-line no-inner-declarations
-function validateWearerAttributes(baseErrorPath: string, definition: ItemDefinition): void {
+function validateWearerAttributes(baseErrorPath: string, definition: InventoryItemDefinition): void {
     function validateWearerAttributesInternal(baseErrorPath: string, attributes: WearerAttributes): void {
         tester.assertNoPointlessValue({
             obj: attributes,
@@ -488,8 +489,6 @@ logger.indent("Validating armor definitions", () => {
                 includeMax: true,
                 baseErrorPath: errorPath
             });
-
-            validateWearerAttributes(errorPath, armor);
         });
     }
 });
@@ -507,8 +506,6 @@ logger.indent("Validating backpack definitions", () => {
                 baseErrorPath: errorPath
             });
 
-            validateWearerAttributes(errorPath, backpack);
-
             logger.indent("Validating maximum capacities", () => {
                 const errorPath2 = tester.createPath(errorPath, "maximum capacities");
 
@@ -517,8 +514,8 @@ logger.indent("Validating backpack definitions", () => {
                         obj: { [item]: item },
                         field: item,
                         baseErrorPath: errorPath2,
-                        collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions),
-                        collectionName: "HealingItems and Ammos"
+                        collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions).concat(Throwables),
+                        collectionName: "HealingItems, Ammos, and Throwables"
                     });
 
                     tester.assertIsNaturalNumber({
@@ -586,7 +583,7 @@ logger.indent("Validating building definitions", () => {
                                         const reference = Obstacles.fromString(idString);
 
                                         if (reference) {
-                                            const rotationMode = reference.rotationMode;
+                                            const rotationMode = typeof obstacle.idString === "string" ? reference.rotationMode : RotationMode.Full;
 
                                             switch (rotationMode) {
                                                 case RotationMode.Full: {
@@ -777,7 +774,7 @@ logger.indent("Validating building definitions", () => {
                         (decal, errorPath) => {
                             tester.assertReferenceExists({
                                 obj: decal,
-                                field: "id",
+                                field: "idString",
                                 collection: Decals,
                                 baseErrorPath: errorPath
                             });
@@ -1006,6 +1003,7 @@ logger.indent("Validating explosions", () => {
                     field: "min",
                     min: 0,
                     max: explosion.radius.max,
+                    includeMin: true,
                     includeMax: true,
                     baseErrorPath: errorPath2
                 });
@@ -1756,29 +1754,31 @@ logger.indent("Validating obstacles", () => {
             logger.indent("Validating scaling", () => {
                 const errorPath2 = tester.createPath(errorPath, "scaling");
 
-                tester.assertInBounds({
-                    obj: obstacle.scale,
-                    field: "spawnMin",
-                    min: -Infinity,
-                    max: obstacle.scale.spawnMax,
-                    includeMax: true,
-                    baseErrorPath: errorPath2
-                });
+                if (obstacle.scale) {
+                    tester.assertInBounds({
+                        obj: obstacle.scale,
+                        field: "spawnMin",
+                        min: -Infinity,
+                        max: obstacle.scale.spawnMax,
+                        includeMax: true,
+                        baseErrorPath: errorPath2
+                    });
 
-                tester.assertInBounds({
-                    obj: obstacle.scale,
-                    field: "spawnMax",
-                    min: obstacle.scale.spawnMin,
-                    max: Infinity,
-                    includeMin: true,
-                    baseErrorPath: errorPath2
-                });
+                    tester.assertInBounds({
+                        obj: obstacle.scale,
+                        field: "spawnMax",
+                        min: obstacle.scale.spawnMin,
+                        max: Infinity,
+                        includeMin: true,
+                        baseErrorPath: errorPath2
+                    });
 
-                tester.assertIsFiniteRealNumber({
-                    obj: obstacle.scale,
-                    field: "destroy",
-                    baseErrorPath: errorPath2
-                });
+                    tester.assertIsFiniteRealNumber({
+                        obj: obstacle.scale,
+                        field: "destroy",
+                        baseErrorPath: errorPath2
+                    });
+                }
             });
 
             validators.hitbox(errorPath, obstacle.hitbox);

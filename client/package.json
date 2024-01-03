@@ -20,30 +20,31 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tsconfig/svelte": "^5.0.2",
     "@types/jquery": "^3.5.29",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.10.6",
     "postcss": "^8.4.32",
-    "postcss-import": "^15.1.0",
-    "postcss-loader": "^7.3.3",
+    "postcss-import": "^16.0.0",
+    "postcss-loader": "^7.3.4",
     "postcss-preset-env": "^9.3.0",
-    "sass": "^1.69.5",
+    "sass": "^1.69.6",
     "sirv-cli": "^2.0.2",
-    "svgo": "^3.1.0",
+    "svelte": "^4.2.3",
+    "svgo": "^3.2.0",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "typescript": "5.3.3",
-    "vite": "^5.0.7",
+    "vite": "^5.0.10",
     "vite-plugin-image-optimizer": "^1.1.7",
     "vite-spritesheet-plugin": "0.0.3"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
-    "@pixi/compressed-textures": "^7.3.2",
-    "@pixi/graphics-extras": "^7.3.2",
+    "@pixi/graphics-extras": "^7.3.3",
     "@pixi/sound": "^5.2.2",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.1",
-    "pixi.js": "7.3.2"
+    "pixi.js": "7.3.3"
   }
 }

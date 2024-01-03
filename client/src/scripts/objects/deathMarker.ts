@@ -14,7 +14,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     playerName!: string;
     nameColor = 0xdcdcdc;
 
-    image: SuroiSprite;
+    readonly image: SuroiSprite;
     playerNameText: Text;
 
     scaleAnim?: Tween<Vector>;
@@ -45,8 +45,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
-        const pos = toPixiCoords(this.position);
-        this.container.position.copyFrom(pos);
+        this.container.position.copyFrom(toPixiCoords(this.position));
 
         this.container.zIndex = ZIndexes.DeathMarkers;
         if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
@@ -90,8 +89,11 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         }
     }
 
-    destroy(): void {
+    override destroy(): void {
         super.destroy();
+
+        this.image.destroy();
+        this.playerNameText.destroy();
         this.scaleAnim?.kill();
         this.alphaAnim?.kill();
     }

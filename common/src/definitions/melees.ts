@@ -1,8 +1,8 @@
 import { type FireMode } from "../constants";
-import { ItemType, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemType, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 
-export interface MeleeDefinition extends ItemDefinition {
+export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
 
     readonly damage: number
@@ -11,14 +11,10 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
-    readonly speedMultiplier: number
-    readonly killstreak?: boolean
     readonly maxTargets: number
-    readonly fists: {
+    readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
-        readonly left: Vector
-        readonly right: Vector
         readonly useLeft: Vector
         readonly useRight: Vector
     }

@@ -15,7 +15,7 @@
     "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
-    "dev:test": "cd tests && pnpm test",
+    "dev:test": "cd tests && pnpm stressTest",
     "lint": "eslint . --fix --ext .js,.ts",
     "lint:ci": "eslint . --max-warnings 0 --ext .js,.ts",
     "validateDefinitions": "cd tests && tsc && pnpm validateDefinitions",
@@ -27,12 +27,12 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
     "eslint-config-standard-with-typescript": "^43.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-n": "^16.4.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "typescript": "5.3.3"
   }

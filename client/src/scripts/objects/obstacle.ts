@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, calculateDoorHitboxes, Numeric } from "../../../../common/src/utils/math";
+import { Angle, calculateDoorHitboxes, EaseFunctions, Numeric } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -12,7 +12,7 @@ import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
@@ -91,12 +91,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 });
             }
 
-            if (!this.activated && full.activated) {
+            if (this.activated !== full.activated) {
                 this.activated = full.activated;
 
                 if (!isNew && !this.destroyed) {
                     if (definition.role === ObstacleSpecialRoles.Activatable && definition.sound) {
-                        this.playSound(definition.sound.name, definition.sound);
+                        if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
+                        else this.playSound(definition.sound.name, definition.sound);
                     }
 
                     // fixme idString check, hard coded behavior
@@ -107,12 +108,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             scale: {
                                 start: randomFloat(0.85, 0.95),
                                 end: 0,
-                                ease: EaseFunctions.quartIn
+                                ease: EaseFunctions.quarticIn
                             },
                             alpha: {
                                 start: 1,
                                 end: 0,
-                                ease: EaseFunctions.sextIn
+                                ease: EaseFunctions.sexticIn
                             },
                             rotation: { start: randomRotation(), end: randomRotation() },
                             speed: Vec.fromPolar(randomRotation(), randomFloat(minSpeed, maxSpeed))
@@ -148,12 +149,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         this.scale = data.scale;
 
-        const scaleFactor = (this.scale - definition.scale.destroy) / (definition.scale.spawnMax - definition.scale.destroy);
+        const destroyScale = definition.scale?.destroy ?? 1;
+        const scaleFactor = (this.scale - destroyScale) / ((definition.scale?.spawnMax ?? 1) - destroyScale);
 
         if (this.smokeEmitter) {
             this.smokeEmitter.active = !this.dead &&
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
+                (("emitParticles" in definition && this.activated) || (scaleFactor > 0 && scaleFactor < 0.5));
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = Numeric.lerp(150, 3000, scaleFactor);
@@ -199,12 +201,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     scale: {
                         start: randomFloat(0.85, 0.95),
                         end: 0,
-                        ease: EaseFunctions.quartIn
+                        ease: EaseFunctions.quarticIn
                     },
                     alpha: {
                         start: 1,
                         end: 0,
-                        ease: EaseFunctions.sextIn
+                        ease: EaseFunctions.sexticIn
                     },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
                 }));
@@ -227,7 +229,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (!texture) {
             texture = !this.dead
-                ? definition.frames?.base ?? `${definition.idString}`
+                ? this.activated && definition.frames?.activated
+                    ? definition.frames.activated
+                    : definition.frames?.base ?? `${definition.idString}`
                 : definition.frames?.residue ?? `${definition.idString}_residue`;
         }
 
@@ -385,7 +389,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         });
     }
 
-    destroy(): void {
+    override destroy(): void {
         super.destroy();
         this.image.destroy();
         this.smokeEmitter?.destroy();

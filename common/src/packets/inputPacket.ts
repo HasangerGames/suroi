@@ -2,6 +2,7 @@ import { GameConstants, InputActions, PacketType } from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
 import { type ScopeDefinition } from "../definitions/scopes";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
 
@@ -9,7 +10,7 @@ const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 export type InputAction = {
     readonly type: InputActions.UseItem
-    readonly item: HealingItemDefinition | ScopeDefinition
+    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
 } | {
     readonly type: InputActions.EquipItem | InputActions.DropItem
     readonly slot: number
@@ -103,7 +104,9 @@ export class InputPacket extends Packet {
         this.turning = stream.readBoolean();
         if (this.turning) {
             this.rotation = stream.readRotation(16);
-            if (!this.isMobile) this.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 8);
+            if (!this.isMobile) {
+                this.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 8);
+            }
         }
 
         // Actions
@@ -126,5 +129,29 @@ export class InputPacket extends Packet {
 
             this.actions.push({ type, item, slot });
         }
+    }
+
+    /**
+     * Compare two input packets to test if they need to be resent
+     * @param that The previous input packet
+     */
+    didChange(that: InputPacket): boolean {
+        if (this.actions.length) return true;
+
+        for (const k in this.movement) {
+            const key = k as keyof InputPacket["movement"];
+            if (that.movement[key] !== this.movement[key]) return true;
+        }
+
+        for (const k in this.mobile) {
+            const key = k as keyof InputPacket["mobile"];
+            if (that.mobile[key] !== this.mobile[key]) return true;
+        }
+
+        for (const key of ["attacking", "turning", "rotation", "distanceToMouse"] as const) {
+            if (that[key] !== this[key]) return true;
+        }
+
+        return false;
     }
 }

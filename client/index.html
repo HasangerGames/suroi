@@ -188,10 +188,10 @@
           <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
           <span id="gas-timer-text">0:00</span>
         </div>
-        <div id="debug-hud">
-          <div id="fps-counter"></div>
-          <div id="ping-counter"></div>
-          <div id="coordinates-hud"></div>
+          <div id="debug-hud">
+            <div id="fps-counter"></div>
+            <div id="ping-counter"></div>
+            <div id="coordinates-hud"></div>
         </div>
       </div>
 
@@ -269,10 +269,14 @@
       <div id="kill-msg-kills"></div>
       You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
     </div>
-    <div id="items-container">
+    <div class="items-container" id="healing">
       <div class="inventory-container" id="healing-items-container">
       </div>
+    </div>
+    <div class="items-container" id="ammo">
       <div class="inventory-container" id="ammo-container">
+      </div>
+      <div class="inventory-container" id="special-ammo-container">
       </div>
     </div>
     <div class="inventory-container" id="equipment-container">
@@ -296,21 +300,24 @@
       <div class="inventory-slot" id="weapon-slot-1">
         <span class="slot-number">1</span>
         <span class="item-ammo"></span>
-        <img class="item-image dual-image" draggable="false">
         <img class="item-image" draggable="false">
         <span class="item-name"></span>
       </div>
       <div class="inventory-slot" id="weapon-slot-2">
         <span class="slot-number">2</span>
         <span class="item-ammo"></span>
-        <img class="item-image dual-image" draggable="false">
         <img class="item-image" draggable="false">
         <span class="item-name"></span>
       </div>
       <div class="inventory-slot" id="weapon-slot-3">
         <span class="slot-number">3</span>
         <span class="item-ammo"></span>
-        <img class="item-image dual-image" draggable="false">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+      <div class="inventory-slot" id="weapon-slot-4">
+        <span class="slot-number">4</span>
+        <span class="item-ammo"></span>
         <img class="item-image" draggable="false">
         <span class="item-name"></span>
       </div>

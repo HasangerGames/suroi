@@ -53,7 +53,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     x: scale,
                     y: scale
                 },
-                duration: GameConstants.tps
+                duration: GameConstants.msPerTick
             });
         }
 
@@ -84,6 +84,8 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
     destroy(): void {
         super.destroy();
+
+        this.image.destroy();
         this.scaleAnim?.kill();
         this.fallSound?.stop();
     }
