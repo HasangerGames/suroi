@@ -47,6 +47,16 @@ export const Vec = Object.freeze({
         return this.create(a.x - b.x, a.y - b.y);
     },
     /**
+     * Subtracts one vector from another
+     * @param a The `Vector` to be subtracted from
+     * @param x The x-coordinate of the second vector
+     * @param y The y-coordinate of the second vector
+     * @returns A new `Vector` resulting from the subtraction of `x` and `y` from `b`
+     */
+    subComponent(a: Vector, x: number, y: number): Vector {
+        return this.create(a.x - x, a.y - y);
+    },
+    /**
      * Multiplies a `Vector` by a scalar
      * @param a The `Vector` to be multiplied
      * @param n The scalar value to multiply the `Vector` by

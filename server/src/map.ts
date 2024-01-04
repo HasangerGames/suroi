@@ -574,26 +574,59 @@ export class Map {
                 case MapObjectSpawnMode.GrassAndSand:
                 case MapObjectSpawnMode.Beach: {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
-                        if (spawnMode !== MapObjectSpawnMode.GrassAndSand &&
-                            (river.bankHitbox.isPointInside(position) ||
-                                hitbox.collidesWith(river.bankHitbox))) {
+                        if (
+                            spawnMode !== MapObjectSpawnMode.GrassAndSand &&
+                            (
+                                river.bankHitbox.isPointInside(position) ||
+                                hitbox.collidesWith(river.bankHitbox)
+                            )
+                        ) {
                             collided = true;
                             break;
                         }
 
-                        if (spawnMode === MapObjectSpawnMode.GrassAndSand &&
-                            (river.waterHitbox.isPointInside(position) ||
-                                hitbox.collidesWith(river.waterHitbox))) {
+                        if (
+                            spawnMode === MapObjectSpawnMode.GrassAndSand &&
+                            (
+                                river.waterHitbox.isPointInside(position) ||
+                                hitbox.collidesWith(river.waterHitbox)
+                            )
+                        ) {
                             collided = true;
                             break;
                         }
                     }
                     break;
                 }
+                case MapObjectSpawnMode.River: {
+                    if (hitbox instanceof CircleHitbox) {
+                        const radius = hitbox.radius;
+                        for (
+                            const point of [
+                                Vec.subComponent(position, 0, radius),
+                                Vec.subComponent(position, radius, 0),
+                                Vec.addComponent(position, 0, radius),
+                                Vec.addComponent(position, radius, 0)
+                            ]
+                        ) {
+                            for (const river of this.terrain.getRiversInHitbox(hitbox)) {
+                                if (!river.waterHitbox.isPointInside(point)) {
+                                    collided = true;
+                                    break;
+                                }
+                            }
+                            if (collided) break;
+                        }
+                    }
+                    // TODO add code for other hitbox types
+                    break;
+                }
                 case MapObjectSpawnMode.RiverBank: {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
-                        if (river.waterHitbox.isPointInside(position) ||
-                            hitbox.collidesWith(river.waterHitbox)) {
+                        if (
+                            river.waterHitbox.isPointInside(position) ||
+                            hitbox.collidesWith(river.waterHitbox)
+                        ) {
                             collided = true;
                             break;
                         }

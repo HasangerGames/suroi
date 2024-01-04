@@ -52,11 +52,11 @@ export const Maps: Record<string, MapDefinition> = {
         rivers: {
             minAmount: 3,
             maxAmount: 3,
-            wideChance: 0.15,
-            minWidth: 12,
-            maxWidth: 18,
-            minWideWidth: 25,
-            maxWideWidth: 30
+            wideChance: 0.35,
+            minWidth: 14,
+            maxWidth: 20,
+            minWideWidth: 27,
+            maxWideWidth: 32
         },
         buildings: {
             port_complex: 1,
@@ -85,9 +85,11 @@ export const Maps: Record<string, MapDefinition> = {
             aegis_crate: 6,
             grenade_crate: 40,
             rock: 200,
+            river_rock: 45,
             bush: 120,
             blueberry_bush: 30,
             barrel: 80,
+            viking_chest: 1,
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
@@ -340,7 +342,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("port_fence", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("viking_chest", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
