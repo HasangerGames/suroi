@@ -244,7 +244,7 @@ export class Game {
             // Update gas
             this.gas.tick();
 
-            // First loop over players: Movement, animations, & actions
+            // First loop over players: movement, animations, & actions
             for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
@@ -255,6 +255,13 @@ export class Game {
                 if (!player.joined) continue;
 
                 player.secondUpdate();
+            }
+
+            // Third loop: clean up after all packets have been sent
+            for (const player of this.connectedPlayers) {
+                if (!player.joined) continue;
+
+                player.postPacket();
             }
 
             // Reset everything
@@ -278,10 +285,11 @@ export class Game {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
-                    lastManStanding.movement.up = false;
-                    lastManStanding.movement.down = false;
-                    lastManStanding.movement.left = false;
-                    lastManStanding.movement.right = false;
+                    const movement = lastManStanding.movement;
+                    movement.up = false;
+                    movement.down = false;
+                    movement.left = false;
+                    movement.right = false;
                     lastManStanding.attacking = false;
                     lastManStanding.sendGameOverPacket(true);
                 }

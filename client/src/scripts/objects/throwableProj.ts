@@ -23,7 +23,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
     override updateFromData(data: ObjectsNetData[ObjectCategory.ThrowableProjectile], isNew = false): void {
         if (data.full) {
             this.image.setFrame(data.full.definition.animation.liveImage);
-            this.radius = data.full.definition.radius;
+            this.radius = data.full.definition.hitboxRadius;
         }
 
         this.position = data.position;

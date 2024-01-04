@@ -79,15 +79,19 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         const dt = GameConstants.msPerTick;
         const halfDt = dt * 0.5;
 
-        this.position = Vec.add(this.position, Vec.scale(this.velocity, halfDt));
+        const calculateSafeDisplacement = (): Vector => {
+            let displacement = Vec.scale(this.velocity, halfDt);
+            if (Vec.squaredLength(displacement) >= 1) {
+                displacement = Vec.normalizeSafe(displacement);
+            }
+
+            return displacement;
+        };
+
+        this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.velocity = Vec.scale(this.velocity, Loot._dragConstant);
 
-        let displacement = Vec.scale(this.velocity, halfDt);
-        if (Vec.squaredLength(displacement) >= 1) {
-            displacement = Vec.normalizeSafe(displacement);
-        }
-
-        this.position = Vec.add(this.position, displacement);
+        this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 

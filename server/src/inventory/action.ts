@@ -15,24 +15,18 @@ export abstract class Action {
     protected constructor(player: Player, time: number) {
         this.player = player;
         this._timeout = player.game.addTimeout(this.execute.bind(this), time * 1000);
-        this.player.actionSeq++;
-        this.player.actionSeq %= 4;
-        this.player.game.fullDirtyObjects.add(this.player);
+        this.player.game.partialDirtyObjects.add(this.player);
     }
 
     cancel(): void {
         this._timeout.kill();
         this.player.action = undefined;
-        this.player.actionSeq++;
-        this.player.actionSeq %= 4;
-        this.player.game.fullDirtyObjects.add(this.player);
+        this.player.game.partialDirtyObjects.add(this.player);
     }
 
     execute(): void {
         this.player.action = undefined;
-        this.player.actionSeq++;
-        this.player.actionSeq %= 4;
-        this.player.game.fullDirtyObjects.add(this.player);
+        this.player.game.partialDirtyObjects.add(this.player);
     }
 }
 
@@ -46,7 +40,7 @@ export class ReloadAction extends Action {
         this.item = item;
     }
 
-    execute(): void {
+    override execute(): void {
         super.execute();
 
         const items = this.player.inventory.items;
@@ -83,7 +77,7 @@ export class HealingAction extends Action {
         this.item = itemDef;
     }
 
-    execute(): void {
+    override execute(): void {
         super.execute();
 
         this.player.inventory.items.decrementItem(this.item.idString);

@@ -273,15 +273,15 @@ export const Maps: Record<string, MapDefinition> = {
             // Fixed obstacles
             const obstacles = [
                 { id: "rock", pos: Vec.create(10, 10) },
-                { id: "rock", pos: Vec.create(30, 40) },
-                { id: "rock", pos: Vec.create(30, 80) },
+                { id: "rock", pos: Vec.create(25, 40) },
+                { id: "rock", pos: Vec.create(25, 80) },
                 { id: "regular_crate", pos: Vec.create(20, 15) },
                 { id: "barrel", pos: Vec.create(25, 25) },
                 { id: "rock", pos: Vec.create(80, 10) },
                 { id: "rock", pos: Vec.create(60, 15) },
                 { id: "oak_tree", pos: Vec.create(20, 70) },
                 { id: "oil_tank", pos: Vec.create(120, 25) },
-                { id: "birch_tree", pos: Vec.create(110, 50) }
+                { id: "birch_tree", pos: Vec.create(120, 50) }
             ];
 
             const center = Vec.create(map.width / 2, map.height / 2);
@@ -293,10 +293,10 @@ export const Maps: Record<string, MapDefinition> = {
                 map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 75)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 75)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -75)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -75)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 80)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 80)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -80)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -80)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -309,12 +309,15 @@ export const Maps: Record<string, MapDefinition> = {
             };
 
             for (const obstacle in randomObstacles) {
-                for (let i = 0; i < randomObstacles[obstacle]; i++) {
+                const limit = randomObstacles[obstacle];
+                for (let i = 0; i < limit; i++) {
                     const definition = Obstacles.fromString(obstacle);
-
-                    const pos = map.getRandomPosition(definition.spawnHitbox ?? definition.hitbox, {
-                        collides: pos => Collision.circleCollision(center, 120, pos, 1)
-                    });
+                    const pos = map.getRandomPosition(
+                        definition.spawnHitbox ?? definition.hitbox,
+                        {
+                            collides: pos => Collision.circleCollision(center, 130, pos, 1)
+                        }
+                    );
 
                     if (!pos) continue;
 
@@ -333,7 +336,7 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 32,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("port", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {

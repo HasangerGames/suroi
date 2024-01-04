@@ -82,7 +82,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.rotation = Angle.normalize(this.rotation + this.angularVelocity * deltaTime);
 
         const impactDamage = this.definition.impactDamage;
-        const shouldDealImpactDamage = impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0016;
+        const shouldDealImpactDamage = impactDamage !== undefined && Vec.squaredLength(this.velocity) > 0.0004;
 
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             if (
@@ -169,6 +169,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         }
 
         this._collideWithOwner ||= this.game.now - this._spawnTime >= 100;
+        this.game.grid.updateObject(this);
         this.game.partialDirtyObjects.add(this);
     }
 

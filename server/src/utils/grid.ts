@@ -110,9 +110,7 @@ export class Grid {
     }
 
     /**
-     * Get all objects near this hitbox
-     * This transforms the hitbox into a rectangle
-     * and gets all objects intersecting it after rounding it to grid cells
+     * Get all objects near this hitbox. This transforms the hitbox into a rectangle and gets all objects intersecting it after rounding it to grid cells
      * @param hitbox The hitbox
      * @return A set with the objects near this hitbox
      */

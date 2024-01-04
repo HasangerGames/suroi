@@ -57,8 +57,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private _kills = 0;
     get kills(): number { return this._kills; }
-    set kills(k: number) {
-        this._kills = k;
+    set kills(kills: number) {
+        this._kills = kills;
         this.game.updateKillLeader(this);
     }
 
@@ -202,14 +202,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     bufferedAttack?: Timeout;
 
-    readonly animation = {
+    private readonly _animation = {
         type: AnimationType.None,
-        // This boolean is flipped when an animation plays
-        // when it's changed, the client plays the animation
-        seq: false
+        dirty: true
     };
 
-    actionSeq = 0;
+    get animation(): AnimationType { return this._animation.type; }
+    set animation(animType: AnimationType) {
+        const animation = this._animation;
+        animation.type = animType;
+        animation.dirty = true;
+    }
 
     /**
      * Objects the player can see
@@ -245,14 +248,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     readonly socket: WebSocket<PlayerContainer>;
 
-    private _action?: Action | undefined;
-    get action(): Action | undefined { return this._action; }
-    set action(value: Action | undefined) {
-        const wasReload = this._action?.type === PlayerActions.Reload;
-        this._action = value;
+    private readonly _action: { type?: Action, dirty: boolean } = {
+        type: undefined,
+        dirty: true
+    };
 
-        // The action slot is now free, meaning our player isn't doing anything
-        // Let's try reloading our empty gun then, unless we just cancelled a reload
+    get action(): Action | undefined { return this._action.type; }
+    set action(value: Action | undefined) {
+        const action = this._action;
+        const wasReload = action.type?.type === PlayerActions.Reload;
+
+        action.type = value;
+        action.dirty = true;
+
         if (
             !wasReload &&
             value === undefined &&
@@ -260,7 +268,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.activeItem.ammo <= 0 &&
             this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
         ) {
-            this._action = new ReloadAction(this, this.activeItem);
+            // The action slot is now free, meaning our player isn't doing anything
+            // Let's try reloading our empty gun then, unless we just cancelled a reload
+            action.type = new ReloadAction(this, this.activeItem);
+            action.dirty = true;
         }
     }
 
@@ -281,7 +292,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     invulnerable = true;
 
     /**
-     * Determines if the player can despawn
+     * Determines if the player can despawn\
      * Set to false once the player picks up loot
      */
     canDespawn = true;
@@ -307,7 +318,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -359,6 +370,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             this.inventory.items.setItem("2x_scope", 1);
             this.inventory.items.setItem("4x_scope", 1);
+            this.inventory.items.setItem("8x_scope", 1);
+            this.inventory.items.setItem("15x_scope", 1);
             this.inventory.scope = "4x_scope";
         }
 
@@ -387,14 +400,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // This system allows opposite movement keys to cancel each other out.
         const movement = Vec.create(0, 0);
 
-        if (this.isMobile && this.movement.moving) {
-            movement.x = Math.cos(this.movement.angle) * 1.45;
-            movement.y = Math.sin(this.movement.angle) * 1.45;
+        const playerMovement = this.movement;
+        if (this.isMobile && playerMovement.moving) {
+            movement.x = Math.cos(playerMovement.angle) * 1.45;
+            movement.y = Math.sin(playerMovement.angle) * 1.45;
         } else {
-            if (this.movement.up) movement.y--;
-            if (this.movement.down) movement.y++;
-            if (this.movement.left) movement.x--;
-            if (this.movement.right) movement.x++;
+            if (playerMovement.up) movement.y--;
+            if (playerMovement.down) movement.y++;
+            if (playerMovement.left) movement.x--;
+            if (playerMovement.right) movement.x++;
         }
 
         if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
@@ -429,7 +443,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             Vec.scale(movementVector, dt)
         );
 
-        /* Object placing code start //
+        /*
+        // Object placing code start
         const position = Vec.add(
             this.position,
             Vec.create(Math.cos(this.rotation) * this.distanceToMouse, Math.sin(this.rotation) * this.distanceToMouse)
@@ -447,7 +462,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
             //console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
         }
-        // Object placing code end */
+        // Object placing code end
+        */
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -695,6 +711,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
+    }
+
+    /**
+     * Clean up internal state after all packets have been sent
+     * to all recipients. The only code that should be present here
+     * is clean up code that cannot be in `secondUpdate` because packets
+     * depend on it
+     */
+    postPacket(): void {
+        this._animation.dirty = false;
+        this._action.dirty = false;
     }
 
     spectate(packet: SpectatePacket): void {
@@ -1201,10 +1228,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     override get data(): FullData<ObjectCategory.Player> {
-        return {
+        const data: FullData<ObjectCategory.Player> = {
             position: this.position,
             rotation: this.rotation,
-            animation: this.animation,
             full: {
                 dead: this.dead,
                 invulnerable: this.invulnerable,
@@ -1212,16 +1238,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,
                 skin: this.loadout.skin,
-                activeItem: this.activeItem.definition,
-                action: {
-                    seq: this.actionSeq,
-                    ...(() => {
-                        return this.action instanceof HealingAction
-                            ? { type: PlayerActions.UseItem, item: this.action.item }
-                            : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
-                    })()
-                }
+                activeItem: this.activeItem.definition
             }
         };
+
+        if (this._animation.dirty) {
+            data.animation = this.animation;
+        }
+
+        if (this._action.dirty) {
+            data.action = this.action instanceof HealingAction
+                ? { type: PlayerActions.UseItem, item: this.action.item }
+                : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
+        }
+
+        return data;
     }
 }

@@ -48,14 +48,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return this.id === this.game.activePlayerID;
     }
 
-    animationSeq!: boolean;
-
     footstepSound?: GameSound;
     actionSound?: GameSound;
 
     action = {
         type: PlayerActions.None,
-        seq: 0,
         item: undefined as undefined | HealingItemDefinition
     };
 
@@ -385,11 +382,67 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.emoteContainer.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
         }
 
-        // Animation
-        if (this.animationSeq !== data.animation.seq && this.animationSeq !== undefined) {
-            this.playAnimation(data.animation.type);
+        if (data.animation !== undefined) {
+            this.playAnimation(data.animation);
         }
-        this.animationSeq = data.animation.seq;
+
+        if (data.action !== undefined) {
+            const action = data.action;
+
+            let actionSoundName = "";
+            this.healingParticlesEmitter.active = false;
+
+            this.actionSound?.stop();
+
+            switch (action.type) {
+                case PlayerActions.None: {
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.cancelAction();
+                    }
+                    break;
+                }
+                case PlayerActions.Reload: {
+                    const weaponDef = this.activeItem as GunDefinition;
+                    const reference = this._getItemReference() as GunDefinition;
+
+                    if (reference.casingParticles?.spawnOnReload) {
+                        if (weaponDef.isDual) {
+                            this.spawnCasingParticles(true);
+                        }
+                        this.spawnCasingParticles(false);
+                    }
+
+                    actionSoundName = `${weaponDef.idString}_reload`;
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.animateAction("Reloading...", weaponDef.reloadTime);
+                    }
+
+                    break;
+                }
+                case PlayerActions.UseItem: {
+                    const itemDef = action.item;
+                    actionSoundName = itemDef.idString;
+                    this.healingParticlesEmitter.active = true;
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
+                    }
+                    break;
+                }
+            }
+
+            if (actionSoundName) {
+                this.actionSound = this.playSound(
+                    actionSoundName,
+                    {
+                        fallOff: 0.6,
+                        maxRange: 48
+                    }
+                );
+            }
+
+            // @ts-expect-error 'item' not existing is okay
+            this.action = action;
+        }
 
         if (data.full) {
             const full = data.full;
@@ -400,88 +453,49 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
             this._oldItem = this.activeItem;
+            const itemDirty = this.activeItem !== full.activeItem;
             this.activeItem = full.activeItem;
 
             const skinID = full.skin.idString;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
-
-            this.images.body.setFrame(`${skinID}_base`);
-            this.images.leftFist.setFrame(`${skinID}_fist`);
-            this.images.rightFist.setFrame(`${skinID}_fist`);
-
             const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
-            this.images.body.setTint(tint);
-            this.images.leftFist.setTint(tint);
-            this.images.rightFist.setTint(tint);
+
+            this.images.body
+                .setFrame(`${skinID}_base`)
+                .setTint(tint);
+            this.images.leftFist
+                .setFrame(`${skinID}_fist`)
+                .setTint(tint);
+            this.images.rightFist
+                .setFrame(`${skinID}_fist`)
+                .setTint(tint);
+
+            const {
+                hideEquipment,
+                helmetLevel,
+                vestLevel,
+                backpackLevel
+            } = this;
 
             this.hideEquipment = skinDef.hideEquipment;
 
-            this.equipment.helmet = full.helmet;
-            this.equipment.vest = full.vest;
-            this.equipment.backpack = full.backpack;
+            this.helmetLevel = (this.equipment.helmet = full.helmet)?.level ?? 0;
+            this.vestLevel = (this.equipment.vest = full.vest)?.level ?? 0;
+            this.backpackLevel = (this.equipment.backpack = full.backpack).level;
 
-            this.helmetLevel = full.helmet?.level ?? 0;
-            this.vestLevel = full.vest?.level ?? 0;
-            this.backpackLevel = full.backpack.level;
+            const equipmentDirty = hideEquipment !== this.hideEquipment ||
+                helmetLevel !== this.helmetLevel ||
+                vestLevel !== this.vestLevel ||
+                backpackLevel !== this.backpackLevel;
 
-            const action = full.action;
-
-            if (this.action.type !== action.type || this.action.seq !== action.seq) {
-                let actionSoundName = "";
-                this.healingParticlesEmitter.active = false;
-
-                this.actionSound?.stop();
-
-                switch (action.type) {
-                    case PlayerActions.None: {
-                        if (this.isActivePlayer) this.game.uiManager.cancelAction();
-                        break;
-                    }
-                    case PlayerActions.Reload: {
-                        const weaponDef = this.activeItem as GunDefinition;
-                        const reference = this._getItemReference() as GunDefinition;
-
-                        if (reference.casingParticles?.spawnOnReload) {
-                            if (weaponDef.isDual) {
-                                this.spawnCasingParticles(true);
-                            }
-                            this.spawnCasingParticles(false);
-                        }
-
-                        actionSoundName = `${weaponDef.idString}_reload`;
-                        if (this.isActivePlayer) {
-                            this.game.uiManager.animateAction("Reloading...", weaponDef.reloadTime);
-                        }
-
-                        break;
-                    }
-                    case PlayerActions.UseItem: {
-                        const itemDef = action.item;
-                        actionSoundName = itemDef.idString;
-                        this.healingParticlesEmitter.active = true;
-                        if (this.isActivePlayer) this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
-                        break;
-                    }
-                }
-
-                if (actionSoundName) {
-                    this.actionSound = this.playSound(
-                        actionSoundName,
-                        {
-                            fallOff: 0.6,
-                            maxRange: 48
-                        }
-                    );
-                }
+            if (equipmentDirty) {
+                this.updateEquipment();
             }
 
-            // @ts-expect-error 'item' not existing is okay
-            this.action = action;
-
-            this.updateEquipment();
-
-            this.updateFistsPosition(true);
-            this.updateWeapon(isNew);
+            if (itemDirty) {
+                this.updateFistsPosition(true);
+                this.updateWeapon(isNew);
+            }
         }
 
         if (HITBOX_DEBUG_MODE) {

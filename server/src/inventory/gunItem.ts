@@ -73,8 +73,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (this.ammo <= 0) {
             if (owner.inventory.items.hasItem(definition.ammoType)) {
-                owner.animation.type = AnimationType.GunClick;
-                owner.animation.seq = !owner.animation.seq;
+                owner.animation = AnimationType.GunClick;
             }
 
             this._shots = 0;
@@ -93,13 +92,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        owner.animation.type = definition.ballistics.lastShotFX && this.ammo === 1
+        owner.animation = definition.ballistics.lastShotFX && this.ammo === 1
             ? AnimationType.LastShot
             : this._altFire
                 ? AnimationType.GunAlt
                 : AnimationType.Gun;
 
-        owner.animation.seq = !this.owner.animation.seq;
         owner.game.partialDirtyObjects.add(owner);
 
         owner.dirty.weapons = true;
