@@ -45,11 +45,29 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "throwables", weight: 0.3 }
         ]
     },
-    viking_treasure_chest: {
+    viking_chest: {
         min: 1,
         max: 1,
         loot: [
-            { item: "seax", weight: 1 }
+            [
+                { item: "seax", weight: 1 },
+                { item: null, weight: 1 }
+            ],
+            [
+                { tier: "viking_chest_guns", weight: 1 }
+            ],
+            [
+                { tier: "viking_chest_guns", weight: 1 }
+            ],
+            [
+                { tier: "special_equipment", weight: 0.65 },
+                { tier: "viking_chest_guns", weight: 0.5 },
+                { tier: "special_scopes", weight: 0.3 }
+            ],
+            [
+                { tier: "special_equipment", weight: 0.65 },
+                { tier: "special_scopes", weight: 0.3 }
+            ],
         ]
     },
     aegis_crate: {
@@ -545,5 +563,16 @@ export const LootTiers: Record<string, WeightedItem[]> = {
     special_winter_skins: [
         { item: "christmas_tree_skin", weight: 1 },
         { item: "gingerbread", weight: 1 }
-    ]
+    ],
+    viking_chest_guns: [
+        { item: "arx160", weight: 1 },
+        { item: "m16a4", weight: 1 },
+        { item: "m3k", weight: 1 },
+        { item: "mcx_spear", weight: 0.8 },
+        { item: "flues", weight: 0.8 },
+        { item: "lewis_gun", weight: 0.75 },
+        { item: "vepr12", weight: 0.75 },
+        { item: "stoner_63", weight: 0.1 },
+        { item: "g19", weight: 0.1 }
+    ],
 };

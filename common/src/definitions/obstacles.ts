@@ -268,8 +268,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer4
         },
         {
-            idString: "viking_treasure_chest",
-            name: "Viking Treasure Chest",
+            idString: "viking_chest",
+            name: "Viking Chest",
             material: "wood",
             health: 150,
             scale: {
@@ -494,8 +494,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "tear_gas_crate",
             name: "Tear Gas Crate",
             material: "crate",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
