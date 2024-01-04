@@ -116,7 +116,8 @@ export enum RotationMode {
 }
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
-    const definition: Partial<ObstacleDefinition> = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return {
         idString,
         name,
         material: "crate",
@@ -127,11 +128,11 @@ function makeCrate(idString: string, name: string, options: Partial<ObstacleDefi
             destroy: 0.5
         },
         spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.Binary,
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         hasLoot: true,
         ...options
-    };
-    return definition as ObstacleDefinition;
+    } as ObstacleDefinition;
 }
 
 function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition {
@@ -504,7 +505,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(9.15, 6.3),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "crate_particle"
+                particle: "crate_particle",
+                residue: "regular_crate_residue"
             }
         },
         {
