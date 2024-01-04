@@ -67,7 +67,7 @@ export const LootTables: Record<string, LootTable> = {
             [
                 { tier: "special_equipment", weight: 0.65 },
                 { tier: "special_scopes", weight: 0.3 }
-            ],
+            ]
         ]
     },
     aegis_crate: {
@@ -574,5 +574,5 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "vepr12", weight: 0.75 },
         { item: "stoner_63", weight: 0.1 },
         { item: "g19", weight: 0.1 }
-    ],
+    ]
 };
