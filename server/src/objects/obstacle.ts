@@ -41,7 +41,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     readonly isDoor: boolean;
     door?: {
         operationStyle: NonNullable<(ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]>
-        open: boolean
+        isOpen: boolean
         locked?: boolean
         closedHitbox: Hitbox
         openHitbox: Hitbox
@@ -128,7 +128,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
             this.door = {
                 operationStyle: definition.operationStyle ?? "swivel",
-                open: false,
+                isOpen: false,
                 locked: definition.locked,
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
@@ -249,7 +249,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
         switch (definition.role) {
             case ObstacleSpecialRoles.Door: {
-                if (!(this.door!.open && definition.openOnce)) {
+                if (!(this.door!.isOpen && definition.openOnce)) {
                     this.toggleDoor(player);
                 }
                 break;
@@ -289,8 +289,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             throw new Error("Door with non-rectangular hitbox");
         }
 
-        this.door.open = !this.door.open;
-        if (this.door.open) {
+        this.door.isOpen = !this.door.isOpen;
+        if (this.door.isOpen) {
             switch (this.door.operationStyle) {
                 case "swivel": {
                     if (player !== undefined) {

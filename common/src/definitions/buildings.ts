@@ -48,11 +48,14 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly decals?: BuildingDecal[]
 
     readonly puzzle?: {
-        triggerInteractOn: ReferenceTo<ObstacleDefinition>
-        interactDelay: number
-        order?: string[]
-        solvedSound?: boolean
-        setSolvedImmediately?: boolean // Don't wait for the interact delay before setting solved to true
+        readonly triggerInteractOn: ReferenceTo<ObstacleDefinition>
+        readonly interactDelay: number
+        readonly order?: string[]
+        readonly solvedSound?: boolean
+        /**
+         * Don't wait for the interact delay before setting solved to true
+         */
+        readonly setSolvedImmediately?: boolean
     }
 
     readonly sounds?: {
@@ -79,7 +82,9 @@ export interface BuildingDefinition extends ObjectDefinition {
     }>
     readonly ceilingZIndex?: number
 
-    // How many walls need to be broken to destroy the ceiling
+    /**
+     * How many walls need to be broken to destroy the ceiling
+     */
     readonly wallsToDestroy?: number
 
     readonly floors?: Array<{
@@ -88,7 +93,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     }>
 
     readonly groundGraphics?: Array<{
-        readonly color: number
+        readonly color: number | `#${string}`
         readonly hitbox: Hitbox
     }>
 
@@ -199,7 +204,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_back_wall",
-                position: Vec.create(0, -8.7),
+                position: Vec.create(0, -8.8),
                 rotation: 0
             },
             {
@@ -219,7 +224,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_front_wall",
-                position: Vec.create(-4.6, 8.7),
+                position: Vec.create(-4.6, 8.8),
                 rotation: 2
             }
         ]
@@ -1321,7 +1326,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "oil_tanker_ship_tanks",
         name: "Oil Tanker",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
-        scopeHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
+        ceilingHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
         ceilingImages: [
             {
                 key: "oil_tanker_ship_tank_ceiling",
@@ -1574,7 +1579,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(300, 270, Vec.create(-5, 0)),
         groundGraphics: [
             {
-                color: 0x666666,
+                color: "#6664",
                 hitbox: RectangleHitbox.fromRect(297.2, 271.7, Vec.create(-4.5, 0))
             },
             {
@@ -2175,19 +2180,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         groundGraphics: [
             {
-                color: 0x666666,
+                color: "#6664",
                 hitbox: RectangleHitbox.fromRect(153.09, 1.87, Vec.create(0, -83.96))
             },
             {
-                color: 0x666666,
+                color: "#6664",
                 hitbox: RectangleHitbox.fromRect(153.09, 1.87, Vec.create(0, 83.96))
             },
             {
-                color: 0x666666,
+                color: "#6664",
                 hitbox: RectangleHitbox.fromRect(1.93, 168, Vec.create(-75.57, 0))
             },
             {
-                color: 0x666666,
+                color: "#6664",
                 hitbox: RectangleHitbox.fromRect(1.93, 168, Vec.create(75.57, 0))
             },
             {

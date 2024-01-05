@@ -102,7 +102,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     hitbox = new CircleHitbox(GameConstants.player.radius);
 
-    floorType = "grass";
+    floorType: keyof typeof FloorTypes = "grass";
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Player]>) {
         super(game, id);
@@ -305,21 +305,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         const floorType = this.game.map.terrain.getFloor(this.position);
 
-        this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderwaterPlayers : ZIndexes.Players;
+        const doOverlay = FloorTypes[floorType].overlay;
+        this.container.zIndex = doOverlay ? ZIndexes.UnderwaterPlayers : ZIndexes.Players;
 
         if (floorType !== this.floorType) {
-            if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);
+            if (doOverlay) this.images.waterOverlay.setVisible(true);
+
             this.anims.waterOverlay?.kill();
             this.anims.waterOverlay = new Tween(
                 this.game,
                 {
                     target: this.images.waterOverlay,
                     to: {
-                        alpha: FloorTypes[floorType].overlay ? 1 : 0
+                        alpha: doOverlay ? 1 : 0
                     },
                     duration: 200,
                     onComplete: () => {
-                        if (!FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(false);
+                        if (!doOverlay) this.images.waterOverlay.setVisible(false);
                     }
                 }
             );

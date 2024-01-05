@@ -35,7 +35,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     /**
      * Ensures that the drag experienced is not dependant on tickrate
      *
-     * This particular exponent results in a 10% loss every 28.63ms (or a 50% loss every 188.4ms)
+     * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
     private static readonly _dragConstant = Math.exp(-3.69 / GameConstants.tickrate);
 

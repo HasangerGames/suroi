@@ -147,6 +147,7 @@ export enum ZIndexes {
     Ground,
     UnderWaterDeathMarkers,
     UnderWaterDeadObstacles,
+    UnderwaterGroundedThrowables,
     UnderWaterObstacles,
     UnderWaterLoot,
     UnderwaterPlayers,
@@ -154,6 +155,7 @@ export enum ZIndexes {
     Decals,
     DeadObstacles,
     DeathMarkers,
+    GroundedThrowables,
     /**
      * This is the default layer for obstacles
      */
@@ -166,6 +168,7 @@ export enum ZIndexes {
      * bushes, tables etc
      */
     ObstaclesLayer3,
+    AirborneThrowables,
     /**
      * trees
      */

@@ -413,5 +413,47 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1344,
         oceanSize: 144,
         beachSize: 32
+    },
+    armory: {
+        width: 850,
+        height: 850,
+        oceanSize: 144,
+        beachSize: 32,
+        buildings: {
+            armory: 1
+        },
+        obstacles: {
+            regular_crate: 30,
+            grenade_crate: 15,
+            toilet: 20,
+            aegis_crate: 10,
+            flint_crate: 10,
+            melee_crate: 5,
+            birch_tree: 30,
+            pine_tree: 30,
+            rock: 30,
+            barrel: 15
+        }
+    },
+    new_port: {
+        width: 875,
+        height: 875,
+        oceanSize: 144,
+        beachSize: 32,
+        buildings: {
+            port_complex: 1
+        },
+        obstacles: {
+            regular_crate: 30,
+            grenade_crate: 15,
+            toilet: 20,
+            aegis_crate: 10,
+            flint_crate: 10,
+            melee_crate: 5,
+            birch_tree: 30,
+            pine_tree: 30,
+            rock: 30,
+            barrel: 15
+        }
     }
 };

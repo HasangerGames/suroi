@@ -141,8 +141,13 @@ export class Terrain {
         let floor = "water";
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
-        if (isInsideMap) floor = "sand";
-        if (isInsideMap && this.grassHitbox.isPointInside(position)) floor = "grass";
+        if (isInsideMap) {
+            floor = "sand";
+
+            if (this.grassHitbox.isPointInside(position)) {
+                floor = "grass";
+            }
+        }
 
         const cell = this._grid[pos.x][pos.y];
 
@@ -165,6 +170,7 @@ export class Terrain {
                 return floor.type;
             }
         }
+
         // assume if no floor was found at this position, it's in the ocean
         return floor;
     }

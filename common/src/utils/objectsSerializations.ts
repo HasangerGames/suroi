@@ -129,6 +129,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     [ObjectCategory.ThrowableProjectile]: {
         position: Vector
         rotation: number
+        airborne: boolean
         full?: {
             definition: ThrowableDefinition
         }
@@ -444,8 +445,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.ThrowableProjectile]: {
         serializePartial(stream, data) {
             stream.writePosition(data.position);
-            // stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);
             stream.writeRotation(data.rotation, 16);
+            stream.writeBoolean(data.airborne);
         },
         serializeFull(stream, data) {
             this.serializePartial(stream, data);
@@ -453,11 +454,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             return {
-                position: {
-                    ...stream.readPosition()
-                    // z: stream.readFloat(0, GameConstants.maxPosition, 16)
-                },
-                rotation: stream.readRotation(16)
+                position: stream.readPosition(),
+                rotation: stream.readRotation(16),
+                airborne: stream.readBoolean()
             };
         },
         deserializeFull(stream) {
