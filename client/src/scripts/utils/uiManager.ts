@@ -302,6 +302,7 @@ export class UIManager {
                     .text(totalAmmo);
             }
 
+            this.ui.ammoCounterContainer.toggleClass("has-reserve", showReserve);
             if (!showReserve) {
                 this.ui.reserveAmmo.hide();
             }

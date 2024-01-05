@@ -380,7 +380,7 @@
     top: 3px;
 }
 
-#weapon-ammo-container {    
+#weapon-ammo-container {
     position: absolute;
     bottom: 91px;
     left: 50%;
@@ -390,6 +390,10 @@
 
     font-weight: bold;
     @include text-shadow;
+
+    &.has-reserve {
+        left: calc(50% + 32px);
+    }
 
     div {
         display: flex;
