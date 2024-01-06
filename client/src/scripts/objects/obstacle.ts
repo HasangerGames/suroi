@@ -170,7 +170,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.playSound(
                     `${definition.material}_destroyed`,
                     {
-                        fallOff: 0.2,
+                        falloff: 0.2,
                         maxRange: 96
                     }
                 );
@@ -332,7 +332,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.playSound(
                 `${soundName}_${offset ? "open" : "close"}`,
                 {
-                    fallOff: 0.3,
+                    falloff: 0.3,
                     maxRange: 48
                 }
             );
@@ -373,7 +373,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,
             {
                 position,
-                fallOff: 0.2,
+                falloff: 0.2,
                 maxRange: 96
             }
         );

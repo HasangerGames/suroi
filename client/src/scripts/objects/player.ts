@@ -335,7 +335,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.footstepSound = this.playSound(
                     `${this.floorType}_step_${random(1, 2)}`,
                     {
-                        fallOff: 0.6,
+                        falloff: 0.6,
                         maxRange: 48
                     }
                 );
@@ -436,7 +436,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.actionSound = this.playSound(
                     actionSoundName,
                     {
-                        fallOff: 0.6,
+                        falloff: 0.6,
                         maxRange: 48
                     }
                 );
@@ -700,7 +700,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.playSound(
             "emote",
             {
-                fallOff: 0.4,
+                falloff: 0.4,
                 maxRange: 128
             }
         );
@@ -791,7 +791,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.playSound(
                     "swing",
                     {
-                        fallOff: 0.4,
+                        falloff: 0.4,
                         maxRange: 96
                     }
                 );
@@ -844,7 +844,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.playSound(
                     `${reference.idString}_fire`,
                     {
-                        fallOff: 0.5
+                        falloff: 0.5
                     }
                 );
 
@@ -852,7 +852,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.playSound(
                         `${reference.idString}_last_shot`,
                         {
-                            fallOff: 0.5
+                            falloff: 0.5
                         }
                     );
                 }
@@ -939,7 +939,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.playSound(
                     "gun_click",
                     {
-                        fallOff: 0.8,
+                        falloff: 0.8,
                         maxRange: 48
                     }
                 );
@@ -1120,7 +1120,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             randomBoolean() ? "player_hit_1" : "player_hit_2",
             {
                 position,
-                fallOff: 0.2,
+                falloff: 0.2,
                 maxRange: 96
             });
 

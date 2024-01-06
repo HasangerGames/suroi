@@ -245,7 +245,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 this.playSound(
                     "ceiling_collapse",
                     {
-                        fallOff: 0.5,
+                        falloff: 0.5,
                         maxRange: 96
                     }
                 );

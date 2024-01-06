@@ -13,7 +13,7 @@ import * as PixiSound from "@pixi/sound";
 
 export interface SoundOptions {
     position?: Vector
-    fallOff: number
+    falloff: number
     maxRange: number
     loop: boolean
     /**
@@ -46,7 +46,7 @@ export class GameSound {
         this.name = name;
         this.manager = manager;
         this.position = options.position;
-        this.fallOff = options.fallOff;
+        this.fallOff = options.falloff;
         this.maxRange = options.maxRange;
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
@@ -123,7 +123,7 @@ export class SoundManager {
 
     play(name: string, options?: Partial<SoundOptions>): GameSound {
         const sound = new GameSound(name, {
-            fallOff: 1,
+            falloff: 1,
             maxRange: 256,
             dynamic: false,
             loop: false,

@@ -116,7 +116,7 @@ type RawGunDefinition = BaseGunDefinition & {
                 "burstProperties" |
                 "leftRightOffset"
             >
-        ]?: (GunDefinition & { readonly isDual: true })[K]
+        ]?: DualGunNarrowing[K]
     }
 };
 

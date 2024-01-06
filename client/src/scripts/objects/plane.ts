@@ -37,7 +37,7 @@ export class Plane {
             "airdrop_plane",
             {
                 position: startPosition,
-                fallOff: 0.5,
+                falloff: 0.5,
                 maxRange: 256,
                 dynamic: true
             }

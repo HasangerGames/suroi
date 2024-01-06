@@ -90,7 +90,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
-        readonly fallOff?: number
+        readonly falloff?: number
     }
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly interactText?: string
@@ -646,7 +646,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             sound: {
                 name: "airdrop_unlock",
                 maxRange: 64,
-                fallOff: 0.3
+                falloff: 0.3
             },
             replaceWith: {
                 idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
@@ -1426,7 +1426,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(28),
             rotationMode: RotationMode.Full,
             allowFlyover: FlyoverPref.Never,
-            zIndex: ZIndexes.ObstaclesLayer1,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1819,7 +1818,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             sound: {
                 name: "generator_starting",
                 maxRange: 412,
-                fallOff: 2
+                falloff: 2
             },
             emitParticles: true,
             requiredItem: "gas_can",

@@ -32,7 +32,7 @@ export interface GameSettings {
 }
 
 // When opening the console with a key, the key will be typed to the console,
-// because the keypress event is triggered for the input field
+// because the keypress event is triggered for the input field, but only on the main menu screen
 let invalidateNextCharacter = false;
 export class GameConsole {
     private _isOpen = false;
@@ -44,7 +44,7 @@ export class GameConsole {
             this._ui.container.show();
             this._ui.input.trigger("focus");
             this._ui.input.val("");
-            invalidateNextCharacter = true;
+            invalidateNextCharacter = !this.game.gameStarted;
         } else {
             this._ui.container.hide();
         }
