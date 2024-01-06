@@ -270,8 +270,7 @@ Video evidence is required.`)
             skin.notInLoadout ??
             (skin.roleRequired !== undefined &&
                 skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))
-        )
-            continue;
+        ) { continue; }
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -284,7 +283,7 @@ Video evidence is required.`)
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function () {
+        skinItem.on("click", function() {
             game.console.setBuiltInCVar("cv_loadout_skin", skin.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             updateSplashCustomize(skin.idString);
@@ -297,13 +296,13 @@ Video evidence is required.`)
 
     // Load emotes
     let selectedEmoteSlot:
-        | "top"
-        | "right"
-        | "bottom"
-        | "left"
-        | "win"
-        | "death"
-        | undefined;
+    | "top"
+    | "right"
+    | "bottom"
+    | "left"
+    | "win"
+    | "death"
+    | undefined;
     for (const emote of Emotes.definitions) {
         // noinspection CssUnknownTarget
         const emoteItem =
@@ -311,7 +310,7 @@ Video evidence is required.`)
   <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
   <span class="emote-name">${emote.name}</span>
 </div>`);
-        emoteItem.on("click", function () {
+        emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
             game.console.setBuiltInCVar(
                 `cv_loadout_${selectedEmoteSlot}_emote`,
@@ -410,7 +409,7 @@ Video evidence is required.`)
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function () {
+        crosshairItem.on("click", function() {
             game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
@@ -661,8 +660,7 @@ Video evidence is required.`)
             !confirm(
                 "This option will overwrite all settings and reload the page. Continue?"
             )
-        )
-            return;
+        ) { return; }
         const error = (): void => {
             alert("Invalid config.");
         };
@@ -713,8 +711,7 @@ Video evidence is required.`)
             !confirm(
                 "This option will reset all settings and reload the page. Continue?"
             )
-        )
-            return;
+        ) { return; }
         if (!confirm("Are you sure? This action cannot be undone.")) return;
         localStorage.removeItem("suroi_config");
         window.location.reload();
@@ -744,11 +741,11 @@ Video evidence is required.`)
     for (const scope of Scopes) {
         $("#scopes-container").append(`
         <div class="inventory-slot item-slot" id="${
-            scope.idString
-        }-slot" style="display: none;">
+    scope.idString
+}-slot" style="display: none;">
             <img class="item-image" src="./img/game/loot/${
-                scope.idString
-            }.svg" draggable="false">
+    scope.idString
+}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
@@ -771,15 +768,15 @@ Video evidence is required.`)
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
             <img class="item-image" src="./img/game/loot/${
-                item.idString
-            }.svg" draggable="false">
+    item.idString
+}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
                 Restores ${item.restoreAmount}${
-            item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
-        }
+    item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
+}
             </div>
         </div>`);
 
@@ -915,7 +912,7 @@ Video evidence is required.`)
         tabContent.show();
     });
 
-    $("#warning-modal-agree-checkbox").on("click", function () {
+    $("#warning-modal-agree-checkbox").on("click", function() {
         $("#warning-btn-play-solo, #btn-play-solo").toggleClass(
             "btn-disabled",
             !$(this).prop("checked")
