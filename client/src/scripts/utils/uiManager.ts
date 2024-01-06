@@ -430,10 +430,8 @@ export class UIManager {
             hideInKillfeed
         } = message;
 
-        const weaponPresent = weaponUsed === undefined;
-        const isGrenadeImpactKill = "itemType" in weaponUsed! && weaponUsed.itemType === ItemType.Throwable;
-        // this nna is okay, because even if ts doesn't allow `"a" in undefined`, the runtime is quite
-        // happy in accepting it before promptly returning `false`, which is what we want
+        const weaponPresent = weaponUsed !== undefined;
+        const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
 
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
 
@@ -461,13 +459,13 @@ export class UIManager {
                                 break;
                         }
 
-                        const fullyQualifiedName = weaponPresent ? "" : `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}`;
+                        const fullyQualifiedName = weaponPresent ? `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}` : "";
                         /**
                          * English being complicated means that this will sometimes return bad results (ex: "hour", "NSA", "one" and "university")
                          * but to be honest, short of downloading a library off of somewhere, this'll have to do
                          */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
-                        const weaponNameText = weaponPresent ? "" : ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}`;
+                        const weaponNameText = weaponPresent ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}` : "";
 
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
