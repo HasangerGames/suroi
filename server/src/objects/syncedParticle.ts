@@ -68,7 +68,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
 
     private _target?: {
         readonly target: Vector
-        readonly _currentPosition: Vector
+        readonly _startPosition: Vector
         readonly _start: number
         readonly easing: EasingFunction
         readonly duration: number
@@ -144,7 +144,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         this._target = {
             target,
             _start: this.game.now,
-            _currentPosition: Vec.clone(this._position),
+            _startPosition: Vec.clone(this._position),
             easing,
             duration: timespan
         };
@@ -172,7 +172,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
             const targetInterp = (this.game.now - target._start) / target.duration;
 
             this._position = Vec.lerp(
-                target._currentPosition,
+                target._startPosition,
                 target.target,
                 target.easing(targetInterp)
             );
