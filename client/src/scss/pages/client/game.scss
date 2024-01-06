@@ -73,18 +73,10 @@
     display: flex;
     flex-direction: column;
 
-    //align-items: center;
-
-    /*
     @media screen and (max-width: $screen_large) {
         top: 5px;
         left: 5px;
-
-        &>div {
-            margin-bottom: 5px;
-        }
     }
-    */
 }
 
 #minimap-border {
@@ -393,6 +385,14 @@
 
     &.has-reserve {
         left: calc(50% + 32px);
+
+        @media screen and (max-width: $screen_large) {
+            left: calc(50% + 24px);
+        }
+
+        @media screen and (max-width: 425px) {
+            left: calc(50% - 53px);
+        }
     }
 
     div {
@@ -433,9 +433,6 @@
             width: 45px;
             height: 22px;
             font-size: 14px;
-        }
-        @media screen and (max-width: $screen_small) {
-            display: none !important;
         }
     }
 }
@@ -812,6 +809,10 @@
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
         }
+
+        @media screen and (max-width: $screen_medium) {
+            font-size: 10px;
+        }
     }
 
     .item-ammo {
@@ -819,19 +820,19 @@
         bottom: 59px;
         margin-left: -195px;
         float: left;
-        text-align: center;
         z-index: 1;
         font-size: 18px;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
-            font-size: 13px;
-            margin-left: -55px;
-            bottom: 5px;
+            font-size: 12px;
+            margin-left: -125px;
+            top: 2px;
         }
+
         @media screen and (max-width: $screen_medium) {
-            font-size: 11px;
-            margin-left: -100px;
+            font-size: 10px;
+            margin-left: -93px;
             bottom: 25px;
         }
     }
@@ -857,9 +858,6 @@
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
         }
-        @media screen and (max-width: $screen_medium) {
-            font-size: 10px;
-        }
     }
 }
 
@@ -874,11 +872,9 @@
         right: 5px;
     }
 
-    @media screen and (max-width: $screen_small) {
+    @media screen and (max-width: 460px) {
         right: 3px;
         bottom: 70px;
-        //top: 75%;
-        //transform: translateY(-50%);
         height: fit-content;
     }
 
@@ -888,13 +884,13 @@
         opacity: 0.75;
 
         @media screen and (max-width: $screen_large) {
-            height: 60px;
-            width: 170px;
+            height: 50px;
+            width: 150px;
         }
 
         @media screen and (max-width: $screen_medium) {
             height: 40px;
-            width: 120px;
+            width: 110px;
         }
 
         .slot-number, .item-name {
@@ -936,7 +932,7 @@
 
         bottom: 50px;
         @media screen and (max-width: $screen_medium) {
-            bottom: 100px;
+            bottom: 125px;
             left: -7px;
         }
         @media screen and (max-height: 400px) {
@@ -951,21 +947,30 @@
     .inventory-container {
         justify-content: end;
         bottom: 450px;
+
         @media screen and (max-width: $screen_large) {
             bottom: 300px;
         }
+
         @media screen and (max-width: $screen_medium) {
             bottom: 190px;
             right: -7px;
         }
-        @media screen and (max-height: 500px)and (max-width: $screen_large) {
-            bottom: 260px;
+
+        @media screen and (max-height: 500px) and (max-width: $screen_large) {
+            bottom: 220px;
         }
+
         @media screen and (max-width: $screen_small) {
             bottom: 240px;
         }
-        @media screen and (max-height: 500px)and (max-width: $screen_medium) {
+
+        @media screen and (max-height: 500px) and (max-width: $screen_medium) {
             bottom: 180px;
+        }
+
+        @media screen and (max-width: 460px) {
+            bottom: 240px;
         }
     }
 }
@@ -1051,24 +1056,24 @@
 
 #equipment-container {
     position: absolute;
-    //bottom: 10px;
-    bottom: 4%;
-    left: 15%;
+    bottom: 10px;
+    left: 25%;
+    transform: translateX(-75%);
     flex-direction: row;
-    //width: fit-content;
 
 
     @media screen and (max-width: $screen_medium) {
-        left: 10%;
         flex-direction: row;
-        //left: 5px;
-        //bottom: 58px;
+        left: 5px;
+        transform: none;
         width: fit-content;
     }
 
-    @media screen and (max-width: $screen_small) {
-        bottom: 60px;
+    @media screen and (max-width: 500px) {
+        flex-direction: column;
+        left: 0;
     }
+
     @media screen and (max-height: 400px) and (max-width: $screen_medium) {
         left: 80px;
     }
@@ -1082,6 +1087,12 @@
             background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         }
 
+        .item-name {
+            font-weight: normal;
+            font-size: 16px;
+            bottom: 4px;
+        }
+
         .item-tooltip {
             bottom: 85px;
             width: max-content;
@@ -1092,12 +1103,12 @@
             height: 60px;
             font-size: small;
 
-            .item-tooltip {
-                bottom: 70px;
+            .item-name {
+                font-size: 14px;
             }
 
-            &:last-child .item-tooltip {
-                //right: 0;
+            .item-tooltip {
+                bottom: 70px;
             }
         }
 

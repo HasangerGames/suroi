@@ -585,7 +585,7 @@ export class InputManager {
 
         // Change the weapons slots keybind text
         for (let i = 0, maxWeapons = GameConstants.player.maxWeapons; i < maxWeapons; i++) {
-            const slotKeybinds = this.binds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
+            const slotKeybinds = this.binds.getInputsBoundToAction(i === 3 ? "equip_or_cycle_throwables 1" : `slot ${i}`).filter(a => a !== "").slice(0, 2);
             $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
         }
     }
