@@ -1,12 +1,15 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { RotationMode } from "./obstacles";
 import { ZIndexes } from "../constants";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { RotationMode } from "./obstacles";
 
 export interface DecalDefinition extends ObjectDefinition {
     readonly image?: string
     readonly scale?: number
-    readonly rotationMode?: RotationMode // default is Limited
-    readonly zIndex?: number
+    /**
+     * @default {RotationMode.Limited}
+     */
+    readonly rotationMode?: RotationMode
+    readonly zIndex?: ZIndexes
 }
 
 export const Decals = new ObjectDefinitions<DecalDefinition>(
@@ -14,6 +17,16 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
         {
             idString: "explosion_decal",
             name: "Explosion Decal",
+            rotationMode: RotationMode.Full
+        },
+        {
+            idString: "frag_explosion_decal",
+            name: "Frag Explosion Decal",
+            rotationMode: RotationMode.Full
+        },
+        {
+            idString: "smoke_explosion_decal",
+            name: "Smoke Explosion Decal",
             rotationMode: RotationMode.Full
         },
         {

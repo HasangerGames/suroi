@@ -1,18 +1,17 @@
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-
-import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
-import { v, vDiv } from "../../../../common/src/utils/vector";
+import { GameConstants, InputActions } from "../../../../common/src/constants";
+import { Scopes } from "../../../../common/src/definitions/scopes";
+import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
+import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { InputActions } from "../../../../common/src/constants";
-import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { type InputAction, InputPacket } from "../../../../common/src/packets/inputPacket";
+import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 
 export class InputManager {
     readonly game: Game;
@@ -36,7 +35,7 @@ export class InputManager {
     mouseY = 0;
 
     emoteWheelActive = false;
-    emoteWheelPosition = v(0, 0);
+    emoteWheelPosition = Vec.create(0, 0);
 
     rotation = 0;
 
@@ -65,10 +64,22 @@ export class InputManager {
 
     turning = false;
 
+    private _lastInputPacket: InputPacket | undefined;
+    private _inputPacketTimer = 0;
+
     update(): void {
         if (this.game.gameOver) return;
         const packet = new InputPacket();
-        packet.movement = this.movement;
+
+        // assigning it directly breaks comparing last and current input packet
+        // since javascript will pass it by reference
+        packet.movement = {
+            up: this.movement.up,
+            down: this.movement.down,
+            left: this.movement.left,
+            right: this.movement.right
+        };
+
         packet.attacking = this.attacking;
 
         packet.turning = this.turning;
@@ -92,37 +103,19 @@ export class InputManager {
         }
         packet.actions = this.actions;
 
-        this.game.sendPacket(packet);
+        this._inputPacketTimer++;
+
+        if (!this._lastInputPacket ||
+            packet.didChange(this._lastInputPacket) ||
+            this._inputPacketTimer >= GameConstants.tickrate
+        ) {
+            this.game.sendPacket(packet);
+            this._lastInputPacket = packet;
+        }
+
+        this._inputPacketTimer %= GameConstants.tickrate;
+
         this.actions.length = 0;
-    }
-
-    cycleScope(offset: number): void {
-        const scope = this.game.uiManager.inventory.scope;
-        const scopeId = Scopes.definitions.indexOf(scope);
-        let scopeString = scope.idString;
-        let searchIndex = scopeId;
-
-        let iterationCount = 0;
-        // Prevent possible infinite loops
-        while (iterationCount++ < 100) {
-            searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
-                ? absMod(searchIndex + offset, Scopes.definitions.length)
-                : clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
-
-            const scopeCandidate = Scopes.definitions[searchIndex].idString;
-
-            if (this.game.uiManager.inventory.items[scopeCandidate]) {
-                scopeString = scopeCandidate;
-                break;
-            }
-        }
-
-        if (scopeString !== scope.idString) {
-            this.addAction({
-                type: InputActions.UseItem,
-                item: Loots.fromString(scopeString)
-            });
-        }
     }
 
     constructor(game: Game) {
@@ -137,7 +130,6 @@ export class InputManager {
         this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
 
         const game = this.game;
-
         const gameUi = $("#game-ui")[0];
 
         // different event targets… why?
@@ -154,9 +146,9 @@ export class InputManager {
             this.mouseY = e.clientY;
 
             if (this.emoteWheelActive) {
-                const mousePosition = v(e.clientX, e.clientY);
-                if (distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
-                    const angle = angleBetweenPoints(this.emoteWheelPosition, mousePosition);
+                const mousePosition = Vec.create(e.clientX, e.clientY);
+                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
+                    const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
 
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
@@ -182,10 +174,10 @@ export class InputManager {
             this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
 
             if (!game.gameOver && game.activePlayer) {
-                const globalPos = v(e.clientX, e.clientY);
+                const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
-                const gamePos = vDiv(pixiPos, PIXI_SCALE);
-                this.distanceToMouse = distance(game.activePlayer.position, gamePos);
+                const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+                this.distanceToMouse = Geometry.distance(game.activePlayer.position, gamePos);
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
@@ -273,14 +265,14 @@ export class InputManager {
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
+        if (!event.isTrusted) return;
+
         // Disable pointer events on mobile if mobile controls are enabled
         if (event instanceof PointerEvent && this.isMobile) return;
 
-        // If the using is interacting with a text field or something of the sort, inputs should
+        // If the user is interacting with a text field or something of the sort, inputs should
         // not be honored
-        if (document.activeElement !== document.body) {
-            return;
-        }
+        if (document.activeElement !== document.body) return;
 
         /*
             We don't want to allow keybinds to work with modifiers, because firstly,
@@ -403,6 +395,7 @@ export class InputManager {
         "slot 0": "Equip Primary",
         "slot 1": "Equip Secondary",
         "slot 2": "Equip Melee",
+        "equip_or_cycle_throwables 1": "Equip/Cycle Throwable",
         last_item: "Equip Last Weapon",
         other_weapon: "Equip Other Gun",
         swap_gun_slots: "Swap Gun Slots",
@@ -412,7 +405,7 @@ export class InputManager {
         drop: "Drop Active Weapon",
         reload: "Reload",
         "cycle_scopes -1": "Previous Scope",
-        "cycle_scopes +1": "Next Scope",
+        "cycle_scopes 1": "Next Scope",
         "use_consumable gauze": "Use Gauze",
         "use_consumable medikit": "Use Medikit",
         "use_consumable cola": "Use Cola",
@@ -424,6 +417,66 @@ export class InputManager {
         "+emote_wheel": "Emote Wheel",
         toggle_console: "Toggle Console"
     };
+
+    cycleScope(offset: number): void {
+        const scope = this.game.uiManager.inventory.scope;
+        const scopeIndex = Scopes.definitions.indexOf(scope);
+        let scopeTarget = scope;
+
+        let searchIndex = scopeIndex;
+        let iterationCount = 0;
+        // Prevent possible infinite loops
+        while (iterationCount++ < 100) {
+            searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
+                ? Numeric.absMod(searchIndex + offset, Scopes.definitions.length)
+                : Numeric.clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
+
+            const scopeCandidate = Scopes.definitions[searchIndex];
+
+            if (this.game.uiManager.inventory.items[scopeCandidate.idString]) {
+                scopeTarget = scopeCandidate;
+                break;
+            }
+        }
+
+        if (scopeTarget !== scope) {
+            this.addAction({
+                type: InputActions.UseItem,
+                item: scopeTarget
+            });
+        }
+    }
+
+    cycleThrowable(offset: number): void {
+        const throwable = this.game.uiManager.inventory.weapons
+            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)?.definition as ThrowableDefinition;
+
+        if (!throwable) return;
+
+        const throwableIndex = Throwables.indexOf(throwable);
+        let throwableTarget = throwable;
+
+        let searchIndex = throwableIndex;
+        let iterationCount = 0;
+        // Prevent possible infinite loops
+        while (iterationCount++ < 100) {
+            searchIndex = Numeric.absMod(searchIndex + offset, Throwables.length);
+
+            const throwableCandidate = Throwables[searchIndex];
+
+            if (this.game.uiManager.inventory.items[throwableCandidate.idString]) {
+                throwableTarget = throwableCandidate;
+                break;
+            }
+        }
+
+        if (throwableTarget !== throwable) {
+            this.addAction({
+                type: InputActions.UseItem,
+                item: throwableTarget
+            });
+        }
+    }
 
     generateBindsConfigScreen(): void {
         const keybindsContainer = $("#tab-keybinds-content");
@@ -531,8 +584,8 @@ export class InputManager {
         })).appendTo(keybindsContainer);
 
         // Change the weapons slots keybind text
-        for (let i = 0; i < 3; i++) {
-            const slotKeybinds = this.binds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
+        for (let i = 0, maxWeapons = GameConstants.player.maxWeapons; i < maxWeapons; i++) {
+            const slotKeybinds = this.binds.getInputsBoundToAction(i === 3 ? "equip_or_cycle_throwables 1" : `slot ${i}`).filter(a => a !== "").slice(0, 2);
             $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
         }
     }

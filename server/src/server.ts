@@ -1,24 +1,14 @@
-import { Config } from "./config";
-import { version } from "../../package.json";
-
-import {
-    App,
-    DEDICATED_COMPRESSOR_256KB,
-    type HttpRequest,
-    type HttpResponse,
-    SSLApp,
-    type WebSocket
-} from "uWebSockets.js";
-
 import { existsSync, readFile, writeFile, writeFileSync } from "fs";
-import os from "os";
-
 import { URLSearchParams } from "node:url";
+import os from "os";
+import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
+import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { version } from "../../package.json";
+import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
-import { clamp } from "../../common/src/utils/math";
 
 /**
  * Apply CORS headers to a response.
@@ -53,7 +43,8 @@ export function newGame(id?: number): number {
             return id;
         }
     } else {
-        for (let i = 0; i < Config.maxGames; i++) {
+        const maxGames = Config.maxGames;
+        for (let i = 0; i < maxGames; i++) {
             if (!games[i] || games[i]?.stopped) return newGame(i);
         }
     }
@@ -142,7 +133,8 @@ app.get("/api/getGame", async(res, req) => {
         }
     } else {
         let foundGame = false;
-        for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+        const maxGames = Config.maxGames;
+        for (let gameID = 0; gameID < maxGames; gameID++) {
             const game = games[gameID];
             if (canJoin(game) && game?.allowJoin) {
                 response = { success: true, gameID };
@@ -150,6 +142,7 @@ app.get("/api/getGame", async(res, req) => {
                 break;
             }
         }
+
         if (!foundGame) {
             // Create a game if there's a free slot
             const gameID = newGame();
@@ -158,11 +151,12 @@ app.get("/api/getGame", async(res, req) => {
             } else {
                 // Join the game that most recently started
                 const game = games
-                    .filter(g => g && !g.over)
-                    .reduce((a, b) => (a!).startedTime > (b!).startedTime ? a : b);
+                    .filter((g => g && !g.over) as (g?: Game) => g is Game)
+                    .reduce((a, b) => a.startedTime > b.startedTime ? a : b);
 
-                if (game) response = { success: true, gameID: game.id };
-                else response = { success: false };
+                response = game
+                    ? { success: true, gameID: game.id }
+                    : { success: false };
             }
         }
     }
@@ -281,7 +275,7 @@ app.ws("/play", {
 
             try {
                 const colorString = searchParams.get("nameColor");
-                if (colorString) nameColor = clamp(parseInt(colorString), 0, 0xffffff);
+                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
             } catch { }
         }
 

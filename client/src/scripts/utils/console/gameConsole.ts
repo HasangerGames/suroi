@@ -1,6 +1,5 @@
 import $ from "jquery";
-
-import { clamp } from "../../../../../common/src/utils/math";
+import { Numeric } from "../../../../../common/src/utils/math";
 import { type Game } from "../../game";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
@@ -33,7 +32,7 @@ export interface GameSettings {
 }
 
 // When opening the console with a key, the key will be typed to the console,
-// because the keypress event is triggered for the input field
+// because the keypress event is triggered for the input field, but only on the main menu screen
 let invalidateNextCharacter = false;
 export class GameConsole {
     private _isOpen = false;
@@ -45,7 +44,7 @@ export class GameConsole {
             this._ui.container.show();
             this._ui.input.trigger("focus");
             this._ui.input.val("");
-            invalidateNextCharacter = true;
+            invalidateNextCharacter = !this.game.gameStarted;
         } else {
             this._ui.container.hide();
         }
@@ -72,7 +71,7 @@ export class GameConsole {
         const proxy = {
             get width() { return width; },
             set width(w: number) {
-                w = clamp(
+                w = Numeric.clamp(
                     w,
                     0,
                     window.innerWidth - (Number.isNaN(T._position?.left ?? NaN) ? -Infinity : T._position.left)
@@ -89,7 +88,7 @@ export class GameConsole {
 
             get height() { return height; },
             set height(h: number) {
-                h = clamp(
+                h = Numeric.clamp(
                     h,
                     0,
                     window.innerHeight - (Number.isNaN(T._position?.top ?? NaN) ? -Infinity : T._position.top)
@@ -119,7 +118,7 @@ export class GameConsole {
         const proxy = {
             get left() { return left; },
             set left(l: number) {
-                l = clamp(
+                l = Numeric.clamp(
                     l,
                     0,
                     window.innerWidth - T._dimensions.width - magicalPadding
@@ -136,7 +135,7 @@ export class GameConsole {
 
             get top() { return top; },
             set top(t: number) {
-                t = clamp(
+                t = Numeric.clamp(
                     t,
                     0,
                     window.innerHeight - T._dimensions.height - magicalPadding
@@ -283,7 +282,6 @@ export class GameConsole {
                 error: nativeError
             } = console;
 
-            // eslint-disable-next-line no-inner-declarations
             function makeOverride<
                 C extends typeof window.console,
                 K extends "log" | "info" | "warn" | "error"

@@ -1,7 +1,7 @@
 import { type Orientation } from "../typings";
-import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2, rectRectIntersection } from "./math";
+import { Collision, Geometry, type CollisionRecord, type IntersectionResponse } from "./math";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
-import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
+import { Vec, type Vector } from "./vector";
 
 export enum HitboxType {
     Circle,
@@ -10,28 +10,28 @@ export enum HitboxType {
     Polygon
 }
 
-export interface HitboxJsonMapping {
+export interface HitboxJSONMapping {
     [HitboxType.Circle]: {
-        type: HitboxType.Circle
-        radius: number
-        position: Vector
+        readonly type: HitboxType.Circle
+        readonly radius: number
+        readonly position: Vector
     }
     [HitboxType.Rect]: {
-        type: HitboxType.Rect
-        min: Vector
-        max: Vector
+        readonly type: HitboxType.Rect
+        readonly min: Vector
+        readonly max: Vector
     }
     [HitboxType.Group]: {
-        type: HitboxType.Group
-        hitboxes: Array<HitboxJsonMapping[HitboxType.Circle | HitboxType.Rect]>
+        readonly type: HitboxType.Group
+        readonly hitboxes: Array<HitboxJSONMapping[HitboxType.Circle | HitboxType.Rect]>
     }
     [HitboxType.Polygon]: {
-        type: HitboxType.Polygon
-        points: Vector[]
+        readonly type: HitboxType.Polygon
+        readonly points: Vector[]
     }
 }
 
-export type HitboxJson = HitboxJsonMapping[HitboxType];
+export type HitboxJSON = HitboxJSONMapping[HitboxType];
 
 export interface HitboxMapping {
     [HitboxType.Circle]: CircleHitbox
@@ -45,9 +45,9 @@ export type Hitbox = HitboxMapping[HitboxType];
 export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
     abstract type: HitboxType;
 
-    abstract toJSON(): HitboxJsonMapping[T];
+    abstract toJSON(): HitboxJSONMapping[T];
 
-    static fromJSON(data: HitboxJson): Hitbox {
+    static fromJSON(data: HitboxJSON): Hitbox {
         switch (data.type) {
             case HitboxType.Circle:
                 return new CircleHitbox(data.radius, data.position);
@@ -131,24 +131,24 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     constructor(radius: number, position?: Vector) {
         super();
 
-        this.position = position ?? v(0, 0);
+        this.position = position ?? Vec.create(0, 0);
         this.radius = radius;
     }
 
-    override toJSON(): HitboxJsonMapping[HitboxType.Circle] {
+    override toJSON(): HitboxJSONMapping[HitboxType.Circle] {
         return {
             type: this.type,
             radius: this.radius,
-            position: vClone(this.position)
+            position: Vec.clone(this.position)
         };
     }
 
     override collidesWith(that: Hitbox): boolean {
         switch (that.type) {
             case HitboxType.Circle:
-                return circleCollision(that.position, that.radius, this.position, this.radius);
+                return Collision.circleCollision(that.position, that.radius, this.position, this.radius);
             case HitboxType.Rect:
-                return rectangleCollision(that.min, that.max, this.position, this.radius);
+                return Collision.rectangleCollision(that.min, that.max, this.position, this.radius);
             case HitboxType.Group:
                 return that.collidesWith(this);
             case HitboxType.Polygon:
@@ -160,47 +160,51 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     override resolveCollision(that: Hitbox): void {
         switch (that.type) {
             case HitboxType.Circle: {
-                const collision = circleCircleIntersection(this.position, this.radius, that.position, that.radius);
+                const collision = Collision.circleCircleIntersection(this.position, this.radius, that.position, that.radius);
+
                 if (collision) {
-                    this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+                    this.position = Vec.sub(this.position, Vec.scale(collision.dir, collision.pen));
                 }
-            }
                 break;
+            }
             case HitboxType.Rect: {
-                const collision = rectCircleIntersection(that.min, that.max, this.position, this.radius);
+                const collision = Collision.rectCircleIntersection(that.min, that.max, this.position, this.radius);
                 if (collision) {
-                    this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+                    this.position = Vec.sub(this.position, Vec.scale(collision.dir, collision.pen));
                 }
                 break;
             }
             case HitboxType.Group: {
                 for (const hitbox of that.hitboxes) {
-                    if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+                    if (this.collidesWith(hitbox)) {
+                        this.resolveCollision(hitbox);
+                    }
                 }
                 break;
             }
-            default:
+            default: {
                 this.throwUnknownSubclassError(that);
+            }
         }
     }
 
     override distanceTo(that: Hitbox): CollisionRecord {
         switch (that.type) {
             case HitboxType.Circle:
-                return distanceToCircle(that.position, that.radius, this.position, this.radius);
+                return Collision.distanceBetweenCircles(that.position, that.radius, this.position, this.radius);
             case HitboxType.Rect:
-                return distanceToRectangle(that.min, that.max, this.position, this.radius);
+                return Collision.distanceBetweenRectangleCircle(that.min, that.max, this.position, this.radius);
             default:
                 this.throwUnknownSubclassError(that);
         }
     }
 
     override clone(): CircleHitbox {
-        return new CircleHitbox(this.radius, vClone(this.position));
+        return new CircleHitbox(this.radius, Vec.clone(this.position));
     }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
-        return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
+        return new CircleHitbox(this.radius * scale, Vec.addAdjust(position, this.position, orientation));
     }
 
     override scale(scale: number): void {
@@ -208,7 +212,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     }
 
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
-        return lineIntersectsCircle(a, b, this.position, this.radius);
+        return Collision.lineIntersectsCircle(a, b, this.position, this.radius);
     }
 
     override randomPoint(): Vector {
@@ -216,11 +220,11 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     }
 
     override toRectangle(): RectangleHitbox {
-        return new RectangleHitbox(v(this.position.x - this.radius, this.position.y - this.radius), v(this.position.x + this.radius, this.position.y + this.radius));
+        return new RectangleHitbox(Vec.create(this.position.x - this.radius, this.position.y - this.radius), Vec.create(this.position.x + this.radius, this.position.y + this.radius));
     }
 
     override isPointInside(point: Vector): boolean {
-        return distance(point, this.position) < this.radius;
+        return Geometry.distance(point, this.position) < this.radius;
     }
 
     override getCenter(): Vector {
@@ -240,42 +244,42 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         this.max = max;
     }
 
-    toJSON(): HitboxJsonMapping[HitboxType.Rect] {
+    toJSON(): HitboxJSONMapping[HitboxType.Rect] {
         return {
             type: this.type,
-            min: vClone(this.min),
-            max: vClone(this.max)
+            min: Vec.clone(this.min),
+            max: Vec.clone(this.max)
         };
     }
 
     static fromLine(a: Vector, b: Vector): RectangleHitbox {
         return new RectangleHitbox(
-            v(
+            Vec.create(
                 Math.min(a.x, b.x),
                 Math.min(a.y, b.y)
             ),
-            v(
+            Vec.create(
                 Math.max(a.x, b.x),
                 Math.max(a.y, b.y)
             )
         );
     }
 
-    static fromRect(width: number, height: number, pos = v(0, 0)): RectangleHitbox {
-        const size = v(width / 2, height / 2);
+    static fromRect(width: number, height: number, pos = Vec.create(0, 0)): RectangleHitbox {
+        const size = Vec.create(width / 2, height / 2);
 
         return new RectangleHitbox(
-            vSub(pos, size),
-            vAdd(pos, size)
+            Vec.sub(pos, size),
+            Vec.add(pos, size)
         );
     }
 
     override collidesWith(that: Hitbox): boolean {
         switch (that.type) {
             case HitboxType.Circle:
-                return rectangleCollision(this.min, this.max, that.position, that.radius);
+                return Collision.rectangleCollision(this.min, this.max, that.position, that.radius);
             case HitboxType.Rect:
-                return rectRectCollision(that.min, that.max, this.min, this.max);
+                return Collision.rectRectCollision(that.min, that.max, this.min, this.max);
             case HitboxType.Group:
             case HitboxType.Polygon:
                 return that.collidesWith(this);
@@ -285,18 +289,18 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override resolveCollision(that: Hitbox): void {
         switch (that.type) {
             case HitboxType.Circle: {
-                const collision = rectCircleIntersection(this.min, this.max, that.position, that.radius);
+                const collision = Collision.rectCircleIntersection(this.min, this.max, that.position, that.radius);
                 if (collision) {
-                    const rect = this.transform(vMul(collision.dir, collision.pen));
+                    const rect = this.transform(Vec.scale(collision.dir, collision.pen));
                     this.min = rect.min;
                     this.max = rect.max;
                 }
                 break;
             }
             case HitboxType.Rect: {
-                const collision = rectRectIntersection(this.min, this.max, that.min, that.max);
+                const collision = Collision.rectRectIntersection(this.min, this.max, that.min, that.max);
                 if (collision) {
-                    const rect = this.transform(vMul(collision.dir, collision.pen));
+                    const rect = this.transform(Vec.scale(collision.dir, collision.pen));
                     this.min = rect.min;
                     this.max = rect.max;
                 }
@@ -316,19 +320,19 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override distanceTo(that: Hitbox): CollisionRecord {
         switch (that.type) {
             case HitboxType.Circle:
-                return distanceToRectangle(this.min, this.max, that.position, that.radius);
+                return Collision.distanceBetweenRectangleCircle(this.min, this.max, that.position, that.radius);
             case HitboxType.Rect:
-                return rectangleDistanceToRectangle(that.min, that.max, this.min, this.max);
+                return Collision.distanceBetweenRectangles(that.min, that.max, this.min, this.max);
         }
         this.throwUnknownSubclassError(that);
     }
 
     override clone(): RectangleHitbox {
-        return new RectangleHitbox(vClone(this.min), vClone(this.max));
+        return new RectangleHitbox(Vec.clone(this.min), Vec.clone(this.max));
     }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
-        const rect = transformRectangle(position, this.min, this.max, scale, orientation);
+        const rect = Geometry.transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
     }
@@ -336,12 +340,13 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override scale(scale: number): void {
         const centerX = (this.min.x + this.max.x) / 2;
         const centerY = (this.min.y + this.max.y) / 2;
-        this.min = v((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
-        this.max = v((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
+
+        this.min = Vec.create((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
+        this.max = Vec.create((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
 
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
-        return lineIntersectsRect(a, b, this.min, this.max);
+        return Collision.lineIntersectsRect(a, b, this.min, this.max);
     }
 
     override randomPoint(): Vector {
@@ -351,7 +356,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    override toRectangle(): RectangleHitbox {
+    override toRectangle(): this {
         return this;
     }
 
@@ -369,7 +374,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
 
 export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
-    position = v(0, 0);
+    position = Vec.create(0, 0);
     hitboxes: Array<RectangleHitbox | CircleHitbox>;
 
     constructor(...hitboxes: Array<RectangleHitbox | CircleHitbox>) {
@@ -377,7 +382,7 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
         this.hitboxes = hitboxes;
     }
 
-    toJSON(): HitboxJsonMapping[HitboxType.Group] {
+    toJSON(): HitboxJSONMapping[HitboxType.Group] {
         return {
             type: HitboxType.Group,
             hitboxes: this.hitboxes.map(hitbox => hitbox.toJSON())
@@ -403,20 +408,20 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
                 case HitboxType.Circle:
                     switch (that.type) {
                         case HitboxType.Circle:
-                            newRecord = distanceToCircle(that.position, that.radius, hitbox.position, hitbox.radius);
+                            newRecord = Collision.distanceBetweenCircles(that.position, that.radius, hitbox.position, hitbox.radius);
                             break;
                         case HitboxType.Rect:
-                            newRecord = distanceToRectangle(that.min, that.max, hitbox.position, hitbox.radius);
+                            newRecord = Collision.distanceBetweenRectangleCircle(that.min, that.max, hitbox.position, hitbox.radius);
                             break;
                     }
                     break;
                 case HitboxType.Rect: {
                     switch (that.type) {
                         case HitboxType.Circle:
-                            newRecord = distanceToRectangle(hitbox.min, hitbox.max, that.position, that.radius);
+                            newRecord = Collision.distanceBetweenRectangleCircle(hitbox.min, hitbox.max, that.position, that.radius);
                             break;
                         case HitboxType.Rect:
-                            newRecord = rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max);
+                            newRecord = Collision.distanceBetweenRectangles(that.min, that.max, hitbox.min, hitbox.max);
                     }
                 }
             }
@@ -454,7 +459,7 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
             if (intersection) intersections.push(intersection);
         }
 
-        return intersections.sort((c, d) => distanceSquared(c.point, a) - distanceSquared(d.point, a))[0] ?? null;
+        return intersections.sort((c, d) => Geometry.distanceSquared(c.point, a) - Geometry.distanceSquared(d.point, a))[0] ?? null;
     }
 
     override randomPoint(): Vector {
@@ -462,8 +467,8 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     }
 
     override toRectangle(): RectangleHitbox {
-        const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
-        const max = v(0, 0);
+        const min = Vec.create(Number.MAX_VALUE, Number.MAX_VALUE);
+        const max = Vec.create(0, 0);
         for (const hitbox of this.hitboxes) {
             const toRect = hitbox.toRectangle();
             min.x = Math.min(min.x, toRect.min.x);
@@ -496,26 +501,29 @@ export class PolygonHitbox extends BaseHitbox {
         this.points = points;
     }
 
-    override toJSON(): HitboxJsonMapping[HitboxType.Polygon] {
+    override toJSON(): HitboxJSONMapping[HitboxType.Polygon] {
         return {
             type: this.type,
-            points: this.points.map(point => vClone(point))
+            points: this.points.map(point => Vec.clone(point))
         };
     }
 
     override collidesWith(that: Hitbox): boolean {
         switch (that.type) {
-            case HitboxType.Rect:
+            case HitboxType.Rect: {
                 if (this.isPointInside(that.min) || this.isPointInside(that.max)) return true;
-                for (let i = 0; i < this.points.length; i++) {
+                const length = this.points.length;
+                for (let i = 0; i < length; i++) {
                     const a = this.points[i];
                     if (that.isPointInside(a)) return true;
-                    const b = i === this.points.length - 1 ? this.points[0] : this.points[i + 1];
-                    if (lineIntersectsRect2(b, a, that.min, that.max)) {
+                    const b = this.points[(i + 1) % length];
+
+                    if (Collision.lineIntersectsRectTest(b, a, that.min, that.max)) {
                         return true;
                     }
                 }
                 return false;
+            }
         }
         this.throwUnknownSubclassError(that);
     }
@@ -534,13 +542,13 @@ export class PolygonHitbox extends BaseHitbox {
 
     override transform(position: Vector, scale: number = 1, orientation: Orientation = 0): PolygonHitbox {
         return new PolygonHitbox(
-            this.points.map(point => vMul(addAdjust(position, point, orientation), scale))
+            this.points.map(point => Vec.scale(Vec.addAdjust(position, point, orientation), scale))
         );
     }
 
     override scale(scale: number): void {
         for (let i = 0, length = this.points.length; i < length; i++) {
-            this.points[i] = vMul(this.points[i], scale);
+            this.points[i] = Vec.scale(this.points[i], scale);
         }
     }
 
@@ -560,8 +568,8 @@ export class PolygonHitbox extends BaseHitbox {
     }
 
     override toRectangle(): RectangleHitbox {
-        const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
-        const max = v(0, 0);
+        const min = Vec.create(Number.MAX_VALUE, Number.MAX_VALUE);
+        const max = Vec.create(0, 0);
         for (const point of this.points) {
             min.x = Math.min(min.x, point.x);
             min.y = Math.min(min.y, point.y);

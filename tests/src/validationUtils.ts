@@ -1,8 +1,9 @@
-import { type ObjectDefinition, type ObjectDefinitions, type BaseBulletDefinition } from "../../common/src/utils/objectDefinitions";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import type { Vector } from "../../common/src/utils/vector";
-import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
+import { ZIndexes } from "../../common/src/constants";
 import { Loots } from "../../common/src/definitions/loots";
+import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { type Vector } from "../../common/src/utils/vector";
+import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
 /*
     eslint-disable
@@ -11,7 +12,7 @@ import { Loots } from "../../common/src/definitions/loots";
     object-shorthand
 */
 
-function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
+export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
     const dupes: Record<string, number> = {};
     const set = new Set<string>();
     let foundDupes = false;
@@ -462,6 +463,27 @@ export const validators = Object.freeze({
                         baseErrorPath: errorPath
                     });
                 }
+
+                tester.assertNoPointlessValue({
+                    obj: tracer,
+                    field: "image",
+                    defaultValue: "base_trail",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertNoPointlessValue({
+                    obj: tracer,
+                    field: "particle",
+                    defaultValue: false,
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertNoPointlessValue({
+                    obj: tracer,
+                    field: "zIndex",
+                    defaultValue: ZIndexes.Bullets,
+                    baseErrorPath: errorPath
+                });
             });
         }
 
@@ -487,6 +509,20 @@ export const validators = Object.freeze({
         tester.assertNoPointlessValue({
             obj: ballistics,
             field: "goToMouse",
+            defaultValue: false,
+            baseErrorPath
+        });
+
+        tester.assertNoPointlessValue({
+            obj: ballistics,
+            field: "lastShotFX",
+            defaultValue: false,
+            baseErrorPath
+        });
+
+        tester.assertNoPointlessValue({
+            obj: ballistics,
+            field: "noCollision",
             defaultValue: false,
             baseErrorPath
         });
@@ -635,6 +671,178 @@ export const validators = Object.freeze({
                 collection: LootTiers,
                 collectionName: "LootTiers"
             });
+        }
+    },
+    wearerAttributes(baseErrorPath: string, definition: InventoryItemDefinition): void {
+        function validateWearerAttributesInternal(baseErrorPath: string, attributes: WearerAttributes): void {
+            tester.assertNoPointlessValue({
+                obj: attributes,
+                field: "maxAdrenaline",
+                defaultValue: 1,
+                baseErrorPath
+            });
+
+            if (attributes.maxAdrenaline) {
+                tester.assertIsPositiveReal({
+                    obj: attributes,
+                    field: "maxAdrenaline",
+                    baseErrorPath
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: attributes,
+                field: "minAdrenaline",
+                defaultValue: 0,
+                baseErrorPath
+            });
+
+            if (attributes.minAdrenaline) {
+                tester.assertIsPositiveReal({
+                    obj: attributes,
+                    field: "minAdrenaline",
+                    baseErrorPath
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: attributes,
+                field: "maxHealth",
+                defaultValue: 1,
+                baseErrorPath
+            });
+
+            if (attributes.maxHealth) {
+                tester.assertIsPositiveReal({
+                    obj: attributes,
+                    field: "maxHealth",
+                    baseErrorPath
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: attributes,
+                field: "speedBoost",
+                defaultValue: 1,
+                baseErrorPath
+            });
+
+            if (attributes.speedBoost) {
+                tester.assertIsPositiveReal({
+                    obj: attributes,
+                    field: "speedBoost",
+                    baseErrorPath
+                });
+            }
+        }
+
+        if (definition.wearerAttributes) {
+            logger.indent("Validating wearer attributes", () => {
+                const wearerAttributes = definition.wearerAttributes!;
+
+                tester.assertNoPointlessValue({
+                    obj: wearerAttributes,
+                    field: "passive",
+                    defaultValue: {},
+                    equalityFunction: a => Object.keys(a).length === 0,
+                    baseErrorPath
+                });
+
+                if (wearerAttributes.passive) {
+                    logger.indent("Validating passive wearer attributes", () => {
+                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "passive"), wearerAttributes.passive!);
+                    });
+                }
+
+                tester.assertNoPointlessValue({
+                    obj: wearerAttributes,
+                    field: "active",
+                    defaultValue: {},
+                    equalityFunction: a => Object.keys(a).length === 0,
+                    baseErrorPath
+                });
+
+                if (wearerAttributes.active) {
+                    logger.indent("Validating active wearer attributes", () => {
+                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "active"), wearerAttributes.active!);
+                    });
+                }
+
+                tester.assertNoPointlessValue({
+                    obj: wearerAttributes,
+                    field: "on",
+                    defaultValue: {},
+                    equalityFunction: a => Object.keys(a).length === 0,
+                    baseErrorPath
+                });
+
+                if (wearerAttributes.on) {
+                    logger.indent("Validating on wearer attributes", () => {
+                        const on = wearerAttributes.on!;
+
+                        tester.assertNoPointlessValue({
+                            obj: on,
+                            field: "damageDealt",
+                            defaultValue: [],
+                            equalityFunction: a => a.length === 0,
+                            baseErrorPath
+                        });
+
+                        if (on.damageDealt) {
+                            logger.indent("Validating on-damage wearer attributes", () => {
+                                tester.runTestOnArray(
+                                    on.damageDealt!,
+                                    (entry, errorPath) => {
+                                        validateWearerAttributesInternal(errorPath, entry);
+                                    },
+                                    tester.createPath(baseErrorPath, "wearer attributes", "on", "damageDealt")
+                                );
+                            });
+                        }
+
+                        tester.assertNoPointlessValue({
+                            obj: on,
+                            field: "kill",
+                            defaultValue: [],
+                            equalityFunction: a => a.length === 0,
+                            baseErrorPath
+                        });
+
+                        if (on.kill) {
+                            logger.indent("Validating on-kill wearer attributes", () => {
+                                tester.runTestOnArray(
+                                    on.kill!,
+                                    (entry, errorPath) => {
+                                        validateWearerAttributesInternal(errorPath, entry);
+                                    },
+                                    tester.createPath(baseErrorPath, "wearer attributes", "kill", "damageDealt")
+                                );
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    },
+    color(baseErrorPath: string, color: number | `#${string}`): void {
+        switch (typeof color) {
+            case "number": {
+                tester.assert(
+                    // eslint-disable-next-line yoda
+                    !(color % 1) && 0 <= color && color <= 0xffffff,
+                    `Color '${color}' is not a valid hexadecimal color`,
+                    baseErrorPath
+                );
+                break;
+            }
+            case "string": {
+                tester.assert(
+                    color.match(/^#([0-9a-fA-F]{1,2}){3,4}$/) !== null,
+                    `Color '${color}' is not a valid hexadecimal color`,
+                    baseErrorPath
+                );
+                break;
+            }
         }
     }
 });

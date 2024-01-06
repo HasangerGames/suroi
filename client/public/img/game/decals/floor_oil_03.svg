@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg width="134.52899" height="178.01866" viewBox="0 0 35.594129 47.100771" version="1.1" id="svg1" inkscape:version="1.3.1 (91b66b0783, 2023-11-16, custom)" sodipodi:docname="floor_oil_03.svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview id="namedview1" pagecolor="#505050" bordercolor="#eeeeee" borderopacity="1" inkscape:showpageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#505050" inkscape:document-units="mm" inkscape:zoom="0.74208053" inkscape:cx="80.179977" inkscape:cy="-0.67378132" inkscape:window-width="1440" inkscape:window-height="840" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="layer1" />
-  <defs id="defs1" />
-  <g inkscape:label="Calque 1" inkscape:groupmode="layer" id="layer1" transform="translate(-83.343872,-148.69583)">
-    <path style="fill:#454545;fill-opacity:1;stroke:none;stroke-width:2.559;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000" d="m 118.938,187.08828 c -6.7963,4.01822 -13.8573,10.52344 -22.4504,8.2319 -2.1558,-0.57489 -4.3423,-1.48577 -5.987,-2.99342 -4.9511,-4.53846 -8.3942,-19.55662 -6.7352,-26.19242 0.3207,-1.28245 2.4365,-3.9854 2.9935,-5.23848 1.81,-4.07248 3.2964,-10.7398 8.232,-11.97368 3.3475,-0.8369 4.9657,0.75543 7.4834,2.99342 4.1228,3.66456 5.2385,4.78034 5.2385,9.72861 0,0.4989 0.3527,1.14393 0,1.49671 -0.1765,0.17639 -0.6368,-0.22312 -0.7485,0 -0.7869,1.57378 0,5.6858 0,7.48355 0,1.58811 -0.1209,2.9446 0.7485,4.49012 3.2951,5.85787 5.1893,10.46468 11.2252,11.97369 z" id="path26883" />
+<svg
+   width="135.47548"
+   height="178.06375"
+   viewBox="0 0 35.844554 47.112701"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   sodipodi:docname="floor_oil_03.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="4.1978414"
+     inkscape:cx="55.981153"
+     inkscape:cy="77.539852"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-83.376987,-148.66547)">
+    <path
+       style="fill:#454545;fill-opacity:1;stroke:none;stroke-width:2.559;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
+       d="m 118.938,187.08828 c -3.98619,5.88481 -12.0823,8.99997 -19.652161,8.66549 -4.985705,-0.2203 -9.738588,-3.16165 -11.814094,-7.8277 -2.706064,-6.08364 -4.271974,-12.7685 -4.078734,-19.41715 0.114329,-3.9336 3.361307,-6.62634 4.475311,-10.25315 1.220964,-3.97503 3.384465,-8.97736 8.051244,-9.54903 3.722057,-0.45594 6.196384,2.97017 8.711524,5.14501 2.85095,2.46521 3.36838,6.71706 1.96778,10.56315 -1.04414,2.86724 -0.0772,6.16612 0.53709,9.14441 0.60009,2.90926 2.60997,5.3518 4.18482,7.85607 1.71096,2.72072 9.46878,2.93944 7.61722,5.6729 z"
+       id="path26883"
+       sodipodi:nodetypes="sssssssssss" />
   </g>
 </svg>

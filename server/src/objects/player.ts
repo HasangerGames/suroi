@@ -1,53 +1,44 @@
+import { randomBytes } from "crypto";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
-import {
-    AnimationType,
-    GameConstants,
-    InputActions,
-    KillFeedMessageType,
-    KillType,
-    ObjectCategory,
-    PlayerActions,
-    SpectateActions
-} from "../../../common/src/constants";
-import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
+import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { type Packet } from "../../../common/src/packets/packet";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
+import { type Timeout } from "../../../common/src/utils/misc";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { type FullData } from "../../../common/src/utils/objectsSerializations";
+import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
-import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
-import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
-import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { type Action, HealingAction, ReloadAction } from "../inventory/action";
+import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
-import { type InventoryItem } from "../inventory/inventoryItem";
+import { CountableInventoryItem, type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
-import { GameObject } from "./gameObject";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
-import { Obstacle } from "./obstacle";
-import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { type Packet } from "../../../common/src/packets/packet";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { randomBytes } from "crypto";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { type Timeout } from "../../../common/src/utils/misc";
+import { Obstacle } from "./obstacle";
 
-export class Player extends GameObject<ObjectCategory.Player> {
+export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
     override readonly damageable = true;
 
@@ -66,8 +57,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     private _kills = 0;
     get kills(): number { return this._kills; }
-    set kills(k: number) {
-        this._kills = k;
+    set kills(kills: number) {
+        this._kills = kills;
         this.game.updateKillLeader(this);
     }
 
@@ -162,6 +153,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
     startedAttacking = false;
 
     /**
+     * Whether the player stopped attacking last update
+     */
+    stoppedAttacking = false;
+
+    /**
      * Whether the player is turning as of last update
      */
     turning = false;
@@ -183,11 +179,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         adrenaline: true,
         weapons: true,
         items: true,
+        throwable: true,
         zoom: true
     };
 
     // save current tick dirty status to send to spectators
-    thisTickDirty!: this["dirty"];
+    thisTickDirty?: this["dirty"];
 
     readonly inventory = new Inventory(this);
 
@@ -199,20 +196,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return this.inventory.activeWeapon;
     }
 
-    get activeItemDefinition(): MeleeDefinition | GunDefinition {
+    get activeItemDefinition(): WeaponDefinition {
         return this.activeItem.definition;
     }
 
     bufferedAttack?: Timeout;
 
-    readonly animation = {
+    private readonly _animation = {
         type: AnimationType.None,
-        // This boolean is flipped when an animation plays
-        // when it's changed, the client plays the animation
-        seq: false
+        dirty: true
     };
 
-    actionSeq = 0;
+    get animation(): AnimationType { return this._animation.type; }
+    set animation(animType: AnimationType) {
+        const animation = this._animation;
+        animation.type = animType;
+        animation.dirty = true;
+    }
 
     /**
      * Objects the player can see
@@ -248,22 +248,30 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     readonly socket: WebSocket<PlayerContainer>;
 
-    private _action?: Action | undefined;
-    get action(): Action | undefined { return this._action; }
-    set action(value: Action | undefined) {
-        const wasReload = this._action?.type === PlayerActions.Reload;
-        this._action = value;
+    private readonly _action: { type?: Action, dirty: boolean } = {
+        type: undefined,
+        dirty: true
+    };
 
-        // The action slot is now free, meaning our player isn't doing anything
-        // Let's try reloading our empty gun then, unless we just cancelled a reload
+    get action(): Action | undefined { return this._action.type; }
+    set action(value: Action | undefined) {
+        const action = this._action;
+        const wasReload = action.type?.type === PlayerActions.Reload;
+
+        action.type = value;
+        action.dirty = true;
+
         if (
             !wasReload &&
             value === undefined &&
             this.activeItem instanceof GunItem &&
             this.activeItem.ammo <= 0 &&
-            this.inventory.items[(this.activeItemDefinition as GunDefinition).ammoType] !== 0
+            this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
         ) {
-            this._action = new ReloadAction(this, this.activeItem);
+            // The action slot is now free, meaning our player isn't doing anything
+            // Let's try reloading our empty gun then, unless we just cancelled a reload
+            action.type = new ReloadAction(this, this.activeItem);
+            action.dirty = true;
         }
     }
 
@@ -284,7 +292,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     invulnerable = true;
 
     /**
-     * Determines if the player can despawn
+     * Determines if the player can despawn\
      * Set to false once the player picks up loot
      */
     canDespawn = true;
@@ -307,6 +315,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.hitbox.position = position;
     }
 
+    private _movementVector = Vec.create(0, 0);
+    get movementVector(): Vector { return Vec.clone(this._movementVector); }
+
+    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
@@ -318,6 +331,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
+
+        /* Object placing code start //
+        this.objectToPlace = new Obstacle(game, "regular_crate", position);
+        game.grid.addObject(this.objectToPlace);
+        // Object placing code end */
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -338,8 +356,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
-        // this.inventory.items["15x_scope"] = 1;
-        // this.inventory.scope = "15x_scope";
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -348,12 +364,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.inventory.addOrReplaceWeapon(1, "revitalizer");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.inventory.items["12g"] = 15;
+            this.inventory.items.setItem("12g", 15);
 
             this.inventory.addOrReplaceWeapon(2, "heap_sword");
 
-            this.inventory.items["2x_scope"] = 1;
-            this.inventory.items["4x_scope"] = 1;
+            this.inventory.items.setItem("2x_scope", 1);
+            this.inventory.items.setItem("4x_scope", 1);
+            this.inventory.items.setItem("8x_scope", 1);
+            this.inventory.items.setItem("15x_scope", 1);
             this.inventory.scope = "4x_scope";
         }
 
@@ -362,11 +380,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
-        const slot = this.inventory.appendWeapon(idString);
-        const primaryItem = this.inventory.getWeapon(slot) as GunItem;
+        const primaryItem = this.inventory.getWeapon(this.inventory.appendWeapon(idString)) as GunItem;
         const primaryDefinition = primaryItem.definition;
+
         primaryItem.ammo = primaryDefinition.capacity;
-        this.inventory.items[primaryDefinition.ammoType] = this.inventory.backpack.maxCapacity[primaryDefinition.ammoType];
+        this.inventory.items.setItem(
+            primaryDefinition.ammoType,
+            this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
+        );
     }
 
     emote(slot: number): void {
@@ -374,17 +395,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     update(): void {
-        // This system allows opposite movement keys to cancel each other out.
-        const movement = v(0, 0);
+        const dt = GameConstants.msPerTick;
 
-        if (this.isMobile && this.movement.moving) {
-            movement.x = Math.cos(this.movement.angle) * 1.45;
-            movement.y = Math.sin(this.movement.angle) * 1.45;
+        // This system allows opposite movement keys to cancel each other out.
+        const movement = Vec.create(0, 0);
+
+        const playerMovement = this.movement;
+        if (this.isMobile && playerMovement.moving) {
+            movement.x = Math.cos(playerMovement.angle) * 1.45;
+            movement.y = Math.sin(playerMovement.angle) * 1.45;
         } else {
-            if (this.movement.up) movement.y--;
-            if (this.movement.down) movement.y++;
-            if (this.movement.left) movement.x--;
-            if (this.movement.right) movement.x++;
+            if (playerMovement.up) movement.y--;
+            if (playerMovement.down) movement.y++;
+            if (playerMovement.left) movement.x--;
+            if (playerMovement.right) movement.x++;
         }
 
         if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
@@ -401,6 +425,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 recoilMultiplier = this.recoil.multiplier;
             }
         }
+
         /* eslint-disable no-multi-spaces */
         const speed = Config.movementSpeed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
@@ -410,8 +435,35 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
-        const oldPosition = vClone(this.position);
-        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+        const oldPosition = Vec.clone(this.position);
+        const movementVector = Vec.scale(movement, speed);
+        this._movementVector = movementVector;
+        this.position = Vec.add(
+            this.position,
+            Vec.scale(movementVector, dt)
+        );
+
+        /*
+        // Object placing code start
+        const position = Vec.add(
+            this.position,
+            Vec.create(Math.cos(this.rotation) * this.distanceToMouse, Math.sin(this.rotation) * this.distanceToMouse)
+        );
+        const obj = this.objectToPlace;
+        obj.position = position;
+        if (this.game.emotes.size > 0) {
+            obj.rotation += 1;
+            obj.rotation %= 4;
+        }
+        this.game.fullDirtyObjects.add(this.objectToPlace);
+        if (this.startedAttacking) {
+            const map = this.game.map;
+            const round = (n: number): number => Math.round(n * 100) / 100;
+            console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
+            //console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
+        }
+        // Object placing code end
+        */
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -432,12 +484,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // World boundaries
-        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        this.isMoving = !vEqual(oldPosition, this.position);
+        this.isMoving = !Vec.equals(oldPosition, this.position);
 
-        if (this.isMoving) this.game.grid.addObject(this);
+        if (this.isMoving) this.game.grid.updateObject(this);
 
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
@@ -451,20 +503,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Drain adrenaline
         if (this.adrenaline > 0) {
-            this.adrenaline -= 0.015;
+            this.adrenaline -= 0.0005 * dt;
         }
 
         // Regenerate health
-        if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
-        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
-        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
-        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+        if (this.adrenaline >= 87.5) this.health += dt * 2.75 / (30 ** 2);
+        else if (this.adrenaline >= 50) this.health += dt * 2.125 / (30 ** 2);
+        else if (this.adrenaline >= 25) this.health += dt * 1.125 / (30 ** 2);
+        else if (this.adrenaline > 0) this.health += dt * 0.625 / (30 ** 2);
 
-        // Shoot gun/use melee
+        // Shoot gun/use item
         if (this.startedAttacking) {
             this.startedAttacking = false;
             this.disableInvulnerability();
-            this.activeItem?.useItem();
+            this.activeItem.useItem();
+        }
+
+        if (this.stoppedAttacking) {
+            this.stoppedAttacking = false;
+            this.activeItem.stopUse();
         }
 
         // Gas damage
@@ -499,12 +556,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
      */
     secondUpdate(): void {
         const packet = new UpdatePacket();
-
         const player = this.spectating ?? this;
+        const game = this.game;
 
         // Calculate visible objects
         this.ticksSinceLastUpdate++;
-        if (this.ticksSinceLastUpdate > 8 || this.game.updateObjects || this.updateObjects) {
+        if (this.ticksSinceLastUpdate > 8 || game.updateObjects || this.updateObjects) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
@@ -514,7 +571,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 player.position
             );
 
-            const newVisibleObjects = this.game.grid.intersectsHitbox(this.screenHitbox);
+            const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
@@ -531,18 +588,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        for (const object of this.game.fullDirtyObjects) {
+        for (const object of game.fullDirtyObjects) {
             if (this.visibleObjects.has(object)) {
                 packet.fullDirtyObjects.add(object);
             }
         }
 
-        for (const object of this.game.partialDirtyObjects) {
+        for (const object of game.partialDirtyObjects) {
             if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
                 packet.partialDirtyObjects.add(object);
             }
         }
 
+        const inventory = player.inventory;
         // player data
         packet.playerData = {
             health: player.health,
@@ -554,7 +612,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
             id: player.id,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
-            inventory: player.inventory
+            inventory: {
+                activeWeaponIndex: inventory.activeWeaponIndex,
+                scope: inventory.scope,
+                weapons: inventory.weapons.map(slot => {
+                    const item = slot;
+
+                    return (item && {
+                        definition: item.definition,
+                        count: item instanceof GunItem
+                            ? item.ammo
+                            : item instanceof CountableInventoryItem
+                                ? item.count
+                                : undefined,
+                        stats: item.stats
+                    }) satisfies (PlayerData["inventory"]["weapons"] & object)[number];
+                }),
+                items: inventory.items.asRecord()
+            }
         };
 
         if (this.startedSpectating && this.spectating) {
@@ -566,8 +641,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // Cull bullets
-        for (const bullet of this.game.newBullets) {
-            if (lineIntersectsRect2(bullet.initialPosition,
+        for (const bullet of game.newBullets) {
+            if (Collision.lineIntersectsRectTest(bullet.initialPosition,
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
@@ -576,15 +651,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // Cull explosions
-        for (const explosion of this.game.explosions) {
+        for (const explosion of game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
-                distanceSquared(explosion.position, this.position) < 16384) {
+                Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
                 packet.explosions.add(explosion);
             }
         }
 
         // Emotes
-        for (const emote of this.game.emotes) {
+        for (const emote of game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
                 packet.emotes.add(emote);
             }
@@ -592,28 +667,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // gas
         packet.gas = {
-            ...this.game.gas,
-            dirty: this.game.gas.dirty || this._firstPacket
+            ...game.gas,
+            dirty: game.gas.dirty || this._firstPacket
         };
 
-        packet.gasPercentage = {
-            dirty: this.game.gas.percentageDirty || this._firstPacket,
-            value: this.game.gas.percentage
+        packet.gasProgress = {
+            dirty: game.gas.completionRatioDirty || this._firstPacket,
+            value: game.gas.completionRatio
         };
 
         // new and deleted players
-        if (this._firstPacket) packet.newPlayers = this.game.objects.getCategory(ObjectCategory.Player);
-        else packet.newPlayers = this.game.newPlayers;
+        packet.newPlayers = this._firstPacket
+            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            : game.newPlayers;
 
-        packet.deletedPlayers = this.game.deletedPlayers;
+        packet.deletedPlayers = game.deletedPlayers;
 
         // alive count
-        packet.aliveCount = this.game.aliveCount;
-        packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
+        packet.aliveCount = game.aliveCount;
+        packet.aliveCountDirty = game.aliveCountDirty || this._firstPacket;
 
         // kill feed messages
-        packet.killFeedMessages = this.game.killFeedMessages;
-        const killLeader = this.game.killLeader;
+        packet.killFeedMessages = game.killFeedMessages;
+        const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
             packet.killFeedMessages.add({
@@ -624,8 +700,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        packet.planes = this.game.planes;
-        packet.mapPings = this.game.mapPings;
+        packet.planes = game.planes;
+        packet.mapPings = game.mapPings;
 
         // serialize and send update packet
         this.sendPacket(packet);
@@ -635,6 +711,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
+    }
+
+    /**
+     * Clean up internal state after all packets have been sent
+     * to all recipients. The only code that should be present here
+     * is clean up code that cannot be in `secondUpdate` because packets
+     * depend on it
+     */
+    postPacket(): void {
+        this._animation.dirty = false;
+        this._action.dirty = false;
     }
 
     spectate(packet: SpectatePacket): void {
@@ -738,7 +825,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (this.invulnerable) return;
 
         // Reductions are merged additively
@@ -754,7 +841,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
@@ -813,7 +900,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             minAdrenaline: 0
         };
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
+        const maxWeapons = GameConstants.player.maxWeapons;
+        for (let i = 0; i < maxWeapons; i++) {
             const weapon = this.inventory.getWeapon(i);
 
             if (weapon === undefined) continue;
@@ -831,7 +919,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     // dies of death
-    die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
         this.health = 0;
@@ -895,17 +983,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.movement.down = false;
         this.movement.left = false;
         this.movement.right = false;
+        this.startedAttacking = false;
         this.attacking = false;
+        this.stoppedAttacking = false;
         this.game.aliveCountDirty = true;
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
+        this.game.fullDirtyObjects.add(this);
         this.emote(4);
         setTimeout(() => { this.game.grid.removeObject(this); }, 1);
         this.game.updateObjects = true;
         removeFrom(this.game.spectatablePlayers, this);
+
+        if (this.activeItem instanceof ThrowableItem) {
+            this.activeItem.stopUse();
+        }
 
         //
         // Drop loot
@@ -915,8 +1010,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.inventory.dropWeapons();
 
         // Drop inventory items
-        for (const item in this.inventory.items) {
-            const count = this.inventory.items[item];
+        for (const item in this.inventory.items.asRecord()) {
+            const count = this.inventory.items.getItem(item);
             const def = Loots.fromString(item);
 
             if (count > 0) {
@@ -938,7 +1033,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 this.game.addLoot(item, this.position, count);
-                this.inventory.items[item] = 0;
+                this.inventory.items.setItem(item, 0);
             }
         }
 
@@ -960,8 +1055,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.inventory.helmet = this.inventory.vest = undefined;
 
         // Create death marker
-        const deathMarker = new DeathMarker(this);
-        this.game.grid.addObject(deathMarker);
+        this.game.grid.addObject(new DeathMarker(this));
 
         // Send game over to dead player
         if (!this.disconnected) {
@@ -1001,7 +1095,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const attackState = packet.attacking;
 
         this.attacking = attackState;
-        if (!oldAttackState && attackState) this.startedAttacking = true;
+        this.startedAttacking ||= !oldAttackState && attackState;
+        this.stoppedAttacking ||= oldAttackState && !attackState;
 
         this.turning = packet.turning;
         if (this.turning) {
@@ -1024,7 +1119,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         : inventory.lastWeaponIndex;
 
                     // If a user is reloading the gun in slot 2, then we don't cancel the reload if they "switch" to slot 2
-                    if (this.action?.type !== PlayerActions.Reload || target !== this.activeItemIndex) {
+                    if (this.action?.type !== PlayerActions.Reload || (target !== this.activeItemIndex && inventory.hasWeapon(target))) {
                         this.action?.cancel();
                     }
 
@@ -1065,7 +1160,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
-                            const dist = distanceSquared(object.position, this.position);
+                            const dist = Geometry.distanceSquared(object.position, this.position);
                             if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
@@ -1134,27 +1229,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.action = action;
     }
 
-    override get data(): Required<ObjectsNetData[ObjectCategory.Player]> {
-        return {
+    override get data(): FullData<ObjectCategory.Player> {
+        const data: FullData<ObjectCategory.Player> = {
             position: this.position,
             rotation: this.rotation,
-            animation: this.animation,
             full: {
+                dead: this.dead,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,
                 skin: this.loadout.skin,
-                activeItem: this.activeItem.definition,
-                action: {
-                    seq: this.actionSeq,
-                    ...(() => {
-                        return this.action instanceof HealingAction
-                            ? { type: PlayerActions.UseItem, item: this.action.item }
-                            : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
-                    })()
-                }
+                activeItem: this.activeItem.definition
             }
         };
+
+        if (this._animation.dirty) {
+            data.animation = this.animation;
+        }
+
+        if (this._action.dirty) {
+            data.action = this.action instanceof HealingAction
+                ? { type: PlayerActions.UseItem, item: this.action.item }
+                : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
+        }
+
+        return data;
     }
 }

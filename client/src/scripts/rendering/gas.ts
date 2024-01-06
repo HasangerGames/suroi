@@ -1,24 +1,23 @@
 import $ from "jquery";
-
 import { Graphics } from "pixi.js";
 import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants";
-import { clamp, lerp, vLerp } from "../../../../common/src/utils/math";
-import { v, type Vector, vMul, vClone } from "../../../../common/src/utils/vector";
-import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
-import { formatDate } from "../utils/misc";
+import { Numeric } from "../../../../common/src/utils/math";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { formatDate } from "../utils/misc";
 
 const kOverdraw = 100 * 1000;
 const kSegments = 512;
 
 export class Gas {
     state = GasState.Inactive;
-    initialDuration = 0;
-    oldPosition = v(0, 0);
-    lastPosition = v(0, 0);
-    position = v(0, 0);
-    newPosition = v(0, 0);
+    currentDuration = 0;
+    oldPosition = Vec.create(0, 0);
+    lastPosition = Vec.create(0, 0);
+    position = Vec.create(0, 0);
+    newPosition = Vec.create(0, 0);
     oldRadius = 2048;
     lastRadius = 2048;
     radius = 2048;
@@ -44,11 +43,11 @@ export class Gas {
     updateFrom(data: UpdatePacket): void {
         const gas = data.gas;
 
-        const gasPercentage = data.gasPercentage?.value;
+        const gasProgress = data.gasProgress?.value;
 
         if (gas) {
             this.state = gas.state;
-            this.initialDuration = gas.initialDuration;
+            this.currentDuration = gas.currentDuration;
             this.oldPosition = gas.oldPosition;
             this.newPosition = gas.newPosition;
             this.oldRadius = gas.oldRadius;
@@ -59,7 +58,7 @@ export class Gas {
                 gas.state === GasState.Advancing
             ];
 
-            const time = this.initialDuration - Math.round(this.initialDuration * (gasPercentage ?? 1));
+            const time = this.currentDuration - Math.round(this.currentDuration * (gasProgress ?? 1));
 
             let gasMessage = "";
             switch (this.state) {
@@ -86,7 +85,7 @@ export class Gas {
             }
 
             if (
-                (isInactive || gas.initialDuration !== 0) &&
+                (isInactive || gas.currentDuration !== 0) &&
                 !UI_DEBUG_MODE &&
                 (!this.game.gameOver || this.game.spectating)
             ) {
@@ -101,8 +100,8 @@ export class Gas {
             }
         }
 
-        if (gasPercentage !== undefined) {
-            const time = this.initialDuration - Math.round(this.initialDuration * gasPercentage);
+        if (gasProgress !== undefined) {
+            const time = this.currentDuration - Math.round(this.currentDuration * gasProgress);
             this._ui.timerText.text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
 
             if (this.state !== GasState.Advancing) {
@@ -111,10 +110,10 @@ export class Gas {
             }
 
             if (this.state === GasState.Advancing) {
-                this.lastPosition = vClone(this.position);
+                this.lastPosition = Vec.clone(this.position);
                 this.lastRadius = this.radius;
-                this.position = vLerp(this.oldPosition, this.newPosition, gasPercentage);
-                this.radius = lerp(this.oldRadius, this.newRadius, gasPercentage);
+                this.position = Vec.lerp(this.oldPosition, this.newPosition, gasProgress);
+                this.radius = Numeric.lerp(this.oldRadius, this.newRadius, gasProgress);
                 this.lastUpdateTime = Date.now();
             }
         }
@@ -163,15 +162,15 @@ export class GasRender {
         let radius: number;
 
         if (gas.state === GasState.Advancing) {
-            const interpFactor = clamp((Date.now() - gas.lastUpdateTime) / GameConstants.tps, 0, 1);
-            position = vLerp(gas.lastPosition, gas.position, interpFactor);
-            radius = lerp(gas.lastRadius, gas.radius, interpFactor);
+            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / GameConstants.msPerTick, 0, 1);
+            position = Vec.lerp(gas.lastPosition, gas.position, interpFactor);
+            radius = Numeric.lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {
             position = gas.position;
             radius = gas.radius;
         }
 
-        const center = vMul(position, this._scale);
+        const center = Vec.scale(position, this._scale);
         // Once the hole gets small enough, just fill the entire
         // screen with some random part of the geometry
         let rad = radius * this._scale;

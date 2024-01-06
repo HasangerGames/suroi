@@ -1,9 +1,11 @@
-import { type BulletDefinition, Bullets } from "../definitions/bullets";
+import { ObjectCategory } from "../constants";
+import { Bullets, type BulletDefinition } from "../definitions/bullets";
+import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Hitbox } from "./hitbox";
-import { clamp, distanceSquared } from "./math";
+import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
 import { type SuroiBitStream } from "./suroiBitStream";
-import { v, vAdd, vClone, vMul, type Vector } from "./vector";
+import { Vec, type Vector } from "./vector";
 
 export interface BulletOptions {
     readonly position: Vector
@@ -15,13 +17,18 @@ export interface BulletOptions {
     readonly clipDistance?: number
 }
 
-interface GameObject {
+type GameObject = {
     readonly position: Vector
     readonly hitbox?: Hitbox
     readonly dead: boolean
     readonly damageable: boolean
     readonly id: number
-}
+} & ({
+    readonly type: ObjectCategory.Obstacle
+    readonly definition: ObstacleDefinition
+} | {
+    readonly type: Exclude<ObjectCategory, ObjectCategory.Obstacle>
+});
 
 interface Collision {
     readonly intersection: {
@@ -57,7 +64,7 @@ export class BaseBullet {
     readonly canHitShooter: boolean;
 
     constructor(options: BulletOptions) {
-        this.initialPosition = vClone(options.position);
+        this.initialPosition = Vec.clone(options.position);
         this.position = options.position;
         this.rotation = options.rotation;
         this.reflectionCount = options.reflectionCount ?? 0;
@@ -69,14 +76,14 @@ export class BaseBullet {
         let range = this.definition.range;
 
         if (this.definition.goToMouse && options.clipDistance !== undefined) {
-            range = clamp(options.clipDistance, 0, this.definition.range);
+            range = Numeric.clamp(options.clipDistance, 0, this.definition.range);
         }
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
 
-        this.direction = v(Math.sin(this.rotation), -Math.cos(this.rotation));
+        this.direction = Vec.create(Math.sin(this.rotation), -Math.cos(this.rotation));
 
-        this.velocity = vMul(this.direction, this.definition.speed * (this.rangeVariance + 1));
+        this.velocity = Vec.scale(this.direction, this.definition.speed * (this.rangeVariance + 1));
 
         this.canHitShooter = (this.definition.shrapnel ?? this.reflectionCount > 0);
     }
@@ -88,13 +95,13 @@ export class BaseBullet {
      * @returns An array containing the objects that the bullet collided and the intersection data
      */
     updateAndGetCollisions(delta: number, objects: { [Symbol.iterator]: () => Iterator<GameObject> }): Collision[] {
-        const oldPosition = vClone(this.position);
+        const oldPosition = Vec.clone(this.position);
 
-        this.position = vAdd(this.position, vMul(this.velocity, delta));
+        this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
 
-        if (distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
+        if (Geometry.distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
             this.dead = true;
-            this.position = vAdd(this.initialPosition, (vMul(this.direction, this.maxDistance)));
+            this.position = Vec.add(this.initialPosition, (Vec.scale(this.direction, this.maxDistance)));
         }
 
         if (this.definition.noCollision) return [];
@@ -102,6 +109,8 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
+            if (object.type === ObjectCategory.Obstacle && object.definition.noBulletCollision) continue;
+
             if (
                 object.damageable && !object.dead &&
                 !(!this.canHitShooter && object.id === this.sourceID) &&
@@ -121,8 +130,8 @@ export class BaseBullet {
         // Sort by closest to initial position
         collisions.sort(
             (a, b) =>
-                distanceSquared(a.intersection?.point, this.initialPosition) -
-                distanceSquared(b.intersection?.point, this.initialPosition)
+                Geometry.distanceSquared(a.intersection?.point, this.initialPosition) -
+                Geometry.distanceSquared(b.intersection?.point, this.initialPosition)
         );
 
         return collisions;

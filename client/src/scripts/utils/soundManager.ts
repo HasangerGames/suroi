@@ -1,18 +1,19 @@
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
-import { clamp } from "../../../../common/src/utils/math";
+import { Throwables } from "../../../../common/src/definitions/throwables";
+import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "./constants";
-import { Reskins } from "../../../../common/src/definitions/modes";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
 export interface SoundOptions {
     position?: Vector
-    fallOff: number
+    falloff: number
     maxRange: number
     loop: boolean
     /**
@@ -45,7 +46,7 @@ export class GameSound {
         this.name = name;
         this.manager = manager;
         this.position = options.position;
-        this.fallOff = options.fallOff;
+        this.fallOff = options.falloff;
         this.maxRange = options.maxRange;
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
@@ -85,16 +86,16 @@ export class GameSound {
 
     update(): void {
         if (this.instance && this.position) {
-            const diff = vSub(this.manager.position, this.position);
+            const diff = Vec.sub(this.manager.position, this.position);
 
             this.instance.volume = (1 -
-                clamp(
-                    Math.abs(vLength(diff) / this.maxRange),
+                Numeric.clamp(
+                    Math.abs(Vec.length(diff) / this.maxRange),
                     0,
                     1
                 )) ** (1 + this.fallOff * 2) * this.manager.volume;
 
-            this.stereoFilter.pan = clamp(diff.x / this.maxRange * -1, -1, 1);
+            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
         }
     }
 
@@ -112,7 +113,7 @@ export class SoundManager {
     readonly dynamicSounds = new Set<GameSound>();
 
     volume: number;
-    position = v(0, 0);
+    position = Vec.create(0, 0);
 
     constructor(game: Game) {
         this.game = game;
@@ -122,7 +123,7 @@ export class SoundManager {
 
     play(name: string, options?: Partial<SoundOptions>): GameSound {
         const sound = new GameSound(name, {
-            fallOff: 1,
+            falloff: 1,
             maxRange: 256,
             dynamic: false,
             loop: false,
@@ -150,8 +151,8 @@ export class SoundManager {
 
     loadSounds(): void {
         const soundsToLoad: Record<string, string> = {
-            player_hit_2: "audio/sfx/hits/player_hit_2",
             player_hit_1: "audio/sfx/hits/player_hit_1",
+            player_hit_2: "audio/sfx/hits/player_hit_2",
             gun_click: "audio/sfx/gun_click",
             swing: "audio/sfx/swing",
             emote: "audio/sfx/emote",
@@ -174,6 +175,7 @@ export class SoundManager {
             medikit_pickup: "audio/sfx/pickup/medikit_pickup",
             cola_pickup: "audio/sfx/pickup/cola_pickup",
             tablets_pickup: "audio/sfx/pickup/tablets_pickup",
+            throwable_pickup: "audio/sfx/pickup/throwable_pickup",
 
             usas_explosion: "audio/sfx/usas_explosion",
 
@@ -185,7 +187,16 @@ export class SoundManager {
             airdrop_fall: "audio/sfx/airdrop/airdrop_fall",
             airdrop_unlock: "audio/sfx/airdrop/airdrop_unlock",
             airdrop_land: "audio/sfx/airdrop/airdrop_land",
-            airdrop_land_water: "audio/sfx/airdrop/airdrop_land_water"
+            airdrop_land_water: "audio/sfx/airdrop/airdrop_land_water",
+
+            throwable_pin: "audio/sfx/throwable_pin",
+            throwable_throw: "audio/sfx/throwable_throw",
+            frag_grenade: "audio/sfx/frag_grenade",
+            smoke_grenade: "audio/sfx/smoke_grenade",
+
+            button_press: "audio/sfx/button_press",
+            puzzle_error: "audio/sfx/puzzle_error",
+            puzzle_solved: "audio/sfx/puzzle_solved"
         };
 
         for (const material of Materials) {
@@ -202,6 +213,10 @@ export class SoundManager {
 
             soundsToLoad[`${gun.idString}_reload`] = `audio/sfx/weapons/${gun.idString}_reload`;
             if (gun.ballistics.lastShotFX) soundsToLoad[`${gun.idString}_last_shot`] = `audio/sfx/weapons/${gun.idString}_last_shot`;
+        }
+
+        for (const throwable of Throwables) {
+            soundsToLoad[`${throwable.idString}_switch`] = `audio/sfx/weapons/${throwable.idString}_switch`;
         }
 
         for (const healingItem of HealingItems) {
@@ -223,8 +238,27 @@ export class SoundManager {
             soundsToLoad[key] = `./${path}.mp3`;
         }
 
-        PixiSound.sound.add(soundsToLoad, {
-            preload: true
-        });
+        for (const [alias, path] of Object.entries(soundsToLoad)) {
+            /**
+             * For some reason, PIXI will call the `loaded` callback twice
+             * when an error occurs…
+             */
+            let called = false;
+
+            PixiSound.sound.add(
+                alias,
+                {
+                    url: path,
+                    preload: true,
+                    loaded(error) {
+                        if (error !== null && !called) {
+                            called = true;
+                            console.warn(`Failed to load sound '${alias}' (path '${path}')\nError object provided below`);
+                            console.error(error);
+                        }
+                    }
+                }
+            );
+        }
     }
 }

@@ -181,10 +181,10 @@
           <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg" />
           <span id="gas-timer-text">0:00</span>
         </div>
-        <div id="debug-hud">
-          <div id="fps-counter"></div>
-          <div id="ping-counter"></div>
-          <div id="coordinates-hud"></div>
+          <div id="debug-hud">
+            <div id="fps-counter"></div>
+            <div id="ping-counter"></div>
+            <div id="coordinates-hud"></div>
         </div>
       </div>
 
@@ -256,99 +256,108 @@
         </div>
       </div>
 
-      <div id="kill-msg" style="display: none">
-        <div id="kill-msg-kills"></div>
-        You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
+    <div id="kill-msg" style="display: none">
+      <div id="kill-msg-kills"></div>
+      You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
+    </div>
+    <div class="items-container" id="healing">
+      <div class="inventory-container" id="healing-items-container">
       </div>
-      <div id="items-container">
-        <div class="inventory-container" id="healing-items-container"> </div>
-        <div class="inventory-container" id="ammo-container"> </div>
+    </div>
+    <div class="items-container" id="ammo">
+      <div class="inventory-container" id="ammo-container">
       </div>
-      <div class="inventory-container" id="equipment-container">
-        <div class="inventory-slot has-item" id="helmet-slot">
-          <img class="item-image" draggable="false" />
-          <span class="item-name"></span>
-          <div class="item-tooltip"></div>
-        </div>
-        <div class="inventory-slot has-item" id="vest-slot">
-          <img class="item-image" draggable="false" />
-          <span class="item-name"></span>
-          <div class="item-tooltip"></div>
-        </div>
-        <div class="inventory-slot has-item" id="backpack-slot">
-          <img class="item-image" draggable="false" />
-          <span class="item-name"></span>
-          <div class="item-tooltip"></div>
+      <div class="inventory-container" id="special-ammo-container">
+      </div>
+    </div>
+    <div class="inventory-container" id="equipment-container">
+      <div class="inventory-slot has-item" id="helmet-slot">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+        <div class="item-tooltip"></div>
+      </div>
+      <div class="inventory-slot has-item" id="vest-slot">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+        <div class="item-tooltip"></div>
+      </div>
+      <div class="inventory-slot has-item" id="backpack-slot">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+        <div class="item-tooltip"></div>
+      </div>
+    </div>
+    <div class="inventory-container" id="weapons-container">
+      <div class="inventory-slot" id="weapon-slot-1">
+        <span class="slot-number">1</span>
+        <span class="item-ammo"></span>
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+      <div class="inventory-slot" id="weapon-slot-2">
+        <span class="slot-number">2</span>
+        <span class="item-ammo"></span>
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+      <div class="inventory-slot" id="weapon-slot-3">
+        <span class="slot-number">3</span>
+        <span class="item-ammo"></span>
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+      <div class="inventory-slot" id="weapon-slot-4">
+        <span class="slot-number">4</span>
+        <span class="item-ammo"></span>
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+    </div>
+    <div id="emote-wheel" style="display: none">
+      <div class="emote-top"></div>
+      <div class="emote-right"></div>
+      <div class="emote-bottom"></div>
+      <div class="emote-left"></div>
+    </div>
+    <div id="game-over-overlay" style="display: none">
+      <div id="game-over-top-screen">
+        <img id="chicken-dinner" src="./img/game/emotes/chicken.svg">
+        <h1 id="game-over-text" class="modal-item">You died.</h1>
+        <div id="game-over-rank-container">
+          <span>Rank</span>
+          <span id="game-over-rank" class="modal-item"></span>
         </div>
       </div>
-      <div class="inventory-container" id="weapons-container">
-        <div class="inventory-slot" id="weapon-slot-1">
-          <span class="slot-number">1</span>
-          <span class="item-ammo"></span>
-          <img class="item-image dual-image" draggable="false" />
-          <img class="item-image" draggable="false" />
-          <span class="item-name"></span>
-        </div>
-        <div class="inventory-slot" id="weapon-slot-2">
-          <span class="slot-number">2</span>
-          <span class="item-ammo"></span>
-          <img class="item-image dual-image" draggable="false" />
-          <img class="item-image" draggable="false" />
-          <span class="item-name"></span>
-        </div>
-        <div class="inventory-slot" id="weapon-slot-3">
-          <span class="slot-number">3</span>
-          <span class="item-ammo"></span>
-          <img class="item-image dual-image" draggable="false" />
-          <img class="item-image" draggable="false" />
-          <span class="item-name"></span>
-        </div>
-      </div>
-      <div id="emote-wheel" style="display: none">
-        <div class="emote-top"></div>
-        <div class="emote-right"></div>
-        <div class="emote-bottom"></div>
-        <div class="emote-left"></div>
-      </div>
-      <div id="game-over-overlay" style="display: none">
-        <div id="game-over-top-screen">
-          <img id="chicken-dinner" src="./img/game/emotes/chicken.svg" />
-          <h1 id="game-over-text" class="modal-item">You died.</h1>
-          <div id="game-over-rank-container">
-            <span>Rank</span>
-            <span id="game-over-rank" class="modal-item"></span>
+      <div id="game-over-screen">
+        <h1 id="game-over-player-name" class="modal-item">Player</h1>
+        <div class="modal-item" id="game-over-stats">
+          <div class="stat">
+            <span class="stat-name">Kills:</span>
+            <span class="stat-value" id="game-over-kills"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage done:</span>
+            <span class="stat-value" id="game-over-damage-done"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage taken:</span>
+            <span class="stat-value" id="game-over-damage-taken"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Time alive:</span>
+            <span class="stat-value" id="game-over-time"></span>
           </div>
         </div>
-        <div id="game-over-screen">
-          <h1 id="game-over-player-name" class="modal-item">Player</h1>
-          <div class="modal-item" id="game-over-stats">
-            <div class="stat">
-              <span class="stat-name">Kills:</span>
-              <span class="stat-value" id="game-over-kills"></span>
-            </div>
-            <div class="stat">
-              <span class="stat-name">Damage done:</span>
-              <span class="stat-value" id="game-over-damage-done"></span>
-            </div>
-            <div class="stat">
-              <span class="stat-name">Damage taken:</span>
-              <span class="stat-value" id="game-over-damage-taken"></span>
-            </div>
-            <div class="stat">
-              <span class="stat-name">Time alive:</span>
-              <span class="stat-value" id="game-over-time"></span>
-            </div>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
-            <div style="display: flex; gap: 8px">
-              <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
-              <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu">Menu</button>
-            </div>
+        <div class="modal-item">
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu">Menu</button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
     <div class="modal" id="game-menu" style="display: none">
       <div class="modal-item">

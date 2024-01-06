@@ -1,5 +1,5 @@
 import { GameConstants, PacketType } from "../constants";
-import { type EmoteDefinition, Emotes } from "../definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
 

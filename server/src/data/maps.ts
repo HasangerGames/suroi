@@ -1,18 +1,18 @@
-import { type BuildingDefinition, Buildings } from "../../../common/src/definitions/buildings";
+import { type WebSocket } from "uWebSockets.js";
+import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
+import { Guns } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
-import { type ObstacleDefinition, Obstacles } from "../../../common/src/definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { Skins } from "../../../common/src/definitions/skins";
 import { type Variation } from "../../../common/src/typings";
-import { circleCollision } from "../../../common/src/utils/math";
+import { Collision } from "../../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray, random } from "../../../common/src/utils/random";
-import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { type GunItem } from "../inventory/gunItem";
 import { type Map } from "../map";
-import { Guns } from "../../../common/src/definitions/guns";
 import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
-import { type WebSocket } from "uWebSockets.js";
-import { type GunItem } from "../inventory/gunItem";
-import { Skins } from "../../../common/src/definitions/skins";
 import { type LootTables } from "./lootTables";
 
 interface MapDefinition {
@@ -52,14 +52,15 @@ export const Maps: Record<string, MapDefinition> = {
         rivers: {
             minAmount: 3,
             maxAmount: 3,
-            wideChance: 0.15,
-            minWidth: 12,
-            maxWidth: 18,
-            minWideWidth: 25,
-            maxWideWidth: 30
+            wideChance: 0.35,
+            minWidth: 14,
+            maxWidth: 20,
+            minWideWidth: 27,
+            maxWideWidth: 32
         },
         buildings: {
             port_complex: 1,
+            armory: 1,
             refinery: 1,
             warehouse: 5,
             small_house: 10,
@@ -75,17 +76,20 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 10,
-            christmas_tree: 1, // winter mode
+            // christmas_tree: 1, // winter mode
             oak_tree: 310,
             birch_tree: 50,
             pine_tree: 30,
             regular_crate: 300,
             flint_crate: 6,
             aegis_crate: 6,
+            grenade_crate: 40,
             rock: 200,
+            river_rock: 45,
             bush: 120,
             blueberry_bush: 30,
             barrel: 80,
+            viking_chest: 1,
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
@@ -95,12 +99,12 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: v(0.23, 0.2) },
-            { name: "Takedown", position: v(0.23, 0.8) },
-            { name: "Lavlandet", position: v(0.75, 0.2) },
-            { name: "Noskin Narrows", position: v(0.72, 0.8) },
-            { name: "Mt. Sanger", position: v(0.5, 0.35) },
-            { name: "Deepwood", position: v(0.5, 0.65) }
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
     debug: {
@@ -111,7 +115,7 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback: (map: Map) => {
             // Generate all buildings
 
-            const buildingPos = v(200, map.height - 600);
+            const buildingPos = Vec.create(200, map.height - 600);
 
             for (const building of Buildings.definitions) {
                 map.generateBuilding(building.idString, buildingPos);
@@ -126,7 +130,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
 
             // Generate all obstacles
-            const obstaclePos = v(200, 200);
+            const obstaclePos = Vec.create(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
                 if (obstacle.invisible) continue;
@@ -142,9 +146,9 @@ export const Maps: Record<string, MapDefinition> = {
             }
 
             // Generate all Loots
-            const itemPos = v(map.width / 2, map.height / 2);
+            const itemPos = Vec.create(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(item, itemPos, 511);
+                map.game.addLoot(item, itemPos, Infinity);
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -154,12 +158,12 @@ export const Maps: Record<string, MapDefinition> = {
             }
         },
         places: [
-            { name: "[object Object]", position: v(0.8, 0.7) },
-            { name: "Kernel Panic", position: v(0.6, 0.8) },
-            { name: "NullPointerException", position: v(0.7, 0.3) },
-            { name: "undefined Forest", position: v(0.3, 0.2) },
-            { name: "seg. fault\n(core dumped)", position: v(0.3, 0.7) },
-            { name: "Can't read props of null", position: v(0.4, 0.5) }
+            { name: "[object Object]", position: Vec.create(0.8, 0.7) },
+            { name: "Kernel Panic", position: Vec.create(0.6, 0.8) },
+            { name: "NullPointerException", position: Vec.create(0.7, 0.3) },
+            { name: "undefined Forest", position: Vec.create(0.3, 0.2) },
+            { name: "seg. fault\n(core dumped)", position: Vec.create(0.3, 0.7) },
+            { name: "Can't read props of null", position: Vec.create(0.4, 0.5) }
         ]
     },
     halloween: {
@@ -210,12 +214,12 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 40
         },
         places: [
-            { name: "Pumpkin Patch", position: v(0.23, 0.2) },
-            { name: "Reaper", position: v(0.23, 0.8) },
-            { name: "Spøkelsesfelt", position: v(0.75, 0.2) },
-            { name: "Haunted Hollow", position: v(0.72, 0.8) },
-            { name: "Mt. Fang", position: v(0.5, 0.35) },
-            { name: "Darkwood", position: v(0.5, 0.65) }
+            { name: "Pumpkin Patch", position: Vec.create(0.23, 0.2) },
+            { name: "Reaper", position: Vec.create(0.23, 0.8) },
+            { name: "Spøkelsesfelt", position: Vec.create(0.75, 0.2) },
+            { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
+            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -229,9 +233,21 @@ export const Maps: Record<string, MapDefinition> = {
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
                 const width = 70;
 
-                const startPos = vClone(pos);
+                const startPos = Vec.clone(pos);
                 startPos.x -= width / 2;
-                const itemPos = vClone(startPos);
+                const itemPos = Vec.clone(startPos);
+
+                const countMap = {
+                    [ItemType.Gun]: 1,
+                    [ItemType.Ammo]: Infinity,
+                    [ItemType.Melee]: 1,
+                    [ItemType.Throwable]: Infinity,
+                    [ItemType.Healing]: Infinity,
+                    [ItemType.Armor]: 1,
+                    [ItemType.Backpack]: 1,
+                    [ItemType.Scope]: 1,
+                    [ItemType.Skin]: 1
+                };
 
                 for (const item of Loots.definitions) {
                     if (
@@ -241,7 +257,7 @@ export const Maps: Record<string, MapDefinition> = {
                         item.itemType === ItemType.Skin
                     ) continue;
 
-                    map.game.addLoot(item, itemPos, Infinity);
+                    map.game.addLoot(item, itemPos, countMap[item.itemType] ?? 1).velocity = Vec.create(0, 0);
 
                     itemPos.x += xOff;
                     if (
@@ -256,31 +272,31 @@ export const Maps: Record<string, MapDefinition> = {
 
             // Fixed obstacles
             const obstacles = [
-                { id: "rock", pos: v(10, 10) },
-                { id: "rock", pos: v(30, 40) },
-                { id: "rock", pos: v(30, 80) },
-                { id: "regular_crate", pos: v(20, 15) },
-                { id: "barrel", pos: v(25, 25) },
-                { id: "rock", pos: v(80, 10) },
-                { id: "rock", pos: v(60, 15) },
-                { id: "oak_tree", pos: v(20, 70) },
-                { id: "oil_tank", pos: v(120, 25) },
-                { id: "birch_tree", pos: v(110, 50) }
+                { id: "rock", pos: Vec.create(10, 10) },
+                { id: "rock", pos: Vec.create(25, 40) },
+                { id: "rock", pos: Vec.create(25, 80) },
+                { id: "regular_crate", pos: Vec.create(20, 15) },
+                { id: "barrel", pos: Vec.create(25, 25) },
+                { id: "rock", pos: Vec.create(80, 10) },
+                { id: "rock", pos: Vec.create(60, 15) },
+                { id: "oak_tree", pos: Vec.create(20, 70) },
+                { id: "oil_tank", pos: Vec.create(120, 25) },
+                { id: "birch_tree", pos: Vec.create(120, 50) }
             ];
 
-            const center = v(map.width / 2, map.height / 2);
+            const center = Vec.create(map.width / 2, map.height / 2);
 
             for (const obstacle of obstacles) {
-                map.generateObstacle(obstacle.id, vAdd(center, obstacle.pos), 0, 1, 1);
-                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1);
-                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1);
-                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
+                map.generateObstacle(obstacle.id, Vec.add(center, obstacle.pos), 0, 1, 1);
+                map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1);
+                map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1);
+                map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
             }
 
-            genLoots(vAdd(center, v(-70, 75)), 8, 8);
-            genLoots(vAdd(center, v(70, 75)), 8, 8);
-            genLoots(vAdd(center, v(-70, -75)), -8, 8);
-            genLoots(vAdd(center, v(70, -75)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 80)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 80)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -80)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -80)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -293,12 +309,15 @@ export const Maps: Record<string, MapDefinition> = {
             };
 
             for (const obstacle in randomObstacles) {
-                for (let i = 0; i < randomObstacles[obstacle]; i++) {
+                const limit = randomObstacles[obstacle];
+                for (let i = 0; i < limit; i++) {
                     const definition = Obstacles.fromString(obstacle);
-
-                    const pos = map.getRandomPosition(definition.spawnHitbox ?? definition.hitbox, {
-                        collides: pos => circleCollision(center, 120, pos, 1)
-                    });
+                    const pos = map.getRandomPosition(
+                        definition.spawnHitbox ?? definition.hitbox,
+                        {
+                            collides: pos => Collision.circleCollision(center, 130, pos, 1)
+                        }
+                    );
 
                     if (!pos) continue;
 
@@ -307,7 +326,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
         },
         places: [
-            { name: "stark is noob", position: v(0.5, 0.5) }
+            { name: "stark is noob", position: Vec.create(0.5, 0.5) }
         ]
     },
     singleBuilding: {
@@ -316,7 +335,8 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("port_complex", v(this.width / 2, this.height / 2), 0);
+            // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -325,30 +345,40 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("christmas_tree", v(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("viking_chest", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
-    guns_test: {
+    singleGun: {
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
+        genCallback(map) {
+            map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
+        }
+    },
+    gunsTest: {
         width: 64,
         height: 48 + (16 * Guns.length),
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
             for (let i = 0; i < Guns.length; i++) {
-                const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(32, 32 + (16 * i)));
+                const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(32, 32 + (16 * i)));
                 const gun = Guns[i];
                 player.inventory.addOrReplaceWeapon(0, gun.idString);
                 (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
-                player.inventory.items[gun.ammoType] = Infinity;
+                player.inventory.items.setItem(gun.ammoType, Infinity);
                 player.disableInvulnerability();
                 // setInterval(() => player.activeItem.useItem(), 30);
-                map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
-                map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
+                map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));
+                map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
             }
         }
     },
-    obstacles_test: {
+    obstaclesTest: {
         width: 128,
         height: 48 + (32 * Obstacles.definitions.length),
         beachSize: 4,
@@ -357,11 +387,11 @@ export const Maps: Record<string, MapDefinition> = {
             for (let i = 0; i < Obstacles.definitions.length; i++) {
                 const obstacle = Obstacles.definitions[i];
                 // setInterval(() => player.activeItem.useItem(), 30);
-                map.generateObstacle(obstacle.idString, v(map.width / 2, 40 * i), 0, 1, i as Variation);
+                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), 0, 1, i as Variation);
             }
         }
     },
-    players_test: {
+    playersTest: {
         width: 256,
         height: 256,
         beachSize: 16,
@@ -369,11 +399,11 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
-                    const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
+                    const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
                     player.disableInvulnerability();
                     player.loadout.skin = pickRandomInArray(Skins.definitions);
                     map.game.grid.addObject(player);
-                    if (random(0, 1) === 1) map.generateObstacle("barrel", v(x, y));
+                    if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
                 }
             }
         }
@@ -383,5 +413,47 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1344,
         oceanSize: 144,
         beachSize: 32
+    },
+    armory: {
+        width: 850,
+        height: 850,
+        oceanSize: 144,
+        beachSize: 32,
+        buildings: {
+            armory: 1
+        },
+        obstacles: {
+            regular_crate: 30,
+            grenade_crate: 15,
+            toilet: 20,
+            aegis_crate: 10,
+            flint_crate: 10,
+            melee_crate: 5,
+            birch_tree: 30,
+            pine_tree: 30,
+            rock: 30,
+            barrel: 15
+        }
+    },
+    new_port: {
+        width: 875,
+        height: 875,
+        oceanSize: 144,
+        beachSize: 32,
+        buildings: {
+            port_complex: 1
+        },
+        obstacles: {
+            regular_crate: 30,
+            grenade_crate: 15,
+            toilet: 20,
+            aegis_crate: 10,
+            flint_crate: 10,
+            melee_crate: 5,
+            birch_tree: 30,
+            pine_tree: 30,
+            rock: 30,
+            barrel: 15
+        }
     }
 };

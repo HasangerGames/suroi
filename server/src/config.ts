@@ -20,7 +20,7 @@ export const Config = {
 
     mapName: "main",
 
-    spawn: { mode: SpawnMode.Random },
+    spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
     maxGames: 3,
@@ -28,7 +28,7 @@ export const Config = {
 
     gas: { mode: GasMode.Normal },
 
-    movementSpeed: 0.77,
+    movementSpeed: 0.026,
 
     censorUsernames: true,
 

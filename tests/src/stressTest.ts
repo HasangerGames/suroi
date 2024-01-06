@@ -1,13 +1,13 @@
 import { WebSocket, type MessageEvent } from "ws";
 import { InputActions, PacketType } from "../../common/src/constants";
-import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
+import { Loots } from "../../common/src/definitions/loots";
 import { Skins } from "../../common/src/definitions/skins";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
+import { InputPacket, type InputAction } from "../../common/src/packets/inputPacket";
+import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Loots } from "../../common/src/definitions/loots";
-import { type InputAction, InputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 
 const config = {
     address: "127.0.0.1:8000",
@@ -54,6 +54,8 @@ class Bot {
     id: number;
 
     ws: WebSocket;
+
+    lastInputPacket?: InputPacket;
 
     constructor(id: number) {
         this.id = id;
@@ -107,7 +109,9 @@ class Bot {
 
         const inputPacket = new InputPacket();
 
-        inputPacket.movement = this.moving;
+        inputPacket.movement = {
+            ...this.moving
+        };
         inputPacket.attacking = this.shootStart;
         inputPacket.turning = true;
         inputPacket.rotation = this.angle;
@@ -134,9 +138,11 @@ class Bot {
 
         if (action) inputPacket.actions = [action];
 
-        inputPacket.serialize();
-
-        this.ws.send(inputPacket.getBuffer());
+        if (!this.lastInputPacket || inputPacket.didChange(this.lastInputPacket)) {
+            inputPacket.serialize();
+            this.ws.send(inputPacket.getBuffer());
+            this.lastInputPacket = inputPacket;
+        }
     }
 
     updateInputs(): void {

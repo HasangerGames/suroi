@@ -1,96 +1,73 @@
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Gas } from "./gas";
-import { Grid } from "./utils/grid";
-import { type GameObject } from "./objects/gameObject";
-import { type Emote } from "./objects/emote";
-import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import {
-    GameConstants,
-    KillFeedMessageType,
-    KillType,
-    ObjectCategory,
-    PacketType
-} from "../../common/src/constants";
-import { Maps } from "./data/maps";
-import { Config, SpawnMode } from "./config";
-import { Map } from "./map";
-import { endGame, newGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
-import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { v, vAdd, type Vector } from "../../common/src/utils/vector";
-import { clamp, distanceSquared, polarToVector } from "../../common/src/utils/math";
-import { Logger, removeFrom } from "./utils/misc";
-import { type LootDefinition } from "../../common/src/definitions/loots";
-import { type GunItem } from "./inventory/gunItem";
-import { IDAllocator } from "./utils/idAllocator";
-import {
-    ItemType,
-    MapObjectSpawnMode,
-    type ReferenceTo,
-    type ReifiableDef
-} from "../../common/src/utils/objectDefinitions";
+import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketType } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { hasBadWords } from "./utils/badWordFilter";
-import { JoinedPacket } from "../../common/src/packets/joinedPacket";
+import { type LootDefinition } from "../../common/src/definitions/loots";
+import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
+import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { InputPacket } from "../../common/src/packets/inputPacket";
+import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
-import { Obstacle } from "./objects/obstacle";
-import { type ObstacleDefinition, Obstacles } from "../../common/src/definitions/obstacles";
+import { CircleHitbox } from "../../common/src/utils/hitbox";
+import { Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
-import { Explosion } from "./objects/explosion";
-import { Player } from "./objects/player";
-import { Loot } from "./objects/loot";
+import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { Vec, type Vector } from "../../common/src/utils/vector";
+import { Config, SpawnMode } from "./config";
+import { Maps } from "./data/maps";
+import { Gas } from "./gas";
+import { type GunItem } from "./inventory/gunItem";
+import { type ThrowableItem } from "./inventory/throwableItem";
+import { Map } from "./map";
 import { Building } from "./objects/building";
+import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
+import { type Emote } from "./objects/emote";
+import { Explosion } from "./objects/explosion";
+import { type GameObject } from "./objects/gameObject";
+import { Loot } from "./objects/loot";
+import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
-import { type DeathMarker } from "./objects/deathMarker";
-import { type Decal } from "./objects/decal";
-import { ObjectPool } from "../../common/src/utils/objectPool";
-
-interface ObjectMapping {
-    [ObjectCategory.Player]: Player
-    [ObjectCategory.Obstacle]: Obstacle
-    [ObjectCategory.DeathMarker]: DeathMarker
-    [ObjectCategory.Loot]: Loot
-    [ObjectCategory.Building]: Building
-    [ObjectCategory.Decal]: Decal
-    [ObjectCategory.Parachute]: Parachute
-}
+import { Player } from "./objects/player";
+import { SyncedParticle } from "./objects/syncedParticle";
+import { ThrowableProjectile } from "./objects/throwableProj";
+import { endGame, newGame, type PlayerContainer } from "./server";
+import { hasBadWords } from "./utils/badWordFilter";
+import { Grid } from "./utils/grid";
+import { IDAllocator } from "./utils/idAllocator";
+import { Logger, removeFrom } from "./utils/misc";
 
 export class Game {
     readonly _id: number;
     get id(): number { return this._id; }
 
-    map: Map;
-
-    gas: Gas;
-
-    readonly grid: Grid<GameObject>;
+    readonly map: Map;
+    readonly gas: Gas;
+    readonly grid: Grid;
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
 
     updateObjects = false;
 
-    readonly objects = new ObjectPool<ObjectMapping>();
-
-    readonly livingPlayers: Set<Player> = new Set<Player>();
-    readonly connectedPlayers: Set<Player> = new Set<Player>();
+    readonly livingPlayers = new Set<Player>();
+    readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
     /**
      * New players created this tick
      */
-    readonly newPlayers: Set<Player> = new Set<Player>();
+    readonly newPlayers = new Set<Player>();
     /**
     * Players deleted this tick
     */
-    readonly deletedPlayers: Set<number> = new Set<number>();
+    readonly deletedPlayers = new Set<number>();
 
-    readonly explosions: Set<Explosion> = new Set<Explosion>();
-    readonly emotes: Set<Emote> = new Set<Emote>();
+    readonly explosions = new Set<Explosion>();
+    readonly emotes = new Set<Emote>();
     readonly parachutes = new Set<Parachute>();
 
     /**
@@ -115,7 +92,7 @@ export class Game {
     /**
      * All planes this tick
      */
-    readonly planes = new Set<{ position: Vector, direction: number }>();
+    readonly planes = new Set<{ readonly position: Vector, readonly direction: number }>();
 
     /**
      * All map pings this tick
@@ -124,8 +101,8 @@ export class Game {
 
     private readonly _timeouts = new Set<Timeout>();
 
-    addTimeout(callback: () => void, delay?: number): Timeout {
-        const timeout = new Timeout(callback, this.now + (delay ?? 0));
+    addTimeout(callback: () => void, delay = 0): Timeout {
+        const timeout = new Timeout(callback, this.now + delay);
         this._timeouts.add(timeout);
         return timeout;
     }
@@ -149,8 +126,6 @@ export class Game {
 
     tickTimes: number[] = [];
 
-    tickDelta = 1000 / GameConstants.tps;
-
     constructor(id: number) {
         this._id = id;
 
@@ -167,7 +142,7 @@ export class Game {
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
-        this.tick(GameConstants.tps);
+        this.tick(GameConstants.msPerTick);
     }
 
     handlePacket(stream: SuroiBitStream, player: Player): void {
@@ -216,6 +191,7 @@ export class Game {
                     this._timeouts.delete(timeout);
                     continue;
                 }
+
                 if (this.now > timeout.end) {
                     timeout.callback();
                     this._timeouts.delete(timeout);
@@ -223,12 +199,20 @@ export class Game {
             }
 
             // Update loots
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
+            for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
                 loot.update();
             }
 
-            for (const parachute of this.objects.getCategory(ObjectCategory.Parachute)) {
+            for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
                 parachute.update();
+            }
+
+            for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
+                projectile.update();
+            }
+
+            for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
+                syncedParticle.update();
             }
 
             // Update bullets
@@ -260,8 +244,8 @@ export class Game {
             // Update gas
             this.gas.tick();
 
-            // First loop over players: Movement, animations, & actions
-            for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+            // First loop over players: movement, animations, & actions
+            for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
@@ -271,6 +255,13 @@ export class Game {
                 if (!player.joined) continue;
 
                 player.secondUpdate();
+            }
+
+            // Third loop: clean up after all packets have been sent
+            for (const player of this.connectedPlayers) {
+                if (!player.joined) continue;
+
+                player.postPacket();
             }
 
             // Reset everything
@@ -286,7 +277,7 @@ export class Game {
             this.mapPings.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
-            this.gas.percentageDirty = false;
+            this.gas.completionRatioDirty = false;
             this.updateObjects = false;
 
             // Winning logic
@@ -294,13 +285,13 @@ export class Game {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
-                    lastManStanding.emote(5);
-                    // setTimeout(()=>{},1)
-                    lastManStanding.movement.up = false;
-                    lastManStanding.movement.down = false;
-                    lastManStanding.movement.left = false;
-                    lastManStanding.movement.right = false;
+                    const movement = lastManStanding.movement;
+                    movement.up = false;
+                    movement.down = false;
+                    movement.left = false;
+                    movement.right = false;
                     lastManStanding.attacking = false;
+                    lastManStanding.emote(5);
                     lastManStanding.sendGameOverPacket(true);
                 }
 
@@ -322,11 +313,11 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.tps) * 100).toFixed(1)}%`);
+                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, GameConstants.tps - tickTime));
+            this.tick(Math.max(0, GameConstants.msPerTick - tickTime));
         }, delay);
     }
 
@@ -370,7 +361,8 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
-        let spawnPosition = v(this.map.width / 2, this.map.height / 2);
+        let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
+
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -378,13 +370,16 @@ export class Game {
                 let foundPosition = false;
                 let tries = 0;
                 while (!foundPosition && tries < 100) {
-                    spawnPosition = this.map.getRandomPosition(hitbox, {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: (position) => {
-                            return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                    spawnPosition = this.map.getRandomPosition(
+                        hitbox,
+                        {
+                            maxAttempts: 500,
+                            spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            collides: (position) => {
+                                return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                            }
                         }
-                    }) ?? spawnPosition;
+                    ) ?? spawnPosition;
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
@@ -398,13 +393,16 @@ export class Game {
             }
             case SpawnMode.Random: {
                 const gasRadius = this.gas.newRadius ** 2;
-                spawnPosition = this.map.getRandomPosition(hitbox, {
-                    maxAttempts: 500,
-                    spawnMode: MapObjectSpawnMode.GrassAndSand,
-                    collides: (position) => {
-                        return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                spawnPosition = this.map.getRandomPosition(
+                    hitbox,
+                    {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: (position) => {
+                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                        }
                     }
-                }) ?? spawnPosition;
+                ) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Radius: {
@@ -447,13 +445,13 @@ export class Game {
         player.loadout.emotes = packet.emotes;
 
         this.livingPlayers.add(player);
-        this.objects.add(player);
         this.spectatablePlayers.push(player);
         this.connectedPlayers.add(player);
         this.newPlayers.add(player);
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
+        this.updateObjects = true;
 
         player.joined = true;
 
@@ -469,7 +467,7 @@ export class Game {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;
-                this.gas.advanceGas();
+                this.gas.advanceGasStage();
 
                 this.addTimeout(() => {
                     newGame();
@@ -507,6 +505,7 @@ export class Game {
             this.startTimeout?.kill();
             this.startTimeout = undefined;
         }
+
         try {
             player.socket.close();
         } catch (e) { }
@@ -528,7 +527,6 @@ export class Game {
             count
         );
 
-        this.objects.add(loot);
         this.grid.addObject(loot);
         return loot;
     }
@@ -558,6 +556,28 @@ export class Game {
         return explosion;
     }
 
+    addProjectile(definition: ThrowableDefinition, position: Vector, source: ThrowableItem): ThrowableProjectile {
+        const projectile = new ThrowableProjectile(this, position, definition, source);
+        this.grid.addObject(projectile);
+        return projectile;
+    }
+
+    removeProjectile(projectile: ThrowableProjectile): void {
+        this.removeObject(projectile);
+        projectile.dead = true;
+    }
+
+    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, definition, position);
+        this.grid.addObject(syncedParticle);
+        return syncedParticle;
+    }
+
+    removeSyncedParticle(syncedParticle: SyncedParticle): void {
+        this.removeObject(syncedParticle);
+        syncedParticle.dead = true;
+    }
+
     /**
      * Delete an object and give the id back to the allocator
      * @param object The object to delete
@@ -566,7 +586,6 @@ export class Game {
         this.grid.removeObject(object);
         this.idAllocator.give(object.id);
         this.updateObjects = true;
-        this.objects.delete(object as ObjectMapping[ObjectCategory]);
     }
 
     summonAirdrop(position: Vector): void {
@@ -596,10 +615,12 @@ export class Game {
             thisHitbox = crateHitbox.transform(position);
 
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Obstacle &&
+                if (
+                    object instanceof Obstacle &&
                     !object.dead &&
                     object.definition.indestructible &&
-                    object.spawnHitbox.collidesWith(thisHitbox)) {
+                    object.spawnHitbox.collidesWith(thisHitbox)
+                ) {
                     collided = true;
                     thisHitbox.resolveCollision(object.spawnHitbox);
                 }
@@ -608,9 +629,11 @@ export class Game {
 
             // second loop, buildings
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Building &&
+                if (
+                    object instanceof Building &&
                     object.scopeHitbox &&
-                    object.definition.wallsToDestroy === undefined) {
+                    object.definition.wallsToDestroy === undefined
+                ) {
                     const hitbox = object.scopeHitbox.clone();
                     hitbox.scale(1.5);
                     if (!thisHitbox.collidesWith(hitbox)) continue;
@@ -623,15 +646,15 @@ export class Game {
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;
             const height = max.y - min.y;
-            position.x = clamp(position.x, width, this.map.width - width);
-            position.y = clamp(position.y, height, this.map.height - height);
+            position.x = Numeric.clamp(position.x, width, this.map.width - width);
+            position.y = Numeric.clamp(position.y, height, this.map.height - height);
         }
 
         const direction = randomRotation();
 
-        const planePos = vAdd(
+        const planePos = Vec.add(
             position,
-            polarToVector(direction, -GameConstants.maxPosition)
+            Vec.fromPolar(direction, -GameConstants.maxPosition)
         );
 
         const airdrop = { position, type: crateDef };
@@ -643,7 +666,6 @@ export class Game {
         this.addTimeout(() => {
             const parachute = new Parachute(this, position, airdrop);
             this.grid.addObject(parachute);
-            this.objects.add(parachute);
             this.mapPings.add(position);
         }, GameConstants.airdrop.flyTime);
     }
@@ -660,6 +682,6 @@ export class Game {
 }
 
 export interface Airdrop {
-    position: Vector
-    type: ObstacleDefinition
+    readonly position: Vector
+    readonly type: ObstacleDefinition
 }

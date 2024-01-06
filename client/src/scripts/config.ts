@@ -7,7 +7,7 @@ export const Config = {
         as: { name: "Asia", address: "as.suroi.io", https: true }
     },
     defaultRegion: "na",
-    mode: "winter"
+    mode: "normal"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {

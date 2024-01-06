@@ -1,26 +1,19 @@
+import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { UI_DEBUG_MODE } from "./utils/constants";
-import { requestFullscreen } from "./utils/misc";
-import {
-    GameConstants,
-    InputActions,
-    SpectateActions
-} from "../../../common/src/constants";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import {
-    HealingItems,
-    HealType
-} from "../../../common/src/definitions/healingItems";
 import { isMobile } from "pixi.js";
+import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { type Game } from "./game";
+import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
+import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
-import { body, createDropdown } from "./uiHelpers";
-import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { type Game } from "./game";
+import { body, createDropdown } from "./uiHelpers";
 import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { sound } from "@pixi/sound";
+import { UI_DEBUG_MODE } from "./utils/constants";
+import { Crosshairs, getCrosshair } from "./utils/crosshairs";
+import { requestFullscreen } from "./utils/misc";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -718,7 +711,8 @@ Video evidence is required.`)
     });
 
     // Switch weapon slots by clicking
-    for (let slot = 0; slot < GameConstants.player.maxWeapons; slot++) {
+    const maxWeapons = GameConstants.player.maxWeapons;
+    for (let slot = 0; slot < maxWeapons; slot++) {
         const slotElement = $(`#weapon-slot-${slot + 1}`);
         slotElement[0].addEventListener(
             "pointerdown",
@@ -795,7 +789,7 @@ Video evidence is required.`)
     for (const ammo of Ammos) {
         if (ammo.ephemeral === true) continue;
 
-        $("#ammo-container").append(`
+        $(`#${ammo.hideUnlessPresent ? "special-" : ""}ammo-container`).append(`
         <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
             <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
             <span class="item-count" id="${ammo.idString}-count">0</span>

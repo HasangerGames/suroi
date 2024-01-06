@@ -1,8 +1,8 @@
 import { type FireMode } from "../constants";
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
-import { v, type Vector } from "../utils/vector";
+import { ItemType, type InventoryItemDefinition } from "../utils/objectDefinitions";
+import { Vec, type Vector } from "../utils/vector";
 
-export interface MeleeDefinition extends ItemDefinition {
+export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
 
     readonly damage: number
@@ -11,14 +11,10 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
-    readonly speedMultiplier: number
-    readonly killstreak?: boolean
     readonly maxTargets: number
-    readonly fists: {
+    readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
-        readonly left: Vector
-        readonly right: Vector
         readonly useLeft: Vector
         readonly useRight: Vector
     }
@@ -41,7 +37,7 @@ export const Melees: MeleeDefinition[] = [
         damage: 20,
         obstacleMultiplier: 1,
         radius: 1.5,
-        offset: v(2.5, 0),
+        offset: Vec.create(2.5, 0),
         cooldown: 250,
         noDrop: true,
         speedMultiplier: 1,
@@ -49,10 +45,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 125,
             randomFist: true,
-            left: v(38, -35),
-            right: v(38, 35),
-            useLeft: v(75, -10),
-            useRight: v(75, 10)
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(75, -10),
+            useRight: Vec.create(75, 10)
         }
     },
     {
@@ -62,20 +58,20 @@ export const Melees: MeleeDefinition[] = [
         damage: 35,
         obstacleMultiplier: 1,
         radius: 3.8,
-        offset: v(3.8, 2.2),
+        offset: Vec.create(3.8, 2.2),
         cooldown: 450,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
             animationDuration: 150,
-            left: v(55, -15),
-            right: v(45, 0),
-            useLeft: v(28, -15),
-            useRight: v(50, -15)
+            left: Vec.create(55, -15),
+            right: Vec.create(45, 0),
+            useLeft: Vec.create(28, -15),
+            useRight: Vec.create(50, -15)
         },
         image: {
-            position: v(35, 45),
-            usePosition: v(115, -14),
+            position: Vec.create(35, 45),
+            usePosition: Vec.create(115, -14),
             angle: 155,
             useAngle: 45,
             lootScale: 0.55
@@ -88,20 +84,20 @@ export const Melees: MeleeDefinition[] = [
         damage: 25,
         obstacleMultiplier: 1.25,
         radius: 2.7,
-        offset: v(3.1, 0.9),
-        cooldown: 200,
+        offset: Vec.create(3.1, 0.9),
+        cooldown: 225,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
             animationDuration: 100,
-            left: v(38, -35),
-            right: v(38, 35),
-            useLeft: v(38, -35),
-            useRight: v(70, 20)
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(38, -35),
+            useRight: Vec.create(70, 20)
         },
         image: {
-            position: v(62, 42),
-            usePosition: v(90, 8),
+            position: Vec.create(62, 42),
+            usePosition: Vec.create(90, 8),
             angle: 60,
             useAngle: 5,
             lootScale: 0.8
@@ -112,25 +108,25 @@ export const Melees: MeleeDefinition[] = [
         name: "Maul",
         itemType: ItemType.Melee,
         damage: 40,
-        obstacleMultiplier: 2,
+        obstacleMultiplier: 1.9,
         piercingMultiplier: 1,
         radius: 2.7,
-        offset: v(4.9, -1),
+        offset: Vec.create(5.4, -0.5),
         cooldown: 450,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
             animationDuration: 150,
-            left: v(35, -25),
-            right: v(35, 5),
-            useLeft: v(35, -15),
-            useRight: v(65, -15)
+            left: Vec.create(40, -25),
+            right: Vec.create(40, 15),
+            useLeft: Vec.create(35, -35),
+            useRight: Vec.create(75, -20)
         },
         image: {
-            position: v(40, 20),
-            usePosition: v(85, -25),
+            position: Vec.create(45, 20),
+            usePosition: Vec.create(85, -25),
             angle: 135,
-            useAngle: 45,
+            useAngle: 65,
             lootScale: 0.6
         }
     },
@@ -141,23 +137,23 @@ export const Melees: MeleeDefinition[] = [
         damage: 22,
         obstacleMultiplier: 1,
         radius: 1.75,
-        offset: v(3.1, 0.5),
+        offset: Vec.create(3.1, 0.5),
         cooldown: 250,
         speedMultiplier: 1,
         maxTargets: 1,
         image: {
-            position: v(54, 35),
-            usePosition: v(91, 10),
+            position: Vec.create(54, 35),
+            usePosition: Vec.create(91, 10),
             useAngle: 0,
             lootScale: 0.8,
             separateWorldImage: true
         },
         fists: {
             animationDuration: 125,
-            left: v(38, -35),
-            right: v(38, 35),
-            useLeft: v(38, -35),
-            useRight: v(75, 10)
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(38, -35),
+            useRight: Vec.create(75, 10)
         }
     },
     {
@@ -169,22 +165,76 @@ export const Melees: MeleeDefinition[] = [
         piercingMultiplier: 1,
         killstreak: true,
         radius: 4,
-        offset: v(5, 0),
+        offset: Vec.create(5, 0),
         cooldown: 300,
         speedMultiplier: 1,
         maxTargets: Infinity,
         fists: {
             animationDuration: 150,
-            left: v(38, -35),
-            right: v(38, 35),
-            useLeft: v(38, -35),
-            useRight: v(120, 20)
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(38, -35),
+            useRight: Vec.create(120, 20)
         },
         image: {
-            position: v(102, 35),
-            usePosition: v(140, -30),
+            position: Vec.create(102, 35),
+            usePosition: Vec.create(140, -30),
             angle: 50,
             useAngle: -20,
+            lootScale: 0.6
+        }
+    },
+    {
+        idString: "ice_pick",
+        name: "Ice Pick",
+        itemType: ItemType.Melee,
+        damage: 35,
+        obstacleMultiplier: 1.9,
+        piercingMultiplier: 1,
+        radius: 2.8,
+        offset: Vec.create(5.4, -0.5),
+        cooldown: 420,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        fists: {
+            animationDuration: 150,
+            left: Vec.create(40, -30),
+            right: Vec.create(40, 10),
+            useLeft: Vec.create(33, -36),
+            useRight: Vec.create(68, -20)
+        },
+        image: {
+            position: Vec.create(47, 25),
+            usePosition: Vec.create(85, -25),
+            angle: 130,
+            useAngle: 65,
+            lootScale: 0.6
+        }
+    },
+    {
+        idString: "seax",
+        name: "Seax",
+        itemType: ItemType.Melee,
+        damage: 40,
+        obstacleMultiplier: 1.9,
+        piercingMultiplier: 1,
+        radius: 2.7,
+        offset: Vec.create(5.4, -0.5),
+        cooldown: 450,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        fists: {
+            animationDuration: 150,
+            left: Vec.create(38, -35),
+            right: Vec.create(38, 35),
+            useLeft: Vec.create(38, -35),
+            useRight: Vec.create(95, 20)
+        },
+        image: {
+            position: Vec.create(80, 25),
+            usePosition: Vec.create(123, -13),
+            angle: 35,
+            useAngle: 0,
             lootScale: 0.6
         }
     }

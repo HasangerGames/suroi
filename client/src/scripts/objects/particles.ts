@@ -1,6 +1,6 @@
-import { lerp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
-import { vAdd, vDiv, type Vector, vMul } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
@@ -8,7 +8,7 @@ export class ParticleManager {
     readonly particles = new Set<Particle>();
     readonly emitters = new Set<ParticleEmitter>();
 
-    game: Game;
+    readonly game: Game;
 
     constructor(game: Game) {
         this.game = game;
@@ -111,7 +111,7 @@ export class Particle {
     }
 
     update(delta: number): void {
-        this.position = vAdd(this.position, vDiv(vMul(this.options.speed, delta), 1000));
+        this.position = Vec.add(this.position, Vec.scale(Vec.scale(this.options.speed, delta), 1e-3));
         const options = this.options;
 
         const now = Date.now();
@@ -124,15 +124,15 @@ export class Particle {
         }
 
         if (typeof options.scale === "object") {
-            this.scale = lerp(options.scale.start, options.scale.end, (options.scale.ease ?? (t => t))(interpFactor));
+            this.scale = Numeric.lerp(options.scale.start, options.scale.end, (options.scale.ease ?? (t => t))(interpFactor));
         }
 
         if (typeof options.alpha === "object") {
-            this.alpha = lerp(options.alpha.start, options.alpha.end, (options.alpha.ease ?? (t => t))(interpFactor));
+            this.alpha = Numeric.lerp(options.alpha.start, options.alpha.end, (options.alpha.ease ?? (t => t))(interpFactor));
         }
 
         if (typeof options.rotation === "object") {
-            this.rotation = lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
+            this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
         this.image.position.copyFrom(toPixiCoords(this.position));

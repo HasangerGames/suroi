@@ -1,5 +1,5 @@
 import { type Stringable } from "./gameConsole";
-import { type CVarFlags, type ExtractConVarValue, type ConVar } from "./variables";
+import { type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
@@ -130,16 +130,17 @@ export const defaultBinds = Object.freeze({
     "slot 0": ["1"],
     "slot 1": ["2"],
     "slot 2": ["3", "E"],
+    "equip_or_cycle_throwables 1": ["4"],
     last_item: ["Q"],
     other_weapon: ["Space"],
     swap_gun_slots: ["T"],
     "cycle_items -1": ["MWheelUp"],
     "cycle_items 1": ["MWheelDown"],
     "+attack": ["Mouse0"],
-    drop: [] as string[],
+    drop: [],
     reload: ["R"],
-    "cycle_scopes -1": [] as string[],
-    "cycle_scopes +1": [] as string[],
+    "cycle_scopes -1": [],
+    "cycle_scopes 1": [],
     "use_consumable gauze": ["7"],
     "use_consumable medikit": ["8"],
     "use_consumable cola": ["9"],
@@ -147,7 +148,7 @@ export const defaultBinds = Object.freeze({
     cancel_action: ["X"],
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],
-    toggle_hud: [] as string[],
+    toggle_hud: [],
     "+emote_wheel": ["Mouse2"],
-    toggle_console: [] as string[]
-});
+    toggle_console: []
+} satisfies Record<string, string[]>);

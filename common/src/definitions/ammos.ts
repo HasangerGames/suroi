@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
     readonly itemType: ItemType.Ammo

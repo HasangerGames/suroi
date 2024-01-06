@@ -1,10 +1,9 @@
-import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet, type ISpritesheetData } from "pixi.js";
-import { type Hitbox, HitboxType } from "../../../../common/src/utils/hitbox";
-import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE } from "./constants";
-
+import { Sprite, Spritesheet, Texture, type ColorSource, type Graphics, type ISpritesheetData } from "pixi.js";
 import { atlases } from "virtual:spritesheets-jsons";
 import { Reskins } from "../../../../common/src/definitions/modes";
+import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { MODE, PIXI_SCALE } from "./constants";
 
 const textures: Record<string, Texture> = {};
 
@@ -16,20 +15,25 @@ export async function loadTextures(): Promise<void> {
 
         console.log(`Loading atlas ${location.origin}/${image}`);
 
-        promises.push(new Promise<void>((resolve) => {
-            Texture.fromURL(image).then((texture) => {
-                const spriteSheet = new Spritesheet(texture, atlas);
+        promises.push(
+            new Promise<void>(resolve => {
+                Texture.fromURL(image)
+                    .then(texture => {
+                        new Spritesheet(texture, atlas)
+                            .parse()
+                            .then(sheetTextures => {
+                                for (const frame in sheetTextures) {
+                                    textures[frame] = sheetTextures[frame];
+                                }
+                                console.log(`Atlas ${image} loaded.`);
 
-                spriteSheet.parse().then((sheetTextures) => {
-                    for (const frame in sheetTextures) {
-                        textures[frame] = sheetTextures[frame];
-                    }
-                    console.log(`Atlas ${image} loaded.`);
-
-                    resolve();
-                }).catch(console.error);
-            }).catch(console.error);
-        }));
+                                resolve();
+                            })
+                            .catch(console.error);
+                    })
+                    .catch(console.error);
+            })
+        );
     }
 
     await Promise.all(promises);
@@ -48,64 +52,64 @@ export class SuroiSprite extends Sprite {
         return textures[frame] ?? textures._missing_texture;
     }
 
-    setFrame(frame: string): SuroiSprite {
+    setFrame(frame: string): this {
         this.texture = SuroiSprite._getTexture(frame);
         return this;
     }
 
-    setAnchor(anchor: Vector): SuroiSprite {
+    setAnchor(anchor: Vector): this {
         this.anchor.copyFrom(anchor);
         return this;
     }
 
-    setPos(x: number, y: number): SuroiSprite {
+    setPos(x: number, y: number): this {
         this.position.set(x, y);
         return this;
     }
 
-    setVPos(pos: Vector): SuroiSprite {
+    setVPos(pos: Vector): this {
         this.position.set(pos.x, pos.y);
         return this;
     }
 
-    setVisible(visible: boolean): SuroiSprite {
+    setVisible(visible: boolean): this {
         this.visible = visible;
         return this;
     }
 
-    setAngle(angle?: number): SuroiSprite {
+    setAngle(angle?: number): this {
         this.angle = angle ?? 0;
         return this;
     }
 
-    setRotation(rotation?: number): SuroiSprite {
+    setRotation(rotation?: number): this {
         this.rotation = rotation ?? 0;
         return this;
     }
 
-    setScale(scale?: number): SuroiSprite {
-        this.scale = v(scale ?? 1, scale ?? 1);
+    setScale(scale?: number): this {
+        this.scale = Vec.create(scale ?? 1, scale ?? 1);
         return this;
     }
 
-    setTint(tint: ColorSource): SuroiSprite {
+    setTint(tint: ColorSource): this {
         this.tint = tint;
         return this;
     }
 
-    setZIndex(zIndex: number): SuroiSprite {
+    setZIndex(zIndex: number): this {
         this.zIndex = zIndex;
         return this;
     }
 
-    setAlpha(alpha: number): SuroiSprite {
+    setAlpha(alpha: number): this {
         this.alpha = alpha;
         return this;
     }
 }
 
 export function toPixiCoords(pos: Vector): Vector {
-    return vMul(pos, PIXI_SCALE);
+    return Vec.scale(pos, PIXI_SCALE);
 }
 
 export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
@@ -121,7 +125,8 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
         case HitboxType.Rect: {
             const min = toPixiCoords(hitbox.min);
             const max = toPixiCoords(hitbox.max);
-            graphics.moveTo(min.x, min.y)
+            graphics
+                .moveTo(min.x, min.y)
                 .lineTo(max.x, min.y)
                 .lineTo(max.x, max.y)
                 .lineTo(min.x, max.y)

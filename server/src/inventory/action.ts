@@ -15,24 +15,18 @@ export abstract class Action {
     protected constructor(player: Player, time: number) {
         this.player = player;
         this._timeout = player.game.addTimeout(this.execute.bind(this), time * 1000);
-        this.player.actionSeq++;
-        this.player.actionSeq %= 4;
-        this.player.game.fullDirtyObjects.add(this.player);
+        this.player.game.partialDirtyObjects.add(this.player);
     }
 
     cancel(): void {
         this._timeout.kill();
         this.player.action = undefined;
-        this.player.actionSeq++;
-        this.player.actionSeq %= 4;
-        this.player.game.fullDirtyObjects.add(this.player);
+        this.player.game.partialDirtyObjects.add(this.player);
     }
 
     execute(): void {
         this.player.action = undefined;
-        this.player.actionSeq++;
-        this.player.actionSeq %= 4;
-        this.player.game.fullDirtyObjects.add(this.player);
+        this.player.game.partialDirtyObjects.add(this.player);
     }
 }
 
@@ -46,19 +40,19 @@ export class ReloadAction extends Action {
         this.item = item;
     }
 
-    execute(): void {
+    override execute(): void {
         super.execute();
 
         const items = this.player.inventory.items;
         const definition = this.item.definition;
         const difference = Math.min(
-            items[definition.ammoType],
+            items.getItem(definition.ammoType),
             definition.singleReload
                 ? 1
                 : this.item.definition.capacity - this.item.ammo
         );
         this.item.ammo += difference;
-        items[definition.ammoType] -= difference;
+        items.decrementItem(definition.ammoType, difference);
 
         if (definition.singleReload) { // this is to chain single reloads together
             this.item.reload();
@@ -83,10 +77,10 @@ export class HealingAction extends Action {
         this.item = itemDef;
     }
 
-    execute(): void {
+    override execute(): void {
         super.execute();
 
-        this.player.inventory.items[this.item.idString]--;
+        this.player.inventory.items.decrementItem(this.item.idString);
 
         switch (this.item.healType) {
             case HealType.Health:

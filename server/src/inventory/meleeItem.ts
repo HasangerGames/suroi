@@ -2,10 +2,10 @@ import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { vAdd, vRotate } from "../../../common/src/utils/vector";
+import { Vec } from "../../../common/src/utils/vector";
+import { type GameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
-import { type GameObject } from "../objects/gameObject";
 import { InventoryItem } from "./inventoryItem";
 
 /**
@@ -40,8 +40,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
         const definition = this.definition;
 
         this._lastUse = owner.game.now;
-        owner.animation.type = AnimationType.Melee;
-        owner.animation.seq = !this.owner.animation.seq;
+        owner.animation = AnimationType.Melee;
         owner.game.partialDirtyObjects.add(owner);
 
         owner.action?.cancel();
@@ -53,8 +52,8 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 !owner.dead &&
                 !owner.disconnected
             ) {
-                const rotated = vRotate(definition.offset, owner.rotation);
-                const position = vAdd(owner.position, rotated);
+                const rotated = Vec.rotate(definition.offset, owner.rotation);
+                const position = Vec.add(owner.position, rotated);
                 const hitbox = new CircleHitbox(definition.radius, position);
 
                 // Damage the closest object

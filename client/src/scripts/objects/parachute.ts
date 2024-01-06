@@ -1,14 +1,14 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { lerp } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { v, type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
 import { Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
@@ -35,14 +35,14 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
             this.fallSound = this.playSound(
                 "airdrop_fall",
                 {
-                    fallOff: 1,
+                    falloff: 1,
                     maxRange: 128,
                     dynamic: true
                 }
             );
         }
 
-        const scale = lerp(0.5, 1, data.height);
+        const scale = Numeric.lerp(0.5, 1, data.height);
         if (isNew) {
             this.container.scale.set(scale);
         } else {
@@ -53,7 +53,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     x: scale,
                     y: scale
                 },
-                duration: GameConstants.tps
+                duration: GameConstants.msPerTick
             });
         }
 
@@ -68,7 +68,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     zIndex: ZIndexes.Ground,
                     position: randomPointInsideCircle(this.position, 6),
                     lifetime: 1000,
-                    speed: v(0, 0),
+                    speed: Vec.create(0, 0),
                     scale: {
                         start: randomFloat(0.45, 0.55),
                         end: randomFloat(2.95, 3.05)
@@ -84,6 +84,8 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
     destroy(): void {
         super.destroy();
+
+        this.image.destroy();
         this.scaleAnim?.kill();
         this.fallSound?.stop();
     }

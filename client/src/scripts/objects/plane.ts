@@ -1,10 +1,10 @@
-import { vAdd, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "../utils/pixi";
-import { type Game } from "../game";
-import { distanceSquared, vLerp, polarToVector } from "../../../../common/src/utils/math";
-import { PIXI_SCALE } from "../utils/constants";
 import { GameConstants, ZIndexes } from "../../../../common/src/constants";
-import type { GameSound } from "../utils/soundManager";
+import { Geometry } from "../../../../common/src/utils/math";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite } from "../utils/pixi";
+import { type GameSound } from "../utils/soundManager";
 
 export class Plane {
     readonly game: Game;
@@ -23,9 +23,9 @@ export class Plane {
 
         this.startPosition = startPosition;
 
-        this.endPosition = vAdd(
+        this.endPosition = Vec.add(
             this.startPosition,
-            polarToVector(direction, GameConstants.maxPosition * 2)
+            Vec.fromPolar(direction, GameConstants.maxPosition * 2)
         );
 
         this.image = new SuroiSprite("airdrop_plane")
@@ -37,7 +37,7 @@ export class Plane {
             "airdrop_plane",
             {
                 position: startPosition,
-                fallOff: 0.5,
+                falloff: 0.5,
                 maxRange: 256,
                 dynamic: true
             }
@@ -47,15 +47,15 @@ export class Plane {
     }
 
     update(): void {
-        const position = this.sound.position = vLerp(
+        const position = this.sound.position = Vec.lerp(
             this.startPosition,
             this.endPosition,
             (Date.now() - this.startTime) / (GameConstants.airdrop.flyTime * 2)
         );
 
-        this.image.setVPos(vMul(position, PIXI_SCALE));
+        this.image.setVPos(Vec.scale(position, PIXI_SCALE));
 
-        if (distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
+        if (Geometry.distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();
             this.game.planes.delete(this);
         }
