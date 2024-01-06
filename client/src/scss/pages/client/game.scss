@@ -28,14 +28,13 @@
     bottom: 5px;
 
     @media screen and (max-width: 1500px) {
-        bottom: 5px;
-        right: 210px;
+        right: 160px;
     }
 
     @media screen and (min-width: $screen_large) {
         width: 70px;
         height: 60px;
-        bottom: 130px;
+        bottom: 10px;
         right: 260px;
     }
 
@@ -43,11 +42,10 @@
         width: 50px;
         height: 40px;
         font-size: 20px;
-        bottom: 3px;
-        right: 150px;
+        right: 120px;
     }
 
-    @media screen and (max-width: $screen_small) {
+    @media screen and (max-width: 460px) {
         bottom: 3px;
         right: 3px;
     }
