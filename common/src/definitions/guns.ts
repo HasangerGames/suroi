@@ -804,7 +804,7 @@ const GunsRaw: RawGunDefinition[] = [
         fireDelay: 75,
         burstProperties: {
             shotsPerBurst: 3,
-            burstCooldown: 250
+            burstCooldown: 325
         },
         switchDelay: 300,
         speedMultiplier: 0.92,
@@ -842,7 +842,7 @@ const GunsRaw: RawGunDefinition[] = [
         fireDelay: 75,
         burstProperties: {
             shotsPerBurst: 3,
-            burstCooldown: 250
+            burstCooldown: 325
         },
         switchDelay: 400,
         speedMultiplier: 0.92,

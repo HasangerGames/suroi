@@ -84,15 +84,6 @@ export class GunItem extends InventoryItem<GunDefinition> {
         this.owner.action?.cancel();
         clearTimeout(this._burstTimeout);
 
-        if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
-            this._shots = 0;
-            this._burstTimeout = setTimeout(
-                this._useItemNoDelayCheck.bind(this, false),
-                definition.burstProperties.burstCooldown
-            );
-            return;
-        }
-
         owner.animation = definition.ballistics.lastShotFX && this.ammo === 1
             ? AnimationType.LastShot
             : this._altFire
@@ -189,11 +180,20 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (this.ammo <= 0) {
+            this._shots = 0;
             this._reloadTimeout = this.owner.game.addTimeout(
                 this.reload.bind(this, true),
                 definition.fireDelay
             );
+            return;
+        }
+
+        if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
             this._shots = 0;
+            this._burstTimeout = setTimeout(
+                this._useItemNoDelayCheck.bind(this, false),
+                definition.burstProperties.burstCooldown
+            );
             return;
         }
 
