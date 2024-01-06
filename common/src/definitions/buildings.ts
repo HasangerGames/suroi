@@ -63,7 +63,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly solved?: string
         readonly position?: Vector
         readonly maxRange: number
-        readonly fallOff: number
+        readonly falloff: number
     }
 
     readonly floorImages?: Array<{
@@ -71,16 +71,16 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly position: Vector
         readonly rotation?: number
         readonly scale?: Vector
-        readonly tint?: number
+        readonly tint?: number | `#${string}`
     }>
 
     readonly ceilingImages?: Array<{
         readonly key: string
         readonly position: Vector
         readonly residue?: string
-        readonly tint?: number
+        readonly tint?: number | `#${string}`
     }>
-    readonly ceilingZIndex?: number
+    readonly ceilingZIndex?: ZIndexes
 
     /**
      * How many walls need to be broken to destroy the ceiling
@@ -224,7 +224,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_front_wall",
-                position: Vec.create(-4.6, 8.8),
+                position: Vec.create(-4.6, 8.7),
                 rotation: 2
             }
         ]
@@ -1356,7 +1356,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             solved: "generator_running",
             position: Vec.create(23, 75),
             maxRange: 416,
-            fallOff: 2
+            falloff: 2
         },
         floorImages: [
             {
@@ -2146,7 +2146,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     position: Vec.create(10 + 4.75 * i, -19.2),
                     rotation: 0,
                     puzzlePiece: ["y", "o", "j", "l"][i]
-                })
+                } satisfies BuildingObstacle)
             ),
             { idString: "panel_without_button", position: Vec.create(30.7, -14), rotation: 1 },
             { idString: "ammo_crate", position: Vec.create(-20, -14.8), rotation: 0 },

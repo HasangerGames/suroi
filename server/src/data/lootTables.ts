@@ -463,6 +463,10 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "hp18", weight: 1 },
         { item: "mp40", weight: 1 },
         { item: "model_37", weight: 1 },
+        //fixme custom loot table for playtest (start)
+        { item: "vector", weight: 0.8 },
+        { item: "vepr12", weight: 0.8 },
+        //fixme custom loot table for playtest (end)
         { item: "m3k", weight: 0.8 },
         { item: "arx160", weight: 0.8 },
         { item: "flues", weight: 0.8 },
@@ -541,6 +545,8 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "mini14", weight: 1 },
         { item: "sr25", weight: 1 },
         { item: "vss", weight: 1 },
+        { item: "vector", weight: 1 },
+        { item: "vepr12", weight: 1 },
         { item: "mcx_spear", weight: 0.95 },
         { item: "mosin", weight: 0.95 },
         { item: "tango_51", weight: 0.9 },

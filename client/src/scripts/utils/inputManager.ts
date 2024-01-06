@@ -265,14 +265,14 @@ export class InputManager {
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
+        if (!event.isTrusted) return;
+
         // Disable pointer events on mobile if mobile controls are enabled
         if (event instanceof PointerEvent && this.isMobile) return;
 
-        // If the using is interacting with a text field or something of the sort, inputs should
+        // If the user is interacting with a text field or something of the sort, inputs should
         // not be honored
-        if (document.activeElement !== document.body) {
-            return;
-        }
+        if (document.activeElement !== document.body) return;
 
         /*
             We don't want to allow keybinds to work with modifiers, because firstly,

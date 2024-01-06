@@ -2202,7 +2202,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "sandbags",
             name: "Sandbags",
-            material: "stone",
+            material: "sand",
             health: 1000,
             indestructible: true,
             hitbox: RectangleHitbox.fromRect(13.5, 8.1),

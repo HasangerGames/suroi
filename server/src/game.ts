@@ -361,6 +361,7 @@ export class Game {
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
+
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -368,13 +369,16 @@ export class Game {
                 let foundPosition = false;
                 let tries = 0;
                 while (!foundPosition && tries < 100) {
-                    spawnPosition = this.map.getRandomPosition(hitbox, {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: (position) => {
-                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                    spawnPosition = this.map.getRandomPosition(
+                        hitbox,
+                        {
+                            maxAttempts: 500,
+                            spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            collides: (position) => {
+                                return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                            }
                         }
-                    }) ?? spawnPosition;
+                    ) ?? spawnPosition;
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
@@ -388,13 +392,16 @@ export class Game {
             }
             case SpawnMode.Random: {
                 const gasRadius = this.gas.newRadius ** 2;
-                spawnPosition = this.map.getRandomPosition(hitbox, {
-                    maxAttempts: 500,
-                    spawnMode: MapObjectSpawnMode.GrassAndSand,
-                    collides: (position) => {
-                        return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                spawnPosition = this.map.getRandomPosition(
+                    hitbox,
+                    {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: (position) => {
+                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                        }
                     }
-                }) ?? spawnPosition;
+                ) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Radius: {
@@ -621,9 +628,11 @@ export class Game {
 
             // second loop, buildings
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Building &&
+                if (
+                    object instanceof Building &&
                     object.scopeHitbox &&
-                    object.definition.wallsToDestroy === undefined) {
+                    object.definition.wallsToDestroy === undefined
+                ) {
                     const hitbox = object.scopeHitbox.clone();
                     hitbox.scale(1.5);
                     if (!thisHitbox.collidesWith(hitbox)) continue;

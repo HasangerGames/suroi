@@ -14,7 +14,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
     }
     readonly animation: {
         readonly duration: number
-        readonly tint: number
+        readonly tint: number | `#${string}`
         readonly scale: number
     }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
