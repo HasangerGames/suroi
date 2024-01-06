@@ -397,7 +397,7 @@ export class Inventory {
         const definition = item.definition;
 
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
-            this.removeThrowable(definition as ThrowableDefinition, true, Infinity);
+            this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
             if (item instanceof GunItem && (definition as DualGunNarrowing).isDual) {
                 this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
