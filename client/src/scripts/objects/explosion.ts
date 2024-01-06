@@ -69,7 +69,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             definition.sound,
             {
                 position,
-                fallOff: 0.4
+                falloff: 0.4
             }
         );
     }

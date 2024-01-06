@@ -40,8 +40,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
         const definition = this.definition;
 
         this._lastUse = owner.game.now;
-        owner.animation.type = AnimationType.Melee;
-        owner.animation.seq = !this.owner.animation.seq;
+        owner.animation = AnimationType.Melee;
         owner.game.partialDirtyObjects.add(owner);
 
         owner.action?.cancel();

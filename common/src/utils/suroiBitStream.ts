@@ -12,7 +12,7 @@ export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 13;
 export const VARIATION_BITS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
-export const MAX_OBJECT_SCALE = 2;
+export const MAX_OBJECT_SCALE = 3;
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -20,19 +20,19 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Allocs a new Suroi Bit Stream.
-     * @param length The size of the stream.
-     * @return The Suroi Bit Stream object.
+     * Allocs a new Suroi Bit Stream
+     * @param length The size of the stream
+     * @return The Suroi Bit Stream object
      */
     static alloc(length: number): SuroiBitStream {
         return new SuroiBitStream(new ArrayBuffer(length));
     }
 
     /**
-     * Write a floating point number to the stream.
-     * @param value The number.
-     * @param min The minimum number.
-     * @param max The maximum number.
+     * Write a floating point number to the stream
+     * @param value The number
+     * @param min The minimum number
+     * @param max The maximum number
      * @param bitCount The number of bits to write
      */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
@@ -42,11 +42,11 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read a floating point number from the stream.
-     * @param min The minimum number.
-     * @param max The maximum number.
+     * Read a floating point number from the stream
+     * @param min The minimum number
+     * @param max The maximum number
      * @param bitCount The number of bits to read
-     * @return The floating point number.
+     * @return The floating point number
      */
     readFloat(min: number, max: number, bitCount: number): number {
         const range = (1 << bitCount) - 1;
@@ -54,28 +54,28 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a position Vector to the stream.
-     * @param vector The Vector.
-     * @param minX The minimum X position.
-     * @param minY The minimum Y position.
-     * @param maxX The maximum X position.
-     * @param maxY The maximum Y position.
-     * @param bitCount The number of bits to write.
+     * Write a position Vector to the stream
+     * @param vector The Vector
+     * @param minX The minimum X position
+     * @param minY The minimum Y position
+     * @param maxX The maximum X position
+     * @param maxY The maximum Y position
+     * @param bitCount The number of bits to write
      */
     writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
         this.writeVector2(vector.x, vector.y, minX, minY, maxX, maxY, bitCount);
     }
 
     /**
-     * Write a position Vector to the stream.
-     * @param x The X position.
-     * @param y The Y position.
-     * @param minX The minimum X position.
-     * @param minY The minimum Y position.
-     * @param maxX The maximum X position.
-     * @param maxY The maximum Y position.
-     * @param bitCount The number of bits to write.
-     * @return The position Vector.
+     * Write a position Vector to the stream
+     * @param x The X position
+     * @param y The Y position
+     * @param minX The minimum X position
+     * @param minY The minimum Y position
+     * @param maxX The maximum X position
+     * @param maxY The maximum Y position
+     * @param bitCount The number of bits to write
+     * @return The position Vector
      */
     writeVector2(x: number, y: number, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
         this.writeFloat(x, minX, maxX, bitCount);
@@ -83,11 +83,11 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read a position Vector from the stream.
-     * @param minX The minimum X position.
-     * @param minY The minimum Y position.
-     * @param maxX The maximum X position.
-     * @param maxY The maximum Y position.
+     * Read a position Vector from the stream
+     * @param minX The minimum X position
+     * @param minY The minimum Y position
+     * @param maxX The maximum X position
+     * @param maxY The maximum Y position
      * @param bitCount The number of bits to read
      */
     readVector(minX: number, minY: number, maxX: number, maxY: number, bitCount: number): Vector {
@@ -98,23 +98,23 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a packet type to the stream.
-     * @param value The packet type.
+     * Write a packet type to the stream
+     * @param value The packet type
      */
     writePacketType(value: PacketType): void {
         this.writeBits(value, PACKET_TYPE_BITS);
     }
 
     /**
-     * Read a packet type from stream.
-     * @return The packet type.
+     * Read a packet type from stream
+     * @return The packet type
      */
     readPacketType(): PacketType {
         return this.readBits(PACKET_TYPE_BITS) as PacketType;
     }
 
     /**
-     * Write a game object type to the stream.
+     * Write a game object type to the stream
      * @param type The ObjectType
      */
     writeObjectType(type: ObjectCategory): void {
@@ -122,15 +122,15 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read a game object type from stream.
-     * @return The object type.
+     * Read a game object type from stream
+     * @return The object type
      */
     readObjectType(): ObjectCategory {
         return this.readBits(OBJECT_CATEGORY_BITS);
     }
 
     /**
-     * Write an object ID to the stream.
+     * Write an object ID to the stream
      * @param id The object ID to write
      */
     writeObjectID(id: number): void {
@@ -138,7 +138,7 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read an object ID from the stream.
+     * Read an object ID from the stream
      * @return The object ID
      */
     readObjectID(): number {
@@ -146,15 +146,15 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a position Vector to the stream with the game default max and minimum X and Y.
-     * @param vector The Vector to write.
+     * Write a position Vector to the stream with the game default max and minimum X and Y
+     * @param vector The Vector to write
      */
     writePosition(vector: Vector): void {
         this.writePosition2(vector.x, vector.y);
     }
 
     /**
-     * Write a position Vector to the stream with the game default max and minimum X and Y.
+     * Write a position Vector to the stream with the game default max and minimum X and Y
      * @param x The x-coordinate of the vector to write
      * @param y The y-coordinate of the vector to write
      */
@@ -163,15 +163,15 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read a position Vector from stream with the game default max and minimum X and Y.
-     * @return the position Vector.
+     * Read a position Vector from stream with the game default max and minimum X and Y
+     * @return the position Vector
      */
     readPosition(): Vector {
         return this.readVector(0, 0, GameConstants.maxPosition, GameConstants.maxPosition, 16);
     }
 
     /**
-     * Write a rotation to the stream.
+     * Write a rotation to the stream
      * @param value The rotation to write, in radians
      * @param bitCount The number of bits to write
      */
@@ -180,16 +180,16 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read a rotation from the stream.
+     * Read a rotation from the stream
      * @param bitCount The number of bits to read
-     * @return The rotation in radians.
+     * @return The rotation in radians
      */
     readRotation(bitCount: number): number {
         return this.readFloat(-Math.PI, Math.PI, bitCount);
     }
 
     /**
-     * Write an obstacle rotation to the stream.
+     * Write an obstacle rotation to the stream
      * @param value The rotation to write, in radians
      * @param mode The rotation mode
      */
@@ -208,9 +208,9 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Read an obstacle rotation from the stream.
+     * Read an obstacle rotation from the stream
      * @param mode The rotation mode
-     * @return The rotation in radians.
+     * @return The rotation in radians
      */
     readObstacleRotation(mode: RotationMode): { rotation: number, orientation: Orientation } {
         let orientation: Orientation = 0;
@@ -237,32 +237,32 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a game object scale to the stream.
-     * @param value The scale to write.
+     * Write a game object scale to the stream
+     * @param value The scale to write
      */
     writeScale(value: number): void {
         this.writeFloat(value, MIN_OBJECT_SCALE, MAX_OBJECT_SCALE, 8);
     }
 
     /**
-     * Read a game object scale from the stream.
-     * @return The object scale.
+     * Read a game object scale from the stream
+     * @return The object scale
      */
     readScale(): number {
         return this.readFloat(MIN_OBJECT_SCALE, MAX_OBJECT_SCALE, 8);
     }
 
     /**
-     * Write a game object variation to the stream.
-     * @param value The variation value to write.
+     * Write a game object variation to the stream
+     * @param value The variation value to write
      */
     writeVariation(value: Variation): void {
         this.writeBits(value, VARIATION_BITS);
     }
 
     /**
-     * Read a game object variation from the stream.
-     * @return The object variation.
+     * Read a game object variation from the stream
+     * @return The object variation
      */
     readVariation(): Variation {
         return this.readBits(VARIATION_BITS) as Variation;
@@ -270,7 +270,7 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Write a player name to the stream
-     * @param name The player name.
+     * @param name The player name
      */
     writePlayerName(name: string): void {
         this.writeASCIIString(name, GameConstants.player.nameMaxLength);
@@ -278,7 +278,7 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Read a player name from the stream
-     * @return The player name.
+     * @return The player name
      */
     readPlayerName(): string {
         return this.readASCIIString(GameConstants.player.nameMaxLength);

@@ -35,7 +35,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
             this.fallSound = this.playSound(
                 "airdrop_fall",
                 {
-                    fallOff: 1,
+                    falloff: 1,
                     maxRange: 128,
                     dynamic: true
                 }

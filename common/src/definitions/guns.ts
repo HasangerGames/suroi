@@ -116,7 +116,7 @@ type RawGunDefinition = BaseGunDefinition & {
                 "burstProperties" |
                 "leftRightOffset"
             >
-        ]?: (GunDefinition & { readonly isDual: true })[K]
+        ]?: DualGunNarrowing[K]
     }
 };
 
@@ -443,16 +443,16 @@ const GunsRaw: RawGunDefinition[] = [
         capacity: 5,
         reloadTime: 2.4,
         fireDelay: 450,
-        switchDelay: 400,
+        switchDelay: 650,
         speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
-        recoilDuration: 525,
+        recoilDuration: 550,
         fireMode: FireMode.Auto,
-        bulletCount: 10,
         shotSpread: 11,
         moveSpread: 14,
-        jitterRadius: 1.5,
+        jitterRadius: 1.25,
         length: 7.1,
+        bulletCount: 10,
         fists: {
             left: Vec.create(98, -2),
             right: Vec.create(40, 0),
@@ -461,7 +461,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(81, 2) },
         casingParticles: {
-            position: Vec.create(3.7, 0.6)
+            position: Vec.create(4.3, 0.6)
         },
         ballistics: {
             damage: 10,

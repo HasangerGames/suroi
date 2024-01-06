@@ -28,8 +28,6 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
             this.container.zIndex = definition.zIndex ?? ZIndexes.ObstaclesLayer1;
         }
 
-        console.log(data.rotation);
-
         this.position = data.position;
         this.rotation = data.rotation;
 

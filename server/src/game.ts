@@ -244,7 +244,7 @@ export class Game {
             // Update gas
             this.gas.tick();
 
-            // First loop over players: Movement, animations, & actions
+            // First loop over players: movement, animations, & actions
             for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
@@ -255,6 +255,13 @@ export class Game {
                 if (!player.joined) continue;
 
                 player.secondUpdate();
+            }
+
+            // Third loop: clean up after all packets have been sent
+            for (const player of this.connectedPlayers) {
+                if (!player.joined) continue;
+
+                player.postPacket();
             }
 
             // Reset everything
@@ -278,10 +285,11 @@ export class Game {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
-                    lastManStanding.movement.up = false;
-                    lastManStanding.movement.down = false;
-                    lastManStanding.movement.left = false;
-                    lastManStanding.movement.right = false;
+                    const movement = lastManStanding.movement;
+                    movement.up = false;
+                    movement.down = false;
+                    movement.left = false;
+                    movement.right = false;
                     lastManStanding.attacking = false;
                     lastManStanding.sendGameOverPacket(true);
                 }
@@ -353,6 +361,7 @@ export class Game {
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
+
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -360,13 +369,16 @@ export class Game {
                 let foundPosition = false;
                 let tries = 0;
                 while (!foundPosition && tries < 100) {
-                    spawnPosition = this.map.getRandomPosition(hitbox, {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: (position) => {
-                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                    spawnPosition = this.map.getRandomPosition(
+                        hitbox,
+                        {
+                            maxAttempts: 500,
+                            spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            collides: (position) => {
+                                return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                            }
                         }
-                    }) ?? spawnPosition;
+                    ) ?? spawnPosition;
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
@@ -380,13 +392,16 @@ export class Game {
             }
             case SpawnMode.Random: {
                 const gasRadius = this.gas.newRadius ** 2;
-                spawnPosition = this.map.getRandomPosition(hitbox, {
-                    maxAttempts: 500,
-                    spawnMode: MapObjectSpawnMode.GrassAndSand,
-                    collides: (position) => {
-                        return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                spawnPosition = this.map.getRandomPosition(
+                    hitbox,
+                    {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: (position) => {
+                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                        }
                     }
-                }) ?? spawnPosition;
+                ) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Radius: {
@@ -613,9 +628,11 @@ export class Game {
 
             // second loop, buildings
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (object instanceof Building &&
+                if (
+                    object instanceof Building &&
                     object.scopeHitbox &&
-                    object.definition.wallsToDestroy === undefined) {
+                    object.definition.wallsToDestroy === undefined
+                ) {
                     const hitbox = object.scopeHitbox.clone();
                     hitbox.scale(1.5);
                     if (!thisHitbox.collidesWith(hitbox)) continue;

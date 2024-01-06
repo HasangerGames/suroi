@@ -9,7 +9,7 @@ export interface DecalDefinition extends ObjectDefinition {
      * @default {RotationMode.Limited}
      */
     readonly rotationMode?: RotationMode
-    readonly zIndex?: number
+    readonly zIndex?: ZIndexes
 }
 
 export const Decals = new ObjectDefinitions<DecalDefinition>(

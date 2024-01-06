@@ -31,28 +31,31 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
     private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
         const owner = this.owner;
 
-        this._lastUse = owner.game.now;
-        owner.animation.type = AnimationType.ThrowableCook;
-        owner.animation.seq = !this.owner.animation.seq;
-        owner.game.partialDirtyObjects.add(owner);
-
         if (
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
             owner.disconnected ||
-            this !== this.owner.activeItem
+            this !== this.owner.activeItem ||
+            this._activeHandler
         ) {
             return;
         }
 
+        this._lastUse = owner.game.now;
+        owner.animation = AnimationType.ThrowableCook;
+        owner.game.partialDirtyObjects.add(owner);
+
         owner.action?.cancel();
 
-        this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this);
+        this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this, () => this._detachHandler());
         this._activeHandler.cook();
     }
 
     override stopUse(): void {
         this._activeHandler?.throw(!this.isActive);
+    }
+
+    private _detachHandler(): void {
         this._activeHandler = undefined;
     }
 
@@ -65,8 +68,9 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 }
 
 class GrenadeHandler {
-    private _cooking = false;
+    private _cookStart?: number;
     private _thrown = false;
+    private _scheduledThrow?: Timeout;
     private _timer?: Timeout;
     private _projectile?: ThrowableProjectile;
 
@@ -75,7 +79,8 @@ class GrenadeHandler {
     constructor(
         readonly definition: ThrowableDefinition,
         readonly game: Game,
-        readonly parent: ThrowableItem
+        readonly parent: ThrowableItem,
+        readonly detach: () => void
     ) {
         this.owner = this.parent.owner;
     }
@@ -83,17 +88,18 @@ class GrenadeHandler {
     private _detonate(): void {
         const { explosion, particles } = this.definition.detonation;
 
+        const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
+
         if (explosion !== undefined) {
             this.game.addExplosion(
                 explosion,
-                this._projectile?.position ?? this.parent.owner.position,
+                referencePosition,
                 this.parent.owner
             );
         }
 
         if (particles !== undefined) {
             const particleDef = SyncedParticles.fromString(particles.type);
-            const referencePosition = this._projectile?.position ?? this.parent.owner.position;
             const spawnInterval = particles.spawnInterval ?? 0;
 
             for (let i = 0, count = particles.count; i < count; i++) {
@@ -128,14 +134,13 @@ class GrenadeHandler {
             owner.inventory.removeThrowable(this.definition, false, 1);
         }
 
-        const animation = owner.animation;
-
-        animation.type = AnimationType.ThrowableThrow;
-        animation.seq = !animation.seq;
+        owner.animation = AnimationType.ThrowableThrow;
         owner.game.partialDirtyObjects.add(owner);
     }
 
     cook(): void {
+        if (this._cookStart !== undefined || this._thrown || this._scheduledThrow) return;
+
         const owner = this.parent.owner;
         const recoil = owner.recoil;
         recoil.active = true;
@@ -157,11 +162,40 @@ class GrenadeHandler {
             );
         }
 
-        this._cooking = true;
+        this._cookStart = this.game.now;
     }
 
     throw(soft = false): void {
-        if (!this._cooking || this._thrown) { return; }
+        if (this._cookStart === undefined || this._thrown) return;
+
+        if (this._scheduledThrow) {
+            if (soft) {
+                this._scheduledThrow.kill();
+                this._throwInternal(true);
+            }
+
+            return;
+        }
+
+        const cookTimeLeft = this.definition.cookTime - this.game.now + this._cookStart;
+        if (cookTimeLeft > 0) {
+            this._scheduledThrow = this.game.addTimeout(
+                () => {
+                    this._throwInternal(soft);
+                },
+                cookTimeLeft
+            );
+            return;
+        }
+
+        this._throwInternal(soft);
+    }
+
+    private _throwInternal(soft = false): void {
+        this.detach();
+
+        const definition = this.definition;
+
         this.parent.owner.recoil.active = false;
         this._thrown = true;
 
@@ -175,13 +209,11 @@ class GrenadeHandler {
             this.definition.fuseTime
         );
 
-        const definition = this.definition;
-        const rightFist = definition.animation.cook.rightFist;
         const projectile = this._projectile = this.game.addProjectile(
             definition,
             Vec.add(
                 this.owner.position,
-                Vec.rotate(rightFist, this.owner.rotation)
+                Vec.rotate(definition.animation.cook.rightFist, this.owner.rotation)
             ),
             this.parent
         );
@@ -212,7 +244,7 @@ class GrenadeHandler {
     }
 
     destroy(): void {
-        this._cooking = false;
+        this._cookStart = undefined;
         this._timer?.kill();
         this._projectile && this.game.removeProjectile(this._projectile);
     }

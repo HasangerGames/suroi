@@ -6,6 +6,26 @@ import { Vec, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 import { type LootDefinition } from "./loots";
 
+/**
+ * An enum indicating the degree to which an obstacle should allow
+ * throwables to sail over it.
+ *
+ * - `Always` will, as its name implies, always allow throwables to fly over.
+ * - `Sometimes` will allow throwables to fly over if their velocity exceeds 0.04 u/ms
+ * (for reference, the maximum throwing speed is around 0.09 u/ms for a 1x scope).
+ * - `Never` will, as its name implies, never allow throwables to fly over.
+ *
+ * Note that any throwable whose velocity is below 0.03 u/ms won't be able to sail
+ * over any obstacle, even those marked as `Always`. Additionally, if the obstacle
+ * in question has a role that is `ObstacleSpecialRoles.Door`, its preference will only
+ * be honored when the door is opened; if it is closed, it will act as `Never`.
+ */
+export enum FlyoverPref {
+    Always,
+    Sometimes,
+    Never
+}
+
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
@@ -25,7 +45,11 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode
     readonly variations?: Exclude<Variation, 0>
     readonly particleVariations?: number
-    readonly zIndex?: number
+    readonly zIndex?: ZIndexes
+    /**
+     * Whether throwables can fly over this obstacle
+     */
+    readonly allowFlyover?: FlyoverPref
     readonly hasLoot?: boolean
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
@@ -66,7 +90,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
-        readonly fallOff?: number
+        readonly falloff?: number
     }
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly interactText?: string
@@ -116,7 +140,8 @@ export enum RotationMode {
 }
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
-    const definition: Partial<ObstacleDefinition> = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return {
         idString,
         name,
         material: "crate",
@@ -127,11 +152,11 @@ function makeCrate(idString: string, name: string, options: Partial<ObstacleDefi
             destroy: 0.5
         },
         spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.Binary,
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         hasLoot: true,
         ...options
-    };
-    return definition as ObstacleDefinition;
+    } as ObstacleDefinition;
 }
 
 function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition {
@@ -148,6 +173,7 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
         },
         hitbox,
         rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
         frames: {
             particle: "wall_particle"
         },
@@ -171,6 +197,7 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
         hitbox,
         rotationMode: RotationMode.Limited,
         role: ObstacleSpecialRoles.Wall,
+        allowFlyover: FlyoverPref.Never,
         particleVariations: 2,
         variations,
         frames: {
@@ -212,6 +239,7 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
         invisible: invisible || undefined,
         hitbox,
         rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
         role: ObstacleSpecialRoles.Wall,
         reflectBullets: true,
         zIndex: ZIndexes.BuildingsFloor + 1,
@@ -265,7 +293,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
             variations: 3,
-            zIndex: ZIndexes.ObstaclesLayer4
+            zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never
         },
         {
             idString: "viking_chest",
@@ -281,7 +310,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             hideOnMap: true,
-            spawnMode: MapObjectSpawnMode.Beach
+            spawnMode: MapObjectSpawnMode.Beach,
+            allowFlyover: FlyoverPref.Always
         },
         {
             idString: "pine_tree",
@@ -296,7 +326,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
-            zIndex: ZIndexes.ObstaclesLayer4
+            zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never
         },
         {
             idString: "birch_tree",
@@ -311,7 +342,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
-            zIndex: ZIndexes.ObstaclesLayer4
+            zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never
         },
         {
             idString: "christmas_tree",
@@ -327,6 +359,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
             zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never,
             hasLoot: true
         },
         {
@@ -376,6 +409,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(2.4),
             spawnHitbox: new CircleHitbox(3),
             rotationMode: RotationMode.Full,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true
         },
         {
@@ -450,7 +484,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeCrate("grenade_crate", "Grenade Crate", {
             hitbox: RectangleHitbox.fromRect(6.5, 6.3),
             rotationMode: RotationMode.None,
-            hideOnMap: true
+            allowFlyover: FlyoverPref.Always
         }),
         {
             idString: "melee_crate",
@@ -465,6 +499,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: RectangleHitbox.fromRect(6.1, 6.1),
             rotationMode: RotationMode.None,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true,
             frames: {
                 particle: "crate_particle",
@@ -503,8 +538,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: RectangleHitbox.fromRect(9.15, 6.3),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             frames: {
-                particle: "crate_particle"
+                particle: "crate_particle",
+                residue: "regular_crate_residue"
             }
         },
         {
@@ -556,6 +593,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ),
             spawnHitbox: RectangleHitbox.fromRect(28, 18),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             noResidue: true,
             frames: {
                 particle: "metal_particle"
@@ -608,7 +646,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             sound: {
                 name: "airdrop_unlock",
                 maxRange: 64,
-                fallOff: 0.3
+                falloff: 0.3
             },
             replaceWith: {
                 idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
@@ -687,6 +725,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(12, 1.7, Vec.create(5.5, 34.5))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             reflectBullets: true,
             noResidue: true,
             invisible: true,
@@ -745,6 +784,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true,
             hitbox: RectangleHitbox.fromRect(9.1, 6.45, Vec.create(0, -0.45)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "metal_particle"
             },
@@ -791,6 +831,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hideOnMap: true,
             invisible: true,
+            allowFlyover: FlyoverPref.Never,
             hitbox: new HitboxGroup(
                 // Comments assume the building is not rotated (rotation = 0)
                 RectangleHitbox.fromRect(14.33, 2, Vec.create(-41.16, -34.15)), // First Topmost wall
@@ -866,6 +907,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new CircleHitbox(2.5),
+            allowFlyover: FlyoverPref.Always,
             // TODO Figure out why this doesn't work
             /* hitbox: new HitboxGroup([
                 RectangleHitbox.fromRect(v(-3.18, 1.25), v(3.2, 4.05)),
@@ -885,6 +927,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new CircleHitbox(2.5),
+            allowFlyover: FlyoverPref.Always,
             // TODO Figure out why this doesn't work
             /* hitbox: new HitboxGroup([
                 RectangleHitbox.fromRect(v(-3.18, 1.25), v(3.2, 4.05)),
@@ -909,6 +952,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(6.2, 6, Vec.create(0, -0.5)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true,
             frames: {
                 particle: "furniture_particle"
@@ -927,6 +971,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(12.5, 6, Vec.create(0, -0.5)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true,
             frames: {
                 particle: "furniture_particle"
@@ -1015,6 +1060,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             variations: 2,
+            allowFlyover: FlyoverPref.Always,
             hitbox: RectangleHitbox.fromRect(12.49, 4.24),
             rotationMode: RotationMode.Limited,
             hasLoot: true,
@@ -1035,6 +1081,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(1.8, 9.4),
             zIndex: ZIndexes.ObstaclesLayer2,
+            allowFlyover: FlyoverPref.Never,
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Window
         },
@@ -1049,6 +1096,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: RectangleHitbox.fromRect(1.8, 9.4),
+            allowFlyover: FlyoverPref.Never,
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Window
         },
@@ -1065,6 +1113,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(11.2, 16),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             frames: {
                 particle: "furniture_particle"
             }
@@ -1079,6 +1128,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(8.2, 15.6, Vec.create(0.4, 0)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             frames: {
                 particle: "metal_particle"
             }
@@ -1096,6 +1146,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(21.7, 1.5, Vec.create(0, -0.4)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "furniture_particle"
             }
@@ -1113,6 +1164,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(12.13, 4.3, Vec.create(0.02, -1.05)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true,
             frames: {
                 particle: "porta_potty_toilet_particle",
@@ -1132,6 +1184,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(12, 4.3, Vec.create(0, -1.05)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true,
             frames: {
                 particle: "porta_potty_toilet_particle",
@@ -1152,6 +1205,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(12.8, 1.6, Vec.create(0, 0)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             role: ObstacleSpecialRoles.Wall,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -1171,6 +1225,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(9.2, 1.4, Vec.create(-0.8, 0)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             role: ObstacleSpecialRoles.Door,
             hingeOffset: Vec.create(-5.5, 0)
         },
@@ -1188,6 +1243,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(3, 1.6),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             role: ObstacleSpecialRoles.Wall,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -1207,6 +1263,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(19.2, 1.9, Vec.create(0, 1.25)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
@@ -1227,6 +1284,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec.create(0, -1.15)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
@@ -1306,6 +1364,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(10.5, 2, Vec.create(-21.25, 9))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             particleVariations: 2,
             noResidue: true,
             frames: {
@@ -1324,6 +1383,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(6.8),
             rotationMode: RotationMode.Full,
+            allowFlyover: FlyoverPref.Never,
             explosion: "small_refinery_barrel_explosion",
             reflectBullets: true,
             frames: {
@@ -1343,6 +1403,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(17.15),
             rotationMode: RotationMode.Full,
+            allowFlyover: FlyoverPref.Never,
             explosion: "large_refinery_barrel_explosion",
             reflectBullets: true,
             zIndex: ZIndexes.ObstaclesLayer5,
@@ -1364,7 +1425,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(28),
             rotationMode: RotationMode.Full,
-            zIndex: ZIndexes.ObstaclesLayer1,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1378,6 +1439,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(8.9),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
+            allowFlyover: FlyoverPref.Never,
             zIndex: ZIndexes.ObstaclesLayer5,
             noResidue: true,
             frames: {
@@ -1395,6 +1457,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(4.9, Vec.create(0, 0.9))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             reflectBullets: true,
             zIndex: ZIndexes.ObstaclesLayer5,
             noResidue: true,
@@ -1422,6 +1485,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(1.9, -2.6, Vec.create(4.05, -6.65)) // Pipe connected to topmost circle
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             reflectBullets: true,
             noResidue: true,
             frames: {
@@ -1462,6 +1526,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9)) // Bottom Right Wall
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             noResidue: true,
             frames: {
                 particle: "wall_particle"
@@ -1484,6 +1549,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ),
             reflectBullets: true,
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "metal_particle"
@@ -1504,6 +1570,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(9.75, 1, Vec.create(-0.05, 22.75)) // Front part (idk)
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             zIndex: ZIndexes.ObstaclesLayer4,
             noResidue: true,
             frames: {
@@ -1522,6 +1589,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(15, 6.5),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true
         },
         {
@@ -1637,6 +1705,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(4.2, 1.8, Vec.create(0, -14.8)) // Bottom wheels
             ),
             zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never,
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1749,7 +1818,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             sound: {
                 name: "generator_starting",
                 maxRange: 412,
-                fallOff: 2
+                falloff: 2
             },
             emitParticles: true,
             requiredItem: "gas_can",
@@ -1763,6 +1832,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 200,
             indestructible: true,
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "metal_particle"
             },
@@ -1777,6 +1847,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             reflectBullets: true,
             invisible: true,
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "metal_particle"
             },
@@ -1842,6 +1913,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             reflectBullets: true,
             invisible: true,
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "metal_particle"
             },
@@ -1915,6 +1987,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(0, 0),
             zIndex: ZIndexes.ObstaclesLayer1 - 1,
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             frames: {
                 particle: "crate_particle"
             },
@@ -1932,6 +2005,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(3.45, Vec.create(1, 0))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             frames: {
                 particle: "metal_particle"
             }
@@ -1969,6 +2043,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(9, 1.75, Vec.create(-5.25, 12.19)) // Bottom wall
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             noResidue: true,
             particleVariations: 2,
             frames: {
@@ -1987,6 +2062,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(8.45, 1.6),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             noResidue: true,
             frames: {
                 particle: "metal_particle"
@@ -2008,6 +2084,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ),
             noResidue: true,
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "metal_particle"
             }
@@ -2030,6 +2107,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(1.73, 24.52, Vec.create(-31.36, 0.38))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             invisible: true,
             frames: {
                 particle: "barrel_particle"
@@ -2058,6 +2136,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(Vec.create(-24, -20.85), Vec.create(-4, -18.76))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             invisible: true,
             particleVariations: 2,
             frames: {
@@ -2080,6 +2159,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(32.34, 2.07, Vec.create(1.24, 21.88))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             invisible: true,
             particleVariations: 2,
             frames: {
@@ -2105,6 +2185,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             invisible: true,
             particleVariations: 2,
             frames: {
@@ -2120,7 +2201,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "sandbags",
             name: "Sandbags",
-            material: "stone",
+            material: "sand",
             health: 1000,
             indestructible: true,
             hitbox: RectangleHitbox.fromRect(13.5, 8.1),
@@ -2138,6 +2219,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(10.22, 4.73),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true
         },
         {
@@ -2155,6 +2237,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
             ),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "metal_particle"
             }
@@ -2189,6 +2272,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(10.65, 7.42, Vec.create(0, 0.43)),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             hasLoot: true
         },
         {
@@ -2204,6 +2288,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(2.15, 1.51),
             rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
             frames: {
                 particle: "metal_particle",
                 activated: "button_activated"

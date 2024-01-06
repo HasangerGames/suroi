@@ -34,10 +34,14 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     [ObjectCategory.Player]: {
         position: Vector
         rotation: number
-        animation: {
-            type: AnimationType
-            seq: boolean
-        }
+        animation?: AnimationType
+        action?: ({
+            type: Exclude<PlayerActions, PlayerActions.UseItem>
+            item?: undefined
+        } | {
+            type: PlayerActions.UseItem
+            item: HealingItemDefinition
+        })
         full?: {
             dead: boolean
             invulnerable: boolean
@@ -46,15 +50,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             helmet?: ArmorDefinition
             vest?: ArmorDefinition
             backpack: BackpackDefinition
-            action: ({
-                seq: number
-            }) & ({
-                type: Exclude<PlayerActions, PlayerActions.UseItem>
-                item?: undefined
-            } | {
-                type: PlayerActions.UseItem
-                item: HealingItemDefinition
-            })
         }
     }
     //
@@ -134,6 +129,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     [ObjectCategory.ThrowableProjectile]: {
         position: Vector
         rotation: number
+        airborne: boolean
         full?: {
             definition: ThrowableDefinition
         }
@@ -168,8 +164,22 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
             stream.writeRotation(data.rotation, 16);
-            stream.writeBits(data.animation.type, ANIMATION_TYPE_BITS);
-            stream.writeBoolean(data.animation.seq);
+
+            const animationDirty = data.animation !== undefined;
+            stream.writeBoolean(animationDirty);
+            if (animationDirty) {
+                stream.writeBits(data.animation!, ANIMATION_TYPE_BITS);
+            }
+
+            const action = data.action;
+            const actionDirty = action !== undefined;
+            stream.writeBoolean(actionDirty);
+            if (actionDirty) {
+                stream.writeBits(action.type, PLAYER_ACTIONS_BITS);
+                if (action.item) {
+                    Loots.writeToStream(stream, action.item);
+                }
+            }
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
@@ -181,12 +191,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Skins.writeToStream(stream, full.skin);
             Backpacks.writeToStream(stream, full.backpack);
 
-            stream.writeBits(full.action.type, PLAYER_ACTIONS_BITS);
-            stream.writeBits(full.action.seq, 2);
-            if (full.action.item) {
-                Loots.writeToStream(stream, full.action.item);
-            }
-
             stream.writeBoolean(full.helmet !== undefined);
             if (full.helmet) {
                 Armors.writeToStream(stream, full.helmet);
@@ -197,15 +201,26 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
         },
         deserializePartial(stream) {
-            return {
+            const data: ObjectsNetData[ObjectCategory.Player] = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
-                fullUpdate: false,
-                animation: {
-                    type: stream.readBits(ANIMATION_TYPE_BITS),
-                    seq: stream.readBoolean()
-                }
+                animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
+
+            if (stream.readBoolean()) { // action dirty
+                const action: NonNullable<ObjectsNetData[ObjectCategory.Player]["action"]> = {
+                    type: stream.readBits(PLAYER_ACTIONS_BITS),
+                    item: undefined as HealingItemDefinition | undefined
+                };
+
+                if (action.type === PlayerActions.UseItem) {
+                    action.item = Loots.readFromStream(stream);
+                }
+
+                data.action = action;
+            }
+
+            return data;
         },
         deserializeFull(stream) {
             const partial = this.deserializePartial(stream);
@@ -215,20 +230,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 skin: Skins.readFromStream(stream),
-                backpack: Backpacks.readFromStream(stream),
-                action: {
-                    type: stream.readBits(PLAYER_ACTIONS_BITS),
-                    seq: stream.readBits(2)
-                }
+                backpack: Backpacks.readFromStream(stream)
             };
-
-            if (full.action && full.action.type === PlayerActions.UseItem) {
-                full.action.item = Loots.readFromStream(stream);
-            }
 
             if (stream.readBoolean()) {
                 full.helmet = Armors.readFromStream<ArmorDefinition>(stream);
             }
+
             if (stream.readBoolean()) {
                 full.vest = Armors.readFromStream<ArmorDefinition>(stream);
             }
@@ -437,8 +445,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.ThrowableProjectile]: {
         serializePartial(stream, data) {
             stream.writePosition(data.position);
-            // stream.writeFloat(data.position.z, 0, GameConstants.maxPosition, 16);
             stream.writeRotation(data.rotation, 16);
+            stream.writeBoolean(data.airborne);
         },
         serializeFull(stream, data) {
             this.serializePartial(stream, data);
@@ -446,11 +454,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             return {
-                position: {
-                    ...stream.readPosition()
-                    // z: stream.readFloat(0, GameConstants.maxPosition, 16)
-                },
-                rotation: stream.readRotation(16)
+                position: stream.readPosition(),
+                rotation: stream.readRotation(16),
+                airborne: stream.readBoolean()
             };
         },
         deserializeFull(stream) {
@@ -470,7 +476,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const writeScale = data.scale !== undefined;
             stream.writeBoolean(writeScale);
             if (writeScale) {
-                stream.writeFloat32(data.scale!);
+                stream.writeScale(data.scale!);
             }
 
             const writeAlpha = data.alpha !== undefined;
@@ -497,7 +503,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
 
             if (stream.readBoolean()) { // scale
-                data.scale = stream.readFloat32();
+                data.scale = stream.readScale();
             }
 
             if (stream.readBoolean()) { // alpha

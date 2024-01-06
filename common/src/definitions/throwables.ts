@@ -14,14 +14,14 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     /**
      * Whether cooking the grenade will run down the fuse
      */
-    readonly cookable: boolean
+    readonly cookable?: boolean
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
         readonly position: Vector
         readonly angle?: number
     }
-    readonly radius: number
+    readonly hitboxRadius: number
     readonly fireDelay?: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
@@ -63,15 +63,14 @@ export const Throwables: ThrowableDefinition[] = [
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
         cookSpeedMultiplier: 0.7,
-        radius: 1,
+        hitboxRadius: 1,
         impactDamage: 1,
         obstacleMultiplier: 20,
         fuseTime: 4000,
-        cookTime: 250,
+        cookTime: 150,
         throwTime: 150,
         cookable: true,
         maxThrowDistance: 96,
-        fireDelay: 500,
         image: {
             position: Vec.create(60, 43),
             angle: 60
@@ -99,12 +98,11 @@ export const Throwables: ThrowableDefinition[] = [
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
         cookSpeedMultiplier: 0.7,
-        radius: 1,
+        hitboxRadius: 1,
         impactDamage: 1,
         obstacleMultiplier: 20,
-        cookable: false,
         fuseTime: 2000,
-        cookTime: 250,
+        cookTime: 150,
         throwTime: 150,
         maxThrowDistance: 96,
         image: {
@@ -116,7 +114,7 @@ export const Throwables: ThrowableDefinition[] = [
             particles: {
                 type: "smoke_grenade_particle",
                 count: 10,
-                spawnInterval: 2000,
+                spawnInterval: 4000,
                 spawnRadius: 15
             }
         },

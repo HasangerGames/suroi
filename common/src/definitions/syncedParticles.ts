@@ -71,10 +71,7 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
             }
         },
         alpha: {
-            start: {
-                min: 0.95,
-                max: 1
-            },
+            start: 1,
             end: 0,
             easing: "expoIn"
         },
