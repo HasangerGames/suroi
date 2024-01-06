@@ -21,6 +21,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly position: Vector
         readonly angle?: number
     }
+    readonly speedCap?: number
     readonly hitboxRadius: number
     readonly fireDelay?: number
     readonly detonation: {
@@ -28,7 +29,14 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly particles?: {
             readonly type: ReferenceTo<SyncedParticleDefinition>
             readonly count: number
-            readonly spawnInterval?: number
+            readonly deployAnimation?: {
+                readonly duration?: number
+                readonly staggering?: {
+                    readonly delay: number
+                    readonly spawnPerGroup?: number
+                    readonly initialAmount?: number
+                }
+            }
             readonly spawnRadius: number
         }
     }
@@ -75,6 +83,7 @@ export const Throwables: ThrowableDefinition[] = [
             position: Vec.create(60, 43),
             angle: 60
         },
+        speedCap: 0.15,
         detonation: {
             explosion: "frag_explosion"
         },
@@ -109,12 +118,19 @@ export const Throwables: ThrowableDefinition[] = [
             position: Vec.create(60, 43),
             angle: 60
         },
+        speedCap: 0.15,
         detonation: {
             explosion: "smoke_explosion",
             particles: {
                 type: "smoke_grenade_particle",
                 count: 10,
-                spawnInterval: 4000,
+                deployAnimation: {
+                    duration: 4000,
+                    staggering: {
+                        delay: 300,
+                        initialAmount: 2
+                    }
+                },
                 spawnRadius: 15
             }
         },

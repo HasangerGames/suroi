@@ -165,7 +165,7 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
         name: `House Wall ${lengthNumber}`,
         material: "wood",
         noResidue: true,
-        health: 120,
+        health: 170,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -2054,7 +2054,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "port_fence",
             name: "Port Fence",
             material: "appliance",
-            health: 200,
+            health: 40,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -2072,7 +2072,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "port_fence_side",
             name: "Port Fence Side",
             material: "appliance",
-            health: 200,
+            health: 40,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
