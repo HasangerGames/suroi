@@ -12,7 +12,8 @@
     margin-left: 5px;
 }
 
-#report-modal-content, #warning-modal-content {
+#report-modal-content,
+#warning-modal-content {
     padding: 1rem;
 
     p {
@@ -160,17 +161,42 @@
         height: 100%;
     }
 
-    #emote-customize-wheel {
-        position: relative;
-        align-self: center;
-        flex-shrink: 0;
+    #emote-wheel-container {
+        #emote-customize-wheel {
+            position: relative;
+            align-self: center;
+            flex-shrink: 0;
 
-        .emote-top,
-        .emote-right,
-        .emote-bottom,
-        .emote-left {
-            cursor: pointer;
-            z-index: 10;
+            .emote-top,
+            .emote-right,
+            .emote-bottom,
+            .emote-left {
+                cursor: pointer;
+                z-index: 10;
+            }
+        }
+
+        #emote-wheel-bottom {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .emote-win,
+            .emote-death {
+                padding: 2px;
+                width: 104px;
+                height: 104px;
+                background-size: 84px 84px;
+                flex-shrink: 0;
+                background-color: $transparent_bg;
+                border-radius: 10px;
+                border: 5px solid transparent;
+                background-repeat: no-repeat;
+                background-position: center;
+
+                &.selected {
+                    border-color: $orange;
+                }
+            }
         }
     }
 
@@ -319,7 +345,7 @@
             height: 191px;
             background-size: contain;
 
-            &>div {
+            & > div {
                 width: 56px;
                 height: 56px;
                 background-size: contain;
@@ -352,7 +378,7 @@
             width: 143px;
             height: 143px;
 
-            &>div {
+            & > div {
                 width: 42px;
                 height: 42px;
             }
@@ -402,7 +428,7 @@
     #settings-tabs,
     #customize-tabs {
         width: 100%;
-        height: 380px;
+        height: 410px;
         max-height: 80vh;
         overflow-y: auto;
     }
@@ -443,7 +469,7 @@
             background: #49993e;
         }
 
-        &>img {
+        & > img {
             position: relative;
             top: 3px;
             margin-right: 5px;
@@ -468,7 +494,6 @@
     }
 
     .modal-item {
-
         &.checkbox-setting {
             margin-bottom: 20px;
         }
