@@ -1340,23 +1340,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(16, 30)
     },
     {
-        idString: "oil_tanker_ship_tanks",
-        name: "Oil Tanker",
-        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
-        ceilingHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
-        ceilingImages: [
-            {
-                key: "oil_tanker_ship_tank_ceiling",
-                position: Vec.create(10.5, 20)
-            }
-        ],
-        obstacles: [
-            { idString: "large_oil_tank", position: Vec.create(10, -46.5), rotation: -Math.PI * 2 },
-            { idString: "large_oil_tank", position: Vec.create(10, 20), rotation: Math.PI / 2 },
-            { idString: "large_oil_tank", position: Vec.create(10, 88), rotation: -Math.PI / 2 }
-        ]
-    },
-    {
         idString: "ship",
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
@@ -1522,6 +1505,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "oil_tanker_ship_ceiling",
                 position: Vec.create(7, -99.5)
+            },
+            {
+                key: "oil_tanker_ship_tank_ceiling",
+                position: Vec.create(9.5, 20)
             }
         ],
         floors: [
@@ -1541,6 +1528,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             // Main Ship Hitbox
             { idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
+
+            // Oil Tanks
+            { idString: "large_oil_tank", position: Vec.create(9, -46.5), rotation: -Math.PI * 2 },
+            { idString: "large_oil_tank", position: Vec.create(9, 20), rotation: Math.PI / 2 },
+            { idString: "large_oil_tank", position: Vec.create(9, 88), rotation: -Math.PI / 2 },
 
             // Cabin Windows
             { idString: "ship_cabin_window", position: Vec.create(-0.25, -87.5), rotation: 1 },
@@ -1585,9 +1577,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "super_barrel", position: Vec.create(43, -7.5) },
             { idString: "sandbags", position: Vec.create(30, -16), rotation: 2 },
             { idString: "flint_crate", position: Vec.create(41, -35) }
-        ],
-        subBuildings: [
-            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) }
         ]
     },
     {

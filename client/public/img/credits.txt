@@ -152,7 +152,7 @@ Obstacles:
   Stove: 1092384
   Residues for above obstacles: platonthek
 
-  Sandbags: Yeet120
+  Sandbags: Yeet120, Eclair
 
   Pumpkin: RedCoder09
 

@@ -2204,7 +2204,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "sand",
             health: 1000,
             indestructible: true,
-            hitbox: RectangleHitbox.fromRect(13.5, 8.1),
+            hitbox: RectangleHitbox.fromRect(13.1, 7.7),
             rotationMode: RotationMode.Limited
         },
         {
