@@ -343,8 +343,6 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "gold_airdrop_guns", weight: 1 },
-            { item: "medikit", weight: 1 },
-            { item: "tablets", weight: 1 }
         ]
     },
     christmas_tree: {
