@@ -227,7 +227,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         {
             idString: "frag_explosion",
             name: "Frag Grenade",
-            damage: 150,
+            damage: 120,
             obstacleMultiplier: 2,
             radius: {
                 min: 10,
@@ -242,9 +242,9 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 tint: 0x91140b,
                 scale: 1.5
             },
-            shrapnelCount: 15,
+            shrapnelCount: 10,
             ballistics: {
-                damage: 4,
+                damage: 15,
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 range: 20,
