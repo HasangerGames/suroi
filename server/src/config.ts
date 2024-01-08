@@ -28,7 +28,7 @@ export const Config = {
 
     gas: { mode: GasMode.Normal },
 
-    movementSpeed: 0.026,
+    movementSpeed: 0.02655,
 
     censorUsernames: true,
 
