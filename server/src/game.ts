@@ -3,7 +3,7 @@ import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketTyp
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
+import { SyncedParticles, type SyncedParticlesDefinition, type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -12,10 +12,10 @@ import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { Geometry, Numeric } from "../../common/src/utils/math";
+import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
@@ -575,6 +575,57 @@ export class Game {
     removeSyncedParticle(syncedParticle: SyncedParticle): void {
         this.removeObject(syncedParticle);
         syncedParticle.dead = true;
+    }
+
+    spawnSyncedParticles(particles: SyncedParticlesDefinition, position: Vector): void {
+        const particleDef = SyncedParticles.fromString(particles.type);
+        const { spawnRadius, count, deployAnimation } = particles;
+
+        const duration = deployAnimation?.duration;
+        const circOut = EaseFunctions.cubicOut;
+
+        const setParticleTarget = duration
+            ? (particle: SyncedParticle, target: Vector) => {
+                particle.setTarget(target, duration, circOut);
+            }
+            : (particle: SyncedParticle, target: Vector) => {
+                particle._position = target;
+            };
+
+        const spawnParticles = (amount = 1): void => {
+            for (let i = 0; i++ < amount; i++) {
+                setParticleTarget(
+                    this.addSyncedParticle(
+                        particleDef,
+                        position
+                    ),
+                    Vec.add(
+                        Vec.fromPolar(
+                            randomRotation(),
+                            randomFloat(0, spawnRadius)
+                        ),
+                        position
+                    )
+                );
+            }
+        };
+
+        if (deployAnimation?.staggering) {
+            const staggering = deployAnimation.staggering;
+            const initialAmount = staggering.initialAmount ?? 0;
+
+            spawnParticles(initialAmount);
+
+            const addTimeout = this.addTimeout.bind(this);
+            const addParticles = spawnParticles.bind(null, staggering.spawnPerGroup);
+            const delay = staggering.delay;
+
+            for (let i = initialAmount, j = 1; i < count; i++, j++) {
+                addTimeout(addParticles, j * delay);
+            }
+        } else {
+            spawnParticles(particles.count);
+        }
     }
 
     /**

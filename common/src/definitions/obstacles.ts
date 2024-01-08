@@ -116,7 +116,8 @@ export const Materials = [
     "cardboard",
     "appliance",
     "large_refinery_barrel",
-    "sand"
+    "sand",
+    "fence"
 ] as const;
 
 export enum RotationMode {
@@ -2053,7 +2054,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "port_fence",
             name: "Port Fence",
-            material: "appliance",
+            material: "fence",
             health: 40,
             scale: {
                 spawnMin: 1,
@@ -2065,13 +2066,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             allowFlyover: FlyoverPref.Never,
             noResidue: true,
             frames: {
-                particle: "metal_particle"
+                particle: "fence_particle"
             }
         },
         {
             idString: "port_fence_side",
             name: "Port Fence Side",
-            material: "appliance",
+            material: "fence",
             health: 40,
             scale: {
                 spawnMin: 1,
@@ -2086,7 +2087,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
-                particle: "metal_particle"
+                particle: "fence_particle"
             }
         },
         {

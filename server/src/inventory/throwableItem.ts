@@ -1,14 +1,10 @@
 import { AnimationType } from "../../../common/src/constants";
-import { SyncedParticles } from "../../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { EaseFunctions } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { randomFloat, randomRotation } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { Vec } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
-import { type SyncedParticle } from "../objects/syncedParticle";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
 
@@ -101,54 +97,7 @@ class GrenadeHandler {
         }
 
         if (particles !== undefined) {
-            const particleDef = SyncedParticles.fromString(particles.type);
-            const { spawnRadius, count, deployAnimation } = particles;
-
-            const duration = deployAnimation?.duration;
-            const circOut = EaseFunctions.cubicOut;
-
-            const setParticleTarget = duration
-                ? (particle: SyncedParticle, target: Vector) => {
-                    particle.setTarget(target, duration, circOut);
-                }
-                : (particle: SyncedParticle, target: Vector) => {
-                    particle._position = target;
-                };
-
-            const spawnParticles = (amount = 1): void => {
-                for (let i = 0; i++ < amount; i++) {
-                    setParticleTarget(
-                        game.addSyncedParticle(
-                            particleDef,
-                            referencePosition
-                        ),
-                        Vec.add(
-                            Vec.fromPolar(
-                                randomRotation(),
-                                randomFloat(0, spawnRadius)
-                            ),
-                            referencePosition
-                        )
-                    );
-                }
-            };
-
-            if (deployAnimation?.staggering) {
-                const staggering = deployAnimation.staggering;
-                const initialAmount = staggering.initialAmount ?? 0;
-
-                spawnParticles(initialAmount);
-
-                const addTimeout = game.addTimeout.bind(game);
-                const addParticles = spawnParticles.bind(null, staggering.spawnPerGroup);
-                const delay = staggering.delay;
-
-                for (let i = initialAmount, j = 1; i < count; i++, j++) {
-                    addTimeout(addParticles, j * delay);
-                }
-            } else {
-                spawnParticles(particles.count);
-            }
+            game.spawnSyncedParticles(particles, referencePosition);
         }
     }
 

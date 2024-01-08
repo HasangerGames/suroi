@@ -1,7 +1,7 @@
 import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type ExplosionDefinition } from "./explosions";
-import { type SyncedParticleDefinition } from "./syncedParticles";
+import { type SyncedParticlesDefinition } from "./syncedParticles";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
@@ -26,19 +26,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly fireDelay?: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
-        readonly particles?: {
-            readonly type: ReferenceTo<SyncedParticleDefinition>
-            readonly count: number
-            readonly deployAnimation?: {
-                readonly duration?: number
-                readonly staggering?: {
-                    readonly delay: number
-                    readonly spawnPerGroup?: number
-                    readonly initialAmount?: number
-                }
-            }
-            readonly spawnRadius: number
-        }
+        readonly particles?: SyncedParticlesDefinition
     }
     readonly animation: {
         readonly pinImage: string

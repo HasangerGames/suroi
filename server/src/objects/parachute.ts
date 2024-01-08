@@ -1,4 +1,5 @@
 import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
+import { SyncedParticles } from "../../../common/src/definitions/syncedParticles";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
@@ -36,6 +37,20 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
             this.game.airdrops.delete(this._airdrop);
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
+
+            // Spawn smoke
+            this.game.spawnSyncedParticles({
+                type: "airdrop_smoke_particle",
+                count: 5,
+                deployAnimation: {
+                    duration: 2000,
+                    staggering: {
+                        delay: 100,
+                        initialAmount: 2
+                    }
+                },
+                spawnRadius: 10
+            }, crate.position);
 
             // Crush damage
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox)) {
