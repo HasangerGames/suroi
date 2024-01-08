@@ -383,7 +383,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "river_rock",
             name: "River Rock",
             material: "stone",
-            health: 400,
+            health: 550,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
@@ -2264,7 +2264,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "briefcase",
             name: "Briefcase",
             material: "appliance",
-            health: 100,
+            health: 150,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
