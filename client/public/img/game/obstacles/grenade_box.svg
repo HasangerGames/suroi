@@ -8,8 +8,11 @@
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   sodipodi:docname="box_1.svg"
+   sodipodi:docname="grenade_box.svg"
    inkscape:version="1.3.1 (91b66b0783, 2023-11-16, custom)"
+   inkscape:export-filename="grenade_box.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -60,10 +63,10 @@
        d="M 5.1105744,3.8983154 H 19.261961"
        style="fill:none;stroke:#342318;stroke-width:1.09199;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal" /><path
        id="path11"
-       d="M 5.0582642,21.153217 H 19.16593"
+       d="M 5.0862807,20.532049 H 19.193946"
        style="fill:none;stroke:#342318;stroke-width:1.0903;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal" /></g><g
      id="g8"
-     transform="translate(0.28815798,0.3825381)"><rect
+     transform="translate(0.2881587,0.3825353)"><rect
        style="fill:#e2cec0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect23"
        width="1.555177"
@@ -101,8 +104,8 @@
        rx="0.64209259"
        ry="0.64085972" /></g><path
      id="rect1533"
-     d="m 15.008945,6.3324399 6.113981,-2.1222844 0.01209,0.9093772 0.558397,0.7341124 -6.11398,2.1222842 0.09455,-0.9644321 z"
+     d="m 15.008946,6.3324371 6.113981,-2.1222844 0.01209,0.9093772 0.558397,0.7341124 -6.11398,2.1222842 0.09455,-0.9644321 z"
      style="fill:#e2cec0;fill-opacity:1;fill-rule:nonzero;stroke:#342418;stroke-width:2.08359;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers" /><path
      style="fill:#e2cec0;fill-opacity:1;fill-rule:nonzero;stroke:#342418;stroke-width:2.08359;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
-     d="m 6.5604889,16.618429 5.7708851,2.929445 -0.646382,0.639766 -0.141,0.911492 -5.7708995,-2.929445 0.7600213,-0.601186 z"
+     d="m 6.5604896,16.618426 5.7708854,2.929445 -0.646382,0.639766 -0.141,0.911492 -5.7708998,-2.929445 0.7600213,-0.601186 z"
      id="path1538" /></svg>
