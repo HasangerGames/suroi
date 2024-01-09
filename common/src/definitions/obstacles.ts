@@ -320,6 +320,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             allowFlyover: FlyoverPref.Always
         },
         {
+            idString: "grenade_box",
+            name: "grenade_box",
+            material: "cardboard",
+            health: 60,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: RectangleHitbox.fromRect(4.4, 4.4),
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer2,
+            hasLoot: true,
+            frames: {
+                particle: "box_particle",
+                residue: "box_residue",
+
+            }
+        },
+        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",
