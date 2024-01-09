@@ -357,7 +357,7 @@ export const LootTables: Record<string, LootTable> = {
         ]
     },
     gun_case: {
-        min: 2,
+        min: 1,
         max: 2,
         loot: [
             { tier: "special_guns", weight: 1 }
