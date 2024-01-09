@@ -2,6 +2,7 @@ import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { randomSign, randomVector } from "../utils/random";
 import { type FloorTypes } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
@@ -169,6 +170,12 @@ const randomContainer1 = {
 const randomContainer2 = {
     ...randomContainer1,
     container_11: 7
+};
+
+const warehouseObstacle = {
+    regular_crate: 2,
+    barrel: 2,
+    flint_crate: 1
 };
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
@@ -500,75 +507,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            {
-                idString: "warehouse_walls",
-                position: Vec.create(-19.8, 0),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_walls",
-                position: Vec.create(19.8, 0),
-                rotation: 2
-            },
-            {
-                idString: "regular_crate",
-                position: Vec.create(14, -28.5)
-            },
-            {
-                idString: "regular_crate",
-                position: Vec.create(-14, -28.5)
-            },
-            {
-                idString: {
-                    regular_crate: 0.7,
-                    flint_crate: 0.3
-                },
-                position: Vec.create(-14, 28.5)
-            },
-            {
-                idString: "barrel",
-                position: Vec.create(14.6, 29.2)
-            },
-            {
-                idString: "metal_shelf",
-                position: Vec.create(-15.8, 0),
-                rotation: 1
-            },
-            {
-                idString: "box",
-                position: Vec.create(-15.7, 0),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(-15.8, 6.4),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(-15.7, -8),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "metal_shelf",
-                position: Vec.create(15.8, 0),
-                rotation: 1
-            },
-            {
-                idString: "box",
-                position: Vec.create(15.8, 0),
-                lootSpawnOffset: Vec.create(-5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(15.7, 6),
-                lootSpawnOffset: Vec.create(-5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(15.6, -7),
-                lootSpawnOffset: Vec.create(-5, 0)
-            }
+            { idString: "warehouse_walls", position: Vec.create(-19.8, 0), rotation: 0 },
+            { idString: "warehouse_walls", position: Vec.create(19.8, 0), rotation: 2 },
+
+            { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
+            { idString: "regular_crate", position: Vec.create(-14, -28.5) },
+            { idString: "regular_crate", position: Vec.create(14, 28.5) },
+            { idString: warehouseObstacle, position: Vec.create(-14, 28.5) },
+
+            { idString: "ammo_crate", position: Vec.create(-14, 0) },
+            { idString: "ammo_crate", position: Vec.create(14, 0) },
+
+            { idString: "box", get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
+            { idString: "box", get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
+            { idString: "box", get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
+            { idString: "box", get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
+            { idString: "box", get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
         ],
 
         lootSpawners: [
