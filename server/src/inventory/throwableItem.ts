@@ -97,7 +97,7 @@ class GrenadeHandler {
         }
 
         if (particles !== undefined) {
-            game.spawnSyncedParticles(particles, referencePosition);
+            game.addSyncedParticles(particles, referencePosition);
         }
     }
 

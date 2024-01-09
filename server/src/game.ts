@@ -577,7 +577,7 @@ export class Game {
         syncedParticle.dead = true;
     }
 
-    spawnSyncedParticles(particles: SyncedParticlesDefinition, position: Vector): void {
+    addSyncedParticles(particles: SyncedParticlesDefinition, position: Vector): void {
         const particleDef = SyncedParticles.fromString(particles.type);
         const { spawnRadius, count, deployAnimation } = particles;
 

@@ -1,6 +1,7 @@
 import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { type Animated, type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "../../../common/src/definitions/syncedParticles";
 import { type Variation } from "../../../common/src/typings";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, EaseFunctions, Numeric, type EasingFunction } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { random, randomFloat } from "../../../common/src/utils/random";
@@ -136,6 +137,10 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         if (definition.variations !== undefined) {
             this.variant = random(0, definition.variations) as Variation;
         }
+
+        if (definition.hitbox !== undefined) {
+            this.hitbox = this.definition.hitbox?.transform(this.position, this.scale);
+        }
     }
 
     override damage(amount: number, source?: unknown): void {}
@@ -210,6 +215,11 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         const scaleAnim = this._scaleAnim;
         if (scaleAnim) {
             this.scale = Numeric.lerp(scaleAnim.start, scaleAnim.end, scaleAnim.easing(age / scaleAnim.duration));
+        }
+
+        if (this.hitbox instanceof CircleHitbox && this.definition.hitbox !== undefined) {
+            this.hitbox.position = this.position;
+            this.hitbox.radius = this.definition.hitbox.radius * this.scale;
         }
     }
 

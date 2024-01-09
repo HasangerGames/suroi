@@ -25,6 +25,7 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
             const { variant, definition } = full;
 
             this.image.setFrame(`${definition.frame ?? definition.idString}${variant !== undefined ? `_${variant}` : ""}`);
+            if (definition.tint) this.image.tint = definition.tint;
             this.container.zIndex = definition.zIndex ?? ZIndexes.ObstaclesLayer1;
         }
 

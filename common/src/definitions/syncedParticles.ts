@@ -1,5 +1,6 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
+import { CircleHitbox } from "../utils/hitbox";
 import { type EaseFunctions } from "../utils/math";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type Vector } from "../utils/vector";
@@ -54,7 +55,15 @@ export interface SyncedParticleDefinition extends ObjectDefinition {
      * @default {ZIndexes.ObstaclesLayer1}
      */
     readonly zIndex?: ZIndexes
+
     readonly frame?: string
+    readonly tint?: number
+
+    readonly hitbox?: CircleHitbox
+    readonly depletePerTick?: {
+        health?: number
+        adrenaline?: number
+    }
 }
 
 export interface SyncedParticlesDefinition {
@@ -71,10 +80,10 @@ export interface SyncedParticlesDefinition {
     readonly spawnRadius: number
 }
 
-export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
-    {
-        idString: "smoke_grenade_particle",
-        name: "Smoke grenade particle",
+function createParticle(idString: string, name: string, options?: Partial<SyncedParticleDefinition>): SyncedParticleDefinition {
+    return {
+        idString,
+        name,
         scale: {
             start: {
                 min: 1.5,
@@ -108,30 +117,22 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
             mean: 20000,
             deviation: 1000
         },
-        zIndex: ZIndexes.ObstaclesLayer4
-    },
-    {
-        idString: "airdrop_smoke_particle",
-        name: "Airdrop Smoke Particle",
-        scale: {
-            start: {
-                min: 1.5,
-                max: 2
-            },
-            end: {
-                min: 1.75,
-                max: 2.25
-            }
-        },
-        alpha: {
-            start: 1,
-            end: 0,
-            easing: "expoIn"
-        },
-        angularVelocity: {
-            min: -0.0005,
-            max: 0.0005
-        },
+        zIndex: ZIndexes.ObstaclesLayer4,
+        frame: "smoke_grenade_particle",
+        ...options
+    };
+}
+
+export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
+    createParticle("smoke_grenade_particle", "Smoke Grenade Particle"),
+    createParticle("tear_gas_particle", "Tear Gas Particle", {
+        tint: 0xa0e6ff,
+        hitbox: new CircleHitbox(11),
+        depletePerTick: {
+            adrenaline: 0.0055
+        }
+    }),
+    createParticle("airdrop_smoke_particle", "Airdrop Smoke Particle", {
         velocity: {
             min: {
                 x: -0.002,
@@ -145,8 +146,6 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         lifetime: {
             mean: 2000,
             deviation: 500
-        },
-        zIndex: ZIndexes.ObstaclesLayer4,
-        frame: "smoke_grenade_particle"
-    }
+        }
+    })
 ]);

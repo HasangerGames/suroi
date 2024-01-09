@@ -39,7 +39,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
             // Spawn smoke
-            this.game.spawnSyncedParticles({
+            this.game.addSyncedParticles({
                 type: "airdrop_smoke_particle",
                 count: 5,
                 deployAnimation: {

@@ -37,6 +37,8 @@ import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
+import { SyncedParticle } from "./syncedParticle";
+import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -530,12 +532,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         let isInsideBuilding = false;
+        let depletePerTick: SyncedParticleDefinition["depletePerTick"] | undefined;
         for (const object of this.nearObjects) {
             if (object instanceof Building && !object.dead) {
                 if (object.scopeHitbox?.collidesWith(this.hitbox)) {
                     isInsideBuilding = true;
-                    break;
                 }
+            }
+            if (
+                object instanceof SyncedParticle &&
+                object.definition.depletePerTick &&
+                object.hitbox?.collidesWith(this.hitbox)
+            ) {
+                depletePerTick = object.definition.depletePerTick;
             }
         }
 
@@ -545,6 +554,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.zoom = this.inventory.scope.zoomLevel;
         }
         this.isInsideBuilding = isInsideBuilding;
+
+        if (depletePerTick?.health) {
+            this.piercingDamage(depletePerTick.health * dt, KillType.Gas);
+        }
+        if (depletePerTick?.adrenaline) {
+            this.adrenaline = Math.max(0, this.adrenaline - depletePerTick.adrenaline * dt);
+        }
 
         this.turning = false;
     }
