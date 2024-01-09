@@ -535,23 +535,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 1
             },
             {
-                idString: { box: .75, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(-15.7, 0),
                 lootSpawnOffset: Vec.create(5, 0)
             },
             {
-                idString: { box: .25, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(-15.7, 0),
                 lootSpawnOffset: Vec.create(5, 0)
 
             },
             {
-                idString: { box: .75, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(-15.8, 6.4),
                 lootSpawnOffset: Vec.create(5, 0)
             },
             {
-                idString: { box: .75, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(-15.7, -8),
                 lootSpawnOffset: Vec.create(5, 0)
             },
@@ -561,17 +561,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 1
             },
             {
-                idString: { box: .75, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(15.8, 0),
                 lootSpawnOffset: Vec.create(-5, 0)
             },
             {
-                idString: { box: .75, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(15.7, 6),
                 lootSpawnOffset: Vec.create(-5, 0)
             },
             {
-                idString: { box: .75, grenade_box: .25},
+                idString: { box: .90, grenade_box: .10},
                 position: Vec.create(15.6, -7),
                 lootSpawnOffset: Vec.create(-5, 0)
             }
