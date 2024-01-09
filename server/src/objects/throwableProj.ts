@@ -88,17 +88,28 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, speed));
     }
 
+    private _calculateSafeDisplacement(halfDt: number): Vector {
+        let displacement = Vec.scale(this.velocity, halfDt);
+
+        const displacementLength = Vec.length(displacement);
+        const maxDisplacement = (this.definition.speedCap ?? Infinity) * halfDt;
+
+        if (displacementLength >= maxDisplacement) {
+            displacement = Vec.scale(displacement, maxDisplacement / displacementLength);
+        }
+
+        return displacement;
+    }
+
     update(): void {
         const deltaTime = GameConstants.msPerTick;
         const halfDt = 0.5 * deltaTime;
 
-        this.hitbox.position.x += this._velocity.x * halfDt;
-        this.hitbox.position.y += this._velocity.y * halfDt;
+        this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
         this._velocity = { ...Vec.scale(this._velocity, this._currentDragConst) };
 
-        this.hitbox.position.x += this._velocity.x * halfDt;
-        this.hitbox.position.y += this._velocity.y * halfDt;
+        this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
         this.rotation = Angle.normalize(this.rotation + this.angularVelocity * deltaTime);
 
@@ -136,8 +147,11 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             const isPlayer = object instanceof Player;
 
             if (
-                (!isObstacle || !object.collidable) &&
-                (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
+                object.dead ||
+                (
+                    (!isObstacle || !object.collidable) &&
+                    (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
+                )
             ) continue;
 
             const hitbox = object.hitbox;

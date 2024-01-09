@@ -7,7 +7,7 @@ Guns:
   M3K switch - Dablux
   M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
 
-  AUG reload & switch: Dablux
+  AUG reload & switch - Dablux
 
   Model 37 fire - "Shotgun Blast" by Jim Rogers: https://soundbible.com/1919-Shotgun-Blast.html
 
@@ -32,6 +32,10 @@ Guns:
   ACR fire - "Beefy Suppressed Bushmaster ACR 5.56 Close Gunshot A Sound Effect" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/bushmaster-acr-5.56-combat-rifle-298
   ACR reload & switch - "Bushmaster ACR remake" by Tyrannotitan Fan: https://gamebanana.com/sounds/68939
 
+  Vector fire - "smgshoot2" from Pixabay: https://pixabay.com/sound-effects/smgshoot2-35768/
+
+  Vepr-12 reload & switch - Dablux
+
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Obstacles:
@@ -54,6 +58,8 @@ Obstacles:
   Stone destroyed - "Rocks - Effects - Source Recordings - 05" by GregorQuendel (CC BY 4.0):   https://freesound.org/people/newlocknew/sounds/631485/
 
   Pumpkin destroyed - https://pixabay.com/sound-effects/splat2ogg-14668/
+
+  Fence hit & destroyed - Katloo
 
 Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
 Vault door opening - "Metal warehouse door opened with chains" from Pixabay: https://pixabay.com/sound-effects/metal-warehouse-door-opened-with-chains-100823/

@@ -2,6 +2,7 @@ import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { randomSign, randomVector } from "../utils/random";
 import { type FloorTypes } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
@@ -169,6 +170,12 @@ const randomContainer1 = {
 const randomContainer2 = {
     ...randomContainer1,
     container_11: 7
+};
+
+const warehouseObstacle = {
+    regular_crate: 2,
+    barrel: 2,
+    flint_crate: 1
 };
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
@@ -500,75 +507,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            {
-                idString: "warehouse_walls",
-                position: Vec.create(-19.8, 0),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_walls",
-                position: Vec.create(19.8, 0),
-                rotation: 2
-            },
-            {
-                idString: "regular_crate",
-                position: Vec.create(14, -28.5)
-            },
-            {
-                idString: "regular_crate",
-                position: Vec.create(-14, -28.5)
-            },
-            {
-                idString: {
-                    regular_crate: 0.7,
-                    flint_crate: 0.3
-                },
-                position: Vec.create(-14, 28.5)
-            },
-            {
-                idString: "barrel",
-                position: Vec.create(14.6, 29.2)
-            },
-            {
-                idString: "metal_shelf",
-                position: Vec.create(-15.8, 0),
-                rotation: 1
-            },
-            {
-                idString: "box",
-                position: Vec.create(-15.7, 0),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(-15.8, 6.4),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(-15.7, -8),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "metal_shelf",
-                position: Vec.create(15.8, 0),
-                rotation: 1
-            },
-            {
-                idString: "box",
-                position: Vec.create(15.8, 0),
-                lootSpawnOffset: Vec.create(-5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(15.7, 6),
-                lootSpawnOffset: Vec.create(-5, 0)
-            },
-            {
-                idString: "box",
-                position: Vec.create(15.6, -7),
-                lootSpawnOffset: Vec.create(-5, 0)
-            }
+            { idString: "warehouse_walls", position: Vec.create(-19.8, 0), rotation: 0 },
+            { idString: "warehouse_walls", position: Vec.create(19.8, 0), rotation: 2 },
+
+            { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
+            { idString: "regular_crate", position: Vec.create(-14, -28.5) },
+            { idString: "regular_crate", position: Vec.create(14, 28.5) },
+            { idString: warehouseObstacle, position: Vec.create(-14, 28.5) },
+
+            { idString: "ammo_crate", position: Vec.create(-14, 0) },
+            { idString: "ammo_crate", position: Vec.create(14, 0) },
+
+            { idString: "box", get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
+            { idString: "box", get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
+            { idString: "box", get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
+            { idString: "box", get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
+            { idString: "box", get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
         ],
 
         lootSpawners: [
@@ -1106,37 +1060,44 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: "house_wall_1",
                 position: Vec.create(5.4, -6.75),
                 rotation: 2
-            }, // Bedroom Bottom Left
+            },
+            // Bedroom Bottom Left
             {
                 idString: "house_wall_2",
                 position: Vec.create(8.85, -18),
                 rotation: 1
-            }, // Bedroom Door
+            },
+            // Bedroom Door
             {
                 idString: "door",
                 position: Vec.create(-4.5, -6.75),
                 rotation: 2
-            }, //  Bathroom Left
+            },
+            // Bathroom Left
             {
                 idString: "house_wall_4",
                 position: Vec.create(-2.50, 17.2),
                 rotation: 1
-            }, //  Bathroom Right
+            },
+            // Bathroom Right
             {
                 idString: "house_wall_4",
                 position: Vec.create(9.55, 17.2),
                 rotation: 1
-            }, // Bathroom Door
+            },
+            // Bathroom Door
             {
                 idString: "door",
                 position: Vec.create(3.1, 7.2),
                 rotation: 2
-            }, // Bathroom Toilet
+            },
+            // Bathroom Toilet
             {
                 idString: { toilet: 2, used_toilet: 1 },
                 position: Vec.create(3.6, 23.5),
                 rotation: 2
-            }, // Front Door
+            },
+            // Front Door
             {
                 idString: "door",
                 position: Vec.create(-14.8, 29),
@@ -1146,7 +1107,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: "door",
                 position: Vec.create(16.2, -29.5),
                 rotation: 2
-            }, // Living Room Cough
+            },
+            // Living Room Cough
             {
                 idString: "couch",
                 position: Vec.create(-21.6, -1.8),
@@ -1163,12 +1125,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: "bookshelf",
                 position: Vec.create(-6, 17.5),
                 rotation: 3
-            }, // Kitchen Stove
+            },
+            // Kitchen Stove
             {
                 idString: "stove",
                 position: Vec.create(15.5, 24),
                 rotation: 2
-            }, // Kitchen Fridge
+            },
+            // Kitchen Fridge
             {
                 idString: "fridge",
                 position: Vec.create(25, 24),
@@ -1179,7 +1143,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: "chair",
                 position: Vec.create(25, 5),
                 rotation: 0
-            }, // Near Backdoor Chair
+            },
+            // Near Backdoor Chair
             {
                 idString: "chair",
                 position: Vec.create(25, -5),
@@ -1202,32 +1167,38 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: "bed",
                 position: Vec.create(-21.5, -22.5),
                 rotation: 1
-            }, // Bedroom Drawer
+            },
+            // Bedroom Drawer
             {
                 idString: "small_drawer",
                 position: Vec.create(-26, -11.5),
                 rotation: 1
-            }, // Bedroom Bookshelf
+            },
+            // Bedroom Bookshelf
             {
                 idString: "bookshelf",
                 position: Vec.create(5.5, -22),
                 rotation: 1
-            }, // Bedroom Window
+            },
+            // Bedroom Window
             {
                 idString: "window",
                 position: Vec.create(-7.2, -29.5),
                 rotation: 1
-            }, // Living Room Window
+            },
+            // Living Room Window
             {
                 idString: "window",
                 position: Vec.create(-31, 7.5),
                 rotation: 2
-            }, // Kitchen Window
+            },
+            // Kitchen Window
             {
                 idString: "window",
                 position: Vec.create(31, 15.4),
                 rotation: 2
-            }, // Backdoor Window
+            },
+            // Backdoor Window
             {
                 idString: "window",
                 position: Vec.create(31, -15.9),
@@ -1321,23 +1292,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "container_11",
         name: "Invisible Container",
         spawnHitbox: RectangleHitbox.fromRect(16, 30)
-    },
-    {
-        idString: "oil_tanker_ship_tanks",
-        name: "Oil Tanker",
-        spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
-        ceilingHitbox: RectangleHitbox.fromRect(80, 200, Vec.create(9.5, 20)),
-        ceilingImages: [
-            {
-                key: "oil_tanker_ship_tank_ceiling",
-                position: Vec.create(10.5, 20)
-            }
-        ],
-        obstacles: [
-            { idString: "large_oil_tank", position: Vec.create(10, -46.5), rotation: -Math.PI * 2 },
-            { idString: "large_oil_tank", position: Vec.create(10, 20), rotation: Math.PI / 2 },
-            { idString: "large_oil_tank", position: Vec.create(10, 88), rotation: -Math.PI / 2 }
-        ]
     },
     {
         idString: "ship",
@@ -1505,6 +1459,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "oil_tanker_ship_ceiling",
                 position: Vec.create(7, -99.5)
+            },
+            {
+                key: "oil_tanker_ship_tank_ceiling",
+                position: Vec.create(9.5, 20)
             }
         ],
         floors: [
@@ -1524,6 +1482,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             // Main Ship Hitbox
             { idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
+
+            // Oil Tanks
+            { idString: "large_oil_tank", position: Vec.create(9, -46.5), rotation: -Math.PI * 2 },
+            { idString: "large_oil_tank", position: Vec.create(9, 20), rotation: Math.PI / 2 },
+            { idString: "large_oil_tank", position: Vec.create(9, 88), rotation: -Math.PI / 2 },
 
             // Cabin Windows
             { idString: "ship_cabin_window", position: Vec.create(-0.25, -87.5), rotation: 1 },
@@ -1568,15 +1531,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "super_barrel", position: Vec.create(43, -7.5) },
             { idString: "sandbags", position: Vec.create(30, -16), rotation: 2 },
             { idString: "flint_crate", position: Vec.create(41, -35) }
-        ],
-        subBuildings: [
-            { idString: "oil_tanker_ship_tanks", position: Vec.create(-1, 0) }
         ]
     },
     {
         idString: "port",
         name: "Port",
-        spawnHitbox: RectangleHitbox.fromRect(300, 270, Vec.create(-5, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(315, 290, Vec.create(-5, 0)),
         groundGraphics: [
             {
                 color: "#6664",
@@ -1936,15 +1896,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(-60, -25)
+                position: Vec.create(60, 25),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(-45, -25)
+                position: Vec.create(45, 25),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(-30, -25)
+                position: Vec.create(30, 25),
+                orientation: 2
             },
             // Group 2
             {
@@ -1961,15 +1924,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(5, -25)
+                position: Vec.create(-5, 25),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(20, -25)
+                position: Vec.create(-20, 25),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(35, -25)
+                position: Vec.create(-35, 25),
+                orientation: 2
             },
             // Group 3
             {
@@ -1986,15 +1952,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(-100, -90)
+                position: Vec.create(100, 90),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(-115, -90)
+                position: Vec.create(115, 90),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(-130, -90)
+                position: Vec.create(130, 90),
+                orientation: 2
             },
 
             // Group 4
@@ -2012,15 +1981,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(82.5, -30)
+                position: Vec.create(-82.5, 30),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(97.5, -30)
+                position: Vec.create(-97.5, 30),
+                orientation: 2
             },
             {
                 idString: randomContainer2,
-                position: Vec.create(112.5, -30)
+                position: Vec.create(-112.5, 30),
+                orientation: 2
             }
         ]
     },

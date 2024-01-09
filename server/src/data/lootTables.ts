@@ -51,7 +51,6 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             [
                 { item: "seax", weight: 1 },
-                { item: null, weight: 1 }
             ],
             [
                 { tier: "viking_chest_guns", weight: 1 }
@@ -343,8 +342,6 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "gold_airdrop_guns", weight: 1 },
-            { item: "medikit", weight: 1 },
-            { item: "tablets", weight: 1 }
         ]
     },
     christmas_tree: {
@@ -360,7 +357,7 @@ export const LootTables: Record<string, LootTable> = {
         ]
     },
     gun_case: {
-        min: 2,
+        min: 1,
         max: 2,
         loot: [
             { tier: "special_guns", weight: 1 }
@@ -390,7 +387,7 @@ export const LootTables: Record<string, LootTable> = {
             { item: "vector", weight: 3 },
             { item: "arx160", weight: 1 },
             { item: "vepr12", weight: 1 },
-            { item: "g19", weight: 0.1 }
+            { item: "g19", weight: 0.05 }
         ]
     }
 };

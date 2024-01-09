@@ -175,6 +175,10 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 this.game.addExplosion(definition.explosion, this.position, source);
             }
 
+            if (definition.particlesOnDestroy !== undefined) {
+                this.game.addSyncedParticles(definition.particlesOnDestroy, this.position);
+            }
+
             for (const item of this.loot) {
                 const loot = this.game.addLoot(
                     item.idString,

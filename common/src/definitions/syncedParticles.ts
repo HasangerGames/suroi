@@ -1,7 +1,8 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
+import { CircleHitbox } from "../utils/hitbox";
 import { type EaseFunctions } from "../utils/math";
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type Vector } from "../utils/vector";
 
 export interface MinMax<T> {
@@ -54,12 +55,35 @@ export interface SyncedParticleDefinition extends ObjectDefinition {
      * @default {ZIndexes.ObstaclesLayer1}
      */
     readonly zIndex?: ZIndexes
+
+    readonly frame?: string
+    readonly tint?: number
+
+    readonly hitbox?: CircleHitbox
+    readonly depletePerTick?: {
+        health?: number
+        adrenaline?: number
+    }
 }
 
-export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
-    {
-        idString: "smoke_grenade_particle",
-        name: "Smoke grenade particle",
+export interface SyncedParticlesDefinition {
+    readonly type: ReferenceTo<SyncedParticleDefinition>
+    readonly count: number
+    readonly deployAnimation?: {
+        readonly duration?: number
+        readonly staggering?: {
+            readonly delay: number
+            readonly spawnPerGroup?: number
+            readonly initialAmount?: number
+        }
+    }
+    readonly spawnRadius: number
+}
+
+function createParticle(idString: string, name: string, options?: Partial<SyncedParticleDefinition>): SyncedParticleDefinition {
+    return {
+        idString,
+        name,
         scale: {
             start: {
                 min: 1.5,
@@ -93,6 +117,35 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
             mean: 20000,
             deviation: 1000
         },
-        zIndex: ZIndexes.ObstaclesLayer4
-    }
+        zIndex: ZIndexes.ObstaclesLayer4,
+        frame: "smoke_grenade_particle",
+        ...options
+    };
+}
+
+export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
+    createParticle("smoke_grenade_particle", "Smoke Grenade Particle"),
+    createParticle("tear_gas_particle", "Tear Gas Particle", {
+        tint: 0xa0e6ff,
+        hitbox: new CircleHitbox(11),
+        depletePerTick: {
+            adrenaline: 0.0055
+        }
+    }),
+    createParticle("airdrop_smoke_particle", "Airdrop Smoke Particle", {
+        velocity: {
+            min: {
+                x: -0.002,
+                y: -0.002
+            },
+            max: {
+                x: 0.002,
+                y: 0.002
+            }
+        },
+        lifetime: {
+            mean: 2000,
+            deviation: 500
+        }
+    })
 ]);

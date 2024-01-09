@@ -1,10 +1,7 @@
 import { AnimationType } from "../../../common/src/constants";
-import { SyncedParticles } from "../../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { EaseFunctions } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { randomFloat, randomRotation } from "../../../common/src/utils/random";
 import { Vec } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
@@ -89,9 +86,10 @@ class GrenadeHandler {
         const { explosion, particles } = this.definition.detonation;
 
         const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
+        const game = this.game;
 
         if (explosion !== undefined) {
-            this.game.addExplosion(
+            game.addExplosion(
                 explosion,
                 referencePosition,
                 this.parent.owner
@@ -99,29 +97,7 @@ class GrenadeHandler {
         }
 
         if (particles !== undefined) {
-            const particleDef = SyncedParticles.fromString(particles.type);
-            const spawnInterval = particles.spawnInterval ?? 0;
-
-            for (let i = 0, count = particles.count; i < count; i++) {
-                const target = Vec.add(
-                    Vec.fromPolar(
-                        randomRotation(),
-                        randomFloat(0, particles.spawnRadius)
-                    ),
-                    referencePosition
-                );
-
-                const particle = this.game.addSyncedParticle(
-                    particleDef,
-                    referencePosition
-                );
-
-                if (spawnInterval) {
-                    particle.setTarget(target, spawnInterval, EaseFunctions.circOut);
-                } else {
-                    particle._position = target;
-                }
-            }
+            game.addSyncedParticles(particles, referencePosition);
         }
     }
 

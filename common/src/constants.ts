@@ -147,20 +147,20 @@ export enum ZIndexes {
     Ground,
     UnderWaterDeathMarkers,
     UnderWaterDeadObstacles,
-    UnderwaterGroundedThrowables,
     UnderWaterObstacles,
     UnderWaterLoot,
+    UnderwaterGroundedThrowables,
     UnderwaterPlayers,
     BuildingsFloor,
     Decals,
     DeadObstacles,
     DeathMarkers,
-    GroundedThrowables,
     /**
      * This is the default layer for obstacles
      */
     ObstaclesLayer1,
     Loot,
+    GroundedThrowables,
     ObstaclesLayer2,
     Bullets,
     Players,

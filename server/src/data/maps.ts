@@ -336,7 +336,7 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 32,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("warehouse", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -345,7 +345,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("viking_chest", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("tear_gas_crate", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

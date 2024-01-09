@@ -66,6 +66,8 @@ import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
+import { SyncedParticle } from "./syncedParticle";
+import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -383,7 +385,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         return Vec.clone(this._movementVector);
     }
 
-    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(
         game: Game,
@@ -402,7 +404,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "regular_crate", position);
+        this.objectToPlace = new Obstacle(game, "box", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -513,8 +515,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this._movementVector = movementVector;
         this.position = Vec.add(this.position, Vec.scale(movementVector, dt));
 
-        /*
-        // Object placing code start
+        /* Object placing code start //
         const position = Vec.add(
             this.position,
             Vec.create(Math.cos(this.rotation) * this.distanceToMouse, Math.sin(this.rotation) * this.distanceToMouse)
@@ -532,8 +533,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
             //console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
         }
-        // Object placing code end
-        */
+        // Object placing code end */
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -608,12 +608,24 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         let isInsideBuilding = false;
+        let depletePerTick: SyncedParticleDefinition["depletePerTick"] | undefined;
         for (const object of this.nearObjects) {
-            if (object instanceof Building && !object.dead) {
-                if (object.scopeHitbox?.collidesWith(this.hitbox)) {
-                    isInsideBuilding = true;
-                    break;
-                }
+            if (
+                !isInsideBuilding &&
+                object instanceof Building &&
+                !object.dead &&
+                object.scopeHitbox?.collidesWith(this.hitbox)
+            ) {
+                isInsideBuilding = true;
+            }
+
+            if (
+                !depletePerTick &&
+                object instanceof SyncedParticle &&
+                object.definition.depletePerTick &&
+                object.hitbox?.collidesWith(this.hitbox)
+            ) {
+                depletePerTick = object.definition.depletePerTick;
             }
         }
 
@@ -623,6 +635,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.zoom = this.inventory.scope.zoomLevel;
         }
         this.isInsideBuilding = isInsideBuilding;
+
+        if (depletePerTick?.health) {
+            this.piercingDamage(depletePerTick.health * dt, KillType.Gas);
+        }
+        if (depletePerTick?.adrenaline) {
+            this.adrenaline = Math.max(0, this.adrenaline - depletePerTick.adrenaline * dt);
+        }
 
         this.turning = false;
     }
@@ -779,7 +798,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.aliveCount = game.aliveCount;
         packet.aliveCountDirty = game.aliveCountDirty || this._firstPacket;
 
-        // kill feed messages
+        // killfeed messages
         packet.killFeedMessages = game.killFeedMessages;
         const killLeader = game.killLeader;
 

@@ -1,6 +1,6 @@
 Skins:
-  Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing
+  Forest Camo body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
+  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Henry Sanger
 Loot:
   Level 1 Vest (Loot Image): Slapdap, modified by Leia
   Level 2 Vest (Loot Image): Slapdap, modified by Leia
@@ -63,7 +63,7 @@ Weapons:
   M1895 (World Image): jchen
 
   M1 Garand (Loot Image): eiπ, modified by jchen & cobby
-  M1 Garand (World Image): cobby, 
+  M1 Garand (World Image): cobby,
 
   M3K (Loot Image): eiπ
   M3K (World Image): TacomyLoh, shortened by jchen
@@ -107,8 +107,11 @@ Weapons:
   VSS (Loot Image): jchen
   VSS (World Image): ItzBlover, shortened by jchen
 
+  Vector (Loot Image): TODO
+  Vector (World Image): TODO
+
   All killfeed icons: eiπ
-  
+
   Baseball Bat: Radians
   HE-AP Sword: Radians
   K-bar: Radians
@@ -117,7 +120,7 @@ Weapons:
 
 Obstacles:
   Barrel: 123OP, Asultra, Henry Sanger
-  Barrel Residue: Dachselt, Leo, Henry Sanger
+  Barrel Residue: Dachselt, Leia, Henry Sanger
 
   Bush: Glek
   Bush Particles: Asultra, Radians
@@ -135,7 +138,7 @@ Obstacles:
   Rocks: Leia
   Rock particles: Radians
   Rock residue: Henry Sanger, Radians
-  Mossy & cracked rocks: Hester, Leo, Henry Sanger
+  Mossy & cracked rocks: Leia, Henry Sanger
   Gold rock: Katloo
 
   Oak trees: Asultra
@@ -143,20 +146,22 @@ Obstacles:
   Pine tree: SquareCube
   Pine tree particles: Radians
   Pine tree residue: Radians, Henry Sanger
-  Birch tree, particles, & residue: Hester
+  Birch tree, particles, & residue: Henry Sanger, Radians
 
   Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, Henry Sanger
   Stove: 1092384
   Residues for above obstacles: platonthek
+
+  Sandbags: Yeet120, Eclair
 
   Pumpkin: RedCoder09
 
 Building designs:
   Small House: platonthek
   Refinery: platonthek
-  Port: platonthek
+  Port & ships: platonthek
   Warehouse: Leia, 1092384
-  Porta-Potty: Katloo, Slapdap, 1092384
+  Porta potty: Katloo, Slapdap, 1092384
 
 Other:
   Death Marker & Skull: Henry Sanger
