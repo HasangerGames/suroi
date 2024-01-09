@@ -1,5 +1,4 @@
 import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
-import { SyncedParticles } from "../../../common/src/definitions/syncedParticles";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
