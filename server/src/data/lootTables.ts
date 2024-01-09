@@ -51,7 +51,6 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             [
                 { item: "seax", weight: 1 },
-                { item: null, weight: 1 }
             ],
             [
                 { tier: "viking_chest_guns", weight: 1 }

@@ -30,7 +30,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             idString: "barrel_explosion",
             name: "Barrel",
             damage: 130,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1,
             radius: {
                 min: 8,
                 max: 25
@@ -86,7 +86,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             idString: "control_panel_explosion",
             name: "Control Panel",
             damage: 130,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1.5,
             radius: {
                 min: 8,
                 max: 25
@@ -114,7 +114,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             idString: "super_barrel_explosion",
             name: "Super Barrel",
             damage: 160,
-            obstacleMultiplier: 3,
+            obstacleMultiplier: 1,
             radius: {
                 min: 8,
                 max: 25
@@ -142,7 +142,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             idString: "small_refinery_barrel_explosion",
             name: "Small Refinery Barrel",
             damage: 200,
-            obstacleMultiplier: 3,
+            obstacleMultiplier: 2,
             radius: {
                 min: 16,
                 max: 40
@@ -198,7 +198,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             idString: "usas_explosion",
             name: "USAS-12",
             damage: 35,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1,
             radius: {
                 min: 6,
                 max: 16
@@ -215,7 +215,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             shrapnelCount: 13,
             ballistics: {
                 damage: 3,
-                obstacleMultiplier: 2,
+                obstacleMultiplier: 1.5,
                 speed: 0.06,
                 range: 10,
                 rangeVariance: 1,
@@ -227,8 +227,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         {
             idString: "frag_explosion",
             name: "Frag Grenade",
-            damage: 150,
-            obstacleMultiplier: 2,
+            damage: 120,
+            obstacleMultiplier: 1.15,
             radius: {
                 min: 10,
                 max: 25
@@ -242,9 +242,9 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 tint: 0x91140b,
                 scale: 1.5
             },
-            shrapnelCount: 15,
+            shrapnelCount: 10,
             ballistics: {
-                damage: 4,
+                damage: 15,
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 range: 20,
