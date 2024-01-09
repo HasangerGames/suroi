@@ -534,12 +534,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         let isInsideBuilding = false;
         let depletePerTick: SyncedParticleDefinition["depletePerTick"] | undefined;
         for (const object of this.nearObjects) {
-            if (object instanceof Building && !object.dead) {
-                if (object.scopeHitbox?.collidesWith(this.hitbox)) {
-                    isInsideBuilding = true;
-                }
-            }
             if (
+                !isInsideBuilding &&
+                object instanceof Building &&
+                !object.dead &&
+                object.scopeHitbox?.collidesWith(this.hitbox)
+            ) {
+                isInsideBuilding = true;
+            }
+
+            if (
+                !depletePerTick &&
                 object instanceof SyncedParticle &&
                 object.definition.depletePerTick &&
                 object.hitbox?.collidesWith(this.hitbox)
