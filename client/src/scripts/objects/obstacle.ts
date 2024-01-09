@@ -167,13 +167,16 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (!this.dead && data.dead) {
             this.dead = true;
             if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
-                this.playSound(
-                    `${definition.material}_destroyed`,
-                    {
+                const playSound = (name: string): void => {
+                    this.playSound(name, {
                         falloff: 0.2,
                         maxRange: 96
-                    }
-                );
+                    });
+                };
+                playSound(`${definition.material}_destroyed`);
+                if (definition.additionalDestroySounds) {
+                    for (const sound of definition.additionalDestroySounds) playSound(sound);
+                }
 
                 if (definition.noResidue) {
                     this.image.setVisible(false);

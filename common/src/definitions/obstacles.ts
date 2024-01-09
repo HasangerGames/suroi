@@ -73,6 +73,8 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly tint?: number
 
     readonly particlesOnDestroy?: SyncedParticlesDefinition
+
+    readonly additionalDestroySounds?: string[]
 } & (({
     readonly role: ObstacleSpecialRoles.Door
     readonly locked?: boolean
@@ -558,7 +560,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                     }
                 },
                 spawnRadius: 15
-            }
+            },
+            additionalDestroySounds: ["smoke_grenade"]
         },
         {
             idString: "barrel",
