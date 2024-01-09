@@ -335,7 +335,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true,
             frames: {
                 particle: "box_particle",
-                residue: "box_residue",
+                residue: "box_residue"
 
             }
         },
