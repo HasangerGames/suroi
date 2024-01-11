@@ -459,6 +459,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.activeItem = full.activeItem;
 
             const skinID = full.skin.idString;
+            if (this.isActivePlayer) {
+                this.game.uiManager.skinID = skinID;
+                this.game.uiManager.updateWeapons();
+            }
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
             const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
 

@@ -268,6 +268,8 @@ export class UIManager {
         }
     }
 
+    skinID?: string;
+
     updateWeapons(): void {
         const inventory = this.inventory;
         const activeIndex = inventory.activeWeaponIndex;
@@ -326,9 +328,12 @@ export class UIManager {
                     .children(".item-name")
                     .text(weapon.definition.name);
 
+                const isFists = weapon.definition.idString === "fists";
+
                 container
                     .children(".item-image")
-                    .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
+                    .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
+                    .attr("src", `./img/game/weapons/${isFists ? "blank" : weapon.definition.idString}.svg`)
                     .show();
 
                 if (weapon.count !== undefined) {
