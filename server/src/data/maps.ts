@@ -14,7 +14,6 @@ import { type Map } from "../map";
 import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type LootTables } from "./lootTables";
-import { Decal } from "../objects/decal";
 
 interface MapDefinition {
     readonly width: number

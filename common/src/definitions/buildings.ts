@@ -211,7 +211,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_back_wall",
-                position: Vec.create(0, -8.8),
+                position: Vec.create(0, -8.75),
                 rotation: 0
             },
             {
@@ -231,7 +231,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_front_wall",
-                position: Vec.create(-4.6, 8.7),
+                position: Vec.create(-4.6, 8.66),
                 rotation: 2
             }
         ]
