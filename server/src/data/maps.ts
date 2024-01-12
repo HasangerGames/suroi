@@ -337,7 +337,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.game.grid.addObject(new Decal(map.game, "mobile_home_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            //map.game.grid.addObject(new Decal(map.game, "mobile_home_decal", Vec.create(this.width / 2, this.height / 2), 0));
             map.generateBuilding("mobile_home", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },

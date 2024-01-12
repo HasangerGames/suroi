@@ -105,7 +105,10 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly delay: number
     }
 } | {
-    readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
+    readonly role: ObstacleSpecialRoles.Window
+    readonly noCollisionAfterDestroyed?: boolean
+} | {
+    readonly role?: ObstacleSpecialRoles.Wall
 });
 
 export const Materials = [
@@ -2367,6 +2370,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.7
             },
             hideOnMap: true,
+            hasLoot: true,
             hitbox: RectangleHitbox.fromRect(9.5, 6.63, Vec.create(0, -0.47)),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
@@ -2384,6 +2388,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.8
             },
+            hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
             rotationMode: RotationMode.Limited,
             explosion: "stove_explosion",
@@ -2427,6 +2432,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             allowFlyover: FlyoverPref.Never,
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Window,
+            noCollisionAfterDestroyed: true,
             frames: {
                 particle: "window_particle"
             }

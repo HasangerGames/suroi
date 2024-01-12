@@ -25,10 +25,10 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "equipment", weight: 1 },
-            { tier: "scopes", weight: 0.3 },
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 1 },
-            { tier: "guns", weight: 0.9 }
+            { tier: "guns", weight: 0.9 },
+            { tier: "scopes", weight: 0.3 }
         ]
     },
     regular_crate: {
@@ -37,12 +37,12 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "guns", weight: 1.25 },
             { tier: "equipment", weight: 1 },
-            { tier: "scopes", weight: 0.3 },
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
-            { tier: "melee", weight: 0.04 },
+            { tier: "scopes", weight: 0.3 },
             // { tier: "winter_skins", weight: 0.4 }, // winter mode
-            { tier: "throwables", weight: 0.3 }
+            { tier: "throwables", weight: 0.3 },
+            { tier: "melee", weight: 0.04 }
         ]
     },
     viking_chest: {
@@ -167,8 +167,9 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
+            { tier: "ammo", weight: 1 },
             { tier: "healing_items", weight: 0.8 },
-            { tier: "ammo", weight: 1 }
+            { tier: "guns", weight: 0.3 }
         ]
     },
     small_table: {
@@ -388,6 +389,14 @@ export const LootTables: Record<string, LootTable> = {
             { item: "arx160", weight: 1 },
             { item: "vepr12", weight: 1 },
             { item: "g19", weight: 0.05 }
+        ]
+    },
+    mobile_home_sink: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 1.2 },
+            { tier: "ammo", weight: 1 }
         ]
     }
 };

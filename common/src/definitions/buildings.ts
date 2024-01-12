@@ -2369,7 +2369,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [{
             key: "mobile_home_ceiling",
             position: Vec.create(2, -1),
-            residue: "fists" // fixme add residue
+            residue: "mobile_home_residue"
         }],
         floors: [{
             type: "wood",
