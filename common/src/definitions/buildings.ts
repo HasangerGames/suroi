@@ -2394,7 +2394,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "box", position: Vec.create(26.2, -3.43), rotation: 0 },
             { idString: "box", position: Vec.create(28, 1.52), rotation: 0 },
-            { idString: "barrel", position: Vec.create(-18.9, 14.62), rotation: 0 },
+            { idString: "barrel", position: Vec.create(-18.9, 14.62), rotation: 0 }
         ]
     }
 ]);

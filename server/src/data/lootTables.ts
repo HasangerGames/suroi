@@ -50,7 +50,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             [
-                { item: "seax", weight: 1 },
+                { item: "seax", weight: 1 }
             ],
             [
                 { tier: "viking_chest_guns", weight: 1 }
@@ -342,7 +342,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { tier: "gold_airdrop_guns", weight: 1 },
+            { tier: "gold_airdrop_guns", weight: 1 }
         ]
     },
     christmas_tree: {
