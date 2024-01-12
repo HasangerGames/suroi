@@ -14,6 +14,7 @@ import { type Map } from "../map";
 import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type LootTables } from "./lootTables";
+import { Decal } from "../objects/decal";
 
 interface MapDefinition {
     readonly width: number
@@ -63,7 +64,8 @@ export const Maps: Record<string, MapDefinition> = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            small_house: 10,
+            small_house: 7,
+            mobile_home: 10,
             porta_potty: 15,
             container_3: 1,
             container_4: 2,
@@ -335,8 +337,8 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("warehouse", Vec.create(this.width / 2, this.height / 2), 0);
+            map.game.grid.addObject(new Decal(map.game, "mobile_home_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("mobile_home", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -345,7 +347,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("tear_gas_crate", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("mobile_home_sink", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

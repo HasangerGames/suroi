@@ -2356,5 +2356,45 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 })
             )
         ]
+    },
+    {
+        idString: "mobile_home",
+        name: "Mobile Home",
+        spawnHitbox: RectangleHitbox.fromRect(65, 40),
+        scopeHitbox: RectangleHitbox.fromRect(43, 20, Vec.create(2, -1)),
+        floorImages: [{
+            key: "mobile_home_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "mobile_home_ceiling",
+            position: Vec.create(2, -1),
+            residue: "fists" // fixme add residue
+        }],
+        floors: [{
+            type: "wood",
+            hitbox: RectangleHitbox.fromRect(43, 20, Vec.create(2, -1))
+        }],
+        wallsToDestroy: 2,
+        obstacles: [
+            { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
+            { idString: "door", position: Vec.create(6.45, 8.33), rotation: 0 },
+            { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
+            { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
+            { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
+            { idString: "mobile_home_wall_3", position: Vec.create(22.7, -1.03), rotation: 1 },
+            { idString: "mobile_home_wall_3", position: Vec.create(11.65, -10.43), rotation: 0 },
+            { idString: "mobile_home_wall_3", position: Vec.create(-9.35, 8.32), rotation: 0 },
+            { idString: "mobile_home_bed", position: Vec.create(13.55, -5.72), rotation: 3 },
+            { idString: "small_drawer", position: Vec.create(17.45, 3.27), rotation: 3 },
+            { idString: "mobile_home_sink", position: Vec.create(-12.8, 3.4), rotation: 2 },
+            { idString: "mobile_home_stove", position: Vec.create(-3.75, 3.57), rotation: 2 },
+            { idString: "mobile_home_tire", position: Vec.create(-21.25, 4.85), rotation: 0 },
+            { idString: "mobile_home_window", position: Vec.create(-5.6, -10.42), rotation: 0 },
+
+            { idString: "box", position: Vec.create(26.2, -3.43), rotation: 0 },
+            { idString: "box", position: Vec.create(28, 1.52), rotation: 0 },
+            { idString: "barrel", position: Vec.create(-18.9, 14.62), rotation: 0 },
+        ]
     }
 ]);
