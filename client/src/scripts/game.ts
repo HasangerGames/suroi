@@ -428,6 +428,7 @@ export class Game {
             for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
                 syncedParticle.updateContainerPosition();
                 syncedParticle.updateContainerRotation();
+                syncedParticle.updateContainerScale();
             }
         }
 
