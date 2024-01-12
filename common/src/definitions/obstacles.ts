@@ -2106,7 +2106,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(8.45, 1.6),
             rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
+            allowFlyover: FlyoverPref.Sometimes,
             noResidue: true,
             frames: {
                 particle: "fence_particle"
