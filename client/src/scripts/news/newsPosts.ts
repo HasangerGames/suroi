@@ -369,9 +369,9 @@ Surians can now customize their skins, and express themselves with emotes too! E
     {
         date: 1685914769000,
         author: "Dr. Petrova",
-        title: "2, 8, 18, 7",
+        title: "Doublet State",
         bannerImage: "../img/news/v0.3.0.png",
-        content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -7.2°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
+        content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -9.3°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
         longContent: `<h2>Suroi v0.3.0</h2>
 <h3>New features</h3>
 <ul>
