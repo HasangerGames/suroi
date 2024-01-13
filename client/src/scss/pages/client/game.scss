@@ -910,7 +910,7 @@
 
         &.is-fists {
             background-repeat: no-repeat space;
-            background-position-x: center;
+            background-position-x: 26px;
             background-size: 32px;
             transform: rotate(90deg);
 
@@ -919,6 +919,7 @@
                 height: 50px;
 
                 background-size: 19px;
+                background-position-x: 15px;
             }
 
             @media screen and (max-width: $screen_medium) {
@@ -926,6 +927,7 @@
                 height: 35px;
 
                 background-size: 13px;
+                background-position-x: 11px;
             }
         }
     }

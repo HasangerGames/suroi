@@ -235,6 +235,16 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         itemType: ItemType.Skin
     },
     {
+        idString: "bee",
+        name: "Bee",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "armadillo",
+        name: "Armadillo",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "printer",
         name: "Printer",
         itemType: ItemType.Skin
@@ -310,16 +320,6 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         name: "Blueberry Smoothie",
         itemType: ItemType.Skin,
         notInLoadout: true
-    },
-    {
-        idString: "armadillo",
-        name: "Armadillo",
-        itemType: ItemType.Skin
-    },
-    {
-        idString: "bee",
-        name: "Bee",
-        itemType: ItemType.Skin
     },
     {
         idString: "fireball",
