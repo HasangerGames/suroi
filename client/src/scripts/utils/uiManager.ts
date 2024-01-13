@@ -328,14 +328,11 @@ export class UIManager {
                     .children(".item-name")
                     .text(weapon.definition.name);
 
+                const isFists = weapon.definition.idString === "fists";
                 container
                     .children(".item-image")
-                    .css(
-                        "background-image",
-                        weapon.definition.idString === "fists"
-                            ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
-                            : "none"
-                    )
+                    .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
+                    .toggleClass("is-fists", isFists)
                     .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
                     .show();
 

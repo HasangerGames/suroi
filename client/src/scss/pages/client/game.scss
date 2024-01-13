@@ -908,25 +908,26 @@
         position: absolute;
         left: 5px;
 
-        background-repeat: space no-repeat;
-        background-position-y: center;
+        &.is-fists {
+            background-repeat: no-repeat space;
+            background-position-x: center;
+            background-size: 32px;
+            transform: rotate(90deg);
 
-        background-size: 32px;
+            @media screen and (max-width: $screen_large) {
+                width: 50px;
+                height: 50px;
 
-        @media screen and (max-width: $screen_large) {
-            width: 50px;
-            height: 50px;
+                background-size: 19px;
+            }
 
-            background-size: 19px;
+            @media screen and (max-width: $screen_medium) {
+                width: 35px;
+                height: 35px;
+
+                background-size: 13px;
+            }
         }
-
-        @media screen and (max-width: $screen_medium) {
-            width: 35px;
-            height: 35px;
-
-            background-size: 13px;
-        }
-
     }
 }
 
