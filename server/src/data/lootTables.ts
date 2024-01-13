@@ -308,6 +308,10 @@ export const LootTables: Record<string, LootTable> = {
             ],
             [
                 { tier: "airdrop_guns", weight: 1 }
+            ],
+            [
+                { item: "frag_grenade", count: 3, weight: 2 },
+                { item: null, weight: 1 }
             ]
         ]
     },
@@ -335,6 +339,9 @@ export const LootTables: Record<string, LootTable> = {
             ],
             [
                 { tier: "gold_airdrop_guns", weight: 1 }
+            ],
+            [
+                { item: "frag_grenade", count: 3, weight: 1 }
             ]
         ]
     },
@@ -540,6 +547,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: null, weight: 1 },
         { item: "stardust", weight: 0.5 },
         { item: "aurora", weight: 0.5 },
+        { item: "blueberry_smoothie", weight: 0.3 },
         { item: "ghillie_suit", weight: 0.1 },
         { item: "basic_outfit", weight: 0.001 }
     ],
