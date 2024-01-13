@@ -164,6 +164,11 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         itemType: ItemType.Skin
     },
     {
+        idString: "floral",
+        name: "Floral",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "sunny",
         name: "Sunny",
         itemType: ItemType.Skin
@@ -222,6 +227,11 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     {
         idString: "zebra",
         name: "Zebra",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "tiger",
+        name: "Tiger",
         itemType: ItemType.Skin
     },
     {
