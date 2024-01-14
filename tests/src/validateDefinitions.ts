@@ -1412,132 +1412,149 @@ logger.indent("Validating guns", () => {
                     }
                 });
 
+                tester.assertNoPointlessValue({
+                    obj: gun,
+                    field: "casingParticles",
+                    defaultValue: [],
+                    equalityFunction: a => a.length === 0,
+                    baseErrorPath: errorPath
+                });
+
                 if (gun.casingParticles !== undefined) {
                     const casings = gun.casingParticles;
+
                     logger.indent("Validating casings", () => {
-                        const errorPath2 = tester.createPath(errorPath, "casings");
-                        validators.vector(errorPath2, casings.position);
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "count",
-                            defaultValue: 1,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (casings.count !== undefined) {
-                            tester.assertIsPositiveFiniteReal({
-                                obj: casings,
-                                field: "count",
-                                baseErrorPath: errorPath2
-                            });
-                        }
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "spawnOnReload",
-                            defaultValue: false,
-                            baseErrorPath: errorPath2
-                        });
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "ejectionDelay",
-                            defaultValue: 0,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (casings.ejectionDelay !== undefined) {
-                            tester.assertIsPositiveFiniteReal({
-                                obj: casings,
-                                field: "ejectionDelay",
-                                baseErrorPath: errorPath2
-                            });
-                        }
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "velocity",
-                            defaultValue: {},
-                            equalityFunction: a => Object.keys(a).length === 0,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (casings.velocity) {
-                            logger.indent("Validating casing velocities", () => {
-                                const velocity = casings.velocity!;
+                        tester.runTestOnArray<NonNullable<SingleGunNarrowing["casingParticles"]>[number]>(
+                            casings,
+                            (casingSpec, errorPath) => {
+                                validators.vector(errorPath, casingSpec.position);
 
                                 tester.assertNoPointlessValue({
-                                    obj: velocity,
-                                    field: "x",
-                                    defaultValue: {},
-                                    equalityFunction: a => Object.keys(a).length === 0,
-                                    baseErrorPath: errorPath2
+                                    obj: casingSpec,
+                                    field: "count",
+                                    defaultValue: 1,
+                                    baseErrorPath: errorPath
                                 });
 
-                                if (velocity.x) {
-                                    tester.assertInBounds({
-                                        obj: velocity.x,
-                                        field: "min",
-                                        min: -Infinity,
-                                        max: velocity.x.max,
-                                        includeMin: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertInBounds({
-                                        obj: velocity.x,
-                                        field: "max",
-                                        min: velocity.x.min,
-                                        max: Infinity,
-                                        includeMax: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertNoPointlessValue({
-                                        obj: velocity.x,
-                                        field: "randomSign",
-                                        defaultValue: false,
-                                        baseErrorPath: errorPath2
+                                if (casingSpec.count !== undefined) {
+                                    tester.assertIsPositiveFiniteReal({
+                                        obj: casingSpec,
+                                        field: "count",
+                                        baseErrorPath: errorPath
                                     });
                                 }
 
                                 tester.assertNoPointlessValue({
-                                    obj: velocity,
-                                    field: "y",
-                                    defaultValue: {},
-                                    equalityFunction: a => Object.keys(a).length === 0,
-                                    baseErrorPath: errorPath2
+                                    obj: casingSpec,
+                                    field: "ejectionDelay",
+                                    defaultValue: 0,
+                                    baseErrorPath: errorPath
                                 });
 
-                                if (velocity.y) {
-                                    tester.assertInBounds({
-                                        obj: velocity.y,
-                                        field: "min",
-                                        min: -Infinity,
-                                        max: velocity.y.max,
-                                        includeMin: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertInBounds({
-                                        obj: velocity.y,
-                                        field: "max",
-                                        min: velocity.y.min,
-                                        max: Infinity,
-                                        includeMax: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertNoPointlessValue({
-                                        obj: velocity.y,
-                                        field: "randomSign",
-                                        defaultValue: false,
-                                        baseErrorPath: errorPath2
+                                if (casingSpec.ejectionDelay !== undefined) {
+                                    tester.assertIsPositiveFiniteReal({
+                                        obj: casingSpec,
+                                        field: "ejectionDelay",
+                                        baseErrorPath: errorPath
                                     });
                                 }
-                            });
-                        }
+
+                                tester.assertNoPointlessValue({
+                                    obj: casingSpec,
+                                    field: "velocity",
+                                    defaultValue: {},
+                                    equalityFunction: a => Object.keys(a).length === 0,
+                                    baseErrorPath: errorPath
+                                });
+
+                                if (casingSpec.velocity) {
+                                    logger.indent("Validating casing velocities", () => {
+                                        const velocity = casingSpec.velocity!;
+
+                                        const errorPathX = tester.createPath(errorPath, "velocity", "x");
+                                        const errorPathY = tester.createPath(errorPath, "velocity", "y");
+
+                                        tester.assertNoPointlessValue({
+                                            obj: velocity,
+                                            field: "x",
+                                            defaultValue: {},
+                                            equalityFunction: a => Object.keys(a).length === 0,
+                                            baseErrorPath: errorPathX
+                                        });
+
+                                        if (velocity.x) {
+                                            tester.assertInBounds({
+                                                obj: velocity.x,
+                                                field: "min",
+                                                min: -Infinity,
+                                                max: velocity.x.max,
+                                                includeMin: false,
+                                                baseErrorPath: errorPathX
+                                            });
+
+                                            tester.assertInBounds({
+                                                obj: velocity.x,
+                                                field: "max",
+                                                min: velocity.x.min,
+                                                max: Infinity,
+                                                includeMax: false,
+                                                baseErrorPath: errorPathX
+                                            });
+
+                                            tester.assertNoPointlessValue({
+                                                obj: velocity.x,
+                                                field: "randomSign",
+                                                defaultValue: false,
+                                                baseErrorPath: errorPathX
+                                            });
+                                        }
+
+                                        tester.assertNoPointlessValue({
+                                            obj: velocity,
+                                            field: "y",
+                                            defaultValue: {},
+                                            equalityFunction: a => Object.keys(a).length === 0,
+                                            baseErrorPath: errorPathY
+                                        });
+
+                                        if (velocity.y) {
+                                            tester.assertInBounds({
+                                                obj: velocity.y,
+                                                field: "min",
+                                                min: -Infinity,
+                                                max: velocity.y.max,
+                                                includeMin: false,
+                                                baseErrorPath: errorPathY
+                                            });
+
+                                            tester.assertInBounds({
+                                                obj: velocity.y,
+                                                field: "max",
+                                                min: velocity.y.min,
+                                                max: Infinity,
+                                                includeMax: false,
+                                                baseErrorPath: errorPathY
+                                            });
+
+                                            tester.assertNoPointlessValue({
+                                                obj: velocity.y,
+                                                field: "randomSign",
+                                                defaultValue: false,
+                                                baseErrorPath: errorPathY
+                                            });
+                                        }
+                                    });
+                                }
+
+                                tester.assertNoPointlessValue({
+                                    obj: casingSpec,
+                                    field: "on",
+                                    defaultValue: "fire",
+                                    baseErrorPath: errorPath
+                                });
+                            },
+                            tester.createPath(errorPath, "casings")
+                        );
                     });
                 }
             }
