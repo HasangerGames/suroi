@@ -217,7 +217,6 @@ export const Melees: MeleeDefinition[] = [
         itemType: ItemType.Melee,
         damage: 45,
         obstacleMultiplier: 1.5,
-        piercingMultiplier: 1,
         radius: 2.7,
         offset: Vec.create(5.4, -0.5),
         cooldown: 410,
@@ -235,7 +234,7 @@ export const Melees: MeleeDefinition[] = [
             usePosition: Vec.create(123, -13),
             angle: 35,
             useAngle: 0,
-            lootScale: 0.6
+            lootScale: 0.7
         }
     }
 ];
