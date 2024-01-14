@@ -74,7 +74,7 @@ export class Gas {
         const currentStage = GasStages[this.stage + 1];
         if (currentStage === undefined) return;
 
-        const duration = Config.gas.mode === GasMode.Debug && currentStage.duration !== 0
+        const duration = Config.gas.mode === GasMode.Debug && Config.gas.overrideDuration !== undefined && currentStage.duration !== 0
             ? Config.gas.overrideDuration
             : currentStage.duration;
 
@@ -87,10 +87,10 @@ export class Gas {
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {
-                if (Config.gas.mode === GasMode.Debug) {
+                if (Config.gas.mode === GasMode.Debug && Config.gas.overridePosition) {
                     this.newPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
                 } else {
-                    this.newPosition = randomPointInsideCircle(this.oldPosition, (currentStage.oldRadius - currentStage.newRadius) * this.mapSize);
+                    this.newPosition = randomPointInsideCircle(this.oldPosition, currentStage.newRadius * this.mapSize);
                     const radius = currentStage.newRadius * this.mapSize;
                     this.newPosition.x = Numeric.clamp(this.newPosition.x, radius, this.game.map.width - radius);
                     this.newPosition.y = Numeric.clamp(this.newPosition.y, radius, this.game.map.height - radius);

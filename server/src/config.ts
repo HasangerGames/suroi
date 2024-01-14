@@ -113,7 +113,8 @@ export interface ConfigType {
         readonly mode: GasMode.Normal
     } | {
         readonly mode: GasMode.Debug
-        readonly overrideDuration: number
+        readonly overridePosition?: boolean
+        readonly overrideDuration?: number
     }
 
     readonly movementSpeed: number
