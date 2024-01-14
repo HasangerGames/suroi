@@ -429,9 +429,11 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "sr25", weight: 0.01 },
         { item: "mini14", weight: 0.01 },
         { item: "mcx_spear", weight: 0.01 },
+        { item: "vepr12", weight: 0.008 },
         { item: "stoner_63", weight: 0.005 },
         { item: "radio", weight: 0.005 },
         { item: "mosin", weight: 0.005 },
+        { item: "vector", weight: 0.004 },
         { item: "tango_51", weight: 0.002 }
     ],
     healing_items: [
@@ -476,10 +478,6 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "hp18", weight: 1 },
         { item: "mp40", weight: 1 },
         { item: "model_37", weight: 1 },
-        //fixme custom loot table for playtest (start)
-        { item: "vector", weight: 0.8 },
-        { item: "vepr12", weight: 0.8 },
-        //fixme custom loot table for playtest (end)
         { item: "m3k", weight: 0.8 },
         { item: "arx160", weight: 0.8 },
         { item: "flues", weight: 0.8 },
@@ -493,9 +491,11 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "sr25", weight: 0.05 },
         { item: "mini14", weight: 0.05 },
         { item: "mcx_spear", weight: 0.05 },
+        { item: "vepr12", weight: 0.04 },
         { item: "stoner_63", weight: 0.01 },
         { item: "radio", weight: 0.01 },
         { item: "mosin", weight: 0.01 },
+        { item: "vector", weight: 0.008 },
         { item: "tango_51", weight: 0.004 }
     ],
     special_healing_items: [
@@ -596,6 +596,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "vepr12", weight: 0.6 },
         { item: "lewis_gun", weight: 0.6 },
         { item: "mosin", weight: 0.5 },
+        { item: "vector", weight: 0.4 },
         { item: "stoner_63", weight: 0.1 },
         { item: "tango_51", weight: 0.1 },
         { item: "g19", weight: 0.1 }
