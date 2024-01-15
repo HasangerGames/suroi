@@ -9,7 +9,14 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Specified in *milliseconds*
      */
     readonly fuseTime: number
+    /**
+     * Note: setting this higher than `fuseTime` guarantees that the grenade detonates in the user's hands,
+     * except if they drop it at their feet and run away
+     */
     readonly cookTime: number
+    /**
+     * Only used client-side, dictates the duration of the throwing animation
+     */
     readonly throwTime: number
     /**
      * Whether cooking the grenade will run down the fuse
