@@ -3,7 +3,7 @@ import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketTyp
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { SyncedParticles, type SyncedParticlesDefinition, type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
+import { SyncedParticles, type SyncedParticleSpawnerDefinition, type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -577,7 +577,7 @@ export class Game {
         syncedParticle.dead = true;
     }
 
-    addSyncedParticles(particles: SyncedParticlesDefinition, position: Vector): void {
+    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector): void {
         const particleDef = SyncedParticles.fromString(particles.type);
         const { spawnRadius, count, deployAnimation } = particles;
 

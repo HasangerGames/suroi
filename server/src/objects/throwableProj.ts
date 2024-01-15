@@ -116,9 +116,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         const impactDamage = this.definition.impactDamage;
         const currentSquaredVel = Vec.squaredLength(this.velocity);
         const squaredThresholds = ThrowableProjectile.squaredThresholds;
-        const shouldDealImpactDamage = impactDamage !== undefined && currentSquaredVel >= squaredThresholds.impactDamage;
+        const remainAirborne = currentSquaredVel >= squaredThresholds.impactDamage;
+        const shouldDealImpactDamage = impactDamage !== undefined && remainAirborne;
 
-        if (!shouldDealImpactDamage) {
+        if (!remainAirborne) {
             this._airborne = false;
 
             if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
