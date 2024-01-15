@@ -411,6 +411,7 @@ export class InputManager {
         "use_consumable cola": "Use Cola",
         "use_consumable tablets": "Use Tablets",
         cancel_action: "Cancel Action",
+        "+view_map": "View Map",
         toggle_map: "Toggle Fullscreen Map",
         toggle_minimap: "Toggle Minimap",
         toggle_hud: "Toggle HUD",
