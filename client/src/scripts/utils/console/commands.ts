@@ -570,12 +570,10 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "view_map",
-        function (): undefined {
-            console.log("hi from show map");
+        function(): undefined {
             game.map.switchToBigMap();
         },
-        function (): undefined {
-            console.log("hi from hide map");
+        function(): undefined {
             game.map.switchToSmallMap();
         },
         game,
