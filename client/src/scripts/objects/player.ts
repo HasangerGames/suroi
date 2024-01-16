@@ -108,7 +108,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         super(game, id);
 
         this.images = {
-            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), // SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
+            aimTrail: new TilingSprite(SuroiSprite.getTexture("aimTrail"), 20, 6000),
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
