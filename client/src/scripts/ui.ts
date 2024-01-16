@@ -490,6 +490,28 @@ Video evidence is required.`)) {
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
 
+    const gameUi = $("#game-ui");
+    function updateUiScale(): void {
+        const scale = game.console.getBuiltInCVar("cv_ui_scale");
+
+        gameUi.width(window.innerWidth / scale);
+        gameUi.height(window.innerHeight / scale);
+        gameUi.css("transform", `scale(${scale})`);
+    }
+    updateUiScale();
+    window.addEventListener("resize", () => updateUiScale());
+
+    addSliderListener("#slider-ui-scale", "cv_ui_scale", () => {
+        updateUiScale();
+        game.map.resize();
+    });
+
+    // TODO: fix joysticks on mobile when UI scale is not 1
+    if (game.inputManager.isMobile) {
+        $("#ui-scale-container").hide();
+        game.console.setBuiltInCVar("cv_ui_scale", 1);
+    }
+
     // Minimap stuff
     addSliderListener("#slider-minimap-transparency", "cv_minimap_transparency", () => {
         game.map.updateTransparency();
@@ -665,8 +687,7 @@ Video evidence is required.`)) {
         // Emote button & wheel
         $("#emote-wheel")
             .css("top", "50%")
-            .css("left", "50%")
-            .css("transform", "translate(-50%, -50%)");
+            .css("left", "50%");
         $("#btn-emotes").show().on("click", () => {
             $("#emote-wheel").show();
         });

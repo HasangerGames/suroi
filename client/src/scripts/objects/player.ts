@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, Texture, TilingSprite } from "pixi.js";
+import { Container, TilingSprite } from "pixi.js";
 import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";

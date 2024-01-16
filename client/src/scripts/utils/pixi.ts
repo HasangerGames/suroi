@@ -39,7 +39,6 @@ export async function loadTextures(): Promise<void> {
     await Promise.all(promises);
 }
 
-
 export class SuroiSprite extends Sprite {
     constructor(frame?: string) {
         super(frame ? SuroiSprite.getTexture(frame) : undefined);

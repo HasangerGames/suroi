@@ -139,7 +139,7 @@ export class Game {
             resolution: window.devicePixelRatio || 1
         });
 
-        $("#game-ui").append(this.pixi.view);
+        $("#game").append(this.pixi.view);
 
         this.pixi.ticker.add(this.render.bind(this));
 
