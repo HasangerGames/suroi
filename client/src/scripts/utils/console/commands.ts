@@ -617,7 +617,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_hud",
         function(): undefined {
-            $("canvas").toggleClass("over-hud");
+            $("#game-ui").toggle();
             if (game.map.visible) { game.map.toggleMinimap(); }
         },
         game,

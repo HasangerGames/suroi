@@ -325,7 +325,7 @@ Video evidence is required.`)) {
             game.console.getBuiltInCVar("cv_crosshair_stroke_color"),
             game.console.getBuiltInCVar("cv_crosshair_stroke_size")
         );
-        const cursor = `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
+        const cursor = crosshair === "crosshair" ? crosshair : `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
 
         $("#crosshair-image").css({
             backgroundImage: `url("${crosshair}")`,
@@ -335,7 +335,7 @@ Video evidence is required.`)) {
 
         $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]);
 
-        $("#crosshair-preview, #game-ui").css({ cursor });
+        $("#crosshair-preview, #game").css({ cursor });
     }
     loadCrosshair();
 
@@ -390,7 +390,7 @@ Video evidence is required.`)) {
     }).val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
 
     // Disable context menu
-    $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
+    $("#game").on("contextmenu", e => { e.preventDefault(); });
 
     // Load settings values and event listeners
     function addSliderListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: number) => void): void {
