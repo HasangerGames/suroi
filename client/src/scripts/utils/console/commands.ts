@@ -568,6 +568,27 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    Command.createInvertiblePair(
+        "view_map",
+        function(): undefined {
+            game.map.switchToBigMap();
+        },
+        function(): undefined {
+            game.map.switchToSmallMap();
+        },
+        game,
+        {
+            short: "Shows the game map",
+            long: "When invoked, the fullscreen map will be toggled.",
+            signatures: [{ args: [], noexcept: true }]
+        },
+        {
+            short: "Hides the game map",
+            long: "When invoked, the fullscreen map will be hidden.",
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
     Command.createCommand(
         "toggle_map",
         function(): undefined {
