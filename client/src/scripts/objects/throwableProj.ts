@@ -46,7 +46,6 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                 : ZIndexes.GroundedThrowables;
 
             if (floorType !== this.floorType) {
-                console.log(floorType);
                 if (doOverlay) this.waterOverlay.setVisible(true);
 
                 this._waterAnim?.kill();
