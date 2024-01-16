@@ -1,6 +1,8 @@
 import { ZIndexes } from "../../common/src/constants";
 import { Loots } from "../../common/src/definitions/loots";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
+import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
+import { type EaseFunctions } from "../../common/src/utils/math";
 import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
@@ -8,8 +10,7 @@ import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 /*
     eslint-disable
 
-    @typescript-eslint/unbound-method,
-    object-shorthand
+    @typescript-eslint/unbound-method
 */
 
 export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
@@ -33,305 +34,354 @@ export function findDupes(collection: string[]): { readonly foundDupes: boolean,
     };
 }
 
+function safeString(value: unknown): string {
+    try {
+        return JSON.stringify(value);
+    } catch (_) {
+        return String(value);
+    }
+}
+
 export const tester = (() => {
+    type Helper<
+        PlainValue,
+        OtherParams extends object
+    > = <Target extends object>(
+        params: ({
+            obj: Target
+            field: keyof Target
+            baseErrorPath: string
+        } | {
+            value: PlainValue
+            errorPath: string
+        }) & OtherParams
+    ) => void;
+    function createDualForm<
+        PlainValue,
+        OtherParams extends object = object
+    >(
+        predicate: (
+            value: PlainValue,
+            otherParams: OtherParams,
+            forwardTo: <Args extends object, Fn extends Helper<PlainValue, Args>>(fn: Fn, args: Args) => void
+        ) => {
+            readonly errors?: string[]
+            readonly warnings?: string[]
+        } | undefined
+    ) {
+        return <Target extends object>(
+            params: ({
+                obj: Target
+                field: keyof Target
+                baseErrorPath: string
+            } | {
+                value: PlainValue
+                errorPath: string
+            }) & OtherParams
+        ): void => {
+            const [value, errorPath] = "value" in params
+                ? [
+                    params.value,
+                    params.errorPath
+                ]
+                : [
+                    params.obj[params.field] as PlainValue,
+                    tester.createPath(params.baseErrorPath, `field ${String(params.field)}`)
+                ];
+
+            const result = {
+                errors: [],
+                warnings: [],
+                ...(predicate(
+                    value,
+                    params,
+                    (target, args) => {
+                        return target({
+                            value,
+                            errorPath,
+                            ...args
+                        });
+                    }
+                ) ?? {})
+            };
+
+            if (result === undefined || !(result.errors.length << result.warnings.length)) return;
+
+            const prependErrorPath = (err: string): [string, string] => [errorPath, err];
+
+            tester.errors.push(
+                ...result.errors.map(prependErrorPath)
+            );
+            tester.warnings.push(
+                ...result.warnings.map(prependErrorPath)
+            );
+        };
+    }
+
     const warnings: Array<[string, string]> = [];
     const errors: Array<[string, string]> = [];
 
-    return {
-        get warnings() { return warnings; },
-        get errors() { return errors; },
-        createPath(...components: string[]) {
-            return components.join(" -> ");
-        },
+    function createPath(...components: string[]): string {
+        return components.join(" -> ");
+    }
 
-        assert(condition: boolean, errorMessage: string, errorPath: string): void {
-            if (!condition) errors.push([errorPath, errorMessage]);
-        },
-        assertWarn(warningCondition: boolean, warningMessage: string, errorPath: string): void {
-            if (warningCondition) warnings.push([errorPath, warningMessage]);
-        },
-        assertNoDuplicateIDStrings(collection: Array<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
-            const { foundDupes, dupes } = findDupes(collection.map(v => v.idString));
+    function assert(condition: boolean, errorMessage: string, errorPath: string): void {
+        if (!condition) errors.push([errorPath, errorMessage]);
+    }
 
-            this.assert(
-                !foundDupes,
-                `Collection ${collectionName} contained duplicate entries: ${Object.entries(dupes).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                errorPath
-            );
-        },
-        assertInt<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }) {
-            const {
-                obj,
-                field,
-                baseErrorPath
-            } = params;
+    function assertWarn(warningCondition: boolean, warningMessage: string, errorPath: string): void {
+        if (warningCondition) warnings.push([errorPath, warningMessage]);
+    }
 
-            const value = obj[field] as number;
-            const errorPath = this.createPath(baseErrorPath, `field '${String(field)}'`);
+    function assertNoDuplicateIDStrings(collection: Array<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
+        const { foundDupes, dupes } = findDupes(collection.map(v => v.idString));
 
-            tester.assert(value % 1 === 0, `This field must be an integer (received ${value})`, errorPath);
-        },
-        assertReferenceExists<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
+        assert(
+            !foundDupes,
+            `Collection ${collectionName} contained duplicate entries: ${Object.entries(dupes).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
+            errorPath
+        );
+    }
+
+    const assertInt = createDualForm((value: number) => {
+        if (value % 1 === 0) return;
+
+        return {
+            errors: [`This value must be an integer (received ${safeString(value)})`]
+        };
+    });
+
+    const assertReferenceExists = createDualForm((
+        value: string,
+        otherParams: {
             collection: ObjectDefinitions
-        }) {
-            const {
-                obj,
-                field,
-                baseErrorPath,
-                collection
-            } = params;
-
-            this.assertReferenceExistsArray({
-                obj,
-                field,
-                baseErrorPath,
-                collection: collection.definitions,
-                collectionName: collection.constructor.name
-            });
+            collectionName: string
         },
-        assertReferenceExistsArray<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
+        forwardTo
+    ): undefined => {
+        forwardTo(
+            assertReferenceExistsArray,
+            {
+                collection: otherParams.collection.definitions,
+                collectionName: otherParams.collectionName
+            }
+        );
+    });
+
+    const assertReferenceExistsArray = createDualForm((
+        value: string,
+        otherParams: {
             collection: ObjectDefinition[]
             collectionName: string
-        }) {
-            const {
-                obj,
-                field,
-                baseErrorPath,
-                collection,
-                collectionName
-            } = params;
-
-            this.assertReferenceExistsObject({
-                obj,
-                field,
-                baseErrorPath,
-                collection: collection.reduce<Record<string, unknown>>(
+        },
+        forwardTo
+    ): undefined => {
+        forwardTo(
+            assertReferenceExistsObject,
+            {
+                collection: otherParams.collection.reduce<Record<string, unknown>>(
                     (acc, cur) => {
                         acc[cur.idString] = cur;
                         return acc;
                     },
                     {}
                 ),
-                collectionName
-            });
-        },
-        assertReferenceExistsObject<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
+                collectionName: otherParams.collectionName
+            }
+        );
+    });
+
+    const assertReferenceExistsObject = createDualForm((
+        value: string,
+        otherParams: {
             collection: Record<string, unknown>
             collectionName: string
-        }) {
-            const {
-                obj,
-                field,
-                baseErrorPath,
-                collection,
-                collectionName
-            } = params;
+        }
+    ) => {
+        if (value in otherParams.collection) return;
 
-            const referenceToValidate = obj[field] as string;
-            const errorPath = this.createPath(baseErrorPath, `field '${String(field)}'`);
+        return {
+            errors: [`This field attempted to refer to member '${value}' of collection '${otherParams.collectionName}', but no such member exists.`]
+        };
+    });
 
-            tester.assert(
-                referenceToValidate in collection,
-                `This field attempted to refer to member '${referenceToValidate}' of collection '${collectionName}', but no such member exists.`,
-                errorPath
-            );
+    const assertInBounds = createDualForm((
+        value: number,
+        otherParams: {
+            min: number
+            max: number
+            includeMin?: boolean
+            includeMax?: boolean
+        }
+    ) => {
+        const {
+            min,
+            max,
+            includeMin,
+            includeMax
+        } = otherParams;
+
+        const errors: string[] = [];
+
+        if (!(value > min || (includeMin === true && value === min))) {
+            errors.push(`This field must be greater than ${includeMin ? "or equal to " : ""}${min} (received ${safeString(value)})`);
+        }
+        if (!(value < max || (includeMax === true && value === max))) {
+            errors.push(`This field must be less than ${includeMax ? "or equal to " : ""}${max} (received ${safeString(value)})`);
+        }
+
+        return {
+            errors
+        };
+    });
+
+    const assertIsRealNumber = createDualForm<number>((value, otherParams, forwardTo): undefined => {
+        forwardTo(
+            assertInBounds,
+            {
+                min: -Infinity,
+                max: Infinity,
+                includeMin: true,
+                includeMax: true
+            }
+        );
+    });
+
+    const assertIsFiniteRealNumber = createDualForm<number>((value, otherParams, forwardTo): undefined => {
+        forwardTo(
+            assertInBounds,
+            {
+                min: -Infinity,
+                max: Infinity
+            }
+        );
+    });
+
+    const assertIsPositiveReal = createDualForm<number>((value, otherParams, forwardTo): undefined => {
+        forwardTo(
+            assertInBounds,
+            {
+                min: 0,
+                max: Infinity,
+                includeMin: true,
+                includeMax: true
+            }
+        );
+    });
+
+    const assertIsPositiveFiniteReal = createDualForm<number>((value, otherParams, forwardTo): undefined => {
+        forwardTo(
+            assertInBounds,
+            {
+                min: 0,
+                max: Infinity,
+                includeMin: true
+            }
+        );
+    });
+
+    const assertIsNaturalNumber = createDualForm<number>((value, otherParams, forwardTo): undefined => {
+        forwardTo(assertIsPositiveReal, {});
+
+        if (Number.isFinite(value)) {
+            forwardTo(assertInt, {});
+        }
+    });
+
+    const assertIsNaturalFiniteNumber = createDualForm<number>((value, otherParams, forwardTo): undefined => {
+        forwardTo(assertIsPositiveFiniteReal, {});
+
+        if (Number.isFinite(value)) {
+            forwardTo(assertInt, {});
+        }
+    });
+
+    const assertIntAndInBounds = createDualForm((
+        value: number,
+        otherParams: {
+            min: number
+            max: number
+            includeMin?: boolean
+            includeMax?: boolean
         },
+        forwardTo
+    ): undefined => {
+        forwardTo(assertInBounds, otherParams);
+
+        if (Number.isFinite(value)) {
+            forwardTo(assertInt, {});
+        }
+    });
+
+    const assertNoPointlessValue = createDualForm(
+        (
+            value: unknown,
+            otherParams: {
+                defaultValue: typeof value
+                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
+            }
+        ) => {
+            if ((value !== undefined) && (otherParams.equalityFunction ?? ((a, b) => a === b))(value!, otherParams.defaultValue)) {
+                return {
+                    warnings: [
+                        `This field is optional and has a default value (${safeString(otherParams.defaultValue)}); specifying its default value serves no purpose`
+                    ]
+                };
+            }
+        }
+    ) as <Target extends object, Key extends keyof Target, ValueType>(
+        params: ({
+            obj: Target
+            field: Key
+            baseErrorPath: string
+        } | {
+            value: ValueType
+            errorPath: string
+        }) & {
+            defaultValue: ValueType
+            equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
+        }
+    ) => void;
+    // lol
+
+    return Object.freeze({
+        get warnings() { return warnings; },
+        get errors() { return errors; },
+        createPath,
+        assert,
+        assertWarn,
+        assertNoDuplicateIDStrings,
+        assertInt,
+        assertReferenceExists,
+        assertReferenceExistsArray,
+        assertReferenceExistsObject,
+        assertInBounds,
         /**
          * Checks for [-∞, ∞]
          */
-        assertIsRealNumber<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }): void {
-            const {
-                obj,
-                field,
-                baseErrorPath
-            } = params;
-
-            this.assertInBounds({
-                obj,
-                field,
-                min: -Infinity,
-                max: Infinity,
-                includeMin: true,
-                includeMax: true,
-                baseErrorPath
-            });
-        },
+        assertIsRealNumber,
         /**
          * Checks for ]-∞, ∞[
          */
-        assertIsFiniteRealNumber<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }): void {
-            const {
-                obj,
-                field,
-                baseErrorPath
-            } = params;
-
-            this.assertInBounds({
-                obj,
-                field,
-                min: -Infinity,
-                max: Infinity,
-                baseErrorPath
-            });
-        },
+        assertIsFiniteRealNumber,
         /**
          * Checks for `[0, ∞]`
          */
-        assertIsPositiveReal<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }): void {
-            const {
-                obj,
-                field,
-                baseErrorPath
-            } = params;
-
-            this.assertInBounds({
-                obj,
-                field,
-                min: 0,
-                max: Infinity,
-                includeMin: true,
-                includeMax: true,
-                baseErrorPath
-            });
-        },
+        assertIsPositiveReal,
         /**
          * Checks for `[0, ∞[`
          */
-        assertIsPositiveFiniteReal<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }): void {
-            const {
-                obj,
-                field,
-                baseErrorPath
-            } = params;
-
-            this.assertInBounds({
-                obj,
-                field,
-                min: 0,
-                max: Infinity,
-                includeMin: true,
-                baseErrorPath
-            });
-        },
+        assertIsPositiveFiniteReal,
         /**
          * Checks for `[0, ∞] ∩ ℤ`
          */
-        assertIsNaturalNumber<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }): void {
-            if (Number.isFinite(params.obj[params.field])) {
-                this.assertInt(params);
-            }
-            this.assertIsPositiveReal(params);
-        },
+        assertIsNaturalNumber,
         /**
          * Checks for `[0, ∞[ ∩ ℤ` (aka `ℕ`)
          */
-        assertIsNaturalFiniteNumber<T extends object>(params: {
-            obj: T
-            field: keyof T
-            baseErrorPath: string
-        }): void {
-            if (Number.isFinite(params.obj[params.field])) {
-                this.assertInt(params);
-            }
-            this.assertIsPositiveFiniteReal(params);
-        },
-        assertInBounds<T extends object>(params: {
-            obj: T
-            field: keyof T
-            min: number
-            max: number
-            includeMin?: boolean
-            includeMax?: boolean
-            baseErrorPath: string
-        }): void {
-            const {
-                obj,
-                field,
-                min,
-                max,
-                includeMin,
-                includeMax,
-                baseErrorPath
-            } = params;
-
-            const value = obj[field] as number;
-            const errorPath = this.createPath(baseErrorPath, `field '${String(field)}'`);
-
-            tester.assert(value > min || (includeMin === true && value === min), `This field must be greater than ${includeMin ? "or equal to " : ""}${min} (received ${value})`, errorPath);
-            tester.assert(value < max || (includeMax === true && value === max), `This field must be less than ${includeMax ? "or equal to " : ""}${max} (received ${value})`, errorPath);
-        },
-        assertIntAndInBounds<T extends object>(params: {
-            obj: T
-            field: keyof T
-            min: number
-            max: number
-            includeMin?: boolean
-            includeMax?: boolean
-            baseErrorPath: string
-        }): void {
-            if (Number.isFinite(params.obj[params.field])) {
-                this.assertInt(params);
-            }
-
-            this.assertInBounds(params);
-        },
-        assertNoPointlessValue<T extends object, K extends keyof T, U>(params: {
-            obj: T
-            field: K
-            defaultValue: U
-            equalityFunction?: (a: NonNullable<T[K]>, b: U) => boolean
-            baseErrorPath: string
-        }): void {
-            const {
-                obj,
-                field,
-                equalityFunction,
-                defaultValue,
-                baseErrorPath
-            } = params;
-
-            const errorPath = this.createPath(baseErrorPath, `field '${String(field)}'`);
-
-            // technically we should do "field in obj" here, but meh…
-            tester.assertWarn(
-                (obj[field] !== undefined) && (equalityFunction ?? ((a, b) => a === b))(obj[field]!, defaultValue),
-                `This field is optional and has a default value (${JSON.stringify(defaultValue)}); specifying its default value serves no purpose`,
-                errorPath
-            );
-        },
+        assertIsNaturalFiniteNumber,
+        assertIntAndInBounds,
+        assertNoPointlessValue,
         runTestOnArray<T>(array: T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
             let i = 0;
             for (const element of array) {
@@ -339,7 +389,7 @@ export const tester = (() => {
                 i++;
             }
         }
-    };
+    });
 })();
 
 export const validators = Object.freeze({
@@ -369,20 +419,20 @@ export const validators = Object.freeze({
         });
 
         if (ballistics.penetration !== undefined) {
-            const errorPath3 = tester.createPath(baseErrorPath, "penetration");
+            const errorPath = tester.createPath(baseErrorPath, "penetration");
 
             tester.assertNoPointlessValue({
                 obj: ballistics.penetration,
                 field: "players",
                 defaultValue: false,
-                baseErrorPath: errorPath3
+                baseErrorPath: errorPath
             });
 
             tester.assertNoPointlessValue({
                 obj: ballistics.penetration,
                 field: "obstacles",
                 defaultValue: false,
-                baseErrorPath: errorPath3
+                baseErrorPath: errorPath
             });
         }
 
@@ -580,21 +630,38 @@ export const validators = Object.freeze({
         );
     },
     hitbox(baseErrorPath: string, hitbox: Hitbox): void {
-        if (hitbox instanceof CircleHitbox) {
-            this.vector(baseErrorPath, hitbox.position);
+        switch (hitbox.type) {
+            case HitboxType.Circle: {
+                this.vector(tester.createPath(baseErrorPath, "center"), hitbox.position);
 
-            tester.assertIsPositiveFiniteReal({
-                obj: hitbox,
-                field: "radius",
-                baseErrorPath
-            });
-        } else if (hitbox instanceof RectangleHitbox) {
-            this.vector(baseErrorPath, hitbox.min);
-            this.vector(baseErrorPath, hitbox.max);
-        } else if (hitbox instanceof HitboxGroup) {
-            hitbox.hitboxes.map(this.hitbox.bind(this, baseErrorPath));
-        } else if (hitbox instanceof PolygonHitbox) {
-            hitbox.points.map(v => this.vector(baseErrorPath, v));
+                tester.assertIsPositiveFiniteReal({
+                    obj: hitbox,
+                    field: "radius",
+                    baseErrorPath
+                });
+                break;
+            }
+            case HitboxType.Rect: {
+                this.vector(tester.createPath(baseErrorPath, "min"), hitbox.min);
+                this.vector(tester.createPath(baseErrorPath, "max"), hitbox.max);
+                break;
+            }
+            case HitboxType.Group: {
+                tester.runTestOnArray(
+                    hitbox.hitboxes,
+                    (hitbox, errorPath) => this.hitbox(errorPath, hitbox),
+                    baseErrorPath
+                );
+                break;
+            }
+            case HitboxType.Polygon: {
+                tester.runTestOnArray(
+                    hitbox.points,
+                    (point, errorPath) => this.vector(errorPath, point),
+                    baseErrorPath
+                );
+                break;
+            }
         }
     },
     weightedItem(baseErrorPath: string, weightedItem: WeightedItem): void {
@@ -815,7 +882,7 @@ export const validators = Object.freeze({
                                     (entry, errorPath) => {
                                         validateWearerAttributesInternal(errorPath, entry);
                                     },
-                                    tester.createPath(baseErrorPath, "wearer attributes", "kill", "damageDealt")
+                                    tester.createPath(baseErrorPath, "wearer attributes", "on", "kill")
                                 );
                             });
                         }
@@ -844,6 +911,171 @@ export const validators = Object.freeze({
                 break;
             }
         }
+    },
+    minMax<T>(
+        baseErrorPath: string,
+        obj: { min: T, max: T },
+        baseValidator: (errorPath: string, value: T) => void,
+        comparator?: (a: T, b: T) => number
+    ): void {
+        baseValidator(tester.createPath(baseErrorPath, "min"), obj.min);
+        baseValidator(tester.createPath(baseErrorPath, "max"), obj.max);
+
+        if (comparator) {
+            tester.assert(
+                comparator(obj.min, obj.max) <= 0,
+                "The specified maximum must be greater than or equal to the specified minimum",
+                baseErrorPath
+            );
+
+            tester.assert(
+                comparator(obj.max, obj.min) >= 0,
+                "The specified minimum must be smaller than or equal to the specified maximum",
+                baseErrorPath
+            );
+        }
+    },
+    valueSpecifier<T>(
+        baseErrorPath: string,
+        value: ValueSpecifier<T>,
+        baseValidator: (errorPath: string, value: T) => void,
+        comparator?: (a: T, b: T) => number
+    ): void {
+        if (typeof value !== "object" || value === null) {
+            baseValidator(baseErrorPath, value);
+            return;
+        }
+
+        if ("min" in value) {
+            this.minMax(
+                baseErrorPath,
+                value,
+                baseValidator,
+                comparator
+            );
+            return;
+        }
+
+        if ("mean" in value) {
+            baseValidator(tester.createPath(baseErrorPath, "mean"), value.mean);
+            baseValidator(tester.createPath(baseErrorPath, "deviation"), value.deviation);
+            return;
+        }
+
+        baseValidator(baseErrorPath, value);
+    },
+    animated<T>(
+        baseErrorPath: string,
+        animated: Animated<T>,
+        baseValidator: (errorPath: string, value: T) => void,
+        durationValidator?: (errorPath: string, duration?: NumericSpecifier | "lifetime") => void,
+        easingValidator?: (errorPath: string, easing?: keyof typeof EaseFunctions) => void
+    ): void {
+        this.valueSpecifier(tester.createPath(baseErrorPath, "start"), animated.start, baseValidator);
+        this.valueSpecifier(tester.createPath(baseErrorPath, "end"), animated.end, baseValidator);
+
+        (durationValidator ?? (() => {}))(tester.createPath(baseErrorPath, "duration"), animated.duration);
+        (easingValidator ?? (() => {}))(tester.createPath(baseErrorPath, "easing"), animated.easing);
+    },
+    syncedParticleSpawner(baseErrorPath: string, spawner: SyncedParticleSpawnerDefinition): void {
+        tester.assertReferenceExists({
+            obj: spawner,
+            field: "type",
+            collection: SyncedParticles,
+            collectionName: "SyncedParticles",
+            baseErrorPath
+        });
+
+        tester.assertIsNaturalFiniteNumber({
+            obj: spawner,
+            field: "count",
+            baseErrorPath
+        });
+
+        tester.assertNoPointlessValue({
+            obj: spawner,
+            field: "deployAnimation",
+            defaultValue: {},
+            equalityFunction: a => Object.keys(a).length === 0,
+            baseErrorPath
+        });
+
+        if (spawner.deployAnimation !== undefined) {
+            const deployAnimation = spawner.deployAnimation;
+
+            logger.indent("Validating deploy animation", () => {
+                const errorPath = tester.createPath(baseErrorPath, "deploy animation");
+
+                tester.assertNoPointlessValue({
+                    obj: deployAnimation,
+                    field: "duration",
+                    defaultValue: 0,
+                    baseErrorPath: errorPath
+                });
+
+                if (deployAnimation.duration !== undefined) {
+                    tester.assertIsPositiveReal({
+                        obj: deployAnimation,
+                        field: "duration",
+                        baseErrorPath: errorPath
+                    });
+                }
+
+                if (deployAnimation.staggering !== undefined) {
+                    const staggering = deployAnimation.staggering;
+
+                    logger.indent("Validating staggering", () => {
+                        const errorPath2 = tester.createPath(errorPath, "staggering");
+
+                        tester.assertIsPositiveFiniteReal({
+                            obj: staggering,
+                            field: "delay",
+                            baseErrorPath: errorPath2
+                        });
+
+                        tester.assertNoPointlessValue({
+                            obj: staggering,
+                            field: "spawnPerGroup",
+                            defaultValue: 1,
+                            baseErrorPath: errorPath2
+                        });
+
+                        if (staggering.spawnPerGroup !== undefined) {
+                            tester.assertIsNaturalNumber({
+                                obj: staggering,
+                                field: "spawnPerGroup",
+                                baseErrorPath: errorPath2
+                            });
+                        }
+
+                        tester.assertNoPointlessValue({
+                            obj: staggering,
+                            field: "initialAmount",
+                            defaultValue: 0,
+                            baseErrorPath: errorPath2
+                        });
+
+                        if (staggering.spawnPerGroup !== undefined) {
+                            tester.assertIntAndInBounds({
+                                obj: staggering,
+                                field: "spawnPerGroup",
+                                min: 0,
+                                max: spawner.count,
+                                includeMin: true,
+                                includeMax: true,
+                                baseErrorPath: errorPath2
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        tester.assertIsPositiveReal({
+            obj: spawner,
+            field: "spawnRadius",
+            baseErrorPath
+        });
     }
 });
 
@@ -879,7 +1111,7 @@ export const logger = (() => {
             // ┬┆┐─└├
 
             console.clear();
-            (function printInternal(base: LoggingLevel, level = 0, dashes: boolean[] = []): void {
+            (function printInternal(base: LoggingLevel, dashes: boolean[] = []): void {
                 const prePrefix = dashes.map(v => `${v ? "┆" : " "} `).join("");
 
                 for (let i = 0, l = base.messages.length; i < l; i++) {
@@ -894,7 +1126,7 @@ export const logger = (() => {
                         console.log(`${prePrefix}${basePrefix}${prefix} ${message.title}`);
 
                         if (message.messages.length) {
-                            printInternal(message, level + 1, dashes.concat(!isLast));
+                            printInternal(message, dashes.concat(!isLast));
                         }
                     }
                 }

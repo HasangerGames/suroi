@@ -5,7 +5,7 @@ import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type Objec
 import { Vec, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 import { type LootDefinition } from "./loots";
-import { type SyncedParticlesDefinition } from "./syncedParticles";
+import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
 /**
  * An enum indicating the degree to which an obstacle should allow
@@ -72,7 +72,7 @@ export type ObstacleDefinition = ObjectDefinition & {
 
     readonly tint?: number
 
-    readonly particlesOnDestroy?: SyncedParticlesDefinition
+    readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
 
     readonly additionalDestroySounds?: string[]
 } & (({
@@ -2106,7 +2106,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(8.45, 1.6),
             rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Sometimes,
             noResidue: true,
             frames: {
                 particle: "fence_particle"

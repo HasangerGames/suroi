@@ -668,13 +668,15 @@ export function calculateDoorHitboxes<
 type NameGenerator<T extends string> = `${T}In` | `${T}Out` | `${T}InOut`;
 
 function generatePolynomialEasingTriplet<T extends string>(degree: number, type: T): { readonly [K in NameGenerator<T>]: (t: number) => number } {
+    const coeffCache = 2 ** (degree - 1);
+
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return Object.freeze({
         [`${type}In`]: (t: number) => t ** degree,
         [`${type}Out`]: (t: number) => 1 - (1 - t) ** degree,
         [`${type}InOut`]: (t: number) => t < 0.5
-            ? (2 * t) ** degree / 2
-            : 1 - (2 * (1 - t)) ** degree / 2
+            ? coeffCache * t ** degree
+            : 1 - (coeffCache * (1 - t) ** degree)
     } as { [K in NameGenerator<T>]: (t: number) => number });
 }
 

@@ -1,7 +1,7 @@
 import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type ExplosionDefinition } from "./explosions";
-import { type SyncedParticlesDefinition } from "./syncedParticles";
+import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
@@ -9,7 +9,14 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Specified in *milliseconds*
      */
     readonly fuseTime: number
+    /**
+     * Note: setting this higher than `fuseTime` guarantees that the grenade detonates in the user's hands,
+     * except if they drop it at their feet and run away
+     */
     readonly cookTime: number
+    /**
+     * Only used client-side, dictates the duration of the throwing animation
+     */
     readonly throwTime: number
     /**
      * Whether cooking the grenade will run down the fuse
@@ -26,7 +33,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly fireDelay?: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
-        readonly particles?: SyncedParticlesDefinition
+        readonly particles?: SyncedParticleSpawnerDefinition
     }
     readonly animation: {
         readonly pinImage: string
