@@ -3,6 +3,47 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1705262400000,
+        author: "HAZEL",
+        title: "Pulling the Pin",
+        bannerImage: "../img/news/v0.15.0.png",
+        content: `Yank a pin out, cook the 'nade, and toss it to blow your enemy sky high! The throwables update is here and brings a plethora of new features and content the game.<br><br>
+
+First and foremost: throwables. Punch a grenade box, scattered around the map, to find frag and smoke grenades. Frags have a timed fuse and produce a powerful explosion, while smokes can provide cover to hide from enemies.<br><br>
+
+Two new powerful weapons have made it ashore in this update: the Vepr-12 and the Vector. The Vector is incredibly strong, but burns through ammo fast. Similarly, the Vepr-12 will send opponents running, but keep an eye on your 12-gauge ammo reserves.<br><br>
+
+The first new building (in a while!) also makes its debut. The armory is a bastion of strength for the island, and the weapons and density of loot live up to that. Explore the office, bunkhouse, APC, and the vault, which contains powerful loot.<br><br>
+
+There are a bunch more new features to check out, such as a new port layout (including an oil tanker!), mobile home, Viking chests, the seax, maul, and major UI changes. Stay survivn'!`,
+        longContent: `<h2>Suroi v0.15.0</h2>
+<h3>New features</h3>
+<ul>
+  <li>**Throwables!** Added frag grenades and smoke grenades. Other throwables, like mines and MIRV equivalents, will be added in a future update.</li>
+  <li>**New structures!** Added the armory and mobile home.</li>
+  <li>**New guns!** Added the Vector (an SMG), and the Vepr-12 (a full auto shotgun; equivalent to surviv's Saiga-12).</li>
+  <li>**Updated port!** The port is now smaller, and a new type of ship, the oil tanker, has a 50% chance of spawning in place of the normal ship.</li>
+  <li>**New melees!** Added the maul (a heavy hammer), and the seax (a Viking dagger).</li>
+  <li>**New UI layout!** The UI has been overhauled.</li>
+  <li>Added river rocks.</li>
+  <li>Redesigned 2 skins, and added 6 new ones, 1 of which is airdrop exclusive.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Winter mode is over.</li>
+  <li>Increased movement speed slightly, to match surviv.</li>
+  <li>Increased tick rate.</li>
+  <li>The flint stone no longer drops healing items.</li>
+  <li>Adjusted melee weapon stats.</li>
+  <li>Adjusted obstacle multipliers for explosions.</li>
+  <li>Smoke now spawns when airdrops land.</li>
+  <li>The fists icon now changes with the equipped skin.</li>
+  <li>New airdrop ping sound.</li>
+  <li>New dry fire sound.</li>
+</ul>`
+    },
+    {
         date: 1702328915000,
         author: "HAZEL",
         title: "Double Trouble",
@@ -369,9 +410,9 @@ Surians can now customize their skins, and express themselves with emotes too! E
     {
         date: 1685914769000,
         author: "Dr. Petrova",
-        title: "2, 8, 18, 7",
+        title: "Doublet State",
         bannerImage: "../img/news/v0.3.0.png",
-        content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -7.2°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
+        content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -9.3°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
         longContent: `<h2>Suroi v0.3.0</h2>
 <h3>New features</h3>
 <ul>

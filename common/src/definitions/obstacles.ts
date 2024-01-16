@@ -5,7 +5,7 @@ import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type Objec
 import { Vec, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 import { type LootDefinition } from "./loots";
-import { type SyncedParticlesDefinition } from "./syncedParticles";
+import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
 /**
  * An enum indicating the degree to which an obstacle should allow
@@ -72,7 +72,7 @@ export type ObstacleDefinition = ObjectDefinition & {
 
     readonly tint?: number
 
-    readonly particlesOnDestroy?: SyncedParticlesDefinition
+    readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
 
     readonly additionalDestroySounds?: string[]
 } & (({
@@ -105,7 +105,10 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly delay: number
     }
 } | {
-    readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
+    readonly role: ObstacleSpecialRoles.Window
+    readonly noCollisionAfterDestroyed?: boolean
+} | {
+    readonly role?: ObstacleSpecialRoles.Wall
 });
 
 export const Materials = [
@@ -209,6 +212,28 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
         frames: {
             particle: "rock_particle"
         }
+    };
+}
+
+function makeMobileHomeWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition {
+    return {
+        idString: `mobile_home_wall_${lengthNumber}`,
+        name: `Mobile Home Wall ${lengthNumber}`,
+        material: "appliance",
+        noResidue: true,
+        health: 240,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        hitbox,
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            particle: "briefcase_particle"
+        },
+        role: ObstacleSpecialRoles.Wall
     };
 }
 
@@ -2101,7 +2126,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(8.45, 1.6),
             rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
             noResidue: true,
             frames: {
                 particle: "fence_particle"
@@ -2331,6 +2355,105 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "metal_particle",
                 activated: "button_activated"
+            }
+        },
+        makeMobileHomeWall("1", RectangleHitbox.fromRect(6.97, 1.68)),
+        makeMobileHomeWall("2", RectangleHitbox.fromRect(10.8, 1.68)),
+        makeMobileHomeWall("3", RectangleHitbox.fromRect(20.43, 1.68)),
+        {
+            idString: "mobile_home_bed",
+            name: "Mobile Home Bed",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(7.12, 16.06),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "mobile_home_sink",
+            name: "Mobile Home Sink",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.7
+            },
+            hideOnMap: true,
+            hasLoot: true,
+            hitbox: RectangleHitbox.fromRect(9.5, 6.63, Vec.create(0, -0.47)),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "mobile_home_stove",
+            name: "Mobile Home Stove",
+            material: "metal",
+            health: 140,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
+            rotationMode: RotationMode.Limited,
+            explosion: "stove_explosion",
+            frames: {
+                particle: "metal_particle",
+                residue: "stove_residue"
+            },
+            reflectBullets: true
+        },
+        {
+            idString: "mobile_home_tire",
+            name: "Mobile Home Tire",
+            material: "stone",
+            health: 200,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: RectangleHitbox.fromRect(3.47, 8.35),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "flint_stone_particle"
+            },
+            particleVariations: 2
+        },
+        {
+            idString: "mobile_home_window",
+            name: "Mobile Home Window",
+            material: "glass",
+            health: 20,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(13.8, 1.5),
+            zIndex: ZIndexes.ObstaclesLayer2,
+            allowFlyover: FlyoverPref.Never,
+            rotationMode: RotationMode.Limited,
+            role: ObstacleSpecialRoles.Window,
+            noCollisionAfterDestroyed: true,
+            frames: {
+                particle: "window_particle"
             }
         }
     ]

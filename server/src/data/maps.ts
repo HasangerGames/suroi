@@ -63,8 +63,9 @@ export const Maps: Record<string, MapDefinition> = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            small_house: 10,
-            porta_potty: 15,
+            small_house: 6,
+            mobile_home: 9,
+            porta_potty: 12,
             container_3: 1,
             container_4: 2,
             container_5: 1,
@@ -77,16 +78,16 @@ export const Maps: Record<string, MapDefinition> = {
         obstacles: {
             oil_tank: 10,
             // christmas_tree: 1, // winter mode
-            oak_tree: 310,
-            birch_tree: 50,
-            pine_tree: 30,
-            regular_crate: 300,
-            flint_crate: 6,
-            aegis_crate: 6,
+            oak_tree: 250,
+            birch_tree: 25,
+            pine_tree: 15,
+            regular_crate: 150,
+            flint_crate: 5,
+            aegis_crate: 5,
             grenade_crate: 40,
-            rock: 200,
+            rock: 150,
             river_rock: 45,
-            bush: 120,
+            bush: 110,
             blueberry_bush: 30,
             barrel: 80,
             viking_chest: 1,
@@ -335,8 +336,8 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            // map.game.grid.addObject(new Decal(map.game, "armory_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("port", Vec.create(this.width / 2, this.height / 2), 0);
+            //map.game.grid.addObject(new Decal(map.game, "mobile_home_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("port_complex", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -345,7 +346,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("tear_gas_crate", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("mobile_home_sink", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

@@ -30,6 +30,7 @@ export interface CVarTypeMapping {
     readonly cv_antialias: ConVar<boolean>
     readonly cv_minimap_minimized: ConVar<boolean>
     readonly cv_leave_warning: ConVar<boolean>
+    readonly cv_ui_scale: ConVar<number>
     readonly cv_minimap_transparency: ConVar<number>
     readonly cv_map_transparency: ConVar<number>
     readonly cv_draw_hud: ConVar<boolean>
@@ -84,6 +85,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_antialias: true,
     cv_minimap_minimized: false,
     cv_leave_warning: true,
+    cv_ui_scale: 1,
     cv_minimap_transparency: 0.8,
     cv_map_transparency: 0.9,
     cv_rules_acknowledged: false,
@@ -142,6 +144,7 @@ export const defaultBinds = Object.freeze({
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
     cancel_action: ["X"],
+    "+view_map": [] as string[],
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],
     toggle_hud: [],

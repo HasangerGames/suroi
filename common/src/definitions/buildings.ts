@@ -2,6 +2,7 @@ import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { randomSign, randomVector } from "../utils/random";
 import { type FloorTypes } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
@@ -171,6 +172,12 @@ const randomContainer2 = {
     container_11: 7
 };
 
+const warehouseObstacle = {
+    regular_crate: 2,
+    barrel: 2,
+    flint_crate: 1
+};
+
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
@@ -204,7 +211,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_back_wall",
-                position: Vec.create(0, -8.8),
+                position: Vec.create(0, -8.75),
                 rotation: 0
             },
             {
@@ -224,7 +231,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "porta_potty_front_wall",
-                position: Vec.create(-4.6, 8.7),
+                position: Vec.create(-4.6, 8.66),
                 rotation: 2
             }
         ]
@@ -500,81 +507,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            {
-                idString: "warehouse_walls",
-                position: Vec.create(-19.8, 0),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_walls",
-                position: Vec.create(19.8, 0),
-                rotation: 2
-            },
-            {
-                idString: "regular_crate",
-                position: Vec.create(14, -28.5)
-            },
-            {
-                idString: "regular_crate",
-                position: Vec.create(-14, -28.5)
-            },
-            {
-                idString: {
-                    regular_crate: 0.7,
-                    flint_crate: 0.3
-                },
-                position: Vec.create(-14, 28.5)
-            },
-            {
-                idString: "barrel",
-                position: Vec.create(14.6, 29.2)
-            },
-            {
-                idString: "metal_shelf",
-                position: Vec.create(-15.8, 0),
-                rotation: 1
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(-15.7, 0),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(-15.7, 0),
-                lootSpawnOffset: Vec.create(5, 0)
+            { idString: "warehouse_walls", position: Vec.create(-19.8, 0), rotation: 0 },
+            { idString: "warehouse_walls", position: Vec.create(19.8, 0), rotation: 2 },
 
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(-15.8, 6.4),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(-15.7, -8),
-                lootSpawnOffset: Vec.create(5, 0)
-            },
-            {
-                idString: "metal_shelf",
-                position: Vec.create(15.8, 0),
-                rotation: 1
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(15.8, 0),
-                lootSpawnOffset: Vec.create(-5, 0)
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(15.7, 6),
-                lootSpawnOffset: Vec.create(-5, 0)
-            },
-            {
-                idString: { box: 0.90, grenade_box: 0.10 },
-                position: Vec.create(15.6, -7),
-                lootSpawnOffset: Vec.create(-5, 0)
-            }
+            { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
+            { idString: "regular_crate", position: Vec.create(-14, -28.5) },
+            { idString: "regular_crate", position: Vec.create(14, 28.5) },
+            { idString: warehouseObstacle, position: Vec.create(-14, 28.5) },
+
+            { idString: "ammo_crate", position: Vec.create(-14, 0) },
+            { idString: "ammo_crate", position: Vec.create(14, 0) },
+
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
         ],
 
         lootSpawners: [
@@ -2051,7 +1999,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_complex",
         name: "Port Complex",
-        spawnHitbox: RectangleHitbox.fromRect(300, 270, Vec.create(-5, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(360, 285, Vec.create(-25, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
             { idString: "port", position: Vec.create(-120, 0) },
@@ -2407,6 +2355,46 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     rotation: 1
                 })
             )
+        ]
+    },
+    {
+        idString: "mobile_home",
+        name: "Mobile Home",
+        spawnHitbox: RectangleHitbox.fromRect(65, 40),
+        scopeHitbox: RectangleHitbox.fromRect(42, 20, Vec.create(2, -1)),
+        floorImages: [{
+            key: "mobile_home_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "mobile_home_ceiling",
+            position: Vec.create(2, -1),
+            residue: "mobile_home_residue"
+        }],
+        floors: [{
+            type: "wood",
+            hitbox: RectangleHitbox.fromRect(43, 20, Vec.create(2, -1))
+        }],
+        wallsToDestroy: 2,
+        obstacles: [
+            { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
+            { idString: "door", position: Vec.create(6.45, 8.33), rotation: 0 },
+            { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
+            { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
+            { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
+            { idString: "mobile_home_wall_3", position: Vec.create(22.7, -1.03), rotation: 1 },
+            { idString: "mobile_home_wall_3", position: Vec.create(11.65, -10.43), rotation: 0 },
+            { idString: "mobile_home_wall_3", position: Vec.create(-9.35, 8.32), rotation: 0 },
+            { idString: "mobile_home_bed", position: Vec.create(13.55, -5.72), rotation: 3 },
+            { idString: "small_drawer", position: Vec.create(17.45, 3.27), rotation: 3 },
+            { idString: "mobile_home_sink", position: Vec.create(-12.8, 3.4), rotation: 2 },
+            { idString: "mobile_home_stove", position: Vec.create(-3.75, 3.57), rotation: 2 },
+            { idString: "mobile_home_tire", position: Vec.create(-21.25, 4.85), rotation: 0 },
+            { idString: "mobile_home_window", position: Vec.create(-5.6, -10.42), rotation: 0 },
+
+            { idString: "box", position: Vec.create(26.2, -3.43), rotation: 0 },
+            { idString: "box", position: Vec.create(28, 1.52), rotation: 0 },
+            { idString: "barrel", position: Vec.create(-18.9, 14.62), rotation: 0 }
         ]
     }
 ]);

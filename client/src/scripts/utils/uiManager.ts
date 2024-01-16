@@ -41,23 +41,32 @@ export class UIManager {
         this.game = game;
     }
 
-    getPlayerName(id: number): string {
-        const element = $("<span>");
+    getRawPlayerName(id: number): string {
         const player = this.game.playerNames.get(id);
-
         let name: string;
 
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
             name = "[Unknown Player]";
         } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            name = GameConstants.player.defaultName;
+            name = `${GameConstants.player.defaultName}_${id}`;
         } else {
             name = player.name;
-            if (player.hasColor) {
-                element.css("color", player.nameColor.toHex());
-            }
         }
+
+        return name;
+    }
+
+    getPlayerName(id: number): string {
+        const element = $("<span>");
+        const player = this.game.playerNames.get(id);
+
+        const name = this.getRawPlayerName(id);
+
+        if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            element.css("color", player.nameColor.toHex());
+        }
+
         element.text(name);
 
         return element.prop("outerHTML");
@@ -268,6 +277,8 @@ export class UIManager {
         }
     }
 
+    skinID?: string;
+
     updateWeapons(): void {
         const inventory = this.inventory;
         const activeIndex = inventory.activeWeaponIndex;
@@ -326,8 +337,11 @@ export class UIManager {
                     .children(".item-name")
                     .text(weapon.definition.name);
 
+                const isFists = weapon.definition.idString === "fists";
                 container
                     .children(".item-image")
+                    .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
+                    .toggleClass("is-fists", isFists)
                     .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
                     .show();
 

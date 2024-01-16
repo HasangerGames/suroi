@@ -5,7 +5,7 @@
 #report-modal,
 #warning-modal {
     background-color: $bg;
-    max-width: 450px;
+    max-width: 500px;
 }
 
 #reporting-name {
@@ -164,6 +164,7 @@
         position: relative;
         align-self: center;
         flex-shrink: 0;
+        transform: none;
 
         .emote-top,
         .emote-right,

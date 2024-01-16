@@ -568,6 +568,27 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    Command.createInvertiblePair(
+        "view_map",
+        function(): undefined {
+            game.map.switchToBigMap();
+        },
+        function(): undefined {
+            game.map.switchToSmallMap();
+        },
+        game,
+        {
+            short: "Shows the game map",
+            long: "When invoked, the fullscreen map will be toggled.",
+            signatures: [{ args: [], noexcept: true }]
+        },
+        {
+            short: "Hides the game map",
+            long: "When invoked, the fullscreen map will be hidden.",
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
     Command.createCommand(
         "toggle_map",
         function(): undefined {
@@ -596,7 +617,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_hud",
         function(): undefined {
-            $("canvas").toggleClass("over-hud");
+            $("#game-ui").toggle();
             if (game.map.visible) { game.map.toggleMinimap(); }
         },
         game,
@@ -639,10 +660,11 @@ export function setUpCommands(game: Game): void {
             if (this.gameOver) return;
             const { mouseX, mouseY } = this.inputManager;
 
+            const scale = this.console.getBuiltInCVar("cv_ui_scale");
+
             $("#emote-wheel")
-                //                       ___|> mystery constant (hint: use translate(-50%, 50%) if you're trynna center)
-                .css("left", `${mouseX - 143}px`)
-                .css("top", `${mouseY - 143}px`)
+                .css("left", `${mouseX / scale}px`)
+                .css("top", `${mouseY / scale}px`)
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
                 .show();
             this.inputManager.emoteWheelActive = true;

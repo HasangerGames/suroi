@@ -139,7 +139,7 @@ export class Game {
             resolution: window.devicePixelRatio || 1
         });
 
-        $("#game-ui").append(this.pixi.view);
+        $("#game").append(this.pixi.view);
 
         this.pixi.ticker.add(this.render.bind(this));
 
@@ -153,7 +153,7 @@ export class Game {
         this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
-            url: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
+            url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: true,
@@ -428,6 +428,7 @@ export class Game {
             for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
                 syncedParticle.updateContainerPosition();
                 syncedParticle.updateContainerRotation();
+                syncedParticle.updateContainerScale();
             }
         }
 

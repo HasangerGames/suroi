@@ -1,5 +1,5 @@
 import { Config as ClientConfig } from "../../client/src/scripts/config";
-import { FireMode, ZIndexes } from "../../common/src/constants";
+import { FireMode, GameConstants, ZIndexes } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
 import { Armors } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
@@ -16,22 +16,17 @@ import { Modes } from "../../common/src/definitions/modes";
 import { FlyoverPref, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
+import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables } from "../../common/src/definitions/throwables";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
-import { ObstacleSpecialRoles, type ObjectDefinition, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
+import { MapObjectSpawnMode, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
+import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, LootTiers } from "../../server/src/data/lootTables";
 import { Maps } from "../../server/src/data/maps";
 import { findDupes, logger, tester, validators } from "./validationUtils";
-
-/*
-    eslint-disable
-
-    @typescript-eslint/unbound-method,
-    object-shorthand
-*/
 
 const testStart = Date.now();
 
@@ -179,10 +174,10 @@ logger.indent("Validating map definitions", () => {
                 logger.indent("Validating buildings", () => {
                     for (const [building] of Object.entries(definition.buildings!)) {
                         tester.assertReferenceExists({
-                            obj: { [building]: building },
-                            field: building,
-                            baseErrorPath: errorPath2,
-                            collection: Buildings
+                            value: building,
+                            collection: Buildings,
+                            collectionName: "Buildings",
+                            errorPath: errorPath2
                         });
 
                         tester.assertIsNaturalFiniteNumber({
@@ -208,10 +203,10 @@ logger.indent("Validating map definitions", () => {
                 logger.indent("Validating obstacles", () => {
                     for (const [obstacle] of Object.entries(definition.obstacles!)) {
                         tester.assertReferenceExists({
-                            obj: { [obstacle]: obstacle },
-                            field: obstacle,
-                            baseErrorPath: errorPath2,
-                            collection: Obstacles
+                            value: obstacle,
+                            collection: Obstacles,
+                            collectionName: "Obstacles",
+                            errorPath: errorPath2
                         });
 
                         tester.assertIsNaturalFiniteNumber({
@@ -237,9 +232,8 @@ logger.indent("Validating map definitions", () => {
                 logger.indent("Validating loots", () => {
                     for (const [loot] of Object.entries(definition.loots!)) {
                         tester.assertReferenceExistsObject({
-                            obj: { [loot]: loot },
-                            field: loot,
-                            baseErrorPath: errorPath2,
+                            value: loot,
+                            errorPath: errorPath2,
                             collection: LootTables,
                             collectionName: "LootTables"
                         });
@@ -263,17 +257,19 @@ logger.indent("Validating map definitions", () => {
 
             if (definition.places) {
                 logger.indent("Validating place names", () => {
+                    const errorPath2 = tester.createPath(errorPath, "placeNames");
+
                     const places = definition.places!;
                     tester.assertWarn(
                         places.length >= 1 << 4,
                         `Only the first 16 place names are sent; this map provided ${places.length} names`,
-                        errorPath
+                        errorPath2
                     );
 
                     tester.runTestOnArray(
                         places,
                         (place, errorPath) => {
-                            validators.vector(errorPath, place.position);
+                            validators.vector(tester.createPath(errorPath, "position"), place.position);
 
                             tester.assertWarn(
                                 place.name.length > 24,
@@ -281,7 +277,7 @@ logger.indent("Validating map definitions", () => {
                                 errorPath
                             );
                         },
-                        errorPath
+                        errorPath2
                     );
                 });
             }
@@ -371,9 +367,8 @@ logger.indent("Validating backpack definitions", () => {
 
                 for (const [item] of Object.entries(backpack.maxCapacity)) {
                     tester.assertReferenceExistsArray({
-                        obj: { [item]: item },
-                        field: item,
-                        baseErrorPath: errorPath2,
+                        value: item,
+                        errorPath: errorPath2,
                         collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions).concat(Throwables),
                         collectionName: "HealingItems, Ammos, and Throwables"
                     });
@@ -396,9 +391,24 @@ logger.indent("Validating building definitions", () => {
         logger.indent(`Validating '${building.idString}'`, () => {
             const errorPath = tester.createPath("buildings", `building '${building.idString}'`);
 
-            validators.hitbox(errorPath, building.spawnHitbox);
-            if (building.ceilingHitbox) validators.hitbox(errorPath, building.ceilingHitbox);
-            if (building.scopeHitbox) validators.hitbox(errorPath, building.scopeHitbox);
+            validators.hitbox(
+                tester.createPath(errorPath, "spawn hitbox"),
+                building.spawnHitbox
+            );
+
+            if (building.ceilingHitbox) {
+                validators.hitbox(
+                    tester.createPath(errorPath, "ceiling hitbox"),
+                    building.ceilingHitbox
+                );
+            }
+
+            if (building.scopeHitbox) {
+                validators.hitbox(
+                    tester.createPath(errorPath, "scope hitbox"),
+                    building.scopeHitbox
+                );
+            }
 
             tester.assertNoPointlessValue({
                 obj: building,
@@ -452,14 +462,16 @@ logger.indent("Validating building definitions", () => {
 
                             for (const idString of obstacles) {
                                 logger.indent(`Validating '${idString}'`, () => {
+                                    const errorPath2 = tester.createPath(errorPath, `obstacle '${idString}'`);
+
                                     tester.assertReferenceExists({
-                                        obj: { idString },
-                                        field: "idString",
+                                        value: idString,
                                         collection: Obstacles,
-                                        baseErrorPath: errorPath
+                                        collectionName: "Obstacles",
+                                        errorPath: errorPath2
                                     });
 
-                                    validators.vector(errorPath, obstacle.position);
+                                    validators.vector(tester.createPath(errorPath2, "position"), obstacle.position);
 
                                     if (obstacle.rotation) {
                                         const reference = Obstacles.fromString(idString);
@@ -554,7 +566,7 @@ logger.indent("Validating building definitions", () => {
                                     }
 
                                     if (obstacle.lootSpawnOffset) {
-                                        validators.vector(errorPath, obstacle.lootSpawnOffset);
+                                        validators.vector(tester.createPath(errorPath, "loot spawn offset"), obstacle.lootSpawnOffset);
                                     }
 
                                     tester.assertNoPointlessValue({
@@ -586,7 +598,7 @@ logger.indent("Validating building definitions", () => {
                     tester.runTestOnArray(
                         building.lootSpawners!,
                         (spawner, errorPath) => {
-                            validators.vector(errorPath2, spawner.position);
+                            validators.vector(tester.createPath(errorPath2, "position"), spawner.position);
 
                             tester.assertReferenceExistsObject({
                                 obj: spawner,
@@ -640,15 +652,15 @@ logger.indent("Validating building definitions", () => {
                             for (const idString of subBuildings) {
                                 logger.indent(`Validating '${idString}'`, () => {
                                     tester.assertReferenceExists({
-                                        obj: { idString },
-                                        field: "idString",
+                                        value: idString,
                                         collection: Buildings,
-                                        baseErrorPath: errorPath
+                                        collectionName: "Buildings",
+                                        errorPath
                                     });
                                 });
                             }
 
-                            validators.vector(errorPath, subBuilding.position);
+                            validators.vector(tester.createPath(errorPath, "position"), subBuilding.position);
 
                             tester.assertNoPointlessValue({
                                 obj: subBuilding,
@@ -673,6 +685,7 @@ logger.indent("Validating building definitions", () => {
             if (building.decals?.length) {
                 logger.indent("Validating decals", () => {
                     const errorPath2 = tester.createPath(errorPath, "decals");
+
                     tester.runTestOnArray(
                         building.decals!,
                         (decal, errorPath) => {
@@ -680,10 +693,11 @@ logger.indent("Validating building definitions", () => {
                                 obj: decal,
                                 field: "idString",
                                 collection: Decals,
+                                collectionName: "Decals",
                                 baseErrorPath: errorPath
                             });
 
-                            validators.vector(errorPath, decal.position);
+                            validators.vector(tester.createPath(errorPath, "position"), decal.position);
 
                             tester.assertNoPointlessValue({
                                 obj: decal,
@@ -735,6 +749,7 @@ logger.indent("Validating building definitions", () => {
                         obj: puzzle,
                         field: "triggerInteractOn",
                         collection: Obstacles,
+                        collectionName: "Obstacles",
                         baseErrorPath: errorPath2
                     });
 
@@ -782,6 +797,8 @@ logger.indent("Validating building definitions", () => {
                     );
 
                     if (puzzle.order !== undefined) {
+                        const errorPath3 = tester.createPath(errorPath2, "puzzle");
+
                         tester.runTestOnArray(
                             puzzle.order,
                             (entry, errorPath) => {
@@ -791,7 +808,7 @@ logger.indent("Validating building definitions", () => {
                                     errorPath
                                 );
                             },
-                            errorPath2
+                            errorPath3
                         );
 
                         const { foundDupes: hasDuplicateElements, dupes: duplicateElements } = findDupes(puzzle.order);
@@ -802,14 +819,14 @@ logger.indent("Validating building definitions", () => {
                             tester.assert(
                                 (candidateCount ?? -Infinity) >= count,
                                 `Puzzle calls for ${count} instances of element '${element}', but only ${candidateCount ?? 0} exist within the building`,
-                                errorPath2
+                                errorPath3
                             );
                         }
 
                         tester.assertWarn(
                             hasDuplicateElements,
                             "This puzzle's sequence has duplicate entries: this thus means that there are multiple valid combinations, since there is no way to distinguish two identical elements",
-                            errorPath2
+                            errorPath3
                         );
                     }
 
@@ -831,18 +848,19 @@ logger.indent("Validating building definitions", () => {
 
             if (building.sounds !== undefined) {
                 logger.indent("Validating sounds", () => {
+                    const sounds = building.sounds!;
                     const errorPath2 = tester.createPath(errorPath, "sounds");
 
-                    if (building.sounds!.position) validators.vector(errorPath2, building.sounds!.position);
+                    if (sounds.position) validators.vector(errorPath2, sounds.position);
 
                     tester.assertIsPositiveReal({
-                        obj: building.sounds!,
+                        obj: sounds,
                         field: "maxRange",
                         baseErrorPath: errorPath2
                     });
 
                     tester.assertIsPositiveReal({
-                        obj: building.sounds!,
+                        obj: sounds,
                         field: "falloff",
                         baseErrorPath: errorPath2
                     });
@@ -861,10 +879,24 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnArray(
                     building.floorImages,
                     (image, errorPath) => {
-                        validators.vector(errorPath, image.position);
+                        validators.vector(
+                            tester.createPath(errorPath, "position"),
+                            image.position
+                        );
 
-                        if (image.scale) validators.vector(errorPath, image.scale);
-                        if (image.tint) validators.color(errorPath, image.tint);
+                        if (image.scale) {
+                            validators.vector(
+                                tester.createPath(errorPath, "scale"),
+                                image.scale
+                            );
+                        }
+
+                        if (image.tint) {
+                            validators.color(
+                                tester.createPath(errorPath, "tint"),
+                                image.tint
+                            );
+                        }
                     },
                     tester.createPath(errorPath, "floor images")
                 );
@@ -882,9 +914,17 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnArray(
                     building.ceilingImages,
                     (image, errorPath) => {
-                        validators.vector(errorPath, image.position);
+                        validators.vector(
+                            tester.createPath(errorPath, "position"),
+                            image.position
+                        );
 
-                        if (image.tint) validators.color(errorPath, image.tint);
+                        if (image.tint) {
+                            validators.color(
+                                tester.createPath(errorPath, "tint"),
+                                image.tint
+                            );
+                        }
                     },
                     tester.createPath(errorPath, "ceiling images")
                 );
@@ -977,7 +1017,7 @@ logger.indent("Validating building definitions", () => {
                             collectionName: "Floors"
                         });
 
-                        validators.hitbox(errorPath, floor.hitbox);
+                        validators.hitbox(tester.createPath(errorPath, "hitbox"), floor.hitbox);
                     },
                     tester.createPath(errorPath, "floors")
                 );
@@ -995,8 +1035,15 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnArray(
                     building.groundGraphics,
                     (graphic, errorPath) => {
-                        validators.hitbox(errorPath, graphic.hitbox);
-                        validators.color(errorPath, graphic.color);
+                        validators.hitbox(
+                            tester.createPath(errorPath, "hitbox"),
+                            graphic.hitbox
+                        );
+
+                        validators.color(
+                            tester.createPath(errorPath, "color"),
+                            graphic.color
+                        );
                     },
                     tester.createPath(errorPath, "ground graphics")
                 );
@@ -1142,7 +1189,7 @@ logger.indent("Validating explosions", () => {
                     baseErrorPath: errorPath2
                 });
 
-                validators.color(errorPath2, explosion.animation.tint);
+                validators.color(tester.createPath(errorPath2, "tint"), explosion.animation.tint);
 
                 tester.assertIsFiniteRealNumber({
                     obj: explosion.animation,
@@ -1156,6 +1203,7 @@ logger.indent("Validating explosions", () => {
                     obj: explosion,
                     field: "decal",
                     collection: Decals,
+                    collectionName: "Decals",
                     baseErrorPath: errorPath
                 });
             }
@@ -1368,19 +1416,29 @@ logger.indent("Validating guns", () => {
                         baseErrorPath: errorPath2
                     });
 
-                    const singleDualPtr = Loots.fromString<SingleGunNarrowing>(gun.singleVariant)?.dualVariant;
+                    const singleVar = Loots.fromString<SingleGunNarrowing>(gun.singleVariant);
+
+                    const singleDualPtr = singleVar?.dualVariant;
                     tester.assert(
                         singleDualPtr === gun.idString,
                         `This gun specified weapon '${gun.dualVariant}' as its single form, but that weapon ${singleDualPtr === undefined ? "doesn't exist" : `specified its dual form as being '${singleDualPtr}'`}`,
                         errorPath2
                     );
+
+                    if (singleVar) {
+                        tester.assert(
+                            !singleVar.isDual,
+                            `This gun specified weapon '${gun.dualVariant}' as its single form, but that weapon's 'isDual' flag is set to true`,
+                            errorPath2
+                        );
+                    }
                 });
             } else {
                 logger.indent("Validating fists", () => {
                     const errorPath2 = tester.createPath(errorPath, "fists");
 
-                    validators.vector(errorPath2, gun.fists.left);
-                    validators.vector(errorPath2, gun.fists.right);
+                    validators.vector(tester.createPath(errorPath2, "left"), gun.fists.left);
+                    validators.vector(tester.createPath(errorPath2, "right"), gun.fists.right);
 
                     tester.assertIsPositiveReal({
                         obj: gun.fists,
@@ -1393,7 +1451,7 @@ logger.indent("Validating guns", () => {
                     const errorPath2 = tester.createPath(errorPath, "image");
 
                     if (!gun.isDual) {
-                        validators.vector(errorPath2, gun.image.position);
+                        validators.vector(tester.createPath(errorPath2, "position"), gun.image.position);
                     }
 
                     tester.assertNoPointlessValue({
@@ -1412,132 +1470,155 @@ logger.indent("Validating guns", () => {
                     }
                 });
 
+                tester.assertNoPointlessValue({
+                    obj: gun,
+                    field: "casingParticles",
+                    defaultValue: [],
+                    equalityFunction: a => a.length === 0,
+                    baseErrorPath: errorPath
+                });
+
                 if (gun.casingParticles !== undefined) {
                     const casings = gun.casingParticles;
+
                     logger.indent("Validating casings", () => {
-                        const errorPath2 = tester.createPath(errorPath, "casings");
-                        validators.vector(errorPath2, casings.position);
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "count",
-                            defaultValue: 1,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (casings.count !== undefined) {
-                            tester.assertIsPositiveFiniteReal({
-                                obj: casings,
-                                field: "count",
-                                baseErrorPath: errorPath2
-                            });
-                        }
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "spawnOnReload",
-                            defaultValue: false,
-                            baseErrorPath: errorPath2
-                        });
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "ejectionDelay",
-                            defaultValue: 0,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (casings.ejectionDelay !== undefined) {
-                            tester.assertIsPositiveFiniteReal({
-                                obj: casings,
-                                field: "ejectionDelay",
-                                baseErrorPath: errorPath2
-                            });
-                        }
-
-                        tester.assertNoPointlessValue({
-                            obj: casings,
-                            field: "velocity",
-                            defaultValue: {},
-                            equalityFunction: a => Object.keys(a).length === 0,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (casings.velocity) {
-                            logger.indent("Validating casing velocities", () => {
-                                const velocity = casings.velocity!;
+                        tester.runTestOnArray<NonNullable<SingleGunNarrowing["casingParticles"]>[number]>(
+                            casings,
+                            (casingSpec, errorPath) => {
+                                validators.vector(tester.createPath(errorPath, "position"), casingSpec.position);
 
                                 tester.assertNoPointlessValue({
-                                    obj: velocity,
-                                    field: "x",
-                                    defaultValue: {},
-                                    equalityFunction: a => Object.keys(a).length === 0,
-                                    baseErrorPath: errorPath2
+                                    obj: casingSpec,
+                                    field: "count",
+                                    defaultValue: 1,
+                                    baseErrorPath: errorPath
                                 });
 
-                                if (velocity.x) {
-                                    tester.assertInBounds({
-                                        obj: velocity.x,
-                                        field: "min",
-                                        min: -Infinity,
-                                        max: velocity.x.max,
-                                        includeMin: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertInBounds({
-                                        obj: velocity.x,
-                                        field: "max",
-                                        min: velocity.x.min,
-                                        max: Infinity,
-                                        includeMax: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertNoPointlessValue({
-                                        obj: velocity.x,
-                                        field: "randomSign",
-                                        defaultValue: false,
-                                        baseErrorPath: errorPath2
+                                if (casingSpec.count !== undefined) {
+                                    tester.assertIsPositiveFiniteReal({
+                                        obj: casingSpec,
+                                        field: "count",
+                                        baseErrorPath: errorPath
                                     });
                                 }
 
                                 tester.assertNoPointlessValue({
-                                    obj: velocity,
-                                    field: "y",
-                                    defaultValue: {},
-                                    equalityFunction: a => Object.keys(a).length === 0,
-                                    baseErrorPath: errorPath2
+                                    obj: casingSpec,
+                                    field: "ejectionDelay",
+                                    defaultValue: 0,
+                                    baseErrorPath: errorPath
                                 });
 
-                                if (velocity.y) {
-                                    tester.assertInBounds({
-                                        obj: velocity.y,
-                                        field: "min",
-                                        min: -Infinity,
-                                        max: velocity.y.max,
-                                        includeMin: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertInBounds({
-                                        obj: velocity.y,
-                                        field: "max",
-                                        min: velocity.y.min,
-                                        max: Infinity,
-                                        includeMax: false,
-                                        baseErrorPath: errorPath2
-                                    });
-
-                                    tester.assertNoPointlessValue({
-                                        obj: velocity.y,
-                                        field: "randomSign",
-                                        defaultValue: false,
-                                        baseErrorPath: errorPath2
+                                if (casingSpec.ejectionDelay !== undefined) {
+                                    tester.assertIsPositiveFiniteReal({
+                                        obj: casingSpec,
+                                        field: "ejectionDelay",
+                                        baseErrorPath: errorPath
                                     });
                                 }
-                            });
-                        }
+
+                                tester.assertNoPointlessValue({
+                                    obj: casingSpec,
+                                    field: "velocity",
+                                    defaultValue: {},
+                                    equalityFunction: a => Object.keys(a).length === 0,
+                                    baseErrorPath: errorPath
+                                });
+
+                                if (casingSpec.velocity) {
+                                    logger.indent("Validating casing velocities", () => {
+                                        const velocity = casingSpec.velocity!;
+
+                                        const errorPathX = tester.createPath(errorPath, "velocity", "x");
+                                        const errorPathY = tester.createPath(errorPath, "velocity", "y");
+
+                                        tester.assertNoPointlessValue({
+                                            obj: velocity,
+                                            field: "x",
+                                            defaultValue: {
+                                                min: -2,
+                                                max: 5
+                                            },
+                                            equalityFunction: (a, b) => a.min === b.min && a.max === b.max,
+                                            baseErrorPath: errorPathX
+                                        });
+
+                                        if (velocity.x) {
+                                            tester.assertInBounds({
+                                                obj: velocity.x,
+                                                field: "min",
+                                                min: -Infinity,
+                                                max: velocity.x.max,
+                                                includeMin: false,
+                                                baseErrorPath: errorPathX
+                                            });
+
+                                            tester.assertInBounds({
+                                                obj: velocity.x,
+                                                field: "max",
+                                                min: velocity.x.min,
+                                                max: Infinity,
+                                                includeMax: false,
+                                                baseErrorPath: errorPathX
+                                            });
+
+                                            tester.assertNoPointlessValue({
+                                                obj: velocity.x,
+                                                field: "randomSign",
+                                                defaultValue: false,
+                                                baseErrorPath: errorPathX
+                                            });
+                                        }
+
+                                        tester.assertNoPointlessValue({
+                                            obj: velocity,
+                                            field: "y",
+                                            defaultValue: {
+                                                min: 10,
+                                                max: 15
+                                            },
+                                            equalityFunction: (a, b) => a.min === b.min && a.max === b.max,
+                                            baseErrorPath: errorPathY
+                                        });
+
+                                        if (velocity.y) {
+                                            tester.assertInBounds({
+                                                obj: velocity.y,
+                                                field: "min",
+                                                min: -Infinity,
+                                                max: velocity.y.max,
+                                                includeMin: false,
+                                                baseErrorPath: errorPathY
+                                            });
+
+                                            tester.assertInBounds({
+                                                obj: velocity.y,
+                                                field: "max",
+                                                min: velocity.y.min,
+                                                max: Infinity,
+                                                includeMax: false,
+                                                baseErrorPath: errorPathY
+                                            });
+
+                                            tester.assertNoPointlessValue({
+                                                obj: velocity.y,
+                                                field: "randomSign",
+                                                defaultValue: false,
+                                                baseErrorPath: errorPathY
+                                            });
+                                        }
+                                    });
+                                }
+
+                                tester.assertNoPointlessValue({
+                                    obj: casingSpec,
+                                    field: "on",
+                                    defaultValue: "fire",
+                                    baseErrorPath: errorPath
+                                });
+                            },
+                            tester.createPath(errorPath, "casings")
+                        );
                     });
                 }
             }
@@ -1558,12 +1639,21 @@ logger.indent("Validating guns", () => {
                     baseErrorPath: errorPath
                 });
 
-                const dualSinglePtr: string | undefined = Loots.fromString<DualGunNarrowing>(gun.dualVariant)?.singleVariant;
+                const dualVar = Loots.fromString<DualGunNarrowing>(gun.dualVariant);
+                const dualSinglePtr: string | undefined = dualVar?.singleVariant;
                 tester.assert(
                     dualSinglePtr === gun.idString,
                     `This gun specified weapon '${gun.dualVariant}' as its dual form, but that weapon ${dualSinglePtr === undefined ? "doesn't exist" : `specified its single form as being '${dualSinglePtr}'`}`,
                     errorPath
                 );
+
+                if (dualVar) {
+                    tester.assert(
+                        dualVar.isDual,
+                        `This gun specified weapon '${gun.dualVariant}' as its dual form, but that weapon's 'isDual' flag is set to ${dualVar.isDual}`,
+                        errorPath
+                    );
+                }
             }
 
             tester.assertNoPointlessValue({
@@ -1713,11 +1803,11 @@ logger.indent("Validating melees", () => {
                     baseErrorPath: errorPath2
                 });
 
-                validators.vector(errorPath2, fists.left);
-                validators.vector(errorPath2, fists.right);
+                validators.vector(tester.createPath(errorPath2, "left"), fists.left);
+                validators.vector(tester.createPath(errorPath2, "right"), fists.right);
 
-                validators.vector(errorPath2, fists.useLeft);
-                validators.vector(errorPath2, fists.useRight);
+                validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
+                validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
             });
 
             if (melee.image) {
@@ -1725,8 +1815,8 @@ logger.indent("Validating melees", () => {
                     const errorPath2 = tester.createPath(errorPath, "image");
                     const image = melee.image!;
 
-                    validators.vector(errorPath2, image.position);
-                    validators.vector(errorPath2, image.usePosition);
+                    validators.vector(tester.createPath(errorPath2, "position"), image.position);
+                    validators.vector(tester.createPath(errorPath2, "use position"), image.usePosition);
 
                     tester.assertNoPointlessValue({
                         obj: image,
@@ -1903,10 +1993,10 @@ logger.indent("Validating obstacles", () => {
                 });
             }
 
-            validators.hitbox(errorPath, obstacle.hitbox);
+            validators.hitbox(tester.createPath(errorPath, "hitbox"), obstacle.hitbox);
 
             if (obstacle.spawnHitbox) {
-                validators.hitbox(errorPath, obstacle.spawnHitbox);
+                validators.hitbox(tester.createPath(errorPath, "spawn hitbox"), obstacle.spawnHitbox);
             }
 
             tester.assertNoPointlessValue({
@@ -1978,6 +2068,7 @@ logger.indent("Validating obstacles", () => {
                     obj: obstacle,
                     field: "explosion",
                     collection: Explosions,
+                    collectionName: "Explosions",
                     baseErrorPath: errorPath
                 });
             }
@@ -2016,6 +2107,47 @@ logger.indent("Validating obstacles", () => {
                 baseErrorPath: errorPath
             });
 
+            tester.assertNoPointlessValue({
+                obj: obstacle,
+                field: "imageAnchor",
+                defaultValue: Vec.create(0, 0),
+                equalityFunction: Vec.equals,
+                baseErrorPath: errorPath
+            });
+
+            if (obstacle.imageAnchor) {
+                validators.vector(
+                    tester.createPath(errorPath, "image anchor"),
+                    obstacle.imageAnchor
+                );
+            }
+
+            tester.assertNoPointlessValue({
+                obj: obstacle,
+                field: "spawnMode",
+                defaultValue: MapObjectSpawnMode.Grass,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: obstacle,
+                field: "tint",
+                defaultValue: 0xffffff,
+                baseErrorPath: errorPath
+            });
+
+            if (obstacle.tint !== undefined) {
+                validators.color(tester.createPath(errorPath, "tint"), obstacle.tint);
+            }
+
+            if (obstacle.particlesOnDestroy !== undefined) {
+                const particlesOnDestroy = obstacle.particlesOnDestroy;
+
+                logger.indent("Validating destruction particles", () => {
+                    validators.syncedParticleSpawner(tester.createPath(errorPath, "particles on-destroy"), particlesOnDestroy);
+                });
+            }
+
             if (obstacle.role !== undefined) {
                 logger.indent("Validating role-specific fields", () => {
                     tester.assert(
@@ -2027,7 +2159,7 @@ logger.indent("Validating obstacles", () => {
                     switch (obstacle.role) {
                         case ObstacleSpecialRoles.Door: {
                             if (obstacle.operationStyle !== "slide") {
-                                validators.vector(errorPath, obstacle.hingeOffset);
+                                validators.vector(tester.createPath(errorPath, "hinge offset"), obstacle.hingeOffset);
                             } else {
                                 tester.assertInBounds({
                                     obj: obstacle,
@@ -2073,11 +2205,13 @@ logger.indent("Validating obstacles", () => {
                         }
                         case ObstacleSpecialRoles.Activatable: {
                             if (obstacle.sound) {
+                                const errorPath2 = tester.createPath(errorPath, "sound");
+
                                 if (obstacle.sound.maxRange !== undefined) {
                                     tester.assertIsPositiveReal({
                                         obj: obstacle.sound,
                                         field: "maxRange",
-                                        baseErrorPath: errorPath
+                                        baseErrorPath: errorPath2
                                     });
                                 }
 
@@ -2085,7 +2219,7 @@ logger.indent("Validating obstacles", () => {
                                     tester.assertIsPositiveReal({
                                         obj: obstacle.sound,
                                         field: "falloff",
-                                        baseErrorPath: errorPath
+                                        baseErrorPath: errorPath2
                                     });
                                 }
                             }
@@ -2095,6 +2229,7 @@ logger.indent("Validating obstacles", () => {
                                     obj: obstacle,
                                     field: "requiredItem",
                                     collection: Loots,
+                                    collectionName: "Loots",
                                     baseErrorPath: errorPath
                                 });
                             }
@@ -2135,10 +2270,10 @@ logger.indent("Validating obstacles", () => {
                                     for (const idString of obstacles) {
                                         logger.indent(`Validating '${idString}'`, () => {
                                             tester.assertReferenceExists({
-                                                obj: { idString },
-                                                field: "idString",
+                                                value: idString,
                                                 collection: Obstacles,
-                                                baseErrorPath: errorPath2
+                                                collectionName: "Obstacles",
+                                                errorPath: errorPath2
                                             });
                                         });
                                     }
@@ -2222,8 +2357,501 @@ logger.indent("Validating skins", () => {
     }
 });
 
-// todo synced particles
-// todo throwables
+logger.indent("Validating synchronized particles", () => {
+    tester.assertNoDuplicateIDStrings(SyncedParticles.definitions, "SynchedParticles", "synchedParticles");
+
+    for (const synchedParticle of SyncedParticles) {
+        logger.indent(`Validating synced particle '${synchedParticle.idString}'`, () => {
+            const errorPath = tester.createPath("synched particles", `synced particle '${synchedParticle.idString}'`);
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "scale",
+                defaultValue: 1,
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.scale !== undefined) {
+                const scale = synchedParticle.scale;
+
+                logger.indent("Validating scaling", () => {
+                    const errorPath2 = tester.createPath(errorPath, "scale");
+
+                    const baseValidator = (errorPath: string, n: number): void => {
+                        tester.assertIsFiniteRealNumber({
+                            value: n,
+                            errorPath
+                        });
+                    };
+
+                    if (typeof scale === "object" && "start" in scale) {
+                        validators.animated(
+                            errorPath2,
+                            scale,
+                            baseValidator,
+                            errorPath => tester.assertNoPointlessValue({
+                                obj: scale,
+                                field: "duration",
+                                defaultValue: "lifetime",
+                                baseErrorPath: errorPath
+                            }),
+                            errorPath => tester.assertNoPointlessValue({
+                                obj: scale,
+                                field: "easing",
+                                defaultValue: "linear",
+                                baseErrorPath: errorPath
+                            })
+                        );
+                    } else {
+                        validators.valueSpecifier(
+                            errorPath2,
+                            scale,
+                            baseValidator
+                        );
+                    }
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "alpha",
+                defaultValue: 1,
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.alpha !== undefined) {
+                const alpha = synchedParticle.alpha;
+
+                logger.indent("Validating opacity", () => {
+                    const errorPath2 = tester.createPath(errorPath, "alpha");
+
+                    const baseValidator = (errorPath: string, n: number): void => {
+                        tester.assertInBounds({
+                            value: n,
+                            min: 0,
+                            max: 1,
+                            includeMin: true,
+                            includeMax: true,
+                            errorPath
+                        });
+                    };
+
+                    if (typeof alpha === "object" && "start" in alpha) {
+                        validators.animated(
+                            errorPath2,
+                            alpha,
+                            baseValidator,
+                            errorPath => tester.assertNoPointlessValue({
+                                obj: alpha,
+                                field: "duration",
+                                defaultValue: "lifetime",
+                                baseErrorPath: errorPath
+                            }),
+                            errorPath => tester.assertNoPointlessValue({
+                                obj: alpha,
+                                field: "easing",
+                                defaultValue: "linear",
+                                baseErrorPath: errorPath
+                            })
+                        );
+                    } else {
+                        validators.valueSpecifier(
+                            errorPath2,
+                            alpha,
+                            baseValidator
+                        );
+                    }
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "lifetime",
+                defaultValue: Infinity,
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.lifetime !== undefined) {
+                validators.valueSpecifier(
+                    tester.createPath(errorPath, "lifetime"),
+                    synchedParticle.lifetime,
+                    (errorPath, n) => {
+                        tester.assertIsPositiveReal({
+                            value: n,
+                            errorPath
+                        });
+                    }
+                );
+            }
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "angularVelocity",
+                defaultValue: 0,
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.angularVelocity !== undefined) {
+                logger.indent("Validating angular velocity", () => {
+                    const angularVelocity = synchedParticle.angularVelocity!;
+                    const errorPath2 = tester.createPath(errorPath, "angular velocity");
+
+                    validators.valueSpecifier(
+                        errorPath2,
+                        angularVelocity,
+                        (errorPath, angVel) => {
+                            tester.assertIsFiniteRealNumber({
+                                value: angVel,
+                                errorPath
+                            });
+                        }
+                    );
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "velocity",
+                defaultValue: Vec.create(0, 0),
+                equalityFunction: (a, b) => "x" in a && Vec.equals(a, b),
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.velocity !== undefined) {
+                logger.indent("Validating velocity", () => {
+                    const velocity = synchedParticle.velocity!;
+                    const errorPath2 = tester.createPath(errorPath, "velocity");
+
+                    const baseValidator = (errorPath: string, velocity: Vector): void => {
+                        validators.vector(errorPath, velocity);
+                    };
+
+                    if (typeof velocity === "object" && "start" in velocity) {
+                        validators.animated(
+                            errorPath2,
+                            velocity,
+                            baseValidator,
+                            errorPath => tester.assertNoPointlessValue({
+                                obj: velocity,
+                                field: "duration",
+                                defaultValue: "lifetime",
+                                baseErrorPath: errorPath
+                            }),
+                            errorPath => tester.assertNoPointlessValue({
+                                obj: velocity,
+                                field: "easing",
+                                defaultValue: "linear",
+                                baseErrorPath: errorPath
+                            })
+                        );
+                    } else {
+                        validators.valueSpecifier(
+                            errorPath2,
+                            velocity,
+                            baseValidator
+                        );
+                    }
+                });
+            }
+
+            if (synchedParticle.variations !== undefined) {
+                tester.assertIntAndInBounds({
+                    obj: synchedParticle,
+                    field: "variations",
+                    min: 0,
+                    max: 8,
+                    includeMin: true,
+                    baseErrorPath: errorPath
+                });
+            }
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "zIndex",
+                defaultValue: ZIndexes.ObstaclesLayer1,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "frame",
+                defaultValue: synchedParticle.idString,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "tint",
+                defaultValue: 0xffffff,
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.tint !== undefined) {
+                validators.color(tester.createPath(errorPath, "tint"), synchedParticle.tint);
+            }
+
+            tester.assertNoPointlessValue({
+                obj: synchedParticle,
+                field: "depletePerMs",
+                defaultValue: {},
+                equalityFunction: a => Object.keys(a).length === 0,
+                baseErrorPath: errorPath
+            });
+
+            if (synchedParticle.depletePerMs !== undefined) {
+                const depletePerMs = synchedParticle.depletePerMs;
+
+                logger.indent("Validating depletion settings", () => {
+                    const errorPath2 = tester.createPath(errorPath, "depletion");
+
+                    tester.assertNoPointlessValue({
+                        obj: depletePerMs,
+                        field: "health",
+                        defaultValue: 0,
+                        baseErrorPath: errorPath2
+                    });
+
+                    if (depletePerMs.health !== undefined) {
+                        tester.assertIsRealNumber({
+                            obj: depletePerMs,
+                            field: "health",
+                            baseErrorPath: errorPath2
+                        });
+                    }
+
+                    tester.assertNoPointlessValue({
+                        obj: depletePerMs,
+                        field: "adrenaline",
+                        defaultValue: 0,
+                        baseErrorPath: errorPath2
+                    });
+
+                    if (depletePerMs.adrenaline !== undefined) {
+                        tester.assertIsRealNumber({
+                            obj: depletePerMs,
+                            field: "adrenaline",
+                            baseErrorPath: errorPath2
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
+logger.indent("Validating throwables", () => {
+    tester.assertNoDuplicateIDStrings(Throwables, "Throwables", "throwable");
+
+    for (const throwable of Throwables) {
+        const errorPath = tester.createPath("throwable", `throwable '${throwable.idString}'`);
+
+        logger.indent(`Validating throwable '${throwable.idString}'`, () => {
+            tester.assertIsFiniteRealNumber({
+                obj: throwable,
+                field: "fuseTime",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertIsFiniteRealNumber({
+                obj: throwable,
+                field: "cookTime",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertIsFiniteRealNumber({
+                obj: throwable,
+                field: "throwTime",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: throwable,
+                field: "cookable",
+                defaultValue: false,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertIsFiniteRealNumber({
+                obj: throwable,
+                field: "cookSpeedMultiplier",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertInBounds({
+                obj: throwable,
+                field: "maxThrowDistance",
+                min: 0,
+                max: GameConstants.player.maxMouseDist,
+                includeMin: true,
+                includeMax: true,
+                baseErrorPath: errorPath
+            });
+
+            logger.indent("Validating image", () => {
+                const image = throwable.image;
+                const errorPath2 = tester.createPath(errorPath, "image");
+
+                validators.vector(
+                    tester.createPath(errorPath2, "position"),
+                    image.position
+                );
+
+                tester.assertNoPointlessValue({
+                    obj: image,
+                    field: "angle",
+                    defaultValue: 0,
+                    baseErrorPath: errorPath2
+                });
+
+                if (image.angle !== undefined) {
+                    tester.assertIsFiniteRealNumber({
+                        obj: image,
+                        field: "angle",
+                        baseErrorPath: errorPath2
+                    });
+                }
+            });
+
+            tester.assertNoPointlessValue({
+                obj: throwable,
+                field: "speedCap",
+                defaultValue: Infinity,
+                baseErrorPath: errorPath
+            });
+
+            if (throwable.speedCap !== undefined) {
+                tester.assertInBounds({
+                    obj: throwable,
+                    field: "speedCap",
+                    min: 0,
+                    max: Infinity,
+                    baseErrorPath: errorPath
+                });
+            }
+
+            tester.assertIsPositiveFiniteReal({
+                obj: throwable,
+                field: "hitboxRadius",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: throwable,
+                field: "fireDelay",
+                defaultValue: 250,
+                baseErrorPath: errorPath
+            });
+
+            if (throwable.fireDelay !== undefined) {
+                tester.assertIsPositiveReal({
+                    obj: throwable,
+                    field: "fireDelay",
+                    baseErrorPath: errorPath
+                });
+            }
+
+            logger.indent("Validating detontation", () => {
+                const detonation = throwable.detonation;
+                const errorPath2 = tester.createPath(errorPath, "detonation");
+
+                if (detonation.explosion !== undefined) {
+                    tester.assertReferenceExists({
+                        obj: detonation,
+                        field: "explosion",
+                        collection: Explosions,
+                        collectionName: "Explosions",
+                        baseErrorPath: errorPath2
+                    });
+                }
+
+                if (detonation.particles !== undefined) {
+                    validators.syncedParticleSpawner(errorPath2, detonation.particles);
+                }
+            });
+
+            logger.indent("Validating animations", () => {
+                const animation = throwable.animation;
+                const errorPath2 = tester.createPath(errorPath, "animations");
+
+                logger.indent("Validating cooking animation", () => {
+                    const cooking = animation.cook;
+                    const errorPath3 = tester.createPath(errorPath2, "cooking");
+
+                    validators.vector(tester.createPath(errorPath3, "left fist"), cooking.leftFist);
+                    validators.vector(tester.createPath(errorPath3, "right fist"), cooking.rightFist);
+                });
+
+                logger.indent("Validating throwing animation", () => {
+                    const throwing = animation.throw;
+                    const errorPath3 = tester.createPath(errorPath2, "throwing");
+
+                    validators.vector(tester.createPath(errorPath3, "left fist"), throwing.leftFist);
+                    validators.vector(tester.createPath(errorPath3, "right fist"), throwing.rightFist);
+                });
+            });
+
+            tester.assertNoPointlessValue({
+                obj: throwable,
+                field: "impactDamage",
+                defaultValue: 0,
+                baseErrorPath: errorPath
+            });
+
+            if (throwable.impactDamage !== undefined) {
+                tester.assertIsRealNumber({
+                    obj: throwable,
+                    field: "impactDamage",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertNoPointlessValue({
+                    obj: throwable,
+                    field: "obstacleMultiplier",
+                    defaultValue: 1,
+                    baseErrorPath: errorPath
+                });
+
+                if (throwable.impactDamage !== undefined) {
+                    tester.assertIsRealNumber({
+                        obj: throwable,
+                        field: "obstacleMultiplier",
+                        baseErrorPath: errorPath
+                    });
+                }
+            }
+
+            tester.assertWarn(
+                throwable.wearerAttributes !== undefined,
+                "Wearer attributes on throwables have not been carefully implemented; results may range from unexpected to completely non-functional",
+                errorPath
+            );
+        });
+    }
+});
+
+/*
+
+template for collections which are either ObjectDefinition[] or ObjectDefinitions instances
+
+replace {collection variable} with the name of the variable holding the definitions
+replace {collection name} with an appropriate name for the collection
+
+code:
+
+logger.indent("Validating {collection name}s", () => {
+    tester.assertNoDuplicateIDStrings({collection variable} , "{collection variable}", "{collection name}");
+    //                                                     ^ add a ".definitions" here if the collection in question is an instance of ObjectDefinitions
+
+    for (const {collection name} of {collection variable}) {
+        const errorPath = tester.createPath("{collection name}", `{collection name} '${{collection name}.idString}'`);
+
+        logger.indent(`Validating {collection name} '${{collection name}.idString}'`, () => {
+            // start writing here
+        });
+    }
+});
+
+*/
 
 logger.indent("Validating configurations", () => {
     logger.indent("Validating server config", () => {
@@ -2257,7 +2885,7 @@ logger.indent("Validating configurations", () => {
                 break;
             }
             case SpawnMode.Radius: {
-                tester.assertIsFiniteRealNumber({
+                tester.assertIsPositiveFiniteReal({
                     obj: ServerConfig.spawn,
                     field: "radius",
                     baseErrorPath: errorPath
@@ -2268,7 +2896,7 @@ logger.indent("Validating configurations", () => {
                 const map = Maps[ServerConfig.mapName];
 
                 validators.vector(
-                    errorPath,
+                    tester.createPath(errorPath, "spawn position"),
                     ServerConfig.spawn.position,
                     {
                         min: 0,
@@ -2345,16 +2973,18 @@ logger.indent("Validating configurations", () => {
                 }
 
                 if (protection.maxJoinAttempts) {
+                    const errorPath3 = tester.createPath(errorPath2, "max join attempts");
+
                     tester.assertIsNaturalFiniteNumber({
                         obj: protection.maxJoinAttempts,
                         field: "count",
-                        baseErrorPath: errorPath2
+                        baseErrorPath: errorPath3
                     });
 
                     tester.assertIsPositiveFiniteReal({
                         obj: protection.maxJoinAttempts,
                         field: "duration",
-                        baseErrorPath: errorPath2
+                        baseErrorPath: errorPath3
                     });
                 }
 

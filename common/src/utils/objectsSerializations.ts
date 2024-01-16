@@ -471,7 +471,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.SyncedParticle]: {
         serializePartial(stream, data) {
             stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 16);
+            stream.writeRotation(data.rotation, 8);
 
             const writeScale = data.scale !== undefined;
             stream.writeBoolean(writeScale);
@@ -482,7 +482,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const writeAlpha = data.alpha !== undefined;
             stream.writeBoolean(writeAlpha);
             if (writeAlpha) {
-                stream.writeFloat(data.alpha!, 0, 1, 16);
+                stream.writeFloat(data.alpha!, 0, 1, 8);
             }
         },
         serializeFull(stream, data) {
@@ -499,7 +499,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             const data: ObjectsNetData[ObjectCategory.SyncedParticle] = {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(16)
+                rotation: stream.readRotation(8)
             };
 
             if (stream.readBoolean()) { // scale
@@ -507,7 +507,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
 
             if (stream.readBoolean()) { // alpha
-                data.alpha = stream.readFloat(0, 1, 16);
+                data.alpha = stream.readFloat(0, 1, 8);
             }
 
             return data;
