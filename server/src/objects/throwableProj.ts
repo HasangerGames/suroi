@@ -2,7 +2,7 @@ import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { FlyoverPref } from "../../../common/src/definitions/obstacles";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Collision } from "../../../common/src/utils/math";
+import { Angle, Collision, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -116,9 +116,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         const impactDamage = this.definition.impactDamage;
         const currentSquaredVel = Vec.squaredLength(this.velocity);
         const squaredThresholds = ThrowableProjectile.squaredThresholds;
-        const shouldDealImpactDamage = impactDamage !== undefined && currentSquaredVel >= squaredThresholds.impactDamage;
+        const remainAirborne = currentSquaredVel >= squaredThresholds.impactDamage;
+        const shouldDealImpactDamage = impactDamage !== undefined && remainAirborne;
 
-        if (!shouldDealImpactDamage) {
+        if (!remainAirborne) {
             this._airborne = false;
 
             if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
@@ -250,6 +251,9 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
             this.angularVelocity *= 0.6;
         }
+
+        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
         this._collideWithOwner ||= this.game.now - this._spawnTime >= 250;
         this._damagedLastTick = damagedThisTick;

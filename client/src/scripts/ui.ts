@@ -325,7 +325,7 @@ Video evidence is required.`)) {
             game.console.getBuiltInCVar("cv_crosshair_stroke_color"),
             game.console.getBuiltInCVar("cv_crosshair_stroke_size")
         );
-        const cursor = `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
+        const cursor = crosshair === "crosshair" ? crosshair : `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
 
         $("#crosshair-image").css({
             backgroundImage: `url("${crosshair}")`,
@@ -335,7 +335,7 @@ Video evidence is required.`)) {
 
         $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]);
 
-        $("#crosshair-preview, #game-ui").css({ cursor });
+        $("#crosshair-preview, #game").css({ cursor });
     }
     loadCrosshair();
 
@@ -390,7 +390,7 @@ Video evidence is required.`)) {
     }).val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
 
     // Disable context menu
-    $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
+    $("#game").on("contextmenu", e => { e.preventDefault(); });
 
     // Load settings values and event listeners
     function addSliderListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: number) => void): void {
@@ -489,6 +489,28 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
+
+    const gameUi = $("#game-ui");
+    function updateUiScale(): void {
+        const scale = game.console.getBuiltInCVar("cv_ui_scale");
+
+        gameUi.width(window.innerWidth / scale);
+        gameUi.height(window.innerHeight / scale);
+        gameUi.css("transform", `scale(${scale})`);
+    }
+    updateUiScale();
+    window.addEventListener("resize", () => updateUiScale());
+
+    addSliderListener("#slider-ui-scale", "cv_ui_scale", () => {
+        updateUiScale();
+        game.map.resize();
+    });
+
+    // TODO: fix joysticks on mobile when UI scale is not 1
+    if (game.inputManager.isMobile) {
+        $("#ui-scale-container").hide();
+        game.console.setBuiltInCVar("cv_ui_scale", 1);
+    }
 
     // Minimap stuff
     addSliderListener("#slider-minimap-transparency", "cv_minimap_transparency", () => {
@@ -665,8 +687,7 @@ Video evidence is required.`)) {
         // Emote button & wheel
         $("#emote-wheel")
             .css("top", "50%")
-            .css("left", "50%")
-            .css("transform", "translate(-50%, -50%)");
+            .css("left", "50%");
         $("#btn-emotes").show().on("click", () => {
             $("#emote-wheel").show();
         });

@@ -60,13 +60,13 @@ export interface SyncedParticleDefinition extends ObjectDefinition {
     readonly tint?: number
 
     readonly hitbox?: CircleHitbox
-    readonly depletePerTick?: {
-        health?: number
-        adrenaline?: number
+    readonly depletePerMs?: {
+        readonly health?: number
+        readonly adrenaline?: number
     }
 }
 
-export interface SyncedParticlesDefinition {
+export interface SyncedParticleSpawnerDefinition {
     readonly type: ReferenceTo<SyncedParticleDefinition>
     readonly count: number
     readonly deployAnimation?: {
@@ -128,7 +128,7 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
     createParticle("tear_gas_particle", "Tear Gas Particle", {
         tint: 0xa0e6ff,
         hitbox: new CircleHitbox(11),
-        depletePerTick: {
+        depletePerMs: {
             adrenaline: 0.0055
         }
     }),

@@ -54,8 +54,10 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
 
         const player = this.game.playerNames.get(data.playerID);
 
+        const playerName = this.game.uiManager.getRawPlayerName(data.playerID);
+
         if (player) {
-            this.playerName = player.name;
+            this.playerName = playerName;
             this.playerNameText.text = this.playerName;
 
             if (player.hasColor) {

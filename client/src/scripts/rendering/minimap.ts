@@ -464,6 +464,8 @@ export class Minimap {
 
     resize(): void {
         this.border.visible = this.expanded;
+        const uiScale = this.game.console.getBuiltInCVar("cv_ui_scale");
+
         if (this.expanded) {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
@@ -475,7 +477,11 @@ export class Minimap {
             this.margins = Vec.create(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
-            closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
+            const closeButtonPos = Math.min(
+                this.margins.x + this.minimapWidth + 16,
+                screenWidth - (closeButton.outerWidth() ?? 0)
+            ) / uiScale;
+            closeButton.css("left", `${closeButtonPos}px`);
 
             this.indicator.scale.set(0.2);
 
@@ -490,16 +496,16 @@ export class Minimap {
             if (!this.visible) return;
 
             const bounds = this.borderContainer[0].getBoundingClientRect();
-            const border = parseInt(this.borderContainer.css("border-width"));
+            const border = parseInt(this.borderContainer.css("border-width")) * uiScale;
 
             this.minimapWidth = bounds.width - border * 2;
             this.minimapHeight = bounds.height - border * 2;
             this.margins = Vec.create(bounds.left + border, bounds.top + border);
 
             if (window.innerWidth > 1200) {
-                this.container.scale.set(1 / 1.25);
+                this.container.scale.set(1 / 1.25 * uiScale);
             } else {
-                this.container.scale.set(1 / 2);
+                this.container.scale.set(1 / 2 * uiScale);
             }
 
             this.indicator.scale.set(0.1);
@@ -547,8 +553,6 @@ export class Minimap {
         this.borderContainer.hide();
         $("#scopes-container").hide();
         $("#spectating-container").hide();
-        $("#weapons-container").hide();
-        $("#items-container").hide();
         $("#gas-msg-info").hide();
         $("#btn-close-minimap").show();
         $("#ui-kill-leader").hide();
@@ -561,8 +565,6 @@ export class Minimap {
         this.expanded = false;
         $("#btn-close-minimap").hide();
         $("#center-bottom-container").show();
-        $("#weapons-container").show();
-        $("#items-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
         if (this.game.spectating) $("#spectating-container").show();

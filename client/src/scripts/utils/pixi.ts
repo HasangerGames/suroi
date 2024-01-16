@@ -41,19 +41,19 @@ export async function loadTextures(): Promise<void> {
 
 export class SuroiSprite extends Sprite {
     constructor(frame?: string) {
-        super(frame ? SuroiSprite._getTexture(frame) : undefined);
+        super(frame ? SuroiSprite.getTexture(frame) : undefined);
 
         this.anchor.set(0.5);
         this.setPos(0, 0);
     }
 
-    private static _getTexture(frame: string): Texture {
+    static getTexture(frame: string): Texture {
         if (MODE.reskin && Reskins[MODE.reskin]?.textures.includes(frame)) frame += `_${MODE.reskin}`;
         return textures[frame] ?? textures._missing_texture;
     }
 
     setFrame(frame: string): this {
-        this.texture = SuroiSprite._getTexture(frame);
+        this.texture = SuroiSprite.getTexture(frame);
         return this;
     }
 
