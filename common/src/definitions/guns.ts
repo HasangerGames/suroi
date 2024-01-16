@@ -27,6 +27,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly noQuickswitch?: boolean
     readonly bulletCount?: number
     readonly length: number
+    readonly centerJitterOnMuzzle?: boolean
     readonly shootOnRelease?: boolean
     readonly summonAirdrop?: boolean
 
@@ -362,9 +363,10 @@ const GunsRaw: RawGunDefinition[] = [
         recoilDuration: 600,
         fireMode: FireMode.Single,
         bulletCount: 18,
-        shotSpread: 15,
-        moveSpread: 22,
-        jitterRadius: 1.5,
+        shotSpread: 24,
+        moveSpread: 28,
+        jitterRadius: 1.75,
+        centerJitterOnMuzzle: true,
         length: 8,
         fists: {
             left: Vec.create(120, -1),
@@ -377,7 +379,7 @@ const GunsRaw: RawGunDefinition[] = [
             position: Vec.create(4, 0.6)
         },
         ballistics: {
-            damage: 5,
+            damage: 4,
             obstacleMultiplier: 0.5,
             speed: 0.12,
             range: 40,
