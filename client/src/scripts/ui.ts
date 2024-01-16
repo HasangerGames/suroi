@@ -576,21 +576,26 @@ Video evidence is required.`)) {
 
     // Switch weapon slots by clicking
     const maxWeapons = GameConstants.player.maxWeapons;
-    for (let slot = 0; slot < maxWeapons; slot++) {
-        const slotElement = $(`#weapon-slot-${slot + 1}`);
-        slotElement[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                if (slotElement.hasClass("has-item")) {
-                    e.stopImmediatePropagation();
+for (let slot = 0; slot < maxWeapons; slot++) {
+    const slotElement = $(`#weapon-slot-${slot + 1}`);
+    slotElement[0].addEventListener(
+        "pointerdown",
+        (e: PointerEvent): void => {
+            if (slotElement.hasClass("has-item")) {
+                e.stopImmediatePropagation();
+                if (slot === 3) { // Check if the slot is 4 (0-indexed)
+                    const step = 1; // Define the step for cycling
+                    game.inputManager.cycleThrowable(step);
+                } else {
                     game.inputManager.addAction({
                         type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
                         slot
                     });
                 }
             }
-        );
-    }
+        }
+    );
+}
 
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
