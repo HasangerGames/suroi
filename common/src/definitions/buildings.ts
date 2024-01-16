@@ -518,11 +518,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "ammo_crate", position: Vec.create(-14, 0) },
             { idString: "ammo_crate", position: Vec.create(14, 0) },
 
-            { idString: "box", get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
-            { idString: "box", get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
-            { idString: "box", get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
-            { idString: "box", get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
-            { idString: "box", get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
+            { idString: { box: 9, grenade_box: 1 }, get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
         ],
 
         lootSpawners: [

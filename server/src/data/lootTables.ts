@@ -89,6 +89,14 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_scopes", weight: 0.3 }
         ]
     },
+    grenade_box: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "frag_grenade", count: 1, weight: 1 },
+            { item: "smoke_grenade", count: 1, weight: 1 }
+        ]
+    },
     melee_crate: {
         min: 2,
         max: 2,
