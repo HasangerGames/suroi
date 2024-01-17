@@ -14,7 +14,6 @@ import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
-import { ThrowableItem } from '../../../server/src/inventory/throwableItem';
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 
 export function setupUI(game: Game): void {
