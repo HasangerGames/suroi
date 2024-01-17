@@ -163,7 +163,9 @@ export function setupUI(game: Game): void {
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(); });
+    $("#btn-spectate-menu").on("click", () => { game.endGame(); });
     $("#btn-menu").on("click", () => { game.endGame(); });
+    $("#btn-spectate-replay").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
     $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
