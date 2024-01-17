@@ -14,6 +14,7 @@ import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -605,6 +606,10 @@ Video evidence is required.`)) {
             (e: PointerEvent): void => {
                 if (slotElement.hasClass("has-item")) {
                     e.stopImmediatePropagation();
+                    if (slot === 3) { // Check if the slot is 4 (0-indexed)
+                        const step = 1; // Define the step for cycling
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
+                    }
                     game.inputManager.addAction({
                         type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
                         slot

@@ -244,6 +244,7 @@
 
     #kill-feed {
         margin-right: 180px;
+        margin-top: -10px;
         @media screen and (max-width: $screen_large) {
             margin-right: 80px;
         }
@@ -943,7 +944,7 @@
 
 .items-container#healing {
     flex-direction: row;
-    left: 10px;
+    left: 5px;
 
     .inventory-container {
         justify-content: end;
@@ -951,7 +952,7 @@
         bottom: 50px;
         @media screen and (max-width: $screen_medium) {
             bottom: 125px;
-            left: -7px;
+            left: -2px;
         }
         @media screen and (max-height: 400px) {
             bottom: 10px;
@@ -960,7 +961,7 @@
 }
 .items-container#ammo {
     flex-direction: row-reverse;
-    right: 10px;
+    right: 5px;
 
     .inventory-container {
         justify-content: end;
@@ -972,7 +973,7 @@
 
         @media screen and (max-width: $screen_medium) {
             bottom: 190px;
-            right: -7px;
+            right: -2px;
         }
 
         @media screen and (max-height: 500px) and (max-width: $screen_large) {
