@@ -67,7 +67,12 @@ export class InputManager {
     private _lastInputPacket: InputPacket | undefined;
     private _inputPacketTimer = 0;
 
+    
+
     update(): void {
+
+        
+
         if (this.game.gameOver) return;
         const packet = new InputPacket();
 
@@ -131,6 +136,16 @@ export class InputManager {
 
         const game = this.game;
         const gameContainer = $("#game")[0];
+
+        // Prevents continued firing when cursor leaves the page
+        gameContainer.addEventListener('pointerleave', (event) => {
+            this.attacking = false;
+        });
+
+        // Prevents continued firing when RMB is pressed
+        gameContainer.addEventListener('pointerup', (event) => {
+            this.attacking = false;
+        });
 
         // different event targets… why?
         window.addEventListener("keydown", this.handleInputEvent.bind(this, true));
