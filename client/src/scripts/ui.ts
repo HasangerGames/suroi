@@ -14,6 +14,8 @@ import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { ThrowableItem } from '../../../server/src/inventory/throwableItem';
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -576,26 +578,25 @@ Video evidence is required.`)) {
 
     // Switch weapon slots by clicking
     const maxWeapons = GameConstants.player.maxWeapons;
-for (let slot = 0; slot < maxWeapons; slot++) {
-    const slotElement = $(`#weapon-slot-${slot + 1}`);
-    slotElement[0].addEventListener(
-        "pointerdown",
-        (e: PointerEvent): void => {
-            if (slotElement.hasClass("has-item")) {
-                e.stopImmediatePropagation();
-                if (slot === 3) { // Check if the slot is 4 (0-indexed)
-                    const step = 1; // Define the step for cycling
-                    game.inputManager.cycleThrowable(step);
-                } else {
+    for (let slot = 0; slot < maxWeapons; slot++) {
+        const slotElement = $(`#weapon-slot-${slot + 1}`);
+        slotElement[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                if (slotElement.hasClass("has-item")) {
+                    e.stopImmediatePropagation();
+                    if (slot === 3) { // Check if the slot is 4 (0-indexed)
+                        const step = 1; // Define the step for cycling
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
+                    }
                     game.inputManager.addAction({
                         type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
                         slot
                     });
                 }
             }
-        }
-    );
-}
+        );
+    }
 
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
