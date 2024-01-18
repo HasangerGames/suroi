@@ -272,8 +272,8 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
-    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
-    for (const emote of Emotes.definitions) {
+    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
+    for (const emote of (Emotes.definitions)) {
         // noinspection CssUnknownTarget
         const emoteItem =
             $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
@@ -282,9 +282,12 @@ Video evidence is required.`)) {
 </div>`);
         emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
-            game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
+            game.console.setBuiltInCVar(
+                `cv_loadout_${selectedEmoteSlot}_emote`,
+                emote.idString
+            );
             $(this).addClass("selected").siblings().removeClass("selected");
-            $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
+            $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
                 "background-image",
                 `url("./img/game/emotes/${emote.idString}.svg")`
             );
@@ -292,23 +295,38 @@ Video evidence is required.`)) {
         $("#emotes-list").append(emoteItem);
     }
 
-    for (const slot of ["top", "right", "bottom", "left"] as const) {
+    const slots = ["top", "right", "bottom", "left", "win", "death"] as const;
+    for (const slot of slots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
-        $(`#emote-customize-wheel > .emote-${slot}`)
+        $(`#emote-wheel-container .emote-${slot}`)
             .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
+                    $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
-                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
+                    if (slots.slice(0, 3).find((_slot) => _slot === slot)) {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
+                        );
+                    } else {
+                        $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
+                    }
+                    $(".emotes-list-item-container")
+                        .removeClass("selected")
+                        .css("cursor", "pointer");
                     $(`#emote-${emote}`).addClass("selected");
                 } else {
                     selectedEmoteSlot = undefined;
-                    $("#emote-customize-wheel").css(
-                        "background-image",
-                        'url("./img/misc/emote_wheel.svg")'
-                    );
+                    if (slots.slice(0, 3).find((_slot) => _slot === slot)) {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            'url("./img/misc/emote_wheel.svg")'
+                        );
+                    } else {
+                        $(`#emote-wheel-container .emote-${slot}`).removeClass("selected");
+                    }
                     $(".emotes-list-item-container")
                         .removeClass("selected")
                         .css("cursor", "default");

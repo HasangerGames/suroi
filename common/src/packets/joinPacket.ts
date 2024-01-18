@@ -36,7 +36,7 @@ export class JoinPacket extends Packet {
         this.isMobile = stream.readBoolean();
         this.skin = Loots.readFromStream(stream);
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) {
             this.emotes.push(Emotes.readFromStream(stream));
         }
     }

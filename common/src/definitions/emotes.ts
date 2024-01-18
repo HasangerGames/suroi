@@ -5,6 +5,10 @@ export interface EmoteDefinition extends ObjectDefinition {}
 export const Emotes = new ObjectDefinitions<EmoteDefinition>(
     [
         {
+            idString: "none",
+            name: "None"
+        },
+        {
             idString: "happy_face",
             name: "Happy Face"
         },

@@ -291,6 +291,7 @@ export class Game {
                     movement.left = false;
                     movement.right = false;
                     lastManStanding.attacking = false;
+                    if (lastManStanding.loadout.emotes[5].idString !== "none") lastManStanding.emote(5);
                     lastManStanding.sendGameOverPacket(true);
                 }
 
