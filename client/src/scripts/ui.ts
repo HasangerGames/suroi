@@ -273,28 +273,33 @@ Video evidence is required.`)) {
 
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
-    for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
-        // noinspection CssUnknownTarget
-        const emoteItem =
-            $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-  <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
-  <span class="emote-name">${emote.name}</span>
-</div>`);
-        emoteItem.on("click", function() {
-            if (selectedEmoteSlot === undefined) return;
-            game.console.setBuiltInCVar(
-                `cv_loadout_${selectedEmoteSlot}_emote`,
-                emote.idString
-            );
-            $(this).addClass("selected").siblings().removeClass("selected");
-            $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
-                "background-image",
-                `url("./img/game/emotes/${emote.idString}.svg")`
-            );
-        });
-        $("#emotes-list").append(emoteItem);
+    function updateEmotesList(): void {
+        $("#emotes-list").empty();
+        for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
+        //for (const emote of Emotes.definitions) {
+            // noinspection CssUnknownTarget
+            const emoteItem =
+                $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+    <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
+    <span class="emote-name">${emote.name}</span>
+    </div>`);
+            emoteItem.on("click", function() {
+                if (selectedEmoteSlot === undefined) return;
+                game.console.setBuiltInCVar(
+                    `cv_loadout_${selectedEmoteSlot}_emote`,
+                    emote.idString
+                );
+                $(this).addClass("selected").siblings().removeClass("selected");
+                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
+                    "background-image",
+                    `url("./img/game/emotes/${emote.idString}.svg")`
+                );
+            });
+            $("#emotes-list").append(emoteItem);
+        }
     }
 
+    updateEmotesList();
     const slots = ["top", "right", "bottom", "left", "win", "death"] as const;
     for (const slot of slots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
@@ -305,6 +310,7 @@ Video evidence is required.`)) {
                 if (selectedEmoteSlot !== slot) {
                     $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
                     selectedEmoteSlot = slot;
+                    updateEmotesList();
                     if (slots.slice(0, 3).find((_slot) => _slot === slot)) {
                         $("#emote-customize-wheel").css(
                             "background-image",
