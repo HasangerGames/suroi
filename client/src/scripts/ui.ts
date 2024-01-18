@@ -273,7 +273,7 @@ Video evidence is required.`)) {
 
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
-    for (const emote of (Emotes.definitions)) {
+    for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
         // noinspection CssUnknownTarget
         const emoteItem =
             $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
