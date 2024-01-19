@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, Texture, TilingSprite } from "pixi.js";
+import { Container, TilingSprite } from "pixi.js";
 import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -108,7 +108,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         super(game, id);
 
         this.images = {
-            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), // SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
+            aimTrail: new TilingSprite(SuroiSprite.getTexture("aimTrail"), 20, 6000),
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),

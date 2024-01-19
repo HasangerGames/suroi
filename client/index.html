@@ -166,202 +166,208 @@
           <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i class="fa-solid fa-volume-high"></i></button>
         </div>
       </div>
-    </div>
+  </div>
+  <div id="game">
     <div id="game-ui">
-      <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i class="fa-solid fa-close"></i></button>
-      <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i class="fa-solid fa-rotate-right"></i></button>
-      <div id="joysticks-containers">
-        <div id="left-joystick-container"></div>
-        <div id="right-joystick-container"></div>
-      </div>
-      <div id="top-left-container">
-        <div style="display: flex">
-          <div id="minimap-border"></div>
-          <div style="display: flex; flex-direction: column; gap: 5px">
-            <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px" id="btn-game-menu"></button>
-            <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
-              <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
-            </button>
+        <div id="joysticks-containers">
+          <div id="left-joystick-container"></div>
+          <div id="right-joystick-container"></div>
+        </div>
+        <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none">
+          <i class="fa-solid fa-close"></i>
+        </button>
+        <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <div id="top-left-container">
+          <div style="display: flex">
+            <div id="minimap-border"></div>
+            <div style="display: flex; flex-direction: column; gap: 5px">
+              <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px" id="btn-game-menu"></button>
+              <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
+                <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
+              </button>
+            </div>
+          </div>
+          <div id="gas-timer">
+            <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
+            <span id="gas-timer-text">0:00</span>
+          </div>
+            <div id="debug-hud">
+              <div id="fps-counter"></div>
+              <div id="ping-counter"></div>
+              <div id="coordinates-hud"></div>
           </div>
         </div>
-        <div id="gas-timer">
-          <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
-          <span id="gas-timer-text">0:00</span>
+
+        <div class="ui-leaderboard">
+          <div id="ui-kill-leader">
+            <div id="kill-leader-leader-container">
+              <span id="kill-leader-leader">Waiting for leader</span>
+              <i class="fa-solid fa-crown" style="margin-left: 5px; margin-right: 5px;"></i>
+              <span id="kill-leader-kills-counter">0</span>
+            </div>
+          </div>
+        <div class="counter">
+          <img src="./img/misc/player_icon.svg">
+          <div class="counter-text" id="ui-players-alive">1</div>
         </div>
-          <div id="debug-hud">
-            <div id="fps-counter"></div>
-            <div id="ping-counter"></div>
-            <div id="coordinates-hud"></div>
+        <div class="counter" id="kill-counter" style="margin-top: 5px; display: none">
+          <img src="./img/misc/skull_icon.svg">
+          <div class="counter-text" id="ui-kills">0</div>
+        </div>
+        <div id="kill-feed"></div>
+      </div>
+      <div id="action-container" style="display: none">
+        <div id="action-timer">
+          <h2 id="action-time">0.0</h2>
+          <svg id="action-timer-anim" width="160" height="160" xmlns="http://www.w3.org/2000/svg">
+            <circle r="36" cy="81" cx="81" stroke="#ffffff" stroke-width="7" stroke-dasharray="226" fill="#16161675" />
+          </svg>
+        </div>
+        <div id="action-name"></div>
+      </div>
+      <div id="interact-message" style="display: none;">
+        <kbd id="interact-key"></kbd>
+        <span id="interact-text"></span>
+      </div>
+      <div id="center-bottom-container">
+        <div id="weapon-ammo-container" style="display: none;">
+          <div id="weapon-clip-ammo"></div>
+          <div id="weapon-inventory-ammo"></div>
+        </div>
+        <div id="adrenaline-bar-container">
+          <div id="adrenaline-bar"></div>
+          <span id="adrenaline-bar-percentage"></span>
+          <span id="adrenaline-bar-min-max"></span>
+        </div>
+        <div id="health-bar-container">
+          <div id="health-bar-animation"></div>
+          <div id="health-bar"></div>
+          <span id="health-bar-percentage"></span>
+          <span id="health-bar-max"></span>
+        </div>
+        <div id="killstreak-indicator-container" style="display: none;">
+          <span id="killstreak-indicator-counter">Streak: 0</span>
         </div>
       </div>
 
-      <div class="ui-leaderboard">
-        <div id="ui-kill-leader">
-          <div id="kill-leader-leader-container">
-            <span id="kill-leader-leader">Waiting for leader</span>
-            <i class="fa-solid fa-crown" style="margin-left: 5px; margin-right: 5px;"></i>
-            <span id="kill-leader-kills-counter">0</span>
+      <div id="center-top-container">
+        <div class="inventory-container" id="scopes-container"></div>
+        <div id="spectating-container" style="display: none">
+          <div id="spectating-msg">
+            Spectating <span id="spectating-msg-player"></span>
+          </div>
+          <div id="spectating-buttons-container">
+            <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
+            <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
+            <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
+            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">Spectate Kill Leader</button>
           </div>
         </div>
-      <div class="counter">
-        <img src="./img/misc/player_icon.svg">
-        <div class="counter-text" id="ui-players-alive">1</div>
+        <div id="gas-msg" style="display: none">
+          <div id="gas-msg-info"></div>
+        </div>
       </div>
-      <div class="counter" id="kill-counter" style="margin-top: 5px; display: none">
-        <img src="./img/misc/skull_icon.svg">
-        <div class="counter-text" id="ui-kills">0</div>
-      </div>
-      <div id="kill-feed"></div>
-    </div>
-    <div id="action-container" style="display: none">
-      <div id="action-timer">
-        <h2 id="action-time">0.0</h2>
-        <svg id="action-timer-anim" width="160" height="160" xmlns="http://www.w3.org/2000/svg">
-          <circle r="36" cy="81" cx="81" stroke="#ffffff" stroke-width="7" stroke-dasharray="226" fill="#16161675" />
-        </svg>
-      </div>
-      <div id="action-name"></div>
-    </div>
-    <div id="interact-message" style="display: none;">
-      <kbd id="interact-key"></kbd>
-      <span id="interact-text"></span>
-    </div>
-    <div id="center-bottom-container">
-      <div id="weapon-ammo-container" style="display: none;">
-        <div id="weapon-clip-ammo"></div>
-        <div id="weapon-inventory-ammo"></div>
-      </div>
-      <div id="adrenaline-bar-container">
-        <div id="adrenaline-bar"></div>
-        <span id="adrenaline-bar-percentage"></span>
-        <span id="adrenaline-bar-min-max"></span>
-      </div>
-      <div id="health-bar-container">
-        <div id="health-bar-animation"></div>
-        <div id="health-bar"></div>
-        <span id="health-bar-percentage"></span>
-        <span id="health-bar-max"></span>
-      </div>
-      <div id="killstreak-indicator-container" style="display: none;">
-        <span id="killstreak-indicator-counter">Streak: 0</span>
-      </div>
-    </div>
 
-    <div id="center-top-container">
-      <div class="inventory-container" id="scopes-container"></div>
-      <div id="spectating-container" style="display: none">
-        <div id="spectating-msg">
-          Spectating <span id="spectating-msg-player"></span>
-        </div>
-        <div id="spectating-buttons-container">
-          <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
-          <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
-          <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
-          <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">Spectate Kill Leader</button>
+      <div id="kill-msg" style="display: none">
+        <div id="kill-msg-kills"></div>
+        You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
+      </div>
+      <div class="items-container" id="healing">
+        <div class="inventory-container" id="healing-items-container">
         </div>
       </div>
-      <div id="gas-msg" style="display: none">
-        <div id="gas-msg-info"></div>
-      </div>
-    </div>
-
-    <div id="kill-msg" style="display: none">
-      <div id="kill-msg-kills"></div>
-      You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
-    </div>
-    <div class="items-container" id="healing">
-      <div class="inventory-container" id="healing-items-container">
-      </div>
-    </div>
-    <div class="items-container" id="ammo">
-      <div class="inventory-container" id="ammo-container">
-      </div>
-      <div class="inventory-container" id="special-ammo-container">
-      </div>
-    </div>
-    <div class="inventory-container" id="equipment-container">
-      <div class="inventory-slot has-item" id="helmet-slot">
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-        <div class="item-tooltip"></div>
-      </div>
-      <div class="inventory-slot has-item" id="vest-slot">
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-        <div class="item-tooltip"></div>
-      </div>
-      <div class="inventory-slot has-item" id="backpack-slot">
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-        <div class="item-tooltip"></div>
-      </div>
-    </div>
-    <div class="inventory-container" id="weapons-container">
-      <div class="inventory-slot" id="weapon-slot-1">
-        <span class="slot-number">1</span>
-        <span class="item-ammo"></span>
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-      </div>
-      <div class="inventory-slot" id="weapon-slot-2">
-        <span class="slot-number">2</span>
-        <span class="item-ammo"></span>
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-      </div>
-      <div class="inventory-slot" id="weapon-slot-3">
-        <span class="slot-number">3</span>
-        <span class="item-ammo"></span>
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-      </div>
-      <div class="inventory-slot" id="weapon-slot-4">
-        <span class="slot-number">4</span>
-        <span class="item-ammo"></span>
-        <img class="item-image" draggable="false">
-        <span class="item-name"></span>
-      </div>
-    </div>
-    <div id="emote-wheel" style="display: none">
-      <div class="emote-top"></div>
-      <div class="emote-right"></div>
-      <div class="emote-bottom"></div>
-      <div class="emote-left"></div>
-    </div>
-    <div id="game-over-overlay" style="display: none">
-      <div id="game-over-top-screen">
-        <img id="chicken-dinner" src="./img/game/emotes/chicken.svg">
-        <h1 id="game-over-text" class="modal-item">You died.</h1>
-        <div id="game-over-rank-container">
-          <span>Rank</span>
-          <span id="game-over-rank" class="modal-item"></span>
+      <div class="items-container" id="ammo">
+        <div class="inventory-container" id="ammo-container">
+        </div>
+        <div class="inventory-container" id="special-ammo-container">
         </div>
       </div>
-      <div id="game-over-screen">
-        <h1 id="game-over-player-name" class="modal-item">Player</h1>
-        <div class="modal-item" id="game-over-stats">
-          <div class="stat">
-            <span class="stat-name">Kills:</span>
-            <span class="stat-value" id="game-over-kills"></span>
-          </div>
-          <div class="stat">
-            <span class="stat-name">Damage done:</span>
-            <span class="stat-value" id="game-over-damage-done"></span>
-          </div>
-          <div class="stat">
-            <span class="stat-name">Damage taken:</span>
-            <span class="stat-value" id="game-over-damage-taken"></span>
-          </div>
-          <div class="stat">
-            <span class="stat-name">Time alive:</span>
-            <span class="stat-value" id="game-over-time"></span>
+      <div class="inventory-container" id="equipment-container">
+        <div class="inventory-slot has-item" id="helmet-slot">
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+          <div class="item-tooltip"></div>
+        </div>
+        <div class="inventory-slot has-item" id="vest-slot">
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+          <div class="item-tooltip"></div>
+        </div>
+        <div class="inventory-slot has-item" id="backpack-slot">
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+          <div class="item-tooltip"></div>
+        </div>
+      </div>
+      <div class="inventory-container" id="weapons-container">
+        <div class="inventory-slot" id="weapon-slot-1">
+          <span class="slot-number">1</span>
+          <span class="item-ammo"></span>
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+        </div>
+        <div class="inventory-slot" id="weapon-slot-2">
+          <span class="slot-number">2</span>
+          <span class="item-ammo"></span>
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+        </div>
+        <div class="inventory-slot" id="weapon-slot-3">
+          <span class="slot-number">3</span>
+          <span class="item-ammo"></span>
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+        </div>
+        <div class="inventory-slot" id="weapon-slot-4">
+          <span class="slot-number">4</span>
+          <span class="item-ammo"></span>
+          <img class="item-image" draggable="false">
+          <span class="item-name"></span>
+        </div>
+      </div>
+      <div id="emote-wheel" style="display: none">
+        <div class="emote-top"></div>
+        <div class="emote-right"></div>
+        <div class="emote-bottom"></div>
+        <div class="emote-left"></div>
+      </div>
+      <div id="game-over-overlay" style="display: none">
+        <div id="game-over-top-screen">
+          <img id="chicken-dinner" src="./img/game/emotes/chicken.svg">
+          <h1 id="game-over-text" class="modal-item">You died.</h1>
+          <div id="game-over-rank-container">
+            <span>Rank</span>
+            <span id="game-over-rank" class="modal-item"></span>
           </div>
         </div>
-        <div class="modal-item">
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
-            <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu">Menu</button>
+        <div id="game-over-screen">
+          <h1 id="game-over-player-name" class="modal-item">Player</h1>
+          <div class="modal-item" id="game-over-stats">
+            <div class="stat">
+              <span class="stat-name">Kills:</span>
+              <span class="stat-value" id="game-over-kills"></span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">Damage done:</span>
+              <span class="stat-value" id="game-over-damage-done"></span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">Damage taken:</span>
+              <span class="stat-value" id="game-over-damage-taken"></span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">Time alive:</span>
+              <span class="stat-value" id="game-over-time"></span>
+            </div>
+          </div>
+          <div class="modal-item">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+              <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu">Menu</button>
+            </div>
           </div>
         </div>
       </div>
@@ -495,6 +501,13 @@
           <p style="color: red"><i>* Requires reload to apply</i></p>
         </div>
         <div class="tab-content" id="tab-interface-content" style="display: none">
+          <div class="modal-item" id="ui-scale-container">
+            <label>
+              <span class="setting-title">Interface Scale</span>
+              <span class="range-input-value"></span>
+              <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
+            </label>
+          </div>
           <div class="modal-item">
             <label>
               <span class="setting-title">Minimap Transparency</span>

@@ -130,16 +130,16 @@ export class InputManager {
         this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
 
         const game = this.game;
-        const gameUi = $("#game-ui")[0];
+        const gameContainer = $("#game")[0];
 
         // different event targets… why?
         window.addEventListener("keydown", this.handleInputEvent.bind(this, true));
         window.addEventListener("keyup", this.handleInputEvent.bind(this, false));
-        gameUi.addEventListener("pointerdown", this.handleInputEvent.bind(this, true));
-        gameUi.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
-        gameUi.addEventListener("wheel", this.handleInputEvent.bind(this, true));
+        gameContainer.addEventListener("pointerdown", this.handleInputEvent.bind(this, true));
+        gameContainer.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
+        gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true));
 
-        gameUi.addEventListener("pointermove", (e: MouseEvent) => {
+        gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
 
             this.mouseX = e.clientX;

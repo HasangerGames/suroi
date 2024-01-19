@@ -1,6 +1,6 @@
 @import "../../palette.scss";
 
-#game-ui {
+#game {
     user-select: none;
     --webkit-user-select: none;
     position: fixed;
@@ -16,11 +16,15 @@
         position: relative;
         z-index: -1;
     }*/
+}
 
-    .over-hud {
-        z-index: 1;
-        position: relative;
-    }
+#game-ui {
+    top: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
 }
 
 #btn-reload {
@@ -1225,6 +1229,7 @@
     position: absolute;
     width: 286px;
     height: 286px;
+    transform: translate(-50%, -50%);
     //noinspection CssUnknownTarget
     background-image: url("/img/misc/emote_wheel.svg");
 
@@ -1269,8 +1274,8 @@
     align-items: center;
 
     position: absolute;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 1001;
 
     background: rgba(0, 0, 0, 0.4);

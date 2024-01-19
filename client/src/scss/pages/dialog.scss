@@ -5,7 +5,7 @@
 #report-modal,
 #warning-modal {
     background-color: $bg;
-    max-width: 450px;
+    max-width: 500px;
 }
 
 #reporting-name {
@@ -160,11 +160,11 @@
         height: 100%;
     }
 
-    #emote-wheel-container {
-        #emote-customize-wheel {
-            position: relative;
-            align-self: center;
-            flex-shrink: 0;
+    #emote-customize-wheel {
+        position: relative;
+        align-self: center;
+        flex-shrink: 0;
+        transform: none;
 
             .emote-top,
             .emote-right,

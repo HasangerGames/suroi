@@ -112,7 +112,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         let position = Vec.add(
             owner.position,
-            Vec.rotate(Vec.create(definition.length + jitter, offset), owner.rotation) // player radius + gun length
+            Vec.rotate(Vec.create(definition.length + (definition.centerJitterOnMuzzle ? 0 : jitter), offset), owner.rotation) // player radius + gun length
         );
 
         for (
