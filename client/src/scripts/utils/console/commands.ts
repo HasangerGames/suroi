@@ -406,7 +406,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Starts attacking",
-            long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player isn't attacking.",
+            long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player is attacking.",
             signatures: [{ args: [], noexcept: true }]
         },
         {
