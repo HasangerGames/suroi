@@ -41,23 +41,32 @@ export class UIManager {
         this.game = game;
     }
 
-    getPlayerName(id: number): string {
-        const element = $("<span>");
+    getRawPlayerName(id: number): string {
         const player = this.game.playerNames.get(id);
-
         let name: string;
 
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
             name = "[Unknown Player]";
         } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            name = GameConstants.player.defaultName;
+            name = `${GameConstants.player.defaultName}_${id}`;
         } else {
             name = player.name;
-            if (player.hasColor) {
-                element.css("color", player.nameColor.toHex());
-            }
         }
+
+        return name;
+    }
+
+    getPlayerName(id: number): string {
+        const element = $("<span>");
+        const player = this.game.playerNames.get(id);
+
+        const name = this.getRawPlayerName(id);
+
+        if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            element.css("color", player.nameColor.toHex());
+        }
+
         element.text(name);
 
         return element.prop("outerHTML");

@@ -406,7 +406,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Starts attacking",
-            long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player isn't attacking.",
+            long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player is attacking.",
             signatures: [{ args: [], noexcept: true }]
         },
         {
@@ -617,7 +617,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_hud",
         function(): undefined {
-            $("canvas").toggleClass("over-hud");
+            $("#game-ui").toggle();
             if (game.map.visible) { game.map.toggleMinimap(); }
         },
         game,
@@ -660,10 +660,11 @@ export function setUpCommands(game: Game): void {
             if (this.gameOver) return;
             const { mouseX, mouseY } = this.inputManager;
 
+            const scale = this.console.getBuiltInCVar("cv_ui_scale");
+
             $("#emote-wheel")
-                //                       ___|> mystery constant (hint: use translate(-50%, 50%) if you're trynna center)
-                .css("left", `${mouseX - 143}px`)
-                .css("top", `${mouseY - 143}px`)
+                .css("left", `${mouseX / scale}px`)
+                .css("top", `${mouseY / scale}px`)
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
                 .show();
             this.inputManager.emoteWheelActive = true;
