@@ -289,7 +289,9 @@ Video evidence is required.`)) {
                     `cv_loadout_${selectedEmoteSlot}_emote`,
                     emote.idString
                 );
+
                 $(this).addClass("selected").siblings().removeClass("selected");
+
                 $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
                     "background-image",
                     `url("./img/game/emotes/${emote.idString}.svg")`
@@ -311,31 +313,22 @@ Video evidence is required.`)) {
                     $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
                     selectedEmoteSlot = slot;
                     updateEmotesList();
-                    if (slots.slice(0, 3).find((_slot) => _slot === slot)) {
+                    if (slots.slice(0, 4).find((_slot) => _slot === slot)) {
                         $("#emote-customize-wheel").css(
                             "background-image",
                             `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
                         );
                     } else {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            "url('/img/misc/emote_wheel.svg')"
+                        );
                         $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
                     }
                     $(".emotes-list-item-container")
                         .removeClass("selected")
                         .css("cursor", "pointer");
                     $(`#emote-${emote}`).addClass("selected");
-                } else {
-                    selectedEmoteSlot = undefined;
-                    if (slots.slice(0, 3).find((_slot) => _slot === slot)) {
-                        $("#emote-customize-wheel").css(
-                            "background-image",
-                            'url("./img/misc/emote_wheel.svg")'
-                        );
-                    } else {
-                        $(`#emote-wheel-container .emote-${slot}`).removeClass("selected");
-                    }
-                    $(".emotes-list-item-container")
-                        .removeClass("selected")
-                        .css("cursor", "default");
                 }
             });
     }
