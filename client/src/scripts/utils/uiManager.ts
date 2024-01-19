@@ -1,5 +1,6 @@
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
+import type { BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
@@ -70,6 +71,25 @@ export class UIManager {
         element.text(name);
 
         return element.prop("outerHTML");
+    }
+
+    getPlayerBadge(id: number): BadgeDefinition | undefined {
+        const player = this.game.playerNames.get(id);
+
+        let badge: BadgeDefinition | undefined;
+
+        if (!player) {
+            console.warn(`Unknown player name with id ${id}`);
+            badge = undefined;
+        } else if (
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names")
+        ) {
+            badge = undefined;
+        } else {
+            badge = player.badge;
+        }
+
+        return badge;
     }
 
     readonly ui = {
@@ -448,6 +468,18 @@ export class UIManager {
         const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
 
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
+        const playerBadge =
+            playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
+            const playerBadgeText = playerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="Badge">`
+            : "";
+
+        const killerBadge =
+            killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
+
+        const killerBadgeText = killerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${killerBadge.idString}.svg" alt="Badge">`
+            : "";
 
         let messageText: string | undefined;
         const classes: string[] = [];
@@ -460,16 +492,18 @@ export class UIManager {
                         let killMessage = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                killMessage = `${playerName} committed suicide`;
+                                killMessage = `${playerBadgeText}${playerName} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                killMessage = `${this.getPlayerName(killerID!)} killed ${playerName}`;
+                                killMessage = `${killerBadgeText}${this.getPlayerName(
+                                    killerID!
+                                )} killed ${playerBadgeText}${playerName}`;
                                 break;
                             case KillType.Gas:
-                                killMessage = `${playerName} died to the gas`;
+                                killMessage = `${playerBadgeText}${playerName} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                killMessage = `${playerName} was crushed by an airdrop`;
+                                killMessage = `${playerBadgeText}${playerName} was crushed by an airdrop`;
                                 break;
                         }
 
@@ -509,10 +543,12 @@ export class UIManager {
                             </span>`
                             : "";
 
-                        messageText = `
-                        ${killerName}
-                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">
+                        messageText = `\
+                        ${killerBadgeText}
+                        ${killerName}\
+                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
                         ${killstreakText}
+                        ${playerBadgeText}
                         ${playerName}`;
                         break;
                     }

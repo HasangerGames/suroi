@@ -442,6 +442,14 @@ export class Game {
         ) {
             player.loadout.skin = skin;
         }
+        const badge = packet.badge;
+        if (
+            !badge.notInLoadout &&
+            (badge.roleRequired === undefined ||
+                badge.roleRequired === player.role)
+        ) {
+            player.badge = packet.badge;
+        }
         player.loadout.emotes = packet.emotes;
 
         this.livingPlayers.add(player);

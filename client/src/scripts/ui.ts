@@ -15,6 +15,7 @@ import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { Badges } from "../../../common/src/definitions/badges";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -385,6 +386,41 @@ Video evidence is required.`)) {
     });
 
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+
+    // Load badges
+    if (
+        new Set(Badges.definitions.map((Badge) => Badge.roleRequired)).has(
+            game.console.getBuiltInCVar("dv_role")
+        )
+    ) {
+        $("#tab-badges").show();
+        for (const badge of Badges) {
+            if (
+                badge.notInLoadout ??
+                (badge.roleRequired !== undefined &&
+                    badge.roleRequired !==
+                        game.console.getBuiltInCVar("dv_role"))
+            ) { continue; }
+
+            /* eslint-disable @typescript-eslint/restrict-template-expressions */
+            // noinspection CssUnknownTarget
+            const skinItem =
+                $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
+    <div class="badges-list-item">
+        <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>
+    </div>
+    <span class="badge-name">${badge.name}</span>
+    </div>`);
+            skinItem.on("click", function() {
+                game.console.setBuiltInCVar("cv_player_badge", badge.idString);
+                $(this).addClass("selected").siblings().removeClass("selected");
+            });
+            $("#badges-list").append(skinItem);
+        }
+        $(`#badge-${game.console.getBuiltInCVar("cv_player_badge")}`).addClass(
+            "selected"
+        );
+    }
 
     addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
         game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
