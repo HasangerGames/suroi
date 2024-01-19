@@ -345,7 +345,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 Emotes.fromString("happy_face"),
                 Emotes.fromString("thumbs_up"),
                 Emotes.fromString("suroi_logo"),
-                Emotes.fromString("sad_face")
+                Emotes.fromString("sad_face"),
+                Emotes.fromString("chicken"),
+                Emotes.fromString("none")
             ]
         };
 
@@ -1015,6 +1017,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
+        if (this.loadout.emotes[4].idString !== "none") this.emote(4);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);
