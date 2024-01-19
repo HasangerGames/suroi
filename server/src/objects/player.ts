@@ -39,7 +39,7 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
-import { BadgeDefinition } from "../../../common/src/definitions/badges";
+import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;

@@ -9,7 +9,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
-import { BadgeDefinition } from "../../common/src/definitions/badges";
+import { type BadgeDefinition } from "../../common/src/definitions/badges";
 
 /**
  * Apply CORS headers to a response.

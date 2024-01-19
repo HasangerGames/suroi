@@ -470,7 +470,7 @@ export class UIManager {
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
         const playerBadge =
             playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
-            const playerBadgeText = playerBadge
+        const playerBadgeText = playerBadge
             ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="Badge">`
             : "";
 
