@@ -132,6 +132,16 @@ export class InputManager {
         const game = this.game;
         const gameContainer = $("#game")[0];
 
+        // Prevents continued firing when cursor leaves the page
+        gameContainer.addEventListener("pointerleave", (event) => {
+            this.attacking = false;
+        });
+
+        // Prevents continued firing when RMB is pressed
+        gameContainer.addEventListener("pointerup", (event) => {
+            this.attacking = false;
+        });
+
         // different event targets… why?
         window.addEventListener("keydown", this.handleInputEvent.bind(this, true));
         window.addEventListener("keyup", this.handleInputEvent.bind(this, false));
