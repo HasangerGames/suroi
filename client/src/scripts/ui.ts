@@ -283,7 +283,7 @@ Video evidence is required.`)) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
+    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
             emoteItem.on("click", function() {
@@ -297,7 +297,7 @@ Video evidence is required.`)) {
 
                 $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
                     "background-image",
-                    `url("./img/game/emotes/${emote.idString}.svg")`
+                    emote.idString !== "none" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
                 );
             });
             $("#emotes-list").append(emoteItem);
@@ -310,7 +310,7 @@ Video evidence is required.`)) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-wheel-container .emote-${slot}`)
-            .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
+            .css("background-image", Emotes.fromString(emote).idString !== "none" ? `url("./img/game/emotes/${emote}.svg")` : "none")
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
@@ -390,34 +390,26 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    if (
-        new Set(Badges.definitions.map((Badge) => Badge.roleRequired)).has(
-            game.console.getBuiltInCVar("dv_role")
-        )
-    ) {
+    const allowedBadges = Badges.definitions.filter((badge) => {
+        return badge.roleRequired && badge.roleRequired.includes(game.console.getBuiltInCVar("dv_role"));
+    });
+    if (allowedBadges.length > 0) {
         $("#tab-badges").show();
-        for (const badge of Badges) {
-            if (
-                badge.notInLoadout ??
-                (badge.roleRequired !== undefined &&
-                    badge.roleRequired !==
-                        game.console.getBuiltInCVar("dv_role"))
-            ) { continue; }
-
+        for (const badge of allowedBadges) {
             /* eslint-disable @typescript-eslint/restrict-template-expressions */
             // noinspection CssUnknownTarget
-            const skinItem =
-                $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
-    <div class="badges-list-item">
-        <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>
-    </div>
-    <span class="badge-name">${badge.name}</span>
+            const badgeItem =
+    $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
+        <div class="badges-list-item">
+            ${badge.idString !== "none" ? `<div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>` : ''}
+        </div>
+        <span class="badge-name">${badge.name}</span>
     </div>`);
-            skinItem.on("click", function() {
+            badgeItem.on("click", function() {
                 game.console.setBuiltInCVar("cv_player_badge", badge.idString);
                 $(this).addClass("selected").siblings().removeClass("selected");
             });
-            $("#badges-list").append(skinItem);
+            $("#badges-list").append(badgeItem);
         }
         $(`#badge-${game.console.getBuiltInCVar("cv_player_badge")}`).addClass(
             "selected"
