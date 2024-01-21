@@ -198,6 +198,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 type: "wood",
                 hitbox: RectangleHitbox.fromRect(14, 18)
+            },
+            {
+                type: "wood",
+                hitbox: RectangleHitbox.fromRect(9.8, 3.5, Vec.create(1.5, 10.6))
             }
         ],
         obstacles: [
@@ -2371,10 +2375,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(2, -1),
             residue: "mobile_home_residue"
         }],
-        floors: [{
-            type: "wood",
-            hitbox: RectangleHitbox.fromRect(43, 20, Vec.create(2, -1))
-        }],
+        floors: [
+            {
+                type: "wood",
+                hitbox: RectangleHitbox.fromRect(43, 20, Vec.create(2, -1))
+            },
+            {
+                type: "metal",
+                hitbox: RectangleHitbox.fromRect(10, 4.5, Vec.create(6, 11))
+            },
+            {
+                type: "metal",
+                hitbox: RectangleHitbox.fromRect(4.5, 10, Vec.create(-21.3, -4.4))
+            }
+        ],
         wallsToDestroy: 2,
         obstacles: [
             { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
