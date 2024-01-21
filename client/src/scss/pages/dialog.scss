@@ -216,9 +216,13 @@
             border-radius: 10px;
             padding: 5px;
             background-color: $transparent_bg;
-
+        
             &.selected {
                 border-color: $orange;
+            }
+        
+            .emote-name {
+                margin-top: auto;
             }
         }
 
