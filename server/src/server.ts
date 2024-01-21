@@ -9,7 +9,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
-import { type BadgeDefinition } from "../../common/src/definitions/badges";
+import { Badges, type BadgeDefinition } from "../../common/src/definitions/badges";
 
 /**
  * Apply CORS headers to a response.
@@ -291,6 +291,7 @@ app.ws("/play", {
             role,
             isDev,
             nameColor,
+            badge: Badges.fromString("none"),
             lobbyClearing: searchParams.get("lobbyClearing") === "true"
         };
         res.upgrade(
