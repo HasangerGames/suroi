@@ -288,7 +288,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly isDev: boolean;
     readonly hasColor: boolean;
     readonly nameColor: number;
-    badge?: BadgeDefinition;
+    badge: BadgeDefinition;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move

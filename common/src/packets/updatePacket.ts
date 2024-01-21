@@ -404,7 +404,7 @@ export class UpdatePacket extends Packet {
     newPlayers = new Set<{
         readonly id: number
         readonly name: string
-        readonly badge?: BadgeDefinition
+        readonly badge: BadgeDefinition
         readonly hasColor: boolean
         readonly nameColor: number
     }>();
@@ -516,7 +516,7 @@ export class UpdatePacket extends Packet {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
-                if (player.badge) Badges.writeToStream(stream, player.badge);
+                Badges.writeToStream(stream, player.badge);
                 if (player.hasColor) stream.writeBits(player.nameColor, 24);
             }
         }

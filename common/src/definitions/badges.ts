@@ -5,10 +5,14 @@ import {
 export interface BadgeDefinition extends ObjectDefinition {
     readonly idString: string
     readonly notInLoadout?: boolean
-    readonly roleRequired: string
+    readonly roleRequired?: string
 }
 
 export const Badges = new ObjectDefinitions<BadgeDefinition>([
+    {
+        name: "None",
+        idString: "none"
+    },
     {
         name: "Developer",
         idString: "developer",

@@ -196,7 +196,7 @@ export interface PlayerContainer {
     player?: Player
     readonly ip: string | undefined
     readonly role?: string
-    readonly badge?: BadgeDefinition
+    readonly badge: BadgeDefinition
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean

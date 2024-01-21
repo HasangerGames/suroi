@@ -82,7 +82,7 @@ export class UIManager {
             console.warn(`Unknown player name with id ${id}`);
             badge = undefined;
         } else if (
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names")
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names") || player.badge.idString === "none"
         ) {
             badge = undefined;
         } else {

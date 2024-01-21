@@ -69,7 +69,7 @@ type SimpleCVarMapping = {
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
     cv_loadout_skin: "hazel_jumpsuit",
-    cv_player_badge: "",
+    cv_player_badge: "none",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",
     cv_loadout_right_emote: "thumbs_up",

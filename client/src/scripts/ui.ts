@@ -391,10 +391,21 @@ Video evidence is required.`)) {
 
     // Load badges
     const allowedBadges = Badges.definitions.filter((badge) => {
-        return badge.roleRequired && badge.roleRequired.includes(game.console.getBuiltInCVar("dv_role"));
+        return badge.roleRequired && badge.roleRequired === game.console.getBuiltInCVar("dv_role");
     });
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
+        const noBadgeItem =
+                $(`<div id="badge-none" class="badges-list-item-container">
+    <div class="badges-list-item">
+    </div>
+    <span class="badge-name">None</span>
+    </div>`);
+        noBadgeItem.on("click", function() {
+            game.console.setBuiltInCVar("cv_player_badge", "none");
+            $(this).addClass("selected").siblings().removeClass("selected");
+        });
+        $("#badges-list").append(noBadgeItem);
         for (const badge of allowedBadges) {
             /* eslint-disable @typescript-eslint/restrict-template-expressions */
             // noinspection CssUnknownTarget
