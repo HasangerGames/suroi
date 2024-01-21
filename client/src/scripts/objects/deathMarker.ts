@@ -2,17 +2,19 @@ import { Text, type Container } from "pixi.js";
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { BadgeDefinition } from "../../../../common/src/definitions/badges";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
 
     playerName!: string;
     nameColor = 0xdcdcdc;
+    playerBadge!: BadgeDefinition;
 
     readonly image: SuroiSprite;
     playerNameText: Text;
@@ -59,6 +61,18 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         if (player) {
             this.playerName = playerName;
             this.playerNameText.text = this.playerName;
+
+            if (player.badge.idString !== "none") {
+                const badgeSprite = new SuroiSprite(player.badge.idString);
+                badgeSprite.width = this.playerNameText.height - 5;
+                badgeSprite.height = this.playerNameText.height - 5;
+                badgeSprite.position = Vec.create(
+                    -(this.playerNameText.width / 2 + 25),
+                    95
+                );
+
+                this.container.addChild(badgeSprite);
+            }
 
             if (player.hasColor) {
                 this.nameColor = player.nameColor.toNumber();

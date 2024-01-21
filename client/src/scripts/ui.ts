@@ -15,6 +15,7 @@ import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { Badges } from "../../../common/src/definitions/badges";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -282,7 +283,7 @@ Video evidence is required.`)) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
+    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
             emoteItem.on("click", function() {
@@ -296,7 +297,7 @@ Video evidence is required.`)) {
 
                 $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
                     "background-image",
-                    `url("./img/game/emotes/${emote.idString}.svg")`
+                    emote.idString !== "none" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
                 );
             });
             $("#emotes-list").append(emoteItem);
@@ -309,7 +310,7 @@ Video evidence is required.`)) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-wheel-container .emote-${slot}`)
-            .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
+            .css("background-image", Emotes.fromString(emote).idString !== "none" ? `url("./img/game/emotes/${emote}.svg")` : "none")
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
@@ -387,6 +388,44 @@ Video evidence is required.`)) {
     });
 
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+
+    // Load badges
+    const allowedBadges = Badges.definitions.filter((badge) => {
+        return badge.roleRequired && badge.roleRequired === game.console.getBuiltInCVar("dv_role");
+    });
+    if (allowedBadges.length > 0) {
+        $("#tab-badges").show();
+        const noBadgeItem =
+                $(`<div id="badge-none" class="badges-list-item-container">
+    <div class="badges-list-item">
+    </div>
+    <span class="badge-name">None</span>
+    </div>`);
+        noBadgeItem.on("click", function() {
+            game.console.setBuiltInCVar("cv_player_badge", "none");
+            $(this).addClass("selected").siblings().removeClass("selected");
+        });
+        $("#badges-list").append(noBadgeItem);
+        for (const badge of allowedBadges) {
+            /* eslint-disable @typescript-eslint/restrict-template-expressions */
+            // noinspection CssUnknownTarget
+            const badgeItem =
+                $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
+    <div class="badges-list-item">
+        <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>
+    </div>
+    <span class="badge-name">${badge.name}</span>
+    </div>`);
+            badgeItem.on("click", function() {
+                game.console.setBuiltInCVar("cv_player_badge", badge.idString);
+                $(this).addClass("selected").siblings().removeClass("selected");
+            });
+            $("#badges-list").append(badgeItem);
+        }
+        $(`#badge-${game.console.getBuiltInCVar("cv_player_badge")}`).addClass(
+            "selected"
+        );
+    }
 
     addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
         game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);

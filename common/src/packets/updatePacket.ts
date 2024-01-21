@@ -1,4 +1,5 @@
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType, PacketType, type GasState, type ObjectCategory } from "../constants";
+import { type BadgeDefinition, Badges } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { type GunDefinition } from "../definitions/guns";
@@ -268,9 +269,10 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
 export type KillFeedMessage = {
     messageType: KillFeedMessageType
     playerID?: number
-
+    playerBadge?: BadgeDefinition
     killType?: KillType
     killerID?: number
+    killerBadge?: BadgeDefinition
     kills?: number
     killstreak?: number
     hideInKillfeed?: boolean
@@ -402,6 +404,7 @@ export class UpdatePacket extends Packet {
     newPlayers = new Set<{
         readonly id: number
         readonly name: string
+        readonly badge: BadgeDefinition
         readonly hasColor: boolean
         readonly nameColor: number
     }>();
@@ -513,9 +516,8 @@ export class UpdatePacket extends Packet {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
-                if (player.hasColor) {
-                    stream.writeBits(player.nameColor, 24);
-                }
+                Badges.writeToStream(stream, player.badge);
+                if (player.hasColor) stream.writeBits(player.nameColor, 24);
             }
         }
 
@@ -659,11 +661,13 @@ export class UpdatePacket extends Packet {
                 const name = stream.readPlayerName();
                 const hasColor = stream.readBoolean();
                 const nameColor = hasColor ? stream.readBits(24) : 0;
+                const badge = Badges.readFromStream(stream);
                 this.newPlayers.add({
                     id,
                     name,
                     hasColor,
-                    nameColor
+                    nameColor,
+                    badge
                 });
             }
         }

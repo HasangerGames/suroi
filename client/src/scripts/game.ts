@@ -48,6 +48,7 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -85,7 +86,7 @@ export class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color }>();
+    readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color, badge: BadgeDefinition }>();
 
     activePlayerID = -1;
     get activePlayer(): Player | undefined {
@@ -198,6 +199,7 @@ export class Game {
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
+            joinPacket.badge = Badges.fromString(this.console.getBuiltInCVar("cv_player_badge"));
 
             for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
                 joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
@@ -451,7 +453,8 @@ export class Game {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
                 hasColor: newPlayer.hasColor,
-                nameColor: new Color(newPlayer.nameColor)
+                nameColor: new Color(newPlayer.nameColor),
+                badge: newPlayer.badge
             });
         }
 

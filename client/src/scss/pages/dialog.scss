@@ -176,6 +176,82 @@
     }
   }
 
+    #emote-customize-wheel {
+        position: relative;
+        align-self: center;
+        flex-shrink: 0;
+        transform: none;
+
+            .emote-top,
+            .emote-right,
+            .emote-bottom,
+            .emote-left {
+                cursor: pointer;
+                z-index: 10;
+            }
+        }
+
+        #emote-wheel-bottom {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .emote-win,
+            .emote-death {
+                padding: 2px;
+                width: 104px;
+                height: 104px;
+                background-size: 84px 84px;
+                flex-shrink: 0;
+                background-color: $transparent_bg;
+                border-radius: 10px;
+                border: 5px solid transparent;
+                background-repeat: no-repeat;
+                background-position: center;
+
+                &.selected {
+                    border-color: $orange;
+                }
+            }
+        }
+    
+
+    #emotes-list {
+        overflow-y: scroll;
+        flex-grow: 1;
+        display: grid;
+        //flex-direction: column;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+
+        .emotes-list-item-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            padding: 5px;
+            background-color: $transparent_bg;
+        
+            &.selected {
+                border-color: $orange;
+            }
+        
+            .emote-name {
+                margin-top: auto;
+            }
+        }
+
+        .emotes-list-item {
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+        }
+
+        .emote-name {
+            font-weight: bold;
+            @include text-shadow;
+        }
   #emote-wheel-bottom {
     display: flex;
     flex-direction: row;
@@ -394,26 +470,97 @@
       height: 56px;
       background-size: contain;
     }
-
-    .emote-top {
-      top: 9px;
-      left: 67px;
+    
+    #badges-list {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      height: 100%;
+    
+      .badges-list-item-container {
+          width: 140px;
+          height: 170px;
+          padding: 8px;
+          margin: 8px;
+          border: 5px solid transparent;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+          cursor: pointer;
+    
+          &.selected {
+              border-color: $orange;
+          }
+      }
+    
+      .badges-list-item {
+          position: relative;
+          width: 102px;
+          height: 98px;
+          font-size: 72px;
+          div {
+              position: relative;
+              width: 100%;
+              height: 100%;
+              background-size: cover;
+          }
+      }
+    
+      .badge-name {
+          font-weight: bold;
+          @include text-shadow;
+          text-align: center;
+      }
     }
 
-    .emote-right {
-      right: 9px;
-      top: 67px;
-    }
+    @media screen and (max-width: 654px) {
+        #emotes-list {
+            gap: 5px;
 
-    .emote-bottom {
-      bottom: 9px;
-      left: 67px;
-    }
+            .emotes-list-item-container {
+                border-width: 3px;
+            }
 
-    .emote-left {
-      left: 9px;
-      top: 67px;
-    }
+            .emotes-list-item {
+                width: 42px;
+                height: 42px;
+                background-size: contain;
+            }
+        }
+
+        #emote-customize-wheel {
+            width: 191px;
+            height: 191px;
+            background-size: contain;
+
+            &>div {
+                width: 56px;
+                height: 56px;
+                background-size: contain;
+            }
+
+            .emote-top {
+                top: 9px;
+                left: 67px;
+            }
+
+            .emote-right {
+                right: 9px;
+                top: 67px;
+            }
+
+            .emote-bottom {
+                bottom: 9px;
+                left: 67px;
+            }
+
+            .emote-left {
+                left: 9px;
+                top: 67px;
+            }
+        }
   }
 }
 
@@ -427,6 +574,12 @@
       height: 42px;
     }
 
+    #settings-tabs,
+    #customize-tabs {
+        width: 100%;
+        height: 410px;
+        max-height: 80vh;
+        overflow-y: auto;
     .emote-top {
       top: 7px;
       left: 51px;
@@ -537,6 +690,12 @@
   }
 }
 
+    &.in-game {
+        background-color: $transparent_bg;
+        box-shadow: none;
+    }
+}
+  
 .modal-item {
   &.checkbox-setting {
     margin-bottom: 20px;
