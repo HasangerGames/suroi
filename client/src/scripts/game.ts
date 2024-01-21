@@ -199,8 +199,7 @@ export class Game {
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
-            if (this.console.getBuiltInCVar("cv_player_badge")) joinPacket.badge = Badges.fromString(this.console.getBuiltInCVar("cv_player_badge"));
-
+            joinPacket.badge = Badges.fromString(this.console.getBuiltInCVar("cv_player_badge"));
             for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
                 joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
             }

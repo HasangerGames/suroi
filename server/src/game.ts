@@ -446,9 +446,9 @@ export class Game {
         if (
             !badge.notInLoadout &&
             (badge.roleRequired === undefined ||
-                (player.role !== undefined && badge.roleRequired.includes(player.role)))
+                badge.roleRequired === player.role)
         ) {
-            if (packet.badge.idString !== "none") player.badge = packet.badge;
+            player.badge = packet.badge;
         }
         player.loadout.emotes = packet.emotes;
 

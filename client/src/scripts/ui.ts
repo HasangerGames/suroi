@@ -399,11 +399,11 @@ Video evidence is required.`)) {
             /* eslint-disable @typescript-eslint/restrict-template-expressions */
             // noinspection CssUnknownTarget
             const badgeItem =
-    $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
-        <div class="badges-list-item">
-            ${badge.idString !== "none" ? `<div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>` : ''}
-        </div>
-        <span class="badge-name">${badge.name}</span>
+                $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
+    <div class="badges-list-item">
+        <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>
+    </div>
+    <span class="badge-name">${badge.name}</span>
     </div>`);
             badgeItem.on("click", function() {
                 game.console.setBuiltInCVar("cv_player_badge", badge.idString);
