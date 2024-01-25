@@ -658,7 +658,7 @@ export class Game {
                     (
                         this.inputManager.isMobile
                             // Only show interact message on mobile if object needs to be tapped to pick up
-                            ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee || type === ItemType.Skin)) || object instanceof Obstacle)
+                            ? (object instanceof Loot || object instanceof Obstacle)
                             : object !== undefined
                     ) ||
                     isAction
