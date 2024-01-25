@@ -942,6 +942,40 @@ const GunsRaw: RawGunDefinition[] = [
         }
     },
     {
+        idString: "pp19",
+        name: "PP-19",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.3,
+        fireDelay: 50,
+        switchDelay: 300,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 8.5,
+        length: 6.9,
+        fists: {
+            left: Vec.create(88, -5),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        casingParticles: [{
+            position: Vec.create(4.5, 0.5)
+        }],
+        image: { position: Vec.create(80, 0) },
+        ballistics: {
+            damage: 10.5,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 160
+        }
+    },
+    {
         idString: "mp40",
         name: "MP40",
         itemType: ItemType.Gun,
