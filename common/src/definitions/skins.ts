@@ -316,17 +316,6 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         notInLoadout: true
     },
     {
-        idString: "blueberry_smoothie",
-        name: "Blueberry Smoothie",
-        itemType: ItemType.Skin,
-        notInLoadout: true
-    },
-    {
-        idString: "fireball",
-        name: "Fireball",
-        itemType: ItemType.Skin
-    },
-    {
         idString: "ghillie_suit",
         name: "Ghillie Suit",
         itemType: ItemType.Skin,
