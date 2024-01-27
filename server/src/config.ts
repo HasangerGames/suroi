@@ -18,9 +18,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "arena",
 
     spawn: { mode: SpawnMode.Normal },
+
+    maxTeamSize: 1,
 
     maxPlayersPerGame: 80,
     maxGames: 3,
@@ -85,6 +87,11 @@ export interface ConfigType {
     } | {
         readonly mode: SpawnMode.Center
     }
+
+    /**
+     * The maximum number of players allowed to join a team.
+     */
+    readonly maxTeamSize: number
 
     /**
      * The maximum number of players allowed to join a game.

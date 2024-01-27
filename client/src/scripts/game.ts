@@ -22,7 +22,7 @@ import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/object
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { enablePlayButton } from "./main";
+import { enableDuoPlayButton, enableSoloPlayButton } from "./main";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
@@ -298,11 +298,13 @@ export class Game {
             this.error = true;
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
-            enablePlayButton();
+            enableSoloPlayButton();
+            enableDuoPlayButton();
         };
 
         this._socket.onclose = (): void => {
-            enablePlayButton();
+            enableSoloPlayButton();
+            enableDuoPlayButton();
             if (!this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
@@ -332,7 +334,8 @@ export class Game {
         }
 
         $("canvas").addClass("active");
-        $("#splash-ui").fadeOut(enablePlayButton);
+        $("#splash-ui").fadeOut(enableSoloPlayButton);
+        $("#splash-ui").fadeOut(enableDuoPlayButton);
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");

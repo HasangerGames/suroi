@@ -8,14 +8,24 @@ import { Game } from "./game";
 import { stringIsPositiveNumber } from "./utils/misc";
 import { loadTextures } from "./utils/pixi";
 
-const playButton: JQuery = $("#btn-play-solo");
+const playButtonSolo: JQuery = $("#btn-play-solo");
+const playButtonDuo: JQuery = $("#btn-play-duo");
 
-export function enablePlayButton(): void {
-    playButton.removeClass("btn-disabled").prop("disabled", false).text("Play Solo");
+export function enableSoloPlayButton(): void {
+    playButtonSolo.removeClass("btn-disabled").prop("disabled", false).text("Play Solo");
 }
 
-function disablePlayButton(text: string): void {
-    playButton.addClass("btn-disabled").prop("disabled", true)
+function disableSoloPlayButton(text: string): void {
+    playButtonSolo.addClass("btn-disabled").prop("disabled", true)
+        .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+}
+
+export function enableDuoPlayButton(): void {
+    playButtonDuo.removeClass("btn-disabled").prop("disabled", false).text("Play Duo");
+}
+
+function disableDuoPlayButton(text: string): void {
+    playButtonDuo.addClass("btn-disabled").prop("disabled", true)
         .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
@@ -23,11 +33,12 @@ function disablePlayButton(text: string): void {
 $(async(): Promise<void> => {
     const game = new Game();
 
-    void loadTextures().then(enablePlayButton);
+    void loadTextures().then(enableSoloPlayButton).then(enableDuoPlayButton);
 
     interface RegionInfo {
         name: string
-        address: string
+        soloAddress: string
+        duoAddress?: string
         https: boolean
         playerCount?: string
         ping?: number
@@ -63,9 +74,9 @@ $(async(): Promise<void> => {
             const listItem = $(`.server-list-item[data-region=${regionID}]`);
             try {
                 const pingStartTime = Date.now();
-                let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
+                let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.soloAddress}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
                     .catch(() => {
-                        console.error(`Could not load player count for ${region.address}.`);
+                        console.error(`Could not load player count for ${region.soloAddress}.`);
                     })
                 )?.text();
                 playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
@@ -134,12 +145,12 @@ $(async(): Promise<void> => {
     let lastPlayButtonClickTime = 0;
 
     // Join server when play button is clicked
-    playButton.on("click", () => {
+    playButtonSolo.on("click", () => {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
         lastPlayButtonClickTime = now;
-        disablePlayButton("Connecting...");
-        const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
+        disableSoloPlayButton("Connecting...");
+        const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.soloAddress}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}`;
@@ -192,7 +203,7 @@ $(async(): Promise<void> => {
                         message = "Error joining game.<br>Please try again in 30 seconds.";
                         break;
                 }
-                enablePlayButton();
+                enableSoloPlayButton();
                 if (showWarningModal) {
                     $("#warning-modal-title").text(title ?? "");
                     $("#warning-modal-text").html(message ?? "");
@@ -208,7 +219,85 @@ $(async(): Promise<void> => {
         }).fail(() => {
             $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
             $("#splash-server-message").show();
-            enablePlayButton();
+            enableSoloPlayButton();
+        });
+    });
+
+    playButtonDuo.on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
+        disableDuoPlayButton("Connecting...");
+        const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.soloAddress}`;
+        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
+            if (data.success) {
+                let address = `ws${urlPart}/play?gameID=${data.gameID}`;
+
+                const devPass = game.console.getBuiltInCVar("dv_password");
+                const role = game.console.getBuiltInCVar("dv_role");
+                const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+
+                if (devPass) address += `&password=${devPass}`;
+                if (role) address += `&role=${role}`;
+                if (lobbyClearing) address += "&lobbyClearing=true";
+
+                const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                if (nameColor) {
+                    try {
+                        const finalColor = new Color(nameColor).toNumber();
+                        address += `&nameColor=${finalColor}`;
+                    } catch (e) {
+                        game.console.setBuiltInCVar("dv_name_color", "");
+                        console.error(e);
+                    }
+                }
+
+                game.connect(address);
+                $("#splash-server-message").hide();
+            } else {
+                let showWarningModal = false;
+                let title: string | undefined;
+                let message: string;
+                switch (data.message) {
+                    case "rateLimit":
+                        message = "Error joining game.<br>Please try again in a few minutes.";
+                        break;
+                    case "warning":
+                        showWarningModal = true;
+                        title = "Teaming is against the rules!";
+                        message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
+                        break;
+                    case "tempBan":
+                        showWarningModal = true;
+                        title = "You have been banned for 1 day for teaming!";
+                        message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
+                        break;
+                    case "permaBan":
+                        showWarningModal = true;
+                        title = "You have been permanently banned for hacking!";
+                        message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
+                        break;
+                    default:
+                        message = "Error joining game.<br>Please try again in 30 seconds.";
+                        break;
+                }
+                enableDuoPlayButton();
+                if (showWarningModal) {
+                    $("#warning-modal-title").text(title ?? "");
+                    $("#warning-modal-text").html(message ?? "");
+                    $("#warning-modal-agree-options").toggle(data.message === "warning");
+                    $("#warning-modal-agree-checkbox").prop("checked", false);
+                    $("#warning-modal").show();
+                    $("#btn-play-solo").addClass("btn-disabled");
+                } else {
+                    $("#splash-server-message-text").html(message);
+                    $("#splash-server-message").show();
+                }
+            }
+        }).fail(() => {
+            $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
+            $("#splash-server-message").show();
+            enableDuoPlayButton();
         });
     });
 
