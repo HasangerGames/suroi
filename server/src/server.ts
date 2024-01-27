@@ -6,7 +6,7 @@ import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { gameMode } from "../../common/src/constants"
+import { GameMode } from "../../common/src/constants"
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
@@ -109,13 +109,13 @@ app.get("/api/playerCount", (res) => {
     res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
 });
 
-app.get("/api/gameMode", (res) => {
+app.get("/api/maxTeamSize", (res) => {
     cors(res);
-    let response: gameMode;
     for(let gameID = 0; gameID < games.length; gameID++) {
         const game = games[gameID];
+        let response: number;
         if (canJoin(game) && game?.allowJoin) {
-            response = game.gameMode;
+            response = game.maxTeamSize;
             res.writeHeader("Content-Type", "text/plain").end(response.toString());
             break;
         }

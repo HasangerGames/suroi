@@ -5,10 +5,11 @@ import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
-export enum gameMode {
-    Solo,
-    Duo,
-    Squad
+export enum GameMode {
+    Solo = 1,
+    Duo = 2,
+    Squad = 3,
+    Custom = 4,
 }
 
 export enum ObjectCategory {
