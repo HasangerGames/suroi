@@ -559,6 +559,46 @@ const GunsRaw: RawGunDefinition[] = [
         }
     },
     {
+        idString: "cz600",
+        name: "CZ-600",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 2.2,
+        fireDelay: 600,
+        switchDelay: 600,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.6,
+        recoilDuration: 750,
+        fireMode: FireMode.Single,
+        shotSpread: 0.75,
+        moveSpread: 1.25,
+        length: 8.3,
+        shootOnRelease: true,
+        fists: {
+            left: Vec.create(115, -4),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(95, 3.5) },
+        casingParticles: [{
+            position: Vec.create(4, 0.6),
+            ejectionDelay: 700
+        }],
+        ballistics: {
+            damage: 55,
+            obstacleMultiplier: 1,
+            speed: 0.3,
+            range: 250,
+            tracer: {
+                width: 1.3,
+                length: 2.4
+            }
+        }
+    },
+    {
         idString: "barrett",
         name: "Barrett M95",
         itemType: ItemType.Gun,
@@ -956,8 +996,9 @@ const GunsRaw: RawGunDefinition[] = [
         recoilDuration: 150,
         fireMode: FireMode.Auto,
         shotSpread: 3,
-        moveSpread: 8.5,
-        length: 6.9,
+        moveSpread: 6.75,
+        length: 6.9, // nice
+        noMuzzleFlash: true,
         fists: {
             left: Vec.create(88, -5),
             right: Vec.create(40, 0),
