@@ -7,6 +7,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { stringIsPositiveNumber } from "./utils/misc";
 import { loadTextures } from "./utils/pixi";
+import { gameMode } from "../../../common/src/constants";
 
 const playButtonSolo: JQuery = $("#btn-play-solo");
 const playButtonDuo: JQuery = $("#btn-play-duo");
@@ -15,7 +16,7 @@ export function enableSoloPlayButton(): void {
     playButtonSolo.removeClass("btn-disabled").prop("disabled", false).text("Play Solo");
 }
 
-function disableSoloPlayButton(text: string): void {
+export function disableSoloPlayButton(text: string): void {
     playButtonSolo.addClass("btn-disabled").prop("disabled", true)
         .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
@@ -24,7 +25,7 @@ export function enableDuoPlayButton(): void {
     playButtonDuo.removeClass("btn-disabled").prop("disabled", false).text("Play Duo");
 }
 
-function disableDuoPlayButton(text: string): void {
+export function disableDuoPlayButton(text: string): void {
     playButtonDuo.addClass("btn-disabled").prop("disabled", true)
         .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
@@ -81,6 +82,16 @@ $(async(): Promise<void> => {
                 )?.text();
                 playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
 
+                let gameModeType = await (await fetch(`http${region.https ? "s" : ""}://${region.soloAddress}/api/gameMode`, { signal: AbortSignal.timeout(2000) })
+                    .catch(() => {
+                        console.error(`Could not load game mode for ${region.soloAddress}.`);
+                    })
+                )?.text();
+                gameModeType = gameModeType && stringIsPositiveNumber(gameModeType) ? gameModeType : "-";
+
+                console.log(gameModeType)
+
+
                 const ping = Date.now() - pingStartTime;
                 regionInfo[regionID] = {
                     ...region,
@@ -108,6 +119,8 @@ $(async(): Promise<void> => {
         if (!selectedRegion) { // Handle invalid region
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", undefined);
+            disableDuoPlayButton("Region doesn't have duos");
+            disableSoloPlayButton("Region doesn't have solos");
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
@@ -128,12 +141,29 @@ $(async(): Promise<void> => {
     }
     updateServerSelector();
 
-    serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
+    //serverListToFind
+    serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
+     
         if (region === null) return;
 
         const info = regionInfo[region];
         if (info === undefined) return;
+
+        let gameModeType = await (await fetch(`http${info.https ? "s" : ""}://${info.soloAddress}/api/gameMode`, { signal: AbortSignal.timeout(2000) })
+                    .catch(() => {
+                        console.error(`Could not load game mode for ${info.soloAddress}.`);
+                    })
+        )?.text();
+        gameModeType = gameModeType && stringIsPositiveNumber(gameModeType) ? gameModeType : "-";
+
+        if(gameModeType == `${gameMode.Solo}`) {
+            disableDuoPlayButton("Region does not have Solo")
+        } else {
+            disableDuoPlayButton("Region does not have Duo")
+        }
+
+        console.log(gameModeType)
 
         selectedRegion = info;
 

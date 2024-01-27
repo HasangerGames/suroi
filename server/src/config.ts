@@ -14,6 +14,12 @@ export enum GasMode {
     Disabled
 }
 
+export enum gameMode {
+    Solo,
+    Duo,
+    Squad
+}
+
 export const Config = {
     host: "127.0.0.1",
     port: 8000,
@@ -22,7 +28,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: 1,
+    gameMode: gameMode.Solo,
 
     maxPlayersPerGame: 80,
     maxGames: 3,
@@ -91,7 +97,7 @@ export interface ConfigType {
     /**
      * The maximum number of players allowed to join a team.
      */
-    readonly maxTeamSize: number
+    readonly gameMode: gameMode
 
     /**
      * The maximum number of players allowed to join a game.

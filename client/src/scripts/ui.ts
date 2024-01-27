@@ -14,6 +14,7 @@ import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { enableSoloPlayButton, disableSoloPlayButton } from "./main";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -144,9 +145,9 @@ export function setupUI(game: Game): void {
     serverSelect.on("change", () => {
         const value = serverSelect.val() as string | undefined;
 
-        if (value !== undefined) {
+        /*if (value !== undefined) {
             game.console.setBuiltInCVar("cv_region", value);
-        }
+        }*/
     });
 
     const rulesBtn = $("#btn-rules");

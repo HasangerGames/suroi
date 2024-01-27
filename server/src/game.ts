@@ -19,6 +19,7 @@ import { randomFloat, randomPointInsideCircle, randomRotation } from "../../comm
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
+import { gameMode } from "../../common/src/constants"
 import { Maps } from "./data/maps";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
@@ -126,6 +127,8 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    gameMode: gameMode;
+
     constructor(id: number) {
         this._id = id;
 
@@ -138,6 +141,8 @@ export class Game {
         this.gas = new Gas(this);
 
         this.allowJoin = true;
+
+        this.gameMode = Config.gameMode;
 
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
