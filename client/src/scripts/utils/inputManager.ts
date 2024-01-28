@@ -261,7 +261,7 @@ export class InputManager {
 
                 const def = activePlayer.activeItem;
 
-                if (def.itemType === ItemType.Gun) {
+                if (def.itemType === ItemType.Gun || def.itemType === ItemType.Throwable) {
                     activePlayer.images.aimTrail.alpha = 1;
                 }
 
