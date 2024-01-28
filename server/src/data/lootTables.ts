@@ -582,6 +582,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "acr", weight: 1 },
         { item: "pp19", weight: 1 },
         { item: "barrett", weight: 0.5 },
+        { item: "model_89", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
     ],
     winter_skins: [

@@ -1013,7 +1013,10 @@ const GunsRaw: RawGunDefinition[] = [
             damage: 10.5,
             obstacleMultiplier: 1,
             speed: 0.25,
-            range: 160
+            range: 160,
+            tracer: {
+                opacity: 0.5
+            }
         }
     },
     {
@@ -1363,6 +1366,46 @@ const GunsRaw: RawGunDefinition[] = [
             speed: 0.3,
             range: 230,
             tracer: {
+                length: 1.5
+            }
+        }
+    },
+    {
+        idString: "model_89",
+        name: "Model 89",
+        itemType: ItemType.Gun,
+        ammoType: "127mm",
+        ammoSpawnAmount: 28,
+        capacity: 7,
+        reloadTime: 0.6,
+        singleReload: true,
+        fireDelay: 375,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 300,
+        fireMode: FireMode.Single,
+        shotSpread: 1,
+        moveSpread: 4,
+        length: 7.6,
+        fists: {
+            left: Vec.create(106, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(90, 0) },
+        casingParticles: [{
+            position: Vec.create(5, 0.5),
+            ejectionDelay: 100
+        }],
+        ballistics: {
+            damage: 62.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            range: 250,
+            tracer: {
+                width: 1.8,
                 length: 1.5
             }
         }
