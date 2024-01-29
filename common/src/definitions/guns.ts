@@ -588,7 +588,7 @@ const GunsRaw: RawGunDefinition[] = [
         image: { position: Vec.create(95, 3.5) },
         casingParticles: [{
             position: Vec.create(5, 0.4),
-            ejectionDelay: 700
+            ejectionDelay: 250
         }],
         ballistics: {
             damage: 55,
@@ -755,7 +755,7 @@ const GunsRaw: RawGunDefinition[] = [
         ammoType: "curadell",
         ammoSpawnAmount: 1,
         fireDelay: 500,
-        switchDelay: 0,
+        switchDelay: 250,
         speedMultiplier: 0.92,
         recoilMultiplier: 1,
         recoilDuration: 0,
@@ -1405,7 +1405,7 @@ const GunsRaw: RawGunDefinition[] = [
         casingParticles: [{
             frame: "casing_500sw",
             position: Vec.create(5, 0.5),
-            ejectionDelay: 100
+            ejectionDelay: 175
         }],
         ballistics: {
             damage: 62.5,

@@ -391,62 +391,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.playAnimation(data.animation);
         }
 
-        if (data.action !== undefined) {
-            const action = data.action;
-
-            let actionSoundName = "";
-            this.healingParticlesEmitter.active = false;
-
-            this.actionSound?.stop();
-
-            switch (action.type) {
-                case PlayerActions.None: {
-                    if (this.isActivePlayer) {
-                        this.game.uiManager.cancelAction();
-                    }
-                    break;
-                }
-                case PlayerActions.Reload: {
-                    const weaponDef = this.activeItem as GunDefinition;
-
-                    if (weaponDef.isDual) {
-                        this.spawnCasingParticles("reload", true);
-                    }
-
-                    this.spawnCasingParticles("reload", false);
-
-                    actionSoundName = `${weaponDef.idString}_reload`;
-                    if (this.isActivePlayer) {
-                        this.game.uiManager.animateAction("Reloading...", weaponDef.reloadTime);
-                    }
-
-                    break;
-                }
-                case PlayerActions.UseItem: {
-                    const itemDef = action.item;
-                    actionSoundName = itemDef.idString;
-                    this.healingParticlesEmitter.active = true;
-                    if (this.isActivePlayer) {
-                        this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
-                    }
-                    break;
-                }
-            }
-
-            if (actionSoundName) {
-                this.actionSound = this.playSound(
-                    actionSoundName,
-                    {
-                        falloff: 0.6,
-                        maxRange: 48
-                    }
-                );
-            }
-
-            // @ts-expect-error 'item' not existing is okay
-            this.action = action;
-        }
-
         if (data.full) {
             const full = data.full;
 
@@ -503,6 +447,62 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
             }
+        }
+
+        if (data.action !== undefined) {
+            const action = data.action;
+
+            let actionSoundName = "";
+            this.healingParticlesEmitter.active = false;
+
+            this.actionSound?.stop();
+
+            switch (action.type) {
+                case PlayerActions.None: {
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.cancelAction();
+                    }
+                    break;
+                }
+                case PlayerActions.Reload: {
+                    const weaponDef = this.activeItem as GunDefinition;
+
+                    if (weaponDef.isDual) {
+                        this.spawnCasingParticles("reload", true);
+                    }
+
+                    this.spawnCasingParticles("reload", false);
+
+                    actionSoundName = `${weaponDef.idString}_reload`;
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.animateAction("Reloading...", weaponDef.reloadTime);
+                    }
+
+                    break;
+                }
+                case PlayerActions.UseItem: {
+                    const itemDef = action.item;
+                    actionSoundName = itemDef.idString;
+                    this.healingParticlesEmitter.active = true;
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
+                    }
+                    break;
+                }
+            }
+
+            if (actionSoundName) {
+                this.actionSound = this.playSound(
+                    actionSoundName,
+                    {
+                        falloff: 0.6,
+                        maxRange: 48
+                    }
+                );
+            }
+
+            // @ts-expect-error 'item' not existing is okay
+            this.action = action;
         }
 
         if (HITBOX_DEBUG_MODE) {
@@ -747,7 +747,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         switch (anim) {
             case AnimationType.Melee: {
                 if (this.activeItem.itemType !== ItemType.Melee) {
-                    console.warn(`Attempted to play melee animation with non melee item ${this.activeItem.idString}`);
+                    console.warn(`Attempted to play melee animation with non-melee item '${this.activeItem.idString}'`);
                     return;
                 }
                 this.updateFistsPosition(false);
@@ -840,7 +840,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.GunAlt:
             case AnimationType.LastShot: {
                 if (this.activeItem.itemType !== ItemType.Gun) {
-                    console.warn(`Attempted to play gun animation with non gun item ${this.activeItem.idString}`);
+                    console.warn(`Attempted to play gun animation (${AnimationType[anim]}) with non-gun item '${this.activeItem.idString}'`);
                     return;
                 }
                 const weaponDef = this.activeItem;
@@ -950,7 +950,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             case AnimationType.ThrowableCook: {
                 if (this.activeItem.itemType !== ItemType.Throwable) {
-                    console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
+                    console.warn(`Attempted to play throwable cooking animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }
 
@@ -1056,7 +1056,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             case AnimationType.ThrowableThrow: {
                 if (this.activeItem.itemType !== ItemType.Throwable) {
-                    console.warn(`Attempted to play throwable animation with non throwable item ${this.activeItem.idString}`);
+                    console.warn(`Attempted to play throwable throwing animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }
                 this.playSound("throwable_throw");
