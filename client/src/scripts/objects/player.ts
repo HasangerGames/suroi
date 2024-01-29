@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { Container, TilingSprite } from "pixi.js";
 import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
@@ -233,7 +234,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         }
 
                         return {
-                            frames: casingSpec.frame ?? `${weaponDef.ammoType}_particle`,
+                            frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame ?? "",
                             zIndex: ZIndexes.Players,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,

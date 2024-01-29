@@ -6,6 +6,7 @@ import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/em
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { type Packet } from "../../../common/src/packets/packet";
@@ -38,7 +39,6 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
