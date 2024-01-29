@@ -1,5 +1,6 @@
+import { type Result } from "../../../../../common/src/utils/misc";
 import { type Stringable } from "./gameConsole";
-import { type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
+import { Casters, type ConVar, type CVarFlags, type ExtractConVarValue } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
@@ -63,6 +64,68 @@ type SimpleCVarMapping = {
     [K in keyof CVarTypeMapping]: ExtractConVarValue<CVarTypeMapping[K]> | JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>>
 };
 
+export const CVarCasters: {
+    [K in keyof CVarTypeMapping]: (val: string) => Result<ExtractConVarValue<CVarTypeMapping[K]>, string>
+} = {
+    cv_player_name: Casters.toString,
+    cv_loadout_skin: Casters.toString,
+    cv_loadout_crosshair: Casters.toInt,
+    cv_loadout_top_emote: Casters.toString,
+    cv_loadout_right_emote: Casters.toString,
+    cv_loadout_bottom_emote: Casters.toString,
+    cv_loadout_left_emote: Casters.toString,
+    cv_loop_scope_selection: Casters.toBoolean,
+    cv_anonymize_player_names: Casters.toBoolean,
+    cv_master_volume: Casters.toNumber,
+    cv_music_volume: Casters.toNumber,
+    cv_sfx_volume: Casters.toNumber,
+    cv_mute_audio: Casters.toBoolean,
+    cv_use_old_menu_music: Casters.toBoolean,
+    cv_language: Casters.toString,
+    cv_region: Casters.toString,
+    cv_camera_shake_fx: Casters.toBoolean,
+    cv_killfeed_style: val => {
+        switch (val) {
+            case "text":
+            case "icon": {
+                return { res: val };
+            }
+            default: {
+                return { err: `Value must be either 'text' or 'icon'; received ${val}` };
+            }
+        }
+    },
+    cv_movement_smoothing: Casters.toBoolean,
+    cv_responsive_rotation: Casters.toBoolean,
+    cv_antialias: Casters.toBoolean,
+    cv_minimap_minimized: Casters.toBoolean,
+    cv_leave_warning: Casters.toBoolean,
+    cv_ui_scale: Casters.toNumber,
+    cv_minimap_transparency: Casters.toNumber,
+    cv_map_transparency: Casters.toNumber,
+    cv_draw_hud: Casters.toBoolean,
+    cv_rules_acknowledged: Casters.toBoolean,
+    cv_hide_rules_button: Casters.toBoolean,
+    cv_console_width: Casters.toNumber,
+    cv_console_height: Casters.toNumber,
+    cv_console_left: Casters.toNumber,
+    cv_console_top: Casters.toNumber,
+    cv_crosshair_color: Casters.toString,
+    cv_crosshair_size: Casters.toNumber,
+    cv_crosshair_stroke_color: Casters.toString,
+    cv_crosshair_stroke_size: Casters.toNumber,
+    pf_show_fps: Casters.toBoolean,
+    pf_show_ping: Casters.toBoolean,
+    pf_show_pos: Casters.toBoolean,
+    mb_controls_enabled: Casters.toBoolean,
+    mb_joystick_size: Casters.toNumber,
+    mb_joystick_transparency: Casters.toNumber,
+    dv_password: Casters.toString,
+    dv_role: Casters.toString,
+    dv_name_color: Casters.toString,
+    dv_lobby_clearing: Casters.toBoolean
+};
+
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
     cv_loadout_skin: "hazel_jumpsuit",
@@ -119,6 +182,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     dv_lobby_clearing: false
 } satisfies SimpleCVarMapping);
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export const defaultBinds = Object.freeze({
     "+up": ["W", "ArrowUp"],
     "+down": ["S", "ArrowDown"],
@@ -144,10 +208,10 @@ export const defaultBinds = Object.freeze({
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
     cancel_action: ["X"],
-    "+view_map": [] as string[],
+    "+view_map": [],
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],
     toggle_hud: [],
     "+emote_wheel": ["Mouse2"],
     toggle_console: []
-} satisfies Record<string, string[]>);
+} as Record<string, string[]>);

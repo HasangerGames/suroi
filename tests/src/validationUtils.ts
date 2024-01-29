@@ -7,12 +7,6 @@ import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDef
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
-/*
-    eslint-disable
-
-    @typescript-eslint/unbound-method
-*/
-
 export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
     const dupes: Record<string, number> = {};
     const set = new Set<string>();

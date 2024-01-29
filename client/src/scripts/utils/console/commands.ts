@@ -13,7 +13,9 @@ import { type Game } from "../../game";
 import { COLORS } from "../constants";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
-import { ConVar } from "./variables";
+import { Casters, ConVar } from "./variables";
+import { handleResult, type Result } from "../../../../../common/src/utils/misc";
+import { Throwables } from "../../../../../common/src/definitions/throwables";
 
 type CommandExecutor<ErrorType = never> = (
     this: Game,
@@ -198,8 +200,8 @@ export function setUpCommands(game: Game): void {
             },
             game,
             {
-                short: `Moves the player in the '${name}' direction.`,
-                long: `Starts moving the player in the '${name}' direction when invoked.`,
+                short: `Moves the player in the '${name}' direction`,
+                long: `Starts moving the player in the '${name}' direction when invoked`,
                 signatures: [
                     {
                         args: [],
@@ -208,8 +210,8 @@ export function setUpCommands(game: Game): void {
                 ]
             },
             {
-                short: `Halts the player's movement in the '${name}' direction.`,
-                long: `Stops moving the player in the '${name}' direction when invoked.`,
+                short: `Halts the player's movement in the '${name}' direction`,
+                long: `Stops moving the player in the '${name}' direction when invoked`,
                 signatures: [
                     {
                         args: [],
@@ -249,10 +251,10 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Attempts to switch to the item in a given slot. The slot number is 0-indexed.",
+            short: "Attempts to switch to the item in a given slot. The slot number is 0-indexed",
             long:
                 "When invoked, an attempt to swap to the slot passed in argument will be made. The slot number " +
-                "is zero-indexed, meaning that 0 designates the first slot, 1 designates the second and 2 designates the third.",
+                "is zero-indexed, meaning that 0 designates the first slot, 1 designates the second and 2 designates the third",
             signatures: [
                 {
                     args: [
@@ -274,8 +276,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Attempts to switch to the last item the player deployed.",
-            long: "When invoked, the player's last active slot will be switched to, if possible.",
+            short: "Attempts to switch to the last item the player deployed",
+            long: "When invoked, the player's last active slot will be switched to, if possible",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -300,8 +302,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Attempts to switch to the other weapon in the player's inventory.",
-            long: "When invoked, the player will swap to the other weapon slot if there is a weapon there. If not, melee will be switched to.",
+            short: "Attempts to switch to the other weapon in the player's inventory",
+            long: "When invoked, the player will swap to the other weapon slot if there is a weapon there. If not, melee will be switched to",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -313,10 +315,10 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Exchanges the guns' slots in the player's inventory.",
+            short: "Exchanges the guns' slots in the player's inventory",
             long:
                 "When invoked, the item in slot 0 will be placed in slot 1 and vice versa. Empty slots are treated normally, meaning " +
-                "that invoking this command with only one gun in an inventory will send it to the other slot, leaving the original slot empty.",
+                "that invoking this command with only one gun in an inventory will send it to the other slot, leaving the original slot empty",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -324,7 +326,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand<string>(
         "cycle_items",
         function(offset) {
-            const step = +(offset ?? "");
+            const step = +(offset ?? NaN);
 
             //                         ______________|> decimal check
             if (Number.isNaN(step) || step % 1 !== 0) {
@@ -359,11 +361,11 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Switches to the item <em>n</em> slots over, where <em>n</em> is some integer.",
+            short: "Switches to the item <em>n</em> slots over, where <em>n</em> is some integer",
             long:
                 "When invoked with an integer argument <em>n</em>, the slot offset from the current one by <em>n</em> slots will be " +
                 "switched to. If the offset is beyond the slots' range (< 0 or > 2), wrap-around is performed. Empty slots are ignored " +
-                "and cannot be swapped to.",
+                "and cannot be swapped to",
             signatures: [
                 {
                     args: [
@@ -406,12 +408,12 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Starts attacking",
-            long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player is attacking.",
+            long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player is attacking",
             signatures: [{ args: [], noexcept: true }]
         },
         {
             short: "Stops attacking",
-            long: "When invoked, the player will stop trying to attack, as if the attack button was released. Does nothing if the player isn't attacking.",
+            long: "When invoked, the player will stop trying to attack, as if the attack button was released. Does nothing if the player isn't attacking",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -435,7 +437,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand<string>(
         "cycle_scopes",
         function(offset) {
-            const step = +(offset ?? "");
+            const step = +(offset ?? NaN);
 
             //                        _______________|> decimal check
             if (Number.isNaN(step) || step % 1 !== 0) {
@@ -447,11 +449,11 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Switches to the scope <em>n</em> slots over, where <em>n</em> is some integer.",
+            short: "Switches to the scope <em>n</em> slots over, where <em>n</em> is some integer",
             long:
                 "When invoked with an integer argument <em>n</em>, the scope offset from the current one by <em>n</em> slots will be " +
                 "switched to. If the offset is beyond the slots' range, wrap-around is performed if the user has " +
-                "<code>cl_loop_scope_selection</code> set to <code>true</code>.",
+                "<code>cl_loop_scope_selection</code> set to <code>true</code>",
             signatures: [
                 {
                     args: [
@@ -471,7 +473,7 @@ export function setUpCommands(game: Game): void {
         function(offset) {
             // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
             if (this.activePlayer?.activeItem.itemType === ItemType.Throwable) {
-                const step = +(offset ?? "");
+                const step = +(offset ?? NaN);
 
                 //                        _______________|> decimal check
                 if (Number.isNaN(step) || step % 1 !== 0) {
@@ -494,10 +496,11 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Switches to the throwable <em>n</em> slots over, where <em>n</em> is some integer.",
+            short: "Selects the throwable slot, but if it already is, then switches to the throwable <em>n</em> slots over, where <em>n</em> is some integer",
             long:
-                "When invoked with an integer argument <em>n</em>, the throwable offset from the current one by <em>n</em> slots will be " +
-                "selected (but the active item won't). If the offset is beyond the slots' range (< 0 or > 2), wrap-around is performed.",
+                "When invoked, this command will switch to the first throwable slot it finds if the active slot isn't a throwable slot—in this case, the " +
+                "'offset' argument is ignored. If a throwable slot is selected, then the throwable offset from the current one by <em>n</em> slots will be " +
+                "selected, with the indices wrapping around if need be",
             signatures: [
                 {
                     args: [
@@ -519,16 +522,16 @@ export function setUpCommands(game: Game): void {
             // This is technically unneeded, since "undefined in {}" returns false, but
             // for the sake of typescript (and the better error message), I'll leave it in
             if (idString === undefined) {
-                return { err: "Expected a string argument, received nothing." };
+                return { err: "Expected a string argument, received nothing" };
             }
 
             if (
-                ![...HealingItems, ...Scopes].some(
+                ![...HealingItems, ...Scopes, ...Throwables].some(
                     (h) => h.idString === idString
                 )
             ) {
                 return {
-                    err: `No consumable with idString '${idString}' exists.`
+                    err: `There is no scope, consumable nor throwable whose idString is '${idString}'`
                 };
             }
 
@@ -539,8 +542,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Uses the item designated by the given <code>idString</code>.",
-            long: "When invoked with a string argument, if a consumable item of that name exists, it will be used.",
+            short: "Uses the item designated by the given <code>idString</code>",
+            long: "When invoked with a string argument, an attempt will be made to use the consumable, scope, or throwable whose <code>idString</code> matches it",
             signatures: [
                 {
                     args: [
@@ -563,7 +566,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Cancels the action (reloading and or consuming) the player is currently executing",
-            long: "When invoked, the current action the player is executing will be stopped, if there is one.",
+            long: "When invoked, the current action the player is executing will be stopped, if there is one",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -579,12 +582,12 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Shows the game map",
-            long: "When invoked, the fullscreen map will be toggled.",
+            long: "When invoked, the fullscreen map will be toggled",
             signatures: [{ args: [], noexcept: true }]
         },
         {
             short: "Hides the game map",
-            long: "When invoked, the fullscreen map will be hidden.",
+            long: "When invoked, the fullscreen map will be hidden",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -597,7 +600,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Toggles the game map",
-            long: "When invoked, the fullscreen map will be toggled.",
+            long: "When invoked, the fullscreen map will be toggled",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -610,7 +613,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Toggles the game minimap",
-            long: "When invoked, the minimap will be toggled.",
+            long: "When invoked, the minimap will be toggled",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -623,7 +626,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Toggles the game HUD",
-            long: "When invoked, the Heads Up Display will be toggled.",
+            long: "When invoked, the Heads Up Display will be toggled",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -648,8 +651,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Toggles the game's console.",
-            long: "When invoked, this command will close the console if it is open, and will open the console if it is closed.",
+            short: "Toggles the game's console",
+            long: "When invoked, this command will close the console if it is open, and will open the console if it is closed",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -777,7 +780,20 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Clears the console",
-            long: "When invoked, the game console's contents will be erased.",
+            long: "When invoked, the game console's contents will be erased",
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
+    Command.createCommand(
+        "clear_history",
+        function(): undefined {
+            gameConsole.clearHistory();
+        },
+        game,
+        {
+            short: "Clears the query history",
+            long: "When invoked, the game console's history is cleared",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -785,12 +801,12 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "echo",
         function(...messages): undefined {
-            gameConsole.log((messages ?? []).join(" "));
+            gameConsole.log.raw((messages ?? []).join(" "));
         },
         game,
         {
-            short: "Echoes whatever is passed to it.",
-            long: "When invoked with any number of arguments, the arguments will be re-printed to the console in same order they were given.",
+            short: "Echoes whatever is passed to it",
+            long: "When invoked with any number of arguments, the arguments will be re-printed to the console in same order they were given",
             signatures: [
                 {
                     args: [
@@ -816,17 +832,29 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            keybinds.addActionsToInput(key.toUpperCase(), query);
+            keybinds.addActionsToInput(key.length > 1 ? key : key.toUpperCase(), query);
             gameConsole.writeToLocalStorage();
             this.inputManager.generateBindsConfigScreen();
         },
         game,
         {
-            short: "Binds an input to an action.",
+            short: "Binds an input to an action",
             long:
                 "Given the name of an input (such as a key or mouse button) and a console query, this command establishes a new link between the two.<br>" +
-                'For alphanumeric keys, simply giving the ley as-is (e.g. "a", or "1") will do. However, keys with no textual representation, or that represent ' +
+                'For alphanumeric keys, simply giving the key as-is (e.g. "a", or "1") will do. However, keys with no textual representation, or that represent ' +
                 'punctuation will have to given by name, such as "Enter" or "Period".<br>' +
+                `For mouse buttons, the encodings are as follows:<br><table><tbody>${
+                    (
+                        [
+                            ["Primary (usually left click)", "Mouse0"],
+                            ["Auxillary (usually middle click)", "Mouse1"],
+                            ["Secondary (usually right click)", "Mouse2"],
+                            ["Backwards (usually back-left side-button)", "Mouse3"],
+                            ["Forwards (usually front-left side-button)", "Mouse4"]
+                        ] as Array<[string, string]>
+                    ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")
+                }</tbody></table>` +
+                "For the scroll wheel, the encoding is simply <code>MWheel</code>, followed by the capitalized direction (ex: <code>MWheelUp</code>)<br>" +
                 'Remember that if your query contains spaces, you must enclose the whole query in double quotes ("") so that it is properly parsed.',
             signatures: [
                 {
@@ -853,14 +881,14 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected an argument, received none" };
             }
 
-            keybinds.unbindInput(key.toUpperCase());
+            keybinds.unbindInput(key.length > 1 ? key : key.toUpperCase());
             gameConsole.writeToLocalStorage();
             this.inputManager.generateBindsConfigScreen();
         },
         game,
         {
-            short: "Removes all actions from a given input.",
-            long: "Given the name of an input (refer to the <code>bind</code> command for more information on naming), this command removes all actions bound to it.",
+            short: "Removes all actions from a given input",
+            long: "Given the name of an input (refer to the <code>bind</code> command for more information on naming), this command removes all actions bound to it",
             signatures: [
                 {
                     args: [
@@ -884,7 +912,7 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Removes all keybinds.",
+            short: "Removes all keybinds",
             long: "When invoked, all inputs will have their actions removed. <b>This is a very dangerous command!!</b>",
             signatures: [{ args: [], noexcept: true }]
         }
@@ -907,18 +935,24 @@ export function setUpCommands(game: Game): void {
                 return { err: `Cannot shadow cvar '${name}'` };
             }
 
+            if (name.match(/^\w{2}_/)) {
+                return { err: "Alias name must not match regular expression <code>^\\w{2}_</code>" };
+            }
+
             gameConsole.aliases.set(name, query);
 
             gameConsole.writeToLocalStorage();
         },
         game,
         {
-            short: "Creates a shorthand for a console query.",
+            short: "Creates a shorthand for a console query",
             long:
                 "This command's first argument is the alias' name, and its second is the query; an <em>alias</em> is created, which can be called like any " +
                 "other command. When the alias is called, the query said alias is bound to will be executed, as if it had been entered into the console manually.<br>" +
-                'If the query contains spaces, remember to wrap the whole thing in double quotes ("") so it can be parsed correctly. An alias\' name cannot match that ' +
-                "of a built-in command. However, if it matches an existing alias, said existing alias will be replaced by the new one.",
+                'If the query contains spaces, remember to wrap it in double quotes ("") so it can be parsed correctly. An alias\' name cannot match that ' +
+                "of a built-in command, nor can it start with two alphanumeric characters followed by an underscore (in other words, the name mustn't match " +
+                "<code>^\\w{2}_</code>, because those prefixes may be used for future CVars). However, if it matches an existing alias, said existing alias " +
+                "will be replaced by the new one",
             signatures: [
                 {
                     args: [
@@ -928,6 +962,37 @@ export function setUpCommands(game: Game): void {
                         },
                         {
                             name: "query",
+                            type: ["string"]
+                        }
+                    ],
+                    noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<string>(
+        "remove_alias",
+        function(name) {
+            if (name === undefined) {
+                return { err: "Expected a string argument, received nothing" };
+            }
+
+            if (!gameConsole.aliases.delete(name)) {
+                return { err: `No alias by the name of '${name}' exists` };
+            }
+
+            gameConsole.writeToLocalStorage();
+        },
+        game,
+        {
+            short: "Removes an alias from the list of aliases",
+            long: "When given the name of an alias, this command removes it from the list of alises if it exists",
+            signatures: [
+                {
+                    args: [
+                        {
+                            name: "alias_name",
                             type: ["string"]
                         }
                     ],
@@ -961,7 +1026,7 @@ export function setUpCommands(game: Game): void {
                     logBinds(key, actions);
                 } else {
                     return {
-                        err: `The input '${key}' hasn't been bound to any action.`
+                        err: `The input '${key}' hasn't been bound to any action`
                     };
                 }
             } else {
@@ -972,11 +1037,11 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Lists all the actions bound to a key, or all the keys and their respective actions.",
+            short: "Lists all the actions bound to a key, or all the keys and their respective actions",
             long:
                 "If this command is invoked without an argument, all keys which have an action to them will be printed, along with " +
                 "the actions bound to each respective key. If it is invoked with an input's name, then only the actions bound to that input " +
-                "will be shown, if any.",
+                "will be shown, if any",
             signatures: [
                 {
                     args: [],
@@ -1013,51 +1078,71 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand<string>(
         "let",
-        (name, value, archive, readonly) => {
+        (name, value, type, archive, readonly) => {
             if (name === undefined || value === undefined) {
                 return {
-                    err: `Expected at least 4 arguments, received ${arguments.length}.`
+                    err: `Expected at least 2 arguments, received ${arguments.length}`
                 };
             }
 
             if (!name.startsWith("uv_")) {
                 return {
-                    err: "Custom CVar name must start with <code>uv_</code>."
+                    err: "Custom CVar name must start with <code>uv_</code>"
                 };
             }
 
             if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
                 return {
-                    err: "Custom CVar name be at least one character long (not including the prefix) and can only contain letters, numbers and underscores."
+                    err: "Custom CVar name be at least one character long (not including the prefix) and can only contain letters, numbers and underscores"
                 };
             }
 
             if (gameConsole.variables.has.custom(name)) {
                 return {
-                    err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do <code>${name}=${value}</code>)`
+                    err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do <code>assign ${name} ${value}</code>)`
                 };
             }
 
-            const toBoolean = (str: string | undefined): boolean =>
-                [undefined, "true", "false", "0", "1"].includes(str);
+            const caster: ((val: string) => Result<Stringable, string>) | undefined = {
+                string: Casters.toString,
+                number: Casters.toNumber,
+                integer: Casters.toInt,
+                boolean: Casters.toBoolean
+            }[type ?? "string"];
+
+            if (caster === undefined) {
+                return { err: `Unknown type '${type}'` };
+            }
+
+            const cast = caster(value);
+            if ("err" in cast) {
+                return { err: `Provided type '${type}' does not match with provided value '${value}' (the given value is not assignable to the given type)` };
+            }
+            const casted = cast.res;
 
             gameConsole.variables.declareCVar(
-                new ConVar<Stringable>(name, value, gameConsole, {
-                    archive: toBoolean(archive),
-                    readonly: toBoolean(readonly)
-                })
+                new ConVar<Stringable>(
+                    name,
+                    casted,
+                    gameConsole,
+                    caster,
+                    {
+                        archive: handleResult(Casters.toBoolean(archive ?? "0"), () => false),
+                        readonly: handleResult(Casters.toBoolean(readonly ?? "0"), () => false)
+                    }
+                )
             );
             gameConsole.writeToLocalStorage();
         },
         game,
         {
-            short: "Creates a new custom console variable, with a name and value.",
+            short: "Creates a new custom console variable, with a name and value",
             long:
                 "When invoked, this command attempts to create a new CVar with the given name and value. <b>Names must being with <code>uv_</code>, " +
                 "must be at least one character long (not counting the prefix) and can only contain letters, numbers and underscores.</b> Invalid names will " +
                 "result in an error.<br>" +
                 "CVars marked as <code>archive</code> will be saved when the game closes and reinitialized when the game boots up again. Readonly CVars cannot " +
-                "have their value changed after being created.",
+                "have their value changed after being created",
             signatures: [
                 {
                     args: [
@@ -1068,6 +1153,11 @@ export function setUpCommands(game: Game): void {
                         {
                             name: "value",
                             type: ["string", "number", "boolean"]
+                        },
+                        {
+                            name: "type",
+                            type: ["\"string\"", "\"number\"", "\"integer\"", "\"boolean\""],
+                            optional: true
                         },
                         {
                             name: "archive",
@@ -1087,6 +1177,83 @@ export function setUpCommands(game: Game): void {
     );
 
     Command.createCommand<string>(
+        "assign",
+        (name, value) => {
+            if (name === undefined || value === undefined) {
+                return {
+                    err: `Expected 2 arguments, received ${arguments.length}`
+                };
+            }
+            if (!gameConsole.variables.has(name)) {
+                return {
+                    err: `CVar '${name}' doesn't exist`
+                };
+            }
+
+            const retVal = gameConsole.variables.get(name)!.setValue(value);
+            gameConsole.writeToLocalStorage();
+
+            return retVal;
+        },
+        game,
+        {
+            short: "Assigns a value to a CVar",
+            long: "When invoked, this command attempts to assign a new value to a CVar",
+            signatures: [
+                {
+                    args: [
+                        {
+                            name: "name",
+                            type: ["string"]
+                        },
+                        {
+                            name: "value",
+                            type: ["string", "number", "boolean"]
+                        }
+                    ],
+                    noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<string>(
+        "delete",
+        function(name) {
+            if (name === undefined) {
+                return { err: "Expected a string argument, received nothing" };
+            }
+
+            if (gameConsole.variables.has.builtIn(name)) {
+                return { err: `Cannot delete built-in CVar '${name}'` };
+            }
+
+            const err = gameConsole.variables.removeCVar(name);
+            if (err === undefined) gameConsole.writeToLocalStorage();
+
+            return err;
+        },
+        game,
+        {
+            short: "Removes a user CVar from the list of variables",
+            long:
+                "When given the name of a user variable, this command removes it from the list of variables. " +
+                "Passing in the name of a built-in CVar causes an error",
+            signatures: [
+                {
+                    args: [
+                        {
+                            name: "variable_name",
+                            type: ["string"]
+                        }
+                    ],
+                    noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<string>(
         "list_alias",
         function(name) {
             if (name === undefined) {
@@ -1096,15 +1263,15 @@ export function setUpCommands(game: Game): void {
             const alias = gameConsole.aliases.get(name);
 
             if (alias) {
-                gameConsole.log(`Alias '${name}' is defined as '${alias}'`);
+                gameConsole.log(`Alias '${name}' is defined as <code>${alias}</code>`);
             } else {
                 return { err: `No alias named '${name}' exists` };
             }
         },
         game,
         {
-            short: "Gives the definition of an alias.",
-            long: "When given the name of an alias, if that alias exists, this command will print the query associated with it.",
+            short: "Gives the definition of an alias",
+            long: "When given the name of an alias, if that alias exists, this command will print the query associated with it",
             signatures: [
                 {
                     args: [
@@ -1154,16 +1321,11 @@ export function setUpCommands(game: Game): void {
                             ? ` ${signature.args
                                 .map(
                                     (arg) =>
-                                        `<em>${arg.rest ? "..." : ""}${
-                                            arg.name
-                                        }${
-                                            arg.optional ? "?" : ""
-                                        }: ${arg.type
-                                            .map(
-                                                (type) =>
-                                                    `<span class="command-desc-arg-type">${type}</span>`
-                                            )
-                                            .join(" | ")}</em>`
+                                        `<em>${arg.rest ? ".." : ""}${arg.name}${arg.optional ? "?" : ""}: ${
+                                            arg.type
+                                                .map(type => `<span class="command-desc-arg-type">${type}</span>`)
+                                                .join(" | ")
+                                        }</em>`
                                 )
                                 .join(", ")}`
                             : "";
@@ -1175,10 +1337,26 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Displays help about a certain command, or a list of commands and aliases.",
+            short: "Displays help about a certain command, or a list of commands and aliases",
             long:
-                "If given the name of a command, this command logs that command's help info. If not given an argument, this command " +
-                "logs a list of all defined commands and aliases. Passing the name of an alias to this command results in an error.",
+                // eslint-disable-next-line prefer-template
+                "If given the name of a command, this command logs that command's help info, along with its signatures.<br>" +
+                "The signatures of a command are all the different possible ways in can be invoked. Each signature follows" +
+                "the following format: <code>noexcept-marker? command-name params</code>" +
+                `<ul>${(
+                    [
+                        ["noexcept-marker", "If included, it indicates that this signature never returns an error. Styled as blue, bold and in italics"],
+                        ["command-name", "Simply the command's name. Styled as bold and yellow"],
+                        [
+                            "params",
+                            "A space-separated list of parameters, where each parameter follows the form <em><code>name: type</code></em>," +
+                            " where <code>name</code> is the parameter's name and <code>type</code> is its data type"
+                        ]
+                    ] as Array<[string, string]>
+                ).map(([name, desc]) => `<li><code>${name}</code>: ${desc}</li>`).join("")}</ul>` +
+                "If not given an argument, this command logs a list of all defined commands and aliases. " +
+                "Passing the name of an alias to this command results in an error. " +
+                "If you want to see the query bound to an alias, use <code>list_alias</code>",
             signatures: [
                 {
                     args: [],

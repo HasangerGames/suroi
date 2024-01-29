@@ -507,9 +507,7 @@ export class InputManager {
         );
 
         let activeButton: HTMLButtonElement | undefined;
-        for (const a in defaultBinds) {
-            const action = a as keyof (typeof defaultBinds);
-
+        for (const action in defaultBinds) {
             const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
 
             $("<div/>", {
@@ -533,7 +531,6 @@ export class InputManager {
             actions.forEach((bind, i) => {
                 const bindButton = buttons[i];
 
-                // eslint-disable-next-line no-inner-declarations
                 const setKeyBind = (event: KeyboardEvent | MouseEvent | WheelEvent): void => {
                     event.stopImmediatePropagation();
 

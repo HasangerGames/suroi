@@ -149,7 +149,8 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, 2) },
         casingParticles: [{
-            position: Vec.create(4, 0.6)
+            frame: "casing_762x39mm",
+            position: Vec.create(4, 0.4)
         }],
         ballistics: {
             damage: 14,
@@ -183,7 +184,8 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(70, 0) },
         casingParticles: [{
-            position: Vec.create(4, 0.6)
+            frame: "casing_762x39mm",
+            position: Vec.create(4, 0.4)
         }],
         ballistics: {
             damage: 12.25,
@@ -215,7 +217,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(75, -4) },
         casingParticles: [{
-            position: Vec.create(4, 0.5)
+            position: Vec.create(2.5, 0.5)
         }],
         capacity: 30,
         reloadTime: 2.25,
@@ -504,6 +506,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, 6.5) },
         casingParticles: [{
+            frame: "casing_762x54mmR",
             position: Vec.create(4, 0.6),
             ejectionDelay: 700
         }],
@@ -584,8 +587,8 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(95, 3.5) },
         casingParticles: [{
-            position: Vec.create(4, 0.6),
-            ejectionDelay: 700
+            position: Vec.create(5, 0.4),
+            ejectionDelay: 250
         }],
         ballistics: {
             damage: 55,
@@ -662,16 +665,17 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(70, 0) },
         casingParticles: [{
+            frame: "casing_762x38mmR",
             position: Vec.create(3.5, 0.5),
             count: 7,
             velocity: {
                 x: {
-                    min: -15,
-                    max: -4
+                    min: -8,
+                    max: -2
                 },
                 y: {
-                    min: 5,
-                    max: 18,
+                    min: 2,
+                    max: 9,
                     randomSign: true
                 }
             },
@@ -751,7 +755,7 @@ const GunsRaw: RawGunDefinition[] = [
         ammoType: "curadell",
         ammoSpawnAmount: 1,
         fireDelay: 500,
-        switchDelay: 0,
+        switchDelay: 250,
         speedMultiplier: 0.92,
         recoilMultiplier: 1,
         recoilDuration: 0,
@@ -904,7 +908,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(100, 0) },
         casingParticles: [{
-            position: Vec.create(3.5, 0.5)
+            position: Vec.create(4, 0.5)
         }],
         ballistics: {
             damage: 21,
@@ -971,7 +975,7 @@ const GunsRaw: RawGunDefinition[] = [
             animationDuration: 100
         },
         casingParticles: [{
-            position: Vec.create(4.5, 0.6)
+            position: Vec.create(4.7, 0.3)
         }],
         image: { position: Vec.create(80, 0) },
         ballistics: {
@@ -1006,7 +1010,7 @@ const GunsRaw: RawGunDefinition[] = [
             animationDuration: 100
         },
         casingParticles: [{
-            position: Vec.create(4.5, 0.5)
+            position: Vec.create(3.5, 0.5)
         }],
         image: { position: Vec.create(80, 0) },
         ballistics: {
@@ -1115,6 +1119,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(120, 0) },
         casingParticles: [{
+            frame: "casing_30-06",
             position: Vec.create(4.7, 1.6)
         }],
         ballistics: {
@@ -1214,6 +1219,7 @@ const GunsRaw: RawGunDefinition[] = [
         image: { position: Vec.create(87, 1) },
         casingParticles: [
             {
+                frame: "casing_30-06",
                 position: Vec.create(4, 0.6),
                 velocity: {
                     y: {
@@ -1223,8 +1229,8 @@ const GunsRaw: RawGunDefinition[] = [
                 }
             },
             {
-                position: Vec.create(4, 0.6),
                 frame: "enbloc",
+                position: Vec.create(4, 0.6),
                 velocity: {
                     x: {
                         min: 1,
@@ -1276,6 +1282,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(80, 0) },
         casingParticles: [{
+            frame: "casing_9x39mm",
             position: Vec.create(4, 0.5)
         }],
         noMuzzleFlash: true,
@@ -1315,7 +1322,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(80, 0) },
         casingParticles: [{
-            position: Vec.create(4.2, 0.5)
+            position: Vec.create(4.2, 0.4)
         }],
         ballistics: {
             damage: 28.5,
@@ -1396,8 +1403,9 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, 0) },
         casingParticles: [{
+            frame: "casing_500sw",
             position: Vec.create(5, 0.5),
-            ejectionDelay: 100
+            ejectionDelay: 175
         }],
         ballistics: {
             damage: 62.5,
@@ -1438,6 +1446,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, -3.5) },
         casingParticles: [{
+            frame: "casing_12ga_he",
             position: Vec.create(4, 0.6)
         }],
         ballistics: {

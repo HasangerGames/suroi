@@ -3,7 +3,23 @@ import { Numeric } from "../../../../../common/src/utils/math";
 import { type Game } from "../../game";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
-import { ConVar, ConsoleVariables, type CVarFlags } from "./variables";
+import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./variables";
+
+/*
+    eslint-disable
+
+    no-lone-blocks,
+    @typescript-eslint/no-this-alias,
+    no-return-assign,
+    no-inner-declarations
+*/
+
+/*
+  `no-lone-blocks`                    Used for organization
+  `@typescript-eslint/no-this-alias`  Use some object literals, then talk to me about "not managing scope well"
+  `no-return-assign`                  skill issue filter
+  `no-inner-declarations`             Is this rule's raison d'être fr "just in case es5 chokes and dies on it sometimes"
+*/
 
 enum MessageType {
     Log = "log",
@@ -26,9 +42,9 @@ export type Stringable = string | number | boolean | bigint | undefined | null;
 export type PossibleError<E = never> = undefined | { readonly err: E };
 
 export interface GameSettings {
-    variables: Record<string, Stringable | { value: Stringable, flags?: CVarFlags }>
-    aliases: Record<string, string>
-    binds: Record<string, string[]>
+    readonly variables: Record<string, Stringable | { value: Stringable, flags?: number }>
+    readonly aliases: Record<string, string>
+    readonly binds: Record<string, string[]>
 }
 
 // When opening the console with a key, the key will be typed to the console,
@@ -41,34 +57,31 @@ export class GameConsole {
         this._isOpen = value;
 
         if (this._isOpen) {
-            this._ui.container.show();
+            this._ui.globalContainer.show();
             this._ui.input.trigger("focus");
-            this._ui.input.val("");
+
             invalidateNextCharacter = !this.game.gameStarted;
         } else {
-            this._ui.container.hide();
+            this._ui.globalContainer.hide();
         }
     }
 
     private readonly _ui = {
+        globalContainer: $("#console"),
         container: $("#console-container"),
         header: $("#console-header"),
         closeButton: $("#console-close"),
         output: $("#console-out"),
-        input: $("#console-in")
+        input: $("#console-in"),
+        autocomplete: $("#console-autocmp")
     };
 
     private readonly _dimensions = (() => {
         let width = NaN;
         let height = NaN;
-
-        /*
-            eslint-disable @typescript-eslint/no-this-alias
-        */
-        // Whoever made this rule should use object literals more often
         const T = this;
 
-        const proxy = {
+        return {
             get width() { return width; },
             set width(w: number) {
                 w = Numeric.clamp(
@@ -83,6 +96,7 @@ export class GameConsole {
                     if (!T._ui.container[0].style.width) {
                         T._ui.container.css("width", width);
                     }
+                    T._ui.autocomplete.css("width", width);
                 }
             },
 
@@ -100,11 +114,10 @@ export class GameConsole {
                     if (!T._ui.container[0].style.height) {
                         T._ui.container.css("height", height);
                     }
+                    T._ui.autocomplete.css("top", T._position.top + height);
                 }
             }
         };
-
-        return proxy;
     })();
 
     private readonly _position = (() => {
@@ -112,10 +125,9 @@ export class GameConsole {
         let top = NaN;
 
         const magicalPadding /* that prevents scroll bars from showing up */ = 1;
-
         const T = this;
 
-        const proxy = {
+        return {
             get left() { return left; },
             set left(l: number) {
                 l = Numeric.clamp(
@@ -126,10 +138,8 @@ export class GameConsole {
 
                 if (left !== l) {
                     T.variables.set.builtIn("cv_console_left", left = l);
-
-                    if (!T._ui.container[0].style.left) {
-                        T._ui.container.css("left", left);
-                    }
+                    T._ui.container.css("left", left);
+                    T._ui.autocomplete.css("left", left);
                 }
             },
 
@@ -143,20 +153,42 @@ export class GameConsole {
 
                 if (top !== t) {
                     T.variables.set.builtIn("cv_console_top", top = t);
-
-                    if (!T._ui.container[0].style.top) {
-                        T._ui.container.css("top", top);
-                    }
+                    T._ui.container.css("top", top);
+                    T._ui.autocomplete.css("top", top + T._dimensions.height);
                 }
             }
         };
-
-        return proxy;
     })();
 
     private readonly _entries: ConsoleData[] = [];
 
     private readonly localStorageKey = "suroi_config";
+
+    private readonly _history = new (class <T> {
+        private readonly _backingSet = new Set<T>();
+        private readonly _backingArray: T[] = [];
+
+        add(element: T): void {
+            const oldSize = this._backingSet.size;
+            this._backingSet.add(element);
+
+            (this._backingSet.size !== oldSize) && this._backingArray.push(element);
+        }
+
+        clear(): void {
+            this._backingSet.clear();
+            this._backingArray.length = 0;
+        }
+
+        filter(predicate: (value: T, index: number) => boolean): T[];
+        filter<U extends T>(predicate: (value: T, index: number) => value is U): U[] {
+            return this._backingArray.filter(predicate);
+        }
+    })<string>();
+
+    clearHistory(): void {
+        this._history.clear();
+    }
 
     writeToLocalStorage(): void {
         const settings: GameSettings = {
@@ -179,21 +211,24 @@ export class GameConsole {
 
             for (const name in config.variables) {
                 const variable = config.variables[name];
-
                 const value = typeof variable === "object" ? variable?.value : variable;
 
                 if (name in defaultClientCVars) {
                     this.variables.set.builtIn(name as keyof CVarTypeMapping, value as string, false);
                 } else {
-                    const flags = typeof variable === "object" ? variable?.flags : {};
-
                     this.variables.declareCVar(
-                        new ConVar(name, value, this, {
-                            archive: true,
-                            cheat: false,
-                            readonly: false,
-                            ...flags
-                        })
+                        new ConVar(
+                            name,
+                            value,
+                            this,
+                            Casters.toString,
+                            {
+                                archive: true,
+                                cheat: false,
+                                readonly: false,
+                                ...(typeof variable === "object" ? flagBitfieldToInterface(variable?.flags ?? 0) : {})
+                            }
+                        )
                     );
                     rewriteToLS = true;
                 }
@@ -245,9 +280,87 @@ export class GameConsole {
 
     readonly game: Game;
 
-    readonly commands = new Map<string, Command<boolean, Stringable>>();
-    readonly aliases = new Map<string, string>();
-    readonly variables = new ConsoleVariables(this);
+    readonly commands = (() => {
+        const map = new Map<string, Command<boolean, Stringable>>();
+
+        const nativeSet = map.set.bind(map);
+        const nativeClear = map.clear.bind(map);
+        const nativeDelete = map.delete.bind(map);
+
+        map.set = (key, value) => {
+            const retVal = nativeSet.call(map, key, value);
+            this._autocmpData.cache.invalidateCommands();
+            return retVal;
+        };
+
+        map.clear = () => {
+            const retVal = nativeClear.call(map);
+            this._autocmpData.cache.invalidateCommands();
+            return retVal;
+        };
+
+        map.delete = (key) => {
+            const retVal = nativeDelete.call(map, key);
+
+            if (retVal) {
+                this._autocmpData.cache.invalidateCommands();
+            }
+
+            return retVal;
+        };
+
+        return map;
+    })();
+
+    readonly aliases = (() => {
+        const map = new Map<string, string>();
+
+        const nativeSet = map.set.bind(map);
+        const nativeClear = map.clear.bind(map);
+        const nativeDelete = map.delete.bind(map);
+
+        map.set = (key, value) => {
+            const retVal = nativeSet.call(map, key, value);
+            this._autocmpData.cache.invalidateAliases();
+            return retVal;
+        };
+
+        map.clear = () => {
+            const retVal = nativeClear.call(map);
+            this._autocmpData.cache.invalidateAliases();
+            return retVal;
+        };
+
+        map.delete = (key) => {
+            const retVal = nativeDelete.call(map, key);
+
+            if (retVal) {
+                this._autocmpData.cache.invalidateAliases();
+            }
+
+            return retVal;
+        };
+
+        return map;
+    })();
+
+    readonly variables = (() => {
+        const varCollection = new ConsoleVariables(this);
+
+        const nativeDeclare = varCollection.declareCVar.bind(varCollection);
+
+        varCollection.declareCVar = (cvar: ConVar<Stringable>) => {
+            const retVal = nativeDeclare(cvar);
+
+            if (retVal !== undefined) {
+                this._autocmpData.cache.invalidateVariables();
+            }
+
+            return retVal;
+        };
+
+        return varCollection;
+    })();
 
     /**
      * Returns the value of a built-in console variable. Sugar method
@@ -325,10 +438,6 @@ export class GameConsole {
     }
 
     private _attachListeners(): void {
-        /*
-            eslint-disable no-lone-blocks
-        */
-
         // Close button
         {
             this._ui.closeButton.on("click", e => {
@@ -354,15 +463,8 @@ export class GameConsole {
             };
 
             const mouseMoveHandler = (event: MouseEvent): void => {
-                this._ui.container.css(
-                    "left",
-                    (this._position.left = event.clientX + offset.x, this._position.left)
-                );
-
-                this._ui.container.css(
-                    "top",
-                    (this._position.top = event.clientY + offset.y, this._position.top)
-                );
+                this._position.left = event.clientX + offset.x;
+                this._position.top = event.clientY + offset.y;
             };
 
             this._ui.header.on("mousedown", e => {
@@ -395,48 +497,281 @@ export class GameConsole {
             }).observe(this._ui.container[0]);
         }
 
+        let navigatingAutocmp = false;
+
         // Input
         {
-            this._ui.input.on("keypress", e => {
+            this._ui.globalContainer.on("keydown", e => {
+                switch (e.key) {
+                    case "Enter": {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        const input = this._ui.input.val() as string;
+
+                        this._ui.input.val("");
+                        navigatingAutocmp = false;
+
+                        this._history.add(input);
+                        this.log(`> ${input}`);
+                        this.handleQuery(input);
+                        this._updateAutocmp();
+                        break;
+                    }
+                    case "ArrowDown":
+                    case "ArrowUp": {
+                        if (!this._isOpen) return;
+
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+
+                        navigatingAutocmp = true;
+
+                        const { nodes, activeIndex } = this._autocmpData;
+                        const focusExists = activeIndex !== undefined;
+                        const nodeLength = nodes.length;
+
+                        focusExists && nodes[activeIndex].trigger("blur");
+                        if (nodeLength) {
+                            const direction = e.key === "ArrowDown" ? 1 : -1;
+                            nodes[
+                                this._autocmpData.activeIndex = Numeric.absMod(
+                                    focusExists
+                                        ? activeIndex + direction
+                                        : (direction - 1) >> 2, // -1 becomes -1, 1 becomes 0
+                                    nodeLength
+                                )
+                            ].trigger("focus");
+                        }
+                        break;
+                    }
+                }
+            });
+
+            this._ui.input.on("beforeinput", e => {
                 if (invalidateNextCharacter) {
                     invalidateNextCharacter = false;
                     e.preventDefault();
-                    return;
                 }
+            });
 
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    const input = this._ui.input.val() as string;
+            this._ui.input.on("input", () => {
+                this._updateAutocmp();
+            });
+        }
 
-                    this._ui.input.val("");
+        // Focus / blur
+        {
+            this._ui.input.on("focus", () => {
+                this._updateAutocmp();
+            });
 
-                    this.log(`> ${input}`);
-                    this.handleQuery(input);
-                }
+            this._ui.input.on("blur", () => {
+                navigatingAutocmp || this._hideAutocomplete();
             });
         }
     }
 
+    private readonly _autocmpData: {
+        nodes: Array<JQuery<HTMLDivElement>>
+        activeIndex: number | undefined
+        readonly cache: {
+            get commands(): string[]
+            invalidateCommands: () => void
+
+            get aliases(): string[]
+            invalidateAliases: () => void
+
+            get variables(): string[]
+            invalidateVariables: () => void
+        }
+    } = {
+            nodes: [],
+            activeIndex: undefined,
+            cache: (() => {
+                const T = this;
+                let commands: string[] | undefined;
+                let aliases: string[] | undefined;
+                let variables: string[] | undefined;
+
+                return {
+                    get commands() { return commands ??= [...T.commands.keys()]; },
+                    invalidateCommands() { commands = undefined; },
+
+                    get aliases() { return aliases ??= [...T.aliases.keys()]; },
+                    invalidateAliases() { aliases = undefined; },
+
+                    get variables() { return variables ??= Object.keys(T.variables.getAll()); },
+                    invalidateVariables() { variables = undefined; }
+                };
+            })()
+        };
+
+    private _updateAutocmp(): void {
+        // todo autocomplete for command invocations
+
+        const inputValue = this._ui.input.val() as string;
+        const { autocomplete, input, container } = this._ui;
+
+        const isEmpty = inputValue.length === 0;
+
+        const [
+            historyCandidates,
+            commandCandidates,
+            aliasCandidates,
+            variableCandidates
+        ] = isEmpty
+            ? [
+                this._history.filter(() => true),
+                [],
+                [],
+                []
+            ]
+            : [
+                this._history.filter(s => s.includes(inputValue) && !this._autocmpData.cache.commands.some(c => c === s)),
+                this._autocmpData.cache.commands.filter(s => s.includes(inputValue)),
+                this._autocmpData.cache.aliases.filter(s => s.includes(inputValue)),
+                this._autocmpData.cache.variables.filter(s => s.includes(inputValue))
+            ];
+
+        const generateAutocompleteNode = (match: string, text: string): JQuery<HTMLDivElement> => {
+            const [before, after] = match
+                ? (() => {
+                    const indexOf = text.indexOf(match);
+
+                    return [text.substring(0, indexOf), text.substring(indexOf + match.length)];
+                })()
+                : [text, ""];
+
+            const node = $<HTMLDivElement>("<div tabindex=\"0\" class=\"console-input-autocomplete-entry\"></div>")
+                .append(
+                    this._sanitizeHTML(before, { strict: true, escapeSpaces: true }),
+                    $(`<b>${this._sanitizeHTML(match, { strict: true, escapeSpaces: true })}</b>`),
+                    this._sanitizeHTML(after, { strict: true, escapeSpaces: true })
+                );
+
+            node.on("mousedown", ev => {
+                if (ev.button) return;
+
+                input
+                    .val(text)
+                    .trigger("focus");
+                this._updateAutocmp();
+            });
+
+            node.on("keydown", function(ev) {
+                if (ev.code !== "Enter") return;
+
+                ev.preventDefault();
+                ev.stopPropagation();
+                ev.stopImmediatePropagation();
+
+                this.dispatchEvent(new MouseEvent("click", { button: 0 }));
+            });
+
+            return node;
+        };
+
+        if (
+            historyCandidates.length ||
+            commandCandidates.length ||
+            aliasCandidates.length ||
+            variableCandidates.length
+        ) {
+            autocomplete.show();
+            container
+                .css("border-bottom-left-radius", 0)
+                .css("border-bottom-right-radius", 0);
+
+            const makeDivider = (): JQuery<HTMLDivElement> => $<HTMLDivElement>("<div class=\"console-autocomplete-divider\"></div>");
+
+            const autocmpNodes: Array<JQuery<HTMLDivElement>> = [];
+            const nodes = [
+                historyCandidates,
+                commandCandidates,
+                aliasCandidates,
+                variableCandidates
+            ]
+                .filter(candidates => candidates.length)
+                .map(
+                    candidates => {
+                        const candidateNodes = candidates
+                            .sort((a, b) => a.indexOf(inputValue) - b.indexOf(inputValue))
+                            .map(generateAutocompleteNode.bind(undefined, inputValue));
+                        autocmpNodes.push(...candidateNodes);
+
+                        return [
+                            ...candidateNodes,
+                            makeDivider()
+                        ];
+                    }
+                )
+                .flat();
+
+            if (this._autocmpData.activeIndex ?? -Infinity > (this._autocmpData.nodes = autocmpNodes).length - 1) {
+                this._autocmpData.activeIndex = undefined;
+            }
+
+            nodes.pop();
+
+            autocomplete
+                .empty()
+                .append(...nodes);
+        } else this._hideAutocomplete();
+    }
+
+    private _hideAutocomplete(): void {
+        this._ui.container
+            .css("border-bottom-left-radius", "")
+            .css("border-bottom-right-radius", "");
+
+        this._ui.autocomplete
+            .hide()
+            .empty();
+
+        this._autocmpData.activeIndex = undefined;
+        this._autocmpData.nodes.length = 0;
+    }
+
     // The part everyone cares about
-    handleQuery(query: string): void {
-        if (query.length === 0) return;
+    handleQuery(query: string): boolean {
+        if (query.trim().length === 0) return true;
 
         class CommandSyntaxError extends SyntaxError { }
 
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        function extractCommandsAndArgs(input: string) {
-            interface Command {
-                name: string
-                args: string[]
-            }
+        // todo command grouping, something like `condition_cmd & (cmd_that_depends_on_condition; other_cmd_that_depends_on_condition)`
+        enum ChainingTypes {
+            Always,
+            IfPass,
+            IfFail
+        }
 
-            let current: Command = {
+        const chainingChars = {
+            [ChainingTypes.Always]: ";",
+            [ChainingTypes.IfPass]: "&",
+            [ChainingTypes.IfFail]: "|",
+
+            ";": ChainingTypes.Always,
+            "&": ChainingTypes.IfPass,
+            "|": ChainingTypes.IfFail
+        };
+
+        interface ParsedCommand {
+            name: string
+            args: string[]
+            next?: {
+                cmd: ParsedCommand
+                chaining: ChainingTypes
+            }
+        }
+
+        function extractCommandsAndArgs(input: string): ParsedCommand {
+            let current: ParsedCommand = {
                 name: "",
-                args: [""]
+                args: []
             };
-            const commands: Command[] = [current];
+            const commands: ParsedCommand = current;
 
             let parserPhase = "cmd" as "cmd" | "args";
             let inString = false;
@@ -450,15 +785,16 @@ export class GameConsole {
                             }
                             break;
                         }
-                        case "=": {
-                            parserPhase = "args";
-                            break;
-                        }
-                        case ";": {
-                            commands.push(current = {
-                                name: "",
-                                args: [""]
-                            });
+                        case ";":
+                        case "&":
+                        case "|": {
+                            commands.next = {
+                                cmd: current = {
+                                    name: "",
+                                    args: []
+                                },
+                                chaining: chainingChars[char]
+                            };
                             break;
                         }
                         default: {
@@ -476,14 +812,19 @@ export class GameConsole {
                             }
                             break;
                         }
-                        case ";": {
+                        case ";":
+                        case "&":
+                        case "|": {
                             if (inString) {
                                 current.args[current.args.length - 1] += char;
                             } else {
-                                commands.push(current = {
-                                    name: "",
-                                    args: [""]
-                                });
+                                commands.next = {
+                                    cmd: current = {
+                                        name: "",
+                                        args: [""]
+                                    },
+                                    chaining: chainingChars[char]
+                                };
                                 parserPhase = "cmd";
                             }
                             break;
@@ -500,6 +841,11 @@ export class GameConsole {
                             break;
                         }
                         default: {
+                            if (current.args.length === 0) {
+                                current.args = [char];
+                                break;
+                            }
+
                             current.args[current.args.length - 1] += char;
                         }
                     }
@@ -514,45 +860,70 @@ export class GameConsole {
                 throw new CommandSyntaxError("Unterminated string argument");
             }
 
-            return commands
-                .filter(command => command.name)
-                .map(command => {
-                    command.args = command.args.filter(arg => arg.trim().length);
-                    return command;
-                });
+            if (!current.next?.cmd.name.length) delete current.next;
+
+            return commands;
         }
 
         try {
-            for (const command of extractCommandsAndArgs(query)) {
-                const target = this.commands.get(command.name);
+            const commands: ParsedCommand = extractCommandsAndArgs(query);
+
+            let current: ParsedCommand | undefined = commands;
+            let error = false;
+
+            const stepForward = (): void => {
+                if (
+                    current?.next === undefined || {
+                        [ChainingTypes.Always]: false,
+                        [ChainingTypes.IfPass]: error,
+                        [ChainingTypes.IfFail]: !error
+                    }[current.next.chaining]
+                ) {
+                    current = undefined;
+                    return;
+                }
+
+                current = current.next.cmd;
+            };
+
+            // eslint-disable-next-line no-unmodified-loop-condition -- cfa fix when™
+            while (current !== undefined) {
+                error = false;
+
+                const target = this.commands.get(current.name);
                 if (target) {
-                    const result = target.run(command.args);
+                    const result = target.run(current.args);
 
                     if (typeof result === "object") {
-                        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                        error = true;
                         this.error.raw(`${result.err}`);
                     }
+                    stepForward();
                     continue;
                 }
 
-                const alias = this.aliases.get(command.name);
+                const alias = this.aliases.get(current.name);
                 if (alias) {
-                    this.handleQuery(alias);
+                    error = !this.handleQuery(alias);
+                    stepForward();
                     continue;
                 }
 
-                const cvar = this.variables.get(command.name);
+                const cvar = this.variables.get(current.name);
                 if (cvar) {
-                    const result = cvar.setValue(command.args[0]);
-
-                    if (typeof result === "object") {
-                        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                        this.error.raw(`${result.err}`);
+                    if (current.args.length) {
+                        error = true;
+                        throw new CommandSyntaxError(`Unexpected token '${current.args[0]}'`);
                     }
+
+                    this.log(`${cvar.name} = ${cvar.value}`);
+                    stepForward();
                     continue;
                 }
 
-                this.error(`Unknown command '${command.name}'`);
+                error = true;
+                this.error(`Unknown console entity '${current.name}'`);
+                stepForward();
             }
         } catch (e) {
             if (e instanceof CommandSyntaxError) {
@@ -562,13 +933,24 @@ export class GameConsole {
                 throw e;
             }
         }
+
+        return true;
     }
 
     open(): void { this.isOpen = true; }
     close(): void { this.isOpen = false; }
     toggle(): void { this.isOpen = !this._isOpen; }
 
-    resizeAndMove(info: { dimensions?: { width?: number, height?: number }, position?: { left?: number, top?: number } }): void {
+    resizeAndMove(info: {
+        readonly dimensions?: {
+            readonly width?: number
+            readonly height?: number
+        }
+        readonly position?: {
+            readonly left?: number
+            readonly top?: number
+        }
+    }): void {
         if (info.dimensions) {
             info.dimensions.width !== undefined && (this._dimensions.width = info.dimensions.width);
             info.dimensions.height !== undefined && (this._dimensions.height = info.dimensions.height);
@@ -585,89 +967,105 @@ export class GameConsole {
         this._ui.output.append(this._generateHTML(entry, raw));
     }
 
-    private readonly _generateHTML = (() => {
-        const allowedTags = [
-            // Headings
-            "h1", "h2", "h3", "h4", "h5", "h6",
+    private readonly _allowedTags = [
+        // Headings
+        "h1", "h2", "h3", "h4", "h5", "h6",
 
-            // Text stuff
-            "blockquote", "p", "pre", "span",
+        // Text stuff
+        "blockquote", "p", "pre", "span",
 
-            // List stuff
-            "li", "ol", "ul",
+        // List stuff
+        "li", "ol", "ul",
 
-            // Inline elements
-            "a", "em", "b", "bdi", "br", "cite", "code", "del", "ins",
-            "kbd", "mark", "q", "s", "samp", "small", "span", "strong",
-            "sub", "sup", "time", "u", "var",
+        // Inline elements
+        "a", "em", "b", "bdi", "br", "cite", "code", "del", "ins",
+        "kbd", "mark", "q", "s", "samp", "small", "span", "strong",
+        "sub", "sup", "time", "u", "var",
 
-            // Table stuff
-            "caption", "col", "colgroup", "table", "tbody", "td", "tfoot",
-            "th", "thead", "tr"
-        ];
+        // Table stuff
+        "caption", "col", "colgroup", "table", "tbody", "td", "tfoot",
+        "th", "thead", "tr"
+    ];
 
-        function sanitizeHTML(message: string): string {
-            return message.replace(
-                /<\/?.*?>/g,
-                match => {
-                    const tag = match.replace(/<\/?|>/g, "").split(" ")[0];
+    private _sanitizeHTML(message: string, opts?: { readonly strict: boolean, readonly escapeSpaces?: boolean }): string {
+        return message.replace(
+            /<\/?.*?>/g,
+            match => {
+                const tag = match.replace(/<\/?|>/g, "").split(" ")[0];
 
-                    return allowedTags.includes(tag)
-                        ? match
-                        : match
-                            .replace(/</g, "&lt;")
-                            .replace(/>/g, "&gt;");
-                }
+                let str = !opts?.strict && this._allowedTags.includes(tag)
+                    ? match
+                    : match
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;");
+
+                opts?.escapeSpaces && (str = str.replace(/ /g, "&nbsp;"));
+
+                return str;
+            }
+        );
+    }
+
+    private _generateHTML(entry: ConsoleData, raw = false): JQuery<HTMLDivElement> {
+        const date = (() => {
+            const timestamp = new Date(entry.timestamp);
+
+            return {
+                hr: `${timestamp.getHours()}`.padStart(2, "0"),
+                min: `${timestamp.getMinutes()}`.padStart(2, "0"),
+                sec: `${timestamp.getSeconds()}`.padStart(2, "0"),
+                mil: `${timestamp.getMilliseconds()}`.padStart(3, "0")
+            };
+        })();
+
+        const message = {
+            container: undefined as unknown as JQuery<HTMLDivElement>,
+            timestamp: undefined as unknown as JQuery<HTMLDivElement>,
+            content: undefined as unknown as JQuery<HTMLDivElement>
+        };
+
+        message.container = $(`<div class="console-entry console-entry-${entry.type}"></div>`);
+        message.timestamp = $("<div class=\"console-entry-timestamp\"></div>");
+        message.timestamp.text(`${date.hr}:${date.min}:${date.sec}:${date.mil}`);
+        message.container.append(message.timestamp);
+
+        message.content = $("<div class=\"console-entry-content\">");
+
+        const [
+            propertyToModify,
+            sanitizer
+        ]: [
+            "html" | "text",
+            typeof GameConsole["prototype"]["_sanitizeHTML"]
+        ] = raw
+            ? [
+                "html",
+                this._sanitizeHTML.bind(this)
+            ]
+            : [
+                "text",
+                (s: string) => s
+            ];
+
+        if (typeof entry.content === "string") {
+            message.content[propertyToModify](sanitizer(entry.content, { strict: false }));
+        } else {
+            message.content.append(
+                $("<details>").append(
+                    $("<summary>")[propertyToModify](sanitizer(entry.content.main, { strict: false })),
+                    Array.isArray(entry.content.detail)
+                        ? $("<ul>").append(
+                            entry.content.detail.map(e => ($("<li>")[propertyToModify](sanitizer(e, { strict: false })) as JQuery<JQuery.Node>))
+                        )
+                        : $("<span>")[propertyToModify](entry.content.detail)
+                )
             );
         }
 
-        return (entry: ConsoleData, raw = false): JQuery<HTMLDivElement> => {
-            const date = (() => {
-                const timestamp = new Date(entry.timestamp);
+        message.container.append(message.content);
 
-                return {
-                    hr: `${timestamp.getHours()}`.padStart(2, "0"),
-                    min: `${timestamp.getMinutes()}`.padStart(2, "0"),
-                    sec: `${timestamp.getSeconds()}`.padStart(2, "0"),
-                    mil: `${timestamp.getMilliseconds()}`.padStart(3, "0")
-                };
-            })();
-
-            const message = {
-                container: undefined as unknown as JQuery<HTMLDivElement>,
-                timestamp: undefined as unknown as JQuery<HTMLDivElement>,
-                content: undefined as unknown as JQuery<HTMLDivElement>
-            };
-
-            message.container = $(`<div class="console-entry console-entry-${entry.type}"></div>`);
-            message.timestamp = $("<div class=\"console-entry-timestamp\"></div>");
-            message.timestamp.text(`${date.hr}:${date.min}:${date.sec}:${date.mil}`);
-            message.container.append(message.timestamp);
-
-            message.content = $("<div class=\"console-entry-content\">");
-
-            const propertyToModify = raw ? "html" : "text";
-
-            if (typeof entry.content === "string") {
-                message.content[propertyToModify](sanitizeHTML(entry.content));
-            } else {
-                message.content.append(
-                    $("<details>").append(
-                        $("<summary>")[propertyToModify](sanitizeHTML(entry.content.main)),
-                        Array.isArray(entry.content.detail)
-                            ? $("<ul>").append(
-                                entry.content.detail.map(e => ($("<li>")[propertyToModify](sanitizeHTML(e)) as JQuery<JQuery.Node>))
-                            )
-                            : $("<span>")[propertyToModify](entry.content.detail)
-                    )
-                );
-            }
-
-            message.container.append(message.content);
-
-            return message.container;
-        };
-    })();
+        return message.container;
+    }
 
     private _createConsoleEntry(content: ConsoleData["content"], type: MessageType): ConsoleData {
         return {

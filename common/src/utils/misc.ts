@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
@@ -15,6 +17,27 @@ export type DeepRequired<T> = T extends Array<infer R>
 export type DeepReadonly<T> = {
     readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
 };
+
+/**
+ * Represents a successful operation
+ * @template Res The type of the successful operation's result
+ */
+export type ResultRes<Res> = { res: Res };
+/**
+ * Represents a failed operation
+ * @template Err The type of the failed operation's result
+ */
+export type ResultErr<Err> = { err: Err };
+/**
+ * Represents a result whose state is unknown
+ * @template Res The type of the successful operation's result
+ * @template Err The type of the failed operation's result
+ */
+export type Result<Res, Err> = ResultRes<Res> | ResultErr<Err>;
+
+export function handleResult<Res>(result: Result<Res, unknown>, fallbackSupplier: () => Res): Res {
+    return "err" in result ? fallbackSupplier() : result.res;
+}
 
 export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPartial<T>>): T {
     if (!sources.length) return target;
