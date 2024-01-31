@@ -473,12 +473,23 @@ export class Game {
        // Check the most recent team in the teams array, if that team has a playerIDS length less than maxTeamSize set in config,
        // Add the player that just joined the game to that team
        // If the most recent team has the amount of playerIDS the same as the maxTeamSize, create a new team object in the array where the player will be added
+       // as a bonus, if you can make it so that disconnects open up a slot on a team, that'd be cool
 
+       if(this.teams.length == 0 || this.teams[this.teams.length - 1].playerIDS.length < Config.maxTeamSize) {
         this.teams.push({
-            playerIDS: [ 1091, 20323 ],
-            teamID: 1,
-            kills: 3
+            kills: 0,
+            playerIDS: [ player.id ],
+            teamID: this.teams.length
         })
+
+        Logger.log(`${this.teams[this.teams.length - 1].playerIDS.length} && ${this.teams[this.teams.length - 1].playerIDS[0]}`)
+
+        Logger.log(`New team created | Team ID: ${this.teams[this.teams.length - 1].teamID}`)
+       } else if(this.teams[this.teams.length - 1].playerIDS.length < this.maxTeamSize) {
+            this.teams[this.teams.length - 1].playerIDS.push(player.id);
+
+            Logger.log(`Added ${player.name} to Team ID: ${this.teams[this.teams.length - 1].teamID}`)
+       }
 
         joinedPacket.tid = player.tid;
 
