@@ -333,6 +333,8 @@ export class Game {
                 );
         }
 
+        console.log(packet.tid);
+
         $("canvas").addClass("active");
         $("#splash-ui").fadeOut(enableSoloPlayButton);
         $("#splash-ui").fadeOut(enableDuoPlayButton);

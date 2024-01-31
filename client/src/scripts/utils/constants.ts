@@ -3,7 +3,7 @@ import { Color } from "pixi.js";
 import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes";
 import { Config } from "../config";
 
-export const UI_DEBUG_MODE = false;
+export const UI_DEBUG_MODE = true;
 export const HITBOX_DEBUG_MODE = false;
 
 export const HITBOX_COLORS = {

@@ -48,6 +48,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     name: string;
     readonly ip?: string;
+    readonly tid: number = 2;
 
     readonly loadout: {
         skin: SkinDefinition

@@ -10,6 +10,7 @@ export class JoinedPacket extends Packet {
     protocolVersion!: number;
 
     emotes: EmoteDefinition[] = [];
+    tid: number = 0;
 
     override serialize(): void {
         super.serialize();
@@ -20,6 +21,8 @@ export class JoinedPacket extends Packet {
         for (const emote of this.emotes) {
             Emotes.writeToStream(stream, emote);
         }
+
+        stream.writeUint16(this.tid);
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -28,5 +31,7 @@ export class JoinedPacket extends Packet {
         for (let i = 0; i < 4; i++) {
             this.emotes.push(Emotes.readFromStream(stream));
         }
+
+        this.tid = stream.readUint16();
     }
 }

@@ -41,6 +41,12 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 
+interface Team {
+    playerIDS: number[],
+    teamID: number
+    kills: number,
+}
+
 export class Game {
     readonly _id: number;
     get id(): number { return this._id; }
@@ -57,6 +63,7 @@ export class Game {
     readonly livingPlayers = new Set<Player>();
     readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
+    readonly teams: Team[] = [];
     /**
      * New players created this tick
      */
@@ -460,6 +467,21 @@ export class Game {
 
         const joinedPacket = new JoinedPacket();
         joinedPacket.emotes = player.loadout.emotes;
+
+       // Notes:
+       // When a new player joins the game, check the teams of the game.
+       // Check the most recent team in the teams array, if that team has a playerIDS length less than maxTeamSize set in config,
+       // Add the player that just joined the game to that team
+       // If the most recent team has the amount of playerIDS the same as the maxTeamSize, create a new team object in the array where the player will be added
+
+        this.teams.push({
+            playerIDS: [ 1091, 20323 ],
+            teamID: 1,
+            kills: 3
+        })
+
+        joinedPacket.tid = player.tid;
+
         player.sendPacket(joinedPacket);
 
         player.sendData(this.map.buffer);
