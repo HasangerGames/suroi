@@ -555,7 +555,12 @@ export class UIManager {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID ? `${this.killerID !== playerName ? `${this.getPlayerName(killerID)} killed Kill Leader!` : "The Kill Leader is dead!"}` : "The Kill Leader killed themselves!"}`;
+                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID
+                    ? `${killerID !== playerID
+                        ? `${this.getPlayerName(killerID)} killed Kill Leader!`
+                        : "The Kill Leader is dead!"}`
+                    : "The Kill Leader killed themselves!"
+                }`;
                 if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
