@@ -5,6 +5,7 @@ import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillTy
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
@@ -13,7 +14,7 @@ import { type Packet } from "../../../common/src/packets/packet";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
@@ -233,17 +234,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     ticksSinceLastUpdate = 0;
 
-    private _zoom!: number;
-    get zoom(): number { return this._zoom; }
-    set zoom(zoom: number) {
-        if (this._zoom === zoom) return;
+    private _scope!: ScopeDefinition;
+    get effectiveScope(): ScopeDefinition { return this._scope; }
+    set effectiveScope(target: ScopeDefinition | ReferenceTo<ScopeDefinition>) {
+        const scope = Scopes.reify(target);
+        if (this._scope === scope) return;
 
-        this._zoom = zoom;
-        this.xCullDist = this._zoom * 1.8;
-        this.yCullDist = this._zoom * 1.35;
+        this._scope = scope;
+        this.xCullDist = this._scope.zoomLevel * 1.8;
+        this.yCullDist = this._scope.zoomLevel * 1.35;
         this.dirty.zoom = true;
         this.updateObjects = true;
     }
+
+    get zoom(): number { return this._scope.zoomLevel; }
 
     xCullDist!: number;
     yCullDist!: number;
@@ -320,7 +324,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -358,6 +362,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
+        this.effectiveScope = DEFAULT_SCOPE;
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -543,22 +548,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (
                 object instanceof SyncedParticle &&
-                object.definition.depletePerMs &&
                 object.hitbox?.collidesWith(this.hitbox)
             ) {
                 depleters.add(object.definition);
             }
         }
 
-        if (isInsideBuilding && !this.isInsideBuilding) {
-            this.zoom = 48;
-        } else if (!this.isInsideBuilding) {
-            this.zoom = this.inventory.scope.zoomLevel;
+        if (!this.isInsideBuilding) {
+            this.effectiveScope = isInsideBuilding
+                ? DEFAULT_SCOPE
+                : this.inventory.scope;
         }
         this.isInsideBuilding = isInsideBuilding;
 
+        let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
         depleters.forEach(def => {
             const depletion = def.depletePerMs;
+
+            // we arbitrarily take the first scope target we find and stick with it
+            scopeTarget ??= (def as SyncedParticleDefinition & { readonly hitbox: Hitbox }).snapScopeTo;
 
             if (depletion?.health) {
                 this.piercingDamage(depletion.health * dt, KillType.Gas);
@@ -569,6 +577,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.adrenaline = Math.max(0, this.adrenaline - depletion.adrenaline * dt);
             }
         });
+
+        if (scopeTarget !== undefined) {
+            this.effectiveScope = scopeTarget;
+        }
 
         this.turning = false;
     }
@@ -632,7 +644,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxHealth: player.maxHealth,
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,
-            zoom: player.zoom,
+            zoom: player._scope.zoomLevel,
             id: player.id,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),

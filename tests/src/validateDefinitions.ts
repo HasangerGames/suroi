@@ -2360,19 +2360,19 @@ logger.indent("Validating skins", () => {
 logger.indent("Validating synchronized particles", () => {
     tester.assertNoDuplicateIDStrings(SyncedParticles.definitions, "SynchedParticles", "synchedParticles");
 
-    for (const synchedParticle of SyncedParticles) {
-        logger.indent(`Validating synced particle '${synchedParticle.idString}'`, () => {
-            const errorPath = tester.createPath("synched particles", `synced particle '${synchedParticle.idString}'`);
+    for (const syncedParticle of SyncedParticles) {
+        logger.indent(`Validating synced particle '${syncedParticle.idString}'`, () => {
+            const errorPath = tester.createPath("synched particles", `synced particle '${syncedParticle.idString}'`);
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "scale",
                 defaultValue: 1,
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.scale !== undefined) {
-                const scale = synchedParticle.scale;
+            if (syncedParticle.scale !== undefined) {
+                const scale = syncedParticle.scale;
 
                 logger.indent("Validating scaling", () => {
                     const errorPath2 = tester.createPath(errorPath, "scale");
@@ -2413,14 +2413,14 @@ logger.indent("Validating synchronized particles", () => {
             }
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "alpha",
                 defaultValue: 1,
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.alpha !== undefined) {
-                const alpha = synchedParticle.alpha;
+            if (syncedParticle.alpha !== undefined) {
+                const alpha = syncedParticle.alpha;
 
                 logger.indent("Validating opacity", () => {
                     const errorPath2 = tester.createPath(errorPath, "alpha");
@@ -2465,16 +2465,16 @@ logger.indent("Validating synchronized particles", () => {
             }
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "lifetime",
                 defaultValue: Infinity,
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.lifetime !== undefined) {
+            if (syncedParticle.lifetime !== undefined) {
                 validators.valueSpecifier(
                     tester.createPath(errorPath, "lifetime"),
-                    synchedParticle.lifetime,
+                    syncedParticle.lifetime,
                     (errorPath, n) => {
                         tester.assertIsPositiveReal({
                             value: n,
@@ -2485,15 +2485,15 @@ logger.indent("Validating synchronized particles", () => {
             }
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "angularVelocity",
                 defaultValue: 0,
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.angularVelocity !== undefined) {
+            if (syncedParticle.angularVelocity !== undefined) {
                 logger.indent("Validating angular velocity", () => {
-                    const angularVelocity = synchedParticle.angularVelocity!;
+                    const angularVelocity = syncedParticle.angularVelocity!;
                     const errorPath2 = tester.createPath(errorPath, "angular velocity");
 
                     validators.valueSpecifier(
@@ -2510,16 +2510,16 @@ logger.indent("Validating synchronized particles", () => {
             }
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "velocity",
                 defaultValue: Vec.create(0, 0),
                 equalityFunction: (a, b) => "x" in a && Vec.equals(a, b),
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.velocity !== undefined) {
+            if (syncedParticle.velocity !== undefined) {
                 logger.indent("Validating velocity", () => {
-                    const velocity = synchedParticle.velocity!;
+                    const velocity = syncedParticle.velocity!;
                     const errorPath2 = tester.createPath(errorPath, "velocity");
 
                     const baseValidator = (errorPath: string, velocity: Vector): void => {
@@ -2554,9 +2554,9 @@ logger.indent("Validating synchronized particles", () => {
                 });
             }
 
-            if (synchedParticle.variations !== undefined) {
+            if (syncedParticle.variations !== undefined) {
                 tester.assertIntAndInBounds({
-                    obj: synchedParticle,
+                    obj: syncedParticle,
                     field: "variations",
                     min: 0,
                     max: 8,
@@ -2566,40 +2566,56 @@ logger.indent("Validating synchronized particles", () => {
             }
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "zIndex",
                 defaultValue: ZIndexes.ObstaclesLayer1,
                 baseErrorPath: errorPath
             });
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "frame",
-                defaultValue: synchedParticle.idString,
+                defaultValue: syncedParticle.idString,
                 baseErrorPath: errorPath
             });
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "tint",
                 defaultValue: 0xffffff,
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.tint !== undefined) {
-                validators.color(tester.createPath(errorPath, "tint"), synchedParticle.tint);
+            if (syncedParticle.tint !== undefined) {
+                validators.color(tester.createPath(errorPath, "tint"), syncedParticle.tint);
+            }
+
+            if (syncedParticle.hitbox !== undefined) {
+                logger.indent("Validating hitbox", () => {
+                    validators.hitbox(tester.createPath(errorPath, "hitbox"), syncedParticle.hitbox);
+                });
+
+                if (syncedParticle.snapScopeTo !== undefined) {
+                    tester.assertReferenceExists({
+                        obj: syncedParticle,
+                        field: "snapScopeTo",
+                        collection: Scopes,
+                        collectionName: "Scopes",
+                        baseErrorPath: errorPath
+                    });
+                }
             }
 
             tester.assertNoPointlessValue({
-                obj: synchedParticle,
+                obj: syncedParticle,
                 field: "depletePerMs",
                 defaultValue: {},
                 equalityFunction: a => Object.keys(a).length === 0,
                 baseErrorPath: errorPath
             });
 
-            if (synchedParticle.depletePerMs !== undefined) {
-                const depletePerMs = synchedParticle.depletePerMs;
+            if (syncedParticle.depletePerMs !== undefined) {
+                const depletePerMs = syncedParticle.depletePerMs;
 
                 logger.indent("Validating depletion settings", () => {
                     const errorPath2 = tester.createPath(errorPath, "depletion");

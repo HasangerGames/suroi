@@ -40,3 +40,5 @@ export const Scopes = new ObjectDefinitions<ScopeDefinition>([
         zoomLevel: 178
     }
 ]);
+
+export const DEFAULT_SCOPE = Scopes.definitions[0];
