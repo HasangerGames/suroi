@@ -379,8 +379,10 @@ export const tester = (() => {
         runTestOnArray<T>(array: T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
             let i = 0;
             for (const element of array) {
-                cb(element, this.createPath(baseErrorPath, `entry ${i}`));
-                i++;
+                logger.indent(`Validating entry ${i}`, () => {
+                    cb(element, this.createPath(baseErrorPath, `entry ${i}`));
+                    i++;
+                });
             }
         }
     });
@@ -641,19 +643,23 @@ export const validators = Object.freeze({
                 break;
             }
             case HitboxType.Group: {
-                tester.runTestOnArray(
-                    hitbox.hitboxes,
-                    (hitbox, errorPath) => this.hitbox(errorPath, hitbox),
-                    baseErrorPath
-                );
+                logger.indent("Validating hitbox group", () => {
+                    tester.runTestOnArray(
+                        hitbox.hitboxes,
+                        (hitbox, errorPath) => this.hitbox(errorPath, hitbox),
+                        baseErrorPath
+                    );
+                });
                 break;
             }
             case HitboxType.Polygon: {
-                tester.runTestOnArray(
-                    hitbox.points,
-                    (point, errorPath) => this.vector(errorPath, point),
-                    baseErrorPath
-                );
+                logger.indent("Validating polygonal hitbox", () => {
+                    tester.runTestOnArray(
+                        hitbox.points,
+                        (point, errorPath) => this.vector(errorPath, point),
+                        baseErrorPath
+                    );
+                });
                 break;
             }
         }
