@@ -554,7 +554,7 @@ export const validators = Object.freeze({
 
         tester.assertNoPointlessValue({
             obj: ballistics,
-            field: "goToMouse",
+            field: "allowRangeOverride",
             defaultValue: false,
             baseErrorPath
         });
