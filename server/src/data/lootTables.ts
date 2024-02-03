@@ -437,6 +437,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "sr25", weight: 0.01 },
         { item: "mini14", weight: 0.01 },
         { item: "mcx_spear", weight: 0.01 },
+        { item: "cz600", weight: 0.008 },
         { item: "vepr12", weight: 0.008 },
         { item: "stoner_63", weight: 0.005 },
         { item: "radio", weight: 0.005 },
@@ -500,6 +501,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "mini14", weight: 0.05 },
         { item: "mcx_spear", weight: 0.05 },
         { item: "vepr12", weight: 0.04 },
+        { item: "cz600", weight: 0.03 },
         { item: "stoner_63", weight: 0.01 },
         { item: "radio", weight: 0.01 },
         { item: "mosin", weight: 0.01 },
@@ -568,6 +570,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "vss", weight: 1 },
         { item: "vector", weight: 1 },
         { item: "vepr12", weight: 1 },
+        { item: "cz600", weight: 1 },
         { item: "mcx_spear", weight: 0.95 },
         { item: "mosin", weight: 0.95 },
         { item: "tango_51", weight: 0.9 },
@@ -577,7 +580,9 @@ export const LootTiers: Record<string, WeightedItem[]> = {
     gold_airdrop_guns: [
         { item: "m1_garand", weight: 1.1 },
         { item: "acr", weight: 1 },
+        { item: "pp19", weight: 1 },
         { item: "barrett", weight: 0.5 },
+        { item: "model_89", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
     ],
     winter_skins: [
@@ -600,6 +605,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "sr25", weight: 0.75 },
         { item: "vss", weight: 0.75 },
         { item: "mcx_spear", weight: 0.75 },
+        { item: "cz600", weight: 0.7 },
         { item: "vepr12", weight: 0.6 },
         { item: "lewis_gun", weight: 0.6 },
         { item: "mosin", weight: 0.5 },

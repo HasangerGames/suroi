@@ -250,6 +250,11 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         itemType: ItemType.Skin
     },
     {
+        idString: "distant_shores",
+        name: "Distant Shores",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "peppermint",
         name: "Peppermint",
         itemType: ItemType.Skin,
