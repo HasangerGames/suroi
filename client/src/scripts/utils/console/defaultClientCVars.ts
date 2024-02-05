@@ -43,6 +43,7 @@ export interface CVarTypeMapping {
     readonly cv_console_height: ConVar<number>
     readonly cv_console_left: ConVar<number>
     readonly cv_console_top: ConVar<number>
+
     readonly cv_crosshair_color: ConVar<string>
     readonly cv_crosshair_size: ConVar<number>
     readonly cv_crosshair_stroke_color: ConVar<string>
