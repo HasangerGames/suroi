@@ -39,6 +39,8 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
+import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -287,6 +289,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly isDev: boolean;
     readonly hasColor: boolean;
     readonly nameColor: number;
+    badge: BadgeDefinition;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move
@@ -330,6 +333,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.name = GameConstants.player.defaultName;
         this.ip = userData.ip;
         this.role = userData.role;
+        this.badge = userData.badge;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
@@ -345,7 +349,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 Emotes.fromString("happy_face"),
                 Emotes.fromString("thumbs_up"),
                 Emotes.fromString("suroi_logo"),
-                Emotes.fromString("sad_face")
+                Emotes.fromString("sad_face"),
+                Emotes.fromString("chicken"),
+                Emotes.fromString("none")
             ]
         };
 
@@ -983,6 +989,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillFeedMessageType.Kill,
                 playerID: this.id,
+                playerBadge: this.badge,
                 weaponUsed: weaponUsed?.definition
             };
 
@@ -991,6 +998,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     killFeedMessage.killType = KillType.TwoPartyInteraction;
                     killFeedMessage.killerID = source.id;
                     killFeedMessage.kills = source.kills;
+                    if (source.badge) {
+                        killFeedMessage.killerBadge = source.badge;
+                    }
 
                     if (source.activeItem.definition.killstreak) {
                         killFeedMessage.killstreak = source.activeItem.stats.kills;
@@ -1015,6 +1025,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
+        if (this.loadout.emotes[4].idString !== "none") this.emote(4);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);

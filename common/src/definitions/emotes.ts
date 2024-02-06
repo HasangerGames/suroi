@@ -5,6 +5,11 @@ export interface EmoteDefinition extends ObjectDefinition {}
 export const Emotes = new ObjectDefinitions<EmoteDefinition>(
     [
         {
+            // TODO: Find a better for when an emote is set to nothing than to set the emote to a placeholder
+            idString: "none",
+            name: "None"
+        },
+        {
             idString: "happy_face",
             name: "Happy Face"
         },
