@@ -2,6 +2,7 @@ import {
     ObjectDefinitions,
     type ObjectDefinition
 } from "../utils/objectDefinitions";
+
 export interface BadgeDefinition extends ObjectDefinition {
     readonly idString: string
     readonly notInLoadout?: boolean

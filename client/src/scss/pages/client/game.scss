@@ -276,7 +276,8 @@
 
             .kill-icon {
                 position: relative;
-                margin-right: -2px;
+                margin-right: 1px;
+                margin-top: -1px;
 
                 @media screen and (max-width: $screen_large) {
                     height: 12px;
@@ -285,7 +286,6 @@
 
             .badge-icon {
                 width: 18px;
-                margin-right: -5px;
 
                 @media screen and (max-width: $screen_large) {
                     height: 12px;
@@ -936,7 +936,7 @@
             width: 50px;
             height: 50px;
         }
-        
+
         @media screen and (max-width: $screen_medium) {
             width: 35px;
             height: 35px;

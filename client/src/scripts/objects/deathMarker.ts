@@ -67,7 +67,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
                 badgeSprite.width = this.playerNameText.height - 5;
                 badgeSprite.height = this.playerNameText.height - 5;
                 badgeSprite.position = Vec.create(
-                    -(this.playerNameText.width / 2 + 25),
+                    -(this.playerNameText.width / 2 + 30),
                     95
                 );
 

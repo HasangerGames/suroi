@@ -516,8 +516,8 @@ export class UpdatePacket extends Packet {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
-                Badges.writeToStream(stream, player.badge);
                 if (player.hasColor) stream.writeBits(player.nameColor, 24);
+                Badges.writeToStream(stream, player.badge);
             }
         }
 
