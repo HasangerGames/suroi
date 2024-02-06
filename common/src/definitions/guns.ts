@@ -559,6 +559,46 @@ const GunsRaw: RawGunDefinition[] = [
         }
     },
     {
+        idString: "cz600",
+        name: "CZ-600",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 2.2,
+        fireDelay: 600,
+        switchDelay: 600,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.6,
+        recoilDuration: 750,
+        fireMode: FireMode.Single,
+        shotSpread: 0.75,
+        moveSpread: 1.25,
+        length: 8.3,
+        shootOnRelease: true,
+        fists: {
+            left: Vec.create(115, -4),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(95, 3.5) },
+        casingParticles: [{
+            position: Vec.create(4, 0.6),
+            ejectionDelay: 700
+        }],
+        ballistics: {
+            damage: 55,
+            obstacleMultiplier: 1,
+            speed: 0.3,
+            range: 250,
+            tracer: {
+                width: 1.3,
+                length: 2.4
+            }
+        }
+    },
+    {
         idString: "barrett",
         name: "Barrett M95",
         itemType: ItemType.Gun,
@@ -942,6 +982,44 @@ const GunsRaw: RawGunDefinition[] = [
         }
     },
     {
+        idString: "pp19",
+        name: "PP-19",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.3,
+        fireDelay: 50,
+        switchDelay: 300,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 6.75,
+        length: 6.9, // nice
+        noMuzzleFlash: true,
+        fists: {
+            left: Vec.create(88, -5),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        casingParticles: [{
+            position: Vec.create(4.5, 0.5)
+        }],
+        image: { position: Vec.create(80, 0) },
+        ballistics: {
+            damage: 10.5,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 160,
+            tracer: {
+                opacity: 0.5
+            }
+        }
+    },
+    {
         idString: "mp40",
         name: "MP40",
         itemType: ItemType.Gun,
@@ -1288,6 +1366,46 @@ const GunsRaw: RawGunDefinition[] = [
             speed: 0.3,
             range: 230,
             tracer: {
+                length: 1.5
+            }
+        }
+    },
+    {
+        idString: "model_89",
+        name: "Model 89",
+        itemType: ItemType.Gun,
+        ammoType: "127mm",
+        ammoSpawnAmount: 28,
+        capacity: 7,
+        reloadTime: 0.6,
+        singleReload: true,
+        fireDelay: 375,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 300,
+        fireMode: FireMode.Single,
+        shotSpread: 1,
+        moveSpread: 4,
+        length: 7.6,
+        fists: {
+            left: Vec.create(106, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(90, 0) },
+        casingParticles: [{
+            position: Vec.create(5, 0.5),
+            ejectionDelay: 100
+        }],
+        ballistics: {
+            damage: 62.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            range: 250,
+            tracer: {
+                width: 1.8,
                 length: 1.5
             }
         }
