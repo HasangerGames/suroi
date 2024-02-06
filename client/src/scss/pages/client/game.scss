@@ -244,6 +244,7 @@
 
     #kill-feed {
         margin-right: 180px;
+        margin-top: -10px;
         @media screen and (max-width: $screen_large) {
             margin-right: 80px;
         }
@@ -257,6 +258,10 @@
             background: $transparent_bg;
             border-radius: 4px;
             font-weight: 600;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
             @include text-shadow;
 
             @media screen and (max-width: $screen_large) {
@@ -271,8 +276,16 @@
 
             .kill-icon {
                 position: relative;
-                bottom: -2px;
-                margin-right: 2px;
+                margin-right: 1px;
+                margin-top: -1px;
+
+                @media screen and (max-width: $screen_large) {
+                    height: 12px;
+                }
+            }
+
+            .badge-icon {
+                width: 18px;
 
                 @media screen and (max-width: $screen_large) {
                     height: 12px;
@@ -923,7 +936,7 @@
             width: 50px;
             height: 50px;
         }
-        
+
         @media screen and (max-width: $screen_medium) {
             width: 35px;
             height: 35px;
@@ -950,7 +963,7 @@
 
 .items-container#healing {
     flex-direction: row;
-    left: 10px;
+    left: 5px;
 
     .inventory-container {
         justify-content: end;
@@ -958,7 +971,7 @@
         bottom: 50px;
         @media screen and (max-width: $screen_medium) {
             bottom: 125px;
-            left: -7px;
+            left: -2px;
         }
         @media screen and (max-height: 400px) {
             bottom: 10px;
@@ -967,7 +980,7 @@
 }
 .items-container#ammo {
     flex-direction: row-reverse;
-    right: 10px;
+    right: 5px;
 
     .inventory-container {
         justify-content: end;
@@ -979,7 +992,7 @@
 
         @media screen and (max-width: $screen_medium) {
             bottom: 190px;
-            right: -7px;
+            right: -2px;
         }
 
         @media screen and (max-height: 500px) and (max-width: $screen_large) {

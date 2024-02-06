@@ -29,7 +29,7 @@ export interface ServerBulletOptions {
     readonly rotation: number
     readonly reflectionCount?: number
     readonly variance?: number
-    readonly clipDistance?: number
+    readonly rangeOverride?: number
 }
 
 export class Bullet extends BaseBullet {
@@ -61,7 +61,7 @@ export class Bullet extends BaseBullet {
             variance: variance ? randomFloat(0, variance) : undefined
         });
 
-        this.clipDistance = options.clipDistance ?? this.definition.range;
+        this.clipDistance = options.rangeOverride ?? this.definition.range;
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
@@ -150,7 +150,7 @@ export class Bullet extends BaseBullet {
                 rotation,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
-                clipDistance: this.clipDistance
+                rangeOverride: this.clipDistance
             }
         );
     }

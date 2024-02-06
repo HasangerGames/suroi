@@ -64,6 +64,9 @@ export class InputManager {
 
     turning = false;
 
+    // Initialize an array to store focus state for keypresses
+    focusController: string[] = [];
+
     private _lastInputPacket: InputPacket | undefined;
     private _inputPacketTimer = 0;
 
@@ -140,6 +143,13 @@ export class InputManager {
         // Prevents continued firing when RMB is pressed
         gameContainer.addEventListener("pointerup", (event) => {
             this.attacking = false;
+        });
+
+        window.addEventListener("blur", () => {
+            for (const k of this.focusController) {
+                this.handleLostFocus(k);
+            }
+            this.focusController = [];
         });
 
         // different event targets… why?
@@ -251,9 +261,7 @@ export class InputManager {
 
                 const def = activePlayer.activeItem;
 
-                if (def.itemType === ItemType.Gun) {
-                    activePlayer.images.aimTrail.alpha = 1;
-                }
+                activePlayer.images.aimTrail.alpha = 1;
 
                 const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
                 if (def.itemType === ItemType.Gun && def.shootOnRelease) {
@@ -302,6 +310,15 @@ export class InputManager {
         */
 
         if (event instanceof KeyboardEvent) {
+            // This statement cross references and updates focus checks for key presses.
+            if (down) {
+                if (!this.focusController.includes(event.key)) {
+                    this.focusController.push(event.key);
+                }
+            } else {
+                this.focusController = this.focusController.filter(item => item !== event.key);
+            }
+
             let modifierCount = 0;
             (
                 [
@@ -345,6 +362,11 @@ export class InputManager {
         if (actionsFired > 0 && this.game.gameStarted) {
             event.preventDefault();
         }
+    }
+
+    // Update keypresses when the page looses focus
+    private handleLostFocus(key: string): void {
+        this.fireAllEventsAtKey(key.toUpperCase(), false);
     }
 
     private fireAllEventsAtKey(input: string, down: boolean): number {

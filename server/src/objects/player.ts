@@ -5,6 +5,7 @@ import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillTy
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
@@ -13,7 +14,7 @@ import { type Packet } from "../../../common/src/packets/packet";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
@@ -39,6 +40,8 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
+import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -234,17 +237,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     ticksSinceLastUpdate = 0;
 
-    private _zoom!: number;
-    get zoom(): number { return this._zoom; }
-    set zoom(zoom: number) {
-        if (this._zoom === zoom) return;
+    private _scope!: ScopeDefinition;
+    get effectiveScope(): ScopeDefinition { return this._scope; }
+    set effectiveScope(target: ScopeDefinition | ReferenceTo<ScopeDefinition>) {
+        const scope = Scopes.reify(target);
+        if (this._scope === scope) return;
 
-        this._zoom = zoom;
-        this.xCullDist = this._zoom * 1.8;
-        this.yCullDist = this._zoom * 1.35;
+        this._scope = scope;
+        this.xCullDist = this._scope.zoomLevel * 1.8;
+        this.yCullDist = this._scope.zoomLevel * 1.35;
         this.dirty.zoom = true;
         this.updateObjects = true;
     }
+
+    get zoom(): number { return this._scope.zoomLevel; }
 
     xCullDist!: number;
     yCullDist!: number;
@@ -288,6 +294,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly isDev: boolean;
     readonly hasColor: boolean;
     readonly nameColor: number;
+    badge: BadgeDefinition;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move
@@ -321,7 +328,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -331,6 +338,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.name = GameConstants.player.defaultName;
         this.ip = userData.ip;
         this.role = userData.role;
+        this.badge = userData.badge;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
@@ -346,7 +354,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 Emotes.fromString("happy_face"),
                 Emotes.fromString("thumbs_up"),
                 Emotes.fromString("suroi_logo"),
-                Emotes.fromString("sad_face")
+                Emotes.fromString("sad_face"),
+                Emotes.fromString("chicken"),
+                Emotes.fromString("none")
             ]
         };
 
@@ -359,6 +369,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
+        this.effectiveScope = DEFAULT_SCOPE;
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -544,22 +555,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (
                 object instanceof SyncedParticle &&
-                object.definition.depletePerMs &&
                 object.hitbox?.collidesWith(this.hitbox)
             ) {
                 depleters.add(object.definition);
             }
         }
 
-        if (isInsideBuilding && !this.isInsideBuilding) {
-            this.zoom = 48;
-        } else if (!this.isInsideBuilding) {
-            this.zoom = this.inventory.scope.zoomLevel;
+        if (!this.isInsideBuilding) {
+            this.effectiveScope = isInsideBuilding
+                ? DEFAULT_SCOPE
+                : this.inventory.scope;
         }
         this.isInsideBuilding = isInsideBuilding;
 
+        let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
         depleters.forEach(def => {
             const depletion = def.depletePerMs;
+
+            // we arbitrarily take the first scope target we find and stick with it
+            scopeTarget ??= (def as SyncedParticleDefinition & { readonly hitbox: Hitbox }).snapScopeTo;
 
             if (depletion?.health) {
                 this.piercingDamage(depletion.health * dt, KillType.Gas);
@@ -570,6 +584,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.adrenaline = Math.max(0, this.adrenaline - depletion.adrenaline * dt);
             }
         });
+
+        if (scopeTarget !== undefined) {
+            this.effectiveScope = scopeTarget;
+        }
 
         this.turning = false;
     }
@@ -633,7 +651,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxHealth: player.maxHealth,
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,
-            zoom: player.zoom,
+            zoom: player._scope.zoomLevel,
             id: player.id,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
@@ -984,6 +1002,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillFeedMessageType.Kill,
                 playerID: this.id,
+                playerBadge: this.badge,
                 weaponUsed: weaponUsed?.definition
             };
 
@@ -992,6 +1011,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     killFeedMessage.killType = KillType.TwoPartyInteraction;
                     killFeedMessage.killerID = source.id;
                     killFeedMessage.kills = source.kills;
+                    if (source.badge) {
+                        killFeedMessage.killerBadge = source.badge;
+                    }
 
                     if (source.activeItem.definition.killstreak) {
                         killFeedMessage.killstreak = source.activeItem.stats.kills;
@@ -1016,6 +1038,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
+        if (this.loadout.emotes[4].idString !== "none") this.emote(4);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);

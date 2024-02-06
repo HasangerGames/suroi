@@ -1,8 +1,10 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Game } from "../game";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
 export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
@@ -26,6 +28,9 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
         this._lastScaleChange = Date.now();
         this._scale = scale;
     }
+
+    private _definition!: SyncedParticleDefinition;
+    get definition(): SyncedParticleDefinition { return this._definition; }
 
     updateContainerScale(): void {
         if (
@@ -53,6 +58,8 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
         if (full) {
             const { variant, definition } = full;
 
+            this._definition = definition;
+
             this.image.setFrame(`${definition.frame ?? definition.idString}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
             this.container.zIndex = definition.zIndex ?? ZIndexes.ObstaclesLayer1;
@@ -60,13 +67,23 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
 
         this.position = data.position;
         this.rotation = data.rotation;
-        this._scale = data.scale ?? this._scale;
+        this.scale = data.scale ?? this._scale;
         this.container.alpha = this._alpha = data.alpha ?? this._alpha;
 
         if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
             this.container.rotation = this.rotation;
             this.container.scale.set(this._scale);
+        }
+
+        if (HITBOX_DEBUG_MODE && this.definition.hitbox) {
+            this.debugGraphics.clear();
+
+            drawHitbox(
+                this.definition.hitbox.transform(this.position, this._scale),
+                HITBOX_COLORS.obstacleNoCollision,
+                this.debugGraphics
+            );
         }
     }
 

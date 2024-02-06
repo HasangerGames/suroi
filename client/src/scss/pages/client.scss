@@ -10,7 +10,6 @@ body {
   background: $grass_bg;
   & > :not(#loading-logo) { opacity: 1 !important }
   #loading-logo { animation: none; }
-  overflow: scroll;
   display: flex;
   flex-direction: column;
 

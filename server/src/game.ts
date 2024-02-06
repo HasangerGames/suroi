@@ -302,6 +302,7 @@ export class Game {
                     movement.left = false;
                     movement.right = false;
                     lastManStanding.attacking = false;
+                    if (lastManStanding.loadout.emotes[5].idString !== "none") lastManStanding.emote(5);
                     lastManStanding.sendGameOverPacket(true);
                 }
 
@@ -451,6 +452,14 @@ export class Game {
             (skin.roleRequired === undefined || skin.roleRequired === player.role)
         ) {
             player.loadout.skin = skin;
+        }
+        const badge = packet.badge;
+        if (
+            !badge.notInLoadout &&
+            (badge.roleRequired === undefined ||
+                badge.roleRequired === player.role)
+        ) {
+            player.badge = packet.badge;
         }
         player.loadout.emotes = packet.emotes;
 

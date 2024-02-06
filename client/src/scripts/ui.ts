@@ -14,7 +14,8 @@ import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
-import { enableSoloPlayButton, disableSoloPlayButton } from "./main";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { Badges } from "../../../common/src/definitions/badges";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -274,46 +275,63 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
-    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
-    for (const emote of Emotes.definitions) {
-        // noinspection CssUnknownTarget
-        const emoteItem =
-            $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-  <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
-  <span class="emote-name">${emote.name}</span>
-</div>`);
-        emoteItem.on("click", function() {
-            if (selectedEmoteSlot === undefined) return;
-            game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
-            $(this).addClass("selected").siblings().removeClass("selected");
-            $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
-                "background-image",
-                `url("./img/game/emotes/${emote.idString}.svg")`
-            );
-        });
-        $("#emotes-list").append(emoteItem);
+    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
+    function updateEmotesList(): void {
+        $("#emotes-list").empty();
+        for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
+        //for (const emote of Emotes.definitions) {
+            // noinspection CssUnknownTarget
+            const emoteItem =
+                $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    <span class="emote-name">${emote.name}</span>
+    </div>`);
+            emoteItem.on("click", function() {
+                if (selectedEmoteSlot === undefined) return;
+                game.console.setBuiltInCVar(
+                    `cv_loadout_${selectedEmoteSlot}_emote`,
+                    emote.idString
+                );
+
+                $(this).addClass("selected").siblings().removeClass("selected");
+
+                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
+                    "background-image",
+                    emote.idString !== "none" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
+                );
+            });
+            $("#emotes-list").append(emoteItem);
+        }
     }
 
-    for (const slot of ["top", "right", "bottom", "left"] as const) {
+    updateEmotesList();
+    const slots = ["top", "right", "bottom", "left", "win", "death"] as const;
+    for (const slot of slots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
-        $(`#emote-customize-wheel > .emote-${slot}`)
-            .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
+        $(`#emote-wheel-container .emote-${slot}`)
+            .css("background-image", Emotes.fromString(emote).idString !== "none" ? `url("./img/game/emotes/${emote}.svg")` : "none")
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
+                    $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
-                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
-                    $(`#emote-${emote}`).addClass("selected");
-                } else {
-                    selectedEmoteSlot = undefined;
-                    $("#emote-customize-wheel").css(
-                        "background-image",
-                        'url("./img/misc/emote_wheel.svg")'
-                    );
+                    updateEmotesList();
+                    if (slots.slice(0, 4).find((_slot) => _slot === slot)) {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
+                        );
+                    } else {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            "url('/img/misc/emote_wheel.svg')"
+                        );
+                        $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
+                    }
                     $(".emotes-list-item-container")
                         .removeClass("selected")
-                        .css("cursor", "default");
+                        .css("cursor", "pointer");
+                    $(`#emote-${emote}`).addClass("selected");
                 }
             });
     }
@@ -370,6 +388,44 @@ Video evidence is required.`)) {
     });
 
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+
+    // Load badges
+    const allowedBadges = Badges.definitions.filter((badge) => {
+        return badge.roleRequired && badge.roleRequired === game.console.getBuiltInCVar("dv_role");
+    });
+    if (allowedBadges.length > 0) {
+        $("#tab-badges").show();
+        const noBadgeItem =
+                $(`<div id="badge-none" class="badges-list-item-container">
+    <div class="badges-list-item">
+    </div>
+    <span class="badge-name">None</span>
+    </div>`);
+        noBadgeItem.on("click", function() {
+            game.console.setBuiltInCVar("cv_player_badge", "none");
+            $(this).addClass("selected").siblings().removeClass("selected");
+        });
+        $("#badges-list").append(noBadgeItem);
+        for (const badge of allowedBadges) {
+            /* eslint-disable @typescript-eslint/restrict-template-expressions */
+            // noinspection CssUnknownTarget
+            const badgeItem =
+                $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
+    <div class="badges-list-item">
+        <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>
+    </div>
+    <span class="badge-name">${badge.name}</span>
+    </div>`);
+            badgeItem.on("click", function() {
+                game.console.setBuiltInCVar("cv_player_badge", badge.idString);
+                $(this).addClass("selected").siblings().removeClass("selected");
+            });
+            $("#badges-list").append(badgeItem);
+        }
+        $(`#badge-${game.console.getBuiltInCVar("cv_player_badge")}`).addClass(
+            "selected"
+        );
+    }
 
     addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
         game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
@@ -608,6 +664,10 @@ Video evidence is required.`)) {
             (e: PointerEvent): void => {
                 if (slotElement.hasClass("has-item")) {
                     e.stopImmediatePropagation();
+                    if (slot === 3) { // Check if the slot is 4 (0-indexed)
+                        const step = 1; // Define the step for cycling
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
+                    }
                     game.inputManager.addAction({
                         type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
                         slot
