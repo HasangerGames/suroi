@@ -10,7 +10,7 @@ export class JoinedPacket extends Packet {
     protocolVersion!: number;
 
     emotes: EmoteDefinition[] = [];
-    tid: number = 0;
+    tid!: number;
 
     override serialize(): void {
         super.serialize();
@@ -45,5 +45,7 @@ export class JoinedPacket extends Packet {
                 break;
             }
         }
+
+        this.tid = stream.readUint16();
     }
 }

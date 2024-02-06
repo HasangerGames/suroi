@@ -43,8 +43,8 @@ import { Logger, removeFrom } from "./utils/misc";
 
 interface Team {
     playerIDS: number[],
-    teamID: number
-    kills: number,
+    teamID: number,
+    t_kills: number,
 }
 
 export class Game {
@@ -64,6 +64,7 @@ export class Game {
     readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
     readonly teams: Team[] = [];
+    newTeam: number[] = [];
     /**
      * New players created this tick
      */
@@ -475,30 +476,20 @@ export class Game {
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
-        joinedPacket.emotes = player.loadout.emotes;
+        joinedPacket.emotes = player.loadout.emotes
 
-       // Notes:
-       // When a new player joins the game, check the teams of the game.
-       // Check the most recent team in the teams array, if that team has a playerIDS length less than maxTeamSize set in config,
-       // Add the player that just joined the game to that team
-       // If the most recent team has the amount of playerIDS the same as the maxTeamSize, create a new team object in the array where the player will be added
-       // as a bonus, if you can make it so that disconnects open up a slot on a team, that'd be cool
+        if(this.newTeam.length < Config.maxTeamSize) {
+            this.newTeam.push(player.id);
+            player.tid = this.teams.length;
 
-       if(this.teams.length == 0 || this.teams[this.teams.length - 1].playerIDS.length < Config.maxTeamSize) {
-        this.teams.push({
-            kills: 0,
-            playerIDS: [ player.id ],
-            teamID: this.teams.length
-        })
+            Logger.log(`${player.tid}`);
+        } 
+        if(this.newTeam.length >= Config.maxTeamSize) {
+            this.teams.push({ playerIDS: this.newTeam, teamID: this.teams.length, t_kills: 0,})
+            this.newTeam = [];
 
-        Logger.log(`${this.teams[this.teams.length - 1].playerIDS.length} && ${this.teams[this.teams.length - 1].playerIDS[0]}`)
-
-        Logger.log(`New team created | Team ID: ${this.teams[this.teams.length - 1].teamID}`)
-       } else if(this.teams[this.teams.length - 1].playerIDS.length < this.maxTeamSize) {
-            this.teams[this.teams.length - 1].playerIDS.push(player.id);
-
-            Logger.log(`Added ${player.name} to Team ID: ${this.teams[this.teams.length - 1].teamID}`)
-       }
+            Logger.log(`New Team Created with ID number: ${this.teams[this.teams.length - 1].teamID}`)
+        }
 
         joinedPacket.tid = player.tid;
 

@@ -22,7 +22,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: 3,
+    maxTeamSize: 2,
 
     maxPlayersPerGame: 80,
     maxGames: 3,
