@@ -21,7 +21,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
 
     readonly decal?: ReferenceTo<DecalDefinition>
     readonly shrapnelCount: number
-    readonly ballistics: BaseBulletDefinition
+    readonly ballistics: Omit<BaseBulletDefinition, "goToMouse" | "lastShotFX">
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(

@@ -1455,7 +1455,7 @@ const GunsRaw: RawGunDefinition[] = [
             speed: 0.16,
             range: 55,
             onHitExplosion: "usas_explosion",
-            goToMouse: true,
+            allowRangeOverride: true,
             tracer: {
                 length: 0.5,
                 color: 0xff0000
