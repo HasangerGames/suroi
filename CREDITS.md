@@ -10,7 +10,7 @@
 ## Artists
 - Asultra
 - Henry Sanger \(https://github.com/hsanger)
-- Leo \(https://github.com/leia-uwu)
+- Leia \(https://github.com/leia-uwu)
 - SquareCube
 - DogEnjoyer
 - Dachselt
