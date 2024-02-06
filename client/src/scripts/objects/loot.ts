@@ -104,7 +104,7 @@ export class Loot extends GameObject {
 
             /*
                 Infinity is serialized as 0 in the bit stream
-                0 is a valid count value on the server
+                0 isn't a valid count value on the server
                 thus
                 If we receive 0 here, it must mean the count on
                 the server is Infinity (or NaN lol)
