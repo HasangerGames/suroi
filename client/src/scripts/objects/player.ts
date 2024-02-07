@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, TilingSprite } from "pixi.js";
+import { Container, TilingSprite, Text } from "pixi.js";
 import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
@@ -32,6 +32,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
 
     name!: string;
+    tid!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
@@ -78,6 +79,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hideEquipment? = false;
 
     readonly emoteContainer: Container;
+    readonly nameContainer: Container;
     healingParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
@@ -150,6 +152,30 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
 
+        this.nameContainer = new Container();
+        this.game.camera.addObject(this.nameContainer);
+        this.nameContainer.zIndex = ZIndexes.DeathMarkers;
+
+        const username = new Text(
+            "",
+            {
+                fontSize: 36,
+                fontFamily: "Inter",
+                dropShadow: true,
+                dropShadowBlur: 2,
+                dropShadowDistance: 2,
+                dropShadowColor: 0
+            }
+        );
+
+        if(this.game) {
+            if(!this.isActivePlayer) {
+                username.text = this.game.uiManager.getRawPlayerName(this.id);
+            }
+        }
+
+        this.nameContainer.addChild(username);
+
         this.updateFistsPosition(false);
         this.updateWeapon();
 
@@ -193,6 +219,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
+        this.nameContainer.position = Vec.addComponent(this.container.position, -75, 75)
         if (!this.destroyed) this.emoteContainer.position = Vec.addComponent(this.container.position, 0, -175);
     }
 

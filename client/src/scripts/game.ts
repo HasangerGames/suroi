@@ -221,6 +221,10 @@ export class Game {
                 case PacketType.Joined: {
                     const packet = new JoinedPacket();
                     packet.deserialize(stream);
+                    if(this.activePlayer) {
+                        this.activePlayer.tid = packet.tid;
+                    }
+                    console.log(`${this.activePlayer?.tid}`)
                     this.startGame(packet);
                     break;
                 }
@@ -334,8 +338,6 @@ export class Game {
                     `url("./img/game/emotes/${packet.emotes[i].idString}.svg")`
                 );
         }
-
-        console.log(packet.tid);
 
         $("canvas").addClass("active");
         $("#splash-ui").fadeOut(enableSoloPlayButton);
