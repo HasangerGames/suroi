@@ -667,7 +667,7 @@ export class GameConsole {
                 ev.stopPropagation();
                 ev.stopImmediatePropagation();
 
-                this.dispatchEvent(new MouseEvent("click", { button: 0 }));
+                this.dispatchEvent(new MouseEvent("mousedown", { button: 0 }));
             });
 
             return node;
@@ -788,7 +788,7 @@ export class GameConsole {
                         case ";":
                         case "&":
                         case "|": {
-                            commands.next = {
+                            current.next = {
                                 cmd: current = {
                                     name: "",
                                     args: []
@@ -818,10 +818,10 @@ export class GameConsole {
                             if (inString) {
                                 current.args[current.args.length - 1] += char;
                             } else {
-                                commands.next = {
+                                current.next = {
                                     cmd: current = {
                                         name: "",
-                                        args: [""]
+                                        args: []
                                     },
                                     chaining: chainingChars[char]
                                 };
