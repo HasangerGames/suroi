@@ -5,8 +5,10 @@ import { GameConstants, InputActions, SpectateActions } from "../../../../../com
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
+import { Throwables } from "../../../../../common/src/definitions/throwables";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { Numeric } from "../../../../../common/src/utils/math";
+import { handleResult, type Result } from "../../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
@@ -14,8 +16,6 @@ import { COLORS } from "../constants";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
-import { handleResult, type Result } from "../../../../../common/src/utils/misc";
-import { Throwables } from "../../../../../common/src/definitions/throwables";
 
 type CommandExecutor<ErrorType = never> = (
     this: Game,
@@ -239,14 +239,14 @@ export function setUpCommands(game: Game): void {
     Command.createCommand<string>(
         "slot",
         function(slot) {
-            const slotNumber = +(slot ?? "");
-            if (Number.isNaN(slotNumber)) {
+            const slotNumber = Casters.toInt(slot ?? "NaN");
+            if ("err" in slotNumber) {
                 return { err: `Attempted to swap to invalid slot '${slot}'` };
             }
 
             this.inputManager.addAction({
                 type: InputActions.EquipItem,
-                slot: slotNumber
+                slot: slotNumber.res
             });
         },
         game,
@@ -326,23 +326,22 @@ export function setUpCommands(game: Game): void {
     Command.createCommand<string>(
         "cycle_items",
         function(offset) {
-            const step = +(offset ?? NaN);
+            const step = Casters.toInt(offset ?? "NaN");
 
-            //                         ______________|> decimal check
-            if (Number.isNaN(step) || step % 1 !== 0) {
+            if ("err" in step) {
                 return {
                     err: `Attempted to cycle items by an invalid offset of '${offset}' slots`
                 };
             }
 
             let index = Numeric.absMod(
-                this.uiManager.inventory.activeWeaponIndex + step,
+                this.uiManager.inventory.activeWeaponIndex + step.res,
                 GameConstants.player.maxWeapons
             );
 
             let iterationCount = 0;
             while (!this.uiManager.inventory.weapons[index]) {
-                index = Numeric.absMod(index + step, GameConstants.player.maxWeapons);
+                index = Numeric.absMod(index + step.res, GameConstants.player.maxWeapons);
 
                 /*
                     If, through some weirdness/oversight, the while loop were
@@ -437,15 +436,14 @@ export function setUpCommands(game: Game): void {
     Command.createCommand<string>(
         "cycle_scopes",
         function(offset) {
-            const step = +(offset ?? NaN);
+            const step = Casters.toInt(offset ?? "NaN");
 
-            //                        _______________|> decimal check
-            if (Number.isNaN(step) || step % 1 !== 0) {
+            if ("err" in step) {
                 return {
                     err: `Attempted to cycle scopes by an invalid offset of '${offset}'`
                 };
             }
-            game.inputManager.cycleScope(step);
+            game.inputManager.cycleScope(step.res);
         },
         game,
         {
@@ -473,16 +471,16 @@ export function setUpCommands(game: Game): void {
         function(offset) {
             // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
             if (this.activePlayer?.activeItem.itemType === ItemType.Throwable) {
-                const step = +(offset ?? NaN);
+                const step = Casters.toInt(offset ?? "NaN");
 
                 //                        _______________|> decimal check
-                if (Number.isNaN(step) || step % 1 !== 0) {
+                if ("err" in step) {
                     return {
                         err: `Attempted to cycle throwables by an invalid offset of '${offset}'`
                     };
                 }
 
-                game.inputManager.cycleThrowable(step);
+                game.inputManager.cycleThrowable(step.res);
             } else {
                 const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === ItemType.Throwable);
 
@@ -526,9 +524,7 @@ export function setUpCommands(game: Game): void {
             }
 
             if (
-                ![...HealingItems, ...Scopes, ...Throwables].some(
-                    (h) => h.idString === idString
-                )
+                ![...HealingItems, ...Scopes, ...Throwables].some(h => h.idString === idString)
             ) {
                 return {
                     err: `There is no scope, consumable nor throwable whose idString is '${idString}'`
@@ -1184,6 +1180,7 @@ export function setUpCommands(game: Game): void {
                     err: `Expected 2 arguments, received ${arguments.length}`
                 };
             }
+
             if (!gameConsole.variables.has(name)) {
                 return {
                     err: `CVar '${name}' doesn't exist`

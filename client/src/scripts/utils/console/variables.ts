@@ -62,12 +62,11 @@ export const Casters = Object.freeze({
         return num;
     },
     toBoolean(val: string): Result<boolean, string> {
-        const truthy = ["1", "t", "true", "y", "yes"];
-        const falsy = ["0", "f", "false", "n", "no"];
+        val = val.toLowerCase();
 
         switch (true) {
-            case truthy.some(t => t.toLowerCase() === val.toLowerCase()): return { res: true };
-            case falsy.some(t => t.toLowerCase() === val.toLowerCase()): return { res: false };
+            case ["1", "t", "true", "y", "yes"].includes(val): return { res: true };
+            case ["0", "f", "false", "n", "no"].includes(val): return { res: false };
             default: {
                 return { err: `'${val}' is not a valid boolean value` };
             }
