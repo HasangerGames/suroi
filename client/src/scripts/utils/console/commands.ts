@@ -1310,7 +1310,7 @@ export function setUpCommands(game: Game): void {
                 detail: [
                     info.long,
                     ...info.signatures.map((signature) => {
-                        const noexcept = signature.noexcept
+                        const noexcept = "noexcept" in signature && signature.noexcept
                             ? '<span class="command-desc-noexcept">noexcept</span> '
                             : "";
                         const commandName = `<span class="command-desc-cmd-name">${command.name}</span>`;
@@ -1366,6 +1366,33 @@ export function setUpCommands(game: Game): void {
                             type: ["string"]
                         }
                     ],
+                    noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<string>(
+        "throw",
+        function(doThrow) {
+            if (handleResult(Casters.toBoolean(doThrow ?? "false"), () => false)) {
+                return { err: "Thrown error" };
+            }
+        },
+        game,
+        {
+            short: "Optionally throws a value. For debugging purposes",
+            long: "If supplied with a truthy argument, this command raises an exception; otherwise, it does nothing.",
+            signatures: [
+                {
+                    args: [],
+                    noexcept: true
+                },
+                {
+                    args: [{
+                        name: "doThrow",
+                        type: ["boolean"]
+                    }],
                     noexcept: false
                 }
             ]

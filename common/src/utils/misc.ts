@@ -102,3 +102,121 @@ export class Timeout {
         this.killed = true;
     }
 }
+
+/**
+ * A double-ended queue
+ * @template T The type of the values stored in this collection
+ */
+export interface Deque<T> {
+    prev?: Deque<T>
+    readonly value: T
+    next?: Deque<T>
+}
+
+/**
+ * Implementation of a [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type))
+ * @template T The type of the values stored in this collection
+ */
+export class Stack<T> {
+    /**
+     * Internal backing deque
+     */
+    private _internal?: Deque<T>;
+
+    /**
+     * Internal tracker for the stack's size
+     */
+    private _size = 0;
+    /**
+     * The amount of elements contained in this collection
+     */
+    get size(): number { return this._size; }
+
+    /**
+     * Internal helper storing the versions of operations used for empty stacks
+     */
+    private readonly _empty = {
+        push: (value: T) => {
+            this._internal = { value };
+            ++this._size;
+
+            ({ push: this._push, pop: this._pop, peek: this._peek, has: this._has } = this._notEmpty);
+        },
+        pop: (): T => {
+            throw new Error("Empty stack");
+        },
+        peek: (): T => {
+            throw new Error("Empty stack");
+        },
+        has: () => false
+    };
+
+    /**
+     * Internal helper storing the versions of operations used for non-empty stacks
+     */
+    private readonly _notEmpty = {
+        push: (value: T) => {
+            ++this._size;
+            this._internal = this._internal!.next = { prev: this._internal, value };
+        },
+        pop: () => {
+            --this._size;
+            const value = this._internal!.value;
+
+            if (!(this._internal = this._internal!.prev)) {
+                ({ push: this._push, pop: this._pop, peek: this._peek, has: this._has } = this._empty);
+            } else {
+                delete this._internal.next;
+            }
+
+            return value;
+        },
+        peek: () => {
+            return this._internal!.value;
+        },
+        has: () => true
+    };
+
+    /**
+    * Internal reference to the current `push` operation
+    */
+    private _push = this._empty.push;
+    /**
+     * Pushes an element onto the stack
+     * @param {T} value The value to add to the stack
+     */
+    get push(): (value: T) => void { return this._push; }
+
+    /**
+    * Internal reference to the current `pop` operation
+    */
+    private _pop = this._empty.pop;
+    /**
+     * Takes the top element of the stack, removes it and returns it
+     *
+     * @throws {Error} If the stack is empty
+     */
+    get pop(): () => T { return this._pop; }
+
+    /**
+    * Internal reference to the current `peek` operation
+    */
+    private _peek = this._empty.peek;
+    /**
+     * Returns the top element of the stack without removing it
+     *
+     * @throws {Error} If the stack is empty
+     */
+    get peek(): () => T { return this._peek; }
+
+    /**
+    * Internal reference to the current `has` operation
+    */
+    private _has = this._empty.has;
+    /**
+     * Returns whether or not the stack currently has elements. If this method return `true`,
+     * `pop` and `peek` are guaranteed not to throw; inversely, if it returns `false`, then
+     * `pop` and `peek` are guaranteed to throw an error;
+     */
+    get has(): () => boolean { return this._has; }
+}
