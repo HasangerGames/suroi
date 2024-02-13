@@ -1,5 +1,6 @@
 import { PacketType } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { type BadgeDefinition, Badges } from "../definitions/badges";
 import { Loots } from "../definitions/loots";
 import { type SkinDefinition } from "../definitions/skins";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
@@ -13,6 +14,7 @@ export class JoinPacket extends Packet {
     isMobile!: boolean;
 
     skin!: SkinDefinition;
+    badge!: BadgeDefinition;
 
     emotes: EmoteDefinition[] = [];
 
@@ -24,6 +26,7 @@ export class JoinPacket extends Packet {
         stream.writeBoolean(this.isMobile);
 
         Loots.writeToStream(stream, this.skin);
+        Badges.writeToStream(stream, this.badge);
 
         for (const emote of this.emotes) {
             Emotes.writeToStream(stream, emote);
@@ -35,8 +38,9 @@ export class JoinPacket extends Packet {
 
         this.isMobile = stream.readBoolean();
         this.skin = Loots.readFromStream(stream);
+        this.badge = Badges.readFromStream(stream);
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) {
             this.emotes.push(Emotes.readFromStream(stream));
         }
     }

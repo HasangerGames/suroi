@@ -9,6 +9,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
+import { Badges, type BadgeDefinition } from "../../common/src/definitions/badges";
 
 /**
  * Apply CORS headers to a response.
@@ -195,6 +196,7 @@ export interface PlayerContainer {
     player?: Player
     readonly ip: string | undefined
     readonly role?: string
+    readonly badge: BadgeDefinition
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean
@@ -289,6 +291,7 @@ app.ws("/play", {
             role,
             isDev,
             nameColor,
+            badge: Badges.fromString("none"),
             lobbyClearing: searchParams.get("lobbyClearing") === "true"
         };
         res.upgrade(

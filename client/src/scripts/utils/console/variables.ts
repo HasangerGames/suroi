@@ -51,7 +51,7 @@ export const Casters = Object.freeze({
         return { res: num };
     },
     toInt(val: string): Result<number, string> {
-        const num = Casters.toInt(val);
+        const num = Casters.toNumber(val);
 
         if ("err" in num) return num;
 
