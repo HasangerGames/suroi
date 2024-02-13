@@ -326,6 +326,6 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     {
         idString: "lemmon",
         name: "Lemmon",
-        itemType: ItemType.skin,
+        itemType: ItemType.Skin,
     }
 ]);
