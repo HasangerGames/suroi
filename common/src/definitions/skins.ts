@@ -322,5 +322,10 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         grassTint: true,
         hideEquipment: true,
         notInLoadout: true
+    },
+    {
+        idString: "lemmon",
+        name: "Lemmon",
+        itemType: ItemType.skin,
     }
 ]);
