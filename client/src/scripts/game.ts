@@ -89,6 +89,7 @@ export class Game {
     readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color, badge: BadgeDefinition }>();
 
     activePlayerID = -1;
+    activePlayerTID = -1;
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
@@ -221,10 +222,6 @@ export class Game {
                 case PacketType.Joined: {
                     const packet = new JoinedPacket();
                     packet.deserialize(stream);
-                    if(this.activePlayer) {
-                        this.activePlayer.tid = packet.tid;
-                    }
-                    console.log(`${this.activePlayer?.tid}`)
                     this.startGame(packet);
                     break;
                 }

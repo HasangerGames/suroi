@@ -168,8 +168,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         );
 
-        if(this.game) {
-            if(!this.isActivePlayer) {
+        console.log(`${this.tid} <-- Player TID`)
+        console.log(`${this.id} <-- Player ID`)
+
+        if(this.game && this.game.activePlayer) {
+            if(!this.isActivePlayer && this.game.activePlayer.tid === this.tid) {
                 username.text = this.game.uiManager.getRawPlayerName(this.id);
             }
         }

@@ -31,11 +31,13 @@ export interface PlayerData {
         weapons: boolean
         items: boolean
         id: boolean
+        tid: boolean
         zoom: boolean
         throwable: boolean
     }
 
     id: number
+    tid: number
     spectating: boolean
 
     health: number
@@ -90,6 +92,11 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
     if (dirty.id) {
         stream.writeObjectID(data.id);
         stream.writeBoolean(data.spectating);
+    }
+    
+    stream.writeBoolean(dirty.tid);
+    if (dirty.tid) {
+        stream.writeObjectID(data.tid);
     }
 
     const inventory = data.inventory;
@@ -169,6 +176,10 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     if (dirty.id = stream.readBoolean()) {
         data.id = stream.readObjectID();
         data.spectating = stream.readBoolean();
+    }
+
+    if (dirty.tid = stream.readBoolean()) {
+        data.tid = stream.readObjectID();
     }
 
     if (dirty.weapons = stream.readBoolean()) {

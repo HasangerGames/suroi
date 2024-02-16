@@ -180,6 +180,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     readonly dirty: PlayerData["dirty"] = {
         id: true,
+        tid: true,
         health: true,
         maxMinStats: true,
         adrenaline: true,
@@ -653,6 +654,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
+            tid: player.tid,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
             inventory: {
@@ -886,6 +888,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (this.invulnerable) return;
+        if (source instanceof Player && source.tid === this.tid) return;
 
         amount = this._clampDamageAmount(amount);
 
