@@ -13,7 +13,7 @@ import { body, createDropdown } from "./uiHelpers";
 import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { requestFullscreen } from "./utils/misc";
+import { dropItemListener, requestFullscreen } from "./utils/misc";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { Badges } from "../../../common/src/definitions/badges";
 
@@ -685,6 +685,8 @@ Video evidence is required.`)) {
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
+        dropItemListener(game, $(`#${scope.idString}-slot`), scope)
+        
         $(`#${scope.idString}-slot`)[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {
@@ -720,23 +722,7 @@ Video evidence is required.`)) {
             </div>
         </div>`);
 
-        $(`#${item.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    if(e.button === 2) {
-                        game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item
-                        });
-                    } else {
-                        game.inputManager.addAction({
-                            type: InputActions.UseItem,
-                            item
-                        });
-                    }
-            }
-        );
+        dropItemListener(game, $(`#${item.idString}-slot`), item)
     }
 
     for (const ammo of Ammos) {
@@ -748,23 +734,12 @@ Video evidence is required.`)) {
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);
 
-        $(`#${ammo.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    if(e.button === 2) {
-                        game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: ammo
-                        });
-                    }
-            }
-        );
+        dropItemListener(game, $(`#${ammo.idString}-slot`), ammo)
     }
 
     for (const armor of ["helmet", "vest"]) {
         const armorContainer =  $(`#${armor}-slot`);
-
+        
         armorContainer[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {

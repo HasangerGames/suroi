@@ -44,6 +44,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         })
         full?: {
             dead: boolean
+            tid: number
             invulnerable: boolean
             activeItem: WeaponDefinition
             skin: SkinDefinition
@@ -186,6 +187,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             const full = data.full;
             stream.writeBoolean(full.dead);
+            stream.writeObjectID(full.tid);
             stream.writeBoolean(full.invulnerable);
             Loots.writeToStream(stream, full.activeItem);
             Skins.writeToStream(stream, full.skin);
@@ -227,6 +229,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             const full: ObjectsNetData[ObjectCategory.Player]["full"] = {
                 dead: stream.readBoolean(),
+                tid: stream.readObjectID(),
                 invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 skin: Skins.readFromStream(stream),

@@ -74,6 +74,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly emoteBackground: SuroiSprite
         readonly emote: SuroiSprite
         readonly waterOverlay: SuroiSprite
+        readonly nameText: Text
     };
 
     hideEquipment? = false;
@@ -123,7 +124,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emote: new SuroiSprite().setPos(0, 0),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
+            nameText: new Text(
+                "",
+                {
+                    fontSize: 36,
+                    fontFamily: "Inter",
+                    dropShadow: true,
+                    dropShadowBlur: 2,
+                    dropShadowDistance: 2,
+                    dropShadowColor: 0
+                }
+            ),
         };
 
         this.container.addChild(
@@ -137,7 +149,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.altWeapon,
             this.images.muzzleFlash,
             this.images.backpack,
-            this.images.helmet
+            this.images.helmet,
         );
         this.container.eventMode = "static";
 
@@ -156,28 +168,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.camera.addObject(this.nameContainer);
         this.nameContainer.zIndex = ZIndexes.DeathMarkers;
 
-        const username = new Text(
-            "",
-            {
-                fontSize: 36,
-                fontFamily: "Inter",
-                dropShadow: true,
-                dropShadowBlur: 2,
-                dropShadowDistance: 2,
-                dropShadowColor: 0
-            }
-        );
-
-        console.log(`${this.tid} <-- Player TID`)
-        console.log(`${this.id} <-- Player ID`)
-
-        if(this.game && this.game.activePlayer) {
-            if(!this.isActivePlayer && this.game.activePlayer.tid === this.tid) {
-                username.text = this.game.uiManager.getRawPlayerName(this.id);
-            }
-        }
-
-        this.nameContainer.addChild(username);
+        this.nameContainer.addChild(this.images.nameText)
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -316,6 +307,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
         this.hitbox.position = this.position;
+
+        if(data.full) {
+            this.tid = data.full.tid;
+        }
+
+        console.log(`${this.game.activePlayerTID} <-- Active Player TID`)
+        console.log(`${this.tid} <-- Player TID`)
+
+        if(this.game) {
+            if(this.game.activePlayerTID === this.tid) {
+                this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);  
+            }
+        }
 
         this.rotation = data.rotation;
 

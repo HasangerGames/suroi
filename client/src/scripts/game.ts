@@ -88,8 +88,19 @@ export class Game {
 
     readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color, badge: BadgeDefinition }>();
 
-    activePlayerID = -1;
+    private _activePlayerID = -1;
+
+    public get activePlayerID() {
+        return this._activePlayerID;
+    }
+    
+    public set activePlayerID(value) {
+        console.trace(value)
+        this._activePlayerID = value;
+    }
+
     activePlayerTID = -1;
+    
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
@@ -463,6 +474,12 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
+
+        if(playerData && playerData.tid) {
+            this.activePlayerTID = playerData.tid;
+            console.log(this.activePlayerTID)
+        }
+
         if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
