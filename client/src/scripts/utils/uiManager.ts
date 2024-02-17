@@ -74,22 +74,23 @@ export class UIManager {
     }
 
     getPlayerBadge(id: number): BadgeDefinition | undefined {
-        const player = this.game.playerNames.get(id);
-
-        let badge: BadgeDefinition | undefined;
-
-        if (!player) {
-            console.warn(`Unknown player name with id ${id}`);
-            badge = undefined;
-        } else if (
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names") || player.badge.idString === "none"
-        ) {
-            badge = undefined;
-        } else {
-            badge = player.badge;
+        if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            return;
         }
 
-        return badge;
+        const player = this.game.playerNames.get(id);
+
+        switch (true) {
+            case this.game.console.getBuiltInCVar("cv_anonymize_player_names"): {
+                return;
+            }
+            case player === undefined: {
+                console.warn(`Unknown player name with id ${id}`); return;
+            }
+            default: {
+                return player.badge;
+            }
+        }
     }
 
     readonly ui = {
@@ -468,17 +469,15 @@ export class UIManager {
         const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
 
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
-        const playerBadge =
-            playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
+
+        const playerBadge = playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
         const playerBadgeText = playerBadge
-            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="Badge">`
+            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
-        const killerBadge =
-            killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
-
+        const killerBadge = killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
         const killerBadgeText = killerBadge
-            ? `<img class="badge-icon" src="./img/game/badges/${killerBadge.idString}.svg" alt="Badge">`
+            ? `<img class="badge-icon" src="./img/game/badges/${killerBadge.idString}.svg" alt="${killerBadge.name} badge">`
             : "";
 
         let messageText: string | undefined;

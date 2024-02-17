@@ -275,6 +275,7 @@
     div#console-autocmp {
         position: absolute;
         background-color: #666;
+        overflow: auto;
         font-family: menlo, monospace;
         padding: 1px;
         color: white;
