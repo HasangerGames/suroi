@@ -168,7 +168,7 @@ export class Stack<T> {
     /**
      * Returns whether or not the stack currently has elements. If this method return `true`,
      * `pop` and `peek` are guaranteed not to throw; inversely, if it returns `false`, then
-     * `pop` and `peek` are guaranteed to throw an error;
+     * `pop` and `peek` are guaranteed to throw an error
      */
     has(): boolean {
         return !!this._head;
@@ -209,7 +209,7 @@ export class Queue<T> {
     /**
      * Returns the first value in the queue, if it exists
      * @returns The value at the front of the queue
-     * @throws {Error} If there are no ID's left
+     * @throws {Error} If the queue is empty
      */
     dequeue(): T {
         if (!this._head) throw new Error("Empty queue");
@@ -223,10 +223,22 @@ export class Queue<T> {
     }
 
     /**
-     * Whether or not this allocator has an id available for use
-     * @returns Whether or not this allocator has an id available for use
+     * Returns the first element of the queue without removing it
+     *
+     * @throws {Error} If the queue is empty
+     */
+    peek(): T {
+        if (!this._head) throw new Error("Empty queue");
+
+        return this._head.value;
+    }
+
+    /**
+     * Returns whether or not the queue currently has elements. If this method return `true`,
+     * `dequeue` and `peek` are guaranteed not to throw; inversely, if it returns `false`, then
+     * `dequeue` and `peek` are guaranteed to throw an error
      */
     has(): boolean {
-        return this._head !== undefined;
+        return !!this._head;
     }
 }
