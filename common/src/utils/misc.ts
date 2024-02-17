@@ -104,13 +104,22 @@ export class Timeout {
 }
 
 /**
- * A double-ended queue
+ * A [singly-linked list](https://en.wikipedia.org/wiki/Linked_list)
  * @template T The type of the values stored in this collection
  */
-export interface Deque<T> {
-    prev?: Deque<T>
+export interface LinkedList<T> {
     readonly value: T
-    next?: Deque<T>
+    next?: LinkedList<T>
+}
+
+/**
+ * A [doubly-linked list](https://en.wikipedia.org/wiki/Doubly_linked_list)
+ * @template T The type of the values stored in this collection
+ */
+export interface DoublyLinkedList<T> {
+    prev?: DoublyLinkedList<T>
+    readonly value: T
+    next?: DoublyLinkedList<T>
 }
 
 /**
@@ -119,104 +128,105 @@ export interface Deque<T> {
  */
 export class Stack<T> {
     /**
-     * Internal backing deque
+     * Internal backing linked list
      */
-    private _internal?: Deque<T>;
+    private _head?: LinkedList<T>;
 
-    /**
-     * Internal tracker for the stack's size
-     */
-    private _size = 0;
-    /**
-     * The amount of elements contained in this collection
-     */
-    get size(): number { return this._size; }
-
-    /**
-     * Internal helper storing the versions of operations used for empty stacks
-     */
-    private readonly _empty = {
-        push: (value: T) => {
-            this._internal = { value };
-            ++this._size;
-
-            ({ push: this._push, pop: this._pop, peek: this._peek, has: this._has } = this._notEmpty);
-        },
-        pop: (): T => {
-            throw new Error("Empty stack");
-        },
-        peek: (): T => {
-            throw new Error("Empty stack");
-        },
-        has: () => false
-    };
-
-    /**
-     * Internal helper storing the versions of operations used for non-empty stacks
-     */
-    private readonly _notEmpty = {
-        push: (value: T) => {
-            ++this._size;
-            this._internal = this._internal!.next = { prev: this._internal, value };
-        },
-        pop: () => {
-            --this._size;
-            const value = this._internal!.value;
-
-            if (!(this._internal = this._internal!.prev)) {
-                ({ push: this._push, pop: this._pop, peek: this._peek, has: this._has } = this._empty);
-            } else {
-                delete this._internal.next;
-            }
-
-            return value;
-        },
-        peek: () => {
-            return this._internal!.value;
-        },
-        has: () => true
-    };
-
-    /**
-    * Internal reference to the current `push` operation
-    */
-    private _push = this._empty.push;
     /**
      * Pushes an element onto the stack
      * @param {T} value The value to add to the stack
      */
-    get push(): (value: T) => void { return this._push; }
+    push(value: T): void {
+        this._head = { value, next: this._head };
+    }
 
     /**
-    * Internal reference to the current `pop` operation
-    */
-    private _pop = this._empty.pop;
-    /**
-     * Takes the top element of the stack, removes it and returns it
+     * Takes the top element of the stack, removes it, and returns it
      *
      * @throws {Error} If the stack is empty
      */
-    get pop(): () => T { return this._pop; }
+    pop(): T {
+        const head = this._head;
+        if (!head) throw new Error("Empty stack");
 
-    /**
-    * Internal reference to the current `peek` operation
-    */
-    private _peek = this._empty.peek;
+        const value = head.value;
+        this._head = head.next;
+        return value;
+    }
+
     /**
      * Returns the top element of the stack without removing it
      *
      * @throws {Error} If the stack is empty
      */
-    get peek(): () => T { return this._peek; }
+    peek(): T {
+        if (!this._head) throw new Error("Empty stack");
 
-    /**
-    * Internal reference to the current `has` operation
-    */
-    private _has = this._empty.has;
+        return this._head.value;
+    }
+
     /**
      * Returns whether or not the stack currently has elements. If this method return `true`,
      * `pop` and `peek` are guaranteed not to throw; inversely, if it returns `false`, then
      * `pop` and `peek` are guaranteed to throw an error;
      */
-    get has(): () => boolean { return this._has; }
+    has(): boolean {
+        return !!this._head;
+    }
+}
+
+/**
+ * Implementation of a [queue](https://en.wikipedia.org/wiki/Queue_(abstract_data_type))
+ * @template T The type of the elements stored in this collection
+ */
+export class Queue<T> {
+    /**
+     * A reference to the beginning of the internal linked list for this collection
+     */
+    private _head?: LinkedList<T>;
+
+    /**
+     * A reference to the end of internal linked list for this collection
+     */
+    private _tail?: LinkedList<T>;
+
+    /**
+     * Adds a value to the end of the queue
+     *
+     * @param value The value to add
+     */
+    enqueue(value: T): void {
+        const node = { value };
+
+        if (!this._head) {
+            this._tail = this._head = node;
+            return;
+        }
+
+        this._tail = this._tail!.next = node;
+    }
+
+    /**
+     * Returns the first value in the queue, if it exists
+     * @returns The value at the front of the queue
+     * @throws {Error} If there are no ID's left
+     */
+    dequeue(): T {
+        if (!this._head) throw new Error("Empty queue");
+
+        const value = this._head.value;
+
+        // eslint-disable-next-line no-cond-assign
+        (this._head = this._head.next) ?? delete this._tail;
+
+        return value;
+    }
+
+    /**
+     * Whether or not this allocator has an id available for use
+     * @returns Whether or not this allocator has an id available for use
+     */
+    has(): boolean {
+        return this._head !== undefined;
+    }
 }
