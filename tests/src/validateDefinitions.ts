@@ -2362,7 +2362,7 @@ logger.indent("Validating skins", () => {
 
             tester.assertNoPointlessValue({
                 obj: skin,
-                field: "notInLoadout",
+                field: "hideFromLoadout",
                 defaultValue: false,
                 baseErrorPath: errorPath
             });

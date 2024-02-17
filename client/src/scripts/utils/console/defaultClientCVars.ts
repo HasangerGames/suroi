@@ -10,7 +10,7 @@ export interface JSONCVar<Value extends Stringable> {
 export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
     cv_loadout_skin: Casters.toString,
-    cv_player_badge: Casters.toString,
+    cv_loadout_badge: Casters.toString,
     cv_loadout_crosshair: Casters.toInt,
     cv_loadout_top_emote: Casters.toString,
     cv_loadout_right_emote: Casters.toString,
@@ -58,12 +58,15 @@ export const CVarCasters = Object.freeze({
     cv_crosshair_size: Casters.toNumber,
     cv_crosshair_stroke_color: Casters.toString,
     cv_crosshair_stroke_size: Casters.toNumber,
+
     pf_show_fps: Casters.toBoolean,
     pf_show_ping: Casters.toBoolean,
     pf_show_pos: Casters.toBoolean,
+
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
     mb_joystick_transparency: Casters.toNumber,
+
     dv_password: Casters.toString,
     dv_role: Casters.toString,
     dv_name_color: Casters.toString,
@@ -83,7 +86,7 @@ type SimpleCVarMapping = {
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
     cv_loadout_skin: "hazel_jumpsuit",
-    cv_player_badge: "none",
+    cv_loadout_badge: "",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",
     cv_loadout_right_emote: "thumbs_up",

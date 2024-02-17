@@ -1,12 +1,12 @@
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType, PacketType, type GasState, type ObjectCategory } from "../constants";
-import { type BadgeDefinition, Badges } from "../definitions/badges";
+import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { type GunDefinition } from "../definitions/guns";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { type FullData, ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
+import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
@@ -404,7 +404,7 @@ export class UpdatePacket extends Packet {
     newPlayers = new Set<{
         readonly id: number
         readonly name: string
-        readonly badge: BadgeDefinition
+        readonly loadout: { readonly badge?: BadgeDefinition }
         readonly hasColor: boolean
         readonly nameColor: number
     }>();
@@ -517,7 +517,10 @@ export class UpdatePacket extends Packet {
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
                 if (player.hasColor) stream.writeBits(player.nameColor, 24);
-                Badges.writeToStream(stream, player.badge);
+
+                const hasBadge = player.loadout.badge !== undefined;
+                stream.writeBoolean(hasBadge);
+                if (hasBadge) Badges.writeToStream(stream, player.loadout.badge);
             }
         }
 
@@ -660,14 +663,15 @@ export class UpdatePacket extends Packet {
                 const id = stream.readObjectID();
                 const name = stream.readPlayerName();
                 const hasColor = stream.readBoolean();
-                const nameColor = hasColor ? stream.readBits(24) : 0;
-                const badge = Badges.readFromStream(stream);
+
                 this.newPlayers.add({
                     id,
                     name,
                     hasColor,
-                    nameColor,
-                    badge
+                    nameColor: hasColor ? stream.readBits(24) : 0,
+                    loadout: {
+                        badge: stream.readBoolean() ? Badges.readFromStream(stream) : undefined
+                    }
                 });
             }
         }
