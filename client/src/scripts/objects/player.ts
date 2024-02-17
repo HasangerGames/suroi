@@ -308,15 +308,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        if(data.full && this.game.activePlayer) {
-            this.isActivePlayer ? this.tid = this.game.activePlayer.tid : this.tid = data.full.tid
+        if(data.full) {
+            this.tid = data.full.tid;
         }
 
         console.log(`${this.game.activePlayerTID} <-- Active Player TID`)
         console.log(`${this.tid} <-- Player TID`)
 
         if(this.game) {
-            if(this.game.activePlayerTID === this.tid) {
+            if(!this.isActivePlayer && this.game.activePlayerTID === this.tid) {
                 this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);  
             }
         }

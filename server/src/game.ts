@@ -480,7 +480,7 @@ export class Game {
 
         if(this.newTeam.length < Config.maxTeamSize) {
             this.newTeam.push(player.id);
-            player.tid = this.teams.length;
+            player.changeTID(this.teams.length);
 
             Logger.log(`${player.tid}`);
         } 
@@ -490,8 +490,6 @@ export class Game {
 
             Logger.log(`New Team Created with ID number: ${this.teams[this.teams.length - 1].teamID}`)
         }
-
-        joinedPacket.tid = player.tid;
 
         player.sendPacket(joinedPacket);
 

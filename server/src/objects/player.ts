@@ -1134,6 +1134,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
+    changeTID(e: number) {
+        this.tid = e;
+    }
+
     processInputs(packet: InputPacket): void {
         this.movement = {
             ...packet.movement,
@@ -1290,6 +1294,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             rotation: this.rotation,
             full: {
                 dead: this.dead,
+                tid: this.tid,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
