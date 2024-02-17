@@ -62,12 +62,11 @@ export const Casters = Object.freeze({
         return num;
     },
     toBoolean(val: string): Result<boolean, string> {
-        const truthy = ["1", "t", "true", "y", "yes"];
-        const falsy = ["0", "f", "false", "n", "no"];
+        val = val.toLowerCase();
 
         switch (true) {
-            case truthy.some(t => t.toLowerCase() === val.toLowerCase()): return { res: true };
-            case falsy.some(t => t.toLowerCase() === val.toLowerCase()): return { res: false };
+            case ["1", "t", "true", "y", "yes"].includes(val): return { res: true };
+            case ["0", "f", "false", "n", "no"].includes(val): return { res: false };
             default: {
                 return { err: `'${val}' is not a valid boolean value` };
             }
@@ -281,7 +280,7 @@ export class ConsoleVariables {
         }
     }
 
-    getAll(): GameSettings["variables"] {
+    getAll(omitDefaults = false): GameSettings["variables"] {
         const variables: GameSettings["variables"] = {};
 
         for (const [varName, cvar] of this._userCVars.entries()) {
@@ -295,7 +294,7 @@ export class ConsoleVariables {
             const defaultVar = defaultClientCVars[cvarName];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
 
-            if (cvar.value !== defaultValue) {
+            if (!omitDefaults || cvar.value !== defaultValue) {
                 variables[varName] = cvar.value;
             }
         }
