@@ -193,7 +193,7 @@ export class GameConsole {
 
     writeToLocalStorage(): void {
         const settings: GameSettings = {
-            variables: this.variables.getAll(),
+            variables: this.variables.getAll(true),
             aliases: Object.fromEntries(this.aliases),
             binds: this.game.inputManager.binds.getAll()
         };
@@ -217,6 +217,16 @@ export class GameConsole {
                 if (name in defaultClientCVars) {
                     this.variables.set.builtIn(name as keyof CVarTypeMapping, value as string, false);
                 } else {
+                    rewriteToLS = true;
+
+                    if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
+                        const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or is an old CVar that no longer exists). It will not be registered and will be deleted.`;
+
+                        console.warn(message);
+                        this.warn(message);
+                        continue;
+                    }
+
                     this.variables.declareCVar(
                         new ConVar(
                             name,
@@ -231,7 +241,6 @@ export class GameConsole {
                             }
                         )
                     );
-                    rewriteToLS = true;
                 }
             }
 
@@ -247,6 +256,8 @@ export class GameConsole {
             for (const alias in config.aliases) {
                 this.aliases.set(alias, config.aliases[alias]);
             }
+
+            this._autocmpData.cache.invalidateAll();
         }
 
         const bindManager = this.game.inputManager.binds;
@@ -349,11 +360,22 @@ export class GameConsole {
         const varCollection = new ConsoleVariables(this);
 
         const nativeDeclare = varCollection.declareCVar.bind(varCollection);
+        const nativeRemove = varCollection.removeCVar.bind(varCollection);
 
         varCollection.declareCVar = (cvar: ConVar<Stringable>) => {
             const retVal = nativeDeclare(cvar);
 
-            if (retVal !== undefined) {
+            if (retVal === undefined) {
+                this._autocmpData.cache.invalidateVariables();
+            }
+
+            return retVal;
+        };
+
+        varCollection.removeCVar = (name: string) => {
+            const retVal = nativeRemove(name);
+
+            if (retVal === undefined) {
                 this._autocmpData.cache.invalidateVariables();
             }
 
@@ -586,6 +608,8 @@ export class GameConsole {
 
             get variables(): string[]
             invalidateVariables: () => void
+
+            invalidateAll: () => void
         }
     } = {
             nodes: [],
@@ -604,7 +628,13 @@ export class GameConsole {
                     invalidateAliases() { aliases = undefined; },
 
                     get variables() { return variables ??= Object.keys(T.variables.getAll()); },
-                    invalidateVariables() { variables = undefined; }
+                    invalidateVariables() { variables = undefined; },
+
+                    invalidateAll() {
+                        this.invalidateCommands();
+                        this.invalidateAliases();
+                        this.invalidateVariables();
+                    }
                 };
             })()
         };

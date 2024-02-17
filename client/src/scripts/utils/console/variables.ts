@@ -280,7 +280,7 @@ export class ConsoleVariables {
         }
     }
 
-    getAll(): GameSettings["variables"] {
+    getAll(omitDefaults = false): GameSettings["variables"] {
         const variables: GameSettings["variables"] = {};
 
         for (const [varName, cvar] of this._userCVars.entries()) {
@@ -294,7 +294,7 @@ export class ConsoleVariables {
             const defaultVar = defaultClientCVars[cvarName];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
 
-            if (cvar.value !== defaultValue) {
+            if (!omitDefaults || cvar.value !== defaultValue) {
                 variables[varName] = cvar.value;
             }
         }

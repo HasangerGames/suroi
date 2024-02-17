@@ -7,6 +7,8 @@ export interface JSONCVar<Value extends Stringable> {
     readonly flags: Partial<CVarFlags>
 }
 
+//! don't use "uv_" as a prefix, cause that's reserved for custom cvars
+
 export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
     cv_loadout_skin: Casters.toString,
