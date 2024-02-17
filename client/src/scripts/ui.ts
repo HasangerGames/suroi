@@ -669,7 +669,7 @@ Video evidence is required.`)) {
                         if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
                     }
                     game.inputManager.addAction({
-                        type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
+                        type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
                         slot
                     });
                 }
@@ -685,13 +685,24 @@ Video evidence is required.`)) {
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.inputManager.addAction({
-                type: InputActions.UseItem,
-                item: scope
-            });
-            e.stopPropagation();
-        });
+        $(`#${scope.idString}-slot`)[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                    e.stopImmediatePropagation();
+                    if(e.button === 2) {
+                        game.inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: scope
+                        });
+                    } else {
+                        game.inputManager.addAction({
+                            type: InputActions.UseItem,
+                            item: scope
+                        });
+                    }
+            }
+        );
+
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
         }
@@ -709,13 +720,23 @@ Video evidence is required.`)) {
             </div>
         </div>`);
 
-        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.inputManager.addAction({
-                type: InputActions.UseItem,
-                item
-            });
-            e.stopPropagation();
-        });
+        $(`#${item.idString}-slot`)[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                    e.stopImmediatePropagation();
+                    if(e.button === 2) {
+                        game.inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item
+                        });
+                    } else {
+                        game.inputManager.addAction({
+                            type: InputActions.UseItem,
+                            item
+                        });
+                    }
+            }
+        );
     }
 
     for (const ammo of Ammos) {
@@ -726,7 +747,54 @@ Video evidence is required.`)) {
             <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);
+
+        $(`#${ammo.idString}-slot`)[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                    e.stopImmediatePropagation();
+                    if(e.button === 2) {
+                        game.inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: ammo
+                        });
+                    }
+            }
+        );
     }
+
+    for (const armor of ["helmet", "vest"]) {
+        const armorContainer =  $(`#${armor}-slot`);
+
+        armorContainer[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                    e.stopImmediatePropagation();
+                    if(e.button === 2 && game.activePlayer) {
+                        console.log("Dropped " + game.activePlayer.getEquipment(armor))
+                        game.inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: game.activePlayer.getEquipment(armor)
+                        });
+                    }
+            }
+        );
+    }
+
+    const backpackContainer =  $(`#backpack-slot`);
+
+    backpackContainer[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                    e.stopImmediatePropagation();
+                    if(e.button === 2 && game.activePlayer) {
+                        game.inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: game.activePlayer.getEquipment("backpack")
+                        });
+                    }
+            }
+    );
+
 
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(isMobile.any);

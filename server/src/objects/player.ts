@@ -31,7 +31,7 @@ import { CountableInventoryItem, type InventoryItem } from "../inventory/invento
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
-import { removeFrom } from "../utils/misc";
+import { Logger, removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -1175,9 +1175,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     inventory.setActiveWeaponIndex(target);
                     break;
                 }
-                case InputActions.DropItem: {
+                case InputActions.DropWeapon: {
                     this.action?.cancel();
                     inventory.dropWeapon(action.slot);
+                    break;
+                }
+                case InputActions.DropItem: {
+                    this.action?.cancel();
+                    Logger.log(action.item.idString)
+                    inventory.dropItem(action.item);
                     break;
                 }
                 case InputActions.SwapGunSlots: {

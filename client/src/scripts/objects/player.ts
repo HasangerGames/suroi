@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Container, TilingSprite, Text } from "pixi.js";
-import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -723,9 +723,45 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
 
+        container[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                    e.stopImmediatePropagation();
+                    console.log("Hey")
+                    if(e.button === 2 && def) {
+                        this.game.inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: def
+                        });
+                    }
+            }
+        );
+
         if (equipmentType === "backpack") {
             this.game.uiManager.updateItems();
         }
+    }
+
+    getEquipment(equipmentType: string): ArmorDefinition | BackpackDefinition {
+        let equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
+          switch (equipmentType) {
+            case "helmet":
+                if(this.equipment.helmet) {
+                    return this.equipment.helmet
+                }
+                break;
+            case "vest":
+                if(this.equipment.vest) {
+                    return this.equipment.vest
+                }
+                break;
+            case "backpack":
+                if(this.equipment.backpack) {
+                    return this.equipment.backpack
+                }
+                break;
+          }
+          return equipment;
     }
 
     emote(type: EmoteDefinition): void {

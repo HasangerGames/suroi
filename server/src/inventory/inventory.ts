@@ -1,6 +1,6 @@
 import { DEFAULT_INVENTORY, GameConstants } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { ArmorType, type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type DualGunNarrowing, type GunDefinition } from "../../../common/src/definitions/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
@@ -13,6 +13,7 @@ import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/s
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
+import { Logger } from "../utils/misc";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
@@ -449,6 +450,71 @@ export class Inventory {
         return item;
     }
 
+     /**
+     * Attempts to drop a item with given `idString`
+     * @param itemString The `idString` of the item;
+     */
+     dropItem(itemString: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | AmmoDefinition | ArmorDefinition | BackpackDefinition, pushForce = -0.03): void {
+
+        const definition = itemString.itemType == ItemType.Armor || ItemType.Backpack ? Loots.fromString(itemString.idString) : Loots.reify(itemString);
+        const idString = definition.idString;
+
+        if (!this.items.hasItem(idString) && definition.itemType != ItemType.Armor && definition.itemType != ItemType.Backpack) return;
+
+        Logger.log(`${itemString.idString}`)
+
+        switch (definition.itemType) {
+            case ItemType.Healing: {
+                this._dropItem(definition, { pushForce });
+                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1)
+                break;
+            }
+            case ItemType.Scope: {
+                this._dropItem(definition, { pushForce });
+                const newScope = Scopes.definitions.indexOf(definition) - 1;
+                if(newScope >= 0) {
+                    this.scope = Scopes.definitions[newScope];
+                }
+                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1)
+                break;
+            }
+            case ItemType.Throwable: {
+                this._dropItem(definition, { pushForce });
+                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1)
+                break;
+            }
+            case ItemType.Ammo: {
+                this._dropItem(definition, { pushForce });
+                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1)
+                break;
+            }
+            case ItemType.Armor: {
+                        if (definition) {
+                            this._dropItem(definition.idString, { pushForce });
+                        }
+                        switch (definition.armorType) {
+                            case ArmorType.Helmet: {
+                                this.owner.inventory.helmet = undefined;
+                                break;
+                            }
+                            case ArmorType.Vest: {
+                                this.owner.inventory.vest = undefined;
+                                break;
+                            }
+                        }
+                break;
+            }
+            case ItemType.Backpack: {
+                this._dropItem(definition, { pushForce });
+                this.owner.inventory.backpack = Loots.fromString("bag");
+                break;
+            }
+        }
+
+        this.owner.game.fullDirtyObjects.add(this.owner);
+        this.owner.dirty.items = true;
+    }
+
     /**
      * Drops all weapons from this inventory
      */
@@ -556,7 +622,7 @@ export class Inventory {
      * Attempts to use a consumable item or a scope with the given `idString`
      * @param itemString The `idString` of the consumable or scope to use
      */
-    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition>): void {
+    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | AmmoDefinition>): void {
         const definition = Loots.reify(itemString);
         const idString = definition.idString;
 
