@@ -3,6 +3,7 @@ import { FireMode, GameConstants, ZIndexes } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
 import { Armors } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
+import { Badges } from "../../common/src/definitions/badges";
 import { Buildings } from "../../common/src/definitions/buildings";
 import { Bullets } from "../../common/src/definitions/bullets";
 import { Decals } from "../../common/src/definitions/decals";
@@ -382,6 +383,26 @@ logger.indent("Validating backpack definitions", () => {
                     });
                 }
             });
+        });
+    }
+});
+
+logger.indent("Validating badge definitions", () => {
+    tester.assertNoDuplicateIDStrings(Badges.definitions, "Badges", "badges");
+
+    for (const badge of Badges) {
+        const errorPath = tester.createPath("badges", `badge '${badge.idString}'`);
+
+        logger.indent(`Validating '${badge.idString}'`, () => {
+            if (badge.roleRequired !== undefined) {
+                tester.assertReferenceExistsObject({
+                    obj: badge,
+                    field: "roleRequired",
+                    collection: Config.roles,
+                    collectionName: "roles",
+                    baseErrorPath: errorPath
+                });
+            }
         });
     }
 });
