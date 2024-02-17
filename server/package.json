@@ -28,8 +28,8 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
-    "@damienvesper/bit-buffer": "^1.0.0",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.34.0",
+    "@damienvesper/bit-buffer": "^1.0.1",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.41.0",
     "ws": "^8.16.0"
   }
 }
