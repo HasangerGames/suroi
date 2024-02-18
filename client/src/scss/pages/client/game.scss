@@ -921,8 +921,8 @@
 
         &.has-item {
             opacity: 1;
-            background: rgb(197,197,197);
-            background: linear-gradient(90deg, rgba(197,197,197,0.45) 0%, rgba(197,197,197,0.45) 25%, rgba(22,22,22,0.5) 100%);
+            background: hsl(0, 0%, 77%);
+            background: linear-gradient(90deg, hsla(0, 0%, 77%, 0.45) 0%, hsla(0, 0%, 77%, 0.45) 25%, hsla(0, 0%, 9%, 0.5) 100%);
         }
     }
 

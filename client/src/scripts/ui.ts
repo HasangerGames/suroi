@@ -529,7 +529,9 @@ Video evidence is required.`)) {
     });
     $("#coordinates-hud").toggle(game.console.getBuiltInCVar("pf_show_pos"));
 
-    // Text kill feed toggle
+    // lmao one day, we'll have dropdown menus
+
+    // Text killfeed toggle
     {
         const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
 
@@ -538,6 +540,17 @@ Video evidence is required.`)) {
         });
 
         element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
+    }
+
+    // Weapon slot style toggle
+    {
+        const element = $("#toggle-colored-slots")[0] as HTMLInputElement;
+
+        element.addEventListener("input", () => {
+            game.console.setBuiltInCVar("cv_weapon_slot_style", element.checked ? "colored" : "simple");
+        });
+
+        element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
     }
 
     // Anti-aliasing toggle
