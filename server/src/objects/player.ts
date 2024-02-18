@@ -1127,7 +1127,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         const inventory = this.inventory;
-
         for (const action of packet.actions) {
             switch (action.type) {
                 case InputActions.UseItem: {
@@ -1158,11 +1157,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 }
                 case InputActions.Loot: {
-                    if (this.game.now - this.lastInteractionTime < 120) return;
-                    this.lastInteractionTime = this.game.now;
-
                     interface CloseObject {
-                        object: Loot | Obstacle | undefined
+                        object: Loot | undefined
                         minDist: number
                     }
 

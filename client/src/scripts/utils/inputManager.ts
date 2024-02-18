@@ -358,7 +358,7 @@ export class InputManager {
             }
             //little exception for those without the loot bind bound
             this.game.console.handleQuery(query);
-            if(this.binds.getInputsBoundToAction("loot").length == 0 && action == "interact"){
+            if(this.binds.getInputsBoundToAction("loot").length == 0 && query == "interact"){
                 this.game.console.handleQuery("loot");
             }
         }
