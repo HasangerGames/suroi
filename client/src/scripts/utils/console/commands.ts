@@ -400,9 +400,9 @@ export function setUpCommands(game: Game): void {
         {
             short: "Loots closest object",
             long: "Loots closest object, this command is also invoked with interact if there is no key bound to loot",
-            signatures: [{args: [], noexcept: true}]
+            signatures: [{ args: [], noexcept: true }]
         }
-    )
+    );
 
     Command.createInvertiblePair(
         "attack",

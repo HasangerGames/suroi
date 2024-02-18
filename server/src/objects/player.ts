@@ -1215,7 +1215,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     this.canDespawn = false;
                     this.disableInvulnerability();
-                    break;                    
+                    break;
                 }
                 case InputActions.Interact: {
                     if (this.game.now - this.lastInteractionTime < 120) return;
