@@ -1643,7 +1643,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "tango_crate",
-            name: "Tango crate",
+            name: "Tango Crate",
             material: "wood",
             health: 120,
             scale: {
@@ -1651,7 +1651,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(15, 6.5),
+            hitbox: RectangleHitbox.fromRect(15.49, 5.85),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
             hasLoot: true
@@ -2418,8 +2418,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             reflectBullets: true
         },
         {
-            idString: "mobile_home_tire",
-            name: "Mobile Home Tire",
+            idString: "tire",
+            name: "Tire",
             material: "stone",
             health: 200,
             scale: {
@@ -2429,6 +2429,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(3.47, 8.35),
             rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.BuildingsFloor - 1,
             noResidue: true,
             frames: {
                 particle: "flint_stone_particle"
@@ -2455,6 +2456,118 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "window_particle"
             }
+        },
+        {
+            idString: "tugboat",
+            name: "Tugboat",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(8.93, 2.09, Vec.create(-9.53, -4.78)),
+                RectangleHitbox.fromRect(8.93, 2.09, Vec.create(9.51, -4.78)),
+                RectangleHitbox.fromRect(2.21, 35.83, Vec.create(14.37, 12.09)),
+                RectangleHitbox.fromRect(2.14, 35.83, Vec.create(-14.33, 12.09)),
+                RectangleHitbox.fromRect(30.88, 1.98, Vec.create(0.04, 29.78)),
+                RectangleHitbox.fromRect(0.99, 14, Vec.create(-20.79, -38)),
+                RectangleHitbox.fromRect(12, 1, Vec.create(-14, -46.2)),
+                RectangleHitbox.fromRect(13, 1, Vec.create(13.5, -46.2)),
+                RectangleHitbox.fromRect(1, 73, Vec.create(20.59, -8.5)),
+                RectangleHitbox.fromRect(0.99, 45, Vec.create(-20.79, 5.5)),
+                new CircleHitbox(1.45, Vec.create(-19.9, -45.5)),
+                new CircleHitbox(1.45, Vec.create(-8.3, -45.5)),
+                new CircleHitbox(1.45, Vec.create(7.4, -45.5)),
+                new CircleHitbox(1.45, Vec.create(19.7, -45.5)),
+                new CircleHitbox(1.45, Vec.create(19.7, -30.8)),
+                new CircleHitbox(1.45, Vec.create(-19.9, -30.8)),
+                new CircleHitbox(1.45, Vec.create(19.7, -16.6)),
+                new CircleHitbox(1.45, Vec.create(-19.9, -16.6)),
+                new CircleHitbox(1.45, Vec.create(19.7, -1.6)),
+                new CircleHitbox(1.45, Vec.create(-19.9, -1.6)),
+                new CircleHitbox(1.45, Vec.create(19.7, 13.4)),
+                new CircleHitbox(1.45, Vec.create(-19.9, 13.4)),
+                new CircleHitbox(1.45, Vec.create(19.7, 27.6)),
+                new CircleHitbox(1.45, Vec.create(-19.9, 27.6)),
+                // HACK: refactor when we support collision with polygon hitboxes
+                ...Array.from({ length: 2 }, (_, i) => {
+                    const a = i === 0 ? 1 : -1;
+                    return Array.from({ length: 13 }, (_, i) => {
+                        return new CircleHitbox(2, Vec.create(i * a * 1.5, 45 - (1 - Math.sqrt(1 - (i / 13) ** 2)) * i * 2));
+                    });
+                }).flat()
+            )
+        },
+        {
+            idString: "lux_crate",
+            name: "Lux Crate",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(15.49, 5.85),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            hasLoot: true
+        },
+        {
+            idString: "tugboat_control_panel",
+            name: "Tugboat Control Panel",
+            material: "metal",
+            health: 250,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.95
+            },
+            hitbox: RectangleHitbox.fromRect(26.3, 8.02, Vec.create(0, 0.5)),
+            rotationMode: RotationMode.Limited,
+            explosion: "control_panel_explosion",
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "tugboat_chair",
+            name: "Tugboat Chair",
+            material: "wood",
+            health: 140,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(4.5, 5.3, Vec.create(0, -0.14)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "tugboat_life_preserver",
+            name: "Tugboat Life Preserver",
+            material: "stone",
+            health: 80,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(3.2, 8.87, Vec.create(-0.4, 0)),
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.BuildingsFloor
         }
     ]
 );

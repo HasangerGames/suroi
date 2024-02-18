@@ -129,6 +129,18 @@ export const LootTables: Record<string, LootTable> = {
             ]
         ]
     },
+    lux_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            [
+                { item: "cz600", weight: 1 }
+            ],
+            [
+                { tier: "scopes", weight: 1 }
+            ]
+        ]
+    },
     gold_rock: {
         min: 1,
         max: 1,
