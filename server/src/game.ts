@@ -375,8 +375,49 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
 
+        let player =  new Player(this, socket, spawnPosition);
+
+        if(this.newTeam.length < Config.maxTeamSize) {
+            this.newTeam.push(player.id);
+            player.changeTID(this.teams.length);
+
+            Logger.log(`${player.tid}`);
+        } 
+        if(this.newTeam.length >= Config.maxTeamSize) {
+            this.teams.push({ playerIDS: this.newTeam, teamID: this.teams.length, t_kills: 0,})
+            this.newTeam = [];
+
+            Logger.log(`New Team Created with ID number: ${this.teams[this.teams.length - 1].teamID}`)
+        }
+
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
+            case SpawnMode.Normal: {
+                const gasRadius = this.gas.newRadius ** 2;
+                let foundPosition = false;
+                let tries = 0;
+                while (!foundPosition && tries < 100) {
+                    spawnPosition = this.map.getRandomPosition(
+                        hitbox,
+                        {
+                            maxAttempts: 500,
+                            spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            collides: (position) => {
+                                return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                            }
+                        }
+                    ) ?? spawnPosition;
+
+                    const radiusHitbox = new CircleHitbox(50, spawnPosition);
+                    for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
+                        if (object instanceof Player) {
+                            foundPosition = false;
+                        }
+                    }
+                    tries++;
+                }
+                break;
+            }
             case SpawnMode.Normal: {
                 const gasRadius = this.gas.newRadius ** 2;
                 let foundPosition = false;
@@ -431,7 +472,7 @@ export class Game {
             // No case for SpawnMode.Center because that's the default
         }
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, socket, spawnPosition);
+        return player;
     }
 
     // Called when a JoinPacket is sent by the client
@@ -477,19 +518,6 @@ export class Game {
 
         const joinedPacket = new JoinedPacket();
         joinedPacket.emotes = player.loadout.emotes
-
-        if(this.newTeam.length < Config.maxTeamSize) {
-            this.newTeam.push(player.id);
-            player.changeTID(this.teams.length);
-
-            Logger.log(`${player.tid}`);
-        } 
-        if(this.newTeam.length >= Config.maxTeamSize) {
-            this.teams.push({ playerIDS: this.newTeam, teamID: this.teams.length, t_kills: 0,})
-            this.newTeam = [];
-
-            Logger.log(`New Team Created with ID number: ${this.teams[this.teams.length - 1].teamID}`)
-        }
 
         player.sendPacket(joinedPacket);
 

@@ -3,6 +3,7 @@ import { type Maps } from "./data/maps";
 
 export enum SpawnMode {
     Normal,
+    SameTID,
     Random,
     Radius,
     Fixed,
@@ -20,7 +21,7 @@ export const Config = {
 
     mapName: "arena",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: 2,
 
@@ -69,6 +70,7 @@ export interface ConfigType {
     /**
      * There are 5 spawn modes: Normal, Random, Radius, Fixed, and Center.
      * SpawnMode.Normal spawns the player at a random location with a minimum distance between players.
+     * SpawnMode.SameTID spawns the player near the same location as another player with the same TID.
      * SpawnMode.Random spawns the player at a random location.
      * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
      * SpawnMode.Fixed always spawns the player at the exact position given.

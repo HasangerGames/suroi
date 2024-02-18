@@ -329,9 +329,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
+    spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+
     // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector = Vec.create(100 / 2, 100 / 2)) {
         super(game, position);
 
         const userData = socket.getUserData();
@@ -365,7 +367,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.joinTime = game.now;
 
-        this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
+        this.hitbox = new CircleHitbox(GameConstants.player.radius, this.spawnPosition);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
@@ -403,6 +405,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             primaryDefinition.ammoType,
             this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
         );
+    }
+
+    spawnPos(position: Vector) {
+        this.spawnPosition = position;
     }
 
     emote(slot: number): void {
