@@ -341,7 +341,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "mobile_home_wall_3", position);
+        this.objectToPlace = new Obstacle(game, "tire", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
