@@ -356,8 +356,11 @@ export class InputManager {
                     query = query.replace("+", "-");
                 } else query = ""; // If the action isn't invertible, then we do nothing
             }
-
+            //little exception for those without the loot bind bound
             this.game.console.handleQuery(query);
+            if(this.binds.getInputsBoundToAction("loot").length == 0 && action == "interact"){
+                this.game.console.handleQuery("loot");
+            }
         }
 
         return actions.length;
@@ -402,6 +405,7 @@ export class InputManager {
         "+left": "Move Left",
         "+right": "Move Right",
         interact: "Interact",
+        loot: "Loot",
         "slot 0": "Equip Primary",
         "slot 1": "Equip Secondary",
         "slot 2": "Equip Melee",
