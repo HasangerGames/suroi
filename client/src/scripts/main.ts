@@ -84,11 +84,11 @@ $(async(): Promise<void> => {
                 playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
 
                 let gameModeType = await (await fetch(`http${region.https ? "s" : ""}://${region.soloAddress}/api/maxTeamSize`, { signal: AbortSignal.timeout(2000) })
-                .catch(() => {
-                    console.error(`Could not load game mode for ${region.soloAddress}.`);
-                })
-    )?.text();
-    gameModeType = gameModeType && stringIsPositiveNumber(gameModeType) ? gameModeType : "-";
+                    .catch(() => {
+                        console.error(`Could not load game mode for ${region.soloAddress}.`);
+                    })
+                )?.text();
+                gameModeType = gameModeType && stringIsPositiveNumber(gameModeType) ? gameModeType : "-";
 
                 const ping = Date.now() - pingStartTime;
                 regionInfo[regionID] = {
@@ -123,10 +123,10 @@ $(async(): Promise<void> => {
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
-        if(selectedRegion.gameModeType != `${GameMode.Solo}`) {
+        if (selectedRegion.gameModeType != `${GameMode.Solo}`) {
             disableSoloPlayButton("Region doesn't have solos");
-        } 
-        if(selectedRegion.gameModeType != `${GameMode.Duo}`) {
+        }
+        if (selectedRegion.gameModeType != `${GameMode.Duo}`) {
             disableDuoPlayButton("Region doesn't have Duos");
         }
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
@@ -149,31 +149,31 @@ $(async(): Promise<void> => {
     //serverListToFind
     serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
-     
+
         if (region === null) return;
 
         const info = regionInfo[region];
         if (info === undefined) return;
 
         let gameModeType = await (await fetch(`http${info.https ? "s" : ""}://${info.soloAddress}/api/maxTeamSize`, { signal: AbortSignal.timeout(2000) })
-                    .catch(() => {
-                        console.error(`Could not load game mode for ${info.soloAddress}.`);
-                    })
+            .catch(() => {
+                console.error(`Could not load game mode for ${info.soloAddress}.`);
+            })
         )?.text();
         gameModeType = gameModeType && stringIsPositiveNumber(gameModeType) ? gameModeType : "-";
 
-        if(gameModeType != `${GameMode.Solo}`) {
-            disableSoloPlayButton("Region does not have Solo")
+        if (gameModeType != `${GameMode.Solo}`) {
+            disableSoloPlayButton("Region does not have Solo");
         } else {
             enableSoloPlayButton();
         }
-        if(gameModeType != `${GameMode.Duo}`) {
-            disableDuoPlayButton("Region does not have Duo")
+        if (gameModeType != `${GameMode.Duo}`) {
+            disableDuoPlayButton("Region does not have Duo");
         } else {
             enableDuoPlayButton();
         }
 
-        console.log(gameModeType)
+        console.log(gameModeType);
 
         selectedRegion = info;
 

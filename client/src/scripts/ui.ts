@@ -144,7 +144,7 @@ export function setupUI(game: Game): void {
 
     // Select region
     serverSelect.on("change", () => {
-        const value = serverSelect.val() as string | undefined;
+        // const value = serverSelect.val() as string | undefined;
 
         /*if (value !== undefined) {
             game.console.setBuiltInCVar("cv_region", value);
@@ -685,23 +685,23 @@ Video evidence is required.`)) {
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        dropItemListener(game, $(`#${scope.idString}-slot`), scope)
-        
+        dropItemListener(game, $(`#${scope.idString}-slot`), scope);
+
         $(`#${scope.idString}-slot`)[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    if(e.button === 2) {
-                        game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: scope
-                        });
-                    } else {
-                        game.inputManager.addAction({
-                            type: InputActions.UseItem,
-                            item: scope
-                        });
-                    }
+                e.stopImmediatePropagation();
+                if (e.button === 2) {
+                    game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: scope
+                    });
+                } else {
+                    game.inputManager.addAction({
+                        type: InputActions.UseItem,
+                        item: scope
+                    });
+                }
             }
         );
 
@@ -722,7 +722,7 @@ Video evidence is required.`)) {
             </div>
         </div>`);
 
-        dropItemListener(game, $(`#${item.idString}-slot`), item)
+        dropItemListener(game, $(`#${item.idString}-slot`), item);
     }
 
     for (const ammo of Ammos) {
@@ -734,42 +734,41 @@ Video evidence is required.`)) {
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);
 
-        dropItemListener(game, $(`#${ammo.idString}-slot`), ammo)
+        dropItemListener(game, $(`#${ammo.idString}-slot`), ammo);
     }
 
     for (const armor of ["helmet", "vest"]) {
-        const armorContainer =  $(`#${armor}-slot`);
-        
+        const armorContainer = $(`#${armor}-slot`);
+
         armorContainer[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    if(e.button === 2 && game.activePlayer) {
-                        console.log("Dropped " + game.activePlayer.getEquipment(armor))
-                        game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: game.activePlayer.getEquipment(armor)
-                        });
-                    }
+                e.stopImmediatePropagation();
+                if (e.button === 2 && game.activePlayer) {
+                    console.log(`Dropped ${game.activePlayer.getEquipment(armor).idString}`);
+                    game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: game.activePlayer.getEquipment(armor)
+                    });
+                }
             }
         );
     }
 
-    const backpackContainer =  $(`#backpack-slot`);
+    const backpackContainer = $("#backpack-slot");
 
     backpackContainer[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    if(e.button === 2 && game.activePlayer) {
-                        game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: game.activePlayer.getEquipment("backpack")
-                        });
-                    }
+        "pointerdown",
+        (e: PointerEvent): void => {
+            e.stopImmediatePropagation();
+            if (e.button === 2 && game.activePlayer) {
+                game.inputManager.addAction({
+                    type: InputActions.DropItem,
+                    item: game.activePlayer.getEquipment("backpack")
+                });
             }
+        }
     );
-
 
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(isMobile.any);

@@ -1,7 +1,7 @@
 import { GameConstants, InputActions, PacketType } from "../constants";
-import { AmmoDefinition } from "../definitions/ammos";
-import { ArmorDefinition } from "../definitions/armors";
-import { BackpackDefinition } from "../definitions/backpacks";
+import { type AmmoDefinition } from "../definitions/ammos";
+import { type ArmorDefinition } from "../definitions/armors";
+import { type BackpackDefinition } from "../definitions/backpacks";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
 import { type ScopeDefinition } from "../definitions/scopes";
@@ -82,6 +82,7 @@ export class InputPacket extends Packet {
                     break;
                 case InputActions.DropItem:
                     Loots.writeToStream(stream, action.item);
+                    break;
                 case InputActions.UseItem:
                     Loots.writeToStream(stream, action.item);
                     break;

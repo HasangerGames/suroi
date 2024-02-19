@@ -135,7 +135,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     dropShadowDistance: 2,
                     dropShadowColor: 0
                 }
-            ),
+            )
         };
 
         this.container.addChild(
@@ -149,7 +149,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.altWeapon,
             this.images.muzzleFlash,
             this.images.backpack,
-            this.images.helmet,
+            this.images.helmet
         );
         this.container.eventMode = "static";
 
@@ -168,7 +168,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.camera.addObject(this.nameContainer);
         this.nameContainer.zIndex = ZIndexes.DeathMarkers;
 
-        this.nameContainer.addChild(this.images.nameText)
+        this.nameContainer.addChild(this.images.nameText);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -213,7 +213,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
-        this.nameContainer.position = Vec.addComponent(this.container.position, -75, 75)
+        this.nameContainer.position = Vec.addComponent(this.container.position, -75, 75);
         if (!this.destroyed) this.emoteContainer.position = Vec.addComponent(this.container.position, 0, -175);
     }
 
@@ -308,16 +308,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        if(data.full) {
+        if (data.full) {
             this.tid = data.full.tid;
         }
 
-        console.log(`${this.game.activePlayerTID} <-- Active Player TID`)
-        console.log(`${this.tid} <-- Player TID`)
+        console.log(`${this.game.activePlayerTID} <-- Active Player TID`);
+        console.log(`${this.tid} <-- Player TID`);
 
-        if(this.game) {
-            if(!this.isActivePlayer && this.game.activePlayerTID === this.tid) {
-                this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);  
+        if (this.game) {
+            if (!this.isActivePlayer && this.game.activePlayerTID === this.tid) {
+                this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
             }
         }
 
@@ -730,14 +730,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         container[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    console.log("Hey")
-                    if(e.button === 2 && def) {
-                        this.game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: def
-                        });
-                    }
+                e.stopImmediatePropagation();
+                console.log("Hey");
+                if (e.button === 2 && def) {
+                    this.game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: def
+                    });
+                }
             }
         );
 
@@ -747,25 +747,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     getEquipment(equipmentType: string): ArmorDefinition | BackpackDefinition {
-        let equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
-          switch (equipmentType) {
+        const equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
+        switch (equipmentType) {
             case "helmet":
-                if(this.equipment.helmet) {
-                    return this.equipment.helmet
+                if (this.equipment.helmet) {
+                    return this.equipment.helmet;
                 }
                 break;
             case "vest":
-                if(this.equipment.vest) {
-                    return this.equipment.vest
+                if (this.equipment.vest) {
+                    return this.equipment.vest;
                 }
                 break;
             case "backpack":
-                if(this.equipment.backpack) {
-                    return this.equipment.backpack
+                if (this.equipment.backpack) {
+                    return this.equipment.backpack;
                 }
                 break;
-          }
-          return equipment;
+        }
+        return equipment;
     }
 
     emote(type: EmoteDefinition): void {

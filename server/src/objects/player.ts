@@ -40,7 +40,6 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
@@ -407,7 +406,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         );
     }
 
-    spawnPos(position: Vector) {
+    spawnPos(position: Vector): void {
         this.spawnPosition = position;
     }
 
@@ -1140,7 +1139,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
-    changeTID(e: number) {
+    changeTID(e: number): void {
         this.tid = e;
     }
 
@@ -1192,7 +1191,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
                 case InputActions.DropItem: {
                     this.action?.cancel();
-                    Logger.log(action.item.idString)
+                    Logger.log(action.item.idString);
                     inventory.dropItem(action.item);
                     break;
                 }

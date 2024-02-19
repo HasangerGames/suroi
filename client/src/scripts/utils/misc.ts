@@ -39,17 +39,17 @@ export function stringIsPositiveNumber(str: string): boolean {
     return matches !== null && matches[0].length === str.length;
 }
 
-export function dropItemListener(game: Game, container: any, item:  HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition) {
+export function dropItemListener(game: Game, container: any, item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition): void {
     container[0].addEventListener(
         "pointerdown",
         (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if(e.button === 2) {
-                    game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: item
-                    });
-                }
+            e.stopImmediatePropagation();
+            if (e.button === 2) {
+                game.inputManager.addAction({
+                    type: InputActions.DropItem,
+                    item
+                });
+            }
         }
     );
 }

@@ -93,7 +93,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         stream.writeObjectID(data.id);
         stream.writeBoolean(data.spectating);
     }
-    
+
     stream.writeBoolean(dirty.tid);
     if (dirty.tid) {
         stream.writeObjectID(data.tid);

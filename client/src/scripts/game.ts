@@ -90,17 +90,17 @@ export class Game {
 
     private _activePlayerID = -1;
 
-    public get activePlayerID() {
+    public get activePlayerID(): number {
         return this._activePlayerID;
     }
-    
+
     public set activePlayerID(value) {
-        console.trace(value)
+        console.trace(value);
         this._activePlayerID = value;
     }
 
     activePlayerTID = -1;
-    
+
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
@@ -475,9 +475,9 @@ export class Game {
 
         const playerData = updateData.playerData;
 
-        if(playerData && playerData.tid) {
+        if (playerData?.tid) {
             this.activePlayerTID = playerData.tid;
-            console.log(this.activePlayerTID)
+            console.log(this.activePlayerTID);
         }
 
         if (playerData) this.uiManager.updateUI(playerData);
