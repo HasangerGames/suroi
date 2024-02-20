@@ -380,9 +380,7 @@ export class Game {
 
         if (this.newTeam.length < Config.maxTeamSize) {
             this.newTeam.push(player.id);
-            player.changeTID(this.teams.length);
-
-            Logger.log(`${player.tid}`);
+            player.changeTID(this.nextPlayerTID);
         }
         if (this.newTeam.length >= Config.maxTeamSize) {
             this.teams.push({ playerIDS: this.newTeam, teamID: this.teams.length, t_kills: 0 });
@@ -761,8 +759,24 @@ export class Game {
 
     idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
+    currentTID: number = 0;
+    playersWithTID: number = 0;
+
     get nextObjectID(): number {
         return this.idAllocator.takeNext();
+    }
+
+    get nextPlayerTID(): number {
+        Logger.log(`${this.currentTID}`);
+        let tid = this.currentTID;
+        if(this.playersWithTID+1 == Config.maxTeamSize) {
+            this.currentTID+=1;
+            this.playersWithTID = 0;
+        } else {
+            this.playersWithTID+=1;
+        }
+
+        return tid;
     }
 }
 

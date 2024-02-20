@@ -15,7 +15,7 @@ import { body, createDropdown } from "./uiHelpers";
 import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { requestFullscreen } from "./utils/misc";
+import { dropItemListener, requestFullscreen } from "./utils/misc";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
