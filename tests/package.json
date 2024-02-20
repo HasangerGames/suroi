@@ -6,8 +6,6 @@
   "scripts": {
     "build": "tsc",
     "validateDefinitions": "node dist/tests/src/validateDefinitions.js",
-    "lint": "eslint . --fix --ext .ts",
-    "lint:ci": "eslint . --ext .ts",
     "stressTest": "tsc && node --enable-source-maps dist/tests/src/stressTest.js"
   },
   "engines": {
@@ -16,14 +14,12 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.11.19",
     "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
     "typescript": "5.3.3"
   },
   "dependencies": {
-    "@damienvesper/bit-buffer": "^1.0.0",
+    "@damienvesper/bit-buffer": "^1.0.1",
     "ws": "^8.16.0"
   }
 }

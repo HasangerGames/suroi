@@ -3,12 +3,13 @@ import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
+import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { MapPacket } from "../../../common/src/packets/mapPacket";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
@@ -48,7 +49,6 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
-import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -86,7 +86,12 @@ export class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color, badge: BadgeDefinition }>();
+    readonly playerNames = new Map<number, {
+        readonly name: string
+        readonly hasColor: boolean
+        readonly nameColor: Color
+        readonly badge?: BadgeDefinition
+    }>();
 
     private _activePlayerID = -1;
 
@@ -211,7 +216,11 @@ export class Game {
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
-            joinPacket.badge = Badges.fromString(this.console.getBuiltInCVar("cv_player_badge"));
+
+            const badge = this.console.getBuiltInCVar("cv_loadout_badge");
+            if (badge) {
+                joinPacket.badge = Badges.fromString(badge);
+            }
 
             for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
                 joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
@@ -469,7 +478,7 @@ export class Game {
                 name: newPlayer.name,
                 hasColor: newPlayer.hasColor,
                 nameColor: new Color(newPlayer.nameColor),
-                badge: newPlayer.badge
+                badge: newPlayer.loadout.badge
             });
         }
 

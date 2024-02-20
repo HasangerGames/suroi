@@ -3,19 +3,19 @@ import $ from "jquery";
 import { isMobile } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
+import { Badges } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
 import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { dropItemListener, requestFullscreen } from "./utils/misc";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { Badges } from "../../../common/src/definitions/badges";
+import { requestFullscreen } from "./utils/misc";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -251,8 +251,8 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        if (skin.notInLoadout ?? (skin.roleRequired !== undefined &&
-            skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))) continue;
+        const role = game.console.getBuiltInCVar("dv_role");
+        if (skin.hideFromLoadout === true || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -390,41 +390,46 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    const allowedBadges = Badges.definitions.filter((badge) => {
-        return badge.roleRequired && badge.roleRequired === game.console.getBuiltInCVar("dv_role");
-    });
+    const allowedBadges = Badges.definitions.filter(badge => !("roleRequired" in badge) || badge.roleRequired === game.console.getBuiltInCVar("dv_role"));
+
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
-        const noBadgeItem =
-                $(`<div id="badge-none" class="badges-list-item-container">
-    <div class="badges-list-item">
-    </div>
-    <span class="badge-name">None</span>
-    </div>`);
+
+        // ???
+        /* eslint-disable @typescript-eslint/quotes, quotes */
+        const noBadgeItem = $(
+            `<div id="badge-" class="badges-list-item-container">\
+            <div class="badges-list-item"> </div>\
+            <span class="badge-name">None</span>\
+            </div>`
+        );
+
         noBadgeItem.on("click", function() {
-            game.console.setBuiltInCVar("cv_player_badge", "none");
+            game.console.setBuiltInCVar("cv_loadout_badge", "");
             $(this).addClass("selected").siblings().removeClass("selected");
         });
+
         $("#badges-list").append(noBadgeItem);
         for (const badge of allowedBadges) {
-            /* eslint-disable @typescript-eslint/restrict-template-expressions */
             // noinspection CssUnknownTarget
-            const badgeItem =
-                $(`<div id="badge-${badge.idString}" class="badges-list-item-container">
-    <div class="badges-list-item">
-        <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>
-    </div>
-    <span class="badge-name">${badge.name}</span>
-    </div>`);
+            const badgeItem = $(
+                `<div id="badge-${badge.idString}" class="badges-list-item-container">\
+                <div class="badges-list-item">\
+                    <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>\
+                </div>\
+                <span class="badge-name">${badge.name}</span>\
+                </div>`
+            );
+
             badgeItem.on("click", function() {
-                game.console.setBuiltInCVar("cv_player_badge", badge.idString);
+                game.console.setBuiltInCVar("cv_loadout_badge", badge.idString);
                 $(this).addClass("selected").siblings().removeClass("selected");
             });
+
             $("#badges-list").append(badgeItem);
         }
-        $(`#badge-${game.console.getBuiltInCVar("cv_player_badge")}`).addClass(
-            "selected"
-        );
+
+        $(`#badge-${game.console.getBuiltInCVar("cv_loadout_badge")}`).addClass("selected");
     }
 
     addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {

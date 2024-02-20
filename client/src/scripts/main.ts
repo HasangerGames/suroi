@@ -117,9 +117,7 @@ $(async(): Promise<void> => {
     const updateServerSelector = (): void => {
         if (!selectedRegion) { // Handle invalid region
             selectedRegion = regionInfo[Config.defaultRegion];
-            game.console.setBuiltInCVar("cv_region", undefined);
-            disableDuoPlayButton("Region doesn't have duos");
-            disableSoloPlayButton("Region doesn't have solos");
+            game.console.setBuiltInCVar("cv_region", "");
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");

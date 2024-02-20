@@ -10,25 +10,17 @@
 
     let hitboxes = [
         ...new HitboxGroup(
-            RectangleHitbox.fromRect(1.47, 102.18, Vec.create(129.93, 73.42)),
-            RectangleHitbox.fromRect(126.01, 1.5, Vec.create(67.66, 123.77)),
-            RectangleHitbox.fromRect(84.61, 1.48, Vec.create(88.35, 74.7)),
-            RectangleHitbox.fromRect(74.74, 1.52, Vec.create(-113.86, -33.25)),
-            RectangleHitbox.fromRect(1.49, 8.59, Vec.create(-15.17, 65.39)),
-            RectangleHitbox.fromRect(84.61, 1.49, Vec.create(88.35, 49.55)),
-            RectangleHitbox.fromRect(1.51, 56, Vec.create(-77.24, -5)),
-            RectangleHitbox.fromRect(207.5, 1.5, Vec.create(25.75, 23.08)),
-            RectangleHitbox.fromRect(84.61, 1.49, Vec.create(88.35, 98.77)),
-            RectangleHitbox.fromRect(21.42, 1.48, Vec.create(-5.21, 61.83)),
-            RectangleHitbox.fromRect(1.47, 63.43, Vec.create(5.4, 92.81)),
-            RectangleHitbox.fromRect(1.49, 8.6, Vec.create(-42.55, 65.39)),
-            RectangleHitbox.fromRect(33, 1.48, Vec.create(-59, 61.83)),
-            RectangleHitbox.fromRect(1.44, 8.6, Vec.create(-75.61, 65.39)),
-            RectangleHitbox.fromRect(1.46, 8.6, Vec.create(-102.97, 65.39)),
-            RectangleHitbox.fromRect(13, 1.48, Vec.create(-110, 61.83)),
-            RectangleHitbox.fromRect(1.46, 55.47, Vec.create(-116.51, 34.84)),
-            RectangleHitbox.fromRect(35.45, 1.47, Vec.create(-133.5, 7.85))
-        ).transform(Vec.create(4.5, 0)).toJSON().hitboxes
+            RectangleHitbox.fromRect(8.93, 2.09, Vec.create(-9.53, -4.78)),
+            RectangleHitbox.fromRect(8.93, 2.09, Vec.create(9.51, -4.78)),
+            RectangleHitbox.fromRect(2.21, 35.83, Vec.create(14.37, 12.09)),
+            RectangleHitbox.fromRect(2.14, 35.83, Vec.create(-14.33, 12.09)),
+            RectangleHitbox.fromRect(30.88, 1.98, Vec.create(0.04, 29.78)),
+            RectangleHitbox.fromRect(0.99, 14, Vec.create(-20.79, -38)),
+            RectangleHitbox.fromRect(12, 1.25, Vec.create(-14, -46.22)),
+            RectangleHitbox.fromRect(13, 1.25, Vec.create(13.5, -46.22)),
+            RectangleHitbox.fromRect(1, 73, Vec.create(20.59, -8.5)),
+            RectangleHitbox.fromRect(0.99, 45, Vec.create(-20.79, 5.5))
+        ).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -98,7 +90,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/port_floor.svg");
+    const bgImage = loadImage("/img/game/buildings/tugboat_floor.svg");
 
 </script>
 

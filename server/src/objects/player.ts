@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
 import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
@@ -40,7 +41,10 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+<<<<<<< HEAD
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
+=======
+>>>>>>> 347e005499b26741aab8d411042b8443884f80e1
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -53,6 +57,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     tid: number = 0;
 
     readonly loadout: {
+        badge?: BadgeDefinition
         skin: SkinDefinition
         emotes: EmoteDefinition[]
     };
@@ -294,7 +299,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly isDev: boolean;
     readonly hasColor: boolean;
     readonly nameColor: number;
-    badge: BadgeDefinition;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move
@@ -340,13 +344,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.name = GameConstants.player.defaultName;
         this.ip = userData.ip;
         this.role = userData.role;
-        this.badge = userData.badge;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "mobile_home_wall_3", position);
+        this.objectToPlace = new Obstacle(game, "tire", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -363,10 +366,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         };
 
         this.rotation = 0;
-
         this.joinTime = game.now;
+<<<<<<< HEAD
 
         this.hitbox = new CircleHitbox(GameConstants.player.radius, this.spawnPosition);
+=======
+        this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
+>>>>>>> 347e005499b26741aab8d411042b8443884f80e1
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
@@ -1010,7 +1016,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillFeedMessageType.Kill,
                 playerID: this.id,
-                playerBadge: this.badge,
+                playerBadge: this.loadout.badge,
                 weaponUsed: weaponUsed?.definition
             };
 
@@ -1019,8 +1025,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     killFeedMessage.killType = KillType.TwoPartyInteraction;
                     killFeedMessage.killerID = source.id;
                     killFeedMessage.kills = source.kills;
-                    if (source.badge) {
-                        killFeedMessage.killerBadge = source.badge;
+                    if (source.loadout.badge) {
+                        killFeedMessage.killerBadge = source.loadout.badge;
                     }
 
                     if (source.activeItem.definition.killstreak) {
@@ -1099,7 +1105,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        if (this.loadout.skin.notInLoadout && this.loadout.skin.noDrop !== true) {
+        if (this.loadout.skin.hideFromLoadout && this.loadout.skin.noDrop !== true) {
             this.game.addLoot(
                 this.loadout.skin,
                 this.position
