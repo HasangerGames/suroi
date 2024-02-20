@@ -8,6 +8,7 @@ export class TeamPacket extends Packet {
 
     players: number[] = [];
     positions: Vector[] = [];
+    healths: number[] = [];
 
     override serialize(): void {
         super.serialize();
@@ -28,6 +29,13 @@ export class TeamPacket extends Packet {
                 GameConstants.maxPosition,
                 24);
         }
+
+        // Must be the same length as the amount of players (logically)
+        for (const health of this.healths) {
+            // We do not need the exact health of our teammates
+            // a uint8 is enough to represent the health of a friendly
+            stream.writeUint8(health);
+        }
     }
 
     override deserialize(): void {
@@ -47,6 +55,11 @@ export class TeamPacket extends Packet {
                 GameConstants.maxPosition,
                 24
             ));
+        }
+
+        // Read the number of healths
+        for (let i = 0; i < numPlayers; i++) {
+            this.healths.push(this.stream.readUint8());
         }
     }
 }
