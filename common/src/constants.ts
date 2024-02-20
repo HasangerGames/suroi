@@ -35,7 +35,8 @@ export enum PacketType {
     Ping,
     Spectate,
     Report,
-    MapPing
+    MapPing,
+    Team
 }
 
 export enum AnimationType {
