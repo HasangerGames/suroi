@@ -21,7 +21,8 @@ export const Config = {
 
     mapName: "arena",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.SameTID, radius: 25},
+
 
     maxTeamSize: 3,
 
@@ -78,6 +79,9 @@ export interface ConfigType {
      */
     readonly spawn: {
         readonly mode: SpawnMode.Normal
+    } | {
+        readonly mode: SpawnMode.SameTID
+        readonly radius: number
     } | {
         readonly mode: SpawnMode.Random
     } | {
