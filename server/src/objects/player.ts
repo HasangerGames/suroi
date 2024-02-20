@@ -41,10 +41,6 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-<<<<<<< HEAD
-import { type BadgeDefinition } from "../../../common/src/definitions/badges";
-=======
->>>>>>> 347e005499b26741aab8d411042b8443884f80e1
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -367,12 +363,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.rotation = 0;
         this.joinTime = game.now;
-<<<<<<< HEAD
-
-        this.hitbox = new CircleHitbox(GameConstants.player.radius, this.spawnPosition);
-=======
         this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
->>>>>>> 347e005499b26741aab8d411042b8443884f80e1
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
