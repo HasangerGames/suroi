@@ -49,6 +49,7 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { TeamPacket } from "../../../common/src/packets/teamPacket";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -256,6 +257,12 @@ export class Game {
                     packet.previousData = this.uiManager;
                     packet.deserialize(stream);
                     this.processUpdate(packet);
+                    break;
+                }
+                case PacketType.Team: {
+                    const packet = new TeamPacket();
+                    console.log("Team Packet Recieved!")
+                    packet.deserialize(stream);
                     break;
                 }
                 case PacketType.GameOver: {

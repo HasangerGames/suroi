@@ -1,9 +1,10 @@
 import { GameConstants, PacketType } from "../constants";
+import { SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
 export class TeamPacket extends Packet {
-    override readonly allocBytes = 1;
+    override readonly allocBytes = 10;
     override readonly type = PacketType.Team;
 
     players: number[] = [];
@@ -38,15 +39,15 @@ export class TeamPacket extends Packet {
         }
     }
 
-    override deserialize(): void {
+    override deserialize(stream: SuroiBitStream): void {
         // Read the number of players
-        const numPlayers = this.stream.readUint8();
+        const numPlayers = stream.readUint8();
         for (let i = 0; i < numPlayers; i++) {
             this.players.push(this.stream.readObjectID());
         }
 
         // Read the number of positions
-        const numPositions = this.stream.readUint8();
+        const numPositions = stream.readUint8();
         for (let i = 0; i < numPositions; i++) {
             this.positions.push(this.stream.readVector(
                 -GameConstants.maxPosition,
@@ -59,7 +60,7 @@ export class TeamPacket extends Packet {
 
         // Read the number of healths
         for (let i = 0; i < numPlayers; i++) {
-            this.healths.push(this.stream.readUint8());
+            this.healths.push(stream.readUint8());
         }
     }
 }

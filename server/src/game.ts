@@ -42,14 +42,15 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 
 interface Team {
-    playerIDS: number[]
+    players: number[]
     teamID: number
-    t_kills: number
+    team_kills: number
+    team_leader: number
 }
 
 export class Game {
     readonly _id: number;
-    tidSpawn: Vector;
+    tidSpawn!: Vector;
     get id(): number { return this._id; }
 
     readonly map: Map;
@@ -65,7 +66,6 @@ export class Game {
     readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
     readonly teams: Team[] = [];
-    newTeam: number[] = [];
     /**
      * New players created this tick
      */
@@ -268,6 +268,7 @@ export class Game {
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
 
+                player.teamUpdate();
                 player.secondUpdate();
             }
 
@@ -472,7 +473,19 @@ export class Game {
 
         const player = new Player(this, socket, spawnPosition);
 
-        player.changeTID(playerTID)
+        player.changeTID(playerTID);
+
+        if(!this.teams[playerTID]) {
+            let team: Team = {
+                players: [ player.id ],
+                teamID: playerTID,
+                team_kills: 0,
+                team_leader: player.id
+            }
+            this.teams[playerTID] = team;
+        } {
+            this.teams[playerTID].players.push(player.id)
+        }
 
         // Player is added to the players array when a JoinPacket is received from the client
         return player;
@@ -804,8 +817,6 @@ export class Game {
         } else {
             this.playersWithTID+=1;
         }
-
-        Logger.log(`${this.currentTID}`);
 
         let tid = this.currentTID;
 

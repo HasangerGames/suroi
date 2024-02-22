@@ -41,6 +41,7 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { TeamPacket } from "../../../common/src/packets/teamPacket";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -758,6 +759,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
+    }
+
+    
+    /**
+     * Sends all information to client related to team health, location, etc.
+     */
+    teamUpdate(): void {
+        const packet = new TeamPacket();
+        this.sendPacket(packet);
     }
 
     /**
