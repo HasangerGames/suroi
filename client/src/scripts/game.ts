@@ -261,8 +261,8 @@ export class Game {
                 }
                 case PacketType.Team: {
                     const packet = new TeamPacket();
-                    console.log("Team Packet Recieved!")
                     packet.deserialize(stream);
+                    this.processTeamUpdate(packet)
                     break;
                 }
                 case PacketType.GameOver: {
@@ -573,6 +573,10 @@ export class Game {
             this.soundManager.play("airdrop_ping");
             this.map.pings.add(new Ping(ping));
         }
+    }
+
+    processTeamUpdate(updateData: TeamPacket): void {
+        console.log(updateData);
     }
 
     // yes this might seem evil. but the two local variables really only need to

@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
-import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PacketType, PlayerActions, SpectateActions } from "../../../common/src/constants";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -11,7 +11,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
-import { type Packet } from "../../../common/src/packets/packet";
+import { Packet } from "../../../common/src/packets/packet";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
@@ -372,7 +372,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.effectiveScope = DEFAULT_SCOPE;
 
         // Inventory preset
-        if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
+        /*if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
 
@@ -387,7 +387,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.inventory.items.setItem("8x_scope", 1);
             this.inventory.items.setItem("15x_scope", 1);
             this.inventory.scope = "4x_scope";
-        }
+        } */
 
         this.updateAndApplyModifiers();
         this.dirty.weapons = true;
@@ -767,6 +767,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     teamUpdate(): void {
         const packet = new TeamPacket();
+
+        this.game.livingPlayers.forEach(player => {
+            if(player.tid === this.tid) {
+                packet.healths.push(player._health)
+            }
+        })
+
         this.sendPacket(packet);
     }
 
