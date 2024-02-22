@@ -1150,8 +1150,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Window
         },
         {
-            idString: "ship_cabin_window",
-            name: "Ship Cabin Window",
+            idString: "window2",
+            name: "Window",
             material: "glass",
             health: 20,
             scale: {
@@ -1657,7 +1657,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true
         },
         {
-            idString: "panel_with_a_button",
+            idString: "control_panel",
             name: "Control Panel",
             material: "metal",
             health: 200,
@@ -1673,7 +1673,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Activatable,
             interactText: "Activate",
             replaceWith: {
-                idString: "panel_with_the_button_pressed",
+                idString: "control_panel_activated",
                 delay: 0
             },
             sound: {
@@ -1685,8 +1685,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "panel_with_the_button_pressed",
-            name: "Panel with the button pressed",
+            idString: "control_panel_activated",
+            name: "Control Panel",
             material: "metal",
             health: 200,
             reflectBullets: true,
@@ -1704,8 +1704,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "panel_without_button",
-            name: "Panel without button",
+            idString: "control_panel2",
+            name: "Control Panel",
             material: "metal",
             health: 200,
             reflectBullets: true,
@@ -1723,8 +1723,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "panel_without_button_small",
-            name: "Panel without button small",
+            idString: "control_panel_small",
+            name: "Small Control Panel",
             material: "metal",
             health: 200,
             reflectBullets: true,
@@ -2538,8 +2538,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "tugboat_chair",
-            name: "Tugboat Chair",
+            idString: "office_chair",
+            name: "Office Chair",
             material: "wood",
             health: 140,
             scale: {
@@ -2555,8 +2555,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "tugboat_life_preserver",
-            name: "Tugboat Life Preserver",
+            idString: "life_preserver",
+            name: "Life Preserver",
             material: "stone",
             health: 80,
             scale: {
@@ -2568,6 +2568,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(3.2, 8.87, Vec.create(-0.4, 0)),
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.BuildingsFloor
+        },
+        {
+            idString: "sea_traffic_control",
+            name: "Sea Traffic Control",
+            material: "stone",
+            health: 150,
+            indestructible: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "rock_particle"
+            },
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(20.8, 1.87, Vec.create(-20.4, -19.6)),
+                RectangleHitbox.fromRect(1.52, 2.37, Vec.create(1.62, -19.85)),
+                RectangleHitbox.fromRect(1.74, 17.25, Vec.create(25.14, -11.91)),
+                RectangleHitbox.fromRect(55, 1.78, Vec.create(-2.5, 20.19)),
+                RectangleHitbox.fromRect(1.51, 2.4, Vec.create(13.27, -19.87)),
+                RectangleHitbox.fromRect(1.78, 14.31, Vec.create(25.12, 13.93)),
+                RectangleHitbox.fromRect(1.78, 40.08, Vec.create(-29.91, 1.04))
+            )
         }
     ]
 );
