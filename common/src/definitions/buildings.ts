@@ -2491,6 +2491,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "window2", position: Vec.create(-4.5, -20.57), rotation: 1 },
             { idString: "window2", position: Vec.create(7.4, -20.57), rotation: 1 },
             { idString: "window2", position: Vec.create(19.2, -20.57), rotation: 1 },
+        ],
+        lootSpawners: [
+            { table: "sea_traffic_control_floor", position: Vec.create(0, 0) }
         ]
     }
 ]);
