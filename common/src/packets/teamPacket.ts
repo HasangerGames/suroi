@@ -1,4 +1,4 @@
-import { GameConstants, PacketType } from "../constants";
+import { PacketType } from "../constants";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
@@ -22,13 +22,7 @@ export class TeamPacket extends Packet {
 
         stream.writeUint8(this.positions.length);
         for (const position of this.positions) {
-            stream.writeVector(
-                position,
-                -GameConstants.maxPosition,
-                -GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                24);
+            stream.writePosition(position);
         }
 
         // Must be the same length as the amount of players (logically)
@@ -49,13 +43,7 @@ export class TeamPacket extends Packet {
         // Read the number of positions
         const numPositions = stream.readUint8();
         for (let i = 0; i < numPositions; i++) {
-            this.positions.push(this.stream.readVector(
-                -GameConstants.maxPosition,
-                -GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                24
-            ));
+            this.positions.push(this.stream.readPosition());
         }
 
         // Read the number of healths
