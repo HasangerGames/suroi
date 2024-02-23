@@ -21,8 +21,7 @@ export const Config = {
 
     mapName: "main",
 
-    spawn: { mode: SpawnMode.SameTID, radius: 25},
-
+    spawn: { mode: SpawnMode.SameTID, radius: 25 },
 
     maxTeamSize: 3,
 

@@ -1337,7 +1337,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "tugboat_life_preserver", position: Vec.create(11.23, 14.67), rotation: 0 },
             { idString: "lux_crate", position: Vec.create(-9.62, 4.29), rotation: 1 },
             { idString: "ship_cabin_window", position: Vec.create(-6.09, 30.75), rotation: 1 },
-            { idString: "ship_cabin_window", position: Vec.create(5.63, 30.75), rotation: 1 },
+            { idString: "ship_cabin_window", position: Vec.create(5.63, 30.75), rotation: 1 }
         ],
         subBuildings: [
         ],

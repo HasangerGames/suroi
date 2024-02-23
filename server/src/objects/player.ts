@@ -11,7 +11,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
-import { Packet } from "../../../common/src/packets/packet";
+import { type Packet } from "../../../common/src/packets/packet";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
@@ -761,7 +761,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
-    
     /**
      * Sends all information to client related to team health, location, etc.
      */
@@ -769,10 +768,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const packet = new TeamPacket();
 
         this.game.livingPlayers.forEach(player => {
-            if(player.tid === this.tid) {
-                packet.healths.push(player._health)
+            if (player.tid === this.tid) {
+                packet.healths.push(player._health);
             }
-        })
+        });
 
         this.sendPacket(packet);
     }

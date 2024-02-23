@@ -1,5 +1,5 @@
 import { GameConstants, PacketType } from "../constants";
-import { SuroiBitStream } from "../utils/suroiBitStream";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 

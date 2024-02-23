@@ -409,7 +409,7 @@ export class Game {
                 break;
             }
             case SpawnMode.SameTID: {
-                if(this.playersWithTID == 1) {
+                if (this.playersWithTID == 1) {
                     const gasRadius = this.gas.newRadius ** 2;
                     let foundPosition = false;
                     let tries = 0;
@@ -424,7 +424,7 @@ export class Game {
                                 }
                             }
                         ) ?? spawnPosition;
-    
+
                         const radiusHitbox = new CircleHitbox(50, spawnPosition);
                         for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                             if (object instanceof Player) {
@@ -475,16 +475,16 @@ export class Game {
 
         player.changeTID(playerTID);
 
-        if(!this.teams[playerTID]) {
-            let team: Team = {
-                players: [ player.id ],
+        if (!this.teams[playerTID]) {
+            const team: Team = {
+                players: [player.id],
                 teamID: playerTID,
                 team_kills: 0,
                 team_leader: player.id
-            }
+            };
             this.teams[playerTID] = team;
         } {
-            this.teams[playerTID].players.push(player.id)
+            this.teams[playerTID].players.push(player.id);
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
@@ -810,15 +810,14 @@ export class Game {
     }
 
     get nextPlayerTID(): number {
-
-        if(this.playersWithTID+1 == Config.maxTeamSize) {
-            this.currentTID+=1;
+        if (this.playersWithTID + 1 == Config.maxTeamSize) {
+            this.currentTID += 1;
             this.playersWithTID = 1;
         } else {
-            this.playersWithTID+=1;
+            this.playersWithTID += 1;
         }
 
-        let tid = this.currentTID;
+        const tid = this.currentTID;
 
         return tid;
     }

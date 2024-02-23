@@ -262,7 +262,7 @@ export class Game {
                 case PacketType.Team: {
                     const packet = new TeamPacket();
                     packet.deserialize(stream);
-                    this.processTeamUpdate(packet)
+                    this.processTeamUpdate(packet);
                     break;
                 }
                 case PacketType.GameOver: {
