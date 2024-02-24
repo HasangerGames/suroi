@@ -425,6 +425,13 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1.2 },
             { tier: "ammo", weight: 1 }
         ]
+    },
+    sea_traffic_control_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "radio", weight: 1 }
+        ]
     }
 };
 

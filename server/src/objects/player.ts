@@ -326,7 +326,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
+    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -341,7 +341,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "tire", position);
+        this.objectToPlace = new Obstacle(game, "window2", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
