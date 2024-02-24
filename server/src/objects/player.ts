@@ -769,7 +769,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.game.livingPlayers.forEach(player => {
             if (player.tid === this.tid) {
+                packet.players.push(player.id);
                 packet.healths.push(player._health);
+                packet.positions.push(player.position);
             }
         });
 
