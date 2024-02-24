@@ -308,6 +308,41 @@ logger.indent("Validating ammo types", () => {
                 baseErrorPath: errorPath
             });
 
+            logger.indent("Validating characteristic color", () => {
+                const color = ammo.characteristicColor;
+                const errorPath2 = tester.createPath(errorPath, "characteristic color");
+
+                tester.assertInBounds({
+                    obj: color,
+                    field: "hue",
+                    min: 0,
+                    max: 360,
+                    includeMin: true,
+                    includeMax: true,
+                    baseErrorPath: errorPath2
+                });
+
+                tester.assertInBounds({
+                    obj: color,
+                    field: "saturation",
+                    min: 0,
+                    max: 100,
+                    includeMin: true,
+                    includeMax: true,
+                    baseErrorPath: errorPath2
+                });
+
+                tester.assertInBounds({
+                    obj: color,
+                    field: "lightness",
+                    min: 0,
+                    max: 100,
+                    includeMin: true,
+                    includeMax: true,
+                    baseErrorPath: errorPath2
+                });
+            });
+
             tester.assertNoPointlessValue({
                 obj: ammo,
                 field: "ephemeral",
