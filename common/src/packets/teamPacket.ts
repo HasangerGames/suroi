@@ -37,13 +37,13 @@ export class TeamPacket extends Packet {
         // Read the number of players
         const numPlayers = stream.readUint8();
         for (let i = 0; i < numPlayers; i++) {
-            this.players.push(this.stream.readObjectID());
+            this.players.push(stream.readObjectID());
         }
 
         // Read the number of positions
         const numPositions = stream.readUint8();
         for (let i = 0; i < numPositions; i++) {
-            this.positions.push(this.stream.readPosition());
+            this.positions.push(stream.readPosition());
         }
 
         // Read the number of healths
