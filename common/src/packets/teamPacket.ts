@@ -20,7 +20,7 @@ export class TeamPacket extends Packet {
             stream.writeObjectID(playerId);
         }
 
-        stream.writeUint8(this.positions.length);
+        // Must be the same length as amount of players (logically)
         for (const position of this.positions) {
             stream.writePosition(position);
         }
@@ -41,8 +41,7 @@ export class TeamPacket extends Packet {
         }
 
         // Read the number of positions
-        const numPositions = stream.readUint8();
-        for (let i = 0; i < numPositions; i++) {
+        for (let i = 0; i < numPlayers; i++) {
             this.positions.push(stream.readPosition());
         }
 
