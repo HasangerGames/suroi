@@ -4,7 +4,7 @@ import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
 export class TeamPacket extends Packet {
-    override readonly allocBytes = 10;
+    override readonly allocBytes = 64;
     override readonly type = PacketType.Team;
 
     players: number[] = [];
