@@ -50,6 +50,7 @@ import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
 import { TeamPacket } from "../../../common/src/packets/teamPacket";
+import type { Vector } from "../../../common/src/utils/vector";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -136,6 +137,8 @@ export class Game {
     readonly music: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
+
+    team: Array<{ id: number, position: Vector, health: number }> = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -576,7 +579,17 @@ export class Game {
     }
 
     processTeamUpdate(updateData: TeamPacket): void {
-        console.log(updateData);
+        const newTeam: typeof this["team"] = [];
+        for (let i = 0; i < updateData.players.length; i++) {
+            const player = updateData.players[i];
+            newTeam.push({
+                id: player,
+                health: updateData.healths[i],
+                position: updateData.positions[i]
+            });
+        }
+
+        this.team = newTeam;
     }
 
     // yes this might seem evil. but the two local variables really only need to
