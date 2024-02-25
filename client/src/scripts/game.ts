@@ -589,6 +589,8 @@ export class Game {
             });
         }
 
+        console.log(newTeam)
+
         this.team = newTeam;
     }
 

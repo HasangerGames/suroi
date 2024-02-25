@@ -318,6 +318,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.game) {
             if (!this.isActivePlayer && this.game.activePlayerTID === this.tid) {
                 this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
+                const player = this.game.playerNames.get(this.id);
+                if(player) {
+                    this.images.nameText.style.fill = player.nameColor.toHex();
+                } else {
+                    this.images.nameText.style.fill = "#FFFFFF";
+                }
             }
         }
 
