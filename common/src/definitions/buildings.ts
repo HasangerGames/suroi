@@ -2412,16 +2412,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "tugboat",
+        idString: "tugboat_red",
         name: "Tugboat",
         spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(0, 0)),
         scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(0, 12.5)),
         floorImages: [{
-            key: "tugboat_floor",
+            key: "tugboat_red_floor",
             position: Vec.create(0, 0)
         }],
         ceilingImages: [{
-            key: "tugboat_ceiling",
+            key: "tugboat_red_ceiling",
             position: Vec.create(0, 12.5)
         }],
         floors: [
@@ -2446,6 +2446,45 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "large_drawer", position: Vec.create(9.29, 2.98), rotation: 3 },
             { idString: "life_preserver", position: Vec.create(11.23, 14.67), rotation: 0 },
             { idString: "lux_crate", position: Vec.create(-9.62, 4.29), rotation: 1 },
+            { idString: "window2", position: Vec.create(-6.09, 30.75), rotation: 1 },
+            { idString: "window2", position: Vec.create(5.63, 30.75), rotation: 1 },
+        ]
+    },
+    {
+        idString: "tugboat_white",
+        name: "Tugboat",
+        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(0, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(0, 12.5)),
+        floorImages: [{
+            key: "tugboat_white_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "tugboat_white_ceiling",
+            position: Vec.create(0, 12.5)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(0, -7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(0, -8)) }
+        ],
+        obstacles: [
+            { idString: "tugboat", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "tire", position: Vec.create(21.28, 5.18), rotation: 0 },
+            { idString: "tire", position: Vec.create(21.4, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(21.4, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(-21.55, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(-21.5, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(-21.45, 5.12), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(-11.48, -37.36) },
+            { idString: "regular_crate", position: Vec.create(11.49, -11.45) },
+            { idString: "grenade_crate", position: Vec.create(12.3, -38.43) },
+            { idString: "barrel", position: Vec.create(12.74, -26.23) },
+            { idString: "tugboat_control_panel", position: Vec.create(0, 24.1), rotation: 0 },
+            { idString: "office_chair", position: Vec.create(0, 16.65), rotation: 0 },
+            { idString: "door", position: Vec.create(0.45, -4.8), rotation: 0 },
+            { idString: "large_drawer", position: Vec.create(9.29, 2.98), rotation: 3 },
+            { idString: "life_preserver", position: Vec.create(11.23, 14.67), rotation: 0 },
+            { idString: "gun_case", position: Vec.create(-9.62, 4.29), rotation: 1 },
             { idString: "window2", position: Vec.create(-6.09, 30.75), rotation: 1 },
             { idString: "window2", position: Vec.create(5.63, 30.75), rotation: 1 },
         ]
