@@ -441,8 +441,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             spawnMode: MapObjectSpawnMode.River,
-            hitbox: new CircleHitbox(7),
-            spawnHitbox: new CircleHitbox(8),
+            zIndex: ZIndexes.UnderwaterPlayers - 1,
+            hitbox: new CircleHitbox(8),
+            spawnHitbox: new CircleHitbox(9),
             rotationMode: RotationMode.Full,
             variations: 5,
             particleVariations: 2
