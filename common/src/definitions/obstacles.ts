@@ -2583,14 +2583,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             particleVariations: 2,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(20.8, 1.87, Vec.create(-20.4, -19.6)),
-                RectangleHitbox.fromRect(1.52, 2.37, Vec.create(1.62, -19.85)),
-                RectangleHitbox.fromRect(1.74, 17.25, Vec.create(25.14, -11.91)),
-                RectangleHitbox.fromRect(55, 1.78, Vec.create(-2.5, 20.19)),
-                RectangleHitbox.fromRect(1.51, 2.4, Vec.create(13.27, -19.87)),
-                RectangleHitbox.fromRect(1.78, 14.31, Vec.create(25.12, 13.93)),
-                RectangleHitbox.fromRect(1.78, 40.08, Vec.create(-29.91, 1.04))
+                RectangleHitbox.fromRect(1.87, 20.8, Vec.create(19.6, -20.4)),
+                RectangleHitbox.fromRect(2.37, 1.52, Vec.create(19.85, 1.62)),
+                RectangleHitbox.fromRect(17.25, 1.74, Vec.create(11.91, 25.14)),
+                RectangleHitbox.fromRect(1.78, 55, Vec.create(-20.19, -2.5)),
+                RectangleHitbox.fromRect(2.4, 1.51, Vec.create(19.87, 13.27)),
+                RectangleHitbox.fromRect(14.31, 1.78, Vec.create(-13.93, 25.12)),
+                RectangleHitbox.fromRect(40.08, 1.78, Vec.create(-1.04, -29.91))
             )
-        }
+        },
     ]
 );
