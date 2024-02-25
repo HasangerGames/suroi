@@ -445,7 +445,7 @@ export class Game {
         }
 
         const badge = packet.badge;
-        if (badge && (badge.roleRequired ?? player.role) === player.role) {
+        if (badge && (!badge.roles || (player.role !== undefined && badge.roles?.includes(player.role)))) {
             player.loadout.badge = packet.badge;
         }
         player.loadout.emotes = packet.emotes;

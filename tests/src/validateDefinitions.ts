@@ -429,10 +429,10 @@ logger.indent("Validating badge definitions", () => {
         const errorPath = tester.createPath("badges", `badge '${badge.idString}'`);
 
         logger.indent(`Validating '${badge.idString}'`, () => {
-            if (badge.roleRequired !== undefined) {
+            if (badge.roles !== undefined) {
                 tester.assertReferenceExistsObject({
                     obj: badge,
-                    field: "roleRequired",
+                    field: "roles",
                     collection: Config.roles,
                     collectionName: "roles",
                     baseErrorPath: errorPath

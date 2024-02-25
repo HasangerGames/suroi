@@ -5,28 +5,33 @@ import {
 
 export interface BadgeDefinition extends ObjectDefinition {
     readonly idString: string
-    readonly roleRequired?: string
+    readonly roles?: string | string[]
 }
 
 export const Badges = new ObjectDefinitions<BadgeDefinition>([
     {
-        idString: "developer",
-        name: "Developer",
-        roleRequired: "dev"
+        idString: "developr",
+        name: "Developr",
+        roles: "dev"
     },
     {
-        idString: "artist",
-        name: "Artist",
-        roleRequired: "artist"
+        idString: "designr",
+        name: "Designr",
+        roles: "artist"
     },
     {
-        idString: "youtuber",
-        name: "Youtuber",
-        roleRequired: "youtuber"
+        idString: "youtubr",
+        name: "Youtubr",
+        roles: "youtubr"
     },
     {
-        idString: "owner",
-        name: "Owner",
-        roleRequired: "hasanger"
+        idString: "ownr",
+        name: "Ownr",
+        roles: "hasanger"
+    },
+    {
+        idString: "contributr+",
+        name: "Contributr+",
+        roles: ["katie", "leia"]
     }
 ]);
