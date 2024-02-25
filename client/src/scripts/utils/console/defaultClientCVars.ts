@@ -30,17 +30,8 @@ export const CVarCasters = Object.freeze({
     cv_language: Casters.toString,
     cv_region: Casters.toString,
     cv_camera_shake_fx: Casters.toBoolean,
-    cv_killfeed_style: (val: string): Result<"text" | "icon", string> => {
-        switch (val) {
-            case "text":
-            case "icon": {
-                return { res: val };
-            }
-            default: {
-                return { err: `Value must be either 'text' or 'icon'; received ${val}` };
-            }
-        }
-    },
+    cv_killfeed_style: Casters.generateUnionCaster(["icon", "text"]),
+    cv_weapon_slot_style: Casters.generateUnionCaster(["simple", "colored"]),
     cv_movement_smoothing: Casters.toBoolean,
     cv_responsive_rotation: Casters.toBoolean,
     cv_antialias: Casters.toBoolean,
@@ -105,6 +96,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_region: "",
     cv_camera_shake_fx: true,
     cv_killfeed_style: "text",
+    cv_weapon_slot_style: "simple",
     cv_movement_smoothing: true,
     cv_responsive_rotation: true,
     cv_antialias: true,

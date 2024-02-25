@@ -50,6 +50,7 @@ export const tester = (() => {
             errorPath: string
         }) & OtherParams
     ) => void;
+
     function createDualForm<
         PlainValue,
         OtherParams extends object = object
@@ -355,7 +356,7 @@ export const tester = (() => {
          */
         assertIsRealNumber,
         /**
-         * Checks for ]-∞, ∞[
+         * Checks for ]-∞, ∞[ (aka `ℝ`)
          */
         assertIsFiniteRealNumber,
         /**
@@ -363,11 +364,11 @@ export const tester = (() => {
          */
         assertIsPositiveReal,
         /**
-         * Checks for `[0, ∞[`
+         * Checks for `[0, ∞[` (aka `ℝ⁺ ∪ { 0 }`)
          */
         assertIsPositiveFiniteReal,
         /**
-         * Checks for `[0, ∞] ∩ ℤ`
+         * Checks for `[0, ∞] ∩ ℤ` (aka `ℤ⁺ ∪ { 0 }`)
          */
         assertIsNaturalNumber,
         /**

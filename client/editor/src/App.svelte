@@ -10,16 +10,13 @@
 
     let hitboxes = [
         ...new HitboxGroup(
-            RectangleHitbox.fromRect(8.93, 2.09, Vec.create(-9.53, -4.78)),
-            RectangleHitbox.fromRect(8.93, 2.09, Vec.create(9.51, -4.78)),
-            RectangleHitbox.fromRect(2.21, 35.83, Vec.create(14.37, 12.09)),
-            RectangleHitbox.fromRect(2.14, 35.83, Vec.create(-14.33, 12.09)),
-            RectangleHitbox.fromRect(30.88, 1.98, Vec.create(0.04, 29.78)),
-            RectangleHitbox.fromRect(0.99, 14, Vec.create(-20.79, -38)),
-            RectangleHitbox.fromRect(12, 1.25, Vec.create(-14, -46.22)),
-            RectangleHitbox.fromRect(13, 1.25, Vec.create(13.5, -46.22)),
-            RectangleHitbox.fromRect(1, 73, Vec.create(20.59, -8.5)),
-            RectangleHitbox.fromRect(0.99, 45, Vec.create(-20.79, 5.5))
+            RectangleHitbox.fromRect(20.8, 1.87, Vec.create(-20.4, -19.6)),
+            RectangleHitbox.fromRect(1.52, 2.37, Vec.create(1.62, -19.85)),
+            RectangleHitbox.fromRect(1.74, 17.25, Vec.create(25.14, -11.91)),
+            RectangleHitbox.fromRect(55, 1.78, Vec.create(-2.5, 20.19)),
+            RectangleHitbox.fromRect(1.51, 2.4, Vec.create(13.27, -19.87)),
+            RectangleHitbox.fromRect(1.78, 14.31, Vec.create(25.12, 13.93)),
+            RectangleHitbox.fromRect(1.78, 40.08, Vec.create(-29.91, 1.04))
         ).toJSON().hitboxes
     ];
 
@@ -90,7 +87,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/tugboat_floor.svg");
+    const bgImage = loadImage("/img/game/buildings/sea_traffic_control_floor.svg");
 
 </script>
 

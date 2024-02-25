@@ -1,6 +1,8 @@
+import $ from "jquery";
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
-import type { BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
@@ -9,7 +11,6 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
 import { formatDate } from "./misc";
-import $ from "jquery";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -348,14 +349,33 @@ export class UIManager {
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
+        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active").css("outline-color", "");
         const max = GameConstants.player.maxWeapons;
         for (let i = 0; i < max; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
             const weapon = inventory.weapons[i];
+            const isActive = this.inventory.activeWeaponIndex === i;
 
             if (weapon) {
+                const isGun = "ammoType" in weapon.definition;
+                const color = isGun
+                    ? Ammos.fromString((weapon.definition as GunDefinition).ammoType).characteristicColor
+                    : { hue: 0, saturation: 0, lightness: 0 };
+
                 container
                     .addClass("has-item")
+                    .toggleClass("active", isActive)
+                    .css(isGun && this.game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored"
+                        ? {
+                            "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
+                            "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
+                            color: `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                        }
+                        : {
+                            "outline-color": "",
+                            "background-color": "",
+                            color: ""
+                        })
                     .children(".item-name")
                     .text(weapon.definition.name);
 
@@ -374,15 +394,12 @@ export class UIManager {
                         .css("color", weapon.count > 0 ? "inherit" : "red");
                 }
             } else {
-                container.removeClass("has-item");
-                container.children(".item-name").text("");
+                container.removeClass("has-item").css("background-color", "");
+                container.children(".item-name").css("color", "").text("");
                 container.children(".item-image").removeAttr("src").hide();
                 container.children(".item-ammo").text("");
             }
         }
-
-        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active");
-        $(`#weapon-slot-${this.inventory.activeWeaponIndex + 1}`).addClass("active");
     }
 
     updateItems(): void {
