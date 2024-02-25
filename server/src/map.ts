@@ -16,7 +16,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
-import { Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
 export class Map {
     readonly game: Game;
@@ -457,7 +457,7 @@ export class Map {
         // so it can retry on different orientations
         getOrientation?: (orientation: Orientation) => void
     }): Vector | undefined {
-        let position = Vec.create(0, 0);
+        let position: Vector | undefined = Vec.create(0, 0);
 
         const scale = params?.scale ?? 1;
         let orientation = params?.orientation ?? 0;
@@ -470,7 +470,7 @@ export class Map {
 
         const spawnMode = params?.spawnMode ?? MapObjectSpawnMode.Grass;
 
-        let getPosition: () => Vector;
+        let getPosition: () => Vector | undefined;
 
         const rect = initialHitbox.toRectangle();
         const width = rect.max.x - rect.min.x;
@@ -502,6 +502,26 @@ export class Map {
             }
             case MapObjectSpawnMode.RiverBank: {
                 getPosition = () => pickRandomInArray(this.terrain.rivers).bankHitbox.randomPoint();
+                break;
+            }
+            case MapObjectSpawnMode.Bridge: {
+                getPosition = () => {
+                    const river = pickRandomInArray(this.terrain.rivers.filter(river => river.width <= 20));
+                    if (river === undefined) return;
+                    
+                    // Find the best orientation
+                    const pos = randomFloat(0.25, 0.75);
+                    const direction = Angle.unitVectorToRadians(river.getNormal(pos));
+                    let shortestDistance = Number.MAX_VALUE;
+                    for (let i = 0; i < 4; i++) {
+                        const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[i]));
+                        if (distance < shortestDistance) {
+                            shortestDistance = distance;
+                            orientation = i as Orientation;
+                        }
+                    }
+                    return river.getPosition(pos);
+                }
                 break;
             }
             case MapObjectSpawnMode.Beach: {
@@ -544,7 +564,7 @@ export class Map {
 
             position = getPosition();
 
-            if (params?.collides?.(position)) {
+            if (!position || params?.collides?.(position)) {
                 collided = true;
                 continue;
             }

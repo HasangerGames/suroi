@@ -666,35 +666,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             reflectBullets: true
         },
         {
-            idString: "small_bridge",
-            name: "Small Bridge",
-            material: "wood",
-            health: 1000,
-            indestructible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(44, 2, Vec.create(0, 6)),
-                RectangleHitbox.fromRect(44, 2, Vec.create(0, -6)),
-                new CircleHitbox(1.3, Vec.create(-22, 6.6)),
-                new CircleHitbox(1.3, Vec.create(-10.09, 6.6)),
-                new CircleHitbox(1.3, Vec.create(0.1, 6.6)),
-                new CircleHitbox(1.3, Vec.create(10.30, 6.6)),
-                new CircleHitbox(1.3, Vec.create(22, 6.6)),
-                new CircleHitbox(1.3, Vec.create(-22, -6.7)),
-                new CircleHitbox(1.3, Vec.create(-10.09, -6.7)),
-                new CircleHitbox(1.3, Vec.create(0.1, -6.7)),
-                new CircleHitbox(1.3, Vec.create(10.30, -6.7)),
-                new CircleHitbox(1.3, Vec.create(22, -6.7))
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(28, 18),
-            rotationMode: RotationMode.Limited,
-            noResidue: true,
-            frames: {
-                particle: "wall_particle"
-            },
-            noBulletCollision: true,
-            spawnMode: MapObjectSpawnMode.River
-        },
-        {
             idString: "airdrop_crate_locked",
             name: "Airdrop",
             material: "metal",
@@ -2609,6 +2580,36 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnMode: MapObjectSpawnMode.River,
             variations: 2,
             zIndex: ZIndexes.ObstaclesLayer3
+        },
+        {
+            idString: "small_bridge",
+            name: "Small Bridge",
+            material: "wood",
+            health: 150,
+            indestructible: true,
+            invisible: true,
+            noBulletCollision: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "furniture_particle"
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.02, 56, Vec.create(6.39, 0)),
+                RectangleHitbox.fromRect(1.02, 56, Vec.create(-6.39, 0)),
+                ...Array.from({ length: 2 }, (_, i) => {
+                    const a = i === 0 ? 1 : -1;
+                    return Array.from({ length: 2 }, (_, i) => {
+                        const b = i === 0 ? 1 : -1;
+                        return [
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 0)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 9.54 * b)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 19.17 * b)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 27.97 * b))
+                        ];
+                    }).flat();
+                }).flat()
+            )
         },
     ]
 );

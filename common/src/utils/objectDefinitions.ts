@@ -100,6 +100,7 @@ export enum MapObjectSpawnMode {
     GrassAndSand,
     RiverBank,
     River,
+    Bridge,
     Beach
 }
 

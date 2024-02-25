@@ -2496,5 +2496,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         lootSpawners: [
             { table: "sea_traffic_control_floor", position: Vec.create(0, 0) }
         ]
+    },
+    {
+        idString: "small_bridge",
+        name: "Small Bridge",
+        spawnHitbox: RectangleHitbox.fromRect(20, 62),
+        spawnMode: MapObjectSpawnMode.Bridge,
+        floorImages: [{
+            key: "small_bridge",
+            position: Vec.create(0, 0)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec.create(0, 0)) }
+        ],
+        obstacles: [
+            { idString: "small_bridge", position: Vec.create(0, 0), rotation: 0 }
+        ],
+        lootSpawners: [
+            { table: "ground_loot", position: Vec.create(0, 0) }
+        ]
     }
 ]);

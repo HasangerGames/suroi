@@ -17,7 +17,7 @@
             RectangleHitbox.fromRect(1.51, 2.4, Vec.create(13.27, -19.87)),
             RectangleHitbox.fromRect(1.78, 14.31, Vec.create(25.12, 13.93)),
             RectangleHitbox.fromRect(1.78, 40.08, Vec.create(-29.91, 1.04))
-        ).toJSON().hitboxes
+        ).transform(Vec.create(0, 0), 1, 3).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -87,7 +87,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/sea_traffic_control_floor.svg");
+    const bgImage = loadImage("/img/game/buildings/small_bridge.svg");
 
 </script>
 

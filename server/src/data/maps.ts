@@ -53,13 +53,15 @@ export const Maps: Record<string, MapDefinition> = {
             minAmount: 3,
             maxAmount: 3,
             wideChance: 0.35,
-            minWidth: 14,
-            maxWidth: 20,
-            minWideWidth: 27,
-            maxWideWidth: 32
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30
         },
         buildings: {
             port_complex: 1,
+            sea_traffic_control: 1,
+            small_bridge: 4,
             armory: 1,
             refinery: 1,
             warehouse: 5,
@@ -88,6 +90,7 @@ export const Maps: Record<string, MapDefinition> = {
             rock: 150,
             river_rock: 45,
             bush: 110,
+            lily_pad: 20,
             blueberry_bush: 30,
             barrel: 80,
             viking_chest: 1,
@@ -337,7 +340,7 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 32,
         genCallback(map) {
             //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("sea_traffic_control", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("small_bridge", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -346,7 +349,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("tugboat_control_panel", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("barrel", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
