@@ -2593,5 +2593,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(40.08, 1.78, Vec.create(-1.04, -29.91))
             )
         },
+        {
+            idString: "lily_pad",
+            name: "Lily Pad",
+            material: "bush",
+            health: 80,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.8
+            },
+            hitbox: new CircleHitbox(4.2),
+            noCollisions: true,
+            rotationMode: RotationMode.Full,
+            spawnMode: MapObjectSpawnMode.River,
+            variations: 2,
+            zIndex: ZIndexes.ObstaclesLayer3
+        },
     ]
 );
