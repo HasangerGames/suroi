@@ -392,7 +392,6 @@ export class UIManager {
                         .css("background-color", GHILLIE_TINT);
                 }
 
-
                 if (weapon.count !== undefined) {
                     container
                         .children(".item-ammo")
