@@ -385,7 +385,7 @@ export class UIManager {
                     .toggleClass("is-fists", isFists)
                     .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
                     .show();
-                
+
                 if (weapon.definition.idString === "ghillie_suit") {
                     container
                         .children(".item-image")
