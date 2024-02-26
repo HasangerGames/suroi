@@ -328,43 +328,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             allowFlyover: FlyoverPref.Never
         },
         {
-            idString: "viking_chest",
-            name: "Viking Chest",
-            material: "wood",
-            health: 150,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
-            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.4)),
-            rotationMode: RotationMode.Limited,
-            hasLoot: true,
-            hideOnMap: true,
-            spawnMode: MapObjectSpawnMode.Beach,
-            allowFlyover: FlyoverPref.Always
-        },
-        {
-            idString: "grenade_box",
-            name: "grenade_box",
-            material: "cardboard",
-            health: 60,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.8
-            },
-            hitbox: RectangleHitbox.fromRect(4.4, 4.4),
-            rotationMode: RotationMode.Limited,
-            zIndex: ZIndexes.ObstaclesLayer2,
-            hasLoot: true,
-            frames: {
-                particle: "box_particle",
-                residue: "box_residue"
-
-            }
-        },
-        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",
@@ -2542,6 +2505,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.BuildingsFloor
         },
         {
+            idString: "grenade_box",
+            name: "grenade_box",
+            material: "cardboard",
+            health: 60,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: RectangleHitbox.fromRect(4.4, 4.4),
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer2,
+            hasLoot: true,
+            frames: {
+                particle: "box_particle",
+                residue: "box_residue"
+
+            }
+        },
+        {
             idString: "sea_traffic_control",
             name: "Sea Traffic Control",
             material: "stone",
@@ -2611,5 +2594,48 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 }).flat()
             )
         },
+        {
+            idString: "viking_chest",
+            name: "Viking Chest",
+            material: "wood",
+            health: 150,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.4)),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            hideOnMap: true,
+            frames: {
+                particle: "chest_particle",
+                residue: "chest_residue"  
+            },
+            spawnMode: MapObjectSpawnMode.Beach,
+            allowFlyover: FlyoverPref.Always
+        },
+        {
+            idString: "river_chest",
+            name: "River Chest",
+            material: "wood",
+            health: 150,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.4)),
+            rotationMode: RotationMode.None,
+            zIndex: ZIndexes.UnderwaterPlayers - 1,
+            hasLoot: true,
+            hideOnMap: true,
+            frames: {
+                particle: "chest_particle",
+                residue: "chest_residue"  
+            },
+            spawnMode: MapObjectSpawnMode.River,
+            allowFlyover: FlyoverPref.Always
+        }
     ]
 );

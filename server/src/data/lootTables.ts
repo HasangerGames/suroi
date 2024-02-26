@@ -69,6 +69,27 @@ export const LootTables: Record<string, LootTable> = {
             ]
         ]
     },
+    river_chest: {
+        min: 1,
+        max: 1,
+        loot: [
+            [
+                { tier: "river_chest_guns", weight: 1 }
+            ],
+            [
+                { tier: "river_chest_guns", weight: 1 }
+            ],
+            [
+                { tier: "special_equipment", weight: 0.65 },
+                { tier: "river_chest_guns", weight: 0.5 },
+                { tier: "special_scopes", weight: 0.3 }
+            ],
+            [
+                { tier: "special_equipment", weight: 0.65 },
+                { tier: "special_scopes", weight: 0.3 }
+            ]
+        ]
+    },
     aegis_crate: {
         min: 3,
         max: 5,
@@ -634,5 +655,18 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "stoner_63", weight: 0.1 },
         { item: "tango_51", weight: 0.1 },
         { item: "g19", weight: 0.1 }
+    ],
+    river_chest_guns: [
+        { item: "m16a4", weight: 1 },
+        { item: "cz600", weight: 0.75 },
+        { item: "mini14", weight: 0.75 },
+        { item: "mcx_spear", weight: 0.55 },
+        { item: "sr25", weight: 0.5 },
+        { item: "vss", weight: 0.5 },
+        { item: "mosin", weight: 0.45 },
+        { item: "vector", weight: 0.4 },
+        { item: "stoner_63", weight: 0.08 },
+        { item: "tango_51", weight: 0.08 },
+        { item: "g19", weight: 0.08 }
     ]
 };
