@@ -7,9 +7,11 @@ import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
+import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
+import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -65,7 +67,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
         if (this.game.map.terrain.groundRect.isPointInside(this.position)) {
             for (const river of this.game.map.terrain.getRiversInPosition(this.position)) {
-                if (river.waterHitbox.isPointInside(this.position)) {
+                if (river.waterHitbox.isPointInside(this.position) && this.game.map.terrain.getFloor(this.position) === "water") {
+                    Logger.log(this.game.map.terrain.getFloor(this.position));
                     const tangent = river.getTangent(
                         river.getClosestT(this.position)
                     );
