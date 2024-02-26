@@ -11,7 +11,10 @@ export interface ModeDefinition {
     readonly bulletTrailAdjust?: string
 }
 
-export interface ReskinDefinition { textures: string[], sounds?: string[] }
+export interface ReskinDefinition {
+    readonly textures: string[]
+    readonly sounds?: string[]
+}
 
 export const Modes: ModeDefinition[] = [
     {

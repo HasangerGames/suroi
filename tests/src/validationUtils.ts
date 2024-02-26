@@ -3,7 +3,7 @@ import { Loots } from "../../common/src/definitions/loots";
 import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
 import { type EaseFunctions } from "../../common/src/utils/math";
-import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
@@ -42,12 +42,12 @@ export const tester = (() => {
         OtherParams extends object
     > = <Target extends object>(
         params: ({
-            obj: Target
-            field: keyof Target
-            baseErrorPath: string
+            readonly obj: Target
+            readonly field: keyof Target
+            readonly baseErrorPath: string
         } | {
-            value: PlainValue
-            errorPath: string
+            readonly value: PlainValue
+            readonly errorPath: string
         }) & OtherParams
     ) => void;
 
@@ -66,12 +66,12 @@ export const tester = (() => {
     ) {
         return <Target extends object>(
             params: ({
-                obj: Target
-                field: keyof Target
-                baseErrorPath: string
+                readonly obj: Target
+                readonly field: keyof Target
+                readonly baseErrorPath: string
             } | {
-                value: PlainValue
-                errorPath: string
+                readonly value: PlainValue
+                readonly errorPath: string
             }) & OtherParams
         ): void => {
             const [value, errorPath] = "value" in params
@@ -100,7 +100,7 @@ export const tester = (() => {
                 ) ?? {})
             };
 
-            if (result === undefined || !(result.errors.length << result.warnings.length)) return;
+            if (result === undefined || Number.isNaN(result.errors.length / result.warnings.length)) return;
 
             const prependErrorPath = (err: string): [string, string] => [errorPath, err];
 
@@ -149,8 +149,8 @@ export const tester = (() => {
     const assertReferenceExists = createDualForm((
         value: string,
         otherParams: {
-            collection: ObjectDefinitions
-            collectionName: string
+            readonly collection: ObjectDefinitions
+            readonly collectionName: string
         },
         forwardTo
     ): undefined => {
@@ -166,8 +166,8 @@ export const tester = (() => {
     const assertReferenceExistsArray = createDualForm((
         value: string,
         otherParams: {
-            collection: ObjectDefinition[]
-            collectionName: string
+            readonly collection: Array<{ readonly idString: string }>
+            readonly collectionName: string
         },
         forwardTo
     ): undefined => {
@@ -189,8 +189,8 @@ export const tester = (() => {
     const assertReferenceExistsObject = createDualForm((
         value: string,
         otherParams: {
-            collection: Record<string, unknown>
-            collectionName: string
+            readonly collection: Record<string, unknown>
+            readonly collectionName: string
         }
     ) => {
         if (value in otherParams.collection) return;
@@ -203,10 +203,10 @@ export const tester = (() => {
     const assertInBounds = createDualForm((
         value: number,
         otherParams: {
-            min: number
-            max: number
-            includeMin?: boolean
-            includeMax?: boolean
+            readonly min: number
+            readonly max: number
+            readonly includeMin?: boolean
+            readonly includeMax?: boolean
         }
     ) => {
         const {
@@ -294,10 +294,10 @@ export const tester = (() => {
     const assertIntAndInBounds = createDualForm((
         value: number,
         otherParams: {
-            min: number
-            max: number
-            includeMin?: boolean
-            includeMax?: boolean
+            readonly min: number
+            readonly max: number
+            readonly includeMin?: boolean
+            readonly includeMax?: boolean
         },
         forwardTo
     ): undefined => {
@@ -326,15 +326,15 @@ export const tester = (() => {
         }
     ) as <Target extends object, Key extends keyof Target, ValueType>(
         params: ({
-            obj: Target
-            field: Key
-            baseErrorPath: string
+            readonly obj: Target
+            readonly field: Key
+            readonly baseErrorPath: string
         } | {
-            value: ValueType
-            errorPath: string
+            readonly value: ValueType
+            readonly errorPath: string
         }) & {
-            defaultValue: ValueType
-            equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
+            readonly defaultValue: ValueType
+            readonly equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
         }
     ) => void;
     // lol
@@ -915,7 +915,7 @@ export const validators = Object.freeze({
     },
     minMax<T>(
         baseErrorPath: string,
-        obj: { min: T, max: T },
+        obj: { readonly min: T, readonly max: T },
         baseValidator: (errorPath: string, value: T) => void,
         comparator?: (a: T, b: T) => number
     ): void {
