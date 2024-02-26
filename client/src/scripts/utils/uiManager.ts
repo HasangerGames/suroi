@@ -9,7 +9,7 @@ import { type GameOverPacket } from "../../../../common/src/packets/gameOverPack
 import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
-import { UI_DEBUG_MODE } from "./constants";
+import { UI_DEBUG_MODE, GHILLIE_TINT } from "./constants";
 import { formatDate } from "./misc";
 
 function safeRound(value: number): number {
@@ -385,6 +385,13 @@ export class UIManager {
                     .toggleClass("is-fists", isFists)
                     .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
                     .show();
+                
+                if (weapon.definition.idString === "ghillie_suit") {
+                    container
+                        .children(".item-image")
+                        .css("background-color", GHILLIE_TINT);
+                }
+
 
                 if (weapon.count !== undefined) {
                     container
