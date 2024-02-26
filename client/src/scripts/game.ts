@@ -137,7 +137,7 @@ export class Game {
         this.inputManager.setupInputs();
 
         // Hide modals
-        $(".dialog").hide()
+        $(".dialog").hide();
 
         // Initialize the Application object
         this.pixi = new Application({
