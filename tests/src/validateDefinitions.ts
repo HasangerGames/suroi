@@ -430,12 +430,20 @@ logger.indent("Validating badge definitions", () => {
 
         logger.indent(`Validating '${badge.idString}'`, () => {
             if (badge.roles !== undefined) {
-                tester.assertReferenceExistsObject({
-                    obj: badge,
-                    field: "roles",
-                    collection: Config.roles,
-                    collectionName: "roles",
-                    baseErrorPath: errorPath
+                const roles = [badge.roles].flat();
+                logger.indent("Validating required roles", () => {
+                    tester.runTestOnArray(
+                        roles,
+                        (role, errorPath) => {
+                            tester.assertReferenceExistsObject({
+                                value: role,
+                                collection: Config.roles,
+                                collectionName: "roles",
+                                errorPath
+                            });
+                        },
+                        errorPath
+                    );
                 });
             }
         });
@@ -2851,7 +2859,7 @@ logger.indent("Validating throwables", () => {
                 });
             }
 
-            logger.indent("Validating detontation", () => {
+            logger.indent("Validating detonation", () => {
                 const detonation = throwable.detonation;
                 const errorPath2 = tester.createPath(errorPath, "detonation");
 
@@ -2991,27 +2999,48 @@ logger.indent("Validating configurations", () => {
                     field: "radius",
                     baseErrorPath: errorPath
                 });
+
+                const map = Maps[ServerConfig.mapName];
+                if (map !== undefined) {
+                    validators.vector(
+                        tester.createPath(errorPath, "spawn position"),
+                        ServerConfig.spawn.position,
+                        {
+                            min: 0,
+                            max: map.width,
+                            includeMin: true,
+                            includeMax: true
+                        },
+                        {
+                            min: 0,
+                            max: map.height,
+                            includeMin: true,
+                            includeMax: true
+                        }
+                    );
+                }
                 break;
             }
             case SpawnMode.Fixed: {
                 const map = Maps[ServerConfig.mapName];
-
-                validators.vector(
-                    tester.createPath(errorPath, "spawn position"),
-                    ServerConfig.spawn.position,
-                    {
-                        min: 0,
-                        max: map.width,
-                        includeMin: true,
-                        includeMax: true
-                    },
-                    {
-                        min: 0,
-                        max: map.height,
-                        includeMin: true,
-                        includeMax: true
-                    }
-                );
+                if (map !== undefined) {
+                    validators.vector(
+                        tester.createPath(errorPath, "spawn position"),
+                        ServerConfig.spawn.position,
+                        {
+                            min: 0,
+                            max: map.width,
+                            includeMin: true,
+                            includeMax: true
+                        },
+                        {
+                            min: 0,
+                            max: map.height,
+                            includeMin: true,
+                            includeMax: true
+                        }
+                    );
+                }
                 break;
             }
         }
@@ -3034,6 +3063,13 @@ logger.indent("Validating configurations", () => {
                 break;
             }
             case GasMode.Debug: {
+                tester.assertNoPointlessValue({
+                    obj: ServerConfig.gas,
+                    field: "overridePosition",
+                    defaultValue: false,
+                    baseErrorPath: errorPath
+                });
+
                 tester.assertIsPositiveReal({
                     obj: ServerConfig.gas,
                     field: "overrideDuration",
@@ -3128,6 +3164,14 @@ logger.indent("Validating configurations", () => {
             field: "defaultRegion",
             collection: ClientConfig.regions,
             collectionName: "regions",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertReferenceExistsArray({
+            obj: ClientConfig,
+            field: "mode",
+            collection: Modes,
+            collectionName: "Modes",
             baseErrorPath: errorPath
         });
     });

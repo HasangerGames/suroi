@@ -65,12 +65,12 @@ export interface ConfigType {
     readonly mapName: keyof typeof Maps
 
     /**
-     * There are 5 spawn modes: Normal, Random, Radius, Fixed, and Center.
-     * SpawnMode.Normal spawns the player at a random location with a minimum distance between players.
-     * SpawnMode.Random spawns the player at a random location.
-     * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
-     * SpawnMode.Fixed always spawns the player at the exact position given.
-     * SpawnMode.Center always spawns the player in the center of the map.
+     * There are 5 spawn modes: `Normal`, `Random`, `Radius`, `Fixed`, and `Center`.
+     * - `SpawnMode.Normal` spawns the player at a random location with a minimum distance between players.
+     * - `SpawnMode.Random` spawns the player at a random location.
+     * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
+     * - `SpawnMode.Fixed` always spawns the player at the exact position given.
+     * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
     readonly spawn: {
         readonly mode: SpawnMode.Normal

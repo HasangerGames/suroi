@@ -114,8 +114,8 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "frag_grenade", count: 1, weight: 1 },
-            { item: "smoke_grenade", count: 1, weight: 1 }
+            { item: "frag_grenade", weight: 1 },
+            { item: "smoke_grenade", weight: 1 }
         ]
     },
     melee_crate: {

@@ -4,6 +4,9 @@ import { RectangleHitbox } from "./hitbox";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { Vec, type Vector } from "./vector";
 
+const π = Math.PI;
+const halfπ = π / 2;
+const τ = 2 * π;
 export const Angle = Object.freeze({
     /**
      * Draws a line between two points and returns that line's angle
@@ -19,8 +22,7 @@ export const Angle = Object.freeze({
      * @param radians The angle, in radians
      */
     normalize(radians: number): number {
-        const π = Math.PI;
-        return Numeric.absMod(radians - π, 2 * π) - π;
+        return Numeric.absMod(radians - π, τ) - π;
     },
     /**
      * Find the smallest difference between two angles
@@ -29,8 +31,7 @@ export const Angle = Object.freeze({
      * @param end The final angle, in radians
      */
     minimize(start: number, end: number): number {
-        const π = Math.PI;
-        return Numeric.absMod(end - start + π, 2 * π) - π;
+        return Numeric.absMod(end - start + π, τ) - π;
     },
     /**
      * Converts degrees to radians
@@ -38,7 +39,7 @@ export const Angle = Object.freeze({
      * @return The angle in radians
      */
     degreesToRadians(degrees: number): number {
-        return degrees * (Math.PI / 180);
+        return degrees * π / 180;
     },
     /**
      * Converts radians to degrees
@@ -46,10 +47,10 @@ export const Angle = Object.freeze({
      * @return The angle in degrees
      */
     radiansToDegrees(radians: number): number {
-        return (radians / Math.PI) * 180;
+        return radians / π * 180;
     },
     orientationToRotation(orientation: number): number {
-        return -this.normalize(orientation * (Math.PI / 2));
+        return -this.normalize(orientation * halfπ);
     },
     /**
      * Converts a unit vector to radians
@@ -274,11 +275,11 @@ export const Collision = Object.freeze({
         const x1 = Geometry.signedAreaTri(startA, endA, endB);
         const x2 = Geometry.signedAreaTri(startA, endA, startB);
 
-        if (x1 !== 0.0 && x2 !== 0.0 && x1 * x2 < 0.0) {
+        if (x1 !== 0 && x2 !== 0 && x1 * x2 < 0) {
             const x3 = Geometry.signedAreaTri(startB, endB, startA);
             const x4 = x3 + x2 - x1;
 
-            if (x3 * x4 < 0.0) {
+            if (x3 * x4 < 0) {
                 return Vec.add(
                     startA,
                     Vec.scale(
@@ -351,12 +352,12 @@ export const Collision = Object.freeze({
         let absDy = Math.abs(d.y);
 
         if (absDx < eps) {
-            d.x = eps * 2.0;
+            d.x = eps * 2;
             absDx = d.x;
         }
 
         if (absDy < eps) {
-            d.y = eps * 2.0;
+            d.y = eps * 2;
             absDy = d.y;
         }
 
@@ -422,12 +423,12 @@ export const Collision = Object.freeze({
         let absDy = Math.abs(d.y);
 
         if (absDx < eps) {
-            d.x = eps * 2.0;
+            d.x = eps * 2;
             absDx = d.x;
         }
 
         if (absDy < eps) {
-            d.y = eps * 2.0;
+            d.y = eps * 2;
             absDy = d.y;
         }
 
@@ -581,7 +582,7 @@ export const Collision = Object.freeze({
         const xo = e0.x + e1.x - Math.abs(n.x);
         const yo = e0.y + e1.y - Math.abs(n.y);
 
-        return xo > 0.0 && yo > 0.0
+        return xo > 0 && yo > 0
             ? xo > yo
                 ? {
                     dir: Vec.create(Math.sign(n.x), 0),
@@ -696,9 +697,9 @@ export type EasingFunction = (t: number) => number;
 export const EaseFunctions = Object.freeze({
     linear: (t: number) => t,
 
-    sineIn: (t: number) => 1 - Math.cos(t * Math.PI / 2),
-    sineOut: (t: number) => Math.sin(t * Math.PI / 2),
-    sineInOut: (t: number) => (1 - Math.cos(Math.PI * t)) / 2,
+    sineIn: (t: number) => 1 - Math.cos(t * halfπ),
+    sineOut: (t: number) => Math.sin(t * halfπ),
+    sineInOut: (t: number) => (1 - Math.cos(π * t)) / 2,
 
     circIn: (t: number) => 1 - Math.sqrt(1 - (t * t)),
     circOut: (t: number) => Math.sqrt(1 - (t - 1) ** 2),
@@ -708,15 +709,15 @@ export const EaseFunctions = Object.freeze({
 
     elasticIn: (t: number) => t === 0 || t === 1
         ? t
-        : -(2 ** (10 * (t - 1))) * Math.sin(Math.PI * (40 * (t - 1) - 3) / 6),
+        : -(2 ** (10 * (t - 1))) * Math.sin(π * (40 * (t - 1) - 3) / 6),
     elasticOut: (t: number) => t === 0 || t === 1
         ? t
-        : 2 ** (-10 * t) * Math.sin(Math.PI * (40 * t - 3) / 6) + 1,
+        : 2 ** (-10 * t) * Math.sin(π * (40 * t - 3) / 6) + 1,
     elasticInOut: (t: number) => t === 0 || t === 1
         ? t
         : t < 0.5
-            ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(Math.PI * (80 * (2 * t - 1) - 9) / 18)
-            : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(Math.PI * (80 * (2 * t - 1) - 9) / 18) + 1,
+            ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18)
+            : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18) + 1,
 
     ...generatePolynomialEasingTriplet(2, "quadratic"),
     ...generatePolynomialEasingTriplet(3, "cubic"),
