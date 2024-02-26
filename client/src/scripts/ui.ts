@@ -218,6 +218,7 @@ Video evidence is required.`)) {
     });
 
     $("#btn-settings").on("click", () => {
+        $(".dialog").hide();
         settingsMenu.fadeToggle(250);
         settingsMenu.removeClass("in-game");
     });
@@ -233,7 +234,7 @@ Video evidence is required.`)) {
     });
 
     const customizeMenu = $("#customize-menu");
-    $("#btn-customize").on("click", () => customizeMenu.fadeToggle(250));
+    $("#btn-customize").on("click", () => { customizeMenu.fadeToggle(250); $(".dialog").hide() });
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
