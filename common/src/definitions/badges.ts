@@ -15,8 +15,8 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
         roles: "dev"
     },
     {
-        idString: "designr",
-        name: "Designr",
+        idString: "artist",
+        name: "Artist",
         roles: "artist"
     },
     {
