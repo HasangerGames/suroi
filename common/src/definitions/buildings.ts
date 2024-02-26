@@ -2448,7 +2448,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "life_preserver", position: Vec.create(101.23, 14.67), rotation: 0 },
             { idString: "lux_crate", position: Vec.create(80.38, 4.29), rotation: 1 },
             { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
-            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 },
+            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
         ]
     },
     {
@@ -2488,7 +2488,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "life_preserver", position: Vec.create(101.23, 14.67), rotation: 0 },
             { idString: "gun_case", position: Vec.create(80.38, 4.29), rotation: 1 },
             { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
-            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 },
+            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
         ]
     },
     {
@@ -2507,7 +2507,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         floors: [
             { type: "wood", hitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)) },
-            { type: "stone", hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) },
+            { type: "stone", hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
         ],
         obstacles: [
             { idString: "sea_traffic_control", position: Vec.create(0, 0), rotation: 0 },
@@ -2532,7 +2532,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "control_panel_small", position: Vec.create(-15.34, -24.7), rotation: 0 },
             { idString: "window2", position: Vec.create(20.57, -4.5), rotation: 0 },
             { idString: "window2", position: Vec.create(20.57, 7.4), rotation: 0 },
-            { idString: "window2", position: Vec.create(20.57, 19.2), rotation: 0 },
+            { idString: "window2", position: Vec.create(20.57, 19.2), rotation: 0 }
         ],
         lootSpawners: [
             { table: "sea_traffic_control_floor", position: Vec.create(0, 0) }
