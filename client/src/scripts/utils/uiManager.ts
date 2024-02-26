@@ -398,8 +398,7 @@ export class UIManager {
                         .children(".item-ammo")
                         .text(weapon.count)
                         .css("color", weapon.count > 0 ? "inherit" : "red");
-                }
-            } else {
+                }} else {
                 container.removeClass("has-item").css("background-color", "");
                 container.children(".item-name").css("color", "").text("");
                 container.children(".item-image").removeAttr("src").hide();
