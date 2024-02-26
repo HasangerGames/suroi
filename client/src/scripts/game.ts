@@ -136,6 +136,9 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
+        // Hide modals
+        $(".dialog").hide()
+
         // Initialize the Application object
         this.pixi = new Application({
             resizeTo: window,
