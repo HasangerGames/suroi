@@ -21,7 +21,7 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     {
         idString: "youtuber",
         name: "Youtuber",
-        roles: "youtuber"
+        roles: "youtubr"
     },
     {
         idString: "owner",

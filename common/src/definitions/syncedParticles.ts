@@ -124,7 +124,7 @@ function createParticle(idString: string, name: string, options?: Partial<Synced
             deviation: 1000
         },
         zIndex: ZIndexes.ObstaclesLayer4,
-        frame: "smoke_grenade_particle",
+        frame: idString === "smoke_grenade_particle" ? undefined : "smoke_grenade_particle",
         ...options
     };
 }
