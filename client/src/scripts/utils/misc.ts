@@ -39,7 +39,7 @@ export function stringIsPositiveNumber(str: string): boolean {
     return matches !== null && matches[0].length === str.length;
 }
 
-export function dropItemListener(game: Game, container: any, item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition): void {
+export function dropItemListener(game: Game, container: JQuery, item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition): void {
     container[0].addEventListener(
         "pointerdown",
         (e: PointerEvent): void => {

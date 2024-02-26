@@ -409,7 +409,7 @@ export class Game {
                 break;
             }
             case SpawnMode.SameTID: {
-                if (this.playersWithTID == 1) {
+                if (this.playersWithTID === 1) {
                     const gasRadius = this.gas.newRadius ** 2;
                     let foundPosition = false;
                     let tries = 0;
@@ -483,7 +483,7 @@ export class Game {
                 team_leader: player.id
             };
             this.teams[playerTID] = team;
-        } {
+        } else {
             this.teams[playerTID].players.push(player.id);
         }
 
@@ -810,7 +810,7 @@ export class Game {
     }
 
     get nextPlayerTID(): number {
-        if (this.playersWithTID + 1 == Config.maxTeamSize) {
+        if (this.playersWithTID + 1 === Config.maxTeamSize) {
             this.currentTID += 1;
             this.playersWithTID = 1;
         } else {

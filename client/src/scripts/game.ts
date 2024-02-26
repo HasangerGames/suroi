@@ -589,7 +589,7 @@ export class Game {
             });
         }
 
-        console.log(newTeam)
+        console.log(newTeam);
 
         this.team = newTeam;
     }

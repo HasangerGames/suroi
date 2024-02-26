@@ -455,10 +455,10 @@ export class Inventory {
      * @param itemString The `idString` of the item;
      */
     dropItem(itemString: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | AmmoDefinition | ArmorDefinition | BackpackDefinition, pushForce = -0.03): void {
-        const definition = itemString.itemType == ItemType.Armor || ItemType.Backpack ? Loots.fromString(itemString.idString) : Loots.reify(itemString);
+        const definition = itemString.itemType === ItemType.Armor || ItemType.Backpack ? Loots.fromString(itemString.idString) : Loots.reify(itemString);
         const idString = definition.idString;
 
-        if (!this.items.hasItem(idString) && definition.itemType != ItemType.Armor && definition.itemType != ItemType.Backpack) return;
+        if (!this.items.hasItem(idString) && definition.itemType !== ItemType.Armor && definition.itemType !== ItemType.Backpack) return;
 
         Logger.log(`${itemString.idString}`);
 

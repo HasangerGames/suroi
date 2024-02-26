@@ -121,10 +121,10 @@ $(async(): Promise<void> => {
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
-        if (selectedRegion.gameModeType != `${GameMode.Solo}`) {
+        if (selectedRegion.gameModeType !== `${GameMode.Solo}`) {
             disableSoloPlayButton("Region doesn't have solos");
         }
-        if (selectedRegion.gameModeType != `${GameMode.Duo}`) {
+        if (selectedRegion.gameModeType !== `${GameMode.Duo}`) {
             disableDuoPlayButton("Region doesn't have Duos");
         }
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
@@ -145,6 +145,7 @@ $(async(): Promise<void> => {
     updateServerSelector();
 
     //serverListToFind
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
 
@@ -160,12 +161,12 @@ $(async(): Promise<void> => {
         )?.text();
         gameModeType = gameModeType && stringIsPositiveNumber(gameModeType) ? gameModeType : "-";
 
-        if (gameModeType != `${GameMode.Solo}`) {
+        if (gameModeType !== `${GameMode.Solo}`) {
             disableSoloPlayButton("Region does not have Solo");
         } else {
             enableSoloPlayButton();
         }
-        if (gameModeType != `${GameMode.Duo}`) {
+        if (gameModeType !== `${GameMode.Duo}`) {
             disableDuoPlayButton("Region does not have Duo");
         } else {
             enableDuoPlayButton();
