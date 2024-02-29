@@ -83,7 +83,7 @@ const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
 
 export interface Punishment { readonly type: "rateLimit" | "warning" | "tempBan" | "permaBan", readonly expires?: number }
-let punishments: Record<string, Punishment> = {};
+export let punishments: Record<string, Punishment> = {};
 
 function removePunishment(ip: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -176,6 +176,26 @@ app.get("/api/punishments", (res, req) => {
     } else {
         forbidden(res);
     }
+});
+
+app.post("/api/addPunishment", (res, req) => {
+    cors(res);
+
+    res.onAborted(() => {});
+
+    const password = req.getHeader("password");
+    res.onData((data) => {
+        if (password === Config.protection?.punishments?.password) {
+            const body = decoder.decode(data);
+            punishments = {
+                ...punishments,
+                ...JSON.parse(body)
+            };
+            res.writeStatus("204 No Content").endWithoutBody(0);
+        } else {
+            forbidden(res);
+        }
+    });
 });
 
 app.get("/api/removePunishment", (res, req) => {
