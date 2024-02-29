@@ -2,7 +2,7 @@
 import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
-      {
+    {
         date: 1708892369000,
         author: "HAZEL",
         title: "A Sailor's Dream",

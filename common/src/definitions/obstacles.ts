@@ -2610,7 +2610,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             frames: {
                 particle: "chest_particle",
-                residue: "chest_residue"  
+                residue: "chest_residue"
             },
             spawnMode: MapObjectSpawnMode.Beach,
             allowFlyover: FlyoverPref.Always
@@ -2632,7 +2632,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             frames: {
                 particle: "chest_particle",
-                residue: "chest_residue"  
+                residue: "chest_residue"
             },
             spawnMode: MapObjectSpawnMode.River,
             allowFlyover: FlyoverPref.Always

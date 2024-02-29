@@ -986,7 +986,7 @@ export class GameConsole {
                                     current parser node
                                 */
                                 expectingEndOfGroup
-                                    ? groupAnchors.pop()!
+                                    ? groupAnchors.pop()
                                     : current
                             ).next = currentNode = {
                                 cmd: current = {

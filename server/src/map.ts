@@ -508,7 +508,7 @@ export class Map {
                 getPosition = () => {
                     const river = pickRandomInArray(this.terrain.rivers.filter(river => river.width <= 20));
                     if (river === undefined) return;
-                    
+
                     // Find the best orientation
                     const pos = randomFloat(0.25, 0.75);
                     const direction = Angle.unitVectorToRadians(river.getNormal(pos));
@@ -521,7 +521,7 @@ export class Map {
                         }
                     }
                     return river.getPosition(pos);
-                }
+                };
                 break;
             }
             case MapObjectSpawnMode.Beach: {
