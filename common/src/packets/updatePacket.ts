@@ -41,9 +41,9 @@ export interface PlayerData {
 
     team: {
         tid: number
-        players: number[];
-        positions: Vector[];
-        healths: number[];
+        players: number[]
+        positions: Vector[]
+        healths: number[]
     }
 
     health: number
@@ -207,20 +207,20 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         data.spectating = stream.readBoolean();
     }
 
-     if(dirty.team = stream.readBoolean()) {
+    if (dirty.team = stream.readBoolean()) {
         data.team = {
             tid: stream.readUint8(),
-            players: [ 0 ],
-            positions: [ Vec.create(0, 0) ],
-            healths: [ 0 ]
-        }
+            players: [0],
+            positions: [Vec.create(0, 0)],
+            healths: [0]
+        };
 
-        let playersLength = stream.readUint8();
+        const playersLength = stream.readUint8();
         for (let i = 0; i < playersLength; i++) {
-                data.team.players[i] = stream.readObjectID();
+            data.team.players[i] = stream.readObjectID();
         }
 
-        let positionsLength = stream.readUint8();
+        const positionsLength = stream.readUint8();
         for (let i = 0; i < positionsLength; i++) {
             stream.readVector(
                 -GameConstants.maxPosition,
@@ -230,12 +230,12 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
                 24);
         }
 
-        let healthsLength = stream.readUint8();
+        const healthsLength = stream.readUint8();
         // Must be the same length as the amount of players (logically)
         for (let i = 0; i < healthsLength; i++) {
-               // We do not need the exact health of our teammates
-              // a uint8 is enough to represent the health of a friendly
-               stream.readUint8();
+            // We do not need the exact health of our teammates
+            // a uint8 is enough to represent the health of a friendly
+            stream.readUint8();
         }
     }
 

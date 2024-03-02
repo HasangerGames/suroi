@@ -137,7 +137,7 @@ export class Game {
 
     readonly tweens = new Set<Tween<unknown>>();
 
-    team: Array<{tid: number, players: number[], positions: Vector[], healths: number[] }> = [];
+    team: Array<{ tid: number, players: number[], positions: Vector[], healths: number[] }> = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -568,6 +568,7 @@ export class Game {
             this.map.pings.add(new Ping(ping));
         }
     }
+
     // yes this might seem evil. but the two local variables really only need to
     // exist so this method can use them: therefore, making them attributes on the
     // enclosing instance is pointless and might induce people into thinking they
