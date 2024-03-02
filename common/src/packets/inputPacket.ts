@@ -1,4 +1,7 @@
 import { GameConstants, InputActions, PacketType } from "../constants";
+import { type AmmoDefinition } from "../definitions/ammos";
+import { type ArmorDefinition } from "../definitions/armors";
+import { type BackpackDefinition } from "../definitions/backpacks";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
 import { type ScopeDefinition } from "../definitions/scopes";
@@ -9,13 +12,13 @@ import { Packet } from "./packet";
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 export type InputAction = {
-    readonly type: InputActions.UseItem
-    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
+    readonly type: InputActions.UseItem | InputActions.DropItem
+    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
 } | {
-    readonly type: InputActions.EquipItem | InputActions.DropItem
+    readonly type: InputActions.EquipItem | InputActions.DropWeapon
     readonly slot: number
 } | {
-    readonly type: Exclude<InputActions, InputActions.EquipItem | InputActions.DropItem | InputActions.UseItem>
+    readonly type: Exclude<InputActions, InputActions.EquipItem | InputActions.DropWeapon | InputActions.DropItem | InputActions.UseItem>
 };
 
 export class InputPacket extends Packet {
@@ -74,8 +77,11 @@ export class InputPacket extends Packet {
 
             switch (action.type) {
                 case InputActions.EquipItem:
-                case InputActions.DropItem:
+                case InputActions.DropWeapon:
                     stream.writeBits(action.slot, 2);
+                    break;
+                case InputActions.DropItem:
+                    Loots.writeToStream(stream, action.item);
                     break;
                 case InputActions.UseItem:
                     Loots.writeToStream(stream, action.item);
@@ -115,12 +121,15 @@ export class InputPacket extends Packet {
             const type = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
-            let item: HealingItemDefinition | ScopeDefinition | undefined;
+            let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | undefined;
 
             switch (type) {
                 case InputActions.EquipItem:
-                case InputActions.DropItem:
+                case InputActions.DropWeapon:
                     slot = stream.readBits(2);
+                    break;
+                case InputActions.DropItem:
+                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition>(stream);
                     break;
                 case InputActions.UseItem:
                     item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);

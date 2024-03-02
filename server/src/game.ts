@@ -41,8 +41,16 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 
+interface Team {
+    players: number[]
+    teamID: number
+    team_kills: number
+    team_leader: number
+}
+
 export class Game {
     readonly _id: number;
+    tidSpawn!: Vector;
     get id(): number { return this._id; }
 
     readonly map: Map;
@@ -57,6 +65,7 @@ export class Game {
     readonly livingPlayers = new Set<Player>();
     readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
+    readonly teams: Team[] = [];
     /**
      * New players created this tick
      */
@@ -126,6 +135,8 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    maxTeamSize: number;
+
     constructor(id: number) {
         this._id = id;
 
@@ -139,6 +150,8 @@ export class Game {
         this.gas = new Gas(this);
 
         this.allowJoin = true;
+
+        this.maxTeamSize = Config.maxTeamSize;
 
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
@@ -255,6 +268,7 @@ export class Game {
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
 
+                player.teamUpdate();
                 player.secondUpdate();
             }
 
@@ -364,6 +378,8 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
 
+        const playerTID = this.nextPlayerTID;
+
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -389,6 +405,41 @@ export class Game {
                         }
                     }
                     tries++;
+                }
+                break;
+            }
+            case SpawnMode.SameTID: {
+                if (this.playersWithTID === 1) {
+                    const gasRadius = this.gas.newRadius ** 2;
+                    let foundPosition = false;
+                    let tries = 0;
+                    while (!foundPosition && tries < 100) {
+                        spawnPosition = this.map.getRandomPosition(
+                            hitbox,
+                            {
+                                maxAttempts: 500,
+                                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                                collides: (position) => {
+                                    return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                                }
+                            }
+                        ) ?? spawnPosition;
+
+                        const radiusHitbox = new CircleHitbox(50, spawnPosition);
+                        for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
+                            if (object instanceof Player) {
+                                foundPosition = false;
+                            }
+                        }
+                        tries++;
+                    }
+
+                    this.tidSpawn = spawnPosition;
+                } else {
+                    spawnPosition = randomPointInsideCircle(
+                        this.tidSpawn,
+                        Config.spawn.radius
+                    );
                 }
                 break;
             }
@@ -419,8 +470,25 @@ export class Game {
             }
             // No case for SpawnMode.Center because that's the default
         }
+
+        const player = new Player(this, socket, spawnPosition);
+
+        player.changeTID(playerTID);
+
+        if (!this.teams[playerTID]) {
+            const team: Team = {
+                players: [player.id],
+                teamID: playerTID,
+                team_kills: 0,
+                team_leader: player.id
+            };
+            this.teams[playerTID] = team;
+        } else {
+            this.teams[playerTID].players.push(player.id);
+        }
+
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, socket, spawnPosition);
+        return player;
     }
 
     // Called when a JoinPacket is sent by the client
@@ -463,6 +531,7 @@ export class Game {
 
         const joinedPacket = new JoinedPacket();
         joinedPacket.emotes = player.loadout.emotes;
+
         player.sendPacket(joinedPacket);
 
         player.sendData(this.map.buffer);
@@ -733,8 +802,24 @@ export class Game {
 
     idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
+    currentTID: number = 0;
+    playersWithTID: number = 0;
+
     get nextObjectID(): number {
         return this.idAllocator.takeNext();
+    }
+
+    get nextPlayerTID(): number {
+        if (this.playersWithTID + 1 === Config.maxTeamSize) {
+            this.currentTID += 1;
+            this.playersWithTID = 1;
+        } else {
+            this.playersWithTID += 1;
+        }
+
+        const tid = this.currentTID;
+
+        return tid;
     }
 }
 

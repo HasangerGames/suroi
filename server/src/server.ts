@@ -108,6 +108,19 @@ app.get("/api/playerCount", (res) => {
     res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
 });
 
+app.get("/api/maxTeamSize", (res) => {
+    cors(res);
+    for (let gameID = 0; gameID < games.length; gameID++) {
+        const game = games[gameID];
+        let response: number;
+        if (canJoin(game) && game?.allowJoin) {
+            response = game.maxTeamSize;
+            res.writeHeader("Content-Type", "text/plain").end(response.toString());
+            break;
+        }
+    }
+});
+
 app.get("/api/getGame", async(res, req) => {
     let aborted = false;
     res.onAborted(() => { aborted = true; });

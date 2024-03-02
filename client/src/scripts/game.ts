@@ -23,7 +23,7 @@ import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/object
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { enablePlayButton } from "./main";
+import { enableDuoPlayButton, enableSoloPlayButton } from "./main";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
@@ -49,6 +49,8 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { TeamPacket } from "../../../common/src/packets/teamPacket";
+import type { Vector } from "../../../common/src/utils/vector";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -93,7 +95,19 @@ export class Game {
         readonly badge?: BadgeDefinition
     }>();
 
-    activePlayerID = -1;
+    private _activePlayerID = -1;
+
+    public get activePlayerID(): number {
+        return this._activePlayerID;
+    }
+
+    public set activePlayerID(value) {
+        console.trace(value);
+        this._activePlayerID = value;
+    }
+
+    activePlayerTID = -1;
+
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
@@ -123,6 +137,8 @@ export class Game {
     readonly music: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
+
+    team: Array<{ id: number, position: Vector, health: number }> = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -249,6 +265,12 @@ export class Game {
                     this.processUpdate(packet);
                     break;
                 }
+                case PacketType.Team: {
+                    const packet = new TeamPacket();
+                    packet.deserialize(stream);
+                    this.processTeamUpdate(packet);
+                    break;
+                }
                 case PacketType.GameOver: {
                     const packet = new GameOverPacket();
                     packet.deserialize(stream);
@@ -312,11 +334,13 @@ export class Game {
             this.error = true;
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
-            enablePlayButton();
+            enableSoloPlayButton();
+            enableDuoPlayButton();
         };
 
         this._socket.onclose = (): void => {
-            enablePlayButton();
+            enableSoloPlayButton();
+            enableDuoPlayButton();
             if (!this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
@@ -346,7 +370,8 @@ export class Game {
         }
 
         $("canvas").addClass("active");
-        $("#splash-ui").fadeOut(enablePlayButton);
+        $("#splash-ui").fadeOut(enableSoloPlayButton);
+        $("#splash-ui").fadeOut(enableDuoPlayButton);
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
@@ -471,6 +496,12 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
+
+        if (playerData?.tid) {
+            this.activePlayerTID = playerData.tid;
+            console.log(this.activePlayerTID);
+        }
+
         if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
@@ -548,6 +579,22 @@ export class Game {
             this.soundManager.play("airdrop_ping");
             this.map.pings.add(new Ping(ping));
         }
+    }
+
+    processTeamUpdate(updateData: TeamPacket): void {
+        const newTeam: typeof this["team"] = [];
+        for (let i = 0; i < updateData.players.length; i++) {
+            const player = updateData.players[i];
+            newTeam.push({
+                id: player,
+                health: updateData.healths[i],
+                position: updateData.positions[i]
+            });
+        }
+
+        console.log(newTeam);
+
+        this.team = newTeam;
     }
 
     // yes this might seem evil. but the two local variables really only need to

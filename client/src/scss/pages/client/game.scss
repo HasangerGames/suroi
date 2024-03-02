@@ -789,10 +789,6 @@
 
         &:hover {
             outline: 1px solid $orange;
-
-            &.ammo-slot {
-                outline: none;
-            }
         }
 
         &.active {

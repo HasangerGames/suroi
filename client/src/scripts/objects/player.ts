@@ -1,6 +1,6 @@
 import $ from "jquery";
-import { Container, TilingSprite } from "pixi.js";
-import { AnimationType, GameConstants, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { Container, TilingSprite, Text } from "pixi.js";
+import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -32,6 +32,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
 
     name!: string;
+    tid!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
@@ -73,11 +74,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly emoteBackground: SuroiSprite
         readonly emote: SuroiSprite
         readonly waterOverlay: SuroiSprite
+        readonly nameText: Text
     };
 
     hideEquipment? = false;
 
     readonly emoteContainer: Container;
+    readonly nameContainer: Container;
     healingParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
@@ -121,7 +124,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emote: new SuroiSprite().setPos(0, 0),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
+            nameText: new Text(
+                "",
+                {
+                    fontSize: 36,
+                    fontFamily: "Inter",
+                    dropShadow: true,
+                    dropShadowBlur: 2,
+                    dropShadowDistance: 2,
+                    dropShadowColor: 0
+                }
+            )
         };
 
         this.container.addChild(
@@ -149,6 +163,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emote);
         this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
+
+        this.nameContainer = new Container();
+        this.game.camera.addObject(this.nameContainer);
+        this.nameContainer.zIndex = ZIndexes.DeathMarkers;
+
+        this.nameContainer.addChild(this.images.nameText);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -193,6 +213,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
+        this.nameContainer.position = Vec.addComponent(this.container.position, -75, 75);
         if (!this.destroyed) this.emoteContainer.position = Vec.addComponent(this.container.position, 0, -175);
     }
 
@@ -286,6 +307,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
         this.hitbox.position = this.position;
+
+        if (data.full) {
+            this.tid = data.full.tid;
+        }
+
+        console.log(`${this.game.activePlayerTID} <-- Active Player TID`);
+        console.log(`${this.tid} <-- Player TID`);
+
+        if (this.game) {
+            if (!this.isActivePlayer && this.game.activePlayerTID === this.tid) {
+                this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
+                const player = this.game.playerNames.get(this.id);
+                if (player) {
+                    this.images.nameText.style.fill = player.nameColor.toHex();
+                } else {
+                    this.images.nameText.style.fill = "#FFFFFF";
+                }
+            }
+        }
 
         this.rotation = data.rotation;
 
@@ -693,9 +733,45 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
 
+        container[0].addEventListener(
+            "pointerdown",
+            (e: PointerEvent): void => {
+                e.stopImmediatePropagation();
+                console.log("Hey");
+                if (e.button === 2 && def) {
+                    this.game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: def
+                    });
+                }
+            }
+        );
+
         if (equipmentType === "backpack") {
             this.game.uiManager.updateItems();
         }
+    }
+
+    getEquipment(equipmentType: string): ArmorDefinition | BackpackDefinition {
+        const equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
+        switch (equipmentType) {
+            case "helmet":
+                if (this.equipment.helmet) {
+                    return this.equipment.helmet;
+                }
+                break;
+            case "vest":
+                if (this.equipment.vest) {
+                    return this.equipment.vest;
+                }
+                break;
+            case "backpack":
+                if (this.equipment.backpack) {
+                    return this.equipment.backpack;
+                }
+                break;
+        }
+        return equipment;
     }
 
     emote(type: EmoteDefinition): void {

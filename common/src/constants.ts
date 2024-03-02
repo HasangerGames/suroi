@@ -5,6 +5,13 @@ import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
+export enum GameMode {
+    Solo = 1,
+    Duo = 2,
+    Squad = 3,
+    Custom = 4,
+}
+
 export enum ObjectCategory {
     Player,
     Obstacle,
@@ -28,7 +35,8 @@ export enum PacketType {
     Ping,
     Spectate,
     Report,
-    MapPing
+    MapPing,
+    Team
 }
 
 export enum AnimationType {
@@ -64,6 +72,7 @@ export enum FireMode {
 export enum InputActions {
     EquipItem,
     EquipLastItem,
+    DropWeapon,
     DropItem,
     SwapGunSlots,
     Interact,

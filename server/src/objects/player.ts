@@ -32,7 +32,7 @@ import { CountableInventoryItem, type InventoryItem } from "../inventory/invento
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
-import { removeFrom } from "../utils/misc";
+import { Logger, removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -41,6 +41,7 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { TeamPacket } from "../../../common/src/packets/teamPacket";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -50,6 +51,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     name: string;
     readonly ip?: string;
+    tid: number = 0;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -179,6 +181,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     readonly dirty: PlayerData["dirty"] = {
         id: true,
+        tid: true,
         health: true,
         maxMinStats: true,
         adrenaline: true,
@@ -326,9 +329,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
+    spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+
+    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
     //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector = Vec.create(100 / 2, 100 / 2)) {
         super(game, position);
 
         const userData = socket.getUserData();
@@ -341,7 +347,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "window2", position);
+        this.objectToPlace = new Obstacle(game, "tire", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -367,7 +373,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.effectiveScope = DEFAULT_SCOPE;
 
         // Inventory preset
-        if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
+        /*if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
 
@@ -382,7 +388,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.inventory.items.setItem("8x_scope", 1);
             this.inventory.items.setItem("15x_scope", 1);
             this.inventory.scope = "4x_scope";
-        }
+        } */
 
         this.updateAndApplyModifiers();
         this.dirty.weapons = true;
@@ -397,6 +403,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             primaryDefinition.ammoType,
             this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
         );
+    }
+
+    spawnPos(position: Vector): void {
+        this.spawnPosition = position;
     }
 
     emote(slot: number): void {
@@ -648,6 +658,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
+            tid: player.tid,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
             inventory: {
@@ -749,6 +760,23 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
+    }
+
+    /**
+     * Sends all information to client related to team health, location, etc.
+     */
+    teamUpdate(): void {
+        const packet = new TeamPacket();
+
+        this.game.livingPlayers.forEach(player => {
+            if (player.tid === this.tid) {
+                packet.players.push(player.id);
+                packet.healths.push(player._health);
+                packet.positions.push(player.position);
+            }
+        });
+
+        this.sendPacket(packet);
     }
 
     /**
@@ -881,6 +909,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (this.invulnerable) return;
+        if (source instanceof Player && source.tid === this.tid && source.id !== this.id) return;
 
         amount = this._clampDamageAmount(amount);
 
@@ -1126,6 +1155,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
+    changeTID(e: number): void {
+        this.tid = e;
+    }
+
     processInputs(packet: InputPacket): void {
         this.movement = {
             ...packet.movement,
@@ -1167,9 +1200,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     inventory.setActiveWeaponIndex(target);
                     break;
                 }
-                case InputActions.DropItem: {
+                case InputActions.DropWeapon: {
                     this.action?.cancel();
                     inventory.dropWeapon(action.slot);
+                    break;
+                }
+                case InputActions.DropItem: {
+                    this.action?.cancel();
+                    Logger.log(action.item.idString);
+                    inventory.dropItem(action.item);
                     break;
                 }
                 case InputActions.SwapGunSlots: {
@@ -1276,6 +1315,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             rotation: this.rotation,
             full: {
                 dead: this.dead,
+                tid: this.tid,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,

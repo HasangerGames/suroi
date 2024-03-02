@@ -3,6 +3,7 @@ import { type Maps } from "./data/maps";
 
 export enum SpawnMode {
     Normal,
+    SameTID,
     Random,
     Radius,
     Fixed,
@@ -20,7 +21,9 @@ export const Config = {
 
     mapName: "singleBuilding",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.SameTID, radius: 25 },
+
+    maxTeamSize: 3,
 
     maxPlayersPerGame: 80,
     maxGames: 3,
@@ -65,15 +68,28 @@ export interface ConfigType {
     readonly mapName: keyof typeof Maps
 
     /**
+<<<<<<< HEAD
      * There are 5 spawn modes: `Normal`, `Random`, `Radius`, `Fixed`, and `Center`.
      * - `SpawnMode.Normal` spawns the player at a random location with a minimum distance between players.
      * - `SpawnMode.Random` spawns the player at a random location.
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
+=======
+     * There are 5 spawn modes: Normal, Random, Radius, Fixed, and Center.
+     * SpawnMode.Normal spawns the player at a random location with a minimum distance between players.
+     * SpawnMode.SameTID spawns the player near the same location as another player with the same TID.
+     * SpawnMode.Random spawns the player at a random location.
+     * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
+     * SpawnMode.Fixed always spawns the player at the exact position given.
+     * SpawnMode.Center always spawns the player in the center of the map.
+>>>>>>> c5dc2f9faca15b42484db3e755185750639bf57e
      */
     readonly spawn: {
         readonly mode: SpawnMode.Normal
+    } | {
+        readonly mode: SpawnMode.SameTID
+        readonly radius: number
     } | {
         readonly mode: SpawnMode.Random
     } | {
@@ -86,6 +102,11 @@ export interface ConfigType {
     } | {
         readonly mode: SpawnMode.Center
     }
+
+    /**
+     * The maximum number of players allowed to join a team.
+     */
+    readonly maxTeamSize: number
 
     /**
      * The maximum number of players allowed to join a game.
