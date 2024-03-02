@@ -2426,7 +2426,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(90, 12.5)
         }],
         floors: [
-            { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+            { type: "wood", hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7))
+            ) },
             { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) }
         ],
         obstacles: [
