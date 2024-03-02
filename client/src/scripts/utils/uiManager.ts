@@ -209,7 +209,6 @@ export class UIManager {
 
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
-        if (data.tid !== undefined) this.game.activePlayerTID = data.tid;
 
         if (data.dirty.id) {
             this.game.spectating = data.spectating;
@@ -220,6 +219,12 @@ export class UIManager {
             $("#spectating-container").toggle(data.spectating);
         }
 
+        if (data.dirty.team) {
+            this.game.team.push(data.team);
+        }
+        
+        console.log(this.game.team)
+        
         if (data.zoom) this.game.camera.zoom = data.zoom;
 
         if (data.dirty.maxMinStats) {

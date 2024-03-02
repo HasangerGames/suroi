@@ -31,14 +31,20 @@ export interface PlayerData {
         weapons: boolean
         items: boolean
         id: boolean
-        tid: boolean
+        team: boolean
         zoom: boolean
         throwable: boolean
     }
 
     id: number
-    tid: number
     spectating: boolean
+
+    team: {
+        tid: number
+        players: number[];
+        positions: Vector[];
+        healths: number[];
+    }
 
     health: number
     adrenaline: number
@@ -94,10 +100,31 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         stream.writeBoolean(data.spectating);
     }
 
-    stream.writeBoolean(dirty.tid);
-    if (dirty.tid) {
-        stream.writeObjectID(data.tid);
-    }
+    /* stream.writeBoolean(dirty.team);
+    if (dirty.team) {
+        stream.writeUint8(data.team.players.length);
+        for (const playerId of data.team.players) {
+            stream.writeObjectID(playerId);
+        }
+
+        stream.writeUint8(data.team.positions.length);
+        for (const position of data.team.positions) {
+            stream.writeVector(
+                position,
+                -GameConstants.maxPosition,
+                -GameConstants.maxPosition,
+                GameConstants.maxPosition,
+                GameConstants.maxPosition,
+                24);
+        }
+
+        // Must be the same length as the amount of players (logically)
+        for (const health of data.team.healths) {
+            // We do not need the exact health of our teammates
+            // a uint8 is enough to represent the health of a friendly
+            stream.writeUint8(health);
+        }
+    } */
 
     const inventory = data.inventory;
     stream.writeBoolean(dirty.weapons);
@@ -178,9 +205,30 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         data.spectating = stream.readBoolean();
     }
 
-    if (dirty.tid = stream.readBoolean()) {
-        data.tid = stream.readObjectID();
-    }
+    /* if(dirty.team = stream.readBoolean()) {
+        let playersLength = stream.readUint8();
+        for (let i = 0; i < playersLength; i++) {
+                data.team.players[i] = stream.readObjectID();
+        }
+
+        let positionsLength = stream.readUint8();
+        for (let i = 0; i < positionsLength; i++) {
+            data.team.positions[i] = stream.readVector(
+                -GameConstants.maxPosition,
+                -GameConstants.maxPosition,
+                GameConstants.maxPosition,
+                GameConstants.maxPosition,
+                24);
+        }
+
+        let healthsLength = stream.readUint8();
+        // Must be the same length as the amount of players (logically)
+        for (let i = 0; i < healthsLength; i++) {
+               // We do not need the exact health of our teammates
+              // a uint8 is enough to represent the health of a friendly
+               data.team.healths[i] = stream.readUint8();
+        }
+    } */
 
     if (dirty.weapons = stream.readBoolean()) {
         inventory.activeWeaponIndex = stream.readBits(2);

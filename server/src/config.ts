@@ -19,11 +19,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "singleBuilding",
+    mapName: "main",
 
     spawn: { mode: SpawnMode.SameTID, radius: 25 },
 
-    maxTeamSize: 3,
+    maxTeamSize: 2,
 
     maxPlayersPerGame: 80,
     maxGames: 3,

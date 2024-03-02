@@ -49,7 +49,6 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
-import { TeamPacket } from "../../../common/src/packets/teamPacket";
 import type { Vector } from "../../../common/src/utils/vector";
 
 interface ObjectClassMapping {
@@ -138,7 +137,7 @@ export class Game {
 
     readonly tweens = new Set<Tween<unknown>>();
 
-    team: Array<{ id: number, position: Vector, health: number }> = [];
+    team: Array<{tid: number, players: number[], positions: Vector[], healths: number[] }> = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -263,12 +262,6 @@ export class Game {
                     packet.previousData = this.uiManager;
                     packet.deserialize(stream);
                     this.processUpdate(packet);
-                    break;
-                }
-                case PacketType.Team: {
-                    const packet = new TeamPacket();
-                    packet.deserialize(stream);
-                    this.processTeamUpdate(packet);
                     break;
                 }
                 case PacketType.GameOver: {
@@ -497,11 +490,6 @@ export class Game {
 
         const playerData = updateData.playerData;
 
-        if (playerData?.tid) {
-            this.activePlayerTID = playerData.tid;
-            console.log(this.activePlayerTID);
-        }
-
         if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
@@ -580,23 +568,6 @@ export class Game {
             this.map.pings.add(new Ping(ping));
         }
     }
-
-    processTeamUpdate(updateData: TeamPacket): void {
-        const newTeam: typeof this["team"] = [];
-        for (let i = 0; i < updateData.players.length; i++) {
-            const player = updateData.players[i];
-            newTeam.push({
-                id: player,
-                health: updateData.healths[i],
-                position: updateData.positions[i]
-            });
-        }
-
-        console.log(newTeam);
-
-        this.team = newTeam;
-    }
-
     // yes this might seem evil. but the two local variables really only need to
     // exist so this method can use them: therefore, making them attributes on the
     // enclosing instance is pointless and might induce people into thinking they

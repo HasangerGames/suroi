@@ -42,10 +42,10 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 
 interface Team {
+    tid: number
+    teamLeader: number
     players: number[]
-    teamID: number
-    team_kills: number
-    team_leader: number
+    kills: number
 }
 
 export class Game {
@@ -268,7 +268,6 @@ export class Game {
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
 
-                player.teamUpdate();
                 player.secondUpdate();
             }
 
@@ -477,10 +476,10 @@ export class Game {
 
         if (!this.teams[playerTID]) {
             const team: Team = {
+                tid: player.tid,
                 players: [player.id],
-                teamID: playerTID,
-                team_kills: 0,
-                team_leader: player.id
+                kills: 0,
+                teamLeader: player.id
             };
             this.teams[playerTID] = team;
         } else {
@@ -810,7 +809,7 @@ export class Game {
     }
 
     get nextPlayerTID(): number {
-        if (this.playersWithTID + 1 === Config.maxTeamSize) {
+        if (this.playersWithTID === Config.maxTeamSize) {
             this.currentTID += 1;
             this.playersWithTID = 1;
         } else {

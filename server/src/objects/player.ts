@@ -41,7 +41,6 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { TeamPacket } from "../../../common/src/packets/teamPacket";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -181,7 +180,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     readonly dirty: PlayerData["dirty"] = {
         id: true,
-        tid: true,
+        team: true,
         health: true,
         maxMinStats: true,
         adrenaline: true,
@@ -600,7 +599,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _firstPacket = true;
 
     /**
-     * Calculate visible objects and send packets
+     * Calculate visible objects, check team, and send packets
      */
     secondUpdate(): void {
         const packet = new UpdatePacket();
@@ -658,7 +657,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            tid: player.tid,
+            team: {
+                tid: this.tid,
+                players: [ 0 ],
+                positions: [ Vec.create(0.23, 0.2), Vec.create(15, 0.2) ],
+                healths: [ 0 ],
+            },
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
             inventory: {
@@ -760,23 +764,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
-    }
-
-    /**
-     * Sends all information to client related to team health, location, etc.
-     */
-    teamUpdate(): void {
-        const packet = new TeamPacket();
-
-        this.game.livingPlayers.forEach(player => {
-            if (player.tid === this.tid) {
-                packet.players.push(player.id);
-                packet.healths.push(player._health);
-                packet.positions.push(player.position);
-            }
-        });
-
-        this.sendPacket(packet);
     }
 
     /**
