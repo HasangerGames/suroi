@@ -8,7 +8,7 @@ import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Vector } from "../utils/vector";
+import { Vec, type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
 interface ObjectFullData {
@@ -100,8 +100,10 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         stream.writeBoolean(data.spectating);
     }
 
-    /* stream.writeBoolean(dirty.team);
+    stream.writeBoolean(dirty.team);
     if (dirty.team) {
+        stream.writeUint8(data.team.tid);
+
         stream.writeUint8(data.team.players.length);
         for (const playerId of data.team.players) {
             stream.writeObjectID(playerId);
@@ -124,7 +126,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             // a uint8 is enough to represent the health of a friendly
             stream.writeUint8(health);
         }
-    } */
+    }
 
     const inventory = data.inventory;
     stream.writeBoolean(dirty.weapons);
@@ -205,7 +207,14 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         data.spectating = stream.readBoolean();
     }
 
-    /* if(dirty.team = stream.readBoolean()) {
+     if(dirty.team = stream.readBoolean()) {
+        data.team = {
+            tid: stream.readUint8(),
+            players: [ 0 ],
+            positions: [ Vec.create(0, 0) ],
+            healths: [ 0 ]
+        }
+
         let playersLength = stream.readUint8();
         for (let i = 0; i < playersLength; i++) {
                 data.team.players[i] = stream.readObjectID();
@@ -213,7 +222,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
 
         let positionsLength = stream.readUint8();
         for (let i = 0; i < positionsLength; i++) {
-            data.team.positions[i] = stream.readVector(
+            stream.readVector(
                 -GameConstants.maxPosition,
                 -GameConstants.maxPosition,
                 GameConstants.maxPosition,
@@ -226,9 +235,9 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         for (let i = 0; i < healthsLength; i++) {
                // We do not need the exact health of our teammates
               // a uint8 is enough to represent the health of a friendly
-               data.team.healths[i] = stream.readUint8();
+               stream.readUint8();
         }
-    } */
+    }
 
     if (dirty.weapons = stream.readBoolean()) {
         inventory.activeWeaponIndex = stream.readBits(2);

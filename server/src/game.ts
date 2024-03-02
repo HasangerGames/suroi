@@ -41,7 +41,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 
-interface Team {
+export interface Team {
     tid: number
     teamLeader: number
     players: number[]
@@ -482,8 +482,10 @@ export class Game {
                 teamLeader: player.id
             };
             this.teams[playerTID] = team;
+            player.changeTeam(this.teams[playerTID]);
         } else {
             this.teams[playerTID].players.push(player.id);
+            player.changeTeam(this.teams[playerTID]);
         }
 
         // Player is added to the players array when a JoinPacket is received from the client

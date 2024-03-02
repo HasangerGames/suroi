@@ -24,7 +24,7 @@ import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
-import { type Game } from "../game";
+import { Team, type Game } from "../game";
 import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
@@ -60,6 +60,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     joined = false;
     disconnected = false;
+
+    team!: Team
 
     private _kills = 0;
     get kills(): number { return this._kills; }
@@ -648,6 +650,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         const inventory = player.inventory;
+
+        let positions: Vector[] = [];
+
+        this.game.livingPlayers.forEach(player => {
+            if(player.tid === this.tid) {
+                positions.push(player._position)
+            }
+        })
+
         // player data
         packet.playerData = {
             health: player.health,
@@ -659,8 +670,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             id: player.id,
             team: {
                 tid: this.tid,
-                players: [ 0 ],
-                positions: [ Vec.create(0.23, 0.2), Vec.create(15, 0.2) ],
+                players: this.team.players,
+                positions: positions,
                 healths: [ 0 ],
             },
             spectating: this.spectating !== undefined,
@@ -1144,6 +1155,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     changeTID(e: number): void {
         this.tid = e;
+    }
+
+    changeTeam(team: Team): void {
+        this.team = team;
     }
 
     processInputs(packet: InputPacket): void {
