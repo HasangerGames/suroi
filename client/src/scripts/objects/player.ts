@@ -734,7 +734,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             "pointerdown",
             (e: PointerEvent): void => {
                 e.stopImmediatePropagation();
-                console.log("Hey");
                 if (e.button === 2 && def) {
                     this.game.inputManager.addAction({
                         type: InputActions.DropItem,

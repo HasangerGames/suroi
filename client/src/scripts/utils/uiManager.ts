@@ -228,8 +228,6 @@ export class UIManager {
                     .join("<br>"));
         }
 
-        // console.log(this.game.team);
-
         if (data.zoom) this.game.camera.zoom = data.zoom;
 
         if (data.dirty.maxMinStats) {

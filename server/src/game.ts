@@ -267,9 +267,6 @@ export class Game {
             // Second loop over players: calculate visible objects & send updates
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
-
-                console.log(`I, ${player.id} am part of team ${player.tid}`);
-                console.log(player.team);
                 player.secondUpdate();
             }
 
@@ -497,16 +494,12 @@ export class Game {
             });
         }
         player.dirty.team = true;
-        console.log("ASSIGNED TEAM");
-        console.log(`Player ${player.id} assigned to team ${playerTID}`);
-        console.table(this.teams[playerTID]);
         // Player is added to the players array when a JoinPacket is received from the client
         return player;
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
-        console.log("ACTIVATING");
         let name = packet.name;
         if (
             !name.length ||

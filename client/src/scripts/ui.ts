@@ -771,7 +771,6 @@ Video evidence is required.`)) {
             (e: PointerEvent): void => {
                 e.stopImmediatePropagation();
                 if (e.button === 2 && game.activePlayer) {
-                    console.log(`Dropped ${game.activePlayer.getEquipment(armor).idString}`);
                     game.inputManager.addAction({
                         type: InputActions.DropItem,
                         item: game.activePlayer.getEquipment(armor)

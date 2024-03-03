@@ -172,8 +172,6 @@ $(async(): Promise<void> => {
             enableDuoPlayButton();
         }
 
-        console.log(gameModeType);
-
         selectedRegion = info;
 
         game.console.setBuiltInCVar("cv_region", region);

@@ -207,7 +207,6 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
                 health: stream.readUint8()
             });
         }
-        console.log(data.team);
     }
 
     if (dirty.weapons = stream.readBoolean()) {
