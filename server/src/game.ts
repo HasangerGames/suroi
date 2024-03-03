@@ -268,6 +268,8 @@ export class Game {
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
 
+                console.log(`I, ${player.id} am part of team ${player.tid}`);
+                console.log(player.team);
                 player.secondUpdate();
             }
 
@@ -471,33 +473,40 @@ export class Game {
         }
 
         const player = new Player(this, socket, spawnPosition);
-
-        player.changeTID(playerTID);
+        player.tid = playerTID;
 
         if (!this.teams[playerTID]) {
+            // Create team
             const team: Team = {
-                tid: player.tid,
+                tid: playerTID,
                 players: [player.id],
                 kills: 0,
                 teamLeader: player.id
             };
+
             this.teams[playerTID] = team;
-            player.changeTeam(this.teams[playerTID]);
+            player.team = team;
         } else {
             this.teams[playerTID].players.push(player.id);
+            player.team = this.teams[playerTID];
+
             this.teams[playerTID].players.forEach((playerId) => {
-                const player = this.getLivingPlayer(playerId);
+                const player = this.getConnectedPlayer(playerId);
                 if (!player) return;
-                player.changeTeam(this.teams[playerTID]);
+                player.team = this.teams[playerTID];
             });
         }
-
+        player.dirty.team = true;
+        console.log("ASSIGNED TEAM");
+        console.log(`Player ${player.id} assigned to team ${playerTID}`);
+        console.table(this.teams[playerTID]);
         // Player is added to the players array when a JoinPacket is received from the client
         return player;
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
+        console.log("ACTIVATING");
         let name = packet.name;
         if (
             !name.length ||
@@ -803,6 +812,12 @@ export class Game {
 
     getLivingPlayer(id: number): Player | undefined {
         for (const player of this.livingPlayers) {
+            if (player.id === id) return player;
+        }
+    }
+
+    getConnectedPlayer(id: number): Player | undefined {
+        for (const player of this.connectedPlayers) {
             if (player.id === id) return player;
         }
     }

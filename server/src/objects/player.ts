@@ -408,8 +408,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.inventory.scope = "4x_scope";
         } */
 
-        this.updateAndApplyModifiers();
         this.dirty.weapons = true;
+
+        this.updateAndApplyModifiers();
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -1165,14 +1166,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const spectator of this.spectators) {
             spectator.sendData(buffer);
         }
-    }
-
-    changeTID(e: number): void {
-        this.tid = e;
-    }
-
-    changeTeam(team: Team): void {
-        this.team = team;
     }
 
     processInputs(packet: InputPacket): void {
