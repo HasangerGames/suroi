@@ -2432,7 +2432,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         floors: [
             { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
-            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) }
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
         ],
         obstacles: [
             { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
@@ -2472,7 +2474,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         floors: [
             { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
-            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) }
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
         ],
         obstacles: [
             { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
