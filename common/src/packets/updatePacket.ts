@@ -8,7 +8,7 @@ import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { Vec, type Vector } from "../utils/vector";
+import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
 interface ObjectFullData {
@@ -103,13 +103,14 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
     stream.writeBoolean(dirty.team);
     if (dirty.team) {
         stream.writeUint8(data.team.tid);
-
         stream.writeUint8(data.team.players.length);
-        for (const playerId of data.team.players) {
-            stream.writeObjectID(playerId);
-        }
 
-        for (const position of data.team.positions) {
+        for (let i = 0; i < data.team.players.length; i++) {
+            const playerId = data.team.players[i];
+            const position = data.team.positions[i];
+            const health = data.team.healths[i];
+
+            stream.writeObjectID(playerId);
             stream.writeVector(
                 position,
                 -GameConstants.maxPosition,
@@ -117,12 +118,6 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
                 GameConstants.maxPosition,
                 GameConstants.maxPosition,
                 24);
-        }
-
-        // Must be the same length as the amount of players (logically)
-        for (const health of data.team.healths) {
-            // We do not need the exact health of our teammates
-            // a uint8 is enough to represent the health of a friendly
             stream.writeUint8(health);
         }
     }
@@ -209,27 +204,21 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     if (dirty.team = stream.readBoolean()) {
         data.team = {
             tid: stream.readUint8(),
-            players: [0],
-            positions: [Vec.create(0, 0)],
-            healths: [0]
+            players: [] as number[],
+            positions: [] as Vector[],
+            healths: [] as number[]
         };
 
         const playersLength = stream.readUint8();
         for (let i = 0; i < playersLength; i++) {
             data.team.players[i] = stream.readObjectID();
-        }
-
-        for (let i = 0; i < playersLength; i++) {
-            stream.readVector(
+            data.team.positions[i] = stream.readVector(
                 -GameConstants.maxPosition,
                 -GameConstants.maxPosition,
                 GameConstants.maxPosition,
                 GameConstants.maxPosition,
                 24);
-        }
-
-        for (let i = 0; i < playersLength; i++) {
-            stream.readUint8();
+            data.team.healths[i] = stream.readUint8();
         }
     }
 
