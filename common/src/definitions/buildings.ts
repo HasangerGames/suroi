@@ -42,6 +42,11 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
+    
+    readonly bridgeSpawnOptions?: {
+        maxRiverWidth: number
+        landCheckDist: number
+    }
 
     readonly obstacles?: BuildingObstacle[]
     readonly lootSpawners?: LootSpawner[]
@@ -2542,7 +2547,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "small_bridge",
         name: "Small Bridge",
         spawnHitbox: RectangleHitbox.fromRect(20, 62),
-        spawnMode: MapObjectSpawnMode.Bridge,
+        bridgeSpawnOptions: {
+            maxRiverWidth: 20,
+            landCheckDist: 30
+        },
         floorImages: [{
             key: "small_bridge",
             position: Vec.create(0, 0)

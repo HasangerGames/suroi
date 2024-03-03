@@ -30,6 +30,7 @@ interface MapDefinition {
         readonly maxWideWidth: number
     }
 
+    readonly bridges?: Array<ReferenceTo<BuildingDefinition>>
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly loots?: Record<keyof typeof LootTables, number>
@@ -58,12 +59,14 @@ export const Maps: Record<string, MapDefinition> = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
+        bridges: [
+            "small_bridge"
+        ],
         buildings: {
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_white: 5,
             tugboat_red: 1,
-            small_bridge: 4,
             armory: 1,
             refinery: 1,
             warehouse: 5,
