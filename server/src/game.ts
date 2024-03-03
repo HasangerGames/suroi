@@ -797,6 +797,12 @@ export class Game {
         }, GameConstants.airdrop.flyTime);
     }
 
+    getLivingPlayer(id: number): Player | undefined {
+        for (const player of this.livingPlayers) {
+            if (player.id === id) return player;
+        }
+    }
+
     get aliveCount(): number {
         return this.livingPlayers.size;
     }

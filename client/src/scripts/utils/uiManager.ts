@@ -220,10 +220,10 @@ export class UIManager {
         }
 
         if (data.dirty.team) {
-            this.game.team.push(data.team);
+            this.game.team = data.team;
         }
 
-        console.log(this.game.team);
+        // console.log(this.game.team);
 
         if (data.zoom) this.game.camera.zoom = data.zoom;
 
@@ -395,7 +395,7 @@ export class UIManager {
                 if (weapon.definition.idString === "ghillie_suit") {
                     container
                         .children(".item-image")
-                        .css("background-color", GHILLIE_TINT);
+                        .css("background-color", GHILLIE_TINT.toHex());
                 }
 
                 if (weapon.count !== undefined) {

@@ -61,7 +61,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     joined = false;
     disconnected = false;
 
-    team!: Team;
+    private _team!: Team;
+    public get team(): Team {
+        return this._team;
+    }
+
+    public set team(value: Team) {
+        this.dirty.team = true;
+        this._team = value;
+    }
 
     private _kills = 0;
     get kills(): number { return this._kills; }
@@ -75,6 +83,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
         this.dirty.maxMinStats = true;
+        this.team?.players.forEach(playerId => {
+            const player = this.game.getLivingPlayer(playerId);
+            if (!player) return;
+            player.dirty.team = true;
+        });
         this.health = this._health;
     }
 
@@ -82,7 +95,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     get health(): number { return this._health; }
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
-
+        this.team?.players.forEach(playerId => {
+            const player = this.game.getLivingPlayer(playerId);
+            if (!player) return;
+            player.dirty.team = true;
+        });
         this.dirty.health = true;
     }
 

@@ -15,7 +15,7 @@ import { type Packet } from "../../../common/src/packets/packet";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
@@ -49,7 +49,6 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
-import type { Vector } from "../../../common/src/utils/vector";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -137,7 +136,7 @@ export class Game {
 
     readonly tweens = new Set<Tween<unknown>>();
 
-    team: Array<{ tid: number, players: number[], positions: Vector[], healths: number[] }> = [];
+    team: PlayerData["team"] | undefined;
 
     private readonly _timeouts = new Set<Timeout>();
 
