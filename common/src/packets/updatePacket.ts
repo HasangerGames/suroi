@@ -8,7 +8,7 @@ import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Vector } from "../utils/vector";
+import { Vec, type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
 interface ObjectFullData {
@@ -109,7 +109,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 
         for (const player of data.team.players) {
             stream.writeObjectID(player.id);
-            stream.writePosition(player.pos);
+            stream.writePosition(player.pos ?? Vec.create(0, 0));
             stream.writeUint8(player.health);
         }
     }
