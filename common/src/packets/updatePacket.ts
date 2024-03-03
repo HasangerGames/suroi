@@ -41,9 +41,11 @@ export interface PlayerData {
 
     team: {
         tid: number
-        players: number[]
-        positions: Vector[]
-        healths: number[]
+        players: Array<{
+            id: number
+            pos: Vector
+            health: number
+        }>
     }
 
     health: number
@@ -105,20 +107,10 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         stream.writeUint8(data.team.tid);
         stream.writeUint8(data.team.players.length);
 
-        for (let i = 0; i < data.team.players.length; i++) {
-            const playerId = data.team.players[i];
-            const position = data.team.positions[i];
-            const health = data.team.healths[i];
-
-            stream.writeObjectID(playerId);
-            stream.writeVector(
-                position,
-                -GameConstants.maxPosition,
-                -GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                24);
-            stream.writeUint8(health);
+        for (const player of data.team.players) {
+            stream.writeObjectID(player.id);
+            stream.writePosition(player.pos);
+            stream.writeUint8(player.health);
         }
     }
 
@@ -204,21 +196,16 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     if (dirty.team = stream.readBoolean()) {
         data.team = {
             tid: stream.readUint8(),
-            players: [] as number[],
-            positions: [] as Vector[],
-            healths: [] as number[]
+            players: [] as PlayerData["team"]["players"]
         };
 
         const playersLength = stream.readUint8();
         for (let i = 0; i < playersLength; i++) {
-            data.team.players[i] = stream.readObjectID();
-            data.team.positions[i] = stream.readVector(
-                -GameConstants.maxPosition,
-                -GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                GameConstants.maxPosition,
-                24);
-            data.team.healths[i] = stream.readUint8();
+            data.team.players.push({
+                id: stream.readObjectID(),
+                pos: stream.readPosition(),
+                health: stream.readUint8()
+            });
         }
     }
 
