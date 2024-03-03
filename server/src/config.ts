@@ -33,14 +33,13 @@ export const Config = {
     censorUsernames: true,
 
     roles: {
-        dev: { password: "dev" },
-        artist: { password: "artist", noPrivileges: true },
+        developr: { password: "developr" },
+        designr: { password: "designr", noPrivileges: true },
         youtubr: { password: "youtubr", noPrivileges: true },
         hasanger: { password: "hasanger" },
         leia: { password: "leia" },
         katie: { password: "katie" },
         eipi: { password: "eipi" },
-        "123op": { password: "123op" },
         radians: { password: "radians" },
         limenade: { password: "limenade" }
     }

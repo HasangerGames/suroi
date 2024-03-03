@@ -238,6 +238,8 @@ Video evidence is required.`)) {
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
+    const role = game.console.getBuiltInCVar("dv_role");
+
     // Load skins
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css(
@@ -251,7 +253,6 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        const role = game.console.getBuiltInCVar("dv_role");
         if (skin.hideFromLoadout === true || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -390,7 +391,7 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || badge.roles!.includes(game.console.getBuiltInCVar("dv_role")));
+    const allowedBadges = role === "" ? [] : Badges.definitions.filter(badge => !("roles" in badge) || badge.roles!.includes(role));
 
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
