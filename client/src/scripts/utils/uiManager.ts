@@ -117,7 +117,9 @@ export class UIManager {
         killFeed: $("#kill-feed"),
 
         interactMsg: $("#interact-message"),
-        interactKey: $("#interact-key")
+        interactKey: $("#interact-key"),
+
+        teamHealthContainer: $("#team-health")
     };
 
     action = {
@@ -221,6 +223,9 @@ export class UIManager {
 
         if (data.dirty.team) {
             this.game.team = data.team;
+            this.ui.teamHealthContainer
+                .html(data.team.players.map(player => `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`)
+                    .join("<br>"));
         }
 
         // console.log(this.game.team);

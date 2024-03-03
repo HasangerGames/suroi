@@ -157,6 +157,17 @@
     }
 }
 
+#team-health {
+    display: flex;
+
+    .healthbar {
+        display: flex;
+        border-radius: 6px;
+        padding: 6px;
+        background-color: $transparent_bg;
+    }
+}
+
 #ui-kill-leader {
     display: flex;
     position: absolute;
