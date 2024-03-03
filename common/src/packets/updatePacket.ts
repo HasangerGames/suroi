@@ -109,7 +109,6 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             stream.writeObjectID(playerId);
         }
 
-        stream.writeUint8(data.team.positions.length);
         for (const position of data.team.positions) {
             stream.writeVector(
                 position,
@@ -220,8 +219,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
             data.team.players[i] = stream.readObjectID();
         }
 
-        const positionsLength = stream.readUint8();
-        for (let i = 0; i < positionsLength; i++) {
+        for (let i = 0; i < playersLength; i++) {
             stream.readVector(
                 -GameConstants.maxPosition,
                 -GameConstants.maxPosition,
@@ -230,11 +228,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
                 24);
         }
 
-        const healthsLength = stream.readUint8();
-        // Must be the same length as the amount of players (logically)
-        for (let i = 0; i < healthsLength; i++) {
-            // We do not need the exact health of our teammates
-            // a uint8 is enough to represent the health of a friendly
+        for (let i = 0; i < playersLength; i++) {
             stream.readUint8();
         }
     }
