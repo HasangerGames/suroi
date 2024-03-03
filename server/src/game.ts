@@ -485,7 +485,11 @@ export class Game {
             player.changeTeam(this.teams[playerTID]);
         } else {
             this.teams[playerTID].players.push(player.id);
-            player.changeTeam(this.teams[playerTID]);
+            this.teams[playerTID].players.forEach((playerId) => {
+                const player = this.getLivingPlayer(playerId);
+                if (!player) return;
+                player.changeTeam(this.teams[playerTID]);
+            });
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
