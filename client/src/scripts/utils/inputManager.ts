@@ -76,6 +76,7 @@ export class InputManager {
 
         // assigning it directly breaks comparing last and current input packet
         // since javascript will pass it by reference
+        // TODO will spread syntax work? packet.movement = { ...this.movement };
         packet.movement = {
             up: this.movement.up,
             down: this.movement.down,
@@ -108,7 +109,8 @@ export class InputManager {
 
         this._inputPacketTimer++;
 
-        if (!this._lastInputPacket ||
+        if (
+            !this._lastInputPacket ||
             packet.didChange(this._lastInputPacket) ||
             this._inputPacketTimer >= GameConstants.tickrate
         ) {
@@ -135,15 +137,17 @@ export class InputManager {
         const game = this.game;
         const gameContainer = $("#game")[0];
 
-        // Prevents continued firing when cursor leaves the page
-        gameContainer.addEventListener("pointerleave", (event) => {
-            this.attacking = false;
-        });
+        if (!this.isMobile) {
+            // Prevents continued firing when cursor leaves the page
+            gameContainer.addEventListener("pointerleave", (event) => {
+                this.attacking = false;
+            });
 
-        // Prevents continued firing when RMB is pressed
-        gameContainer.addEventListener("pointerup", (event) => {
-            this.attacking = false;
-        });
+            // Prevents continued firing when RMB is pressed
+            gameContainer.addEventListener("pointerup", (event) => {
+                this.attacking = false;
+            });
+        }
 
         window.addEventListener("blur", () => {
             for (const k of this.focusController) {
