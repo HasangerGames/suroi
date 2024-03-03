@@ -2397,7 +2397,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         wallsToDestroy: 2,
         obstacles: [
             { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
-            { idString: "door", position: Vec.create(6.45, 8.33), rotation: 0 },
+            { idString: "door", position: Vec.create(5.5, 8.33), rotation: 2 },
             { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
             { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
             { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
