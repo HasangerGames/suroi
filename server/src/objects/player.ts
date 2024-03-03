@@ -651,14 +651,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         const inventory = player.inventory;
 
-        const positions: Vector[] = [];
-
-        this.game.livingPlayers.forEach(player => {
-            if (player.tid === this.tid) {
-                positions.push(player._position);
-            }
-        });
-
         // player data
         packet.playerData = {
             health: player.health,
@@ -670,9 +662,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             id: player.id,
             team: {
                 tid: this.tid,
-                players: this.team.players,
-                positions,
-                healths: [0]
+                players: this.team.players.map(playerId => {
+                    const player = Array.from(this.game.livingPlayers.values()).find(p => p.id === playerId);
+                    return {
+                        id: playerId,
+                        pos: player?.position ?? Vec.create(0, 0),
+                        health: player?.health ?? 0
+                    };
+                })
             },
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
