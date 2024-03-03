@@ -741,6 +741,13 @@ Video evidence is required.`)) {
             </div>
         </div>`);
 
+        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.inputManager.addAction({
+                type: InputActions.UseItem,
+                item
+            });
+            e.stopPropagation();
+        });
         dropItemListener(game, $(`#${item.idString}-slot`), item);
     }
 

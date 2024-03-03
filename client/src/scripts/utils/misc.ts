@@ -43,7 +43,7 @@ export function dropItemListener(game: Game, container: JQuery, item: HealingIte
     container[0].addEventListener(
         "pointerdown",
         (e: PointerEvent): void => {
-            e.stopImmediatePropagation();
+            e.stopPropagation();
             if (e.button === 2) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
