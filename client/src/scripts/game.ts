@@ -236,7 +236,6 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
-
             this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.msPerTick);
         };
 

@@ -1,7 +1,7 @@
 import "@pixi/graphics-extras";
 import $ from "jquery";
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource } from "pixi.js";
-import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, GasState, ObjectCategory, PlayerActions, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -30,7 +30,7 @@ export class Minimap {
     readonly mask = new Graphics();
 
     readonly sprite = new Sprite(Texture.EMPTY);
-    readonly indicator = new SuroiSprite("player_indicator.svg");
+    readonly indicator = new SuroiSprite("player_indicator.svg")
 
     width = 0;
     height = 0;
@@ -43,6 +43,10 @@ export class Minimap {
     readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
 
+    readonly teammateIndicator = [
+        new SuroiSprite("minimap_icon.svg"),
+    ];
+
     terrain = new Terrain(0, 0, 0, 0, 0, []);
 
     readonly pings = new Set<Ping>();
@@ -53,6 +57,7 @@ export class Minimap {
     readonly terrainGraphics = new Graphics();
 
     readonly debugGraphics = new Graphics();
+    teammateIndicatorsContainer = new Container();
 
     constructor(game: Game) {
         this.game = game;
@@ -66,6 +71,10 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
+        this.teammateIndicator.forEach(indicator => {
+            this.teammateIndicatorsContainer.addChild(indicator);
+        });
+
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
 
         this.objectsContainer.addChild(
@@ -75,7 +84,8 @@ export class Minimap {
             this.gasGraphics,
             this.pingGraphics,
             this.pingsContainer,
-            this.indicator
+            this.indicator,
+            this.teammateIndicatorsContainer
         ).sortChildren();
 
         this.borderContainer.on("click", e => {
@@ -484,6 +494,9 @@ export class Minimap {
             closeButton.css("left", `${closeButtonPos}px`);
 
             this.indicator.scale.set(0.2);
+            this.teammateIndicator.forEach(indicator => {
+                indicator.scale.set(0.2);
+            });
 
             this.border.clear();
             this.border.fill.alpha = 0;
@@ -509,6 +522,9 @@ export class Minimap {
             }
 
             this.indicator.scale.set(0.1);
+            this.teammateIndicator.forEach(indicator => {
+                indicator.scale.set(0.1);
+            });
         }
 
         this.mask.clear();
@@ -530,6 +546,12 @@ export class Minimap {
     setPosition(pos: Vector): void {
         this.position = Vec.clone(pos);
         this.indicator.setVPos(pos);
+        this.updatePosition();
+    }
+
+    setTeammatePosition(pos: Vector, teammate: number) {
+        console.log("changed position")
+        this.teammateIndicator[0].setVPos(Vec.create(100, 100));
         this.updatePosition();
     }
 

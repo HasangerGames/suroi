@@ -342,6 +342,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     set position(position: Vector) {
         this.hitbox.position = position;
+        this.team?.players.forEach(playerId => {
+            const player = this.game.getLivingPlayer(playerId);
+            if (!player) return;
+            player.dirty.team = true;
+        });
     }
 
     private _movementVector = Vec.create(0, 0);
