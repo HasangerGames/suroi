@@ -1825,8 +1825,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(9, 7)
         },
         {
-            idString: "ship_thing_1",
-            name: "Ship thing 1 lol",
+            idString: "ship_oil_tank",
+            name: "Ship Oil Tank",
             material: "metal",
             health: 200,
             indestructible: true,

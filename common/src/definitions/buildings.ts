@@ -42,7 +42,6 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
-    
     readonly bridgeSpawnOptions?: {
         maxRiverWidth: number
         landCheckDist: number
@@ -1371,7 +1370,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Main hitbox
             { idString: "ship", position: Vec.create(0, 0), rotation: 0 },
 
-            { idString: "ship_thing_1", position: Vec.create(-14, -111), rotation: 0 },
+            { idString: "ship_oil_tank", position: Vec.create(-14, -111), rotation: 0 },
             { idString: "generator", position: Vec.create(23, 75), rotation: 0, puzzlePiece: true },
             { idString: "barrel", position: Vec.create(24, 66) },
             {
