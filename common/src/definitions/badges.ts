@@ -33,5 +33,25 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
         idString: "contributr+",
         name: "Contributr+",
         roles: ["katie", "leia"]
+    },
+    {
+        idString: "bleh",
+        name: "Bleh"
+    },
+    {
+        idString: "froog",
+        name: "Froog"
+    },
+    {
+        idString: "aegis_logo",
+        name: "AEGIS Logo"
+    },
+    {
+        idString: "flint_logo",
+        name: "Flint Logo"
+    },
+    {
+        idString: "duel",
+        name: "Duel"
     }
 ]);

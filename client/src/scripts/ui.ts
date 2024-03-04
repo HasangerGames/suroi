@@ -391,7 +391,7 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    const allowedBadges = role === "" ? [] : Badges.definitions.filter(badge => !("roles" in badge) || badge.roles!.includes(role));
+    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || (role !== "" && badge.roles!.includes(role)));
 
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
