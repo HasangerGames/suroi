@@ -42,6 +42,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
+
     readonly bridgeSpawnOptions?: {
         maxRiverWidth: number
         landCheckDist: number

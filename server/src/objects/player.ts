@@ -436,6 +436,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.throwableItemMap.get(idString)!.count = this.inventory.items.getItem(idString);
     }
 
+    spawnPos(position: Vector): void {
+        this.spawnPosition = position;
+    }
+
     emote(slot: number): void {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
     }
