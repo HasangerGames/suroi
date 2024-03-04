@@ -1,7 +1,7 @@
 import "@pixi/graphics-extras";
 import $ from "jquery";
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource } from "pixi.js";
-import { GameConstants, GasState, ObjectCategory, PlayerActions, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -30,7 +30,7 @@ export class Minimap {
     readonly mask = new Graphics();
 
     readonly sprite = new Sprite(Texture.EMPTY);
-    readonly indicator = new SuroiSprite("player_indicator.svg")
+    readonly indicator = new SuroiSprite("player_indicator.svg");
 
     width = 0;
     height = 0;
@@ -44,7 +44,7 @@ export class Minimap {
     readonly placesContainer = new Container();
 
     readonly teammateIndicator = [
-        new SuroiSprite("minimap_icon.svg"),
+        new SuroiSprite("minimap_icon.svg")
     ];
 
     terrain = new Terrain(0, 0, 0, 0, 0, []);
@@ -549,8 +549,8 @@ export class Minimap {
         this.updatePosition();
     }
 
-    setTeammatePosition(pos: Vector, teammate: number) {
-        console.log("changed position")
+    setTeammatePosition(pos: Vector, teammate: number): void {
+        console.log("changed position");
         this.teammateIndicator[0].setVPos(Vec.create(100, 100));
         this.updatePosition();
     }

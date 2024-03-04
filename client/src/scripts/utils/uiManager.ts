@@ -233,8 +233,8 @@ export class UIManager {
                 .html(data.team.players.map(player => `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`)
                     .join("<br>"));
 
-            for(let i = 0; i < data.team.players.length; i++) {
-                this.game.map.setTeammatePosition(data.team.players[i].pos, i)
+            for (let i = 0; i < data.team.players.length; i++) {
+                this.game.map.setTeammatePosition(data.team.players[i].pos, i);
             }
         }
 
