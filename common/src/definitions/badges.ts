@@ -12,7 +12,7 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     {
         idString: "developr",
         name: "Developr",
-        roles: "dev"
+        roles: "developr"
     },
     {
         idString: "designr",
