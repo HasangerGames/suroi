@@ -280,7 +280,6 @@ Video evidence is required.`)) {
     function updateEmotesList(): void {
         $("#emotes-list").empty();
         for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
-        //for (const emote of Emotes.definitions) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
@@ -332,7 +331,7 @@ Video evidence is required.`)) {
                     $(".emotes-list-item-container")
                         .removeClass("selected")
                         .css("cursor", "pointer");
-                    $(`#emote-${emote}`).addClass("selected");
+                    $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`)}`).addClass("selected");
                 }
             });
     }
