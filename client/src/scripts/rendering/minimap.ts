@@ -44,6 +44,7 @@ export class Minimap {
     readonly placesContainer = new Container();
 
     readonly teammateIndicator = [
+        new SuroiSprite("minimap_icon.svg"),
         new SuroiSprite("minimap_icon.svg")
     ];
 
@@ -550,7 +551,7 @@ export class Minimap {
     }
 
     setTeammatePosition(pos: Vector, teammate: number): void {
-        console.log("changed position");
+        console.log(`changed position of ${teammate}`);
         this.teammateIndicator[teammate].setVPos(pos);
         this.updatePosition();
     }
