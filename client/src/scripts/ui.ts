@@ -12,7 +12,7 @@ import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
-import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
+import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { dropItemListener, requestFullscreen } from "./utils/misc";
@@ -239,7 +239,13 @@ Video evidence is required.`)) {
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
+    const role = game.console.getBuiltInCVar("dv_role");
+
     // Load skins
+    if (!(game.console.getBuiltInCVar("cv_loadout_skin") in Skins.idStringToNumber)) {
+        game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
+    }
+
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css(
             "background-image",
@@ -252,7 +258,6 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        const role = game.console.getBuiltInCVar("dv_role");
         if (skin.hideFromLoadout === true || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -280,7 +285,6 @@ Video evidence is required.`)) {
     function updateEmotesList(): void {
         $("#emotes-list").empty();
         for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
-        //for (const emote of Emotes.definitions) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
@@ -332,7 +336,7 @@ Video evidence is required.`)) {
                     $(".emotes-list-item-container")
                         .removeClass("selected")
                         .css("cursor", "pointer");
-                    $(`#emote-${emote}`).addClass("selected");
+                    $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`)}`).addClass("selected");
                 }
             });
     }
@@ -391,7 +395,7 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || (Array.isArray(badge.roles) ? badge.roles.includes(game.console.getBuiltInCVar("dv_role")) : badge.roles === game.console.getBuiltInCVar("dv_role")));
+    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || (role !== "" && badge.roles!.includes(role)));
 
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();

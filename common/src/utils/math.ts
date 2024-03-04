@@ -169,7 +169,7 @@ export const Geometry = Object.freeze({
 
 export const Collision = Object.freeze({
     /**
-     * Check if two circles colliding
+     * Check if two circles are colliding
      * @param centerA The center of the first circle
      * @param radiusA The radius of the first circle
      * @param centerB The center of the second circle
@@ -195,7 +195,8 @@ export const Collision = Object.freeze({
             y: Numeric.clamp(pos.y, min.y, max.y)
         };
 
-        const distX = pos.x - cpt.x; const distY = pos.y - cpt.y;
+        const distX = pos.x - cpt.x;
+        const distY = pos.y - cpt.y;
         const distSquared = distX * distX + distY * distY;
 
         return (distSquared < rad * rad) || (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y);

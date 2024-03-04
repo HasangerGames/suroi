@@ -1111,7 +1111,6 @@ export const logger = (() => {
         print() {
             // ┬┆┐─└├
 
-            console.clear();
             (function printInternal(base: LoggingLevel, dashes: boolean[] = []): void {
                 const prePrefix = dashes.map(v => `${v ? "┆" : " "} `).join("");
 

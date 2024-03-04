@@ -152,6 +152,47 @@ export class Map {
             rivers
         );
 
+        for (const bridge of mapDefinition.bridges ?? []) {
+            const { bridgeSpawnOptions } = Buildings.reify(bridge);
+            if (!bridgeSpawnOptions) {
+                Logger.warn("Attempting to spawn non-bridge building as a bridge");
+                continue;
+            }
+
+            for (const river of this.terrain.rivers.filter(river => river.width <= bridgeSpawnOptions.maxRiverWidth)) {
+                const generateBridge = (start: number, end: number): void => {
+                    let shortestDistance = Number.MAX_VALUE;
+                    let bestPosition = 0.5;
+                    let bestOrientation: Orientation = 0;
+                    for (let pos = start; pos <= end; pos += 0.05) {
+                        // Find the best orientation
+                        const direction = Angle.unitVectorToRadians(river.getTangent(pos));
+                        for (let orientation: Orientation = 0; orientation < 4; orientation++) {
+                            const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
+                            if (distance < shortestDistance) {
+                                shortestDistance = distance;
+                                bestPosition = pos;
+                                bestOrientation = orientation as Orientation;
+                            }
+                        }
+                    }
+                    const position = river.getPosition(bestPosition);
+
+                    // Make sure there's dry land on either side of the bridge
+                    if (
+                        [
+                            Vec.addAdjust(position, Vec.create(0, bridgeSpawnOptions.landCheckDist), bestOrientation),
+                            Vec.addAdjust(position, Vec.create(0, -bridgeSpawnOptions.landCheckDist), bestOrientation)
+                        ].some(point => this.terrain.getFloor(point) === "water")
+                    ) return;
+
+                    this.generateBuilding(bridge, position, bestOrientation);
+                };
+                generateBridge(0.2, 0.4);
+                generateBridge(0.6, 0.8);
+            }
+        }
+
         // Generate buildings
         for (const building in mapDefinition.buildings) {
             this.generateBuildings(building, mapDefinition.buildings[building]);
@@ -502,26 +543,6 @@ export class Map {
             }
             case MapObjectSpawnMode.RiverBank: {
                 getPosition = () => pickRandomInArray(this.terrain.rivers).bankHitbox.randomPoint();
-                break;
-            }
-            case MapObjectSpawnMode.Bridge: {
-                getPosition = () => {
-                    const river = pickRandomInArray(this.terrain.rivers.filter(river => river.width <= 20));
-                    if (river === undefined) return;
-
-                    // Find the best orientation
-                    const pos = randomFloat(0.25, 0.75);
-                    const direction = Angle.unitVectorToRadians(river.getNormal(pos));
-                    let shortestDistance = Number.MAX_VALUE;
-                    for (let i = 0; i < 4; i++) {
-                        const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[i]));
-                        if (distance < shortestDistance) {
-                            shortestDistance = distance;
-                            orientation = i as Orientation;
-                        }
-                    }
-                    return river.getPosition(pos);
-                };
                 break;
             }
             case MapObjectSpawnMode.Beach: {
