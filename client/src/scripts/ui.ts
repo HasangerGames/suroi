@@ -12,7 +12,7 @@ import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
-import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
+import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
@@ -241,6 +241,10 @@ Video evidence is required.`)) {
     const role = game.console.getBuiltInCVar("dv_role");
 
     // Load skins
+    if (!(game.console.getBuiltInCVar("cv_loadout_skin") in Skins.idStringToNumber)) {
+        game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
+    }
+
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css(
             "background-image",
