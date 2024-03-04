@@ -36,7 +36,7 @@ export class JoinedPacket extends Packet {
                     Emotes.fromString("thumbs_up"),
                     Emotes.fromString("suroi_logo"),
                     Emotes.fromString("sad_face"),
-                    Emotes.fromString("chicken"),
+                    Emotes.fromString("none"),
                     Emotes.fromString("none")
                 ];
                 break;
