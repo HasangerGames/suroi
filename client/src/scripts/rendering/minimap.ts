@@ -551,7 +551,7 @@ export class Minimap {
 
     setTeammatePosition(pos: Vector, teammate: number): void {
         console.log("changed position");
-        this.teammateIndicator[0].setVPos(Vec.create(100, 100));
+        this.teammateIndicator[teammate].setVPos(pos);
         this.updatePosition();
     }
 
