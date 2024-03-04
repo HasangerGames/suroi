@@ -40,28 +40,22 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         roleRequired: "eipi"
     },
     {
-        idString: "123op",
-        name: "123OP",
-        itemType: ItemType.Skin,
-        roleRequired: "123op"
-    },
-    {
         idString: "radians",
         name: "Radians",
         itemType: ItemType.Skin,
         roleRequired: "radians"
     },
     {
-        idString: "dev",
-        name: "Developer Swag",
+        idString: "developr",
+        name: "Developr Swag",
         itemType: ItemType.Skin,
-        roleRequired: "dev"
+        roleRequired: "developr"
     },
     {
-        idString: "artist",
-        name: "Artist Swag",
+        idString: "designr",
+        name: "Designr Swag",
         itemType: ItemType.Skin,
-        roleRequired: "artist"
+        roleRequired: "designr"
     },
     {
         idString: "hazel_jumpsuit",

@@ -190,6 +190,7 @@
             border: 5px solid transparent;
             background-repeat: no-repeat;
             background-position: center;
+            cursor: pointer;
 
             &.selected {
                 border-color: $orange;

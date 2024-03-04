@@ -3177,8 +3177,6 @@ logger.indent("Validating configurations", () => {
     });
 });
 
-logger.print();
-
 const { errors, warnings } = tester;
 const exitCode = +(errors.length > 0);
 const errorText = errors.length
@@ -3200,4 +3198,8 @@ warnings.forEach(([path, message]) => {
 
 const testRuntime = Date.now() - testStart;
 console.log(`Validation took ${testRuntime}ms`);
+
+console.log("\nDetails:");
+logger.print();
+
 process.exit(exitCode);

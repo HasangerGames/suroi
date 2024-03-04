@@ -42,6 +42,11 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
+    
+    readonly bridgeSpawnOptions?: {
+        maxRiverWidth: number
+        landCheckDist: number
+    }
 
     readonly obstacles?: BuildingObstacle[]
     readonly lootSpawners?: LootSpawner[]
@@ -2392,7 +2397,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         wallsToDestroy: 2,
         obstacles: [
             { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
-            { idString: "door", position: Vec.create(6.45, 8.33), rotation: 0 },
+            { idString: "door", position: Vec.create(5.5, 8.33), rotation: 2 },
             { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
             { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
             { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
@@ -2426,13 +2431,52 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(90, 12.5)
         }],
         floors: [
-            {
-                type: "wood",
-                hitbox: new HitboxGroup(
-                    RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7))
-                )
-            },
-            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) }
+            { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
+        ],
+        obstacles: [
+            { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(81.48, -37.36) },
+            { idString: "regular_crate", position: Vec.create(101.49, -11.45) },
+            { idString: "grenade_crate", position: Vec.create(102.3, -38.43) },
+            { idString: "barrel", position: Vec.create(102.74, -26.23) },
+            { idString: "tugboat_control_panel", position: Vec.create(90, 24.1), rotation: 0 },
+            { idString: "office_chair", position: Vec.create(90, 16.65), rotation: 0 },
+            { idString: "door", position: Vec.create(90.45, -4.8), rotation: 0 },
+            { idString: "large_drawer", position: Vec.create(99.29, 2.98), rotation: 3 },
+            { idString: "life_preserver", position: Vec.create(101.23, 14.67), rotation: 0 },
+            { idString: "lux_crate", position: Vec.create(80.38, 4.29), rotation: 1 },
+            { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
+            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
+        ]
+    },
+    {
+        idString: "tugboat_white",
+        name: "Tugboat",
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
+        floorImages: [{
+            key: "tugboat_white_floor",
+            position: Vec.create(90, 0)
+        }],
+        ceilingImages: [{
+            key: "tugboat_white_ceiling",
+            position: Vec.create(90, 12.5)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
         ],
         obstacles: [
             { idString: "tugboat", position: Vec.create(0, 0), rotation: 0 },
@@ -2507,7 +2551,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "small_bridge",
         name: "Small Bridge",
         spawnHitbox: RectangleHitbox.fromRect(20, 62),
-        spawnMode: MapObjectSpawnMode.Bridge,
+        bridgeSpawnOptions: {
+            maxRiverWidth: 20,
+            landCheckDist: 30
+        },
         floorImages: [{
             key: "small_bridge",
             position: Vec.create(0, 0)
