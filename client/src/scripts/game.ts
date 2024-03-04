@@ -375,6 +375,7 @@ export class Game {
         this.camera.container.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
+        this.map.pingGraphics.clear();
         this.map.pings.clear();
         this.map.pingsContainer.removeChildren();
         this.playerNames.clear();
