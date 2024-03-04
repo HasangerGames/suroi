@@ -355,7 +355,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("barrel", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("control_panel", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
