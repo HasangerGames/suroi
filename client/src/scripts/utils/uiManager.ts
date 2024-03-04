@@ -186,13 +186,19 @@ export class UIManager {
 
         $("#chicken-dinner").toggle(packet.won);
 
+        const playerName = this.getPlayerName(packet.playerID);
+        const playerBadge = this.getPlayerBadge(packet.playerID);
+        const playerBadgeText = playerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            : "";
+
         $("#game-over-text").html(
             packet.won
                 ? "Winner winner chicken dinner!"
                 : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
         );
 
-        $("#game-over-player-name").html(this.getPlayerName(packet.playerID));
+        $("#game-over-player-name").html(playerName + playerBadgeText);
 
         $("#game-over-kills").text(packet.kills);
         $("#game-over-damage-done").text(packet.damageDone);
@@ -485,12 +491,16 @@ export class UIManager {
         const weaponPresent = weaponUsed !== undefined;
         const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
 
+        // TODO Clean up this code
+
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
 
         const playerBadge = playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
         const playerBadgeText = playerBadge
             ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
+
+        const killerName = killerID !== undefined ? this.getPlayerName(killerID) : "";
 
         const killerBadge = killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
         const killerBadgeText = killerBadge
@@ -508,18 +518,16 @@ export class UIManager {
                         let killMessage = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                killMessage = `${playerBadgeText}${playerName} committed suicide`;
+                                killMessage = `${playerName}${playerBadgeText} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                killMessage = `${killerBadgeText}${this.getPlayerName(
-                                    killerID!
-                                )} killed ${playerBadgeText}${playerName}`;
+                                killMessage = `${killerName}${killerBadgeText} killed ${playerName}${playerBadgeText}`;
                                 break;
                             case KillType.Gas:
-                                killMessage = `${playerBadgeText}${playerName} died to the gas`;
+                                killMessage = `${playerName}${playerBadgeText} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                killMessage = `${playerBadgeText}${playerName} was crushed by an airdrop`;
+                                killMessage = `${playerName}${playerBadgeText} was crushed by an airdrop`;
                                 break;
                         }
 
@@ -538,7 +546,7 @@ export class UIManager {
                         break;
                     }
                     case "icon": {
-                        const killerName = killType === KillType.TwoPartyInteraction ? this.getPlayerName(killerID!) : "";
+                        const killerName2 = killType === KillType.TwoPartyInteraction ? killerName : "";
                         let iconName = "";
                         switch (killType) {
                             case KillType.Gas:
@@ -560,11 +568,11 @@ export class UIManager {
                             : "";
 
                         messageText = `\
-                        ${killerBadgeText}
-                        ${killerName}\
+                        ${killerName2}\
+                        ${killerBadgeText}\
                         <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
-                        ${killstreakText}
-                        ${playerBadgeText}
+                        ${killstreakText}\
+                        ${playerBadgeText}\
                         ${playerName}`;
                         break;
                     }
@@ -577,7 +585,7 @@ export class UIManager {
                     }
                     case killerID === this.game.activePlayerID: { // killed other
                         classes.push("kill-feed-item-killer");
-                        this._addKillMessage(kills!, playerName, weaponUsed?.name ?? "", killstreak);
+                        this._addKillMessage(kills!, `${playerName}${playerBadgeText}`, weaponUsed?.name ?? "", killstreak);
                         break;
                     }
                 }
@@ -587,11 +595,11 @@ export class UIManager {
             case KillFeedMessageType.KillLeaderAssigned: {
                 if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
 
-                $("#kill-leader-leader").html(playerName);
+                $("#kill-leader-leader").html(`${playerName}${playerBadgeText}`);
                 $("#kill-leader-kills-counter").text(kills!);
 
                 if (!hideInKillfeed) {
-                    messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
+                    messageText = `<i class="fa-solid fa-crown"></i> ${playerName}${playerBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
                 $("#btn-spectate-kill-leader").show();
@@ -609,7 +617,7 @@ export class UIManager {
                 // noinspection HtmlUnknownTarget
                 messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID
                     ? `${killerID !== playerID
-                        ? `${this.getPlayerName(killerID)} killed Kill Leader!`
+                        ? `${killerName}${killerBadgeText} killed Kill Leader!`
                         : "The Kill Leader is dead!"}`
                     : "The Kill Leader killed themselves!"
                 }`;

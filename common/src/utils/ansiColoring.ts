@@ -99,7 +99,7 @@ type Variant = keyof Colors[Channel][Color];
 type Fonts = typeof FontStyles;
 type FontStyle = Fonts[keyof Fonts];
 
+const CSI = "\u001B";
 export function styleText(string: string, ...styles: Array<Colors[Channel][Color][Variant] | FontStyle>): string {
-    const CSI = "\u001B";
     return `${CSI}[${styles.join(";")}m${string}${CSI}[0m`;
 }

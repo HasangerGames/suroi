@@ -185,8 +185,18 @@
         font-size: 25px;
         @include text-shadow;
 
+        .badge-icon {
+            width: 25px;
+            margin-left: 5px;
+            margin-bottom: -4px;
+        }
+
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
+
+            .badge-icon {
+                width: 12px;
+            }
         }
     }
 
@@ -286,6 +296,8 @@
 
             .badge-icon {
                 width: 18px;
+                margin-top: -1px;
+                margin-left: -1px;
 
                 @media screen and (max-width: $screen_large) {
                     height: 12px;
@@ -702,10 +714,22 @@
     width: 320px;
     @include text-shadow;
 
+    .badge-icon {
+        width: 18px;
+        margin-bottom: -3px;
+        margin-left: 3px;
+    }
+
     @media screen and (max-width: $screen_large) {
         width: 220px;
         bottom: 60px;
         font-size: 12px;
+
+        .badge-icon {
+            width: 14px;
+            margin-bottom: -3px;
+            margin-left: 2px;
+        }
     }
 
     #kill-msg-player-name {
@@ -1317,6 +1341,18 @@
 
         @media screen and (max-width: $screen_large) {
             font-size: 20px;
+        }
+    }
+
+    .badge-icon {
+        width: 32px;
+        margin-left: 5px;
+        margin-bottom: -5px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 25px;
+            margin-left: 4px;
+            margin-bottom: -4px;
         }
     }
 

@@ -42,6 +42,11 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
+    
+    readonly bridgeSpawnOptions?: {
+        maxRiverWidth: number
+        landCheckDist: number
+    }
 
     readonly obstacles?: BuildingObstacle[]
     readonly lootSpawners?: LootSpawner[]
@@ -2392,7 +2397,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         wallsToDestroy: 2,
         obstacles: [
             { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
-            { idString: "door", position: Vec.create(6.45, 8.33), rotation: 0 },
+            { idString: "door", position: Vec.create(5.5, 8.33), rotation: 2 },
             { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
             { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
             { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
@@ -2427,7 +2432,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         floors: [
             { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
-            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) }
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
         ],
         obstacles: [
             { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
@@ -2467,7 +2474,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         floors: [
             { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
-            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) }
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
         ],
         obstacles: [
             { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
@@ -2542,7 +2551,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "small_bridge",
         name: "Small Bridge",
         spawnHitbox: RectangleHitbox.fromRect(20, 62),
-        spawnMode: MapObjectSpawnMode.Bridge,
+        bridgeSpawnOptions: {
+            maxRiverWidth: 20,
+            landCheckDist: 30
+        },
         floorImages: [{
             key: "small_bridge",
             position: Vec.create(0, 0)

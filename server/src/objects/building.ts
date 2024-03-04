@@ -7,6 +7,7 @@ import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 
@@ -122,7 +123,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
     solvePuzzle(): void {
         if (!this.puzzle) {
-            console.warn("Attempting to solve puzzle when no puzzle is present");
+            Logger.warn("Attempting to solve puzzle when no puzzle is present");
             return;
         }
 
@@ -142,7 +143,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
     resetPuzzle(): void {
         if (!this.puzzle) {
-            console.warn("Attempting to reset puzzle when no puzzle is present");
+            Logger.warn("Attempting to reset puzzle when no puzzle is present");
             return;
         }
         this.puzzle.inputOrder = [];

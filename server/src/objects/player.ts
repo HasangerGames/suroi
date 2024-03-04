@@ -41,6 +41,7 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -397,6 +398,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             primaryDefinition.ammoType,
             this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
         );
+    }
+
+    giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {
+        this.inventory.items.incrementItem(idString, count ?? 3);
+        this.inventory.useItem(idString);
+        this.inventory.throwableItemMap.get(idString)!.count = this.inventory.items.getItem(idString);
     }
 
     emote(slot: number): void {

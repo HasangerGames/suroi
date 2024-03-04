@@ -63,8 +63,9 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
         this._oldPosition = Vec.clone(this.position);
 
-        if (this.game.map.terrain.groundRect.isPointInside(this.position)) {
-            for (const river of this.game.map.terrain.getRiversInPosition(this.position)) {
+        const { terrain } = this.game.map;
+        if (terrain.getFloor(this.position) === "water" && terrain.groundRect.isPointInside(this.position)) {
+            for (const river of terrain.getRiversInPosition(this.position)) {
                 if (river.waterHitbox.isPointInside(this.position)) {
                     const tangent = river.getTangent(
                         river.getClosestT(this.position)
