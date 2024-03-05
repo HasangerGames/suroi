@@ -8,8 +8,9 @@ import { ItemType } from "./utils/objectDefinitions";
 export enum GameMode {
     Solo = 1,
     Duo = 2,
-    Squad = 3,
-    Custom = 4,
+    Trio = 3,
+    Squad = 4,
+    Custom = 50,
 }
 
 export enum ObjectCategory {

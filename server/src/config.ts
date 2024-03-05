@@ -23,7 +23,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.SameTID, radius: 25 },
 
-    maxTeamSize: 3,
+    maxTeamSize: 4,
 
     maxPlayersPerGame: 80,
     maxGames: 3,
