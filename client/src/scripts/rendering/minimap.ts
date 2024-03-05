@@ -1,6 +1,6 @@
 import "@pixi/graphics-extras";
 import $ from "jquery";
-import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource, Color } from "pixi.js";
+import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource, type Color } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
@@ -463,13 +463,12 @@ export class Minimap {
         this.gasGraphics.endFill();
 
         //Teammate updates
-        if(this.teammates.size > 0) {
+        if (this.teammates.size > 0) {
             for (const teammate of this.teammates) {
                 if (!teammate.initialized) {
                     this.teammatesContainer.addChild(teammate.image);
                     teammate.initialized = true;
                 }
-
             }
         }
     }
@@ -637,12 +636,11 @@ export class TeammateIndicator {
         this.color = color;
         this.id = id;
 
-        this.image.setTint(this.color)
+        this.image.setTint(this.color);
     }
 
-    updatePosition(pos: Vector) {
+    updatePosition(pos: Vector): void {
         this.position = pos;
         this.image.setVPos(this.position);
     }
 }
-

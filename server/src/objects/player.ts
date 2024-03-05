@@ -358,7 +358,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
     //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector = Vec.create(100 / 2, 100 / 2)) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
         const userData = socket.getUserData();

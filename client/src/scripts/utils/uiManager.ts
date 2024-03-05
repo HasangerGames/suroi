@@ -12,8 +12,6 @@ import { type Game } from "../game";
 import { UI_DEBUG_MODE, GHILLIE_TINT, TEAMMATE_COLORS } from "./constants";
 import { formatDate } from "./misc";
 import { TeammateIndicator } from "../rendering/minimap";
-import { Vec } from "../../../../common/src/utils/vector";
-import { Color } from "pixi.js";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -232,24 +230,25 @@ export class UIManager {
 
         if (data.dirty.team) {
             this.game.team = data.team;
-            data.team.players.map((player, index) => {
+            /*eslint array-callback-return: */
+            data.team.players.forEach((player, index) => {
                 this.ui.teamHealthContainer
-                .html(data.team.players.map(player => `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`)
-                    .join("<br>"));
+                    .html(data.team.players.map(player => {
+                        return `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`;
+                    }).join("<br>"));
 
-                if(player.id !== this.game.activePlayerID) {
-                    if(this.game.map.teammates.size === 0) {
-                        this.game.map.teammates.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index]))
+                if (player.id !== this.game.activePlayerID) {
+                    if (this.game.map.teammates.size === 0) {
+                        this.game.map.teammates.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index]));
                     }
 
                     this.game.map.teammates.forEach(teammate => {
-                        if(teammate.id === player.id) {
-                         teammate.updatePosition(player.pos);
+                        if (teammate.id === player.id) {
+                            teammate.updatePosition(player.pos);
                         }
-                        return;
-                    })
+                    });
                 }
-            })
+            });
         }
 
         if (data.zoom) this.game.camera.zoom = data.zoom;

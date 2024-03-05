@@ -35,8 +35,8 @@ export const TEAMMATE_COLORS = [
     new Color("red"),
     new Color("blue"),
     new Color("green"),
-    new Color("yellow"),
-]
+    new Color("yellow")
+];
 
 export const PIXI_SCALE = 20;
 
