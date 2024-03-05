@@ -41,7 +41,8 @@ export const Config = {
         katie: { password: "katie" },
         eipi: { password: "eipi" },
         radians: { password: "radians" },
-        limenade: { password: "limenade" }
+        limenade: { password: "limenade" },
+        "123op": { password: "123op", noPrivileges: true }
     }
 } satisfies ConfigType as ConfigType;
 

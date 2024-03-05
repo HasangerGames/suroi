@@ -40,6 +40,12 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         roleRequired: "eipi"
     },
     {
+        idString: "123op",
+        name: "123OP",
+        itemType: ItemType.Skin,
+        roleRequired: "123op"
+    },
+    {
         idString: "radians",
         name: "Radians",
         itemType: ItemType.Skin,
