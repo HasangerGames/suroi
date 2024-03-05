@@ -22,7 +22,7 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     {
         idString: "youtubr",
         name: "Youtubr",
-        roles: "youtubr"
+        roles: ["youtubr", "123op"]
     },
     {
         idString: "ownr",

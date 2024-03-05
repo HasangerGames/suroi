@@ -2,7 +2,6 @@ import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType, Packet
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
-import { type GunDefinition } from "../definitions/guns";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
@@ -276,10 +275,6 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
                 ) {
                     stream.writeBits(message.killstreak!, 7);
                 }
-
-                if ("dual" in message.weaponUsed!) {
-                    stream.writeBoolean((message as KillFeedMessage & { weaponUsed: GunDefinition, dual: boolean }).dual);
-                }
             }
             break;
         }
@@ -304,7 +299,7 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
     }
 }
 
-export type KillFeedMessage = {
+export interface KillFeedMessage {
     messageType: KillFeedMessageType
     playerID?: number
     playerBadge?: BadgeDefinition
@@ -314,14 +309,8 @@ export type KillFeedMessage = {
     kills?: number
     killstreak?: number
     hideInKillfeed?: boolean
-} & (
-    {
-        weaponUsed?: LootDefinition | ExplosionDefinition
-    } | {
-        weaponUsed: GunDefinition
-        dual: boolean
-    }
-);
+    weaponUsed?: LootDefinition | ExplosionDefinition
+}
 
 function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
     const message = {
@@ -349,10 +338,6 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
                     message.weaponUsed.killstreak
                 ) {
                     message.killstreak = stream.readBits(7);
-                }
-
-                if ("dual" in message.weaponUsed) { // might be dual
-                    (message as KillFeedMessage & { weaponUsed: GunDefinition, dual: boolean }).dual = stream.readBoolean();
                 }
             }
             break;

@@ -307,10 +307,12 @@ app.ws("/play", {
             role = givenRole;
             isDev = !Config.roles[givenRole].noPrivileges;
 
-            try {
-                const colorString = searchParams.get("nameColor");
-                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-            } catch { }
+            if (isDev) {
+                try {
+                    const colorString = searchParams.get("nameColor");
+                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+                } catch {}
+            }
         }
 
         //
