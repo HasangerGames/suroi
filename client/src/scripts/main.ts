@@ -124,7 +124,7 @@ $(async(): Promise<void> => {
         if (selectedRegion.gameModeType !== `${GameMode.Solo}`) {
             disableSoloPlayButton("Region doesn't have solos");
         }
-        if (selectedRegion.gameModeType !== `${GameMode.Duo}`) {
+        if (selectedRegion.gameModeType !== `${GameMode.Squad}`) {
             disableDuoPlayButton("Region doesn't have Duos");
         }
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");

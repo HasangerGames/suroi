@@ -631,16 +631,22 @@ export class TeammateIndicator {
 
     constructor(position: Vector, id: number, color: Color) {
         this.position = position;
-        this.image = new SuroiSprite("minimap_icon").setVPos(position);
+        this.image = new SuroiSprite("teammate_icon").setVPos(position);
         this.initialized = false;
         this.color = color;
         this.id = id;
 
         this.image.setTint(this.color);
+        this.image.scale.set(0.15)
     }
 
     updatePosition(pos: Vector): void {
         this.position = pos;
+        this.image.setVPos(this.position);
+    }
+
+    updateImage(image: string): void {
+        this.image = new SuroiSprite("")
         this.image.setVPos(this.position);
     }
 }

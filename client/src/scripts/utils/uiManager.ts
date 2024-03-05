@@ -232,14 +232,15 @@ export class UIManager {
             this.game.team = data.team;
             /*eslint array-callback-return: */
             data.team.players.forEach((player, index) => {
+                const color = TEAMMATE_COLORS[index];
                 this.ui.teamHealthContainer
                     .html(data.team.players.map(player => {
                         return `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`;
                     }).join("<br>"));
 
                 if (player.id !== this.game.activePlayerID) {
-                    if (this.game.map.teammates.size === 0) {
-                        this.game.map.teammates.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index]));
+                    if (index >= this.game.map.teammates.size) {
+                        this.game.map.teammates.add(new TeammateIndicator(player.pos, player.id, color));
                     }
 
                     this.game.map.teammates.forEach(teammate => {
