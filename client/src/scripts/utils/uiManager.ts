@@ -531,7 +531,7 @@ export class UIManager {
                                 break;
                         }
 
-                        const fullyQualifiedName = weaponPresent ? `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}` : "";
+                        const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
                          * English being complicated means that this will sometimes return bad results (ex: "hour", "NSA", "one" and "university")
                          * but to be honest, short of downloading a library off of somewhere, this'll have to do
