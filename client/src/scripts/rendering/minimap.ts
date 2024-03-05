@@ -637,7 +637,7 @@ export class TeammateIndicator {
         this.id = id;
 
         this.image.setTint(this.color);
-        this.image.scale.set(0.15)
+        this.image.scale.set(0.15);
     }
 
     updatePosition(pos: Vector): void {
