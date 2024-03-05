@@ -245,7 +245,11 @@ export class UIManager {
 
                     this.game.map.teammates.forEach(teammate => {
                         if (teammate.id === player.id) {
-                            teammate.updatePosition(player.pos);
+                            if(player.health === 0) {
+                                teammate.updateImage("teammate_icon_dead");
+                            } else {
+                                teammate.updatePosition(player.pos);
+                            }
                         }
                     });
                 }

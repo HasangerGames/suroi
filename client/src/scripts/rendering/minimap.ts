@@ -646,7 +646,10 @@ export class TeammateIndicator {
     }
 
     updateImage(image: string): void {
-        this.image = new SuroiSprite("")
+        this.image = new SuroiSprite(image);
+        this.image.setTint(this.color);
+        this.image.scale.set(0.15);
+
         this.image.setVPos(this.position);
     }
 }
