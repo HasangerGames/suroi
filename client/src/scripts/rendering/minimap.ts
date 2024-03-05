@@ -1,6 +1,6 @@
 import "@pixi/graphics-extras";
 import $ from "jquery";
-import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource } from "pixi.js";
+import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource, Color } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
@@ -31,6 +31,8 @@ export class Minimap {
 
     readonly sprite = new Sprite(Texture.EMPTY);
     readonly indicator = new SuroiSprite("player_indicator.svg");
+    readonly teammates = new Set<TeammateIndicator>();
+    readonly teammatesContainer = new Container();
 
     width = 0;
     height = 0;
@@ -43,11 +45,6 @@ export class Minimap {
     readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
 
-    readonly teammateIndicator = [
-        new SuroiSprite("minimap_icon.svg"),
-        new SuroiSprite("minimap_icon.svg")
-    ];
-
     terrain = new Terrain(0, 0, 0, 0, 0, []);
 
     readonly pings = new Set<Ping>();
@@ -58,7 +55,6 @@ export class Minimap {
     readonly terrainGraphics = new Graphics();
 
     readonly debugGraphics = new Graphics();
-    teammateIndicatorsContainer = new Container();
 
     constructor(game: Game) {
         this.game = game;
@@ -72,10 +68,6 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        this.teammateIndicator.forEach(indicator => {
-            this.teammateIndicatorsContainer.addChild(indicator);
-        });
-
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
 
         this.objectsContainer.addChild(
@@ -86,7 +78,7 @@ export class Minimap {
             this.pingGraphics,
             this.pingsContainer,
             this.indicator,
-            this.teammateIndicatorsContainer
+            this.teammatesContainer
         ).sortChildren();
 
         this.borderContainer.on("click", e => {
@@ -469,6 +461,17 @@ export class Minimap {
         this.gasGraphics.line.color = 0xffffff;
         this.gasGraphics.arc(this.gasPos.x, this.gasPos.y, this.gasRadius, 0, Math.PI * 2);
         this.gasGraphics.endFill();
+
+        //Teammate updates
+        if(this.teammates.size > 0) {
+            for (const teammate of this.teammates) {
+                if (!teammate.initialized) {
+                    this.teammatesContainer.addChild(teammate.image);
+                    teammate.initialized = true;
+                }
+
+            }
+        }
     }
 
     borderContainer = $("#minimap-border");
@@ -495,10 +498,6 @@ export class Minimap {
             closeButton.css("left", `${closeButtonPos}px`);
 
             this.indicator.scale.set(0.2);
-            this.teammateIndicator.forEach(indicator => {
-                indicator.scale.set(0.2);
-            });
-
             this.border.clear();
             this.border.fill.alpha = 0;
             this.border.lineStyle({
@@ -523,9 +522,6 @@ export class Minimap {
             }
 
             this.indicator.scale.set(0.1);
-            this.teammateIndicator.forEach(indicator => {
-                indicator.scale.set(0.1);
-            });
         }
 
         this.mask.clear();
@@ -547,12 +543,6 @@ export class Minimap {
     setPosition(pos: Vector): void {
         this.position = Vec.clone(pos);
         this.indicator.setVPos(pos);
-        this.updatePosition();
-    }
-
-    setTeammatePosition(pos: Vector, teammate: number): void {
-        console.log(`changed position of ${teammate}`);
-        this.teammateIndicator[teammate].setVPos(pos);
         this.updatePosition();
     }
 
@@ -632,3 +622,27 @@ export class Ping {
         this.initialized = false;
     }
 }
+
+export class TeammateIndicator {
+    position: Vector;
+    id: number;
+    image: SuroiSprite;
+    initialized: boolean;
+    color: Color;
+
+    constructor(position: Vector, id: number, color: Color) {
+        this.position = position;
+        this.image = new SuroiSprite("minimap_icon").setVPos(position);
+        this.initialized = false;
+        this.color = color;
+        this.id = id;
+
+        this.image.setTint(this.color)
+    }
+
+    updatePosition(pos: Vector) {
+        this.position = pos;
+        this.image.setVPos(this.position);
+    }
+}
+

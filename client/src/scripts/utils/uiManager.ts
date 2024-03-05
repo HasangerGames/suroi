@@ -9,8 +9,11 @@ import { type GameOverPacket } from "../../../../common/src/packets/gameOverPack
 import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
-import { UI_DEBUG_MODE, GHILLIE_TINT } from "./constants";
+import { UI_DEBUG_MODE, GHILLIE_TINT, TEAMMATE_COLORS } from "./constants";
 import { formatDate } from "./misc";
+import { TeammateIndicator } from "../rendering/minimap";
+import { Vec } from "../../../../common/src/utils/vector";
+import { Color } from "pixi.js";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -229,13 +232,24 @@ export class UIManager {
 
         if (data.dirty.team) {
             this.game.team = data.team;
-            this.ui.teamHealthContainer
+            data.team.players.map((player, index) => {
+                this.ui.teamHealthContainer
                 .html(data.team.players.map(player => `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`)
                     .join("<br>"));
 
-            for (let i = 0; i < data.team.players.length; i++) {
-                this.game.map.setTeammatePosition(data.team.players[i].pos, i);
-            }
+                if(player.id !== this.game.activePlayerID) {
+                    if(this.game.map.teammates.size === 0) {
+                        this.game.map.teammates.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index]))
+                    }
+
+                    this.game.map.teammates.forEach(teammate => {
+                        if(teammate.id === player.id) {
+                         teammate.updatePosition(player.pos);
+                        }
+                        return;
+                    })
+                }
+            })
         }
 
         if (data.zoom) this.game.camera.zoom = data.zoom;

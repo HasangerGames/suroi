@@ -223,9 +223,6 @@ export class Game {
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
             const badge = this.console.getBuiltInCVar("cv_loadout_badge");
-            if (badge) {
-                joinPacket.badge = Badges.fromString(badge);
-            }
 
             for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
                 joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
@@ -397,6 +394,8 @@ export class Game {
         this.map.pingGraphics.clear();
         this.map.pings.clear();
         this.map.pingsContainer.removeChildren();
+        this.map.teammatesContainer.removeChildren();
+        this.map.teammates.clear();
         this.playerNames.clear();
         this._timeouts.clear();
 
