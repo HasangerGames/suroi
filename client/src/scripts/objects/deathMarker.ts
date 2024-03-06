@@ -35,7 +35,6 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
                     alpha: 0.8,
                     color: "black",
                     blur: 2,
-                    angle: 0,
                     distance: 2
                 }
             }

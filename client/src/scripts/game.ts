@@ -143,6 +143,7 @@ export class Game {
                 antialias: this.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 resolution: window.devicePixelRatio || 1,
+                hello: true,
                 canvas: document.getElementById("game-canvas") as HTMLCanvasElement
             });
 

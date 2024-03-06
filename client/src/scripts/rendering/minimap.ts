@@ -345,7 +345,6 @@ export class Minimap {
                             alpha: 0.8,
                             color: "black",
                             blur: 2,
-                            angle: Math.PI / 3,
                             distance: 5
                         }
                     }
