@@ -345,8 +345,8 @@ export class Minimap {
                             alpha: 0.8,
                             color: "black",
                             blur: 2,
-                            angle: 0,
-                            distance: 0
+                            angle: Math.PI / 3,
+                            distance: 5
                         }
                     }
                 }
@@ -492,10 +492,10 @@ export class Minimap {
             this.border.clear();
             this.border.setStrokeStyle({
                 width: 4,
-                alpha: 0,
                 color: 0x00000
             });
             this.border.rect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
+            this.border.stroke();
         } else {
             if (!this.visible) return;
 
