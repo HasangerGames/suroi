@@ -109,11 +109,11 @@ export class Game {
 
     private _tickTimeoutID: number | undefined;
 
-    readonly pixi: Application<HTMLCanvasElement>;
+    readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map: Minimap;
-    readonly camera: Camera;
+    readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
 
@@ -136,18 +136,25 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
-        // Initialize the Application object
-        this.pixi = new Application({
-            resizeTo: window,
-            background: COLORS.grass,
-            antialias: this.console.getBuiltInCVar("cv_antialias"),
-            autoDensity: true,
-            resolution: window.devicePixelRatio || 1
-        });
+        void (async() => {
+            await this.pixi.init({
+                resizeTo: window,
+                background: COLORS.grass,
+                antialias: this.console.getBuiltInCVar("cv_antialias"),
+                autoDensity: true,
+                resolution: window.devicePixelRatio || 1,
+                canvas: document.getElementById("game-canvas") as HTMLCanvasElement
+            });
 
-        $("#game").append(this.pixi.view);
+            this.pixi.ticker.add(this.render.bind(this));
+            this.camera.init();
 
-        this.pixi.ticker.add(this.render.bind(this));
+            setInterval(() => {
+                if (this.console.getBuiltInCVar("pf_show_fps")) {
+                    $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                }
+            }, 500);
+        })();
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
@@ -155,7 +162,6 @@ export class Game {
 
         setupUI(this);
 
-        this.camera = new Camera(this);
         this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
@@ -165,12 +171,6 @@ export class Game {
             autoPlay: true,
             volume: this.console.getBuiltInCVar("cv_music_volume")
         });
-
-        setInterval(() => {
-            if (this.console.getBuiltInCVar("pf_show_fps")) {
-                $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
-            }
-        }, 500);
     }
 
     connect(address: string): void {

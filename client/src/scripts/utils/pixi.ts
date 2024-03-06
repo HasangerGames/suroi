@@ -1,4 +1,4 @@
-import { Sprite, Spritesheet, Texture, type ColorSource, type Graphics, type ISpritesheetData } from "pixi.js";
+import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type ISpritesheetData, Assets } from "pixi.js";
 import { atlases } from "virtual:spritesheets-jsons";
 import { Reskins } from "../../../../common/src/definitions/modes";
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -17,7 +17,7 @@ export async function loadTextures(): Promise<void> {
 
         promises.push(
             new Promise<void>(resolve => {
-                Texture.fromURL(image)
+                Assets.load<Texture>(image)
                     .then(texture => {
                         new Spritesheet(texture, atlas)
                             .parse()

@@ -1,4 +1,4 @@
-import { DisplayObject } from "pixi.js";
+import { Container } from "pixi.js";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
 
@@ -54,7 +54,7 @@ export class Tween<T> {
         const now = Date.now();
 
         // fix tweens trying to change properties of destroyed pixi objects and crashing the client
-        if (this.target instanceof DisplayObject && (this.target.destroyed || this.target.transform === undefined)) {
+        if (this.target instanceof Container && this.target.destroyed) {
             this.kill();
             return;
         }
