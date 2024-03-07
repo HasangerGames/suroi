@@ -161,7 +161,7 @@ export function setupUI(game: Game): void {
     // Event listener for rules button
     rulesBtn.on("click", () => {
         game.console.setBuiltInCVar("cv_rules_acknowledged", true);
-        location.href = "/rules/";
+        location.href = "./rules/";
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(); });
@@ -287,7 +287,7 @@ Video evidence is required.`)) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
             emoteItem.on("click", function() {
