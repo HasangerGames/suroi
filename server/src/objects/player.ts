@@ -46,11 +46,15 @@ import { type ThrowableDefinition } from "../../../common/src/definitions/throwa
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
     override readonly damageable = true;
-
     readonly hitbox: CircleHitbox;
 
     name: string;
     readonly ip?: string;
+
+    // Speed toggler utils
+    isTestMode = true;
+    speed: number = Config.movementSpeed;
+    fast = false;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -443,7 +447,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *                // Base speed
+        const speed = this.speed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
@@ -481,6 +485,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
+
+        if (this.isTestMode && this.game.emotes.size > 0) {
+            console.log("Current speed:", this.speed, "Current Fast:", this.fast);
+            this.speed = this.fast ? this.speed / 4 : this.speed * 4;
+            this.fast = !this.fast;
+        }
 
         for (let step = 0; step < 10; step++) {
             let collided = false;

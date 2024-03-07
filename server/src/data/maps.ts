@@ -346,7 +346,9 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 32,
         genCallback(map) {
             //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("oil_tanker_ship", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("small_house", Vec.create(this.width / 2, this.height / 2), 0);
+            map.game.addLoot("usas12", Vec.create(this.width / 2, this.height / 2 - 20));
+            map.game.addLoot("12g", Vec.create(this.width / 2, this.height / 2 - 20), Infinity);
         }
     },
     singleObstacle: {
