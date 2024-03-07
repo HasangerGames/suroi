@@ -169,7 +169,6 @@ export class Minimap {
             }
             ctx.fill(COLORS.water);
 
-
             ctx.setStrokeStyle({
                 color: 0x000000,
                 alpha: 0.1,

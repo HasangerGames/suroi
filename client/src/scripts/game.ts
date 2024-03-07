@@ -137,11 +137,14 @@ export class Game {
         this.inputManager.setupInputs();
 
         void (async() => {
+            const renderMode = this.console.getBuiltInCVar("cv_renderer");
             await this.pixi.init({
                 resizeTo: window,
                 background: COLORS.grass,
                 antialias: this.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
+                preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
+                preference: renderMode === "webgpu" ? "webgpu" : "webgl",
                 resolution: window.devicePixelRatio || 1,
                 hello: true,
                 canvas: document.getElementById("game-canvas") as HTMLCanvasElement
