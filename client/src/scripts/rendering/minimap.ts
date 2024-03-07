@@ -508,9 +508,13 @@ export class Minimap {
             this.indicator.scale.set(0.1);
         }
 
+        // @HACK: pixi v8 doesn't update the mask sometimes
+        this.container.mask = null;
         this.mask.clear();
         this.mask.rect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
         this.mask.fill();
+        this.container.mask = this.mask;
+
         this.updatePosition();
         this.updateTransparency();
 
