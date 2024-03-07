@@ -392,10 +392,12 @@ export class Game {
     }
 
     sendData(buffer: ArrayBuffer): void {
-        try {
-            this._socket?.send(buffer);
-        } catch (e) {
-            console.warn("Error sending packet. Details:", e);
+        if (this._socket && this._socket.readyState === this._socket.OPEN) {
+            try {
+                this._socket.send(buffer);
+            } catch (e) {
+                console.warn("Error sending packet. Details:", e);
+            }
         }
     }
 
