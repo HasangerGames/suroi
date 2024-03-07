@@ -174,7 +174,7 @@ export class GasRender {
         let rad = radius * this._scale;
         if (rad < 0.1) {
             rad = 1.0;
-            center.x += 0.5 * kOverdraw;
+            center.x += 0.5 * GasRender._overdraw;
         }
         this._graphics.position.copyFrom(center);
         this._graphics.scale.set(rad);
