@@ -125,9 +125,6 @@ export class Minimap {
         const drawTerrain = (ctx: Graphics, scale: number, gridLineWidth: number): void => {
             ctx.zIndex = ZIndexes.Ground;
 
-            ctx.rect(0, 0, width * scale, height * scale);
-            ctx.fill(COLORS.water);
-
             const radius = 20 * scale;
 
             const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
@@ -155,25 +152,23 @@ export class Minimap {
                 });
             }
 
-            // no rivers breaks map graphics
-            if (rivers.length) {
-                // river bank needs to be draw first
-                ctx.beginPath();
-                for (const river of rivers) {
-                    ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
-                    ctx.fill(COLORS.riverBank);
-                }
-                ctx.rect(0, 0, width * scale, height * scale);
-                ctx.fill(COLORS.water);
-                ctx.roundShape(beach, radius);
-                ctx.cut();
-
-                ctx.beginPath();
-                for (const river of rivers) {
-                    ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
-                }
-                ctx.fill(COLORS.water);
+            // river bank needs to be draw first
+            ctx.beginPath();
+            for (const river of rivers) {
+                ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
+                ctx.fill(COLORS.riverBank);
             }
+            ctx.rect(0, 0, width * scale, height * scale);
+            ctx.fill(COLORS.water);
+            ctx.roundShape(beach, radius);
+            ctx.cut();
+
+            ctx.beginPath();
+            for (const river of rivers) {
+                ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+            }
+            ctx.fill(COLORS.water);
+
 
             ctx.setStrokeStyle({
                 color: 0x000000,
