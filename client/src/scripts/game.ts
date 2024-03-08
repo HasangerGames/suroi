@@ -152,6 +152,7 @@ export class Game {
 
             this.pixi.ticker.add(this.render.bind(this));
             this.camera.init();
+            this.pixi.renderer.on("resize", () => this.resize());
 
             setInterval(() => {
                 if (this.console.getBuiltInCVar("pf_show_fps")) {
@@ -175,6 +176,11 @@ export class Game {
             autoPlay: true,
             volume: this.console.getBuiltInCVar("cv_music_volume")
         });
+    }
+
+    resize(): void {
+        this.map.resize();
+        this.camera.resize(true);
     }
 
     connect(address: string): void {

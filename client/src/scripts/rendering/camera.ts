@@ -65,11 +65,6 @@ export class Camera {
     }
 
     update(): void {
-        if (this.width !== this.pixi.screen.width ||
-            this.height !== this.pixi.screen.height) {
-            this.resize();
-        }
-
         let position = this.position;
 
         if (this.shaking) {

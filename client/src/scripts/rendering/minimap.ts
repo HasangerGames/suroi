@@ -65,7 +65,6 @@ export class Minimap {
         this.container.addChild(this.objectsContainer);
         this.container.addChild(this.border);
 
-        window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
