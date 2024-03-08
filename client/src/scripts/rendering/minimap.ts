@@ -159,18 +159,18 @@ export class Minimap {
             ctx.beginPath();
             for (const river of rivers) {
                 ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
-                ctx.fill(COLORS.riverBank);
             }
-            ctx.rect(0, 0, width * scale, height * scale);
-            ctx.fill(COLORS.water);
-            ctx.roundShape(beach, radius);
-            ctx.cut();
+            ctx.fill(COLORS.riverBank);
 
             ctx.beginPath();
             for (const river of rivers) {
                 ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
             }
+
+            ctx.rect(0, 0, width * scale, height * scale);
             ctx.fill(COLORS.water);
+            ctx.roundShape(beach, radius);
+            ctx.cut();
 
             ctx.setStrokeStyle({
                 color: 0x000000,
