@@ -1374,15 +1374,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // Main hitbox
                 { idString: "ship", position: Vec.create(0, 0), rotation: 0 },
 
-            { idString: "ship_oil_tank", position: Vec.create(-14, -111), rotation: 0 },
-            { idString: "generator", position: Vec.create(23, 75), rotation: 0, puzzlePiece: true },
-            { idString: "barrel", position: Vec.create(24, 66) },
-            {
-                idString: { barrel: 1, super_barrel: 1 },
-                position: Vec.create(21, 58)
-            },
-            { idString: "regular_crate", position: Vec.create(-6, 73) },
-            { idString: "regular_crate", position: Vec.create(-4, 61) },
+                { idString: "ship_oil_tank", position: Vec.create(-14, -111), rotation: 0 },
+                { idString: "generator", position: Vec.create(23, 75), rotation: 0, puzzlePiece: true },
+                { idString: "barrel", position: Vec.create(24, 66) },
+                {
+                    idString: { barrel: 1, super_barrel: 1 },
+                    position: Vec.create(21, 58)
+                },
+                { idString: "regular_crate", position: Vec.create(-6, 73) },
+                { idString: "regular_crate", position: Vec.create(-4, 61) },
 
                 // Captain's cabin
                 { idString: "control_panel_small", position: Vec.create(14.5, -57), rotation: 2 },
