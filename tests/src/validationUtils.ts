@@ -128,7 +128,7 @@ export const tester = (() => {
         if (warningCondition) warnings.push([errorPath, warningMessage]);
     }
 
-    function assertNoDuplicateIDStrings(collection: Array<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
+    function assertNoDuplicateIDStrings(collection: ReadonlyArray<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
         const { foundDupes, dupes } = findDupes(collection.map(v => v.idString));
 
         assert(
@@ -166,7 +166,7 @@ export const tester = (() => {
     const assertReferenceExistsArray = createDualForm((
         value: string,
         otherParams: {
-            readonly collection: Array<{ readonly idString: string }>
+            readonly collection: ReadonlyArray<{ readonly idString: string }>
             readonly collectionName: string
         },
         forwardTo

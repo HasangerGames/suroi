@@ -407,7 +407,7 @@ logger.indent("Validating backpack definitions", () => {
                     tester.assertReferenceExistsArray({
                         value: item,
                         errorPath: errorPath2,
-                        collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions).concat(Throwables),
+                        collection: (HealingItems.definitions as readonly ObjectDefinition[]).concat(Ammos.definitions).concat(Throwables),
                         collectionName: "HealingItems, Ammos, and Throwables"
                     });
 

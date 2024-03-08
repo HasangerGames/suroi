@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas";
 
 export interface ModeDefinition {

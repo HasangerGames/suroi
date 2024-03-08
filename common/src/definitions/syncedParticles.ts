@@ -85,91 +85,91 @@ export interface SyncedParticleSpawnerDefinition {
     readonly spawnRadius: number
 }
 
-// inheritance when™
-function createParticle(idString: string, name: string, options?: Partial<SyncedParticleDefinition>): SyncedParticleDefinition {
-    return {
-        idString,
-        name,
-        scale: {
-            start: {
-                min: 1.5,
-                max: 2
+export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition>()(
+    {
+        smoke_like: (name: string) => ({
+            idString: name.replace(/ /g, "_").toLowerCase(),
+            name,
+            scale: {
+                start: {
+                    min: 1.5,
+                    max: 2
+                },
+                end: {
+                    min: 1.75,
+                    max: 2.25
+                }
             },
-            end: {
-                min: 1.75,
-                max: 2.25
-            }
-        },
-        alpha: {
-            start: 1,
-            end: 0,
-            easing: "expoIn"
-        },
-        angularVelocity: {
-            min: -0.0005,
-            max: 0.0005
-        },
-        velocity: {
-            min: {
-                x: -0.0002,
-                y: -0.0002
+            alpha: {
+                start: 1,
+                end: 0,
+                easing: "expoIn"
             },
-            max: {
-                x: 0.0002,
-                y: 0.0002
-            }
-        },
-        lifetime: {
-            mean: 20000,
-            deviation: 1000
-        },
-        zIndex: ZIndexes.ObstaclesLayer4,
-        frame: idString === "smoke_grenade_particle" ? undefined : "smoke_grenade_particle",
-        ...options
-    };
-}
-
-export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
-    createParticle(
-        "smoke_grenade_particle",
-        "Smoke Grenade Particle",
-        {
-            hitbox: new CircleHitbox(5),
-            snapScopeTo: "1x_scope"
-        }
-    ),
-    createParticle(
-        "tear_gas_particle",
-        "Tear Gas Particle",
-        {
-            tint: 0xa0e6ff,
-            hitbox: new CircleHitbox(5),
-            snapScopeTo: "1x_scope",
-            depletePerMs: {
-                adrenaline: 0.0055
-            }
-        }
-    ),
-    createParticle(
-        "airdrop_smoke_particle",
-        "Airdrop Smoke Particle",
-        {
+            angularVelocity: {
+                min: -0.0005,
+                max: 0.0005
+            },
             velocity: {
                 min: {
-                    x: -0.002,
-                    y: -0.002
+                    x: -0.0002,
+                    y: -0.0002
                 },
                 max: {
-                    x: 0.002,
-                    y: 0.002
+                    x: 0.0002,
+                    y: 0.0002
                 }
             },
             lifetime: {
-                mean: 2000,
-                deviation: 500
+                mean: 20000,
+                deviation: 1000
             },
-            hitbox: new CircleHitbox(5),
-            snapScopeTo: "1x_scope"
-        }
-    )
-]);
+            zIndex: ZIndexes.ObstaclesLayer4,
+            frame: "smoke_grenade_particle"
+        })
+    }
+)(
+    apply => [
+        apply(
+            "smoke_like",
+            {
+                hitbox: new CircleHitbox(5),
+                snapScopeTo: "1x_scope"
+            },
+            "Smoke Grenade Particle"
+        ),
+        apply(
+            "smoke_like",
+            {
+                tint: 0xa0e6ff,
+                hitbox: new CircleHitbox(5),
+                snapScopeTo: "1x_scope",
+                depletePerMs: {
+                    adrenaline: 0.0055
+                }
+            },
+            "Tear Gas Particle"
+        ),
+        apply(
+            "smoke_like",
+            {
+                velocity: {
+                    min: {
+                        x: -0.002,
+                        y: -0.002
+                    },
+                    max: {
+                        x: 0.002,
+                        y: 0.002
+                    }
+                },
+                lifetime: {
+                    mean: 2000,
+                    deviation: 500
+                },
+                hitbox: new CircleHitbox(5),
+                snapScopeTo: "1x_scope"
+            },
+            "Airdrop Smoke Particle"
+        )
+    ]
+);
