@@ -166,7 +166,9 @@ export class Minimap {
             for (const river of rivers) {
                 ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
             }
+            ctx.fill(COLORS.water);
 
+            ctx.beginPath();
             ctx.rect(0, 0, width * scale, height * scale);
             ctx.fill(COLORS.water);
             ctx.roundShape(beach, radius);
