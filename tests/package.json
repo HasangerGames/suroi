@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/node": "^20.11.19",
     "@types/ws": "^8.5.10",
-    "typescript": "5.3.3"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
