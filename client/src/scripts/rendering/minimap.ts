@@ -57,6 +57,9 @@ export class Minimap {
         this.game = game;
         game.pixi.stage.addChild(this.container);
 
+        // note: since pixi v8 masks also need to be added to the stage
+        // so they update properly when redrawing
+        game.pixi.stage.addChild(this.mask);
         this.objectsContainer.mask = this.mask;
 
         this.container.addChild(this.objectsContainer);
@@ -508,12 +511,9 @@ export class Minimap {
             this.indicator.scale.set(0.1);
         }
 
-        // @HACK: pixi v8 doesn't update the mask sometimes
-        this.container.mask = null;
         this.mask.clear();
         this.mask.rect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
         this.mask.fill();
-        this.container.mask = this.mask;
 
         this.updatePosition();
         this.updateTransparency();
