@@ -1153,7 +1153,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         const inventory = this.inventory;
-
         for (const action of packet.actions) {
             switch (action.type) {
                 case InputActions.UseItem: {
@@ -1183,19 +1182,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     inventory.swapGunSlots();
                     break;
                 }
-                case InputActions.Interact: {
-                    if (this.game.now - this.lastInteractionTime < 120) return;
-                    this.lastInteractionTime = this.game.now;
-
+                case InputActions.Loot: {
                     interface CloseObject {
-                        object: Loot | Obstacle | undefined
+                        object: Loot | undefined
                         minDist: number
                     }
 
-                    const interactable: CloseObject = {
-                        object: undefined,
-                        minDist: Number.MAX_VALUE
-                    };
                     const uninteractable: CloseObject = {
                         object: undefined,
                         minDist: Number.MAX_VALUE
@@ -1205,20 +1197,53 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
+                            (object instanceof Loot) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
-                                interactable.minDist = dist;
-                                interactable.object = object;
-                            } else if (
+                            if (
                                 object instanceof Loot &&
-                                object.definition.itemType !== ItemType.Gun &&
-                                dist < uninteractable.minDist
+                                dist < uninteractable.minDist &&
+                                object.canInteract(this)
                             ) {
                                 uninteractable.minDist = dist;
                                 uninteractable.object = object;
+                            }
+                        }
+                    }
+                    if (uninteractable.object) {
+                        uninteractable.object?.interact(this, false);
+                    }
+
+                    this.canDespawn = false;
+                    this.disableInvulnerability();
+                    break;
+                }
+                case InputActions.Interact: {
+                    if (this.game.now - this.lastInteractionTime < 120) return;
+                    this.lastInteractionTime = this.game.now;
+
+                    interface CloseObject {
+                        object: Obstacle | undefined
+                        minDist: number
+                    }
+
+                    const interactable: CloseObject = {
+                        object: undefined,
+                        minDist: Number.MAX_VALUE
+                    };
+                    const detectionHitbox = new CircleHitbox(3, this.position);
+                    const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
+
+                    for (const object of nearObjects) {
+                        if (
+                            (object instanceof Obstacle && object.canInteract(this)) &&
+                            object.hitbox.collidesWith(detectionHitbox)
+                        ) {
+                            const dist = Geometry.distanceSquared(object.position, this.position);
+                            if (object instanceof Obstacle && dist < interactable.minDist) {
+                                interactable.minDist = dist;
+                                interactable.object = object;
                             }
                         }
                     }
@@ -1226,7 +1251,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (interactable.object) {
                         interactable.object.interact(this);
 
-                        if ((interactable.object as Obstacle).isDoor) {
+                        if ((interactable.object).isDoor) {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
@@ -1240,8 +1265,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                 }
                             }
                         }
-                    } else if (uninteractable.object) {
-                        uninteractable.object?.interact(this, true);
                     }
 
                     this.canDespawn = false;

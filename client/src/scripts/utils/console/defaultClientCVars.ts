@@ -143,6 +143,7 @@ export const defaultBinds = Object.freeze({
     "+left": ["A", "ArrowLeft"],
     "+right": ["D", "ArrowRight"],
     interact: ["F"],
+    loot: [],
     "slot 0": ["1"],
     "slot 1": ["2"],
     "slot 2": ["3", "E"],
