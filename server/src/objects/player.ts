@@ -1211,7 +1211,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             }
                         }
                     }
-                    if(uninteractable.object){
+                    if (uninteractable.object) {
                         uninteractable.object?.interact(this, false);
                     }
 
@@ -1251,7 +1251,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (interactable.object) {
                         interactable.object.interact(this);
 
-                        if ((interactable.object as Obstacle).isDoor) {
+                        if ((interactable.object).isDoor) {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
