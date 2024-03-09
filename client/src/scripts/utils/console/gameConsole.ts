@@ -48,6 +48,11 @@ export interface GameSettings {
     readonly binds: Record<string, string[]>
 }
 
+/**
+ * Error type indicating that a console query has invalid syntax
+ */
+export class CommandSyntaxError extends SyntaxError { }
+
 // When opening the console with a key, the key will be typed to the console,
 // because the keypress event is triggered for the input field, but only on the main menu screen
 let invalidateNextCharacter = false;
@@ -776,11 +781,6 @@ export class GameConsole {
 
             But for now, comments will be strewn
         */
-
-        /**
-         * Somewhat unnecessary subclass
-         */
-        class CommandSyntaxError extends SyntaxError { }
 
         /**
          * The three ways to chain commands together. If thought of as operators, then
