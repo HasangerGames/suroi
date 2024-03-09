@@ -298,8 +298,9 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
     readFromStream<Specific extends Def = Def>(stream: SuroiBitStream): Specific {
         const id = stream.readBits(this.bitCount);
-        if (id >= this.definitions.length) {
-            console.warn(`ID out of range: ${id} (max: ${this.definitions.length - 1})`);
+        const max = this.definitions.length - 1;
+        if (id > max) {
+            console.warn(`ID out of range: ${id} (max: ${max})`);
         }
 
         return this.definitions[id] as Specific;

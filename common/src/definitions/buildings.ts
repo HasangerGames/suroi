@@ -139,7 +139,13 @@ const warehouseObstacle = {
 
 export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
     {
-        container: (id: number, tint: number, wallsId: number, open: "open2" | "open1" | "closed", damaged?: boolean) => {
+        container: (
+            id: number,
+            tint: number,
+            wallsId: number,
+            open: "open2" | "open1" | "closed",
+            damaged?: boolean
+        ) => {
             let spawnHitbox: Hitbox;
             switch (open) {
                 case "open2":
