@@ -1,6 +1,6 @@
-import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
+import { Loots } from "../definitions/loots";
+import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
-import { Guns } from "./guns";
 
 export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
 
@@ -15,7 +15,7 @@ const bulletColors: Record<string, number> = {
 
 export const Bullets = new ObjectDefinitions<BulletDefinition>(
     [
-        ...Guns,
+        ...Loots.byType(ItemType.Gun),
         ...Explosions.definitions
     ]
         .filter(def => !("isDual" in def) || !def.isDual)
@@ -32,6 +32,7 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>(
                 }
             }
 
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             return {
                 idString: `${def.idString}_bullet`,
                 name: `${def.name} Bullet`,

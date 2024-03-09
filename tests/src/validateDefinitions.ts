@@ -20,7 +20,7 @@ import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
-import { MapObjectSpawnMode, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
@@ -1281,7 +1281,9 @@ logger.indent("Validating explosions", () => {
 logger.indent("Validating guns", () => {
     tester.assertNoDuplicateIDStrings(Guns, "Guns", "guns");
 
-    for (const gun of Guns) {
+    // Cannot use `Guns` here, because that's an array of raw definitions
+    // whose inherited fields haven't yet been resolved
+    for (const gun of Loots.byType(ItemType.Gun)) {
         const errorPath = tester.createPath("guns", `gun '${gun.idString}'`);
 
         logger.indent(`Validating gun '${gun.idString}'`, () => {

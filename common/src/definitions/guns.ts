@@ -1,6 +1,6 @@
 import { FireMode, ZIndexes } from "../constants";
 import { mergeDeep } from "../utils/misc";
-import { ItemType, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
@@ -123,7 +123,7 @@ type RawGunDefinition = BaseGunDefinition & {
     }
 };
 
-const GunsRaw: RawGunDefinition[] = [
+const GunsRaw: Array<RawDefinition<RawGunDefinition>> = [
     {
         idString: "ak47",
         name: "AK-47",
@@ -1555,53 +1555,9 @@ const GunsRaw: RawGunDefinition[] = [
         }
     },
     {
+        [ObjectDefinitions.inheritFromSymbol]: "model_37",
         idString: "revitalizer",
         name: "Revitalizer",
-        itemType: ItemType.Gun,
-        ammoType: "12g",
-        ammoSpawnAmount: 15,
-        capacity: 5,
-        reloadTime: 0.75,
-        fireDelay: 925,
-        switchDelay: 925,
-        speedMultiplier: 0.92,
-        recoilMultiplier: 0.5,
-        recoilDuration: 550,
-        fireMode: FireMode.Single,
-        shotSpread: 11,
-        moveSpread: 14,
-        killstreak: true,
-        consistentPatterning: true,
-        bulletCount: 10,
-        length: 7.5,
-        fists: {
-            left: Vec.create(120, -2),
-            right: Vec.create(45, 0),
-            animationDuration: 100,
-            rightZIndex: 4
-        },
-        image: { position: Vec.create(80, 0) },
-        casingParticles: [{
-            position: Vec.create(4, 0.6),
-            ejectionDelay: 450,
-            velocity: {
-                y: {
-                    min: 2,
-                    max: 5,
-                    randomSign: true
-                }
-            }
-        }],
-        singleReload: true,
-        ballistics: {
-            damage: 10,
-            obstacleMultiplier: 1,
-            speed: 0.16,
-            range: 48,
-            tracer: {
-                length: 0.7
-            }
-        },
         wearerAttributes: {
             passive: {
                 maxHealth: 0.51,
@@ -1632,7 +1588,7 @@ const GunsRaw: RawGunDefinition[] = [
     }
 ];
 
-export const Guns: GunDefinition[] = GunsRaw.map(e => {
+export const Guns: Array<RawDefinition<GunDefinition>> = GunsRaw.map(e => {
     if (e.dual === undefined) {
         return [e];
     }

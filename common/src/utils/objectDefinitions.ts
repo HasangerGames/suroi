@@ -122,10 +122,57 @@ type GetInheritedDef<
 */
 
 /**
+ * A file-wide reference to the `symbol` used for inheritance
+ */
+const _inheritFromSymbol: unique symbol = Symbol("inheritFrom");
+
+/**
+ * Either a complete stand-alone definition or a definition configured to inherit
+ * from another. Note that here, "inherit" refers not to the set of partials used by
+ * {@linkcode Partials} *et. al.*, but rather to another definition in the same list
+ *
+ * **Note**: Mixing this inheritance mechanism with the factory pattern is perfectly
+ * fine and works as expected.
+ * @template Def The type of definition
+ */
+export type RawDefinition<Def extends ObjectDefinition> = Def | (
+    Partial<Def> & {
+        /**
+         * @see {@linkcode ObjectDefinition.idString}
+         */
+        readonly idString: string
+        /**
+         * A collection of `idString`s pointing to the definitions which should be
+         * inherited from. If an array is provided, the definitions are applied from
+         * first to last, with fields in later parents overriding those from earlier ones
+         */
+        readonly [_inheritFromSymbol]: ReferenceTo<Def> | Array<ReferenceTo<Def>>
+    }
+);
+
+/**
+ * Error type indicating that something went wrong while creating the partials
+ * for an {@linkcode ObjectDefinitions} instance
+ */
+export class DefinitionFactoryInitError extends Error {}
+
+/**
+ * Error type indicating that something went wrong while resolving the inherited
+ * fields of a definition used in an {@linkcode ObjectDefinitions} instance
+ */
+export class DefinitionInheritanceInitError extends Error {}
+
+/**
  * A class representing a list of definitions
  * @template Def The specific type of `ObjectDefinition` this class holds
  */
 export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> {
+    /**
+     * Allows one to assemble a list of {@linkcode RawDefinition}s without having
+     * to call {@linkcode ObjectDefinitions.create()}
+     */
+    static get inheritFromSymbol(): typeof _inheritFromSymbol { return _inheritFromSymbol; }
+
     /**
      * How many bits are needed to identify a given object belonging to this definition set
      */
@@ -181,6 +228,8 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
              * inside this list. It receives another function, known as the applier, which is used to invoke
              * the inheritance mechanism by passing the name of the desired partial, followed by any necessary
              * argument for that partial's function.
+             * @param inheritFrom A reference to and shorthand for the unique `symbol` used to indicate that a
+             * definition should inherit from another.
              */
             return (
                 definitionsDecl: (
@@ -188,7 +237,12 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                      * A function used to create a definition that inherits from a previously-declared partial
                      * definition.
                      *
-                     * @param
+                     * @template Key The specific name of the partial to inherit from
+                     * @template Overrides The specific type of the provided overrides
+                     * @param name The name of the partial from which this definition should inherit
+                     * @param overrides A set of overrides to apply to the contents of the partial
+                     * @param args A collection of arguments to pass to the inherited partial's function.
+                     * See {@linkcode GetInheritedDef} for more info
                      */
                     apply: <
                         Key extends Keys,
@@ -197,8 +251,9 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                         name: Key,
                         overrides: Overrides,
                         ...args: Parameters<GetPartialDeclFn<Def, Keys, PartialsDecl, Key>>
-                    ) => ReturnType<GetPartialDeclFn<Def, Keys, PartialsDecl, Key>> & Overrides
-                ) => readonly Def[]
+                    ) => ReturnType<GetPartialDeclFn<Def, Keys, PartialsDecl, Key>> & Overrides,
+                    inheritFrom: typeof _inheritFromSymbol
+                ) => ReadonlyArray<RawDefinition<Def>>
             ) => {
                 type ObjectEntries = <O extends object>(obj: O) => Array<readonly [keyof O, O[keyof O]]>;
 
@@ -208,11 +263,11 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
                     const inheritTargetName = value.extends;
                     if (!(inheritTargetName in partialsDecl)) {
-                        throw new Error(`Partial '${String(key)}' tried to extend non-existant partial '${inheritTargetName}'`);
+                        throw new DefinitionFactoryInitError(`Partial '${String(key)}' tried to extend non-existant partial '${inheritTargetName}'`);
                     }
 
                     if (trace.includes(inheritTargetName)) {
-                        throw new Error(`Circular dependency found: ${[...trace, inheritTargetName].join(" -> ")}`);
+                        throw new DefinitionFactoryInitError(`Circular dependency found: ${[...trace, inheritTargetName].join(" -> ")}`);
                     }
 
                     const inheritTarget = resolveInheritance(inheritTargetName, ...trace, inheritTargetName);
@@ -248,7 +303,8 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                             {},
                             partials[name](...args) as ReturnType<GetPartialDeclFn<Def, Keys, PartialsDecl, typeof name>>,
                             overrides
-                        )
+                        ),
+                        _inheritFromSymbol
                     )
                 );
             };
@@ -256,17 +312,43 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 
     /**
-     * Creates a new instance of `ObjectDefinitions`. Can be used to bypass the inheritance system if such
+     * Creates a new instance of `ObjectDefinitions`. Can be used to bypass the factory system if such
      * functionalities aren't needed
      * @param definitions An array of definitions to store within this object
      */
-    constructor(definitions: readonly Def[]) {
+    constructor(definitions: ReadonlyArray<RawDefinition<Def>>) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
 
-        this.definitions = definitions;
+        this.definitions = definitions.map(
+            def => (
+                function withTrace(def: RawDefinition<Def>, ...trace: readonly string[]): Def {
+                    if (!(_inheritFromSymbol in def)) {
+                        return def;
+                    }
 
-        for (let i = 0, defLength = definitions.length; i < defLength; i++) {
-            const idString = definitions[i].idString;
+                    return Object.assign(
+                        {},
+                        ...([def[_inheritFromSymbol]].flat() as ReadonlyArray<ReferenceTo<Def>>)
+                            .map(targetName => {
+                                const target = definitions.find(def => def.idString === targetName);
+                                if (!target) {
+                                    throw new DefinitionInheritanceInitError(`Definition '${def.idString}' was configured to inherit from inexistant definition '${targetName}'`);
+                                }
+
+                                if (trace.includes(targetName)) {
+                                    throw new DefinitionInheritanceInitError(`Circular dependency found: ${[...trace, targetName].join(" -> ")}`);
+                                }
+
+                                return withTrace(target, ...trace, target.idString);
+                            }),
+                        def
+                    );
+                }
+            )(def, def.idString)
+        );
+
+        for (let i = 0, defLength = this.definitions.length; i < defLength; i++) {
+            const idString = this.definitions[i].idString;
             if (this.idStringToNumber[idString] !== undefined) {
                 throw new Error(`Duplicated idString: ${idString}`);
             }
@@ -283,7 +365,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
     fromString<U extends Def = Def>(idString: ReferenceTo<U>): U {
         const id = this.idStringToNumber[idString];
-        if (id === undefined) throw new Error(`Unknown idString: ${idString}`);
+        if (id === undefined) throw new ReferenceError(`Unknown idString '${idString}'`);
         return this.definitions[id] as U;
     }
 
