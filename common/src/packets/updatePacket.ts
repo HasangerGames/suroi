@@ -491,9 +491,7 @@ export class UpdatePacket extends Packet {
                 stream.writeBoolean(player.hasColor);
                 if (player.hasColor) stream.writeBits(player.nameColor, 24);
 
-                const hasBadge = player.loadout.badge !== undefined;
-                stream.writeBoolean(hasBadge);
-                if (hasBadge) Badges.writeToStream(stream, player.loadout.badge);
+                Badges.writeOptional(stream, player.loadout.badge);
             });
         }
 
@@ -619,7 +617,7 @@ export class UpdatePacket extends Packet {
                     hasColor,
                     nameColor: hasColor ? stream.readBits(24) : 0,
                     loadout: {
-                        badge: stream.readBoolean() ? Badges.readFromStream(stream) : undefined
+                        badge: Badges.readOptional(stream)
                     }
                 };
             }));

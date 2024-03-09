@@ -55,6 +55,18 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
         return this.definitions[id] as U;
     }
 
+    writeOptional(stream: SuroiBitStream, type?: ReifiableDef<T>): void {
+        stream.writeBoolean(type !== undefined);
+        if (type !== undefined) this.writeToStream(stream, type);
+    }
+
+    readOptional<U extends T = T>(stream: SuroiBitStream): U | undefined {
+        if (stream.readBoolean()) {
+            return this.readFromStream<U>(stream);
+        }
+        return undefined;
+    }
+
     [Symbol.iterator](): Iterator<T> {
         return this.definitions[Symbol.iterator]();
     }
