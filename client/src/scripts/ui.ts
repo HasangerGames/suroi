@@ -241,7 +241,7 @@ Video evidence is required.`)) {
     const role = game.console.getBuiltInCVar("dv_role");
 
     // Load skins
-    if (!(game.console.getBuiltInCVar("cv_loadout_skin") in Skins.idStringToNumber)) {
+    if (!Skins.definitions.some(s => s.idString === game.console.getBuiltInCVar("cv_loadout_skin"))) {
         game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
     }
 

@@ -7,6 +7,18 @@ import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDef
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
+/*
+    eslint-disable
+
+    @typescript-eslint/consistent-type-definitions,
+    @typescript-eslint/indent
+*/
+
+/*
+    `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
+    `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
+*/
+
 export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
     const dupes: Record<string, number> = {};
     const set = new Set<string>();
@@ -40,16 +52,26 @@ export const tester = (() => {
     type Helper<
         PlainValue,
         OtherParams extends object
-    > = <Target extends object>(
-        params: ({
-            readonly obj: Target
-            readonly field: keyof Target
-            readonly baseErrorPath: string
-        } | {
-            readonly value: PlainValue
-            readonly errorPath: string
-        }) & OtherParams
-    ) => void;
+    > = {
+        <Target extends object>(
+            params: {
+                readonly obj: Target
+                readonly field: keyof Target
+                readonly baseErrorPath: string
+            } & OtherParams
+        ): void
+        (
+            params: {
+                readonly value: PlainValue
+                readonly errorPath: string
+            } & OtherParams
+        ): void
+};
+
+    type ValidationResult = {
+        readonly errors?: string[]
+        readonly warnings?: string[]
+    } | undefined;
 
     function createDualForm<
         PlainValue,
@@ -58,21 +80,35 @@ export const tester = (() => {
         predicate: (
             value: PlainValue,
             otherParams: OtherParams,
-            forwardTo: <Args extends object, Fn extends Helper<PlainValue, Args>>(fn: Fn, args: Args) => void
-        ) => {
-            readonly errors?: string[]
-            readonly warnings?: string[]
-        } | undefined
-    ) {
-        return <Target extends object>(
-            params: ({
+            forwardTo: <Args extends object, Fn extends Helper<PlainValue, Args>>(fn: Fn, args: Args) => boolean,
+            baseErrorPath: string
+        ) => ValidationResult
+    ): {
+        <Target extends object>(
+            params: {
                 readonly obj: Target
                 readonly field: keyof Target
                 readonly baseErrorPath: string
-            } | {
+            } & OtherParams
+        ): void
+        (
+            params: {
                 readonly value: PlainValue
                 readonly errorPath: string
-            }) & OtherParams
+            } & OtherParams
+        ): void
+    } {
+        return <Target extends object>(
+            params: (
+                {
+                    readonly obj: Target
+                    readonly field: keyof Target
+                    readonly baseErrorPath: string
+                } | {
+                    readonly value: PlainValue
+                    readonly errorPath: string
+                }
+            ) & OtherParams
         ): void => {
             const [value, errorPath] = "value" in params
                 ? [
@@ -85,25 +121,47 @@ export const tester = (() => {
                 ];
 
             const result = {
+                fatalErrors: [],
                 errors: [],
                 warnings: [],
-                ...(predicate(
-                    value,
-                    params,
-                    (target, args) => {
-                        return target({
-                            value,
-                            errorPath,
-                            ...args
-                        });
-                    }
-                ) ?? {})
+                ...(
+                    (() => {
+                        try {
+                            return predicate(
+                                value,
+                                params,
+                                (target, args) => {
+                                    const oldErrLen = errors.length;
+                                    target({
+                                        value,
+                                        errorPath,
+                                        ...args
+                                    });
+
+                                    return errors.length !== oldErrLen;
+                                },
+                                errorPath
+                            ) ?? {};
+                        } catch (e) {
+                            return {
+                                fatalErrors: [
+                                    e instanceof Error
+                                        ? e.stack ?? `${e.name}: ${e.message}`
+                                        : safeString(e)
+                                ]
+                            };
+                        }
+                    })()
+                )
             };
 
-            if (result === undefined || Number.isNaN(result.errors.length / result.warnings.length)) return;
+            if (result === undefined || result.fatalErrors.length + result.errors.length + result.warnings.length === 0) return;
 
             const prependErrorPath = (err: string): [string, string] => [errorPath, err];
 
+            tester.fatalErrors.push(
+                ...result.fatalErrors.map(prependErrorPath)
+            );
             tester.errors.push(
                 ...result.errors.map(prependErrorPath)
             );
@@ -115,6 +173,7 @@ export const tester = (() => {
 
     const warnings: Array<[string, string]> = [];
     const errors: Array<[string, string]> = [];
+    const fatalErrors: Array<[string, string]> = [];
 
     function createPath(...components: string[]): string {
         return components.join(" -> ");
@@ -324,24 +383,80 @@ export const tester = (() => {
                 };
             }
         }
-    ) as <Target extends object, Key extends keyof Target, ValueType>(
-        params: ({
-            readonly obj: Target
-            readonly field: Key
-            readonly baseErrorPath: string
-        } | {
-            readonly value: ValueType
-            readonly errorPath: string
-        }) & {
-            readonly defaultValue: ValueType
-            readonly equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
-        }
-    ) => void;
+    ) as {
+        <Target extends object, Keys extends keyof Target, Def extends Target[Keys]>(
+            params: {
+                readonly obj: Target
+                readonly field: Keys
+                readonly baseErrorPath: string
+
+                readonly defaultValue: Def
+                readonly equalityFunction?: (a: NonNullable<Target[Keys]>, b: Def) => boolean
+            }
+        ): void
+        <ValueType>(
+            params: {
+                readonly value: ValueType
+                readonly errorPath: string
+
+                readonly defaultValue: ValueType
+                readonly equalityFunction?: (a: NonNullable<ValueType>, b: NonNullable<ValueType>) => boolean
+            }
+        ): void
+    };
     // lol
+
+    const assertValidOrNPV = createDualForm(
+        (
+            value: unknown,
+            otherParams: {
+                defaultValue: typeof value
+                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
+                validatorIfPresent: (val: NonNullable<typeof value>, baseErrorPath: string) => void
+            },
+            forwardTo,
+            baseErrorPath
+        ): undefined => {
+            if (
+                !forwardTo(
+                    assertNoPointlessValue,
+                    {
+                        defaultValue: otherParams.defaultValue,
+                        equalityFunction: otherParams.equalityFunction
+                    }
+                ) && value !== undefined
+            ) {
+                otherParams.validatorIfPresent(value!, baseErrorPath);
+            }
+        }
+    ) as {
+        <Target extends object, Keys extends keyof Target, Def extends Target[Keys]>(
+            params: {
+                readonly obj: Target
+                readonly field: Keys
+                readonly baseErrorPath: string
+
+                readonly defaultValue: Def
+                readonly equalityFunction?: (a: NonNullable<Target[Keys]>, b: Def) => boolean
+                readonly validatorIfPresent: (value: NonNullable<Target[Keys]>, baseErrorPath: string) => void
+            }
+        ): void
+        <ValueType>(
+            params: {
+                readonly value: ValueType
+                readonly errorPath: string
+
+                readonly defaultValue: ValueType
+                readonly equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
+                readonly validatorIfPresent: (value: NonNullable<ValueType>, baseErrorPath: string) => void
+            }
+        ): void
+    };
 
     return Object.freeze({
         get warnings() { return warnings; },
         get errors() { return errors; },
+        get fatalErrors() { return fatalErrors; },
         createPath,
         assert,
         assertWarn,
@@ -377,6 +492,7 @@ export const tester = (() => {
         assertIsNaturalFiniteNumber,
         assertIntAndInBounds,
         assertNoPointlessValue,
+        assertValidOrNPV,
         runTestOnArray<T>(array: T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
             let i = 0;
             for (const element of array) {
@@ -1101,7 +1217,17 @@ export const logger = (() => {
 
             current.messages.push(nextLevel);
             current = nextLevel;
-            cb();
+            try {
+                cb();
+            } catch (e) {
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                tester.fatalErrors.push([
+                    "unknown",
+                    e instanceof Error
+                        ? e.stack ?? `${e.name}: ${e.message}`
+                        : safeString(e)
+                ]);
+            }
 
             current = currentCopy;
         },

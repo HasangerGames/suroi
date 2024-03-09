@@ -87,9 +87,15 @@ export interface SyncedParticleSpawnerDefinition {
 
 export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition>()(
     {
-        smoke_like: (name: string) => ({
-            idString: name.replace(/ /g, "_").toLowerCase(),
-            name,
+        smoke_like: (idString: string, name?: string) => ({
+            idString,
+            name: name ?? (
+                idString
+                    .replace(/_/g, " ")
+                    .split(" ")
+                    .map(w => w && `${w[0].toUpperCase()}${w.slice(1)}`)
+                    .join(" ")
+            ),
             scale: {
                 start: {
                     min: 1.5,
@@ -124,7 +130,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 deviation: 1000
             },
             zIndex: ZIndexes.ObstaclesLayer4,
-            frame: "smoke_grenade_particle"
+            frame: (<T>(x: T, d: T) => x === d ? undefined : d)(idString, "smoke_grenade_particle")
         })
     }
 )(
@@ -135,7 +141,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 hitbox: new CircleHitbox(5),
                 snapScopeTo: "1x_scope"
             },
-            "Smoke Grenade Particle"
+            "smoke_grenade_particle"
         ),
         apply(
             "smoke_like",
@@ -147,7 +153,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     adrenaline: 0.0055
                 }
             },
-            "Tear Gas Particle"
+            "tear_gas_particle"
         ),
         apply(
             "smoke_like",
@@ -169,7 +175,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 hitbox: new CircleHitbox(5),
                 snapScopeTo: "1x_scope"
             },
-            "Airdrop Smoke Particle"
+            "airdrop_smoke_particle"
         )
     ]
 );
