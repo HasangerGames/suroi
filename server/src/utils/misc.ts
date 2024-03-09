@@ -48,25 +48,26 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     for (const selection of [selectedItem].flat()) {
         if ("tier" in selection) {
             loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
-        } else {
-            const item = selection.item;
-            if (item === null) continue;
-            loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
+            continue;
+        }
 
-            const definition = Loots.fromString(item);
-            if (definition === undefined) {
-                throw new Error(`Unknown loot item: ${item}`);
-            }
+        const item = selection.item;
+        if (item === null) continue;
+        loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
-            if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
-                if (definition.ammoSpawnAmount > 1) {
-                    loot.push(
-                        new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2),
-                        new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2)
-                    );
-                } else {
-                    loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
-                }
+        const definition = Loots.fromString(item);
+        if (definition === undefined) {
+            throw new Error(`Unknown loot item: ${item}`);
+        }
+
+        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
+            if (definition.ammoSpawnAmount > 1) {
+                loot.push(
+                    new LootItem(definition.ammoType, Math.floor(definition.ammoSpawnAmount / 2)),
+                    new LootItem(definition.ammoType, Math.ceil(definition.ammoSpawnAmount / 2))
+                );
+            } else {
+                loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
             }
         }
     }
