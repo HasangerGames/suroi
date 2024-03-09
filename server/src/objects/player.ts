@@ -55,7 +55,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly loadout: {
         badge?: BadgeDefinition
         skin: SkinDefinition
-        emotes: EmoteDefinition[]
+        emotes: Array<EmoteDefinition | undefined>
     };
 
     joined = false;
@@ -353,8 +353,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 Emotes.fromString("thumbs_up"),
                 Emotes.fromString("suroi_logo"),
                 Emotes.fromString("sad_face"),
-                Emotes.fromString("none"),
-                Emotes.fromString("none")
+                undefined,
+                undefined
             ]
         };
 
@@ -407,7 +407,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     emote(slot: number): void {
-        if (this.loadout.emotes[slot]) this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
+        const emote = this.loadout.emotes[slot];
+
+        if (emote) {
+            this.game.emotes.add(new Emote(emote, this));
+        }
     }
 
     update(): void {

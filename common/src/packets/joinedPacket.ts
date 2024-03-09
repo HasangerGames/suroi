@@ -9,7 +9,7 @@ export class JoinedPacket extends Packet {
 
     protocolVersion!: number;
 
-    emotes: EmoteDefinition[] = [];
+    emotes: Array<EmoteDefinition | undefined> = [];
 
     override serialize(): void {
         super.serialize();
@@ -18,29 +18,13 @@ export class JoinedPacket extends Packet {
         stream.writeUint16(GameConstants.protocolVersion);
 
         for (const emote of this.emotes) {
-            Emotes.writeToStream(stream, emote);
+            Emotes.writeOptional(stream, emote);
         }
     }
 
     override deserialize(stream: SuroiBitStream): void {
         this.protocolVersion = stream.readUint16();
 
-        for (let i = 0; i < 6; i++) {
-            this.emotes.push(Emotes.readFromStream(stream));
-        }
-
-        for (let i = 0; i < 4; i++) {
-            if (this.emotes[i].idString === "none") {
-                this.emotes = [
-                    Emotes.fromString("happy_face"),
-                    Emotes.fromString("thumbs_up"),
-                    Emotes.fromString("suroi_logo"),
-                    Emotes.fromString("sad_face"),
-                    Emotes.fromString("none"),
-                    Emotes.fromString("none")
-                ];
-                break;
-            }
-        }
+        this.emotes = Array.from({ length: 6 }, () => Emotes.readOptional(stream));
     }
 }

@@ -211,7 +211,9 @@ export class Game {
             }
 
             for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
-                joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
+                const target = this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`);
+
+                joinPacket.emotes.push(target ? Emotes.fromString(target) : undefined);
             }
 
             this.sendPacket(joinPacket);
@@ -335,10 +337,12 @@ export class Game {
 
         const selectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
         for (let i = 0; i < 4; i++) {
+            const emote = packet.emotes[i];
+
             $(`#emote-wheel > ${selectors[i]}`)
                 .css(
                     "background-image",
-                    `url("./img/game/emotes/${packet.emotes[i].idString}.svg")`
+                    emote ? `url("./img/game/emotes/${emote.idString}.svg")` : ""
                 );
         }
 
