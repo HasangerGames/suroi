@@ -216,6 +216,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     porta_potty_toilet_closed: 0.3
                 },
                 position: Vec.create(0, -5),
+                lootSpawnOffset: Vec.create(0, 5),
                 rotation: 0
             },
             {
@@ -818,6 +819,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 idString: { gun_mount_mcx_spear: 0.99, gun_mount_stoner_63: 0.01 },
                 position: Vec.create(-46.8, 28),
+                lootSpawnOffset: Vec.create(4, 0),
                 rotation: 1
             },
             //
