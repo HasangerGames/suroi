@@ -67,9 +67,7 @@ export class InputPacket extends Packet {
             }
         }
 
-        stream.writeBits(this.actions.length, 3);
-
-        for (const action of this.actions) {
+        stream.writeIterator(this.actions, this.actions.length, 3, (action) => {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);
 
             switch (action.type) {
@@ -81,7 +79,7 @@ export class InputPacket extends Packet {
                     Loots.writeToStream(stream, action.item);
                     break;
             }
-        }
+        });
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -110,8 +108,7 @@ export class InputPacket extends Packet {
         }
 
         // Actions
-        const length = stream.readBits(3);
-        for (let i = 0; i < length; i++) {
+        this.actions = [...stream.readIterator(3, () => {
             const type = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
@@ -127,8 +124,8 @@ export class InputPacket extends Packet {
                     break;
             }
 
-            this.actions.push({ type, item, slot });
-        }
+            return { type, item, slot };
+        })];
     }
 
     /**

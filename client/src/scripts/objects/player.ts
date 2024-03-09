@@ -738,6 +738,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 },
                 onComplete: () => {
                     this.emoteContainer.visible = false;
+                    this.anims.emote?.kill();
+                    this.anims.emote = undefined;
+                    this._emoteHideTimeout = undefined;
                 }
             });
         }, 4000);

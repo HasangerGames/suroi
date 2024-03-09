@@ -364,8 +364,15 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 
     fromString<U extends Def = Def>(idString: ReferenceTo<U>): U {
+        return this.fromStringSafe(idString) ?? (() => {
+            throw new ReferenceError(`Unknown idString '${idString}'`);
+        })();
+    }
+
+    fromStringSafe<U extends Def = Def>(idString: ReferenceTo<U>): U | undefined {
         const id = this.idStringToNumber[idString];
-        if (id === undefined) throw new ReferenceError(`Unknown idString '${idString}'`);
+        if (id === undefined) return undefined;
+
         return this.definitions[id] as U;
     }
 
@@ -386,6 +393,19 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         }
 
         return this.definitions[id] as Specific;
+    }
+
+    writeOptional(stream: SuroiBitStream, type?: ReifiableDef<T>): void {
+        const isPresent = type !== undefined;
+
+        stream.writeBoolean(isPresent);
+        if (isPresent) this.writeToStream(stream, type);
+    }
+
+    readOptional<U extends T = T>(stream: SuroiBitStream): U | undefined {
+        return stream.readBoolean()
+            ? this.readFromStream<U>(stream)
+            : undefined;
     }
 
     [Symbol.iterator](): Iterator<Def> {
