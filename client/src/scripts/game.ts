@@ -210,11 +210,9 @@ export class Game {
                 joinPacket.badge = Badges.fromString(badge);
             }
 
-            for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
-                const target = this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`);
-
-                joinPacket.emotes.push(target ? Emotes.fromString(target) : undefined);
-            }
+            joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
+                slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+            );
 
             this.sendPacket(joinPacket);
 

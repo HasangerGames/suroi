@@ -48,15 +48,17 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     for (const selection of [selectedItem].flat()) {
         if ("tier" in selection) {
             loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
-        } else {
-            const item = selection.item;
-            if (item === null) continue;
-            loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
+            continue;
+        }
 
-            const definition = Loots.fromString(item);
-            if (definition === undefined) {
-                throw new Error(`Unknown loot item: ${item}`);
-            }
+        const item = selection.item;
+        if (item === null) continue;
+        loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
+
+        const definition = Loots.fromStringSafe(item);
+        if (definition === undefined) {
+            throw new ReferenceError(`Unknown loot item: ${item}`);
+        }
 
             if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
                 if (definition.ammoSpawnAmount > 1) {
