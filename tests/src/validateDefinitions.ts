@@ -3092,35 +3092,65 @@ logger.indent("Validating configurations", () => {
 
 const { fatalErrors, errors, warnings } = tester;
 const flags = process.argv.slice(2);
-const exitCode = +(fatalErrors.length > 0 || errors.length > 0 || (flags.includes("-Werror") && warnings.length > 0));
+
+const [
+    warningsAsErrors,
+    printTop,
+    printBottom,
+    noDetails
+] = [
+    flags.includes("-Werror"),
+    flags.includes("-print-top"),
+    flags.includes("-print-bottom"),
+    flags.includes("-no-details")
+];
+
+const exitCode = +(fatalErrors.length > 0 || errors.length > 0 || (warningsAsErrors && warnings.length > 0));
+
 const fatalErrorText = fatalErrors.length
     ? `${styleText(`${fatalErrors.length} fatal error${fatalErrors.length === 1 ? "" : "s"}`, ColorStyles.background.magenta.normal, FontStyles.bold, FontStyles.underline, FontStyles.italic)}, `
     : "";
+
 const errorText = errors.length
     ? styleText(`${errors.length} error${errors.length === 1 ? "" : "s"}`, ColorStyles.foreground.red.bright, FontStyles.bold, FontStyles.underline)
     : styleText("no errors", ColorStyles.foreground.green.bright, FontStyles.bold, FontStyles.underline);
+
 const warningText = warnings.length
-    ? styleText(`${warnings.length} warning${warnings.length === 1 ? "" : "s"}`, ColorStyles.foreground.yellow.bright, FontStyles.underline)
+    ? styleText(`${warnings.length} warning${warnings.length === 1 ? "" : "s"}${warningsAsErrors ? " (treated as errors)" : ""}`, ColorStyles.foreground.yellow.bright, FontStyles.underline)
     : styleText("no warnings", ColorStyles.foreground.green.bright, FontStyles.bold, FontStyles.underline);
 
-console.log(`Validation finished with ${fatalErrorText}${errorText}, and ${warningText}.`);
+function printResults(): void {
+    console.log(`Validation finished with ${fatalErrorText}${errorText}, and ${warningText}.`);
 
-fatalErrors.forEach(([path, message]) => {
-    console.log(`${styleText(path, ColorStyles.background.magenta.normal, FontStyles.italic, FontStyles.underline)}: ${styleText(message, FontStyles.italic, FontStyles.bold)}`);
-});
+    fatalErrors.forEach(([path, message]) => {
+        console.log(`${styleText(path, ColorStyles.background.magenta.normal, FontStyles.italic, FontStyles.underline)}: ${styleText(message, FontStyles.italic, FontStyles.bold)}`);
+    });
 
-errors.forEach(([path, message]) => {
-    console.log(`${styleText(path, ColorStyles.foreground.red.normal, FontStyles.italic)}: ${styleText(message, FontStyles.bold)}`);
-});
+    errors.forEach(([path, message]) => {
+        console.log(`${styleText(path, ColorStyles.foreground.red.normal, FontStyles.italic)}: ${styleText(message, FontStyles.bold)}`);
+    });
 
-warnings.forEach(([path, message]) => {
-    console.log(`${styleText(path, ColorStyles.foreground.yellow.normal)}: ${styleText(message, FontStyles.italic)}`);
-});
+    warnings.forEach(([path, message]) => {
+        console.log(`${styleText(path, ColorStyles.foreground.yellow.normal)}: ${styleText(message, FontStyles.italic)}`);
+    });
 
-const testRuntime = Date.now() - testStart;
-console.log(`Validation took ${testRuntime}ms`);
+    const testRuntime = Date.now() - testStart;
+    console.log(`Runtime: ${testRuntime}ms`);
+}
 
-console.log("\nDetails:");
-logger.print();
+if (noDetails) {
+    printResults();
+} else {
+    if (printTop || !printBottom) {
+        printResults();
+    }
+
+    console.log("\nDetails:");
+    logger.print();
+
+    if (printBottom) {
+        printResults();
+    }
+}
 
 process.exit(exitCode);

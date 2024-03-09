@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "validateDefinitions": "node dist/tests/src/validateDefinitions.js",
+    "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
     "stressTest": "tsc && node --enable-source-maps dist/tests/src/stressTest.js"
   },
   "engines": {
