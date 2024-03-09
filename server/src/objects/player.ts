@@ -349,10 +349,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
             emotes: [
-                Emotes.fromString("happy_face"),
-                Emotes.fromString("thumbs_up"),
-                Emotes.fromString("suroi_logo"),
-                Emotes.fromString("sad_face"),
+                Emotes.fromStringSafe("happy_face"),
+                Emotes.fromStringSafe("thumbs_up"),
+                Emotes.fromStringSafe("suroi_logo"),
+                Emotes.fromStringSafe("sad_face"),
                 undefined,
                 undefined
             ]
