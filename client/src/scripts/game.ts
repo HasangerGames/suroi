@@ -153,9 +153,6 @@ export class Game {
         // Hide modals
         $(".dialog").hide();
 
-        // Hide modals
-        $(".dialog").hide();
-
         void (async() => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
             await this.pixi.init({
