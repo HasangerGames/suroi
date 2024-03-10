@@ -36,6 +36,9 @@ export class SuroiBitStream extends BitStream {
      * @param bitCount The number of bits to write
      */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
+        if (bitCount < 0 || bitCount >= 31) {
+            throw new Error(`Invalid bit count ${bitCount}`);
+        }
         const range = (1 << bitCount) - 1;
         const clamped = Numeric.clamp(value, min, max);
         this.writeBits(((clamped - min) / (max - min)) * range + 0.5, bitCount);
@@ -49,6 +52,9 @@ export class SuroiBitStream extends BitStream {
      * @return The floating point number
      */
     readFloat(min: number, max: number, bitCount: number): number {
+        if (bitCount < 0 || bitCount >= 31) {
+            throw new Error(`Invalid bit count ${bitCount}`);
+        }
         const range = (1 << bitCount) - 1;
         return min + (max - min) * this.readBits(bitCount) / range;
     }
@@ -282,5 +288,44 @@ export class SuroiBitStream extends BitStream {
      */
     readPlayerName(): string {
         return this.readASCIIString(GameConstants.player.nameMaxLength);
+    }
+
+    /**
+     * Write an iterator to the stream
+     * @param iterator Array, set etc containing the iterator
+     * @param serializeFn The function to serialize each iterator item
+     * @param bits The maximum length of bits to write the iterator size
+     * @param size The iterator size (eg. array.length or set.size)
+     */
+    writeIterator<T>(iterator: Iterable<T>, size: number, bits: number, serializeFn: (item: T) => void): void {
+        if (bits < 0 || bits >= 31) {
+            throw new Error(`Invalid bit count ${bits}`);
+        }
+
+        this.writeBits(size, bits);
+
+        const max = 1 << bits;
+        let i = 0;
+        for (const item of iterator) {
+            i++;
+            if (i > max) {
+                console.warn(`writeIterator: iterator overflow: ${bits} bits, ${size} size`);
+                break;
+            }
+            serializeFn(item);
+        }
+    }
+
+    /**
+     * Read an iterator to the stream
+     * @param serializeFn The function to de-serialize each iterator item
+     * @param bits The maximum length of bits to read
+     */
+    * readIterator<T>(bits: number, deserializeFn: () => T): IterableIterator<T> {
+        const size = this.readBits(bits);
+
+        for (let i = 0; i < size; i++) {
+            yield deserializeFn();
+        }
     }
 }
