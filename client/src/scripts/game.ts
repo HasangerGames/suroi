@@ -231,7 +231,7 @@ export class Game {
             const joinPacket = new JoinPacket();
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
-            joinPacket.skin = Loots.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_skin")) ?? Loots.fromString(defaultClientCVars.cv_loadout_skin as string);
+            joinPacket.skin = Loots.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_skin")) ?? Loots.fromString(defaultClientCVars.cv_loadout_skin);
 
             joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));
 

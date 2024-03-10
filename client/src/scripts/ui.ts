@@ -247,7 +247,7 @@ Video evidence is required.`)) {
 
     // Load skins
     if (!(game.console.getBuiltInCVar("cv_loadout_skin") in Skins.idStringToNumber)) {
-        game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
+        game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin);
     }
 
     const updateSplashCustomize = (skinID: string): void => {

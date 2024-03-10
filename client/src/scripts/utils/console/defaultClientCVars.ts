@@ -1,11 +1,5 @@
 import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
-import { type Stringable } from "./gameConsole";
-import { Casters, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
-
-export interface JSONCVar<Value extends Stringable> {
-    readonly value: Value
-    readonly flags: Partial<CVarFlags>
-}
+import { Casters, type ConVar, type ExtractConVarValue } from "./variables";
 
 //! don't use "uv_" as a prefix, cause that's reserved for custom cvars
 
@@ -74,7 +68,7 @@ export type CVarTypeMapping = {
 };
 
 type SimpleCVarMapping = {
-    [K in keyof typeof CVarCasters]: ExtractConVarValue<CVarTypeMapping[K]> | JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>>
+    [K in keyof typeof CVarCasters]: ExtractConVarValue<CVarTypeMapping[K]>
 };
 
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
