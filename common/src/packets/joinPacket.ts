@@ -6,12 +6,6 @@ import { type SkinDefinition } from "../definitions/skins";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
 
-export enum GameMode {
-    SOLO = "solo",
-    DUO = "duo",
-    SQUAD = "squad",
-}
-
 export class JoinPacket extends Packet {
     override readonly allocBytes = 24;
     override readonly type = PacketType.Join;
@@ -22,14 +16,7 @@ export class JoinPacket extends Packet {
     skin!: SkinDefinition;
     badge?: BadgeDefinition;
 
-    emotes: EmoteDefinition[] = [];
-
-    mode!: GameMode;
-
-    constructor(mode: GameMode = GameMode.SOLO) {
-        super();
-        this.mode = mode;
-    }
+    emotes: Array<EmoteDefinition | undefined> = [];
 
     override serialize(): void {
         super.serialize();
@@ -39,46 +26,20 @@ export class JoinPacket extends Packet {
         stream.writeBoolean(this.isMobile);
 
         Loots.writeToStream(stream, this.skin);
-
-        const hasBadge = this.badge !== undefined;
-        stream.writeBoolean(hasBadge);
-        if (hasBadge) {
-            Badges.writeToStream(stream, this.badge!);
-        }
+        Badges.writeOptional(stream, this.badge);
 
         for (const emote of this.emotes) {
-            Emotes.writeToStream(stream, emote);
+            Emotes.writeOptional(stream, emote);
         }
     }
 
     override deserialize(stream: SuroiBitStream): void {
         this.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
-
         this.isMobile = stream.readBoolean();
+
         this.skin = Loots.readFromStream(stream);
-        this.badge = stream.readBoolean() ? Badges.readFromStream(stream) : undefined;
+        this.badge = Badges.readOptional(stream);
 
-        const modeNumber = stream.readUint8();
-
-        // Map the number to the corresponding GameMode string value
-        switch (modeNumber) {
-            case 0:
-                this.mode = GameMode.SOLO;
-                break;
-            case 1:
-                this.mode = GameMode.DUO;
-                break;
-            case 2:
-                this.mode = GameMode.SQUAD;
-                break;
-            default:
-                // Set a default mode
-                this.mode = GameMode.SOLO;
-                break;
-        }
-
-        for (let i = 0; i < 6; i++) {
-            this.emotes.push(Emotes.readFromStream(stream));
-        }
+        this.emotes = Array.from({ length: 6 }, () => Emotes.readOptional(stream));
     }
 }

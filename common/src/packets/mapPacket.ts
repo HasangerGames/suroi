@@ -29,16 +29,11 @@ export class MapPacket extends Packet {
     oceanSize!: number;
     beachSize!: number;
 
-    private _rivers: Array<{ readonly width: number, readonly points: Vector[] }> = [];
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    get rivers() { return this._rivers; }
+    rivers: Array<{ readonly width: number, readonly points: Vector[] }> = [];
 
-    private _objects: MapObject[] = [];
-    get objects(): MapObject[] { return this._objects; }
+    objects: MapObject[] = [];
 
-    private _places: Array<{ readonly position: Vector, readonly name: string }> = [];
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    get places() { return this._places; }
+    places: Array<{ readonly position: Vector, readonly name: string }> = [];
 
     override serialize(): void {
         super.serialize();
@@ -50,19 +45,14 @@ export class MapPacket extends Packet {
         stream.writeUint16(this.oceanSize);
         stream.writeUint16(this.beachSize);
 
-        stream.writeBits(this._rivers.length, 4);
-        for (const river of this._rivers) {
+        stream.writeIterator(this.rivers, this.rivers.length, 4, (river) => {
             stream.writeUint8(river.width);
-
-            stream.writeUint8(river.points.length);
-            for (const point of river.points) {
+            stream.writeIterator(river.points, river.points.length, 8, (point) => {
                 stream.writePosition(point);
-            }
-        }
+            });
+        });
 
-        stream.writeUint16(this._objects.length);
-
-        for (const object of this._objects) {
+        stream.writeIterator(this.objects, this.objects.length, 16, (object) => {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
@@ -80,14 +70,12 @@ export class MapPacket extends Packet {
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
                     break;
             }
-        }
+        });
 
-        stream.writeBits(this._places.length, 4);
-
-        for (const place of this._places) {
-            stream.writeASCIIString(place.name, 24);
+        stream.writeIterator(this.places, this.places.length, 4, (place) => {
+            stream.writeASCIIString(place.name);
             stream.writePosition(place.position);
-        }
+        });
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -97,66 +85,56 @@ export class MapPacket extends Packet {
         this.oceanSize = stream.readUint16();
         this.beachSize = stream.readUint16();
 
-        this._rivers = Array.from(
-            { length: stream.readBits(4) },
-            () => ({
+        this.rivers = [...stream.readIterator(4, () => {
+            return {
                 width: stream.readUint8(),
-                points: Array.from(
-                    { length: stream.readUint8() },
-                    () => stream.readPosition()
-                )
-            })
-        );
+                points: [...stream.readIterator(8, () => stream.readPosition())]
+            };
+        })];
 
-        this._objects = Array.from(
-            { length: stream.readUint16() },
-            // are you have stupid
-            // eslint-disable-next-line array-callback-return
-            () => {
-                const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
-                const position = stream.readPosition();
+        this.objects = [...stream.readIterator(16, () => {
+            const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
+            const position = stream.readPosition();
 
-                switch (type) {
-                    case ObjectCategory.Obstacle: {
-                        const definition = Obstacles.readFromStream(stream);
-                        const scale = definition.scale?.spawnMax ?? 1;
-                        const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
+            switch (type) {
+                case ObjectCategory.Obstacle: {
+                    const definition = Obstacles.readFromStream(stream);
+                    const scale = definition.scale?.spawnMax ?? 1;
+                    const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
-                        let variation: Variation | undefined;
-                        if (definition.variations !== undefined) {
-                            variation = stream.readVariation();
-                        }
-                        return {
-                            position,
-                            type,
-                            definition,
-                            scale,
-                            rotation,
-                            variation
-                        };
+                    let variation: Variation | undefined;
+                    if (definition.variations !== undefined) {
+                        variation = stream.readVariation();
                     }
-                    case ObjectCategory.Building: {
-                        const definition = Buildings.readFromStream(stream);
-                        const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
+                    return {
+                        position,
+                        type,
+                        definition,
+                        scale,
+                        rotation,
+                        variation
+                    };
+                }
+                case ObjectCategory.Building: {
+                    const definition = Buildings.readFromStream(stream);
+                    const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
 
-                        return {
-                            position,
-                            type,
-                            definition,
-                            rotation: orientation,
-                            scale: 1
-                        };
-                    }
+                    return {
+                        position,
+                        type,
+                        definition,
+                        rotation: orientation,
+                        scale: 1
+                    };
                 }
             }
-        );
+        })];
 
-        this._places = Array.from(
-            { length: stream.readBits(4) },
-            () => ({
-                name: stream.readASCIIString(24),
+        this.places = [...stream.readIterator(4, () => {
+            return {
+                name: stream.readASCIIString(),
                 position: stream.readPosition()
-            })
-        );
+            };
+        })];
     }
 }
