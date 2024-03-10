@@ -236,9 +236,9 @@ export class Game {
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
             const badge = this.console.getBuiltInCVar("cv_loadout_badge");
-            if (badge) {
-                joinPacket.badge = Badges.fromString(badge);
-            }
+            //if (badge) {
+             //   joinPacket.badge = Badges.fromString(badge);
+            //}
 
             joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
                 slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
