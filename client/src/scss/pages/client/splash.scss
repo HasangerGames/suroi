@@ -211,32 +211,6 @@
     margin-bottom: 10px;
 }
 
-.spin {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    position: relative;
-    top: 3px;
-    margin-right: 6px;
-    border: 3px solid rgba(255, 255, 255, .3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s linear infinite;
-    -webkit-animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        -webkit-transform: rotate(360deg);
-    }
-}
-
-@-webkit-keyframes spin {
-    to {
-        -webkit-transform: rotate(360deg);
-    }
-}
-
 #splash-news,
 #splash-customize {
     height: 312px;
@@ -357,9 +331,34 @@
 }
 
 #splash-options {
-    width: 100%;
     position: relative;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 312px;
+
+    #splash-options-wrapper {
+        flex: 1 1 auto;
+        transition: filter 0.5s;
+    }
+
+    .loading-logo {
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+
+    &.loading {
+        pointer-events: none;
+
+        .loading-logo {
+            opacity: 1;
+        }
+
+        #splash-options-wrapper {
+            filter: blur(3px);
+        }
+    }
 
     #username-input {
         background: white;
@@ -478,6 +477,10 @@
     .btn {
         font-size: 18px;
         width: 100%;
+    }
+
+    #btn-play-solo, #btn-play-duo {
+        margin-bottom: 5px;
     }
 }
 

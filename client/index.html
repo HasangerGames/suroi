@@ -63,11 +63,11 @@
       body {
         background-color: #49993e;
       }
-      body > :not(#loading-logo) {
+      body > :not(.loading-logo) {
         opacity: 0;
       }
 
-      #loading-logo {
+      .loading-logo {
         position: absolute;
         width: 100px;
         height: 100px;
@@ -79,6 +79,8 @@
         right: 0;
         top: 0;
         bottom: 0;
+        z-index: 1000;
+        pointer-events: none;
         animation: fade-out 3s, rotate 3s infinite linear;
       }
 
@@ -94,7 +96,7 @@
   </head>
 
   <body>
-    <img id="loading-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg' viewBox='-26 -28 512 512' version='1.1' id='svg940' width='512' height='512'%3E%3Cdefs id='defs928'%3E%3CclipPath id='b'%3E%3Ccircle cy='-15' r='9.5' id='circle900' cx='0'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(120)' id='circle902' cx='0'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(-120)' id='circle904' cx='0'/%3E%3C/clipPath%3E%3Cmask id='a' width='60' height='60' x='-30' y='-30' maskUnits='userSpaceOnUse'%3E%3Cpath fill='%23ffffff' d='M -27,-27 H 27 V 27 H -27 Z' id='path907'/%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path909'/%3E%3Ccircle cy='-15' r='10.5' id='circle911' cx='0'/%3E%3Cg transform='rotate(120)' id='g917'%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path913'/%3E%3Ccircle cy='-15' r='10.5' id='circle915' cx='0'/%3E%3C/g%3E%3Cg transform='rotate(-120)' id='g923'%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path919'/%3E%3Ccircle cy='-15' r='10.5' id='circle921' cx='0'/%3E%3C/g%3E%3Ccircle r='3' id='circle925' cx='0' cy='0'/%3E%3C/mask%3E%3C/defs%3E%3Cg id='g958' transform='matrix(8.163575,0,0,8.163575,191.35518,205.68233)'%3E%3Ccircle style='fill:%23000000;fill-opacity:1;stroke:%23008af0;stroke-width:3.75;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' id='path1805' cx='4.7338104' cy='2.7338104' r='29.48381'/%3E%3Ccircle style='fill:none;fill-opacity:1;stroke:%23ff7500;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' id='path1388' cx='4.7338099' cy='2.7338099' r='28.553837'/%3E%3Cg id='g2312' transform='matrix(0.95833334,0,0,0.95833334,0.90047659,-1.8798139)'%3E%3Cg mask='url(%23a)' id='g936' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' transform='matrix(0.97854222,0,0,0.97853768,4,4.6909786)'%3E%3Ccircle cy='-11' r='15' id='circle930' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3Ccircle cy='-11' r='15' transform='rotate(120)' id='circle932' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3Ccircle cy='-11' r='15' transform='rotate(-120)' id='circle934' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3C/g%3E%3Ccircle r='11.75' fill='none' stroke='%23000' stroke-width='3.5' clip-path='url(%23b)' id='circle938' style='stroke:%23008aff;stroke-opacity:1' cx='0' cy='0' transform='matrix(0.97854222,0,0,0.97853768,4,4.6909786)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" />
+    <img class="loading-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg' viewBox='-26 -28 512 512' version='1.1' id='svg940' width='512' height='512'%3E%3Cdefs id='defs928'%3E%3CclipPath id='b'%3E%3Ccircle cy='-15' r='9.5' id='circle900' cx='0'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(120)' id='circle902' cx='0'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(-120)' id='circle904' cx='0'/%3E%3C/clipPath%3E%3Cmask id='a' width='60' height='60' x='-30' y='-30' maskUnits='userSpaceOnUse'%3E%3Cpath fill='%23ffffff' d='M -27,-27 H 27 V 27 H -27 Z' id='path907'/%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path909'/%3E%3Ccircle cy='-15' r='10.5' id='circle911' cx='0'/%3E%3Cg transform='rotate(120)' id='g917'%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path913'/%3E%3Ccircle cy='-15' r='10.5' id='circle915' cx='0'/%3E%3C/g%3E%3Cg transform='rotate(-120)' id='g923'%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path919'/%3E%3Ccircle cy='-15' r='10.5' id='circle921' cx='0'/%3E%3C/g%3E%3Ccircle r='3' id='circle925' cx='0' cy='0'/%3E%3C/mask%3E%3C/defs%3E%3Cg id='g958' transform='matrix(8.163575,0,0,8.163575,191.35518,205.68233)'%3E%3Ccircle style='fill:%23000000;fill-opacity:1;stroke:%23008af0;stroke-width:3.75;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' id='path1805' cx='4.7338104' cy='2.7338104' r='29.48381'/%3E%3Ccircle style='fill:none;fill-opacity:1;stroke:%23ff7500;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' id='path1388' cx='4.7338099' cy='2.7338099' r='28.553837'/%3E%3Cg id='g2312' transform='matrix(0.95833334,0,0,0.95833334,0.90047659,-1.8798139)'%3E%3Cg mask='url(%23a)' id='g936' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' transform='matrix(0.97854222,0,0,0.97853768,4,4.6909786)'%3E%3Ccircle cy='-11' r='15' id='circle930' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3Ccircle cy='-11' r='15' transform='rotate(120)' id='circle932' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3Ccircle cy='-11' r='15' transform='rotate(-120)' id='circle934' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3C/g%3E%3Ccircle r='11.75' fill='none' stroke='%23000' stroke-width='3.5' clip-path='url(%23b)' id='circle938' style='stroke:%23008aff;stroke-opacity:1' cx='0' cy='0' transform='matrix(0.97854222,0,0,0.97853768,4,4.6909786)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" />
     <div id="console" style="display: none">
         <div id="console-container">
           <div id="console-header">
@@ -133,71 +135,56 @@
             <i class="fa-solid fa-rotate"></i> For a better experience, please
             rotate your device to landscape.
           </div>
-          <div id="splash-options">
-            <input
-              type="text"
-              name="username-input"
-              id="username-input"
-              placeholder="Enter a nickname"
-              maxlength="16"
-            />
-            <div id="server-select" class="dropdown">
-              <button id="btn-server-select">
-                <span id="server-name">-</span>
-                <span style="margin-left: auto">
-                  <img
-                    src="./img/misc/player_icon.svg"
-                    width="16"
-                    height="16"
-                    alt="Player count"
-                  />
-                  <span id="server-player-count">-</span>
-                </span>
-                <!--<span style="margin-left: 5px">
-                  <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-                  <span id="server-ping">-</span>
-                </span>-->
-                <i class="fa-solid fa-caret-down"></i>
-              </button>
-              <ul class="dropdown-content" id="server-list"></ul>
-            </div>
-            <button
-              class="btn btn-lg btn-darken btn-primary btn-disabled"
-              id="btn-play-solo"
-            >
-              <span style="position: relative; bottom: 1px"
-                ><div class="spin"></div>
-                Loading...</span
-              >
-            </button>
 
-            <button
-              class="btn btn-lg btn-darken btn-primary btn-disabled"
-              id="btn-play-duo"
-            >
-              <span style="position: relative; bottom: 1px"
-                ><div class="spin"></div>
-                Loading...</span
-              >
-            </button>
-            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
-            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
-            <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-            <button
-              class="rules-close-btn btn-darken"
-              id="rules-close-btn"
-              style="display: none"
-            >
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-            <button
-              class="btn btn-lg btn-darken btn-secondary"
-              id="btn-rules"
-              style="display: none"
-            >
-              <div class="pulsating-circle" style="display: none"></div>
-              <span>Rules &amp; Tutorial</span>
-            </button>
+          <div id="splash-options" class="loading">
+            <img class="loading-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg' viewBox='-26 -28 512 512' version='1.1' id='svg940' width='512' height='512'%3E%3Cdefs id='defs928'%3E%3CclipPath id='b'%3E%3Ccircle cy='-15' r='9.5' id='circle900' cx='0'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(120)' id='circle902' cx='0'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(-120)' id='circle904' cx='0'/%3E%3C/clipPath%3E%3Cmask id='a' width='60' height='60' x='-30' y='-30' maskUnits='userSpaceOnUse'%3E%3Cpath fill='%23ffffff' d='M -27,-27 H 27 V 27 H -27 Z' id='path907'/%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path909'/%3E%3Ccircle cy='-15' r='10.5' id='circle911' cx='0'/%3E%3Cg transform='rotate(120)' id='g917'%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path913'/%3E%3Ccircle cy='-15' r='10.5' id='circle915' cx='0'/%3E%3C/g%3E%3Cg transform='rotate(-120)' id='g923'%3E%3Cpath d='m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4' id='path919'/%3E%3Ccircle cy='-15' r='10.5' id='circle921' cx='0'/%3E%3C/g%3E%3Ccircle r='3' id='circle925' cx='0' cy='0'/%3E%3C/mask%3E%3C/defs%3E%3Cg id='g958' transform='matrix(8.163575,0,0,8.163575,191.35518,205.68233)'%3E%3Ccircle style='fill:%23000000;fill-opacity:1;stroke:%23008af0;stroke-width:3.75;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' id='path1805' cx='4.7338104' cy='2.7338104' r='29.48381'/%3E%3Ccircle style='fill:none;fill-opacity:1;stroke:%23ff7500;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' id='path1388' cx='4.7338099' cy='2.7338099' r='28.553837'/%3E%3Cg id='g2312' transform='matrix(0.95833334,0,0,0.95833334,0.90047659,-1.8798139)'%3E%3Cg mask='url(%23a)' id='g936' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' transform='matrix(0.97854222,0,0,0.97853768,4,4.6909786)'%3E%3Ccircle cy='-11' r='15' id='circle930' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3Ccircle cy='-11' r='15' transform='rotate(120)' id='circle932' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3Ccircle cy='-11' r='15' transform='rotate(-120)' id='circle934' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1' cx='0'/%3E%3C/g%3E%3Ccircle r='11.75' fill='none' stroke='%23000' stroke-width='3.5' clip-path='url(%23b)' id='circle938' style='stroke:%23008aff;stroke-opacity:1' cx='0' cy='0' transform='matrix(0.97854222,0,0,0.97853768,4,4.6909786)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" />
+            <div id="splash-options-wrapper">
+              <input
+                type="text"
+                name="username-input"
+                id="username-input"
+                placeholder="Enter a nickname"
+                maxlength="16"
+              />
+              <div id="server-select" class="dropdown">
+                <button id="btn-server-select">
+                  <span id="server-name">-</span>
+                  <span style="margin-left: auto">
+                    <img
+                      src="./img/misc/player_icon.svg"
+                      width="16"
+                      height="16"
+                      alt="Player count"
+                    />
+                    <span id="server-player-count">-</span>
+                  </span>
+                  <!--<span style="margin-left: 5px">
+                    <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+                    <span id="server-ping">-</span>
+                  </span>-->
+                  <i class="fa-solid fa-caret-down"></i>
+                </button>
+                <ul class="dropdown-content" id="server-list"></ul>
+              </div>
+
+              <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="btn-play-solo">Play Solo</button>
+              <div style="display: flex; gap: 5px">
+                <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="btn-play-duo">Play Duo</button>
+                <!--<button class="btn btn-lg btn-darken btn-primary btn-disabled" id="btn-play-duo">Play Squad</button>-->
+              </div>
+              <div style="display: flex; gap: 5px">
+                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Join Team</button>
+                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button>
+              </div>
+
+              <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
+                <div class="pulsating-circle" style="display: none"></div>
+                <span>Rules &amp; Tutorial</span>
+              </button>
+            </div>
           </div>
           <div id="splash-socials">
             <a
@@ -235,10 +222,7 @@
               target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-wiki"
-            >
-              <!-- TODO: This serves as a placeholder, implement an actual wiki logo -->
-              <span>W</span></a
-            >
+            ></a>
           </div>
         </div>
         <div id="splash-customize">
@@ -393,7 +377,7 @@
             <span id="gas-timer-text">0:00</span>
           </div>
           <div id="team-health">
-            
+
           </div>
           <div id="debug-hud">
             <div id="fps-counter"></div>

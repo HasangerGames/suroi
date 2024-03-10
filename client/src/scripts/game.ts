@@ -23,7 +23,6 @@ import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/object
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { enableDuoPlayButton, enableSoloPlayButton } from "./main";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
@@ -49,6 +48,7 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { resetPlayButtons } from "./main";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -326,16 +326,14 @@ export class Game {
             this.error = true;
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
-            enableSoloPlayButton();
-            enableDuoPlayButton();
+            resetPlayButtons();
         };
 
         this._socket.onclose = (): void => {
-            enableSoloPlayButton();
-            enableDuoPlayButton();
+            resetPlayButtons();
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    $("#splash-ui").fadeIn();
+                    $("#splash-ui").fadeIn(400);
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
                 }
@@ -362,8 +360,7 @@ export class Game {
         }
 
         $("canvas").addClass("active");
-        $("#splash-ui").fadeOut(enableSoloPlayButton);
-        $("#splash-ui").fadeOut(enableDuoPlayButton);
+        $("#splash-ui").fadeOut(400, resetPlayButtons);
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
@@ -373,39 +370,43 @@ export class Game {
     endGame(): void {
         clearTimeout(this._tickTimeoutID);
 
+        $("#splash-options").addClass("loading");
+
         this.soundManager.stopAll();
 
-        $("#action-container").hide();
-        $("#game-menu").hide();
-        $("#game-over-overlay").hide();
-        $("canvas").removeClass("active");
-        $("#kill-leader-leader").text("Waiting for leader");
-        $("#kill-leader-kills-counter").text("0");
-        $("#splash-ui").fadeIn();
-
-        this.gameStarted = false;
-        this._socket?.close();
-
-        // reset stuff
-        for (const object of this.objects) object.destroy();
-        for (const plane of this.planes) plane.destroy();
-        this.objects.clear();
-        this.bullets.clear();
-        this.planes.clear();
-        this.camera.container.removeChildren();
-        this.particleManager.clear();
-        this.map.gasGraphics.clear();
-        this.map.pingGraphics.clear();
-        this.map.pings.clear();
-        this.map.pingsContainer.removeChildren();
-        this.map.teammatesContainer.removeChildren();
-        this.map.teammates.clear();
-        this.playerNames.clear();
-        this._timeouts.clear();
-
-        this.camera.zoom = Scopes.definitions[0].zoomLevel;
-
         void this.music.play();
+
+        $("#splash-ui").fadeIn(400, () => {
+            $("#action-container").hide();
+            $("#game-menu").hide();
+            $("#game-over-overlay").hide();
+            $("canvas").removeClass("active");
+            $("#kill-leader-leader").text("Waiting for leader");
+            $("#kill-leader-kills-counter").text("0");
+
+            this.gameStarted = false;
+            this._socket?.close();
+
+            // reset stuff
+            for (const object of this.objects) object.destroy();
+            for (const plane of this.planes) plane.destroy();
+            this.objects.clear();
+            this.bullets.clear();
+            this.planes.clear();
+            this.camera.container.removeChildren();
+            this.particleManager.clear();
+            this.map.gasGraphics.clear();
+            this.map.pingGraphics.clear();
+            this.map.pings.clear();
+            this.map.pingsContainer.removeChildren();
+            this.map.teammatesContainer.removeChildren();
+            this.map.teammates.clear();
+            this.playerNames.clear();
+            this._timeouts.clear();
+
+            this.camera.zoom = Scopes.definitions[0].zoomLevel;
+            resetPlayButtons();
+        });
     }
 
     sendPacket(packet: Packet): void {
