@@ -551,14 +551,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             switch (this.activeItem.itemType) {
                 case ItemType.Gun: {
-                    ctx.lineStyle({
+                    ctx.setStrokeStyle({
                         color: HITBOX_COLORS.playerWeapon,
                         width: 4
                     });
                     ctx.moveTo(this.container.position.x, this.container.position.y);
                     const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
                     ctx.lineTo(lineEnd.x, lineEnd.y);
-                    ctx.endFill();
+                    ctx.stroke();
                     break;
                 }
                 case ItemType.Melee: {

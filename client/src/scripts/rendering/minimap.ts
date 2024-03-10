@@ -381,13 +381,16 @@ export class Minimap {
                     color: 0
                 });
 
+                debugGraphics.beginPath();
                 debugGraphics.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; i++) {
                     const point = points[i];
                     debugGraphics.lineTo(point.x, point.y);
                 }
+                debugGraphics.stroke();
 
                 for (const point of points) {
+                    debugGraphics.beginPath();
                     debugGraphics.arc(point.x, point.y, 20, 0, Math.PI * 2);
                     debugGraphics.fill(0xff0000);
                 }
