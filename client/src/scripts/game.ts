@@ -49,6 +49,7 @@ import { SoundManager } from "./utils/soundManager";
 import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
 import { resetPlayButtons } from "./main";
+import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -230,12 +231,9 @@ export class Game {
             const joinPacket = new JoinPacket();
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
-            joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
+            joinPacket.skin = Loots.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_skin")) ?? Loots.fromString(defaultClientCVars.cv_loadout_skin as string);
 
-            const badge = this.console.getBuiltInCVar("cv_loadout_badge");
-            //if (badge) {
-             //   joinPacket.badge = Badges.fromString(badge);
-            //}
+            joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));
 
             joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
                 slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
