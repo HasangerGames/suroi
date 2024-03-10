@@ -234,7 +234,7 @@ Video evidence is required.`)) {
     });
 
     const customizeMenu = $("#customize-menu");
-    $("#btn-customize").on("click", () => { customizeMenu.fadeToggle(250); $(".dialog").hide(); });
+    $("#btn-customize").on("click", () => customizeMenu.fadeIn(250));
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
     const createTeamMenu = $("#create-team-menu");

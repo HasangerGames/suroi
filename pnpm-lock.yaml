@@ -1680,7 +1680,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001596
-      electron-to-chromium: 1.4.698
+      electron-to-chromium: 1.4.699
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.23.0)
     dev: true
@@ -1915,8 +1915,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /cssdb@7.11.1:
-    resolution: {integrity: sha512-F0nEoX/Rv8ENTHsjMPGHd9opdjGfXkgRBafSUGnQKPzGZFB7Lm0BbT10x21TMOCrKLbVsJ0NoCDMk6AfKqw8/A==}
+  /cssdb@7.11.2:
+    resolution: {integrity: sha512-lhQ32TFkc1X4eTefGfYPvgovRSzIMofHkigfH8nWtyRL4XJLsRhJFreRvEgKzept7x1rjBuy3J/MurXLaFxW/A==}
     dev: true
 
   /cssesc@3.0.0:
@@ -2066,8 +2066,8 @@ packages:
     resolution: {integrity: sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==}
     dev: false
 
-  /electron-to-chromium@1.4.698:
-    resolution: {integrity: sha512-f9iZD1t3CLy1AS6vzM5EKGa6p9pRcOeEFXRFbaG2Ta+Oe7MkfRQ3fsvPYidzHe1h4i0JvIvpcY55C+B6BZNGtQ==}
+  /electron-to-chromium@1.4.699:
+    resolution: {integrity: sha512-I7q3BbQi6e4tJJN5CRcyvxhK0iJb34TV8eJQcgh+fR2fQ8miMgZcEInckCo1U9exDHbfz7DLDnFn8oqH/VcRKw==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -3726,7 +3726,7 @@ packages:
       css-blank-pseudo: 6.0.1(postcss@8.4.35)
       css-has-pseudo: 6.0.2(postcss@8.4.35)
       css-prefers-color-scheme: 9.0.1(postcss@8.4.35)
-      cssdb: 7.11.1
+      cssdb: 7.11.2
       postcss: 8.4.35
       postcss-attribute-case-insensitive: 6.0.3(postcss@8.4.35)
       postcss-clamp: 4.1.0(postcss@8.4.35)
