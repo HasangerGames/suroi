@@ -3,7 +3,7 @@ import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
-import { type BadgeDefinition } from "../../../common/src/definitions/badges";
+import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
@@ -223,14 +223,13 @@ export class Game {
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
             const badge = this.console.getBuiltInCVar("cv_loadout_badge");
-
             if (badge) {
-                //joinPacket.badge = Badges.fromString(badge);
+                joinPacket.badge = Badges.fromString(badge);
             }
 
-            for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
-                joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
-            }
+            joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
+                slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+            );
 
             this.sendPacket(joinPacket);
 
@@ -352,10 +351,12 @@ export class Game {
 
         const selectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
         for (let i = 0; i < 4; i++) {
+            const emote = packet.emotes[i];
+
             $(`#emote-wheel > ${selectors[i]}`)
                 .css(
                     "background-image",
-                    `url("./img/game/emotes/${packet.emotes[i].idString}.svg")`
+                    emote ? `url("./img/game/emotes/${emote.idString}.svg")` : ""
                 );
         }
 

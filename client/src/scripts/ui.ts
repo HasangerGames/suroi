@@ -283,14 +283,38 @@ Video evidence is required.`)) {
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
     function updateEmotesList(): void {
-        $("#emotes-list").empty();
-        for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
+        const emoteList = $("#emotes-list");
+
+        emoteList.empty();
+
+        const noEmoteItem =
+                $(`<div id="emote-none" class="emotes-list-item-container">
+        <span class="emote-name">None</span>
+        </div>`);
+
+        noEmoteItem.on("click", function() {
+            if (selectedEmoteSlot === undefined) return;
+            game.console.setBuiltInCVar(
+                `cv_loadout_${selectedEmoteSlot}_emote`,
+                ""
+            );
+
+            $(this).addClass("selected").siblings().removeClass("selected");
+
+            $(`#emote-wheel-container .emote-${selectedEmoteSlot}`)
+                .css("background-image", "none");
+        });
+
+        emoteList.append(noEmoteItem);
+
+        for (const emote of Emotes.definitions) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
     ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
+
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
                 game.console.setBuiltInCVar(
@@ -305,7 +329,8 @@ Video evidence is required.`)) {
                     emote.idString !== "none" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
                 );
             });
-            $("#emotes-list").append(emoteItem);
+
+            emoteList.append(emoteItem);
         }
     }
 
@@ -315,29 +340,34 @@ Video evidence is required.`)) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-wheel-container .emote-${slot}`)
-            .css("background-image", Emotes.fromString(emote).idString !== "none" ? `url("./img/game/emotes/${emote}.svg")` : "none")
+            .css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none")
             .on("click", () => {
-                if (selectedEmoteSlot !== slot) {
-                    $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
-                    selectedEmoteSlot = slot;
-                    updateEmotesList();
-                    if (slots.slice(0, 4).find((_slot) => _slot === slot)) {
-                        $("#emote-customize-wheel").css(
-                            "background-image",
-                            `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
-                        );
-                    } else {
-                        $("#emote-customize-wheel").css(
-                            "background-image",
-                            "url('/img/misc/emote_wheel.svg')"
-                        );
-                        $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
-                    }
-                    $(".emotes-list-item-container")
-                        .removeClass("selected")
-                        .css("cursor", "pointer");
-                    $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`)}`).addClass("selected");
+                if (selectedEmoteSlot === slot) return;
+
+                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`)
+                    .removeClass("selected");
+                selectedEmoteSlot = slot;
+
+                updateEmotesList();
+
+                if (slots.indexOf(slot) > 3) {
+                    // win / death emote
+                    $("#emote-customize-wheel").css(
+                        "background-image",
+                        "url('/img/misc/emote_wheel.svg')"
+                    );
+                    $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
+                } else {
+                    $("#emote-customize-wheel").css(
+                        "background-image",
+                        `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
+                    );
                 }
+
+                $(".emotes-list-item-container")
+                    .removeClass("selected")
+                    .css("cursor", "pointer");
+                $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) || "none"}`).addClass("selected");
             });
     }
 

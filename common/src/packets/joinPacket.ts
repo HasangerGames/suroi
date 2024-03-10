@@ -16,7 +16,7 @@ export class JoinPacket extends Packet {
     skin!: SkinDefinition;
     badge?: BadgeDefinition;
 
-    emotes: EmoteDefinition[] = [];
+    emotes: Array<EmoteDefinition | undefined> = [];
 
     override serialize(): void {
         super.serialize();
@@ -26,27 +26,20 @@ export class JoinPacket extends Packet {
         stream.writeBoolean(this.isMobile);
 
         Loots.writeToStream(stream, this.skin);
-
-        const hasBadge = this.badge !== undefined;
-        stream.writeBoolean(hasBadge);
-        if (hasBadge) {
-            Badges.writeToStream(stream, this.badge!);
-        }
+        Badges.writeOptional(stream, this.badge);
 
         for (const emote of this.emotes) {
-            Emotes.writeToStream(stream, emote);
+            Emotes.writeOptional(stream, emote);
         }
     }
 
     override deserialize(stream: SuroiBitStream): void {
         this.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
-
         this.isMobile = stream.readBoolean();
-        this.skin = Loots.readFromStream(stream);
-        this.badge = stream.readBoolean() ? Badges.readFromStream(stream) : undefined;
 
-        for (let i = 0; i < 6; i++) {
-            this.emotes.push(Emotes.readFromStream(stream));
-        }
+        this.skin = Loots.readFromStream(stream);
+        this.badge = Badges.readOptional(stream);
+
+        this.emotes = Array.from({ length: 6 }, () => Emotes.readOptional(stream));
     }
 }
