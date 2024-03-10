@@ -1,4 +1,4 @@
-import { Container, type Application, type DisplayObject } from "pixi.js";
+import { Container, type Application } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -32,13 +32,15 @@ export class Camera {
     constructor(game: Game) {
         this.game = game;
         this.pixi = game.pixi;
-        this.container = new Container();
+        this.container = new Container({
+            isRenderGroup: true
+        });
         this.container.sortableChildren = true;
-        this.pixi.stage.addChild(this.container);
+    }
 
+    init(): void {
+        this.pixi.stage.addChildAt(this.container, 0);
         this.resize();
-
-        this.pixi.renderer.on("resize", this.resize.bind(this));
     }
 
     resize(animation = false): void {
@@ -87,7 +89,7 @@ export class Camera {
         this.shakeIntensity = intensity;
     }
 
-    addObject(...objects: DisplayObject[]): void {
+    addObject(...objects: Container[]): void {
         this.container.addChild(...objects);
     }
 }

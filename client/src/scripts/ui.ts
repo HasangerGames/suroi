@@ -1,6 +1,6 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { isMobile } from "pixi.js";
+import { isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
@@ -161,7 +161,7 @@ export function setupUI(game: Game): void {
     // Event listener for rules button
     rulesBtn.on("click", () => {
         game.console.setBuiltInCVar("cv_rules_acknowledged", true);
-        location.href = "/rules/";
+        location.href = "./rules/";
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(); });
@@ -287,7 +287,7 @@ Video evidence is required.`)) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
             emoteItem.on("click", function() {
@@ -556,6 +556,17 @@ Video evidence is required.`)) {
 
         element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
     }
+
+    // render mode select menu
+    const renderSelect = $("#render-mode-select")[0] as HTMLSelectElement;
+    renderSelect.addEventListener("input", () => {
+        game.console.setBuiltInCVar("cv_renderer", renderSelect.value as unknown as "webgl2");
+    });
+    renderSelect.value = game.console.getBuiltInCVar("cv_renderer");
+
+    void (async() => {
+        $("#webgpu-option").toggle(await isWebGPUSupported());
+    })();
 
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");

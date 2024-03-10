@@ -1,5 +1,5 @@
 import { Text, type Container } from "pixi.js";
-import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -26,17 +26,19 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         super(game, id);
 
         this.image = new SuroiSprite("death_marker");
-        this.playerNameText = new Text(
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? GameConstants.player.defaultName : "",
-            {
+        this.playerNameText = new Text({
+            text: "",
+            style: {
                 fontSize: 36,
                 fontFamily: "Inter",
-                dropShadow: true,
-                dropShadowBlur: 2,
-                dropShadowDistance: 2,
-                dropShadowColor: 0
+                dropShadow: {
+                    alpha: 0.8,
+                    color: "black",
+                    blur: 2,
+                    distance: 2
+                }
             }
-        );
+        });
         this.playerNameText.y = 95;
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);

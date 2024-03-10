@@ -8,9 +8,6 @@ import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 
-const kOverdraw = 100 * 1000;
-const kSegments = 512;
-
 export class Gas {
     state = GasState.Inactive;
     currentDuration = 0;
@@ -126,6 +123,9 @@ export class GasRender {
 
     private readonly _scale: number;
 
+    private static readonly _overdraw = 100 * 1000;
+    private static readonly _segments = 512;
+
     constructor(scale: number) {
         this._scale = scale;
 
@@ -135,26 +135,24 @@ export class GasRender {
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay
-        this._graphics.clear()
-            .beginFill(COLORS.gas)
-            .moveTo(-kOverdraw, -kOverdraw)
-            .lineTo(kOverdraw, -kOverdraw)
-            .lineTo(kOverdraw, kOverdraw)
-            .lineTo(-kOverdraw, kOverdraw)
+        this.graphics.clear()
+            .beginPath()
+            .moveTo(-GasRender._overdraw, -GasRender._overdraw)
+            .lineTo(GasRender._overdraw, -GasRender._overdraw)
+            .lineTo(GasRender._overdraw, GasRender._overdraw)
+            .lineTo(-GasRender._overdraw, GasRender._overdraw)
             .closePath()
-            .beginHole()
+            .fill(COLORS.gas)
             .moveTo(0, 1);
-
-        for (let i = 1; i < kSegments; i++) {
-            const theta = i / kSegments;
+        for (let i = 1; i < GasRender._segments; i++) {
+            const theta = i / GasRender._segments;
             const s = Math.sin(2 * Math.PI * theta);
             const c = Math.cos(2 * Math.PI * theta);
-            this._graphics.lineTo(s, c);
+            this.graphics.lineTo(s, c);
         }
-
-        this._graphics.endHole()
+        this.graphics
             .closePath()
-            .endFill();
+            .cut();
     }
 
     update(gas: Gas): void {
@@ -176,7 +174,7 @@ export class GasRender {
         let rad = radius * this._scale;
         if (rad < 0.1) {
             rad = 1.0;
-            center.x += 0.5 * kOverdraw;
+            center.x += 0.5 * GasRender._overdraw;
         }
         this._graphics.position.copyFrom(center);
         this._graphics.scale.set(rad);
