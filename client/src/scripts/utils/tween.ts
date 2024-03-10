@@ -6,22 +6,24 @@ export class Tween<T> {
     readonly game: Game;
 
     startTime = Date.now();
-    endTime: number;
+    private _endTime: number;
+    get endTime(): number { return this._endTime; }
 
     readonly target: T;
-    readonly duration!: number;
+    readonly duration: number;
 
     startValues: Record<string, number> = {};
     endValues: Record<string, number> = {};
 
-    readonly ease?: (x: number) => number;
+    readonly ease: (x: number) => number;
 
-    yoyo?: boolean;
+    yoyo: boolean;
 
     readonly onUpdate?: () => void;
     readonly onComplete?: () => void;
 
-    dead = false;
+    _dead = false;
+    get dead(): boolean { return this._dead; }
 
     constructor(
         game: Game,
@@ -41,12 +43,13 @@ export class Tween<T> {
             this.startValues[key] = config.target[key] as number;
             this.endValues[key] = config.to[key] as number;
         }
+
         this.duration = config.duration;
-        this.ease = config.ease;
-        this.yoyo = config.yoyo;
+        this.ease = config.ease ?? (t => t);
+        this.yoyo = config.yoyo ?? false;
         this.onUpdate = config.onUpdate;
         this.onComplete = config.onComplete;
-        this.endTime = this.startTime + this.duration;
+        this._endTime = this.startTime + this.duration;
         this.game.tweens.add(this);
     }
 
@@ -59,35 +62,30 @@ export class Tween<T> {
             return;
         }
 
-        if (now >= this.endTime) {
-            for (const [key, value] of Object.entries(this.endValues)) {
-                (this.target[key as keyof T] as number) = value;
-            }
+        const interpFactor = Numeric.clamp((now - this.startTime) / this.duration, 0, 1);
+        for (const key in this.startValues) {
+            const startValue = this.startValues[key];
+            const endValue = this.endValues[key];
 
+            (this.target[key as keyof T] as number) = Numeric.lerp(startValue, endValue, (this.ease ?? (t => t))(interpFactor));
+        }
+        this.onUpdate?.();
+
+        if (now >= this.endTime) {
             if (this.yoyo) {
                 this.yoyo = false;
                 this.startTime = now;
-                this.endTime = this.startTime + this.duration;
+                this._endTime = this.startTime + this.duration;
                 [this.startValues, this.endValues] = [this.endValues, this.startValues];
             } else {
                 this.kill();
                 this.onComplete?.();
             }
-            return;
         }
-
-        for (const key in this.startValues) {
-            const startValue = this.startValues[key];
-            const endValue = this.endValues[key];
-            const interpFactor = (now - this.startTime) / this.duration;
-            (this.target[key as keyof T] as number) = Numeric.lerp(startValue, endValue, (this.ease ?? (t => t))(interpFactor));
-        }
-
-        this.onUpdate?.();
     }
 
     kill(): void {
-        this.dead = true;
+        this._dead = true;
         this.game.tweens.delete(this);
     }
 }
