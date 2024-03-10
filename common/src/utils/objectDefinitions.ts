@@ -395,14 +395,14 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         return this.definitions[id] as Specific;
     }
 
-    writeOptional(stream: SuroiBitStream, type?: ReifiableDef<T>): void {
+    writeOptional(stream: SuroiBitStream, type?: ReifiableDef<Def>): void {
         const isPresent = type !== undefined;
 
         stream.writeBoolean(isPresent);
         if (isPresent) this.writeToStream(stream, type);
     }
 
-    readOptional<U extends T = T>(stream: SuroiBitStream): U | undefined {
+    readOptional<U extends Def = Def>(stream: SuroiBitStream): U | undefined {
         return stream.readBoolean()
             ? this.readFromStream<U>(stream)
             : undefined;
