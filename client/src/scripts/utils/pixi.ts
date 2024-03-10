@@ -1,4 +1,4 @@
-import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type ISpritesheetData, Assets } from "pixi.js";
+import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets } from "pixi.js";
 import { atlases } from "virtual:spritesheets-jsons";
 import { Reskins } from "../../../../common/src/definitions/modes";
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -10,7 +10,7 @@ const textures: Record<string, Texture> = {};
 export async function loadTextures(): Promise<void> {
     const promises: Array<Promise<void>> = [];
 
-    for (const atlas of atlases as ISpritesheetData[]) {
+    for (const atlas of atlases as SpritesheetData[]) {
         const image = atlas.meta.image!;
 
         console.log(`Loading atlas ${location.origin}/${image}`);
@@ -113,13 +113,11 @@ export function toPixiCoords(pos: Vector): Vector {
 }
 
 export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
-    graphics.lineStyle({
+    graphics.setStrokeStyle({
         color,
         width: 2
     });
-
-    graphics.beginFill();
-    graphics.fill.alpha = 0;
+    graphics.beginPath();
 
     switch (hitbox.type) {
         case HitboxType.Rect: {
@@ -142,11 +140,12 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
             for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
             break;
         case HitboxType.Polygon:
-            graphics.drawPolygon(hitbox.points.map(point => toPixiCoords(point)));
+            graphics.poly(hitbox.points.map(point => toPixiCoords(point)));
             break;
     }
 
-    graphics.closePath().endFill();
+    graphics.closePath();
+    graphics.stroke();
 
     return graphics;
 }
