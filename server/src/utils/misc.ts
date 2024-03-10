@@ -55,9 +55,9 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
         if (item === null) continue;
         loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
-        const definition = Loots.fromString(item);
+        const definition = Loots.fromStringSafe(item);
         if (definition === undefined) {
-            throw new Error(`Unknown loot item: ${item}`);
+            throw new ReferenceError(`Unknown loot item: ${item}`);
         }
 
         if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
