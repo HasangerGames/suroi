@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
+import { type Color, Container, Graphics, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
