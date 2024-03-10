@@ -74,7 +74,7 @@ $(async(): Promise<void> => {
             try {
                 const pingStartTime = Date.now();
 
-                const getValue = async (api: string): Promise<number | undefined> => {
+                const getValue = async(api: string): Promise<number | undefined> => {
                     const result = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/${api}`, { signal: AbortSignal.timeout(2000) })
                         .catch(() => {
                             console.error(`Could not load ${api} for ${region.address}.`);

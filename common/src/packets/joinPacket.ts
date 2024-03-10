@@ -7,7 +7,7 @@ import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
 
 export class JoinPacket extends Packet {
-    override readonly allocBytes = 24;
+    override readonly allocBytes = 25;
     override readonly type = PacketType.Join;
 
     name!: string;
