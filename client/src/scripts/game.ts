@@ -47,7 +47,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
-import { type Tween } from "./utils/tween";
+import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
 
 interface ObjectClassMapping {
@@ -548,6 +548,18 @@ export class Game {
             this.soundManager.play("airdrop_ping");
             this.map.pings.add(new Ping(ping));
         }
+    }
+
+    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
+        // ignore deprecation
+        const tween = new Tween(this, config);
+
+        this.tweens.add(tween);
+        return tween;
+    }
+
+    removeTween(tween: Tween<unknown>): void {
+        this.tweens.delete(tween);
     }
 
     // yes this might seem evil. but the two local variables really only need to

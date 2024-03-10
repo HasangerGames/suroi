@@ -7,7 +7,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
@@ -47,7 +47,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
             this.container.scale.set(scale);
         } else {
             this.scaleAnim?.kill();
-            this.scaleAnim = new Tween(this.game, {
+            this.scaleAnim = this.game.addTween({
                 target: this.container.scale,
                 to: {
                     x: scale,

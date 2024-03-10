@@ -114,7 +114,7 @@ export class Loot extends GameObject {
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
                 this.container.scale.set(0.5);
-                this.animation = new Tween(this.game, {
+                this.animation = this.game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
                     duration: 1000,

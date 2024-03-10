@@ -12,7 +12,7 @@ import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
 export class Building extends GameObject<ObjectCategory.Building> {
@@ -146,7 +146,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
         this.ceilingVisible = visible;
 
         this.ceilingTween?.kill();
-        this.ceilingTween = new Tween(this.game, {
+        this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
             to: { alpha: visible ? 0 : 1 },
             duration: visible ? 150 : 300,

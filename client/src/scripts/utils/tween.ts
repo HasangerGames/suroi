@@ -22,9 +22,11 @@ export class Tween<T> {
     readonly onUpdate?: () => void;
     readonly onComplete?: () => void;
 
-    _dead = false;
-    get dead(): boolean { return this._dead; }
-
+    /**
+     * @deprecated
+     * Directly calling this constructor in order to create a `Tween` that is tied to a `Game` is deprecated.
+     * Please use {@linkcode Game.addTween} instead.
+     */
     constructor(
         game: Game,
         config: {
@@ -85,7 +87,6 @@ export class Tween<T> {
     }
 
     kill(): void {
-        this._dead = true;
-        this.game.tweens.delete(this);
+        this.game.removeTween(this);
     }
 }

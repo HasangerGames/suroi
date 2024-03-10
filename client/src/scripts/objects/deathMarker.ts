@@ -5,7 +5,7 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 
@@ -87,7 +87,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(this.game, {
+            this.scaleAnim = this.game.addTween({
                 target: this.container.scale,
                 to: { x: 1, y: 1 },
                 duration: 400,
@@ -96,7 +96,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
                 }
             });
 
-            this.alphaAnim = new Tween(this.game, {
+            this.alphaAnim = this.game.addTween({
                 target: this.container,
                 to: { alpha: 1 },
                 duration: 400,
