@@ -23,7 +23,7 @@ import { type Game } from "../game";
 import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
@@ -112,7 +112,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         super(game, id);
 
         this.images = {
-            aimTrail: new TilingSprite(SuroiSprite.getTexture("aimTrail"), 20, 6000),
+            aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
@@ -352,8 +352,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
 
             this.anims.waterOverlay?.kill();
-            this.anims.waterOverlay = new Tween(
-                this.game,
+            this.anims.waterOverlay = this.game.addTween(
                 {
                     target: this.images.waterOverlay,
                     to: {
@@ -362,6 +361,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     duration: 200,
                     onComplete: () => {
                         if (!doOverlay) this.images.waterOverlay.setVisible(false);
+
+                        this.anims.waterOverlay = undefined;
                     }
                 }
             );
@@ -609,23 +610,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (anim) {
             const duration = "animationDuration" in fists ? fists.animationDuration : 150;
 
-            this.anims.leftFist = new Tween(
-                this.game,
-                {
-                    target: this.images.leftFist,
-                    to: { x: fists.left.x, y: fists.left.y - offset },
-                    duration
+            this.anims.leftFist = this.game.addTween({
+                target: this.images.leftFist,
+                to: { x: fists.left.x, y: fists.left.y - offset },
+                duration,
+                onComplete: () => {
+                    this.anims.leftFist = undefined;
                 }
-            );
+            });
 
-            this.anims.rightFist = new Tween(
-                this.game,
-                {
-                    target: this.images.rightFist,
-                    to: { x: fists.right.x, y: fists.right.y + offset },
-                    duration
+            this.anims.rightFist = this.game.addTween({
+                target: this.images.rightFist,
+                to: { x: fists.right.x, y: fists.right.y + offset },
+                duration,
+                onComplete: () => {
+                    this.anims.rightFist = undefined;
                 }
-            );
+            });
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y - offset);
             this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
@@ -787,21 +788,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
-        this.anims.emote = new Tween(
-            this.game,
-            {
-                target: this.emoteContainer,
-                to: { alpha: 1 },
-                duration: 250,
-                ease: EaseFunctions.backOut,
-                onUpdate: () => {
-                    this.emoteContainer.scale.set(this.emoteContainer.alpha);
-                }
+        this.anims.emote = this.game.addTween({
+            target: this.emoteContainer,
+            to: { alpha: 1 },
+            duration: 250,
+            ease: EaseFunctions.backOut,
+            onUpdate: () => {
+                this.emoteContainer.scale.set(this.emoteContainer.alpha);
+            },
+            onComplete: () => {
+                this.anims.emote = undefined;
             }
-        );
+        });
 
         this._emoteHideTimeout = this.addTimeout(() => {
-            this.anims.emoteHide = new Tween(this.game, {
+            this.anims.emoteHide = this.game.addTween({
                 target: this.emoteContainer,
                 to: { alpha: 0 },
                 duration: 200,
@@ -809,6 +810,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.emoteContainer.scale.set(this.emoteContainer.alpha);
                 },
                 onComplete: () => {
+                    this._emoteHideTimeout = undefined;
+                    this.anims.emoteHide = undefined;
+
                     this.emoteContainer.visible = false;
                     this.anims.emote?.kill();
                     this.anims.emote = undefined;
@@ -835,7 +839,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const duration = weaponDef.fists.animationDuration;
 
                 if (!weaponDef.fists.randomFist || !altFist) {
-                    this.anims.leftFist = new Tween(this.game, {
+                    this.anims.leftFist = this.game.addTween({
                         target: this.images.leftFist,
                         to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
                         duration,
@@ -845,7 +849,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 if (altFist) {
-                    this.anims.rightFist = new Tween(this.game, {
+                    this.anims.rightFist = this.game.addTween({
                         target: this.images.rightFist,
                         to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
                         duration,
@@ -855,7 +859,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 if (weaponDef.image !== undefined) {
-                    this.anims.weapon = new Tween(this.game, {
+                    this.anims.weapon = this.game.addTween({
                         target: this.images.weapon,
                         to: {
                             x: weaponDef.image.usePosition.x,
@@ -944,7 +948,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateFistsPosition(false);
                 const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
-                this.anims.weapon = new Tween(this.game, {
+                this.anims.weapon = this.game.addTween({
                     target: isAltFire ? this.images.altWeapon : this.images.weapon,
                     to: { x: reference.image.position.x - recoilAmount },
                     duration: 50,
@@ -965,49 +969,49 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     this.anims.muzzleFlashFade?.kill();
                     this.anims.muzzleFlashRecoil?.kill();
-                    this.anims.muzzleFlashFade = new Tween(
-                        this.game,
-                        {
-                            target: muzzleFlash,
-                            to: { alpha: 0 },
-                            duration: 100,
-                            onComplete: () => muzzleFlash.setVisible(false)
+                    this.anims.muzzleFlashFade = this.game.addTween({
+                        target: muzzleFlash,
+                        to: { alpha: 0 },
+                        duration: 100,
+                        onComplete: () => {
+                            muzzleFlash.setVisible(false);
+                            this.anims.muzzleFlashFade = undefined;
                         }
-                    );
+                    });
 
-                    this.anims.muzzleFlashRecoil = new Tween(
-                        this.game,
-                        {
-                            target: muzzleFlash,
-                            to: { x: muzzleFlash.x - recoilAmount },
-                            duration: 50,
-                            yoyo: true
+                    this.anims.muzzleFlashRecoil = this.game.addTween({
+                        target: muzzleFlash,
+                        to: { x: muzzleFlash.x - recoilAmount },
+                        duration: 50,
+                        yoyo: true,
+                        onComplete: () => {
+                            this.anims.muzzleFlashRecoil = undefined;
                         }
-                    );
+                    });
                 }
 
                 if (isAltFire !== false) {
-                    this.anims.leftFist = new Tween(
-                        this.game,
-                        {
-                            target: this.images.leftFist,
-                            to: { x: reference.fists.left.x - recoilAmount },
-                            duration: 50,
-                            yoyo: true
+                    this.anims.leftFist = this.game.addTween({
+                        target: this.images.leftFist,
+                        to: { x: reference.fists.left.x - recoilAmount },
+                        duration: 50,
+                        yoyo: true,
+                        onComplete: () => {
+                            this.anims.leftFist = undefined;
                         }
-                    );
+                    });
                 }
 
                 if (isAltFire !== true) {
-                    this.anims.rightFist = new Tween(
-                        this.game,
-                        {
-                            target: this.images.rightFist,
-                            to: { x: reference.fists.right.x - recoilAmount },
-                            duration: 50,
-                            yoyo: true
+                    this.anims.rightFist = this.game.addTween({
+                        target: this.images.rightFist,
+                        to: { x: reference.fists.right.x - recoilAmount },
+                        duration: 50,
+                        yoyo: true,
+                        onComplete: () => {
+                            this.anims.rightFist = undefined;
                         }
-                    );
+                    });
                 }
 
                 this.spawnCasingParticles("fire", isAltFire);
@@ -1041,35 +1045,33 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 pinImage.setZIndex(ZIndexes.Players + 1);
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
 
-                this.anims.leftFist = new Tween(
-                    this.game,
-                    {
-                        target: this.images.leftFist,
-                        to: { x: 35, y: 0 },
-                        duration: def.cookTime / 2,
-                        onComplete: () => {
-                            this.anims.leftFist = new Tween(
-                                this.game,
-                                {
-                                    target: this.images.leftFist,
-                                    to: Vec.scale(def.animation.cook.leftFist, PIXI_SCALE),
-                                    duration: def.cookTime / 2
-                                }
-                            );
+                this.anims.leftFist = this.game.addTween({
+                    target: this.images.leftFist,
+                    to: { x: 35, y: 0 },
+                    duration: def.cookTime / 2,
+                    onComplete: () => {
+                        this.anims.leftFist = this.game.addTween({
+                            target: this.images.leftFist,
+                            to: Vec.scale(def.animation.cook.leftFist, PIXI_SCALE),
+                            duration: def.cookTime / 2,
+                            onComplete: () => {
+                                this.anims.leftFist = undefined;
+                            }
+                        });
 
-                            pinImage.visible = true;
-                            this.anims.pin = new Tween(
-                                this.game, {
-                                    target: pinImage,
-                                    duration: def.cookTime / 2,
-                                    to: {
-                                        ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
-                                    }
-                                }
-                            );
-                        }
+                        pinImage.visible = true;
+                        this.anims.pin = this.game.addTween({
+                            target: pinImage,
+                            duration: def.cookTime / 2,
+                            to: {
+                                ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
+                            },
+                            onComplete: () => {
+                                this.anims.pin = undefined;
+                            }
+                        });
                     }
-                );
+                });
 
                 if (def.cookable) {
                     this.game.particleManager.spawnParticle({
@@ -1090,42 +1092,39 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
 
-                this.anims.weapon = new Tween(
-                    this.game,
-                    {
-                        target: projImage,
-                        to: { x: 25, y: 10 },
-                        duration: def.cookTime / 2
+                this.anims.weapon = this.game.addTween({
+                    target: projImage,
+                    to: { x: 25, y: 10 },
+                    duration: def.cookTime / 2,
+                    onComplete: () => {
+                        this.anims.weapon = undefined;
                     }
-                );
+                });
 
-                this.anims.rightFist = new Tween(
-                    this.game,
-                    {
-                        target: this.images.rightFist,
-                        to: { x: 25, y: 10 },
-                        duration: def.cookTime / 2,
-                        onComplete: () => {
-                            this.anims.weapon = new Tween(
-                                this.game,
-                                {
-                                    target: projImage,
-                                    to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
-                                    duration: def.cookTime / 2
-                                }
-                            );
+                this.anims.rightFist = this.game.addTween({
+                    target: this.images.rightFist,
+                    to: { x: 25, y: 10 },
+                    duration: def.cookTime / 2,
+                    onComplete: () => {
+                        this.anims.weapon = this.game.addTween({
+                            target: projImage,
+                            to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
+                            duration: def.cookTime / 2,
+                            onComplete: () => {
+                                this.anims.weapon = undefined;
+                            }
+                        });
 
-                            this.anims.rightFist = new Tween(
-                                this.game,
-                                {
-                                    target: this.images.rightFist,
-                                    to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
-                                    duration: def.cookTime / 2
-                                }
-                            );
-                        }
+                        this.anims.rightFist = this.game.addTween({
+                            target: this.images.rightFist,
+                            to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
+                            duration: def.cookTime / 2,
+                            onComplete: () => {
+                                this.anims.rightFist = undefined;
+                            }
+                        });
                     }
-                );
+                });
 
                 break;
             }
@@ -1166,27 +1165,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.anims.leftFist?.kill();
                 this.anims.weapon?.kill();
 
-                this.anims.leftFist = new Tween(
-                    this.game,
-                    {
-                        target: this.images.leftFist,
-                        to: Vec.scale(def.animation.throw.leftFist, PIXI_SCALE),
-                        duration: def.throwTime,
-                        onComplete: () => {
-                            projImage.setVisible(true);
-                            this.updateFistsPosition(true);
-                        }
+                this.anims.leftFist = this.game.addTween({
+                    target: this.images.leftFist,
+                    to: Vec.scale(def.animation.throw.leftFist, PIXI_SCALE),
+                    duration: def.throwTime,
+                    onComplete: () => {
+                        this.anims.leftFist = undefined;
+                        projImage.setVisible(true);
+                        this.updateFistsPosition(true);
                     }
-                );
+                });
 
-                this.anims.rightFist = new Tween(
-                    this.game,
-                    {
-                        target: this.images.rightFist,
-                        to: Vec.scale(def.animation.throw.rightFist, PIXI_SCALE),
-                        duration: def.throwTime
+                this.anims.rightFist = this.game.addTween({
+                    target: this.images.rightFist,
+                    to: Vec.scale(def.animation.throw.rightFist, PIXI_SCALE),
+                    duration: def.throwTime,
+                    onComplete: () => {
+                        this.anims.rightFist = undefined;
                     }
-                );
+                });
 
                 break;
             }

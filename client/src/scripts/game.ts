@@ -46,7 +46,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
-import { type Tween } from "./utils/tween";
+import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
 import { resetPlayButtons } from "./main";
 
@@ -121,11 +121,11 @@ export class Game {
 
     private _tickTimeoutID: number | undefined;
 
-    readonly pixi: Application<HTMLCanvasElement>;
+    readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map: Minimap;
-    readonly camera: Camera;
+    readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
 
@@ -153,18 +153,33 @@ export class Game {
         // Hide modals
         $(".dialog").hide();
 
-        // Initialize the Application object
-        this.pixi = new Application({
-            resizeTo: window,
-            background: COLORS.grass,
-            antialias: this.console.getBuiltInCVar("cv_antialias"),
-            autoDensity: true,
-            resolution: window.devicePixelRatio || 1
-        });
+        // Hide modals
+        $(".dialog").hide();
 
-        $("#game").append(this.pixi.view);
+        void (async() => {
+            const renderMode = this.console.getBuiltInCVar("cv_renderer");
+            await this.pixi.init({
+                resizeTo: window,
+                background: COLORS.grass,
+                antialias: this.console.getBuiltInCVar("cv_antialias"),
+                autoDensity: true,
+                preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
+                preference: renderMode === "webgpu" ? "webgpu" : "webgl",
+                resolution: window.devicePixelRatio || 1,
+                hello: true,
+                canvas: document.getElementById("game-canvas") as HTMLCanvasElement
+            });
 
-        this.pixi.ticker.add(this.render.bind(this));
+            this.pixi.ticker.add(this.render.bind(this));
+            this.camera.init();
+            this.pixi.renderer.on("resize", () => this.resize());
+
+            setInterval(() => {
+                if (this.console.getBuiltInCVar("pf_show_fps")) {
+                    $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                }
+            }, 500);
+        })();
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
@@ -172,7 +187,6 @@ export class Game {
 
         setupUI(this);
 
-        this.camera = new Camera(this);
         this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
@@ -182,12 +196,11 @@ export class Game {
             autoPlay: true,
             volume: this.console.getBuiltInCVar("cv_music_volume")
         });
+    }
 
-        setInterval(() => {
-            if (this.console.getBuiltInCVar("pf_show_fps")) {
-                $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
-            }
-        }, 500);
+    resize(): void {
+        this.map.resize();
+        this.camera.resize(true);
     }
 
     connect(address: string): void {
@@ -573,6 +586,18 @@ export class Game {
             this.soundManager.play("airdrop_ping");
             this.map.pings.add(new Ping(ping));
         }
+    }
+
+    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
+        // ignore deprecation
+        const tween = new Tween(this, config);
+
+        this.tweens.add(tween);
+        return tween;
+    }
+
+    removeTween(tween: Tween<unknown>): void {
+        this.tweens.delete(tween);
     }
 
     // yes this might seem evil. but the two local variables really only need to

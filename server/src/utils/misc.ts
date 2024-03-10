@@ -63,8 +63,8 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
         if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
             if (definition.ammoSpawnAmount > 1) {
                 loot.push(
-                    new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2),
-                    new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2)
+                    new LootItem(definition.ammoType, Math.floor(definition.ammoSpawnAmount / 2)),
+                    new LootItem(definition.ammoType, Math.ceil(definition.ammoSpawnAmount / 2))
                 );
             } else {
                 loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
