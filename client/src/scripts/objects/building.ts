@@ -146,16 +146,15 @@ export class Building extends GameObject<ObjectCategory.Building> {
         this.ceilingVisible = visible;
 
         this.ceilingTween?.kill();
-
-        this.ceilingTween = new Tween(
-            this.game,
-            {
-                target: this.ceilingContainer,
-                to: { alpha: visible ? 0 : 1 },
-                duration: visible ? 150 : 300,
-                ease: EaseFunctions.sineOut
+        this.ceilingTween = new Tween(this.game, {
+            target: this.ceilingContainer,
+            to: { alpha: visible ? 0 : 1 },
+            duration: visible ? 150 : 300,
+            ease: EaseFunctions.sineOut,
+            onComplete: () => {
+                this.ceilingTween = undefined;
             }
-        );
+        });
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {

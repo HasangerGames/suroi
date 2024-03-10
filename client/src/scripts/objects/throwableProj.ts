@@ -59,6 +59,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                         duration: 200,
                         onComplete: () => {
                             if (!doOverlay) this.waterOverlay.setVisible(false);
+                            this._waterAnim = undefined;
                         }
                     }
                 );

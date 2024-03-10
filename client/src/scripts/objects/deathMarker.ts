@@ -7,7 +7,7 @@ import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import type { BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
@@ -87,23 +87,23 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(
-                this.game,
-                {
-                    target: this.container.scale,
-                    to: { x: 1, y: 1 },
-                    duration: 400
+            this.scaleAnim = new Tween(this.game, {
+                target: this.container.scale,
+                to: { x: 1, y: 1 },
+                duration: 400,
+                onComplete: () => {
+                    this.scaleAnim = undefined;
                 }
-            );
+            });
 
-            this.alphaAnim = new Tween(
-                this.game,
-                {
-                    target: this.container,
-                    to: { alpha: 1 },
-                    duration: 400
+            this.alphaAnim = new Tween(this.game, {
+                target: this.container,
+                to: { alpha: 1 },
+                duration: 400,
+                onComplete: () => {
+                    this.alphaAnim = undefined;
                 }
-            );
+            });
         }
     }
 

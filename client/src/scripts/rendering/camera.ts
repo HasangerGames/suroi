@@ -51,12 +51,18 @@ export class Camera {
         this.zoomTween?.kill();
 
         if (animation) {
-            this.zoomTween = new Tween(this.game, {
-                target: this.container.scale,
-                to: { x: scale, y: scale },
-                duration: 800,
-                ease: EaseFunctions.cubicOut
-            });
+            this.zoomTween = new Tween(
+                this.game,
+                {
+                    target: this.container.scale,
+                    to: { x: scale, y: scale },
+                    duration: 800,
+                    ease: EaseFunctions.cubicOut,
+                    onComplete: () => {
+                        this.zoomTween = undefined;
+                    }
+                }
+            );
         } else {
             this.container.scale.set(scale);
         }

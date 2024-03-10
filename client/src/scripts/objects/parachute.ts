@@ -53,7 +53,10 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                     x: scale,
                     y: scale
                 },
-                duration: GameConstants.msPerTick
+                duration: GameConstants.msPerTick,
+                onComplete: () => {
+                    this.scaleAnim = undefined;
+                }
             });
         }
 
