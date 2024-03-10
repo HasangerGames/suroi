@@ -237,6 +237,10 @@ Video evidence is required.`)) {
     $("#btn-customize").on("click", () => { customizeMenu.fadeToggle(250); $(".dialog").hide(); });
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
+    const createTeamMenu = $("#create-team-menu");
+    $("#btn-create-team").on("click", () => { createTeamMenu.fadeToggle(250); $(".dialog").hide(); });
+    $("#close-create-team").on("click", () => createTeamMenu.fadeOut(250));
+
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
     const role = game.console.getBuiltInCVar("dv_role");
