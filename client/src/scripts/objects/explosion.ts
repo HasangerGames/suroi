@@ -6,7 +6,6 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Tween } from "../utils/tween";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector): void {
     const pixiPos = toPixiCoords(position);
@@ -19,30 +18,22 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
 
     game.camera.addObject(image);
 
-    /* eslint-disable no-new */
+    game.addTween({
+        target: image.scale,
+        to: { x: definition.animation.scale, y: definition.animation.scale },
+        duration: definition.animation.duration,
+        ease: EaseFunctions.expoOut
+    });
 
-    new Tween(
-        game,
-        {
-            target: image.scale,
-            to: { x: definition.animation.scale, y: definition.animation.scale },
-            duration: definition.animation.duration,
-            ease: EaseFunctions.expoOut
+    game.addTween({
+        target: image,
+        to: { alpha: 0 },
+        duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
+        ease: EaseFunctions.expoOut,
+        onComplete: () => {
+            image.destroy();
         }
-    );
-
-    new Tween(
-        game,
-        {
-            target: image,
-            to: { alpha: 0 },
-            duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
-            ease: EaseFunctions.expoOut,
-            onComplete: () => {
-                image.destroy();
-            }
-        }
-    );
+    });
 
     if (FloorTypes[game.map.terrain.getFloor(position)].particles) {
         game.particleManager.spawnParticles(4, () => ({

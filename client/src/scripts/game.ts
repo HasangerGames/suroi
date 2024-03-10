@@ -47,7 +47,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
-import { type Tween } from "./utils/tween";
+import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
 
 interface ObjectClassMapping {
@@ -220,9 +220,9 @@ export class Game {
                 joinPacket.badge = Badges.fromString(badge);
             }
 
-            for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
-                joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
-            }
+            joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
+                slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+            );
 
             this.sendPacket(joinPacket);
 
@@ -345,10 +345,12 @@ export class Game {
 
         const selectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
         for (let i = 0; i < 4; i++) {
+            const emote = packet.emotes[i];
+
             $(`#emote-wheel > ${selectors[i]}`)
                 .css(
                     "background-image",
-                    `url("./img/game/emotes/${packet.emotes[i].idString}.svg")`
+                    emote ? `url("./img/game/emotes/${emote.idString}.svg")` : ""
                 );
         }
 
@@ -558,6 +560,18 @@ export class Game {
             this.soundManager.play("airdrop_ping");
             this.map.pings.add(new Ping(ping));
         }
+    }
+
+    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
+        // ignore deprecation
+        const tween = new Tween(this, config);
+
+        this.tweens.add(tween);
+        return tween;
+    }
+
+    removeTween(tween: Tween<unknown>): void {
+        this.tweens.delete(tween);
     }
 
     // yes this might seem evil. but the two local variables really only need to
