@@ -159,6 +159,41 @@ const GunsRaw: RawGunDefinition[] = [
             range: 160
         }
     },
+        {
+        idString: "ak74u",
+        name: "AK-74u",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.5,
+        fireDelay: 100,
+        switchDelay: 300,
+        speedMultiplier: 0.95,
+        recoilMultiplier: 0.8,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 1,
+        moveSpread: 3,
+        length: 7.5,
+        fists: {
+            left: Vec.create(120, -2),
+            right: Vec.create(45, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(90, 2) },
+        casingParticles: [{
+            frame: "casing_762x39mm",
+            position: Vec.create(4, 0.4)
+        }],
+        ballistics: {
+            damage: 19,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            range: 300
+        }
+    },
     {
         idString: "arx160",
         name: "ARX-160",
