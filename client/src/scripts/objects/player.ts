@@ -137,7 +137,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.backpack,
             this.images.helmet
         );
-        this.container.eventMode = "static";
+        this.images.body.eventMode = "static";
 
         this.images.aimTrail.angle = 90;
         this.images.aimTrail.position = Vec.create(6000, -8);
@@ -181,7 +181,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         });
 
-        this.container.on("pointerdown", (): void => {
+        this.images.body.on("pointerdown", (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
             const packet = new SpectatePacket();
             packet.spectateAction = SpectateActions.SpectateSpecific;

@@ -148,12 +148,27 @@ export class Game {
                 resolution: window.devicePixelRatio || 1,
                 hello: true,
                 canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
+                // we only use pixi click events (to spectate players on click)
+                // so other events can be disabled for performance
                 eventFeatures: {
                     move: false,
                     globalMove: false,
                     wheel: false,
                     click: true
                 }
+            });
+
+            // @HACK: the game ui covers the canvas
+            // so send pointer events manually to make clicking to spectate players work
+            $("#game-ui")[0].addEventListener("pointerdown", (e) => {
+                this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
+                    pointerId: e.pointerId,
+                    button: e.button,
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                    screenY: e.screenY,
+                    screenX: e.screenX
+                }));
             });
 
             this.pixi.ticker.add(this.render.bind(this));
