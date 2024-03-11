@@ -112,7 +112,7 @@ export class Game {
     readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
-    readonly map: Minimap;
+    readonly map = new Minimap(this);
     readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
@@ -147,12 +147,28 @@ export class Game {
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
                 resolution: window.devicePixelRatio || 1,
                 hello: true,
-                canvas: document.getElementById("game-canvas") as HTMLCanvasElement
+                canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
+                eventFeatures: {
+                    move: false,
+                    globalMove: false,
+                    wheel: false,
+                    click: true
+                }
             });
 
             this.pixi.ticker.add(this.render.bind(this));
-            this.camera.init();
+            this.pixi.stage.addChild(
+                this.camera.container,
+                this.map.container,
+                this.map.mask
+            );
+
+            if (this.console.getBuiltInCVar("cv_minimap_minimized")) {
+                this.map.toggleMinimap();
+            }
+
             this.pixi.renderer.on("resize", () => this.resize());
+            this.resize();
 
             setInterval(() => {
                 if (this.console.getBuiltInCVar("pf_show_fps")) {
@@ -166,8 +182,6 @@ export class Game {
         this.inputManager.generateBindsConfigScreen();
 
         setupUI(this);
-
-        this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
             url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,

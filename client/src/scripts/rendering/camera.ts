@@ -33,14 +33,9 @@ export class Camera {
         this.game = game;
         this.pixi = game.pixi;
         this.container = new Container({
-            isRenderGroup: true
+            isRenderGroup: true,
+            sortableChildren: true
         });
-        this.container.sortableChildren = true;
-    }
-
-    init(): void {
-        this.pixi.stage.addChildAt(this.container, 0);
-        this.resize();
     }
 
     resize(animation = false): void {
