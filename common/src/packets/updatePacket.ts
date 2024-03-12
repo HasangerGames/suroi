@@ -7,7 +7,7 @@ import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
-import { calculateEnumPacketBits, OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { OBJECT_ID_BITS, calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
@@ -109,7 +109,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
                     stream.writeUint8(weapon.count!);
                 }
 
-                if (weapon.definition.killstreak !== undefined) {
+                if (weapon.definition.killstreak) {
                     stream.writeUint8(weapon.stats!.kills!);
                 }
             }
@@ -208,7 +208,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
 const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 const KILL_TYPE_BITS = calculateEnumPacketBits(KillType);
 
-const damageSourcesDefinitions = new ObjectDefinitions([...Loots, ...Explosions]);
+const damageSourcesDefinitions = ObjectDefinitions.create<LootDefinition | ExplosionDefinition>([...Loots, ...Explosions]);
 
 function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessage): void {
     stream.writeBits(message.messageType, KILL_FEED_MESSAGE_TYPE_BITS);

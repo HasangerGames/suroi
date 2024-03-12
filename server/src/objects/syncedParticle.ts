@@ -80,7 +80,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         this._creationDate = game.now;
         this.definition = definition;
 
-        this._lifetime = resolveNumericSpecifier(definition.lifetime ?? Infinity);
+        this._lifetime = resolveNumericSpecifier(definition.lifetime);
 
         const resolveDuration = (duration: Animated<unknown>["duration"]): number => duration === "lifetime" || duration === undefined
             ? this._lifetime
@@ -100,7 +100,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
             this.alpha = Numeric.lerp(this._alphaAnim.start, this._alphaAnim.end, easingFn(0));
             this.alphaActive = true;
         } else {
-            this.alpha = resolveNumericSpecifier(alpha ?? 1);
+            this.alpha = resolveNumericSpecifier(alpha);
         }
 
         if (typeof scale === "object" && "start" in scale) {
@@ -115,10 +115,10 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
             this.scale = Numeric.lerp(this._scaleAnim.start, this._scaleAnim.end, easingFn(0));
             this.scaleActive = true;
         } else {
-            this.scale = resolveNumericSpecifier(scale ?? 1);
+            this.scale = resolveNumericSpecifier(scale);
         }
 
-        this.angularVelocity = resolveNumericSpecifier(definition.angularVelocity ?? 0);
+        this.angularVelocity = resolveNumericSpecifier(definition.angularVelocity);
 
         if (typeof velocity === "object" && "start" in velocity) {
             const easingFn = EaseFunctions[velocity.easing ?? "linear"];
@@ -131,7 +131,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
 
             this._velocity = Vec.lerp(this._velocityAnim.start, this._velocityAnim.end, easingFn(0));
         } else {
-            this._velocity = resolveVectorSpecifier(velocity ?? Vec.create(0, 0));
+            this._velocity = resolveVectorSpecifier(velocity);
         }
 
         if (definition.variations !== undefined) {

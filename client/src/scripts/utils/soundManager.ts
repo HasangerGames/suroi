@@ -1,9 +1,10 @@
-import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { Loots } from "../../../../common/src/definitions/loots";
 import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Throwables } from "../../../../common/src/definitions/throwables";
 import { Numeric } from "../../../../common/src/utils/math";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -205,7 +206,7 @@ export class SoundManager {
             soundsToLoad[`${material}_destroyed`] = `audio/sfx/hits/${material}_destroyed`;
         }
 
-        for (const gun of Guns) {
+        for (const gun of Loots.byType(ItemType.Gun)) {
             if (!gun.isDual) {
                 soundsToLoad[`${gun.idString}_fire`] = `audio/sfx/weapons/${gun.idString}_fire`;
                 soundsToLoad[`${gun.idString}_switch`] = `audio/sfx/weapons/${gun.idString}_switch`;

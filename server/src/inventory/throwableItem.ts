@@ -58,7 +58,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     override useItem(): void {
         super._bufferAttack(
-            this.definition.fireDelay ?? 250,
+            this.definition.fireDelay,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
