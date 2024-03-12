@@ -257,7 +257,7 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        if (skin.hideFromLoadout === true || (skin.roleRequired ?? role) !== role) continue;
+        if (skin.hideFromLoadout || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -288,6 +288,7 @@ Video evidence is required.`)) {
 
         const noEmoteItem =
                 $(`<div id="emote-none" class="emotes-list-item-container">
+            <div class="emotes-list-item" style="background-image: none"></div>
         <span class="emote-name">None</span>
         </div>`);
 
@@ -424,7 +425,7 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || (role !== "" && badge.roles!.includes(role)));
+    const allowedBadges = Badges.definitions.filter(badge => badge.roles.length === 0 || badge.roles.includes(role));
 
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
@@ -771,7 +772,7 @@ Video evidence is required.`)) {
     }
 
     for (const ammo of Ammos) {
-        if (ammo.ephemeral === true) continue;
+        if (ammo.ephemeral) continue;
 
         $(`#${ammo.hideUnlessPresent ? "special-" : ""}ammo-container`).append(`
         <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">

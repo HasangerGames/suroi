@@ -1,12 +1,12 @@
 import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ContainerTints, MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomSign, randomVector } from "../utils/random";
 import { type FloorTypes } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
-import { type ObstacleDefinition, type RotationMode } from "./obstacles";
+import { RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {
     readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>
@@ -40,18 +40,18 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnHitbox: Hitbox
     readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
-    readonly hideOnMap?: boolean
-    readonly spawnMode?: MapObjectSpawnMode
+    readonly hideOnMap: boolean
+    readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
-        maxRiverWidth: number
-        landCheckDist: number
+        readonly maxRiverWidth: number
+        readonly landCheckDist: number
     }
 
-    readonly obstacles?: BuildingObstacle[]
-    readonly lootSpawners?: LootSpawner[]
-    readonly subBuildings?: SubBuilding[]
-    readonly decals?: BuildingDecal[]
+    readonly obstacles: BuildingObstacle[]
+    readonly lootSpawners: LootSpawner[]
+    readonly subBuildings: SubBuilding[]
+    readonly decals: BuildingDecal[]
 
     readonly puzzle?: {
         readonly triggerInteractOn: ReferenceTo<ObstacleDefinition>
@@ -72,7 +72,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly falloff: number
     }
 
-    readonly floorImages?: Array<{
+    readonly floorImages: Array<{
         readonly key: string
         readonly position: Vector
         readonly rotation?: number
@@ -80,39 +80,31 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly tint?: number | `#${string}`
     }>
 
-    readonly ceilingImages?: Array<{
+    readonly ceilingImages: Array<{
         readonly key: string
         readonly position: Vector
         readonly residue?: string
         readonly tint?: number | `#${string}`
     }>
-    readonly ceilingZIndex?: ZIndexes
+    readonly ceilingZIndex: ZIndexes
 
     /**
      * How many walls need to be broken to destroy the ceiling
      */
-    readonly wallsToDestroy?: number
+    readonly wallsToDestroy: number
 
-    readonly floors?: Array<{
+    readonly floors: Array<{
         readonly type: keyof typeof FloorTypes
         readonly hitbox: Hitbox
     }>
 
-    readonly groundGraphics?: Array<{
+    readonly groundGraphics: Array<{
         readonly color: number | `#${string}`
         readonly hitbox: Hitbox
     }>
 
-    readonly rotationMode?: RotationMode.Limited | RotationMode.Binary | RotationMode.None
+    readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
-
-export const ContainerTints = {
-    White: 0xc0c0c0,
-    Red: 0xa32900,
-    Green: 0x00a30e,
-    Blue: 0x005fa3,
-    Yellow: 0xcccc00
-};
 
 const randomContainer1 = {
     container_1: 1,
@@ -138,7 +130,22 @@ const warehouseObstacle = {
 };
 
 export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
-    {
+    defaultTemplate => ({
+        [defaultTemplate]: () => ({
+            hideOnMap: false,
+            spawnMode: MapObjectSpawnMode.Grass,
+            obstacles: [],
+            lootSpawners: [],
+            subBuildings: [],
+            decals: [],
+            wallsToDestroy: Infinity,
+            floorImages: [],
+            ceilingImages: [],
+            ceilingZIndex: ZIndexes.BuildingsCeiling,
+            floors: [],
+            groundGraphics: [],
+            rotationMode: RotationMode.Limited
+        }),
         container: (
             id: number,
             tint: number,
@@ -184,14 +191,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     }
                 ],
                 lootSpawners: open === "closed"
-                    ? undefined
+                    ? []
                     : [{
                         position: Vec.create(0, 0),
                         table: "ground_loot"
                     }]
             };
         }
-    }
+    })
 )(
     apply => [
         {
@@ -543,7 +550,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
                 { idString: { box: 9, grenade_box: 1 }, get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
             ],
-
             lootSpawners: [
                 {
                     position: Vec.create(0, 0),
@@ -1031,7 +1037,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "concrete_wall_segment_long", position: Vec.create(47, 83), rotation: 0 },
                 { idString: "concrete_wall_segment", position: Vec.create(30, 83), rotation: 0 },
                 { idString: "concrete_wall_end", position: Vec.create(22, 83), rotation: 2 }
-            ],
+            ] as BuildingObstacle[],
             subBuildings: [
                 {
                     idString: "porta_potty",
@@ -1549,7 +1555,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "super_barrel", position: Vec.create(43, -7.5) },
                 { idString: "sandbags", position: Vec.create(30, -16), rotation: 2 },
                 { idString: "flint_crate", position: Vec.create(41, -35) }
-            ]
+            ] as BuildingObstacle[]
         },
         {
             idString: "port",
@@ -1887,7 +1893,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "crane_base_end", position: Vec.create(129, -110.46), rotation: 0 },
                 { idString: "crane_base_end", position: Vec.create(129, 18.59), rotation: 0 },
                 { idString: "crane_base_end", position: Vec.create(65.5, -110.46), rotation: 0 }
-            ],
+            ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "container_1", position: Vec.create(-84, 100), orientation: 1 },
                 { idString: "crane", position: Vec.create(97, 25) },
@@ -2578,6 +2584,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { table: "ground_loot", position: Vec.create(0, 0) }
             ]
         }
-    ] as readonly BuildingDefinition[]
+    ]
     // not very fun to do, but type inference doesn't seem to be working well
 );

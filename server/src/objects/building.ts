@@ -20,7 +20,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     readonly spawnHitbox: Hitbox;
     readonly hitbox: Hitbox;
 
-    private _wallsToDestroy?: number;
+    private _wallsToDestroy: number;
 
     interactableObstacles = new Set<Obstacle>();
 
@@ -63,7 +63,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     }
 
     override damage(damage = 1): void {
-        if (this._wallsToDestroy === undefined || this.dead) return;
+        if (this._wallsToDestroy === Infinity || this.dead) return;
 
         this._wallsToDestroy -= damage;
 

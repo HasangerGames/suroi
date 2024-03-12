@@ -75,7 +75,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly waterOverlay: SuroiSprite
     };
 
-    hideEquipment? = false;
+    hideEquipment = false;
 
     readonly emoteContainer: Container;
     healingParticlesEmitter: ParticleEmitter;
@@ -97,9 +97,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     distSinceLastFootstep = 0;
 
-    helmetLevel = 0;
-    vestLevel = 0;
-    backpackLevel = 0;
+    helmetLevel = NaN;
+    vestLevel = NaN;
+    backpackLevel = NaN;
 
     hitbox = new CircleHitbox(GameConstants.player.radius);
 
@@ -200,7 +200,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
-        const casings = (reference.casingParticles ?? []).filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
+        const casings = reference.casingParticles.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
 
         if (!casings.length) return;
 
@@ -234,7 +234,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         }
 
                         return {
-                            frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame ?? "",
+                            frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame,
                             zIndex: ZIndexes.Players,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
@@ -597,7 +597,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (reference.image) {
             this.images.weapon.setPos(reference.image.position.x, reference.image.position.y + offset);
             this.images.altWeapon.setPos(reference.image.position.x, reference.image.position.y - offset);
-            this.images.weapon.setAngle(reference.image.angle ?? 0);
+            this.images.weapon.setAngle(reference.image.angle);
         }
     }
 
@@ -613,8 +613,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.images.weapon.setFrame(frame);
             this.images.altWeapon.setFrame(frame);
-            this.images.weapon.setAngle(reference.image.angle ?? 0);
-            this.images.altWeapon.setAngle(reference.image.angle ?? 0); // there's an ambiguity here as to whether the angle should be inverted or the same
+            this.images.weapon.setAngle(reference.image.angle);
+            this.images.altWeapon.setAngle(reference.image.angle); // there's an ambiguity here as to whether the angle should be inverted or the same
 
             if (this.activeItem !== this._oldItem) {
                 this.anims.muzzleFlashFade?.kill();
@@ -632,8 +632,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
-                this.images.rightFist.setZIndex((reference as SingleGunNarrowing).fists.rightZIndex ?? 1);
-                this.images.leftFist.setZIndex((reference as SingleGunNarrowing).fists.leftZIndex ?? 1);
+                this.images.rightFist.setZIndex(reference.fists.rightZIndex);
+                this.images.leftFist.setZIndex(reference.fists.leftZIndex);
                 this.images.weapon.setZIndex(2);
                 this.images.altWeapon.setZIndex(2);
                 this.images.body.setZIndex(3);

@@ -1,9 +1,8 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ContainerTints, MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { ContainerTints } from "./buildings";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
@@ -30,11 +29,11 @@ export enum FlyoverPref {
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
-    readonly indestructible?: boolean
-    readonly impenetrable?: boolean
-    readonly noResidue?: boolean
-    readonly invisible?: boolean
-    readonly hideOnMap?: boolean
+    readonly indestructible: boolean
+    readonly impenetrable: boolean
+    readonly noResidue: boolean
+    readonly invisible: boolean
+    readonly hideOnMap: boolean
     readonly scale?: {
         readonly spawnMin: number
         readonly spawnMax: number
@@ -42,7 +41,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     }
     readonly hitbox: Hitbox
     readonly spawnHitbox?: Hitbox
-    readonly noCollisions?: boolean
+    readonly noCollisions: boolean
     readonly rotationMode: RotationMode
     readonly variations?: Exclude<Variation, 0>
     readonly particleVariations?: number
@@ -50,15 +49,15 @@ export type ObstacleDefinition = ObjectDefinition & {
     /**
      * Whether throwables can fly over this obstacle
      */
-    readonly allowFlyover?: FlyoverPref
-    readonly hasLoot?: boolean
-    readonly spawnWithLoot?: boolean
+    readonly allowFlyover: FlyoverPref
+    readonly hasLoot: boolean
+    readonly spawnWithLoot: boolean
     readonly explosion?: string
-    readonly noMeleeCollision?: boolean
-    readonly noBulletCollision?: boolean
-    readonly reflectBullets?: boolean
+    readonly noMeleeCollision: boolean
+    readonly noBulletCollision: boolean
+    readonly reflectBullets: boolean
 
-    readonly frames?: {
+    readonly frames: {
         readonly base?: string
         readonly particle?: string
         readonly residue?: string
@@ -67,14 +66,10 @@ export type ObstacleDefinition = ObjectDefinition & {
     }
 
     readonly imageAnchor?: Vector
-
-    readonly spawnMode?: MapObjectSpawnMode
-
+    readonly spawnMode: MapObjectSpawnMode
     readonly tint?: number
-
     readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
-
-    readonly additionalDestroySounds?: string[]
+    readonly additionalDestroySounds: string[]
 } & (({
     readonly role: ObstacleSpecialRoles.Door
     readonly locked?: boolean
@@ -149,7 +144,25 @@ export enum RotationMode {
 }
 
 export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
-    {
+    defaultTemplate => ({
+        [defaultTemplate]: () => ({
+            indestructible: false,
+            impenetrable: false,
+            noResidue: false,
+            invisible: false,
+            hideOnMap: false,
+            noCollisions: false,
+            allowFlyover: FlyoverPref.Sometimes,
+            hasLoot: false,
+            spawnWithLoot: false,
+            noMeleeCollision: false,
+            noBulletCollision: false,
+            reflectBullets: false,
+            frames: {},
+            imageAnchor: Vec.create(0, 0),
+            spawnMode: MapObjectSpawnMode.Grass,
+            additionalDestroySounds: []
+        }),
         crate: () => ({
             material: "crate",
             health: 80,
@@ -246,8 +259,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 health: 500,
                 indestructible: true,
                 noResidue: true,
-                hideOnMap: invisible || undefined,
-                invisible: invisible || undefined,
+                hideOnMap: invisible,
+                invisible,
                 hitbox,
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
@@ -281,7 +294,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 residue: "gun_mount_residue"
             }
         })
-    }
+    })
 )(
     apply => [
         {

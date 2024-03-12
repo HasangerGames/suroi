@@ -1,4 +1,3 @@
-import { ZIndexes } from "../../common/src/constants";
 import { Loots } from "../../common/src/definitions/loots";
 import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
@@ -42,7 +41,10 @@ export function findDupes(collection: string[]): { readonly foundDupes: boolean,
 
 function safeString(value: unknown): string {
     try {
-        return JSON.stringify(value);
+        switch (true) {
+            case Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
+            default: return JSON.stringify(value);
+        }
     } catch (_) {
         return String(value);
     }
@@ -69,8 +71,8 @@ export const tester = (() => {
 };
 
     type ValidationResult = {
-        readonly errors?: string[]
         readonly warnings?: string[]
+        readonly errors?: string[]
     } | undefined;
 
     function createDualForm<
@@ -531,93 +533,34 @@ export const validators = Object.freeze({
             baseErrorPath
         });
 
-        if (ballistics.penetration !== undefined) {
-            const errorPath = tester.createPath(baseErrorPath, "penetration");
-
-            tester.assertNoPointlessValue({
-                obj: ballistics.penetration,
-                field: "players",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-
-            tester.assertNoPointlessValue({
-                obj: ballistics.penetration,
-                field: "obstacles",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-        }
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "tracer",
-            defaultValue: {},
-            equalityFunction: a => Object.keys(a).length === 0,
-            baseErrorPath
-        });
-
         if (ballistics.tracer) {
             logger.indent("Validating tracer data", () => {
                 const errorPath = tester.createPath(baseErrorPath, "tracer data");
-                const tracer = ballistics.tracer!;
+                const tracer = ballistics.tracer;
 
-                tester.assertNoPointlessValue({
+                tester.assertInBounds({
                     obj: tracer,
                     field: "opacity",
-                    defaultValue: 1,
+                    min: 0,
+                    max: 1,
+                    includeMin: true,
+                    includeMax: true,
                     baseErrorPath: errorPath
                 });
 
-                if (tracer.opacity) {
-                    tester.assertInBounds({
-                        obj: tracer,
-                        field: "opacity",
-                        min: 0,
-                        max: 1,
-                        includeMin: true,
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                tester.assertNoPointlessValue({
+                tester.assertIsPositiveReal({
                     obj: tracer,
                     field: "width",
-                    defaultValue: 1,
                     baseErrorPath: errorPath
                 });
 
-                if (tracer.width) {
-                    tester.assertIsPositiveReal({
-                        obj: tracer,
-                        field: "width",
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                tester.assertNoPointlessValue({
+                tester.assertIsPositiveReal({
                     obj: tracer,
                     field: "length",
-                    defaultValue: 1,
                     baseErrorPath: errorPath
                 });
 
-                if (tracer.length) {
-                    tester.assertIsPositiveReal({
-                        obj: tracer,
-                        field: "length",
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "color",
-                    defaultValue: 0xFFFFFF,
-                    baseErrorPath: errorPath
-                });
-
-                if (tracer.color) {
+                if (tracer.color !== undefined) {
                     tester.assertIntAndInBounds({
                         obj: tracer,
                         field: "color",
@@ -626,38 +569,10 @@ export const validators = Object.freeze({
                         baseErrorPath: errorPath
                     });
                 }
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "image",
-                    defaultValue: "base_trail",
-                    baseErrorPath: errorPath
-                });
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "particle",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "zIndex",
-                    defaultValue: ZIndexes.Bullets,
-                    baseErrorPath: errorPath
-                });
             });
         }
 
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "rangeVariance",
-            defaultValue: 0,
-            baseErrorPath
-        });
-
-        if (ballistics.rangeVariance) {
+        if (ballistics.rangeVariance !== undefined) {
             tester.assertInBounds({
                 obj: ballistics,
                 field: "rangeVariance",
@@ -668,27 +583,6 @@ export const validators = Object.freeze({
                 baseErrorPath
             });
         }
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "allowRangeOverride",
-            defaultValue: false,
-            baseErrorPath
-        });
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "lastShotFX",
-            defaultValue: false,
-            baseErrorPath
-        });
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "noCollision",
-            defaultValue: false,
-            baseErrorPath
-        });
     },
     vector(
         baseErrorPath: string,

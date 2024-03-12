@@ -3,7 +3,7 @@ import { type Variation } from "../typings";
 import { CircleHitbox } from "../utils/hitbox";
 import { type EaseFunctions } from "../utils/math";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
-import { type Vector } from "../utils/vector";
+import { Vec, type Vector } from "../utils/vector";
 import type { ScopeDefinition } from "./scopes";
 
 export interface MinMax<T> {
@@ -31,23 +31,23 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     /**
      * @default {1}
      */
-    readonly scale?: Animated<number> | NumericSpecifier
+    readonly scale: Animated<number> | NumericSpecifier
     /**
      * @default {1}
      */
-    readonly alpha?: Animated<number> | NumericSpecifier
+    readonly alpha: Animated<number> | NumericSpecifier
     /**
      * @default {Infinity}
      */
-    readonly lifetime?: NumericSpecifier
+    readonly lifetime: NumericSpecifier
     /**
      * @default {0}
      */
-    readonly angularVelocity?: NumericSpecifier
+    readonly angularVelocity: NumericSpecifier
     /**
      * @default {Vec.create(0,0)}
      */
-    readonly velocity?: Animated<Vector> | VectorSpecifier
+    readonly velocity: Animated<Vector> | VectorSpecifier
     /**
      * @default {undefined}
      */
@@ -55,14 +55,14 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     /**
      * @default {ZIndexes.ObstaclesLayer1}
      */
-    readonly zIndex?: ZIndexes
+    readonly zIndex: ZIndexes
 
-    readonly frame?: string
+    readonly frame: string
     readonly tint?: number
 
-    readonly depletePerMs?: {
-        readonly health?: number
-        readonly adrenaline?: number
+    readonly depletePerMs: {
+        readonly health: number
+        readonly adrenaline: number
     }
 } & ({
     readonly hitbox?: undefined
@@ -86,8 +86,20 @@ export interface SyncedParticleSpawnerDefinition {
 }
 
 export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition>()(
-    {
-        smoke_like: (idString: string, name?: string) => ({
+    (defaultTemplate) => ({
+        [defaultTemplate]: () => ({
+            scale: 1,
+            alpha: 1,
+            lifetime: Infinity,
+            angularVelocity: 0,
+            velocity: Vec.create(0, 0),
+            zIndex: ZIndexes.ObstaclesLayer1,
+            depletePerMs: {
+                health: 0,
+                adrenaline: 0
+            }
+        }),
+        synced_particle_factory: (idString: string, name?: string) => ({
             idString,
             name: name ?? (
                 idString
@@ -96,43 +108,48 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     .map(w => w && `${w[0].toUpperCase()}${w.slice(1)}`)
                     .join(" ")
             ),
-            scale: {
-                start: {
-                    min: 1.5,
-                    max: 2
+            frame: idString
+        }),
+        smoke_like: {
+            extends: "synced_particle_factory",
+            applier: () => ({
+                scale: {
+                    start: {
+                        min: 1.5,
+                        max: 2
+                    },
+                    end: {
+                        min: 1.75,
+                        max: 2.25
+                    }
                 },
-                end: {
-                    min: 1.75,
-                    max: 2.25
-                }
-            },
-            alpha: {
-                start: 1,
-                end: 0,
-                easing: "expoIn"
-            },
-            angularVelocity: {
-                min: -0.0005,
-                max: 0.0005
-            },
-            velocity: {
-                min: {
-                    x: -0.0002,
-                    y: -0.0002
+                alpha: {
+                    start: 1,
+                    end: 0,
+                    easing: "expoIn"
                 },
-                max: {
-                    x: 0.0002,
-                    y: 0.0002
-                }
-            },
-            lifetime: {
-                mean: 20000,
-                deviation: 1000
-            },
-            zIndex: ZIndexes.ObstaclesLayer4,
-            frame: (<T>(x: T, d: T) => x === d ? undefined : d)(idString, "smoke_grenade_particle")
-        })
-    }
+                angularVelocity: {
+                    min: -0.0005,
+                    max: 0.0005
+                },
+                velocity: {
+                    min: {
+                        x: -0.0002,
+                        y: -0.0002
+                    },
+                    max: {
+                        x: 0.0002,
+                        y: 0.0002
+                    }
+                },
+                lifetime: {
+                    mean: 20000,
+                    deviation: 1000
+                },
+                zIndex: ZIndexes.ObstaclesLayer4
+            })
+        }
+    })
 )(
     apply => [
         apply(
@@ -141,7 +158,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 hitbox: new CircleHitbox(5),
                 snapScopeTo: "1x_scope"
             },
-            "smoke_grenade_particle"
+            [],
+            ["smoke_grenade_particle"]
         ),
         apply(
             "smoke_like",
@@ -153,7 +171,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     adrenaline: 0.0055
                 }
             },
-            "tear_gas_particle"
+            [],
+            ["tear_gas_particle"]
         ),
         apply(
             "smoke_like",
@@ -175,7 +194,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 hitbox: new CircleHitbox(5),
                 snapScopeTo: "1x_scope"
             },
-            "airdrop_smoke_particle"
+            [],
+            ["airdrop_smoke_particle"]
         )
     ]
 );

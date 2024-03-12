@@ -1,3 +1,4 @@
+import { defaultBulletTemplate } from "../constants";
 import { Loots } from "../definitions/loots";
 import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
@@ -13,14 +14,18 @@ const bulletColors: Record<string, number> = {
     shrapnel: 0x1d1d1d
 };
 
-export const Bullets = new ObjectDefinitions<BulletDefinition>(
-    [
+export const Bullets = ObjectDefinitions.create<BulletDefinition>()(
+    defaultTemplate => ({
+        [defaultTemplate]: () => defaultBulletTemplate
+    })
+)(
+    () => [
         ...Loots.byType(ItemType.Gun),
         ...Explosions.definitions
     ]
         .filter(def => !("isDual" in def) || !def.isDual)
         .map(def => {
-            let tracerColor = def.ballistics.tracer?.color;
+            let tracerColor = def.ballistics.tracer.color;
 
             // if this bullet definition doesn't override the tracer color
             // calculate it based on ammo type or if it's shrapnel
@@ -32,14 +37,13 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>(
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             return {
                 idString: `${def.idString}_bullet`,
                 name: `${def.name} Bullet`,
                 ...def.ballistics,
                 tracer: {
                     color: tracerColor,
-                    ...(def.ballistics.tracer ?? {})
+                    ...def.ballistics.tracer
                 }
             };
         })

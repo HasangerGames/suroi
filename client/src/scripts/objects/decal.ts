@@ -26,10 +26,10 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
 
         const definition = this.definition = data.definition;
 
-        this.image.setFrame(definition.image ?? definition.idString);
+        this.image.setFrame(definition.image);
         this.container.addChild(this.image);
         this.container.zIndex = definition.zIndex ?? ZIndexes.Decals;
-        this.container.scale.set(definition.scale ?? 1);
+        this.container.scale.set(definition.scale);
 
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;

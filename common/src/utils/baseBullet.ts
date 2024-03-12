@@ -85,7 +85,7 @@ export class BaseBullet {
 
         this.velocity = Vec.scale(this.direction, this.definition.speed * (this.rangeVariance + 1));
 
-        this.canHitShooter = (this.definition.shrapnel ?? this.reflectionCount > 0);
+        this.canHitShooter = this.definition.shrapnel || this.reflectionCount > 0;
     }
 
     /**

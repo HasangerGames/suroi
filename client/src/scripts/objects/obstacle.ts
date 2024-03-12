@@ -69,7 +69,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (definition.invisible) this.container.visible = false;
 
             // If there are multiple particle variations, generate a list of variation image names
-            const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
+            const particleImage = definition.frames.particle ?? `${definition.idString}_particle`;
 
             this.particleFrames = definition.particleVariations !== undefined
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
@@ -174,14 +174,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     });
                 };
                 playSound(`${definition.material}_destroyed`);
-                if (definition.additionalDestroySounds) {
-                    for (const sound of definition.additionalDestroySounds) playSound(sound);
-                }
+                for (const sound of definition.additionalDestroySounds) playSound(sound);
 
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    this.image.setFrame(definition.frames?.residue ?? `${definition.idString}_residue`);
+                    this.image.setFrame(definition.frames.residue ?? `${definition.idString}_residue`);
                 }
 
                 this.container.rotation = this.rotation;
@@ -228,14 +226,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
 
-        this.image.setVisible(!(this.dead && !!definition.noResidue));
+        this.image.setVisible(!(this.dead && definition.noResidue));
 
         if (!texture) {
             texture = !this.dead
-                ? this.activated && definition.frames?.activated
+                ? this.activated && definition.frames.activated
                     ? definition.frames.activated
-                    : definition.frames?.base ?? `${definition.idString}`
-                : definition.frames?.residue ?? `${definition.idString}_residue`;
+                    : definition.frames.base ?? `${definition.idString}`
+                : definition.frames.residue ?? `${definition.idString}_residue`;
         }
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
@@ -250,7 +248,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.debugGraphics.clear();
             drawHitbox(
                 this.hitbox,
-                definition.noCollisions === true || this.dead
+                definition.noCollisions || this.dead
                     ? HITBOX_COLORS.obstacleNoCollision
                     : HITBOX_COLORS.obstacle,
                 this.debugGraphics

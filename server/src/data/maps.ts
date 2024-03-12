@@ -260,8 +260,8 @@ export const Maps: Record<string, MapDefinition> = {
 
                 for (const item of Loots.definitions) {
                     if (
-                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop === true) ||
-                        "ephemeral" in item ||
+                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop) ||
+                        ("ephemeral" in item && item.ephemeral) ||
                         (item.itemType === ItemType.Backpack && item.level === 0) ||
                         item.itemType === ItemType.Skin
                     ) continue;

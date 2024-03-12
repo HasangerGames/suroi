@@ -164,7 +164,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.definition = full.definition;
             this.position = full.position;
 
-            for (const image of this.definition.floorImages ?? []) {
+            for (const image of this.definition.floorImages) {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(toPixiCoords(image.position));
                 if (image.tint !== undefined) sprite.setTint(image.tint);

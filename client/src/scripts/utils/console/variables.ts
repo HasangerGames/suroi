@@ -73,13 +73,13 @@ export const Casters = Object.freeze({
         }
     },
     generateUnionCaster<const T extends string>(options: readonly T[]) {
+        const errorStr = options.map((v, i, a) => `${i === a.length - 1 ? "or " : ""}'${v}'`).join(", ");
+
         return (val: string): Result<T, string> => {
             if (options.includes(val as T)) return { res: val as T };
 
             return {
-                err: `Value must be either ${
-                    options.map((v, i, a) => `${i === a.length - 1 ? "or " : ""}'${v}'`).join(", ")
-                }; received ${val}`
+                err: `Value must be either ${errorStr}; received ${val}`
             };
         };
     }

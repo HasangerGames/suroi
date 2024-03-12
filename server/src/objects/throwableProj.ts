@@ -92,7 +92,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         let displacement = Vec.scale(this.velocity, halfDt);
 
         const displacementLength = Vec.length(displacement);
-        const maxDisplacement = (this.definition.speedCap ?? Infinity) * halfDt;
+        const maxDisplacement = this.definition.speedCap * halfDt;
 
         if (displacementLength >= maxDisplacement) {
             displacement = Vec.scale(displacement, maxDisplacement / displacementLength);
@@ -137,7 +137,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             return flyoverCondMap[
                 obstacle.door?.isOpen === false
                     ? FlyoverPref.Never
-                    : obstacle.definition.allowFlyover ?? FlyoverPref.Sometimes
+                    : obstacle.definition.allowFlyover
             ];
         };
 
