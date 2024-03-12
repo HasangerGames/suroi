@@ -1,5 +1,6 @@
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
+import "pixi.js/prepare";
 import { Application, Color } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
@@ -49,6 +50,7 @@ import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
 import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { loadTextures } from "./utils/pixi";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -157,6 +159,8 @@ export class Game {
                     click: true
                 }
             });
+
+            await loadTextures(this.pixi.renderer).then(enablePlayButton);
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work

@@ -1,4 +1,4 @@
-import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets } from "pixi.js";
+import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets, type Renderer } from "pixi.js";
 import { atlases } from "virtual:spritesheets-jsons";
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -8,12 +8,12 @@ const textures: Record<string, Texture> = {};
 
 const typedAtlases = atlases as Record<string, SpritesheetData[]>;
 
-export async function loadTextures(): Promise<void> {
+export async function loadTextures(renderer: Renderer): Promise<void> {
     const promises: Array<Promise<void>> = [];
     const atlas = typedAtlases.main;
 
     for (const sheet of atlas) {
-        promises.push(loadSpritesheet(sheet));
+        promises.push(loadSpritesheet(sheet, renderer));
     }
 
     await Promise.all(promises);
@@ -21,18 +21,19 @@ export async function loadTextures(): Promise<void> {
     // load mode reskins after main mode assets have loaded
     if (MODE.reskin) {
         for (const sheet of typedAtlases[MODE.reskin]) {
-            await loadSpritesheet(sheet);
+            await loadSpritesheet(sheet, renderer);
         }
     }
 }
 
-async function loadSpritesheet(data: SpritesheetData): Promise<void> {
+async function loadSpritesheet(data: SpritesheetData, renderer: Renderer): Promise<void> {
     const image = data.meta.image!;
 
     console.log(`Loading spritesheet ${location.origin}/${image}`);
 
     return await new Promise<void>(resolve => {
         void Assets.load<Texture>(image).then(texture => {
+            void renderer.prepare.upload(texture);
             void new Spritesheet(texture, data).parse().then(sheetTextures => {
                 for (const frame in sheetTextures) {
                     textures[frame] = sheetTextures[frame];
