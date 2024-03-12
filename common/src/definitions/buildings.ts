@@ -1237,6 +1237,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(-23, 20)
         }],
         floors: [
+            {
+                type: "wood",
+                hitbox: RectangleHitbox.fromRect(75, 53, Vec.create(-8, 0))
+            }
         ],
         obstacles: [
             // BEDROOM
@@ -1312,12 +1316,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Kitchen Fridge
             {
                 idString: "fridge",
-                position: Vec.create(-42.3, 2),
+                position: Vec.create(-42, 1),
                 rotation: 1
             },
             {
                 idString: "stove",
-                position: Vec.create(-42.3, 11.61),
+                position: Vec.create(-42, 10.5),
                 rotation: 1
             },
             {
@@ -1332,7 +1336,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Lower left chair
             { idString: "chair", position: Vec.create(-20.28, 21.8), rotation: 3 },
             // Sink
-            { idString: "mobile_home_sink", position: Vec.create(-41.9, 21.25), rotation: 1 },
+            { idString: "mobile_home_sink", position: Vec.create(-41.7, 20.3), rotation: 1 },
             // Washing Machine
             {
                 idString: "washing_machine",

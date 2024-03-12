@@ -367,7 +367,7 @@ app.ws("/play", {
     }
 });
 
-const openPageInBrowserEnabled = true;
+const openPageInBrowserEnabled = false;
 function openPageInBrowser(url: string): void {
     let command: string;
 
