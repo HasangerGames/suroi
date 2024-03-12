@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
-import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions, SPEED_EMOTE_MODE } from "../../../common/src/constants";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -52,7 +52,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly ip?: string;
 
     // Speed toggler utils
-    isTestMode = true;
+    // TODO: SET TO FALSE BEFORE RELEASE
+    isTestMode = SPEED_EMOTE_MODE;
     speed: number = Config.movementSpeed;
     fast = false;
 
@@ -346,7 +347,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "window2", position);
+        this.objectToPlace = new Obstacle(game, "gun_mount_hp18", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 

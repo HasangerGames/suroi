@@ -28,17 +28,30 @@
     let scale = 1;
 
     let dragging = false;
+    let rightDragging = false; // Flag for right mouse button drag
     function pointerDown(e: PointerEvent) {
-        dragging = true;
+        if (e.button === 1) { // Middle mouse button
+            dragging = true;
+        } else if (e.button === 0) { // Right mouse button
+            rightDragging = true;
+        }
     }
+
     function pointerUp(e: PointerEvent) {
-        dragging = false;
+        if (e.button === 1) {
+            dragging = false;
+        } else if (e.button === 2) {
+            rightDragging = false;
+        }
     }
 
     function pointermove(e: PointerEvent) {
-        if (dragging) {
+        if (dragging && !rightDragging) {
             x += e.movementX;
             y += e.movementY;
+        } else if (rightDragging && !dragging) {
+            selected.position.x += e.movementX;
+            selected.position.y += e.movementY;
         }
     }
 
@@ -87,7 +100,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/small_bridge.svg");
+    const bgImage = loadImage("/img/game/buildings/green_house_floor.svg");
 
 </script>
 

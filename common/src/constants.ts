@@ -113,6 +113,8 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
 
 Object.freeze(DEFAULT_INVENTORY);
 
+export const SPEED_EMOTE_MODE = false;
+
 const tickrate = 40;
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
 export const GameConstants = freezeDeep({

@@ -9,6 +9,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
+import { exec } from "child_process";
 
 /**
  * Apply CORS headers to a response.
@@ -144,7 +145,7 @@ app.get("/api/getGame", async(res, req) => {
         }
 
         if (!foundGame) {
-            // Create a game if there's a free slot
+            // Create a game if there"s a free slot
             const gameID = newGame();
             if (gameID !== -1) {
                 response = { success: true, gameID };
@@ -366,6 +367,35 @@ app.ws("/play", {
     }
 });
 
+const openPageInBrowserEnabled = true;
+function openPageInBrowser(url: string): void {
+    let command: string;
+
+    switch (process.platform) {
+        case "darwin":
+            command = `open "${url}"`;
+            break;
+        case "win32":
+            command = `start "" "${url}"`;
+            break;
+        case "linux":
+            command = `xdg-open "${url}"`;
+            break;
+        default:
+            console.error("Unsupported platform:", process.platform);
+            return;
+    }
+    if (openPageInBrowserEnabled) {
+        exec(command, (error) => {
+            if (error) {
+                console.error("Error opening page:", error);
+            } else {
+                Logger.log("Page opened successfully.");
+            }
+        });
+    }
+}
+
 // Start the server
 app.listen(Config.host, Config.port, (): void => {
     console.log(
@@ -381,6 +411,8 @@ app.listen(Config.host, Config.port, (): void => {
     Logger.log(`Suroi Server v${version}`);
     Logger.log(`Listening on ${Config.host}:${Config.port}`);
     Logger.log("Press Ctrl+C to exit.");
+    Logger.log(`Open page in browser is ${(openPageInBrowserEnabled) ? "enabled" : "disabled"} `);
+    openPageInBrowser("http://localhost:3000");
 
     newGame(0);
 

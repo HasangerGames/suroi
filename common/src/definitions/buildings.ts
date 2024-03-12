@@ -1117,7 +1117,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(16.2, -29.5),
                 rotation: 2
             },
-            // Living Room Cough
+            // Living Room Couch
             {
                 idString: "couch",
                 position: Vec.create(-21.6, -1.8),
@@ -1218,6 +1218,236 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(0, 0),
                 rotation: 2
             }
+        ]
+    },
+    {
+        idString: "green_house",
+        name: "Green House",
+        spawnHitbox: RectangleHitbox.fromRect(100, 80),
+        scopeHitbox: new HitboxGroup(
+            RectangleHitbox.fromRect(78, 55, Vec.create(-8, 0)),
+            RectangleHitbox.fromRect(15, 18, Vec.create(40, 8))
+        ),
+        floorImages: [{
+            key: "green_house_floor",
+            position: Vec.create(-21, 35)
+        }],
+        ceilingImages: [{
+            key: "green_house_ceiling",
+            position: Vec.create(-23, 20)
+        }],
+        floors: [
+        ],
+        obstacles: [
+            // BEDROOM
+
+            // Upper bedroom window
+            {
+                idString: "window",
+                position: Vec.create(31, -11),
+                rotation: 2
+            },
+            // Bedroom Door
+            {
+                idString: "door",
+                position: Vec.create(-21, -5),
+                rotation: 4
+            },
+            // Plant in bedroom
+            {
+                idString: "potted_plant",
+                position: Vec.create(-10, -8.5),
+                rotation: 4
+            },
+            // Bookshelf in bedroom
+            {
+                idString: "bookshelf",
+                position: Vec.create(-10, -20),
+                rotation: 1
+            },
+            {
+                idString: "bed",
+                position: Vec.create(-39.96, -18.33),
+                rotation: 0
+            },
+            {
+                idString: "small_drawer",
+                position: Vec.create(-30.87, -22.72),
+                rotation: 0
+            },
+            // LIVING ROOM
+            {
+                idString: "large_drawer",
+                position: Vec.create(26.17, 18.98),
+                rotation: 3
+            },
+            {
+                idString: "couch",
+                position: Vec.create(2.92, 22.39),
+                rotation: 1
+            },
+            {
+                idString: "green_house_small_table",
+                position: Vec.create(2.63, 13.93),
+                rotation: 1
+            },
+            // Above entry stairs window
+            {
+                idString: "window",
+                position: Vec.create(-22, -27.3),
+                rotation: 1
+            },
+            // Below entry stairs window
+            {
+                idString: "window",
+                position: Vec.create(16.7, 27),
+                rotation: 1
+            },
+            {
+                idString: "gun_mount_hp18",
+                position: Vec.create(28.49, -1.63),
+                rotation: 2
+            },
+            // KITCHEN
+            // Kitchen Fridge
+            {
+                idString: "fridge",
+                position: Vec.create(-42.3, 2),
+                rotation: 1
+            },
+            {
+                idString: "stove",
+                position: Vec.create(-42.3, 11.61),
+                rotation: 1
+            },
+            {
+                idString: "green_house_large_table",
+                position: Vec.create(-13.94, 17.77),
+                rotation: 0
+            },
+            // Upmost chair
+            { idString: "chair", position: Vec.create(-14, 9.61), rotation: 2 },
+            // Upper left chair
+            { idString: "chair", position: Vec.create(-20.28, 14), rotation: 3 },
+            // Lower left chair
+            { idString: "chair", position: Vec.create(-20.28, 21.8), rotation: 3 },
+            // Sink
+            { idString: "mobile_home_sink", position: Vec.create(-41.9, 21.25), rotation: 1 },
+            // Washing Machine
+            {
+                idString: "washing_machine",
+                position: Vec.create(25.5, -22.5),
+                rotation: 4
+            },
+            {
+                idString: "potted_plant",
+                position: Vec.create(17.5, -24.5),
+                rotation: 1
+            },
+            // Front Door
+            {
+                idString: "door",
+                position: Vec.create(31.2, 7.2),
+                rotation: 1
+            },
+            // Back Door
+            {
+                idString: "door",
+                position: Vec.create(-33.8, 26.6),
+                rotation: 2
+            },
+            // Bathroom Door
+            {
+                idString: "door",
+                position: Vec.create(11.3, -11.5),
+                rotation: 1
+            },
+            // BATHROOM
+            {
+                idString: "toilet",
+                position: Vec.create(-2, -22),
+                rotation: 4
+            },
+            {
+                idString: "mobile_home_sink",
+                position: Vec.create(6, -22),
+                rotation: 4
+            },
+
+            // INTERIOR WALLS AND STUFF
+
+            // First wall and column on the right of the back door
+            {
+                idString: "house_wall_6",
+                position: Vec.create(-6.6, 18.5),
+                rotation: 1
+            },
+            {
+                idString: "house_column",
+                position: Vec.create(-6.6, 9.8),
+                rotation: 1
+            },
+            // Bedroom column
+            {
+                idString: "house_column",
+                position: Vec.create(-6.5, -5),
+                rotation: 1
+            },
+            // Bathroom column
+            {
+                idString: "house_column",
+                position: Vec.create(11.5, -5),
+                rotation: 1
+            },
+            // Horizontal wall between bedroom and living room
+            {
+                idString: "house_wall_6",
+                position: Vec.create(2.5, -5),
+                rotation: 2
+            },
+            {
+                idString: "house_wall_7",
+                position: Vec.create(-36, -5),
+                rotation: 2
+            },
+            // Left bathroom wall
+            {
+                idString: "house_wall_7",
+                position: Vec.create(-6.7, -16.5),
+                rotation: 1
+            },
+            // Right bathroom wall
+            {
+                idString: "house_wall_8",
+                position: Vec.create(11.5, -21.5),
+                rotation: 1
+            },
+            {
+                idString: "house_wall_1",
+                position: Vec.create(-12, -5),
+                rotation: 2
+            },
+            // EXTERIOR
+            {
+                idString: "green_house_exterior",
+                position: Vec.create(0, 0),
+                rotation: 2
+            },
+            // Upper front porch column
+            {
+                idString: "house_column",
+                position: Vec.create(42, -1),
+                rotation: 1
+            },
+            // Lower front porch column
+            {
+                idString: "house_column",
+                position: Vec.create(42, 16),
+                rotation: 1
+            }
+        ],
+        lootSpawners: [
+            { table: "ground_loot", position: Vec.create(0, 0) }
         ]
     },
     {
