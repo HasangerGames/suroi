@@ -190,6 +190,10 @@ export class GameConsole {
         filter<U extends T>(predicate: (value: T, index: number) => value is U): U[] {
             return this._backingArray.filter(predicate);
         }
+
+        all(): T[] {
+            return this._backingArray;
+        }
     })<string>();
 
     clearHistory(): void {
@@ -221,32 +225,33 @@ export class GameConsole {
 
                 if (name in defaultClientCVars) {
                     this.variables.set.builtIn(name as keyof CVarTypeMapping, value as string, false);
-                } else {
-                    rewriteToLS = true;
-
-                    if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
-                        const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or is an old CVar that no longer exists). It will not be registered and will be deleted.`;
-
-                        console.warn(message);
-                        this.warn(message);
-                        continue;
-                    }
-
-                    this.variables.declareCVar(
-                        new ConVar(
-                            name,
-                            value,
-                            this,
-                            Casters.toString,
-                            {
-                                archive: true,
-                                cheat: false,
-                                readonly: false,
-                                ...(typeof variable === "object" ? flagBitfieldToInterface(variable?.flags ?? 0) : {})
-                            }
-                        )
-                    );
+                    continue;
                 }
+
+                rewriteToLS = true;
+
+                if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
+                    const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or is an old CVar that no longer exists). It will not be registered and will be deleted.`;
+
+                    console.warn(message);
+                    this.warn(message);
+                    continue;
+                }
+
+                this.variables.declareCVar(
+                    new ConVar(
+                        name,
+                        value,
+                        this,
+                        Casters.toString,
+                        {
+                            archive: true,
+                            cheat: false,
+                            readonly: false,
+                            ...(typeof variable === "object" ? flagBitfieldToInterface(variable?.flags ?? 0) : {})
+                        }
+                    )
+                );
             }
 
             if (config.binds) {
@@ -274,7 +279,6 @@ export class GameConsole {
             }
 
             for (const bind of bindList) {
-                if (bind === "") continue;
                 bindManager.addActionsToInput(bind, command);
             }
         }
@@ -644,13 +648,44 @@ export class GameConsole {
             })()
         };
 
+    private _sanitizeRegExp(str: string): string {
+        return str.replace(/[[\](){}\\.+\-*!<>$|^?:]/g, r => `\\${r}`);
+    }
+
     private _updateAutocmp(): void {
         // todo autocomplete for command invocations
 
         const inputValue = this._ui.input.val() as string;
         const { autocomplete, input, container } = this._ui;
+        const primaryEntity = inputValue.split(" ")[0];
 
         const isEmpty = inputValue.length === 0;
+
+        const findMatches = (name: string): string[] => {
+            if (name.includes(inputValue)) return [inputValue];
+
+            const tokens = primaryEntity.split("_");
+            if (tokens.filter(s => s.length).length === 1) return [];
+
+            for (const token of tokens) {
+                const replaced = name.replace(
+                    new RegExp(
+                        `${this._sanitizeRegExp(`${token}_`)}|${this._sanitizeRegExp(`_${token}`)}`
+                    ),
+                    ""
+                );
+                if (replaced === name) {
+                    return [];
+                }
+
+                name = replaced;
+            }
+
+            return tokens;
+        };
+
+        const matches = (name: string): boolean => findMatches(name).length !== 0;
+        const cache = this._autocmpData.cache;
 
         const [
             historyCandidates,
@@ -659,32 +694,31 @@ export class GameConsole {
             variableCandidates
         ] = isEmpty
             ? [
-                this._history.filter(() => true),
+                this._history.all(),
                 [],
                 [],
                 []
             ]
             : [
-                this._history.filter(s => s.includes(inputValue) && !this._autocmpData.cache.commands.some(c => c === s)),
-                this._autocmpData.cache.commands.filter(s => s.includes(inputValue)),
-                this._autocmpData.cache.aliases.filter(s => s.includes(inputValue)),
-                this._autocmpData.cache.variables.filter(s => s.includes(inputValue))
+                this._history.filter(s => matches(s) && !cache.commands.some(c => c === s)),
+                cache.commands.filter(s => matches(s)),
+                cache.aliases.filter(s => matches(s)),
+                cache.variables.filter(s => matches(s))
             ];
 
-        const generateAutocompleteNode = (match: string, text: string): JQuery<HTMLDivElement> => {
-            const [before, after] = match
-                ? (() => {
-                    const indexOf = text.indexOf(match);
-
-                    return [text.substring(0, indexOf), text.substring(indexOf + match.length)];
-                })()
-                : [text, ""];
+        const generateAutocompleteNode = (text: string): JQuery<HTMLDivElement> => {
+            const matches = findMatches(text);
 
             const node = $<HTMLDivElement>("<div tabindex=\"0\" class=\"console-input-autocomplete-entry\"></div>")
                 .append(
-                    this._sanitizeHTML(before, { strict: true, escapeSpaces: true }),
-                    $(`<b>${this._sanitizeHTML(match, { strict: true, escapeSpaces: true })}</b>`),
-                    this._sanitizeHTML(after, { strict: true, escapeSpaces: true })
+                    this._sanitizeHTML(text, { strict: true, escapeSpaces: true })
+                        .replace(
+                            new RegExp(
+                                matches.map(m => this._sanitizeRegExp(m)).join("|"),
+                                "g"
+                            ),
+                            r => `<b>${this._sanitizeHTML(r, { strict: true, escapeSpaces: true })}</b>`
+                        )
                 );
 
             node.on("mousedown", ev => {
@@ -734,7 +768,7 @@ export class GameConsole {
                     candidates => {
                         const candidateNodes = candidates
                             .sort((a, b) => a.indexOf(inputValue) - b.indexOf(inputValue))
-                            .map(generateAutocompleteNode.bind(undefined, inputValue));
+                            .map(text => generateAutocompleteNode(text));
                         autocmpNodes.push(...candidateNodes);
 
                         return [

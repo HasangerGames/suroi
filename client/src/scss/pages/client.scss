@@ -12,6 +12,7 @@ body {
   #loading-logo { animation: none; }
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
 
   margin: 0;
   padding: 0;
