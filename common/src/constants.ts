@@ -183,7 +183,7 @@ export enum ZIndexes {
     Gas
 }
 
-// i'm putting this ehre because placing it in objectDefinitions.ts or
+// i'm putting this here because placing it in objectDefinitions.ts or
 // in bullets.ts causes circular imports
 export const defaultBulletTemplate = {
     penetration: {

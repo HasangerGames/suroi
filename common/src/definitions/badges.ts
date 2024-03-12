@@ -51,16 +51,3 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
         apply("badge_factory", {}, "Duel")
     ]
 );
-
-// void (async() => {
-//     try {
-//         process;
-//     } catch (e) {
-//         return;
-//     }
-
-//     try {
-//         const fsp = await import("fs/promises");
-//         await fsp.writeFile("./out.txt", `${Badges.bitCount}\n\n${Badges.definitions.map(def => `(${JSON.stringify(def)});`).join("\n")}`);
-//     } catch (e) {}
-// })();

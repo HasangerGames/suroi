@@ -233,6 +233,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         porta_potty_toilet_closed: 0.3
                     },
                     position: Vec.create(0, -5),
+                    lootSpawnOffset: Vec.create(0, 5),
                     rotation: 0
                 },
                 {
@@ -574,7 +575,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             ceilingImages: [{
-                key: "port_warehouse_ceiling_red",
+                key: "port_warehouse_ceiling",
                 position: Vec.create(0, 0),
                 tint: 0x813131
             }],
@@ -677,7 +678,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             ceilingImages: [{
-                key: "port_warehouse_ceiling_blue",
+                key: "port_warehouse_ceiling",
                 position: Vec.create(0, 0),
                 tint: 0x2e2e6a
             }],
@@ -836,7 +837,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     idString: { gun_mount_mcx_spear: 0.99, gun_mount_stoner_63: 0.01 },
                     position: Vec.create(-46.8, 28),
-                    rotation: 1
+                    rotation: 1,
+                    lootSpawnOffset: Vec.create(4, 0)
                 },
                 //
                 // Building obstacles
