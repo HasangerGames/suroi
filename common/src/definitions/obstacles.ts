@@ -485,7 +485,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             {
                 idString: "flint_crate",
                 name: "Flint Crate",
-                rotationMode: RotationMode.Binary,
+                rotationMode: RotationMode.None,
                 hideOnMap: true
             }
         ),
@@ -494,7 +494,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             {
                 idString: "aegis_crate",
                 name: "AEGIS Crate",
-                rotationMode: RotationMode.Binary,
+                rotationMode: RotationMode.None,
                 hideOnMap: true
             }
         ),
