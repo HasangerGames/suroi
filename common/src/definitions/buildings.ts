@@ -559,7 +559,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         ceilingImages: [{
-            key: "port_warehouse_ceiling_red",
+            key: "port_warehouse_ceiling",
+            tint: 0x813131,
             position: Vec.create(0, 0)
         }],
         obstacles: [
@@ -661,7 +662,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         ceilingImages: [{
-            key: "port_warehouse_ceiling_blue",
+            key: "port_warehouse_ceiling",
+            tint: 0x2e2e6a,
             position: Vec.create(0, 0)
         }],
         obstacles: [
