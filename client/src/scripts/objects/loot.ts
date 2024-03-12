@@ -11,7 +11,7 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
@@ -107,18 +107,21 @@ export class Loot extends GameObject {
                 0 isn't a valid count value on the server
                 thus
                 If we receive 0 here, it must mean the count on
-                the server is Infinity (or NaN lol)
+                the server is Infinity (or NaN lol) (or a decimal number, lmao)
             */
             this._count = data.full.count || Infinity;
 
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
                 this.container.scale.set(0.5);
-                this.animation = new Tween(this.game, {
+                this.animation = this.game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
                     duration: 1000,
-                    ease: EaseFunctions.elasticOut
+                    ease: EaseFunctions.elasticOut,
+                    onComplete: () => {
+                        this.animation = undefined;
+                    }
                 });
             }
         }

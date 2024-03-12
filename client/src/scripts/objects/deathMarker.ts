@@ -1,13 +1,13 @@
 import { Text, type Container } from "pixi.js";
-import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import type { BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
@@ -26,17 +26,19 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         super(game, id);
 
         this.image = new SuroiSprite("death_marker");
-        this.playerNameText = new Text(
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? GameConstants.player.defaultName : "",
-            {
+        this.playerNameText = new Text({
+            text: "",
+            style: {
                 fontSize: 36,
                 fontFamily: "Inter",
-                dropShadow: true,
-                dropShadowBlur: 2,
-                dropShadowDistance: 2,
-                dropShadowColor: 0
+                dropShadow: {
+                    alpha: 0.8,
+                    color: "black",
+                    blur: 2,
+                    distance: 2
+                }
             }
-        );
+        });
         this.playerNameText.y = 95;
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
@@ -87,23 +89,23 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(
-                this.game,
-                {
-                    target: this.container.scale,
-                    to: { x: 1, y: 1 },
-                    duration: 400
+            this.scaleAnim = this.game.addTween({
+                target: this.container.scale,
+                to: { x: 1, y: 1 },
+                duration: 400,
+                onComplete: () => {
+                    this.scaleAnim = undefined;
                 }
-            );
+            });
 
-            this.alphaAnim = new Tween(
-                this.game,
-                {
-                    target: this.container,
-                    to: { alpha: 1 },
-                    duration: 400
+            this.alphaAnim = this.game.addTween({
+                target: this.container,
+                to: { alpha: 1 },
+                duration: 400,
+                onComplete: () => {
+                    this.alphaAnim = undefined;
                 }
-            );
+            });
         }
     }
 
