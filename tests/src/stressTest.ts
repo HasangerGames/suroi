@@ -97,7 +97,7 @@ class Bot {
 
         joinPacket.skin = Loots.reify(pickRandomInArray(skins));
         const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
-        joinPacket.emotes = [emote(), emote(), emote(), emote()];
+        joinPacket.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
 
         joinPacket.serialize();
 

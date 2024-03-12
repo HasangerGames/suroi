@@ -1,42 +1,49 @@
-import { Sprite, Spritesheet, Texture, type ColorSource, type Graphics, type ISpritesheetData } from "pixi.js";
+import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets, type Renderer } from "pixi.js";
 import { atlases } from "virtual:spritesheets-jsons";
-import { Reskins } from "../../../../common/src/definitions/modes";
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
 
 const textures: Record<string, Texture> = {};
 
-export async function loadTextures(): Promise<void> {
+const typedAtlases = atlases as Record<string, SpritesheetData[]>;
+
+export async function loadTextures(renderer: Renderer): Promise<void> {
     const promises: Array<Promise<void>> = [];
+    const atlas = typedAtlases.main;
 
-    for (const atlas of atlases as ISpritesheetData[]) {
-        const image = atlas.meta.image!;
-
-        console.log(`Loading atlas ${location.origin}/${image}`);
-
-        promises.push(
-            new Promise<void>(resolve => {
-                Texture.fromURL(image)
-                    .then(texture => {
-                        new Spritesheet(texture, atlas)
-                            .parse()
-                            .then(sheetTextures => {
-                                for (const frame in sheetTextures) {
-                                    textures[frame] = sheetTextures[frame];
-                                }
-                                console.log(`Atlas ${image} loaded.`);
-
-                                resolve();
-                            })
-                            .catch(console.error);
-                    })
-                    .catch(console.error);
-            })
-        );
+    for (const sheet of atlas) {
+        promises.push(loadSpritesheet(sheet, renderer));
     }
 
     await Promise.all(promises);
+
+    // load mode reskins after main mode assets have loaded
+    if (MODE.reskin) {
+        for (const sheet of typedAtlases[MODE.reskin]) {
+            await loadSpritesheet(sheet, renderer);
+        }
+    }
+}
+
+async function loadSpritesheet(data: SpritesheetData, renderer: Renderer): Promise<void> {
+    const image = data.meta.image!;
+
+    console.log(`Loading spritesheet ${location.origin}/${image}`);
+
+    return await new Promise<void>(resolve => {
+        void Assets.load<Texture>(image).then(texture => {
+            void renderer.prepare.upload(texture);
+            void new Spritesheet(texture, data).parse().then(sheetTextures => {
+                for (const frame in sheetTextures) {
+                    textures[frame] = sheetTextures[frame];
+                }
+                console.log(`Atlas ${image} loaded.`);
+
+                resolve();
+            });
+        });
+    });
 }
 
 export class SuroiSprite extends Sprite {
@@ -48,7 +55,6 @@ export class SuroiSprite extends Sprite {
     }
 
     static getTexture(frame: string): Texture {
-        if (MODE.reskin && Reskins[MODE.reskin]?.textures.includes(frame)) frame += `_${MODE.reskin}`;
         return textures[frame] ?? textures._missing_texture;
     }
 
@@ -113,13 +119,11 @@ export function toPixiCoords(pos: Vector): Vector {
 }
 
 export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
-    graphics.lineStyle({
+    graphics.setStrokeStyle({
         color,
         width: 2
     });
-
-    graphics.beginFill();
-    graphics.fill.alpha = 0;
+    graphics.beginPath();
 
     switch (hitbox.type) {
         case HitboxType.Rect: {
@@ -142,11 +146,12 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
             for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
             break;
         case HitboxType.Polygon:
-            graphics.drawPolygon(hitbox.points.map(point => toPixiCoords(point)));
+            graphics.poly(hitbox.points.map(point => toPixiCoords(point)));
             break;
     }
 
-    graphics.closePath().endFill();
+    graphics.closePath();
+    graphics.stroke();
 
     return graphics;
 }

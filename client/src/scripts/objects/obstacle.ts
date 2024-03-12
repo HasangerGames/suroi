@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, calculateDoorHitboxes, EaseFunctions, Numeric } from "../../../../common/src/utils/math";
+import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -12,7 +12,6 @@ import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type GameSound } from "../utils/soundManager";
-import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
@@ -341,16 +340,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             );
 
             if (definition.operationStyle !== "slide") {
-                // eslint-disable-next-line no-new
-                new Tween(this.game, {
+                this.game.addTween({
                     target: this.image,
                     to: { rotation: Angle.orientationToRotation(offset) },
                     duration: definition.animationDuration ?? 150
                 });
             } else {
                 const x = offset ? (definition.slideFactor ?? 1) * (backupHitbox.min.x - backupHitbox.max.x) * PIXI_SCALE : 0;
-                // eslint-disable-next-line no-new
-                new Tween(this.game, {
+                this.game.addTween({
                     target: this.image.position,
                     to: { x, y: 0 },
                     duration: 150

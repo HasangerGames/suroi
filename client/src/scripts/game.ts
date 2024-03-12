@@ -1,5 +1,6 @@
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
+import "pixi.js/prepare";
 import { Application, Color } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
@@ -47,8 +48,9 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { SoundManager } from "./utils/soundManager";
-import { type Tween } from "./utils/tween";
+import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { loadTextures } from "./utils/pixi";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -109,11 +111,11 @@ export class Game {
 
     private _tickTimeoutID: number | undefined;
 
-    readonly pixi: Application<HTMLCanvasElement>;
+    readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
-    readonly map: Minimap;
-    readonly camera: Camera;
+    readonly map = new Minimap(this);
+    readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
 
@@ -136,27 +138,69 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
-        // Initialize the Application object
-        this.pixi = new Application({
-            resizeTo: window,
-            background: COLORS.grass,
-            antialias: this.console.getBuiltInCVar("cv_antialias"),
-            autoDensity: true,
-            resolution: window.devicePixelRatio || 1
-        });
+        void (async() => {
+            const renderMode = this.console.getBuiltInCVar("cv_renderer");
+            await this.pixi.init({
+                resizeTo: window,
+                background: COLORS.grass,
+                antialias: this.console.getBuiltInCVar("cv_antialias"),
+                autoDensity: true,
+                preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
+                preference: renderMode === "webgpu" ? "webgpu" : "webgl",
+                resolution: window.devicePixelRatio || 1,
+                hello: true,
+                canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
+                // we only use pixi click events (to spectate players on click)
+                // so other events can be disabled for performance
+                eventFeatures: {
+                    move: false,
+                    globalMove: false,
+                    wheel: false,
+                    click: true
+                }
+            });
 
-        $("#game").append(this.pixi.view);
+            await loadTextures(this.pixi.renderer).then(enablePlayButton);
 
-        this.pixi.ticker.add(this.render.bind(this));
+            // @HACK: the game ui covers the canvas
+            // so send pointer events manually to make clicking to spectate players work
+            $("#game-ui")[0].addEventListener("pointerdown", (e) => {
+                this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
+                    pointerId: e.pointerId,
+                    button: e.button,
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                    screenY: e.screenY,
+                    screenX: e.screenX
+                }));
+            });
+
+            this.pixi.ticker.add(this.render.bind(this));
+            this.pixi.stage.addChild(
+                this.camera.container,
+                this.map.container,
+                this.map.mask
+            );
+
+            if (this.console.getBuiltInCVar("cv_minimap_minimized")) {
+                this.map.toggleMinimap();
+            }
+
+            this.pixi.renderer.on("resize", () => this.resize());
+            this.resize();
+
+            setInterval(() => {
+                if (this.console.getBuiltInCVar("pf_show_fps")) {
+                    $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                }
+            }, 500);
+        })();
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
         this.inputManager.generateBindsConfigScreen();
 
         setupUI(this);
-
-        this.camera = new Camera(this);
-        this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
             url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
@@ -165,12 +209,11 @@ export class Game {
             autoPlay: true,
             volume: this.console.getBuiltInCVar("cv_music_volume")
         });
+    }
 
-        setInterval(() => {
-            if (this.console.getBuiltInCVar("pf_show_fps")) {
-                $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
-            }
-        }, 500);
+    resize(): void {
+        this.map.resize();
+        this.camera.resize(true);
     }
 
     connect(address: string): void {
@@ -210,9 +253,9 @@ export class Game {
                 joinPacket.badge = Badges.fromString(badge);
             }
 
-            for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
-                joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
-            }
+            joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
+                slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+            );
 
             this.sendPacket(joinPacket);
 
@@ -335,10 +378,12 @@ export class Game {
 
         const selectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
         for (let i = 0; i < 4; i++) {
+            const emote = packet.emotes[i];
+
             $(`#emote-wheel > ${selectors[i]}`)
                 .css(
                     "background-image",
-                    `url("./img/game/emotes/${packet.emotes[i].idString}.svg")`
+                    emote ? `url("./img/game/emotes/${emote.idString}.svg")` : ""
                 );
         }
 
@@ -392,10 +437,12 @@ export class Game {
     }
 
     sendData(buffer: ArrayBuffer): void {
-        try {
-            this._socket?.send(buffer);
-        } catch (e) {
-            console.warn("Error sending packet. Details:", e);
+        if (this._socket && this._socket.readyState === this._socket.OPEN) {
+            try {
+                this._socket.send(buffer);
+            } catch (e) {
+                console.warn("Error sending packet. Details:", e);
+            }
         }
     }
 
@@ -546,6 +593,18 @@ export class Game {
             this.soundManager.play("airdrop_ping");
             this.map.pings.add(new Ping(ping));
         }
+    }
+
+    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
+        // ignore deprecation
+        const tween = new Tween(this, config);
+
+        this.tweens.add(tween);
+        return tween;
+    }
+
+    removeTween(tween: Tween<unknown>): void {
+        this.tweens.delete(tween);
     }
 
     // yes this might seem evil. but the two local variables really only need to

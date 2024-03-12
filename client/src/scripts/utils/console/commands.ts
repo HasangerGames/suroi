@@ -392,6 +392,19 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    Command.createCommand(
+        "loot",
+        function(): undefined {
+            this.inputManager.addAction(InputActions.Loot);
+        },
+        game,
+        {
+            short: "Loots closest object",
+            long: "Loots closest object, this command is also invoked with interact if there is no key bound to loot",
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
     Command.createInvertiblePair(
         "attack",
         function(): undefined {

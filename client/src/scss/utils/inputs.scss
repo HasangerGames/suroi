@@ -136,3 +136,13 @@ input[type="color"] {
         border-radius: 4px;
     }
 }
+
+select {
+    background-color: $bg;
+    padding: 5px;
+    border-radius: 4px;
+    height: 30px;
+    outline: none;
+    border: none;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}

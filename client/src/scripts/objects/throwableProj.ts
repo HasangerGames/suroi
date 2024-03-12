@@ -5,7 +5,7 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Game } from "../game";
 import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
 export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProjectile> {
@@ -49,19 +49,17 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                 if (doOverlay) this.waterOverlay.setVisible(true);
 
                 this._waterAnim?.kill();
-                this._waterAnim = new Tween(
-                    this.game,
-                    {
-                        target: this.waterOverlay,
-                        to: {
-                            alpha: doOverlay ? 1 : 0
-                        },
-                        duration: 200,
-                        onComplete: () => {
-                            if (!doOverlay) this.waterOverlay.setVisible(false);
-                        }
+                this._waterAnim = this.game.addTween({
+                    target: this.waterOverlay,
+                    to: {
+                        alpha: doOverlay ? 1 : 0
+                    },
+                    duration: 200,
+                    onComplete: () => {
+                        if (!doOverlay) this.waterOverlay.setVisible(false);
+                        this._waterAnim = undefined;
                     }
-                );
+                });
             }
             this.floorType = floorType;
         }
