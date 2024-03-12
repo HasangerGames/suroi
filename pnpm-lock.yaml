@@ -63,6 +63,18 @@ importers:
       '@types/node':
         specifier: ^20.11.25
         version: 20.11.26
+      canvas:
+        specifier: ^2.11.2
+        version: 2.11.2
+      chokidar:
+        specifier: ^3.5.3
+        version: 3.6.0
+      maxrects-packer:
+        specifier: ^2.7.3
+        version: 2.7.3
+      minimatch:
+        specifier: ^9.0.3
+        version: 9.0.3
       postcss:
         specifier: ^8.4.35
         version: 8.4.35
@@ -101,10 +113,7 @@ importers:
         version: 5.1.6(@types/node@20.11.26)(sass@1.71.1)
       vite-plugin-image-optimizer:
         specifier: ^1.1.7
-        version: 1.1.7(vite@5.1.6)
-      vite-spritesheet-plugin:
-        specifier: 1.0.0
-        version: 1.0.0(vite@5.1.6)
+        version: 1.1.7(vite@5.1.5)
 
   common:
     dependencies:
@@ -4451,24 +4460,8 @@ packages:
       vite: 5.1.6(@types/node@20.11.26)(sass@1.71.1)
     dev: true
 
-  /vite-spritesheet-plugin@1.0.0(vite@5.1.6):
-    resolution: {integrity: sha512-ZHgglX9BOK7Hh+1L/sByVFkvSNWoMhfNioQ0WCgKDvBlS6l362eY42rurqEZSu6Hmh3QPlb0xlkpYOYaBuvBmQ==}
-    engines: {node: '>=18.0.0', pnpm: '>=8.0.0'}
-    peerDependencies:
-      vite: '*'
-    dependencies:
-      canvas: 2.11.2
-      chokidar: 3.6.0
-      maxrects-packer: 2.7.3
-      minimatch: 9.0.3
-      vite: 5.1.6(@types/node@20.11.26)(sass@1.71.1)
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: true
-
-  /vite@5.1.6(@types/node@20.11.26)(sass@1.71.1):
-    resolution: {integrity: sha512-yYIAZs9nVfRJ/AiOLCA91zzhjsHUgMjB+EigzFb6W2XTLO8JixBCKCjvhKZaye+NKYHCrkv3Oh50dH9EdLU2RA==}
+  /vite@5.1.5(@types/node@20.11.25)(sass@1.71.1):
+    resolution: {integrity: sha512-BdN1xh0Of/oQafhU+FvopafUp6WaYenLU/NFoL5WyJL++GxkNfieKzBhM24H3HVsPQrlAqB7iJYTHabzaRed5Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:

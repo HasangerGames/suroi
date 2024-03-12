@@ -2,9 +2,9 @@ import pkg from "../../package.json";
 
 import { splitVendorChunkPlugin, type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
-import { spritesheet } from "vite-spritesheet-plugin";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { resolve } from "path";
+import { spritesheet } from "./vite-spritesheet-plugin/spritesheet-plugin";
 
 const config: UserConfig = {
     build: {
@@ -27,18 +27,7 @@ const config: UserConfig = {
             test: /\.(svg)$/i,
             logStats: false
         }),
-        spritesheet({
-            patterns: [
-                {
-                    rootDir: "public/img/game"
-                }
-            ],
-            options: {
-                outputFormat: "png",
-                margin: 8,
-                removeExtensions: true
-            }
-        })
+        spritesheet()
     ],
 
     define: {
