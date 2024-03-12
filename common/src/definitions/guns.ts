@@ -27,7 +27,6 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly noQuickswitch: boolean
     readonly bulletCount: number
     readonly length: number
-    readonly centerJitterOnMuzzle: boolean
     readonly shootOnRelease: boolean
     readonly summonAirdrop: boolean
 
@@ -394,7 +393,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             shotSpread: 24,
             moveSpread: 28,
             jitterRadius: 1.75,
-            centerJitterOnMuzzle: true,
             length: 8,
             fists: {
                 left: Vec.create(120, -1),
