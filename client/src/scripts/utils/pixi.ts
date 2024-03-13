@@ -6,13 +6,18 @@ import { MODE, PIXI_SCALE } from "./constants";
 
 const textures: Record<string, Texture> = {};
 
-const typedAtlases = atlases as Record<string, SpritesheetData[]>;
+export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
+    const typedAtlases = atlases as Record<string, {
+        low: SpritesheetData[]
+        high: SpritesheetData[]
+    }>;
 
-export async function loadTextures(renderer: Renderer): Promise<void> {
     const promises: Array<Promise<void>> = [];
     const atlas = typedAtlases.main;
 
-    for (const sheet of atlas) {
+    const resolution = highResolution ? "high" : "low";
+
+    for (const sheet of atlas[resolution]) {
         promises.push(loadSpritesheet(sheet, renderer));
     }
 
@@ -20,7 +25,7 @@ export async function loadTextures(renderer: Renderer): Promise<void> {
 
     // load mode reskins after main mode assets have loaded
     if (MODE.reskin) {
-        for (const sheet of typedAtlases[MODE.reskin]) {
+        for (const sheet of typedAtlases[MODE.reskin][resolution]) {
             await loadSpritesheet(sheet, renderer);
         }
     }

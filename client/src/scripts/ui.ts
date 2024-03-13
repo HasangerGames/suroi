@@ -599,6 +599,9 @@ Video evidence is required.`)) {
         $("#webgpu-option").toggle(await isWebGPUSupported());
     })();
 
+    // High resolution toggle
+    addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
+
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");
 

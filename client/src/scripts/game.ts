@@ -160,7 +160,10 @@ export class Game {
                 }
             });
 
-            await loadTextures(this.pixi.renderer).then(enablePlayButton);
+            await loadTextures(
+                this.pixi.renderer,
+                this.console.getBuiltInCVar("cv_high_res_textures")
+            ).then(enablePlayButton);
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
