@@ -1,4 +1,3 @@
-import { ZIndexes } from "../../common/src/constants";
 import { Loots } from "../../common/src/definitions/loots";
 import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
@@ -6,6 +5,18 @@ import { type EaseFunctions } from "../../common/src/utils/math";
 import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
+
+/*
+    eslint-disable
+
+    @typescript-eslint/consistent-type-definitions,
+    @typescript-eslint/indent
+*/
+
+/*
+    `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
+    `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
+*/
 
 export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
     const dupes: Record<string, number> = {};
@@ -30,7 +41,10 @@ export function findDupes(collection: string[]): { readonly foundDupes: boolean,
 
 function safeString(value: unknown): string {
     try {
-        return JSON.stringify(value);
+        switch (true) {
+            case Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
+            default: return JSON.stringify(value);
+        }
     } catch (_) {
         return String(value);
     }
@@ -40,16 +54,26 @@ export const tester = (() => {
     type Helper<
         PlainValue,
         OtherParams extends object
-    > = <Target extends object>(
-        params: ({
-            readonly obj: Target
-            readonly field: keyof Target
-            readonly baseErrorPath: string
-        } | {
-            readonly value: PlainValue
-            readonly errorPath: string
-        }) & OtherParams
-    ) => void;
+    > = {
+        <Target extends object>(
+            params: {
+                readonly obj: Target
+                readonly field: keyof Target
+                readonly baseErrorPath: string
+            } & OtherParams
+        ): void
+        (
+            params: {
+                readonly value: PlainValue
+                readonly errorPath: string
+            } & OtherParams
+        ): void
+};
+
+    type ValidationResult = {
+        readonly warnings?: string[]
+        readonly errors?: string[]
+    } | undefined;
 
     function createDualForm<
         PlainValue,
@@ -58,21 +82,35 @@ export const tester = (() => {
         predicate: (
             value: PlainValue,
             otherParams: OtherParams,
-            forwardTo: <Args extends object, Fn extends Helper<PlainValue, Args>>(fn: Fn, args: Args) => void
-        ) => {
-            readonly errors?: string[]
-            readonly warnings?: string[]
-        } | undefined
-    ) {
-        return <Target extends object>(
-            params: ({
+            forwardTo: <Args extends object, Fn extends Helper<PlainValue, Args>>(fn: Fn, args: Args) => boolean,
+            baseErrorPath: string
+        ) => ValidationResult
+    ): {
+        <Target extends object>(
+            params: {
                 readonly obj: Target
                 readonly field: keyof Target
                 readonly baseErrorPath: string
-            } | {
+            } & OtherParams
+        ): void
+        (
+            params: {
                 readonly value: PlainValue
                 readonly errorPath: string
-            }) & OtherParams
+            } & OtherParams
+        ): void
+    } {
+        return <Target extends object>(
+            params: (
+                {
+                    readonly obj: Target
+                    readonly field: keyof Target
+                    readonly baseErrorPath: string
+                } | {
+                    readonly value: PlainValue
+                    readonly errorPath: string
+                }
+            ) & OtherParams
         ): void => {
             const [value, errorPath] = "value" in params
                 ? [
@@ -85,25 +123,47 @@ export const tester = (() => {
                 ];
 
             const result = {
+                fatalErrors: [],
                 errors: [],
                 warnings: [],
-                ...(predicate(
-                    value,
-                    params,
-                    (target, args) => {
-                        return target({
-                            value,
-                            errorPath,
-                            ...args
-                        });
-                    }
-                ) ?? {})
+                ...(
+                    (() => {
+                        try {
+                            return predicate(
+                                value,
+                                params,
+                                (target, args) => {
+                                    const oldErrLen = errors.length;
+                                    target({
+                                        value,
+                                        errorPath,
+                                        ...args
+                                    });
+
+                                    return errors.length !== oldErrLen;
+                                },
+                                errorPath
+                            ) ?? {};
+                        } catch (e) {
+                            return {
+                                fatalErrors: [
+                                    e instanceof Error
+                                        ? e.stack ?? `${e.name}: ${e.message}`
+                                        : safeString(e)
+                                ]
+                            };
+                        }
+                    })()
+                )
             };
 
-            if (result === undefined || Number.isNaN(result.errors.length / result.warnings.length)) return;
+            if (result === undefined || result.fatalErrors.length + result.errors.length + result.warnings.length === 0) return;
 
             const prependErrorPath = (err: string): [string, string] => [errorPath, err];
 
+            tester.fatalErrors.push(
+                ...result.fatalErrors.map(prependErrorPath)
+            );
             tester.errors.push(
                 ...result.errors.map(prependErrorPath)
             );
@@ -115,6 +175,7 @@ export const tester = (() => {
 
     const warnings: Array<[string, string]> = [];
     const errors: Array<[string, string]> = [];
+    const fatalErrors: Array<[string, string]> = [];
 
     function createPath(...components: string[]): string {
         return components.join(" -> ");
@@ -128,7 +189,7 @@ export const tester = (() => {
         if (warningCondition) warnings.push([errorPath, warningMessage]);
     }
 
-    function assertNoDuplicateIDStrings(collection: Array<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
+    function assertNoDuplicateIDStrings(collection: ReadonlyArray<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
         const { foundDupes, dupes } = findDupes(collection.map(v => v.idString));
 
         assert(
@@ -166,7 +227,7 @@ export const tester = (() => {
     const assertReferenceExistsArray = createDualForm((
         value: string,
         otherParams: {
-            readonly collection: Array<{ readonly idString: string }>
+            readonly collection: ReadonlyArray<{ readonly idString: string }>
             readonly collectionName: string
         },
         forwardTo
@@ -324,24 +385,80 @@ export const tester = (() => {
                 };
             }
         }
-    ) as <Target extends object, Key extends keyof Target, ValueType>(
-        params: ({
-            readonly obj: Target
-            readonly field: Key
-            readonly baseErrorPath: string
-        } | {
-            readonly value: ValueType
-            readonly errorPath: string
-        }) & {
-            readonly defaultValue: ValueType
-            readonly equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
-        }
-    ) => void;
+    ) as {
+        <Target extends object, Keys extends keyof Target, Def extends Target[Keys]>(
+            params: {
+                readonly obj: Target
+                readonly field: Keys
+                readonly baseErrorPath: string
+
+                readonly defaultValue: Def
+                readonly equalityFunction?: (a: NonNullable<Target[Keys]>, b: Def) => boolean
+            }
+        ): void
+        <ValueType>(
+            params: {
+                readonly value: ValueType
+                readonly errorPath: string
+
+                readonly defaultValue: ValueType
+                readonly equalityFunction?: (a: NonNullable<ValueType>, b: NonNullable<ValueType>) => boolean
+            }
+        ): void
+    };
     // lol
+
+    const assertValidOrNPV = createDualForm(
+        (
+            value: unknown,
+            otherParams: {
+                defaultValue: typeof value
+                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
+                validatorIfPresent: (val: NonNullable<typeof value>, baseErrorPath: string) => void
+            },
+            forwardTo,
+            baseErrorPath
+        ): undefined => {
+            if (
+                !forwardTo(
+                    assertNoPointlessValue,
+                    {
+                        defaultValue: otherParams.defaultValue,
+                        equalityFunction: otherParams.equalityFunction
+                    }
+                ) && value !== undefined
+            ) {
+                otherParams.validatorIfPresent(value!, baseErrorPath);
+            }
+        }
+    ) as {
+        <Target extends object, Keys extends keyof Target, Def extends Target[Keys]>(
+            params: {
+                readonly obj: Target
+                readonly field: Keys
+                readonly baseErrorPath: string
+
+                readonly defaultValue: Def
+                readonly equalityFunction?: (a: NonNullable<Target[Keys]>, b: Def) => boolean
+                readonly validatorIfPresent: (value: NonNullable<Target[Keys]>, baseErrorPath: string) => void
+            }
+        ): void
+        <ValueType>(
+            params: {
+                readonly value: ValueType
+                readonly errorPath: string
+
+                readonly defaultValue: ValueType
+                readonly equalityFunction?: (a: NonNullable<ValueType>, b: ValueType) => boolean
+                readonly validatorIfPresent: (value: NonNullable<ValueType>, baseErrorPath: string) => void
+            }
+        ): void
+    };
 
     return Object.freeze({
         get warnings() { return warnings; },
         get errors() { return errors; },
+        get fatalErrors() { return fatalErrors; },
         createPath,
         assert,
         assertWarn,
@@ -377,6 +494,7 @@ export const tester = (() => {
         assertIsNaturalFiniteNumber,
         assertIntAndInBounds,
         assertNoPointlessValue,
+        assertValidOrNPV,
         runTestOnArray<T>(array: T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
             let i = 0;
             for (const element of array) {
@@ -415,93 +533,34 @@ export const validators = Object.freeze({
             baseErrorPath
         });
 
-        if (ballistics.penetration !== undefined) {
-            const errorPath = tester.createPath(baseErrorPath, "penetration");
-
-            tester.assertNoPointlessValue({
-                obj: ballistics.penetration,
-                field: "players",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-
-            tester.assertNoPointlessValue({
-                obj: ballistics.penetration,
-                field: "obstacles",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-        }
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "tracer",
-            defaultValue: {},
-            equalityFunction: a => Object.keys(a).length === 0,
-            baseErrorPath
-        });
-
         if (ballistics.tracer) {
             logger.indent("Validating tracer data", () => {
                 const errorPath = tester.createPath(baseErrorPath, "tracer data");
-                const tracer = ballistics.tracer!;
+                const tracer = ballistics.tracer;
 
-                tester.assertNoPointlessValue({
+                tester.assertInBounds({
                     obj: tracer,
                     field: "opacity",
-                    defaultValue: 1,
+                    min: 0,
+                    max: 1,
+                    includeMin: true,
+                    includeMax: true,
                     baseErrorPath: errorPath
                 });
 
-                if (tracer.opacity) {
-                    tester.assertInBounds({
-                        obj: tracer,
-                        field: "opacity",
-                        min: 0,
-                        max: 1,
-                        includeMin: true,
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                tester.assertNoPointlessValue({
+                tester.assertIsPositiveReal({
                     obj: tracer,
                     field: "width",
-                    defaultValue: 1,
                     baseErrorPath: errorPath
                 });
 
-                if (tracer.width) {
-                    tester.assertIsPositiveReal({
-                        obj: tracer,
-                        field: "width",
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                tester.assertNoPointlessValue({
+                tester.assertIsPositiveReal({
                     obj: tracer,
                     field: "length",
-                    defaultValue: 1,
                     baseErrorPath: errorPath
                 });
 
-                if (tracer.length) {
-                    tester.assertIsPositiveReal({
-                        obj: tracer,
-                        field: "length",
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "color",
-                    defaultValue: 0xFFFFFF,
-                    baseErrorPath: errorPath
-                });
-
-                if (tracer.color) {
+                if (tracer.color !== undefined) {
                     tester.assertIntAndInBounds({
                         obj: tracer,
                         field: "color",
@@ -510,38 +569,10 @@ export const validators = Object.freeze({
                         baseErrorPath: errorPath
                     });
                 }
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "image",
-                    defaultValue: "base_trail",
-                    baseErrorPath: errorPath
-                });
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "particle",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
-
-                tester.assertNoPointlessValue({
-                    obj: tracer,
-                    field: "zIndex",
-                    defaultValue: ZIndexes.Bullets,
-                    baseErrorPath: errorPath
-                });
             });
         }
 
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "rangeVariance",
-            defaultValue: 0,
-            baseErrorPath
-        });
-
-        if (ballistics.rangeVariance) {
+        if (ballistics.rangeVariance !== undefined) {
             tester.assertInBounds({
                 obj: ballistics,
                 field: "rangeVariance",
@@ -552,27 +583,6 @@ export const validators = Object.freeze({
                 baseErrorPath
             });
         }
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "allowRangeOverride",
-            defaultValue: false,
-            baseErrorPath
-        });
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "lastShotFX",
-            defaultValue: false,
-            baseErrorPath
-        });
-
-        tester.assertNoPointlessValue({
-            obj: ballistics,
-            field: "noCollision",
-            defaultValue: false,
-            baseErrorPath
-        });
     },
     vector(
         baseErrorPath: string,
@@ -1101,7 +1111,17 @@ export const logger = (() => {
 
             current.messages.push(nextLevel);
             current = nextLevel;
-            cb();
+            try {
+                cb();
+            } catch (e) {
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                tester.fatalErrors.push([
+                    "unknown",
+                    e instanceof Error
+                        ? e.stack ?? `${e.name}: ${e.message}`
+                        : safeString(e)
+                ]);
+            }
 
             current = currentCopy;
         },

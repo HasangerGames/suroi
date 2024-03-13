@@ -102,7 +102,7 @@ export class Bullet extends BaseBullet {
                     position: collision.intersection.point
                 });
 
-                if (this.definition.penetration?.players) continue;
+                if (this.definition.penetration.players) continue;
                 this.dead = true;
                 break;
             }
@@ -118,7 +118,7 @@ export class Bullet extends BaseBullet {
                     position: collision.intersection.point
                 });
 
-                if (this.definition.penetration?.obstacles && !object.definition.impenetrable) continue;
+                if (this.definition.penetration.obstacles && !object.definition.impenetrable) continue;
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
                 if (!object.definition.noCollisions) {

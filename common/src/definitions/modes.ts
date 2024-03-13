@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas";
 
 export interface ModeDefinition {
@@ -12,7 +10,6 @@ export interface ModeDefinition {
 }
 
 export interface ReskinDefinition {
-    readonly textures: string[]
     readonly sounds?: string[]
 }
 
@@ -70,40 +67,15 @@ export const Modes: ModeDefinition[] = [
 ];
 
 export const Reskins: Record<string, ReskinDefinition> = {
-    fall: { // TODO
-        textures: []
-    },
     winter: {
-        textures: [
-            "oak_tree_1", "oak_tree_2", "oak_tree_3", "oak_tree_particle", "oak_tree_residue",
-            "birch_tree", "birch_tree_particle", "birch_tree_residue",
-            "pine_tree",
-            "bush", "bush_particle_1", "bush_particle_2", "bush_residue",
-            "blueberry_bush",
-            "rock_6",
-            "regular_crate",
-            "aegis_crate",
-            "flint_crate",
-            "grenade_crate",
-            "airdrop_plane",
-            "airdrop_parachute",
-            "airdrop_crate_locked", "airdrop_crate_unlocking", "airdrop_particle_1", "airdrop_particle_2",
-            "airdrop_crate", "airdrop_crate_particle", "airdrop_crate_residue",
-            "gold_airdrop_crate", "gold_airdrop_crate_particle", "gold_airdrop_crate_residue",
-            "barrier",
-            "bollard",
-            "box",
-            "distillation_column",
-            "generator",
-            "crane_base_end",
-            "pallet",
-            "oil_tank",
-            "forklift",
-            "trailer",
-            "truck"
-        ],
         sounds: [
             "airdrop_plane"
         ]
     }
 };
+
+const tempList = Modes
+    .filter(mode => mode.reskin !== undefined)
+    .map(mode => mode.reskin);
+
+export const ModeAtlases = tempList.filter((item, index) => tempList.indexOf(item) === index) as string[];

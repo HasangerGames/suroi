@@ -5,7 +5,7 @@ import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
@@ -406,7 +406,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             Decals.writeToStream(stream, data.definition);
             stream.writePosition(data.position);
-            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode ?? RotationMode.Limited);
+            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
@@ -416,7 +416,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition,
                 position: stream.readPosition(),
-                rotation: stream.readObstacleRotation(definition.rotationMode ?? RotationMode.Limited).rotation
+                rotation: stream.readObstacleRotation(definition.rotationMode).rotation
             };
         },
         deserializeFull(stream) {

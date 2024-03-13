@@ -188,7 +188,6 @@
 #splash-server-message,
 #splash-rotate-message {
     background: $transparent_bg;
-    backdrop-filter: blur(8px);
     width: 370px;
 
     padding: 20px;
@@ -197,6 +196,21 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
 }
+
+.blur {
+    #splash-news,
+    #splash-options,
+    #splash-customize,
+    #splash-server-message,
+    #splash-rotate-message,
+    #splash-socials,
+    .featured-container,
+    .server-list-item-disabled,
+    .server-list-item {
+        backdrop-filter: blur(8px);
+    }
+}
+
 
 #splash-news,
 #splash-options,
@@ -431,7 +445,6 @@
         border: 2px solid #ff7500;
 
         .server-list-item {
-            backdrop-filter: blur(8px);
             list-style-type: none;
             display: flex;
             padding: 10px 18px 10px 18px;
@@ -465,7 +478,6 @@
 
         .server-list-item-disabled {
             background-color: rgba($color: #000000, $alpha: 0.8);
-            backdrop-filter: blur(8px);
             cursor: default;
         }
 
@@ -490,7 +502,6 @@
     justify-content: center;
     gap: 10px;
     background: $transparent_bg;
-    backdrop-filter: blur(8px);
     padding: 20px;
     border-radius: 20px;
     margin-left: 8px;
@@ -524,7 +535,6 @@
 
     .featured-container {
         background: $transparent_bg;
-        backdrop-filter: blur(8px);
         border-radius: 10px;
         padding: 10px 20px 10px 20px;
         height: fit-content;

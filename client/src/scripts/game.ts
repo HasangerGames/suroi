@@ -1,5 +1,6 @@
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
+import "pixi.js/prepare";
 import { Application, Color } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
@@ -50,6 +51,7 @@ import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
 import { resetPlayButtons } from "./main";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
+import { loadTextures } from "./utils/pixi";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -125,7 +127,7 @@ export class Game {
     readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
-    readonly map: Minimap;
+    readonly map = new Minimap(this);
     readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
@@ -156,6 +158,9 @@ export class Game {
 
         void (async() => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
+
+            const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
+
             await this.pixi.init({
                 resizeTo: window,
                 background: COLORS.grass,
@@ -163,14 +168,50 @@ export class Game {
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
-                resolution: window.devicePixelRatio || 1,
+                resolution: renderRes === "auto" ? (window.devicePixelRatio || 1) : parseFloat(renderRes),
                 hello: true,
-                canvas: document.getElementById("game-canvas") as HTMLCanvasElement
+                canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
+                // we only use pixi click events (to spectate players on click)
+                // so other events can be disabled for performance
+                eventFeatures: {
+                    move: false,
+                    globalMove: false,
+                    wheel: false,
+                    click: true
+                }
+            });
+
+            await loadTextures(
+                this.pixi.renderer,
+                this.console.getBuiltInCVar("cv_high_res_textures")
+            ).then(resetPlayButtons);
+
+            // @HACK: the game ui covers the canvas
+            // so send pointer events manually to make clicking to spectate players work
+            $("#game-ui")[0].addEventListener("pointerdown", (e) => {
+                this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
+                    pointerId: e.pointerId,
+                    button: e.button,
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                    screenY: e.screenY,
+                    screenX: e.screenX
+                }));
             });
 
             this.pixi.ticker.add(this.render.bind(this));
-            this.camera.init();
+            this.pixi.stage.addChild(
+                this.camera.container,
+                this.map.container,
+                this.map.mask
+            );
+
+            if (this.console.getBuiltInCVar("cv_minimap_minimized")) {
+                this.map.toggleMinimap();
+            }
+
             this.pixi.renderer.on("resize", () => this.resize());
+            this.resize();
 
             setInterval(() => {
                 if (this.console.getBuiltInCVar("pf_show_fps")) {
@@ -184,8 +225,6 @@ export class Game {
         this.inputManager.generateBindsConfigScreen();
 
         setupUI(this);
-
-        this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
             url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,

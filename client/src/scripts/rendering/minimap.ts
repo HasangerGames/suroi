@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { type Color, Container, Graphics, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
+import { type Color, Container, Graphics, RenderTexture, Sprite, Text, type Texture, isMobile } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
@@ -28,7 +28,8 @@ export class Minimap {
     readonly container = new Container();
     readonly mask = new Graphics();
 
-    readonly sprite = new Sprite(Texture.EMPTY);
+    readonly sprite = new Sprite();
+    texture?: Texture;
     readonly indicator = new SuroiSprite("player_indicator.svg");
     readonly teammates = new Set<TeammateIndicator>();
     readonly teammatesContainer = new Container();
@@ -57,19 +58,10 @@ export class Minimap {
 
     constructor(game: Game) {
         this.game = game;
-        game.pixi.stage.addChild(this.container);
-
-        // note: since pixi v8 masks also need to be added to the stage
-        // so they update properly when redrawing
-        game.pixi.stage.addChild(this.mask);
         this.objectsContainer.mask = this.mask;
 
         this.container.addChild(this.objectsContainer);
         this.container.addChild(this.border);
-
-        this.resize();
-
-        if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
 
         this.objectsContainer.addChild(
             this.sprite,
@@ -260,7 +252,7 @@ export class Minimap {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
 
-                    let texture = definition.frames?.base ?? definition.idString;
+                    let texture = definition.frames.base ?? definition.idString;
 
                     if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
 
@@ -279,7 +271,7 @@ export class Minimap {
                     const definition = mapObject.definition;
                     const rotation = Angle.orientationToRotation(mapObject.rotation);
 
-                    for (const image of definition.floorImages ?? []) {
+                    for (const image of definition.floorImages) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation + (image.rotation ?? 0))
@@ -290,7 +282,7 @@ export class Minimap {
                         mapRender.addChild(sprite);
                     }
 
-                    for (const image of definition.ceilingImages ?? []) {
+                    for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation)
@@ -301,7 +293,7 @@ export class Minimap {
                         mapRender.addChild(sprite);
                     }
 
-                    for (const floor of definition.floors ?? []) {
+                    for (const floor of definition.floors) {
                         const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
                         this.terrain.addFloor(floor.type, hitbox);
                     }
@@ -313,15 +305,16 @@ export class Minimap {
         mapRender.sortChildren();
 
         // Render all obstacles and buildings to a texture
-        const renderTexture = RenderTexture.create({
+        this.texture?.destroy(true);
+        this.texture = RenderTexture.create({
             width,
             height,
             resolution: isMobile.any ? 1 : 2
         });
 
-        this.game.pixi.renderer.render({ container: mapRender, target: renderTexture, clearColor: COLORS.grass });
+        this.game.pixi.renderer.render({ container: mapRender, target: this.texture, clearColor: COLORS.grass });
         this.sprite.texture.destroy(true);
-        this.sprite.texture = renderTexture;
+        this.sprite.texture = this.texture;
         mapRender.destroy({
             children: true,
             texture: false

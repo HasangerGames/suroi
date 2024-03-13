@@ -6,7 +6,6 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
 import { stringIsPositiveNumber } from "./utils/misc";
-import { loadTextures } from "./utils/pixi";
 import { TeamSize } from "../../../common/src/constants";
 
 interface RegionInfo {
@@ -37,13 +36,12 @@ export function resetPlayButtons(): void {
     duoPlayButton.toggleClass("btn-disabled", info.maxTeamSize === TeamSize.Duo);
 }
 
+const regionInfo: Record<string, RegionInfo> = Config.regions;
+
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-$(async(): Promise<void> => {
+$(async (): Promise<void> => {
     const game = new Game();
 
-    void loadTextures().then(resetPlayButtons);
-
-    const regionInfo: Record<string, RegionInfo> = Config.regions;
     const regionMap = Object.entries(regionInfo);
     const serverList = $("#server-list");
 
@@ -68,13 +66,13 @@ $(async(): Promise<void> => {
     // Get player counts + find server w/ best ping
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
-    const loadServers = async(): Promise<void> => {
+    const loadServers = async (): Promise<void> => {
         for (const [regionID, region] of regionMap) {
             const listItem = $(`.server-list-item[data-region=${regionID}]`);
             try {
                 const pingStartTime = Date.now();
 
-                const getValue = async(api: string): Promise<number | undefined> => {
+                const getValue = async (api: string): Promise<number | undefined> => {
                     const result = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/${api}`, { signal: AbortSignal.timeout(2000) })
                         .catch(() => {
                             console.error(`Could not load ${api} for ${region.address}.`);
@@ -121,7 +119,7 @@ $(async(): Promise<void> => {
 
     const region = game.console.getBuiltInCVar("cv_region");
     if (region) {
-        void (async() => {
+        void (async () => {
             await loadServers();
             selectedRegion = regionInfo[region];
             updateServerSelector();
