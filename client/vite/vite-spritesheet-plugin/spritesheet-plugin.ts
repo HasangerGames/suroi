@@ -95,7 +95,7 @@ export function spritesheet(): Plugin[] {
             },
             load(id) {
                 if (id === resolvedVirtualModuleId) {
-                    return `export const atlases = ${JSON.stringify(exportedAtlases)}`;
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases)}')`;
                 }
             }
         },
@@ -175,7 +175,7 @@ export function spritesheet(): Plugin[] {
             },
             load(id) {
                 if (id === resolvedVirtualModuleId) {
-                    return `export const atlases = ${JSON.stringify(exportedAtlases)}`;
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases)}')`;
                 }
             }
         }
