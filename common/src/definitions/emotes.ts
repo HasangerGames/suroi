@@ -49,6 +49,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         "Pog",
         "Froog",
         "Bleh",
+        "Suroi General Chat",
         "Fire",
         "RIP",
         "Monkey",
