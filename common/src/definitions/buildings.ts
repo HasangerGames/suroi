@@ -1234,11 +1234,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         floorImages: [{
             key: "green_house_floor",
-            position: Vec.create(-21, 35)
+            position: Vec.create(0, 0)
         }],
         ceilingImages: [{
             key: "green_house_ceiling",
-            position: Vec.create(-23, 20)
+            position: Vec.create(-2, -1.1)
         }],
         floors: [
             {
