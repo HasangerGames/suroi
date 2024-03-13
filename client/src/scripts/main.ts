@@ -113,7 +113,6 @@ $(async(): Promise<void> => {
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
-        resetPlayButtons();
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
 
