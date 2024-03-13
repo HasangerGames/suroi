@@ -599,6 +599,13 @@ Video evidence is required.`)) {
         $("#webgpu-option").toggle(await isWebGPUSupported());
     })();
 
+    // render resolution select menu
+    const renderResSelect = $("#render-res-select")[0] as HTMLSelectElement;
+    renderResSelect.addEventListener("input", () => {
+        game.console.setBuiltInCVar("cv_renderer_res", renderResSelect.value as unknown as "auto");
+    });
+    renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
+
     // High resolution toggle
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
 

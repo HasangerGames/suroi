@@ -37,6 +37,7 @@ export const CVarCasters = Object.freeze({
     cv_responsive_rotation: Casters.toBoolean,
     cv_antialias: Casters.toBoolean,
     cv_renderer: Casters.generateUnionCaster(["webgl1", "webgl2", "webgpu"]),
+    cv_renderer_res: Casters.generateUnionCaster(["auto", "0.5", "1", "2", "3"]),
     cv_high_res_textures: Casters.toBoolean,
     cv_blur_splash: Casters.toBoolean,
     cv_minimap_minimized: Casters.toBoolean,
@@ -105,6 +106,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_responsive_rotation: true,
     cv_antialias: true,
     cv_renderer: "webgl2",
+    cv_renderer_res: "auto",
     cv_high_res_textures: true,
     // blur kills splash screen performance on phones from my testing
     cv_blur_splash: !isMobile.any,
