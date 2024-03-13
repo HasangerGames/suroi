@@ -654,6 +654,11 @@ Video evidence is required.`)) {
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
+    // Blur splash screen
+    addCheckboxListener("#toggle-blur-splash", "cv_blur_splash", (value: boolean) => {
+        $("#splash-ui").toggleClass("blur", value);
+    });
+
     // Hide rules button
     addCheckboxListener("#toggle-hide-rules", "cv_hide_rules_button", (value: boolean) => {
         $("#btn-rules, #rules-close-btn").toggle(!value);
