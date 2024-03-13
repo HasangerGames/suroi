@@ -289,7 +289,7 @@ export class Map {
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
-        const rotationMode = definition.rotationMode ?? RotationMode.Limited;
+        const rotationMode = definition.rotationMode;
 
         for (let i = 0; i < count; i++) {
             let orientation = Map.getRandomBuildingOrientation(rotationMode);
@@ -316,11 +316,11 @@ export class Map {
         orientation?: Orientation
     ): Building {
         definition = Buildings.reify(definition);
-        orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode ?? RotationMode.Limited);
+        orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode);
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation);
 
-        for (const obstacleData of definition.obstacles ?? []) {
+        for (const obstacleData of definition.obstacles) {
             const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
@@ -349,7 +349,7 @@ export class Map {
             }
         }
 
-        for (const lootData of definition.lootSpawners ?? []) {
+        for (const lootData of definition.lootSpawners) {
             const table = LootTables[lootData.table];
             const drops = table.loot;
 
@@ -367,7 +367,7 @@ export class Map {
             }
         }
 
-        for (const subBuilding of definition.subBuildings ?? []) {
+        for (const subBuilding of definition.subBuildings) {
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
                 getRandomIDString(subBuilding.idString),
@@ -376,11 +376,11 @@ export class Map {
             );
         }
 
-        for (const floor of definition.floors ?? []) {
+        for (const floor of definition.floors) {
             this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation));
         }
 
-        for (const decal of definition.decals ?? []) {
+        for (const decal of definition.decals) {
             this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.idString), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
         }
 
@@ -486,18 +486,21 @@ export class Map {
         }
     }
 
-    getRandomPosition(initialHitbox: Hitbox, params?: {
-        getPosition?: () => Vector
-        collides?: (position: Vector) => boolean
-        collidableObjects?: Partial<Record<ObjectCategory, boolean>>
-        spawnMode?: MapObjectSpawnMode
-        scale?: number
-        orientation?: Orientation
-        maxAttempts?: number
-        // used for beach spawn mode
-        // so it can retry on different orientations
-        getOrientation?: (orientation: Orientation) => void
-    }): Vector | undefined {
+    getRandomPosition(
+        initialHitbox: Hitbox,
+        params?: {
+            getPosition?: () => Vector
+            collides?: (position: Vector) => boolean
+            collidableObjects?: Partial<Record<ObjectCategory, boolean>>
+            spawnMode?: MapObjectSpawnMode
+            scale?: number
+            orientation?: Orientation
+            maxAttempts?: number
+            // used for beach spawn mode
+            // so it can retry on different orientations
+            getOrientation?: (orientation: Orientation) => void
+        }
+    ): Vector | undefined {
         let position: Vector | undefined = Vec.create(0, 0);
 
         const scale = params?.scale ?? 1;

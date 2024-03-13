@@ -3,7 +3,7 @@ import { watch } from "chokidar";
 import { Minimatch } from "minimatch";
 
 import readDirectory from "./utils/readDirectory.js";
-import { type AtlasList, type CompilerOptions, createSpritesheets } from "./utils/spritesheet.js";
+import { type CompilerOptions, createSpritesheets, type multiResAtlasList } from "./utils/spritesheet.js";
 import { resolve } from "path";
 import { ModeAtlases } from "../../../common/src/definitions/modes";
 import { type SpritesheetData } from "pixi.js";
@@ -33,8 +33,8 @@ for (const atlasId of ModeAtlases) {
 
 const foldersToWatch = Object.values(atlasesToBuild);
 
-async function buildSpritesheets(): Promise<Record<string, AtlasList>> {
-    const atlases: Record<string, AtlasList> = {};
+async function buildSpritesheets(): Promise<multiResAtlasList> {
+    const atlases: multiResAtlasList = {};
 
     for (const atlasId in atlasesToBuild) {
         const files: string[] = readDirectory(atlasesToBuild[atlasId]).filter(x => imagesMatcher.match(x));
@@ -54,9 +54,9 @@ export function spritesheet(): Plugin[] {
     const virtualModuleId = "virtual:spritesheets-jsons";
     const resolvedVirtualModuleId = `\0${virtualModuleId}`;
 
-    let atlases: Record<string, AtlasList> = {};
+    let atlases: multiResAtlasList = {};
 
-    let exportedAtlases: Record<string, SpritesheetData[]> = {};
+    let exportedAtlases: Record<string, { low: SpritesheetData[], high: SpritesheetData[] }> = {};
 
     let buildTimeout: NodeJS.Timeout | undefined;
 
@@ -69,13 +69,16 @@ export function spritesheet(): Plugin[] {
                 atlases = await buildSpritesheets();
                 exportedAtlases = {};
                 for (const atlasId in atlases) {
-                    exportedAtlases[atlasId] = atlases[atlasId].map(sheet => sheet.json);
+                    exportedAtlases[atlasId] = {
+                        high: atlases[atlasId].high.map(sheet => sheet.json),
+                        low: atlases[atlasId].low.map(sheet => sheet.json)
+                    };
                 }
             },
             generateBundle() {
                 for (const atlasId in atlases) {
                     const sheets = atlases[atlasId];
-                    for (const sheet of sheets) {
+                    for (const sheet of [...sheets.low, ...sheets.high]) {
                         this.emitFile({
                             type: "asset",
                             fileName: sheet.json.meta.image,
@@ -92,7 +95,7 @@ export function spritesheet(): Plugin[] {
             },
             load(id) {
                 if (id === resolvedVirtualModuleId) {
-                    return `export const atlases = ${JSON.stringify(exportedAtlases)}`;
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases)}')`;
                 }
             }
         },
@@ -131,13 +134,16 @@ export function spritesheet(): Plugin[] {
 
                     exportedAtlases = {};
                     for (const atlasId in atlases) {
-                        exportedAtlases[atlasId] = atlases[atlasId].map(sheet => sheet.json);
+                        exportedAtlases[atlasId] = {
+                            high: atlases[atlasId].high.map(sheet => sheet.json),
+                            low: atlases[atlasId].low.map(sheet => sheet.json)
+                        };
                     }
 
                     files.clear();
                     for (const atlasId in atlases) {
                         const sheets = atlases[atlasId];
-                        for (const sheet of sheets) {
+                        for (const sheet of [...sheets.low, ...sheets.high]) {
                             files.set(sheet.json.meta.image!, sheet.image);
                         }
                     }
@@ -169,7 +175,7 @@ export function spritesheet(): Plugin[] {
             },
             load(id) {
                 if (id === resolvedVirtualModuleId) {
-                    return `export const atlases = ${JSON.stringify(exportedAtlases)}`;
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases)}')`;
                 }
             }
         }

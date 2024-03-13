@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "validateDefinitions": "node dist/tests/src/validateDefinitions.js",
+    "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
     "stressTest": "tsc && node --enable-source-maps dist/tests/src/stressTest.js"
   },
   "engines": {
@@ -14,9 +14,9 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.11.25",
+    "@types/node": "^20.11.27",
     "@types/ws": "^8.5.10",
-    "typescript": "5.3.3"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",

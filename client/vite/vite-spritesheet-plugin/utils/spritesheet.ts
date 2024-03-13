@@ -51,12 +51,17 @@ export interface CompilerOptions {
 
 export type AtlasList = Array<{ json: SpritesheetData, image: Buffer }>;
 
+export type multiResAtlasList = Record<string, {
+    low: AtlasList
+    high: AtlasList
+}>;
+
 /**
  * Pack images spritesheets.
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(paths: string[], options: CompilerOptions): Promise<AtlasList> {
+export async function createSpritesheets(paths: string[], options: CompilerOptions): Promise<{ low: AtlasList, high: AtlasList }> {
     if (paths.length === 0) throw new Error("No file given.");
 
     if (!supportedFormats.includes(options.outputFormat)) {
@@ -69,89 +74,103 @@ export async function createSpritesheets(paths: string[], options: CompilerOptio
         path: string
     }
 
-    const packer = new MaxRectsPacker(
-        options.maximumSize,
-        options.maximumSize,
-        options.margin,
-        {
-            ...options.packerOptions,
-            allowRotation: false // TODO: support rotating frames
-        }
-    );
+    const images: PackerRectData[] = [];
 
     await Promise.all(paths.map(async path => {
         const image = await loadImage(path);
-
-        packer.add(image.width, image.height, {
+        images.push({
             image,
             path
-        } satisfies PackerRectData);
+        });
     }));
 
-    packer.repack();
-
-    const atlases: AtlasList = [];
-
-    for (const bin of packer.bins) {
-        const canvas = createCanvas(bin.width, bin.height);
-
-        const ctx = canvas.getContext("2d");
-
-        const json: SpritesheetData = {
-            meta: {
-                image: "",
-                scale: "1",
-                size: {
-                    w: bin.width,
-                    h: bin.height
-                }
-            },
-            frames: {}
-        };
-
-        for (const rect of bin.rects) {
-            const data: PackerRectData = rect.data;
-
-            ctx.drawImage(data.image, rect.x, rect.y);
-
-            const sourceParts = (rect.data.path as string).split(platform() === "win32" ? "\\" : "/");
-            let name = sourceParts.slice(sourceParts.length - 1, sourceParts.length).join();
-
-            if (options.removeExtensions) {
-                const temp = name.split(".");
-                temp.splice(temp.length - 1, 1);
-                name = temp.join();
+    function createSheet(resolution: number): AtlasList {
+        const packer = new MaxRectsPacker(
+            options.maximumSize * resolution,
+            options.maximumSize * resolution,
+            options.margin,
+            {
+                ...options.packerOptions,
+                allowRotation: false // TODO: support rotating frames
             }
+        );
 
-            json.frames[name] = {
-                frame: {
-                    w: rect.width,
-                    h: rect.height,
-                    x: rect.x,
-                    y: rect.y
-                },
-                sourceSize: {
-                    w: rect.width,
-                    h: rect.height
-                }
-            };
+        for (const image of images) {
+            packer.add(
+                image.image.width * resolution,
+                image.image.height * resolution,
+                image
+            );
         }
 
-        const buffer = canvas.toBuffer(`image/${options.outputFormat}` as "image/png");
+        const atlases: AtlasList = [];
 
-        const hash = createHash("sha1");
-        hash.setEncoding("hex");
-        hash.write(buffer);
-        hash.end();
-        const sha1 = (hash.read() as string).slice(0, 8);
+        for (const bin of packer.bins) {
+            const canvas = createCanvas(bin.width, bin.height);
 
-        json.meta.image = `${options.outDir}/${options.name}-${sha1}.${options.outputFormat}`;
+            const ctx = canvas.getContext("2d");
 
-        atlases.push({
-            json,
-            image: buffer
-        });
+            const json: SpritesheetData = {
+                meta: {
+                    image: "",
+                    scale: resolution,
+                    size: {
+                        w: bin.width,
+                        h: bin.height
+                    }
+                },
+                frames: {}
+            };
+
+            for (const rect of bin.rects) {
+                const data: PackerRectData = rect.data;
+
+                ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
+
+                const sourceParts = (rect.data.path as string).split(platform() === "win32" ? "\\" : "/");
+                let name = sourceParts.slice(sourceParts.length - 1, sourceParts.length).join();
+
+                if (options.removeExtensions) {
+                    const temp = name.split(".");
+                    temp.splice(temp.length - 1, 1);
+                    name = temp.join();
+                }
+
+                json.frames[name] = {
+                    frame: {
+                        w: rect.width,
+                        h: rect.height,
+                        x: rect.x,
+                        y: rect.y
+                    },
+                    sourceSize: {
+                        w: rect.width,
+                        h: rect.height
+                    }
+                };
+            }
+
+            const buffer = canvas.toBuffer(`image/${options.outputFormat}` as "image/png");
+
+            const hash = createHash("sha1");
+            hash.setEncoding("hex");
+            hash.write(buffer);
+            hash.end();
+            const sha1 = (hash.read() as string).slice(0, 8);
+
+            json.meta.image = `${options.outDir}/${options.name}-${sha1}@${resolution}x.${options.outputFormat}`;
+
+            atlases.push({
+                json,
+                image: buffer
+            });
+        }
+
+        return atlases;
     }
 
-    return atlases;
+    return {
+        low: createSheet(0.5),
+        high: createSheet(1)
+    };
 }

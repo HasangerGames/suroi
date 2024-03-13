@@ -592,12 +592,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             // we arbitrarily take the first scope target we find and stick with it
             scopeTarget ??= (def as SyncedParticleDefinition & { readonly hitbox: Hitbox }).snapScopeTo;
 
-            if (depletion?.health) {
+            if (depletion.health) {
                 this.piercingDamage(depletion.health * dt, KillType.Gas);
                 //                                         ^^^^^^^^^^^^ dubious
             }
 
-            if (depletion?.adrenaline) {
+            if (depletion.adrenaline) {
                 this.adrenaline = Math.max(0, this.adrenaline - depletion.adrenaline * dt);
             }
         });
@@ -1079,7 +1079,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (count > 0) {
                 if (
-                    def.noDrop === true ||
+                    def.noDrop ||
                     ("ephemeral" in def && def.ephemeral)
                 ) continue;
 
@@ -1103,12 +1103,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Drop equipment
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
-            if (item && item.noDrop !== true) {
+            if (item?.noDrop === false) {
                 this.game.addLoot(item, this.position);
             }
         }
 
-        if (this.loadout.skin.hideFromLoadout && this.loadout.skin.noDrop !== true) {
+        if (this.loadout.skin.hideFromLoadout && this.loadout.skin.noDrop) {
             this.game.addLoot(
                 this.loadout.skin,
                 this.position

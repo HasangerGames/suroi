@@ -249,7 +249,7 @@ export class Minimap {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
 
-                    let texture = definition.frames?.base ?? definition.idString;
+                    let texture = definition.frames.base ?? definition.idString;
 
                     if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
 
@@ -268,7 +268,7 @@ export class Minimap {
                     const definition = mapObject.definition;
                     const rotation = Angle.orientationToRotation(mapObject.rotation);
 
-                    for (const image of definition.floorImages ?? []) {
+                    for (const image of definition.floorImages) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation + (image.rotation ?? 0))
@@ -279,7 +279,7 @@ export class Minimap {
                         mapRender.addChild(sprite);
                     }
 
-                    for (const image of definition.ceilingImages ?? []) {
+                    for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation)
@@ -290,7 +290,7 @@ export class Minimap {
                         mapRender.addChild(sprite);
                     }
 
-                    for (const floor of definition.floors ?? []) {
+                    for (const floor of definition.floors) {
                         const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
                         this.terrain.addFloor(floor.type, hitbox);
                     }

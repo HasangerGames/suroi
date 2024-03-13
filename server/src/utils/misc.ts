@@ -60,14 +60,15 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
             throw new ReferenceError(`Unknown loot item: ${item}`);
         }
 
-        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
-            if (definition.ammoSpawnAmount > 1) {
+        if ("ammoType" in definition && definition.ammoSpawnAmount) {
+            const ammoSpawnAmount = definition.ammoSpawnAmount;
+            if (ammoSpawnAmount > 1) {
                 loot.push(
-                    new LootItem(definition.ammoType, Math.floor(definition.ammoSpawnAmount / 2)),
-                    new LootItem(definition.ammoType, Math.ceil(definition.ammoSpawnAmount / 2))
+                    new LootItem(definition.ammoType, Math.floor(ammoSpawnAmount / 2)),
+                    new LootItem(definition.ammoType, Math.ceil(ammoSpawnAmount / 2))
                 );
             } else {
-                loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
+                loot.push(new LootItem(definition.ammoType, ammoSpawnAmount));
             }
         }
     }

@@ -184,3 +184,23 @@ export enum ZIndexes {
     Emotes,
     Gas
 }
+
+// i'm putting this here because placing it in objectDefinitions.ts or
+// in bullets.ts causes circular imports
+export const defaultBulletTemplate = {
+    penetration: {
+        players: false,
+        obstacles: false
+    },
+    tracer: {
+        opacity: 1,
+        width: 1,
+        length: 1,
+        image: "base_trail",
+        particle: false,
+        zIndex: ZIndexes.Bullets
+    },
+    allowRangeOverride: false,
+    lastShotFX: false,
+    noCollision: false
+};

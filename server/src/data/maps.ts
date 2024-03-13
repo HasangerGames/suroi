@@ -1,6 +1,5 @@
 import { type WebSocket } from "uWebSockets.js";
 import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { Guns } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { Skins } from "../../../common/src/definitions/skins";
@@ -262,8 +261,8 @@ export const Maps: Record<string, MapDefinition> = {
 
                 for (const item of Loots.definitions) {
                     if (
-                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop === true) ||
-                        "ephemeral" in item ||
+                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop) ||
+                        ("ephemeral" in item && item.ephemeral) ||
                         (item.itemType === ItemType.Backpack && item.level === 0) ||
                         item.itemType === ItemType.Skin
                     ) continue;
@@ -372,26 +371,35 @@ export const Maps: Record<string, MapDefinition> = {
             map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
         }
     },
-    gunsTest: {
-        width: 64,
-        height: 48 + (16 * Guns.length),
-        beachSize: 8,
-        oceanSize: 8,
-        genCallback(map) {
-            for (let i = 0; i < Guns.length; i++) {
-                const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(32, 32 + (16 * i)));
-                const gun = Guns[i];
-                player.inventory.addOrReplaceWeapon(0, gun.idString);
-                (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
-                player.inventory.items.setItem(gun.ammoType, Infinity);
-                player.disableInvulnerability();
-                // setInterval(() => player.activeItem.useItem(), 30);
-                map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));
-                map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), Infinity);
-                map.game.grid.addObject(player);
+    gunsTest: (() => {
+        const Guns = Loots.byType(ItemType.Gun);
+
+        return {
+            width: 64,
+            height: 48 + (16 * Guns.length),
+            beachSize: 8,
+            oceanSize: 8,
+            genCallback(map) {
+                for (let i = 0, l = Guns.length; i < l; i++) {
+                    const player = new Player(
+                        map.game,
+                        { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>,
+                        Vec.create(32, 32 + (16 * i))
+                    );
+                    const gun = Guns[i];
+
+                    player.inventory.addOrReplaceWeapon(0, gun.idString);
+                    (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
+                    player.inventory.items.setItem(gun.ammoType, Infinity);
+                    player.disableInvulnerability();
+                    // setInterval(() => player.activeItem.useItem(), 30);
+                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));
+                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), Infinity);
+                    map.game.grid.addObject(player);
+                }
             }
-        }
-    },
+        };
+    })(),
     obstaclesTest: {
         width: 128,
         height: 48 + (32 * Obstacles.definitions.length),

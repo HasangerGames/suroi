@@ -254,7 +254,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "verified", weight: 2 },
-            { item: "nokilpls", weight: 1 }
+            { item: "no_kil_pls", weight: 1 }
         ]
     },
     toilet: {
@@ -651,7 +651,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "candy_cane", weight: 1 }
     ],
     special_winter_skins: [
-        { item: "christmas_tree_skin", weight: 1 },
+        { item: "christmas_tree", weight: 1 },
         { item: "gingerbread", weight: 1 }
     ],
     viking_chest_guns: [

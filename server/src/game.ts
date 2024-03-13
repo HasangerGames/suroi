@@ -689,7 +689,7 @@ export class Game {
                 if (
                     object instanceof Building &&
                     object.scopeHitbox &&
-                    object.definition.wallsToDestroy === undefined
+                    object.definition.wallsToDestroy === Infinity
                 ) {
                     const hitbox = object.scopeHitbox.clone();
                     hitbox.scale(1.5);

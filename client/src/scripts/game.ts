@@ -140,6 +140,9 @@ export class Game {
 
         void (async() => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
+
+            const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
+
             await this.pixi.init({
                 resizeTo: window,
                 background: COLORS.grass,
@@ -147,7 +150,7 @@ export class Game {
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
-                resolution: window.devicePixelRatio || 1,
+                resolution: renderRes === "auto" ? (window.devicePixelRatio || 1) : parseFloat(renderRes),
                 hello: true,
                 canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
                 // we only use pixi click events (to spectate players on click)
@@ -160,7 +163,10 @@ export class Game {
                 }
             });
 
-            await loadTextures(this.pixi.renderer).then(enablePlayButton);
+            await loadTextures(
+                this.pixi.renderer,
+                this.console.getBuiltInCVar("cv_high_res_textures")
+            ).then(enablePlayButton);
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work

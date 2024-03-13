@@ -494,16 +494,16 @@ export class InputManager {
 
         if (!throwable) return;
 
-        const throwableIndex = Throwables.indexOf(throwable);
+        const throwableIndex = Throwables.definitions.indexOf(throwable);
         let throwableTarget = throwable;
 
         let searchIndex = throwableIndex;
         let iterationCount = 0;
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
-            searchIndex = Numeric.absMod(searchIndex + offset, Throwables.length);
+            searchIndex = Numeric.absMod(searchIndex + offset, Throwables.definitions.length);
 
-            const throwableCandidate = Throwables[searchIndex];
+            const throwableCandidate = Throwables.definitions[searchIndex];
 
             if (this.game.uiManager.inventory.items[throwableCandidate.idString]) {
                 throwableTarget = throwableCandidate;

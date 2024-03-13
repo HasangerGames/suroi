@@ -218,6 +218,7 @@ Video evidence is required.`)) {
     });
 
     $("#btn-settings").on("click", () => {
+        $(".dialog").hide();
         settingsMenu.fadeToggle(250);
         settingsMenu.removeClass("in-game");
     });
@@ -233,7 +234,7 @@ Video evidence is required.`)) {
     });
 
     const customizeMenu = $("#customize-menu");
-    $("#btn-customize").on("click", () => customizeMenu.fadeToggle(250));
+    $("#btn-customize").on("click", () => { customizeMenu.fadeToggle(250); $(".dialog").hide(); });
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
@@ -241,7 +242,7 @@ Video evidence is required.`)) {
     const role = game.console.getBuiltInCVar("dv_role");
 
     // Load skins
-    if (!(game.console.getBuiltInCVar("cv_loadout_skin") in Skins.idStringToNumber)) {
+    if (!Skins.definitions.some(s => s.idString === game.console.getBuiltInCVar("cv_loadout_skin"))) {
         game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
     }
 
@@ -257,7 +258,7 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        if (skin.hideFromLoadout === true || (skin.roleRequired ?? role) !== role) continue;
+        if (skin.hideFromLoadout || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -288,6 +289,7 @@ Video evidence is required.`)) {
 
         const noEmoteItem =
                 $(`<div id="emote-none" class="emotes-list-item-container">
+            <div class="emotes-list-item" style="background-image: none"></div>
         <span class="emote-name">None</span>
         </div>`);
 
@@ -424,7 +426,7 @@ Video evidence is required.`)) {
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     // Load badges
-    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || (role !== "" && badge.roles!.includes(role)));
+    const allowedBadges = Badges.definitions.filter(badge => badge.roles.length === 0 || badge.roles.includes(role));
 
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
@@ -598,6 +600,16 @@ Video evidence is required.`)) {
         $("#webgpu-option").toggle(await isWebGPUSupported());
     })();
 
+    // render resolution select menu
+    const renderResSelect = $("#render-res-select")[0] as HTMLSelectElement;
+    renderResSelect.addEventListener("input", () => {
+        game.console.setBuiltInCVar("cv_renderer_res", renderResSelect.value as unknown as "auto");
+    });
+    renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
+
+    // High resolution toggle
+    addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
+
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");
 
@@ -649,6 +661,11 @@ Video evidence is required.`)) {
 
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
+
+    // Blur splash screen
+    addCheckboxListener("#toggle-blur-splash", "cv_blur_splash", (value: boolean) => {
+        $("#splash-ui").toggleClass("blur", value);
+    });
 
     // Hide rules button
     addCheckboxListener("#toggle-hide-rules", "cv_hide_rules_button", (value: boolean) => {
@@ -782,7 +799,7 @@ Video evidence is required.`)) {
     }
 
     for (const ammo of Ammos) {
-        if (ammo.ephemeral === true) continue;
+        if (ammo.ephemeral) continue;
 
         $(`#${ammo.hideUnlessPresent ? "special-" : ""}ammo-container`).append(`
         <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">

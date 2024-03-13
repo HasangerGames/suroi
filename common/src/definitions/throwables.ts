@@ -1,4 +1,4 @@
-import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type ExplosionDefinition } from "./explosions";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
@@ -21,16 +21,16 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     /**
      * Whether cooking the grenade will run down the fuse
      */
-    readonly cookable?: boolean
+    readonly cookable: boolean
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
         readonly position: Vector
         readonly angle?: number
     }
-    readonly speedCap?: number
+    readonly speedCap: number
     readonly hitboxRadius: number
-    readonly fireDelay?: number
+    readonly fireDelay: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: SyncedParticleSpawnerDefinition
@@ -59,89 +59,96 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly impactDamage?: undefined
 });
 
-export const Throwables: ThrowableDefinition[] = [
-    {
-        idString: "frag_grenade",
-        name: "Frag Grenade",
-        itemType: ItemType.Throwable,
-        speedMultiplier: 0.92,
-        cookSpeedMultiplier: 0.7,
-        hitboxRadius: 1,
-        impactDamage: 1,
-        obstacleMultiplier: 20,
-        fuseTime: 4000,
-        cookTime: 150,
-        throwTime: 150,
-        cookable: true,
-        maxThrowDistance: 96,
-        image: {
-            position: Vec.create(60, 43),
-            angle: 60
-        },
-        speedCap: 0.15,
-        detonation: {
-            explosion: "frag_explosion"
-        },
-        animation: {
-            pinImage: "proj_frag_pin",
-            liveImage: "proj_frag",
-            leverImage: "proj_frag_lever",
-            cook: {
-                leftFist: Vec.create(2.5, 0),
-                rightFist: Vec.create(-0.5, 2.15)
+export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
+    defaultTemplate => ({
+        [defaultTemplate]: () => ({
+            itemType: ItemType.Throwable,
+            speedMultiplier: 0.92,
+            cookable: false,
+            noDrop: false,
+            cookSpeedMultiplier: 0.7,
+            hitboxRadius: 1,
+            impactDamage: 0,
+            maxThrowDistance: 96,
+            fireDelay: 250,
+            speedCap: Infinity
+        })
+    })
+)(
+    apply => [
+        {
+            idString: "frag_grenade",
+            name: "Frag Grenade",
+            fuseTime: 4000,
+            cookTime: 150,
+            throwTime: 150,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
             },
-            throw: {
-                leftFist: Vec.create(1.9, -1.75),
-                rightFist: Vec.create(4, 2.15)
-            }
-        }
-    },
-    {
-        idString: "smoke_grenade",
-        name: "Smoke Grenade",
-        itemType: ItemType.Throwable,
-        speedMultiplier: 0.92,
-        cookSpeedMultiplier: 0.7,
-        hitboxRadius: 1,
-        impactDamage: 1,
-        obstacleMultiplier: 20,
-        fuseTime: 2000,
-        cookTime: 150,
-        throwTime: 150,
-        maxThrowDistance: 96,
-        image: {
-            position: Vec.create(60, 43),
-            angle: 60
-        },
-        speedCap: 0.15,
-        detonation: {
-            explosion: "smoke_explosion",
-            particles: {
-                type: "smoke_grenade_particle",
-                count: 10,
-                deployAnimation: {
-                    duration: 4000,
-                    staggering: {
-                        delay: 300,
-                        initialAmount: 2
-                    }
+            speedCap: 0.15,
+            detonation: {
+                explosion: "frag_grenade_explosion"
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_frag",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
                 },
-                spawnRadius: 15
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
             }
         },
-        animation: {
-            pinImage: "proj_smoke_pin",
-            liveImage: "proj_smoke",
-            leverImage: "proj_smoke_lever",
-            cook: {
-                cookingImage: "proj_smoke_nopin",
-                leftFist: Vec.create(2.5, 0),
-                rightFist: Vec.create(-0.5, 2.15)
+        {
+            idString: "smoke_grenade",
+            name: "Smoke Grenade",
+            fuseTime: 2000,
+            cookTime: 150,
+            throwTime: 150,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
             },
-            throw: {
-                leftFist: Vec.create(1.9, -1.75),
-                rightFist: Vec.create(4, 2.15)
+            speedCap: 0.15,
+            detonation: {
+                explosion: "smoke_grenade_explosion",
+                particles: {
+                    type: "smoke_grenade_particle",
+                    count: 10,
+                    deployAnimation: {
+                        duration: 4000,
+                        staggering: {
+                            delay: 300,
+                            initialAmount: 2
+                        }
+                    },
+                    spawnRadius: 15
+                }
+            },
+            animation: {
+                pinImage: "proj_smoke_pin",
+                liveImage: "proj_smoke",
+                leverImage: "proj_smoke_lever",
+                cook: {
+                    cookingImage: "proj_smoke_nopin",
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
             }
         }
-    }
-];
+    ]
+);
