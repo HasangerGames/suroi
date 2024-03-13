@@ -13,7 +13,7 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { UI_DEBUG_MODE } from "./utils/constants";
+import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 
@@ -280,7 +280,7 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
-    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
+    let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
     function updateEmotesList(): void {
         const emoteList = $("#emotes-list");
 
@@ -335,8 +335,7 @@ Video evidence is required.`)) {
     }
 
     updateEmotesList();
-    const slots = ["top", "right", "bottom", "left", "win", "death"] as const;
-    for (const slot of slots) {
+    for (const slot of emoteSlots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-wheel-container .emote-${slot}`)
@@ -350,7 +349,7 @@ Video evidence is required.`)) {
 
                 updateEmotesList();
 
-                if (slots.indexOf(slot) > 3) {
+                if (emoteSlots.indexOf(slot) > 3) {
                     // win / death emote
                     $("#emote-customize-wheel").css(
                         "background-image",
