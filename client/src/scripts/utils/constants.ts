@@ -38,3 +38,5 @@ export const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
 export const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
 export const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);
 export const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
+
+export const emoteSlots = ["top", "right", "bottom", "left", "win", "death"] as const;

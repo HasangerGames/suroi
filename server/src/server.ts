@@ -219,6 +219,7 @@ export interface PlayerContainer {
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean
+    readonly weaponPreset: string
 }
 
 app.ws("/play", {
@@ -312,7 +313,8 @@ app.ws("/play", {
             role,
             isDev,
             nameColor,
-            lobbyClearing: searchParams.get("lobbyClearing") === "true"
+            lobbyClearing: searchParams.get("lobbyClearing") === "true",
+            weaponPreset: searchParams.get("weaponPreset") ?? ""
         };
         res.upgrade(
             userData,
@@ -332,7 +334,7 @@ app.ws("/play", {
         const game = games[data.gameID];
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
-        // data.player.sendGameOverPacket(false) // uncomment to test game over screen
+        // data.player.sendGameOverPacket(false); // uncomment to test game over screen
     },
 
     /**
