@@ -192,7 +192,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 500
                 },
                 hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope"
+                snapScopeTo: "1x_scope",
+                frame: "smoke_grenade_particle"
             },
             [],
             ["airdrop_smoke_particle"]
