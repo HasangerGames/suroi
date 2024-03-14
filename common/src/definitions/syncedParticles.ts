@@ -146,6 +146,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     mean: 20000,
                     deviation: 1000
                 },
+                frame: "smoke_grenade_particle",
                 zIndex: ZIndexes.ObstaclesLayer4
             })
         }
@@ -169,8 +170,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 snapScopeTo: "1x_scope",
                 depletePerMs: {
                     adrenaline: 0.0055
-                },
-                frame: "smoke_grenade_particle"
+                }
             },
             [],
             ["tear_gas_particle"]
@@ -193,8 +193,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 500
                 },
                 hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope",
-                frame: "smoke_grenade_particle"
+                snapScopeTo: "1x_scope"
             },
             [],
             ["airdrop_smoke_particle"]
