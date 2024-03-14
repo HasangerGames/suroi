@@ -2,7 +2,7 @@ import { Container, type Application } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 
 export class Camera {
@@ -48,8 +48,7 @@ export class Camera {
         this.zoomTween?.kill();
 
         if (animation) {
-            this.zoomTween = new Tween(
-                this.game,
+            this.zoomTween = this.game.addTween(
                 {
                     target: this.container.scale,
                     to: { x: scale, y: scale },
