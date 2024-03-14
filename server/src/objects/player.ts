@@ -39,7 +39,7 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
+import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 
@@ -485,7 +485,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             let collided = false;
             for (const potential of this.nearObjects) {
                 if (
-                    potential instanceof Obstacle &&
+                    potential.type === ObjectCategory.Obstacle &&
                     potential.collidable &&
                     this.hitbox.collidesWith(potential.hitbox)
                 ) {
@@ -1236,11 +1236,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Obstacle && object.canInteract(this)) &&
+                            (object.type === ObjectCategory.Obstacle && object.canInteract(this)) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if (object instanceof Obstacle && dist < interactable.minDist) {
+                            if (object.type === ObjectCategory.Obstacle  && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
                             }
@@ -1254,7 +1254,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
-                                    object instanceof Obstacle &&
+                                    object.type === ObjectCategory.Obstacle &&
                                     object.isDoor &&
                                     !object.door?.locked &&
                                     object !== interactable.object &&
