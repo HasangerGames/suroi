@@ -94,7 +94,7 @@ export class BaseBullet {
      * @param objects A set containing objects to check for collision
      * @returns An array containing the objects that the bullet collided and the intersection data
      */
-    updateAndGetCollisions(delta: number, objects: { [Symbol.iterator]: () => Iterator<GameObject> }): Collision[] {
+    updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): Collision[] {
         const oldPosition = Vec.clone(this.position);
 
         this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
