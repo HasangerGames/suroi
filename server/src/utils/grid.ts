@@ -3,6 +3,7 @@ import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { Numeric } from "../../../common/src/utils/math";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 import { Logger } from "./misc";
 
@@ -24,7 +25,7 @@ export class Grid {
 
     readonly pool = new ObjectPool<ObjectMapping>();
 
-    constructor(width: number, height: number) {
+    constructor(public game: Game, width: number, height: number) {
         this.width = Math.floor(width / this.cellSize);
         this.height = Math.floor(height / this.cellSize);
 
@@ -43,6 +44,7 @@ export class Grid {
         }
         this.pool.add(object);
         this.updateObject(object);
+        this.game.updateObjects = true;
     }
 
     /**

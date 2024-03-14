@@ -326,4 +326,42 @@ export class SuroiBitStream extends BitStream {
             arr.push(deserializeFn());
         }
     }
+
+    // private field L
+    declare _view: {
+        _view: Uint8Array
+    };
+
+    /**
+     * Copy bytes from a source stream to this stream
+     * !!!NOTE: Both streams index must be byte aligned
+     * @param {BitStream} src
+     * @param {number} offset
+     * @param {number} length
+     */
+    writeBytes(src: SuroiBitStream, offset: number, length: number): void {
+        if (this.index % 8 !== 0) {
+            throw new Error("WriteBytes: stream must be byte aligned");
+        }
+        const data = new Uint8Array(src._view._view.buffer, offset, length);
+        this._view._view.set(data, this.index / 8);
+        this.index += length * 8;
+    }
+
+    /**
+     * Writes a byte alignment to the stream
+     * This is to ensure the stream index is a multiple of 8
+     */
+    writeAlignToNextByte(): void {
+        const offset = 8 - this.index % 8;
+        if (offset < 8) this.writeBits(0, offset);
+    }
+
+    /**
+     * Read a byte alignment from the stream
+     */
+    readAlignToNextByte(): void {
+        const offset = 8 - this.index % 8;
+        if (offset < 8) this.readBits(offset);
+    }
 }

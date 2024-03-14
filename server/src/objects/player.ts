@@ -45,6 +45,8 @@ import { type ThrowableDefinition } from "../../../common/src/definitions/throwa
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
+    override readonly fullAllocBytes = 16;
+    override readonly partialAllocBytes = 3;
     override readonly damageable = true;
 
     readonly hitbox: CircleHitbox;
@@ -627,20 +629,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const object of newVisibleObjects) {
                 if (!this.visibleObjects.has(object)) {
                     this.visibleObjects.add(object);
-                    packet.fullDirtyObjects.push(object);
+                    packet.fullObjectsCache.push(object);
                 }
             }
         }
 
         for (const object of game.fullDirtyObjects) {
-            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.includes(object)) {
-                packet.fullDirtyObjects.push(object);
+            if (this.visibleObjects.has(object as GameObject) && !packet.fullObjectsCache.includes(object)) {
+                packet.fullObjectsCache.push(object);
             }
         }
 
         for (const object of game.partialDirtyObjects) {
-            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.includes(object)) {
-                packet.partialDirtyObjects.push(object);
+            if (this.visibleObjects.has(object as GameObject) && !packet.fullObjectsCache.includes(object)) {
+                packet.partialObjectsCache.push(object);
             }
         }
 

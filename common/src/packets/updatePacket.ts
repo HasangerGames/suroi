@@ -354,9 +354,18 @@ export class UpdatePacket extends Packet {
 
     fullDirtyObjects: ObjectFullData[] = [];
 
-    partialDirtyObjects: ObjectPartialData[ ] = [];
+    partialDirtyObjects: ObjectPartialData[] = [];
 
     // server side only
+
+    fullObjectsCache: Array<{
+        fullStream: SuroiBitStream
+    }> = [];
+
+    partialObjectsCache: Array<{
+        partialStream: SuroiBitStream
+    }> = [];
+
     bullets: BaseBullet[] = [];
 
     deserializedBullets: BulletOptions[] = [];
@@ -408,8 +417,8 @@ export class UpdatePacket extends Packet {
         const flags =
             (+!!playerDataDirty && UpdateFlags.PlayerData) |
             (+!!this.deletedObjects.length && UpdateFlags.DeletedObjects) |
-            (+!!this.fullDirtyObjects.length && UpdateFlags.FullObjects) |
-            (+!!this.partialDirtyObjects.length && UpdateFlags.PartialObjects) |
+            (+!!this.fullObjectsCache.length && UpdateFlags.FullObjects) |
+            (+!!this.partialObjectsCache.length && UpdateFlags.PartialObjects) |
             (+!!this.bullets.length && UpdateFlags.Bullets) |
             (+!!this.explosions.length && UpdateFlags.Explosions) |
             (+!!this.emotes.length && UpdateFlags.Emotes) |
@@ -435,18 +444,16 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.FullObjects) {
-            stream.writeArray(this.fullDirtyObjects, OBJECT_ID_BITS, (object) => {
-                stream.writeObjectID(object.id);
-                stream.writeObjectType(object.type);
-                (ObjectSerializations[object.type].serializeFull as (stream: SuroiBitStream, data: typeof object.data) => void)(stream, object.data);
+            stream.writeAlignToNextByte();
+            stream.writeArray(this.fullObjectsCache, 16, (object) => {
+                stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
             });
         }
 
         if (flags & UpdateFlags.PartialObjects) {
-            stream.writeArray(this.partialDirtyObjects, OBJECT_ID_BITS, (object) => {
-                stream.writeObjectID(object.id);
-                stream.writeObjectType(object.type);
-                (ObjectSerializations[object.type].serializePartial as (stream: SuroiBitStream, data: typeof object.data) => void)(stream, object.data);
+            stream.writeAlignToNextByte();
+            stream.writeArray(this.partialObjectsCache, 16, (object) => {
+                stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
             });
         }
 
@@ -545,19 +552,25 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.FullObjects) {
-            stream.readArray(this.fullDirtyObjects, OBJECT_ID_BITS, () => {
+            stream.readAlignToNextByte();
+
+            stream.readArray(this.fullDirtyObjects, 16, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializeFull(stream);
+                stream.readAlignToNextByte();
                 return { id, type, data };
             });
         }
 
         if (flags & UpdateFlags.PartialObjects) {
-            stream.readArray(this.partialDirtyObjects, OBJECT_ID_BITS, () => {
+            stream.readAlignToNextByte();
+
+            stream.readArray(this.partialDirtyObjects, 16, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializePartial(stream);
+                stream.readAlignToNextByte();
                 return { id, type, data };
             });
         }

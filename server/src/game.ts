@@ -132,7 +132,7 @@ export class Game {
 
         const map = Maps[Config.mapName];
         // Generate map
-        this.grid = new Grid(map.width, map.height);
+        this.grid = new Grid(this, map.width, map.height);
         this.map = new Map(this, Config.mapName);
 
         this.gas = new Gas(this);
@@ -248,6 +248,19 @@ export class Game {
             for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
+            }
+
+            for (const partialObject of this.partialDirtyObjects) {
+                if (this.fullDirtyObjects.has(partialObject)) {
+                    this.partialDirtyObjects.delete(partialObject);
+                    continue;
+                }
+                partialObject.serializePartial();
+            }
+
+            for (const fullObject of this.fullDirtyObjects) {
+                fullObject.serializePartial();
+                fullObject.serializeFull();
             }
 
             // Second loop over players: calculate visible objects & send updates
