@@ -14,8 +14,7 @@ import { Player } from "./player";
 
 export class ThrowableProjectile extends BaseGameObject<ObjectCategory.ThrowableProjectile> {
     override readonly type = ObjectCategory.ThrowableProjectile;
-    override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 2;
+    override readonly allocBytes = 16;
 
     readonly definition: ThrowableDefinition;
 
@@ -263,7 +262,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.setPartialDirty();
     }
 
-    damage(_amount: number, _source?: BaseGameObject<ObjectCategory> | undefined): void { }
+    damage(_amount: number, _source?: GameObject): void { }
 
     get data(): FullData<ObjectCategory.ThrowableProjectile> {
         return {

@@ -45,8 +45,7 @@ import { type ThrowableDefinition } from "../../../common/src/definitions/throwa
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
-    override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 3;
+    override readonly allocBytes = 16;
     override readonly damageable = true;
 
     readonly hitbox: CircleHitbox;

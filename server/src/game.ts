@@ -250,17 +250,8 @@ export class Game {
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
 
-            for (const partialObject of this.partialDirtyObjects) {
-                if (this.fullDirtyObjects.has(partialObject)) {
-                    this.partialDirtyObjects.delete(partialObject);
-                    continue;
-                }
-                partialObject.serializePartial();
-            }
-
-            for (const fullObject of this.fullDirtyObjects) {
-                fullObject.serializePartial();
-                fullObject.serializeFull();
+            for (const object of new Set([...this.fullDirtyObjects, ...this.partialDirtyObjects])) {
+                object.serialize();
             }
 
             // Second loop over players: calculate visible objects & send updates

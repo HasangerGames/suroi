@@ -44,8 +44,7 @@ interface InternalAnimation<T> {
 
 export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle> {
     override readonly type = ObjectCategory.SyncedParticle;
-    override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 2;
+    override readonly allocBytes = 16;
 
     alpha: number;
     alphaActive = false;
@@ -145,7 +144,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         }
     }
 
-    override damage(amount: number, source?: unknown): void {}
+    override damage(_amount: number, _source?: unknown): void {}
 
     setTarget(target: Vector, timespan: number, easing: EasingFunction): void {
         this._target = {

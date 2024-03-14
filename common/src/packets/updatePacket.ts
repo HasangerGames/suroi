@@ -359,11 +359,12 @@ export class UpdatePacket extends Packet {
     // server side only
 
     fullObjectsCache: Array<{
-        fullStream: SuroiBitStream
+        stream: SuroiBitStream
     }> = [];
 
     partialObjectsCache: Array<{
-        partialStream: SuroiBitStream
+        stream: SuroiBitStream
+        partialLength: number
     }> = [];
 
     bullets: BaseBullet[] = [];
@@ -446,14 +447,14 @@ export class UpdatePacket extends Packet {
         if (flags & UpdateFlags.FullObjects) {
             stream.writeAlignToNextByte();
             stream.writeArray(this.fullObjectsCache, 16, (object) => {
-                stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
+                stream.writeBytes(object.stream, 0, object.stream.byteIndex);
             });
         }
 
         if (flags & UpdateFlags.PartialObjects) {
             stream.writeAlignToNextByte();
             stream.writeArray(this.partialObjectsCache, 16, (object) => {
-                stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
+                stream.writeBytes(object.stream, 0, object.partialLength);
             });
         }
 
@@ -557,9 +558,19 @@ export class UpdatePacket extends Packet {
             stream.readArray(this.fullDirtyObjects, 16, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
-                const data = ObjectSerializations[type].deserializeFull(stream);
+
+                const partialData = ObjectSerializations[type].deserializePartial(stream);
                 stream.readAlignToNextByte();
-                return { id, type, data };
+                const fullData = ObjectSerializations[type].deserializeFull(stream);
+                stream.readAlignToNextByte();
+                return {
+                    id,
+                    type,
+                    data: {
+                        ...partialData,
+                        full: fullData
+                    } as ObjectsNetData[typeof type]
+                };
             });
         }
 

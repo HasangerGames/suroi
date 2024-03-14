@@ -12,8 +12,7 @@ import { Player } from "./player";
 
 export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
-    override readonly fullAllocBytes = 8;
-    override readonly partialAllocBytes = 2;
+    override readonly allocBytes = 8;
 
     private _height = 1;
     get height(): number { return this._height; }

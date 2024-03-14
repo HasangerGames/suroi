@@ -30,8 +30,7 @@ export type GameObject = ObjectMapping[ObjectCategory];
 
 export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
     abstract readonly type: Cat;
-    abstract fullAllocBytes: number;
-    abstract partialAllocBytes: number;
+    abstract allocBytes: number;
     readonly id: number;
     readonly game: Game;
 
@@ -47,8 +46,8 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     dead = false;
     hitbox?: Hitbox;
 
-    fullStream!: SuroiBitStream;
-    partialStream!: SuroiBitStream;
+    stream!: SuroiBitStream;
+    partialLength = 0;
 
     protected constructor(game: Game, position: Vector) {
         this.id = game.nextObjectID;
@@ -57,26 +56,22 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
         this.setDirty();
     }
 
-    serializeFull(): void {
-        if (this.fullStream === undefined) {
-            this.fullStream = SuroiBitStream.alloc(this.fullAllocBytes * 8);
+    serialize(): void {
+        if (this.stream === undefined) {
+            this.stream = SuroiBitStream.alloc(this.allocBytes * 8);
         }
-        this.fullStream.index = 0;
-        this.fullStream.writeObjectID(this.id);
-        this.fullStream.writeObjectType(this.type);
-        ObjectSerializations[this.type].serializeFull(this.fullStream, this.data);
-        this.fullStream.writeAlignToNextByte();
-    }
 
-    serializePartial(): void {
-        if (this.partialStream === undefined) {
-            this.partialStream = SuroiBitStream.alloc(this.partialAllocBytes * 8);
-        }
-        this.partialStream.index = 0;
-        this.partialStream.writeObjectID(this.id);
-        this.partialStream.writeObjectType(this.type);
-        ObjectSerializations[this.type].serializePartial(this.partialStream, this.data);
-        this.partialStream.writeAlignToNextByte();
+        this.stream.index = 0;
+
+        this.stream.writeObjectID(this.id);
+        this.stream.writeObjectType(this.type);
+
+        ObjectSerializations[this.type].serializePartial(this.stream, this.data);
+        this.stream.writeAlignToNextByte();
+        this.partialLength = this.stream.byteIndex;
+
+        ObjectSerializations[this.type].serializeFull(this.stream, this.data);
+        this.stream.writeAlignToNextByte();
     }
 
     /**
