@@ -9,6 +9,7 @@ import { Loots, type WeaponDefinition } from "../../../common/src/definitions/lo
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
+import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { type Packet } from "../../../common/src/packets/packet";
@@ -41,7 +42,6 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -104,7 +104,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _adrenaline = this._minAdrenaline;
     get adrenaline(): number { return this._adrenaline; }
     set adrenaline(adrenaline: number) {
-        this._adrenaline = Math.min(Math.max(adrenaline, this._minAdrenaline), this._maxAdrenaline);
+        this._adrenaline = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
 
         this.dirty.adrenaline = true;
     }
@@ -363,16 +363,67 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
 
+        const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
-        if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
-            this.inventory.addOrReplaceWeapon(0, "deathray");
-            (this.inventory.getWeapon(0) as GunItem).ammo = 1;
+        if (specialFunnies) {
+            const [weaponA, weaponB, melee] = userData.weaponPreset;
 
-            this.inventory.addOrReplaceWeapon(1, "revitalizer");
-            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.inventory.items.setItem("12g", 15);
+            const determinePreset = (slot: 0 | 1 | 2, char: string): void => {
+                switch (slot) {
+                    case 0:
+                    case 1: {
+                        switch (char) {
+                            case "0": {
+                                this.inventory.addOrReplaceWeapon(slot, "deathray");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 1;
+                                break;
+                            }
+                            case "1":
+                            case "2":
+                            case "3":
+                            case "4":
+                            case "5":
+                            case "6": {
+                                this.inventory.addOrReplaceWeapon(slot, "revitalizer");
+                                const revit = this.inventory.getWeapon(slot) as GunItem;
+                                revit.ammo = 5;
+                                revit.stats.kills = Number.parseInt(char, 10) - 1;
+                                this.inventory.items.setItem("12g", 15);
+                                break;
+                            }
+                            case "7": {
+                                this.inventory.addOrReplaceWeapon(slot, "usas12");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 10;
+                                this.inventory.items.setItem("12g", 15);
+                                break;
+                            }
+                            case "8": {
+                                this.inventory.addOrReplaceWeapon(slot, "s_g17");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 100;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case 2: {
+                        switch (char) {
+                            case "0": {
+                                this.inventory.addOrReplaceWeapon(2, "heap_sword");
+                                break;
+                            }
+                            case "1": {
+                                this.inventory.addOrReplaceWeapon(2, "kbar");
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            };
 
-            this.inventory.addOrReplaceWeapon(2, "heap_sword");
+            determinePreset(0, weaponA);
+            determinePreset(1, weaponB);
+            determinePreset(2, melee);
 
             this.inventory.items.setItem("2x_scope", 1);
             this.inventory.items.setItem("4x_scope", 1);
@@ -382,6 +433,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         this.updateAndApplyModifiers();
+
+        // good chance that if these were changed, they're meant to be applied
+        if (this.maxHealth !== GameConstants.player.defaultHealth) {
+            this.health = this.maxHealth;
+        }
+
+        if (this.maxAdrenaline !== GameConstants.player.maxAdrenaline) {
+            this.adrenaline = this.maxAdrenaline;
+        }
+
         this.dirty.weapons = true;
     }
 

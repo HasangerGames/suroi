@@ -1536,7 +1536,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 damage: 800,
                 obstacleMultiplier: 2,
                 speed: 4,
-                range: 400,
+                range: 800,
                 penetration: {
                     players: true,
                     obstacles: true
