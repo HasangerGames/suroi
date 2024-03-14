@@ -39,12 +39,13 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
+import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
+    override readonly allocBytes = 16;
     override readonly damageable = true;
 
     readonly hitbox: CircleHitbox;
@@ -244,16 +245,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (this._scope === scope) return;
 
         this._scope = scope;
-        this.xCullDist = this._scope.zoomLevel * 1.8;
-        this.yCullDist = this._scope.zoomLevel * 1.35;
         this.dirty.zoom = true;
         this.updateObjects = true;
     }
 
     get zoom(): number { return this._scope.zoomLevel; }
-
-    xCullDist!: number;
-    yCullDist!: number;
 
     readonly socket: WebSocket<PlayerContainer>;
 
@@ -410,7 +406,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const emote = this.loadout.emotes[slot];
 
         if (emote) {
-            this.game.emotes.add(new Emote(emote, this));
+            this.game.emotes.push(new Emote(emote, this));
         }
     }
 
@@ -490,7 +486,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             let collided = false;
             for (const potential of this.nearObjects) {
                 if (
-                    potential instanceof Obstacle &&
+                    potential.type === ObjectCategory.Obstacle &&
                     potential.collidable &&
                     this.hitbox.collidesWith(potential.hitbox)
                 ) {
@@ -512,7 +508,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
 
             if (this.isMoving) {
                 this.floor = this.game.map.terrain.getFloor(this.position);
@@ -615,8 +611,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.updateObjects = false;
 
             this.screenHitbox = RectangleHitbox.fromRect(
-                2 * player.xCullDist,
-                2 * player.yCullDist,
+                this.zoom * 2 + 8,
+                this.zoom * 2 + 8,
                 player.position
             );
 
@@ -625,27 +621,27 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
                     this.visibleObjects.delete(object);
-                    packet.deletedObjects.add(object.id);
+                    packet.deletedObjects.push(object.id);
                 }
             }
 
             for (const object of newVisibleObjects) {
                 if (!this.visibleObjects.has(object)) {
                     this.visibleObjects.add(object);
-                    packet.fullDirtyObjects.add(object);
+                    packet.fullObjectsCache.push(object);
                 }
             }
         }
 
         for (const object of game.fullDirtyObjects) {
-            if (this.visibleObjects.has(object)) {
-                packet.fullDirtyObjects.add(object);
+            if (this.visibleObjects.has(object as GameObject) && !packet.fullObjectsCache.includes(object)) {
+                packet.fullObjectsCache.push(object);
             }
         }
 
         for (const object of game.partialDirtyObjects) {
-            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
-                packet.partialDirtyObjects.add(object);
+            if (this.visibleObjects.has(object as GameObject) && !packet.fullObjectsCache.includes(object)) {
+                packet.partialObjectsCache.push(object);
             }
         }
 
@@ -685,7 +681,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const key in packet.playerData.dirty) {
                 packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
             }
-            packet.fullDirtyObjects.add(this.spectating);
+            packet.fullDirtyObjects.push(this.spectating);
             this.startedSpectating = false;
         }
 
@@ -695,7 +691,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
-                packet.bullets.add(bullet);
+                packet.bullets.push(bullet);
             }
         }
 
@@ -703,14 +699,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const explosion of game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
-                packet.explosions.add(explosion);
+                packet.explosions.push(explosion);
             }
         }
 
         // Emotes
         for (const emote of game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
-                packet.emotes.add(emote);
+                packet.emotes.push(emote);
             }
         }
 
@@ -727,7 +723,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // new and deleted players
         packet.newPlayers = this._firstPacket
-            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
             : game.newPlayers;
 
         packet.deletedPlayers = game.deletedPlayers;
@@ -741,7 +737,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
-            packet.killFeedMessages.add({
+            packet.killFeedMessages.push({
                 messageType: KillFeedMessageType.KillLeaderAssigned,
                 playerID: killLeader.id,
                 kills: killLeader.kills,
@@ -1029,7 +1025,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 killFeedMessage.killType = source;
             }
 
-            this.game.killFeedMessages.add(killFeedMessage);
+            this.game.killFeedMessages.push(killFeedMessage);
         }
 
         // Destroy physics body; reset movement and attacking variables
@@ -1241,11 +1237,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Obstacle && object.canInteract(this)) &&
+                            (object.type === ObjectCategory.Obstacle && object.canInteract(this)) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if (object instanceof Obstacle && dist < interactable.minDist) {
+                            if (object.type === ObjectCategory.Obstacle  && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
                             }
@@ -1259,7 +1255,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
-                                    object instanceof Obstacle &&
+                                    object.type === ObjectCategory.Obstacle &&
                                     object.isDoor &&
                                     !object.door?.locked &&
                                     object !== interactable.object &&

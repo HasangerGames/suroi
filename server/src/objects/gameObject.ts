@@ -1,6 +1,7 @@
 import { type ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
+import { ObjectSerializations, type FullData } from "../../../common/src/utils/objectsSerializations";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Building } from "./building";
@@ -29,6 +30,7 @@ export type GameObject = ObjectMapping[ObjectCategory];
 
 export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
     abstract readonly type: Cat;
+    abstract allocBytes: number;
     readonly id: number;
     readonly game: Game;
 
@@ -44,11 +46,48 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     dead = false;
     hitbox?: Hitbox;
 
+    stream!: SuroiBitStream;
+    partialLength = 0;
+
     protected constructor(game: Game, position: Vector) {
         this.id = game.nextObjectID;
         this.game = game;
         this._position = position;
-        game.updateObjects = true;
+        this.setDirty();
+    }
+
+    serialize(): void {
+        if (this.stream === undefined) {
+            this.stream = SuroiBitStream.alloc(this.allocBytes * 8);
+        }
+
+        this.stream.index = 0;
+
+        this.stream.writeObjectID(this.id);
+        this.stream.writeObjectType(this.type);
+
+        ObjectSerializations[this.type].serializePartial(this.stream, this.data);
+        this.stream.writeAlignToNextByte();
+        this.partialLength = this.stream.byteIndex;
+
+        ObjectSerializations[this.type].serializeFull(this.stream, this.data);
+        this.stream.writeAlignToNextByte();
+    }
+
+    /**
+     * Sets this object as fully fully dirty
+     * This means all the serialization data will be sent to clients
+     */
+    setDirty(): void {
+        this.game.fullDirtyObjects.add(this);
+    }
+
+    /**
+     * Sets this object as partially dirty
+     * This means the partial data will be sent to clients
+     */
+    setPartialDirty(): void {
+        this.game.partialDirtyObjects.add(this);
     }
 
     abstract damage(amount: number, source?: GameObject): void;

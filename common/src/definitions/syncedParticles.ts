@@ -169,7 +169,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 snapScopeTo: "1x_scope",
                 depletePerMs: {
                     adrenaline: 0.0055
-                }
+                },
+                frame: "smoke_grenade_particle"
             },
             [],
             ["tear_gas_particle"]
@@ -192,7 +193,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 500
                 },
                 hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope"
+                snapScopeTo: "1x_scope",
+                frame: "smoke_grenade_particle"
             },
             [],
             ["airdrop_smoke_particle"]

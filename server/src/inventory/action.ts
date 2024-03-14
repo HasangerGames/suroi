@@ -15,18 +15,18 @@ export abstract class Action {
     protected constructor(player: Player, time: number) {
         this.player = player;
         this._timeout = player.game.addTimeout(this.execute.bind(this), time * 1000);
-        this.player.game.partialDirtyObjects.add(this.player);
+        this.player.setPartialDirty();
     }
 
     cancel(): void {
         this._timeout.kill();
         this.player.action = undefined;
-        this.player.game.partialDirtyObjects.add(this.player);
+        this.player.setPartialDirty();
     }
 
     execute(): void {
         this.player.action = undefined;
-        this.player.game.partialDirtyObjects.add(this.player);
+        this.player.setPartialDirty();
     }
 }
 

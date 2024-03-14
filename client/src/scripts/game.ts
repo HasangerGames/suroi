@@ -602,7 +602,6 @@ export class Game {
     }
 
     addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
-        // ignore deprecation
         const tween = new Tween(this, config);
 
         this.tweens.add(tween);
