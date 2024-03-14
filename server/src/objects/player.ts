@@ -244,16 +244,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (this._scope === scope) return;
 
         this._scope = scope;
-        this.xCullDist = this._scope.zoomLevel * 1.8;
-        this.yCullDist = this._scope.zoomLevel * 1.35;
         this.dirty.zoom = true;
         this.updateObjects = true;
     }
 
     get zoom(): number { return this._scope.zoomLevel; }
-
-    xCullDist!: number;
-    yCullDist!: number;
 
     readonly socket: WebSocket<PlayerContainer>;
 
@@ -615,8 +610,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.updateObjects = false;
 
             this.screenHitbox = RectangleHitbox.fromRect(
-                2 * player.xCullDist,
-                2 * player.yCullDist,
+                this.zoom * 2 + 8,
+                this.zoom * 2 + 8,
                 player.position
             );
 
