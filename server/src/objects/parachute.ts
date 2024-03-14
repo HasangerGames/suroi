@@ -27,13 +27,13 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         this.hitbox.position = position;
         this._airdrop = airdrop;
 
-        this.game.mapPings.add(this.position);
+        this.game.mapPings.push(this.position);
     }
 
     update(): void {
         if (this._height < 0) {
             this.game.removeObject(this);
-            this.game.airdrops.delete(this._airdrop);
+            this.game.airdrops.splice(this.game.airdrops.indexOf(this._airdrop), 1);
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 

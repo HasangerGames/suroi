@@ -60,15 +60,14 @@ export class Game {
     /**
      * New players created this tick
      */
-    readonly newPlayers = new Set<Player>();
+    readonly newPlayers: Player[] = [];
     /**
     * Players deleted this tick
     */
-    readonly deletedPlayers = new Set<number>();
+    readonly deletedPlayers: number[] = [];
 
-    readonly explosions = new Set<Explosion>();
-    readonly emotes = new Set<Emote>();
-    readonly parachutes = new Set<Parachute>();
+    readonly explosions: Explosion[] = [];
+    readonly emotes: Emote[] = [];
 
     /**
      * All bullets that currently exist
@@ -77,27 +76,27 @@ export class Game {
     /**
      * All bullets created this tick
      */
-    readonly newBullets = new Set<Bullet>();
+    readonly newBullets: Bullet[] = [];
 
     /**
      * All kill feed messages this tick
      */
-    readonly killFeedMessages = new Set<KillFeedMessage>();
+    readonly killFeedMessages: KillFeedMessage[] = [];
 
     /**
      * All airdrops
      */
-    readonly airdrops = new Set<Airdrop>();
+    readonly airdrops: Airdrop[] = [];
 
     /**
      * All planes this tick
      */
-    readonly planes = new Set<{ readonly position: Vector, readonly direction: number }>();
+    readonly planes: Array<{ readonly position: Vector, readonly direction: number }> = [];
 
     /**
      * All map pings this tick
      */
-    readonly mapPings = new Set<Vector>();
+    readonly mapPings: Vector[] = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -268,14 +267,14 @@ export class Game {
             // Reset everything
             this.fullDirtyObjects.clear();
             this.partialDirtyObjects.clear();
-            this.newBullets.clear();
-            this.explosions.clear();
-            this.emotes.clear();
-            this.newPlayers.clear();
-            this.deletedPlayers.clear();
-            this.killFeedMessages.clear();
-            this.planes.clear();
-            this.mapPings.clear();
+            this.newBullets.length = 0;
+            this.explosions.length = 0;
+            this.emotes.length = 0;
+            this.newPlayers.length = 0;
+            this.deletedPlayers.length = 0;
+            this.killFeedMessages.length = 0;
+            this.planes.length = 0;
+            this.mapPings.length = 0;
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.completionRatioDirty = false;
@@ -353,7 +352,7 @@ export class Game {
 
     private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
         if (this._killLeader === undefined) return;
-        this.killFeedMessages.add({
+        this.killFeedMessages.push({
             messageType,
             playerID: this._killLeader.id,
             kills: this._killLeader.kills,
@@ -453,7 +452,7 @@ export class Game {
         this.livingPlayers.add(player);
         this.spectatablePlayers.push(player);
         this.connectedPlayers.add(player);
-        this.newPlayers.add(player);
+        this.newPlayers.push(player);
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
@@ -494,7 +493,7 @@ export class Game {
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.removeObject(player);
-            this.deletedPlayers.add(player.id);
+            this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
         } else {
             player.rotation = 0;
@@ -551,14 +550,14 @@ export class Game {
         );
 
         this.bullets.add(bullet);
-        this.newBullets.add(bullet);
+        this.newBullets.push(bullet);
 
         return bullet;
     }
 
     addExplosion(type: ReferenceTo<ExplosionDefinition> | ExplosionDefinition, position: Vector, source: GameObject): Explosion {
         const explosion = new Explosion(this, type, position, source);
-        this.explosions.add(explosion);
+        this.explosions.push(explosion);
         return explosion;
     }
 
@@ -716,14 +715,14 @@ export class Game {
 
         const airdrop = { position, type: crateDef };
 
-        this.airdrops.add(airdrop);
+        this.airdrops.push(airdrop);
 
-        this.planes.add({ position: planePos, direction });
+        this.planes.push({ position: planePos, direction });
 
         this.addTimeout(() => {
             const parachute = new Parachute(this, position, airdrop);
             this.grid.addObject(parachute);
-            this.mapPings.add(position);
+            this.mapPings.push(position);
         }, GameConstants.airdrop.flyTime);
     }
 

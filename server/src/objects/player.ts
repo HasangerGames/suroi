@@ -410,7 +410,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const emote = this.loadout.emotes[slot];
 
         if (emote) {
-            this.game.emotes.add(new Emote(emote, this));
+            this.game.emotes.push(new Emote(emote, this));
         }
     }
 
@@ -625,27 +625,27 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
                     this.visibleObjects.delete(object);
-                    packet.deletedObjects.add(object.id);
+                    packet.deletedObjects.push(object.id);
                 }
             }
 
             for (const object of newVisibleObjects) {
                 if (!this.visibleObjects.has(object)) {
                     this.visibleObjects.add(object);
-                    packet.fullDirtyObjects.add(object);
+                    packet.fullDirtyObjects.push(object);
                 }
             }
         }
 
         for (const object of game.fullDirtyObjects) {
-            if (this.visibleObjects.has(object)) {
-                packet.fullDirtyObjects.add(object);
+            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.includes(object)) {
+                packet.fullDirtyObjects.push(object);
             }
         }
 
         for (const object of game.partialDirtyObjects) {
-            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
-                packet.partialDirtyObjects.add(object);
+            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.includes(object)) {
+                packet.partialDirtyObjects.push(object);
             }
         }
 
@@ -685,7 +685,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const key in packet.playerData.dirty) {
                 packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
             }
-            packet.fullDirtyObjects.add(this.spectating);
+            packet.fullDirtyObjects.push(this.spectating);
             this.startedSpectating = false;
         }
 
@@ -695,7 +695,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
-                packet.bullets.add(bullet);
+                packet.bullets.push(bullet);
             }
         }
 
@@ -703,14 +703,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const explosion of game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
-                packet.explosions.add(explosion);
+                packet.explosions.push(explosion);
             }
         }
 
         // Emotes
         for (const emote of game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
-                packet.emotes.add(emote);
+                packet.emotes.push(emote);
             }
         }
 
@@ -727,7 +727,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // new and deleted players
         packet.newPlayers = this._firstPacket
-            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
             : game.newPlayers;
 
         packet.deletedPlayers = game.deletedPlayers;
@@ -741,7 +741,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
-            packet.killFeedMessages.add({
+            packet.killFeedMessages.push({
                 messageType: KillFeedMessageType.KillLeaderAssigned,
                 playerID: killLeader.id,
                 kills: killLeader.kills,
@@ -1029,7 +1029,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 killFeedMessage.killType = source;
             }
 
-            this.game.killFeedMessages.add(killFeedMessage);
+            this.game.killFeedMessages.push(killFeedMessage);
         }
 
         // Destroy physics body; reset movement and attacking variables

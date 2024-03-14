@@ -350,20 +350,20 @@ export class UpdatePacket extends Packet {
     // used to store previous sent max and min health / adrenaline
     previousData!: PreviousData;
 
-    deletedObjects = new Set<number>();
+    deletedObjects: number[] = [];
 
-    fullDirtyObjects = new Set<ObjectFullData>();
+    fullDirtyObjects: ObjectFullData[] = [];
 
-    partialDirtyObjects = new Set<ObjectPartialData>();
+    partialDirtyObjects: ObjectPartialData[ ] = [];
 
     // server side only
-    bullets = new Set<BaseBullet>();
+    bullets: BaseBullet[] = [];
 
-    deserializedBullets = new Set<BulletOptions>();
+    deserializedBullets: BulletOptions[] = [];
 
-    explosions = new Set<{ readonly definition: ExplosionDefinition, readonly position: Vector }>();
+    explosions: Array<{ readonly definition: ExplosionDefinition, readonly position: Vector }> = [];
 
-    emotes = new Set<{ readonly definition: EmoteDefinition, readonly playerID: number }>();
+    emotes: Array<{ readonly definition: EmoteDefinition, readonly playerID: number }> = [];
 
     gas?: {
         readonly state: GasState
@@ -380,24 +380,24 @@ export class UpdatePacket extends Packet {
         readonly value: number
     };
 
-    newPlayers = new Set<{
+    newPlayers: Array<{
         readonly id: number
         readonly name: string
         readonly loadout: { readonly badge?: BadgeDefinition }
         readonly hasColor: boolean
         readonly nameColor: number
-    }>();
+    }> = [];
 
-    deletedPlayers = new Set<number>();
+    deletedPlayers: number[] = [];
 
     aliveCountDirty?: boolean;
     aliveCount?: number;
 
-    killFeedMessages = new Set<KillFeedMessage>();
+    killFeedMessages: KillFeedMessage[] = [];
 
-    planes = new Set<{ readonly position: Vector, readonly direction: number }>();
+    planes: Array<{ readonly position: Vector, readonly direction: number }> = [];
 
-    mapPings = new Set<Vector>();
+    mapPings: Vector[] = [];
 
     override serialize(): void {
         super.serialize();
@@ -407,20 +407,20 @@ export class UpdatePacket extends Packet {
 
         const flags =
             (+!!playerDataDirty && UpdateFlags.PlayerData) |
-            (+!!this.deletedObjects.size && UpdateFlags.DeletedObjects) |
-            (+!!this.fullDirtyObjects.size && UpdateFlags.FullObjects) |
-            (+!!this.partialDirtyObjects.size && UpdateFlags.PartialObjects) |
-            (+!!this.bullets.size && UpdateFlags.Bullets) |
-            (+!!this.explosions.size && UpdateFlags.Explosions) |
-            (+!!this.emotes.size && UpdateFlags.Emotes) |
+            (+!!this.deletedObjects.length && UpdateFlags.DeletedObjects) |
+            (+!!this.fullDirtyObjects.length && UpdateFlags.FullObjects) |
+            (+!!this.partialDirtyObjects.length && UpdateFlags.PartialObjects) |
+            (+!!this.bullets.length && UpdateFlags.Bullets) |
+            (+!!this.explosions.length && UpdateFlags.Explosions) |
+            (+!!this.emotes.length && UpdateFlags.Emotes) |
             (+!!this.gas?.dirty && UpdateFlags.Gas) |
             (+!!this.gasProgress?.dirty && UpdateFlags.GasPercentage) |
-            (+!!this.newPlayers.size && UpdateFlags.NewPlayers) |
-            (+!!this.deletedPlayers.size && UpdateFlags.DeletedPlayers) |
+            (+!!this.newPlayers.length && UpdateFlags.NewPlayers) |
+            (+!!this.deletedPlayers.length && UpdateFlags.DeletedPlayers) |
             (+!!this.aliveCountDirty && UpdateFlags.AliveCount) |
-            (+!!this.killFeedMessages.size && UpdateFlags.KillFeedMessages) |
-            (+!!this.planes.size && UpdateFlags.Planes) |
-            (+!!this.mapPings.size && UpdateFlags.MapPings);
+            (+!!this.killFeedMessages.length && UpdateFlags.KillFeedMessages) |
+            (+!!this.planes.length && UpdateFlags.Planes) |
+            (+!!this.mapPings.length && UpdateFlags.MapPings);
 
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
@@ -429,13 +429,13 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.DeletedObjects) {
-            stream.writeIterator(this.deletedObjects, this.deletedObjects.size, OBJECT_ID_BITS, (id) => {
+            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, (id) => {
                 stream.writeObjectID(id);
             });
         }
 
         if (flags & UpdateFlags.FullObjects) {
-            stream.writeIterator(this.fullDirtyObjects, this.fullDirtyObjects.size, OBJECT_ID_BITS, (object) => {
+            stream.writeArray(this.fullDirtyObjects, OBJECT_ID_BITS, (object) => {
                 stream.writeObjectID(object.id);
                 stream.writeObjectType(object.type);
                 (ObjectSerializations[object.type].serializeFull as (stream: SuroiBitStream, data: typeof object.data) => void)(stream, object.data);
@@ -443,7 +443,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.PartialObjects) {
-            stream.writeIterator(this.partialDirtyObjects, this.partialDirtyObjects.size, OBJECT_ID_BITS, (object) => {
+            stream.writeArray(this.partialDirtyObjects, OBJECT_ID_BITS, (object) => {
                 stream.writeObjectID(object.id);
                 stream.writeObjectType(object.type);
                 (ObjectSerializations[object.type].serializePartial as (stream: SuroiBitStream, data: typeof object.data) => void)(stream, object.data);
@@ -451,20 +451,20 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.Bullets) {
-            stream.writeIterator(this.bullets, this.bullets.size, 8, bullet => {
+            stream.writeArray(this.bullets, 8, bullet => {
                 bullet.serialize(stream);
             });
         }
 
         if (flags & UpdateFlags.Explosions) {
-            stream.writeIterator(this.explosions, this.explosions.size, 8, (explosion) => {
+            stream.writeArray(this.explosions, 8, (explosion) => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             });
         }
 
         if (flags & UpdateFlags.Emotes) {
-            stream.writeIterator(this.emotes, this.emotes.size, 8, (emote) => {
+            stream.writeArray(this.emotes, 8, (emote) => {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerID);
             });
@@ -485,7 +485,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.NewPlayers) {
-            stream.writeIterator(this.newPlayers, this.newPlayers.size, 8, (player) => {
+            stream.writeArray(this.newPlayers, 8, (player) => {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
@@ -496,7 +496,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.DeletedPlayers) {
-            stream.writeIterator(this.deletedPlayers, this.deletedPlayers.size, 8, (id) => {
+            stream.writeArray(this.deletedPlayers, 8, (id) => {
                 stream.writeObjectID(id);
             });
         }
@@ -506,13 +506,13 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.KillFeedMessages) {
-            stream.writeIterator(this.killFeedMessages, this.killFeedMessages.size, 8, (message) => {
+            stream.writeArray(this.killFeedMessages, 8, (message) => {
                 serializeKillFeedMessage(stream, message);
             });
         }
 
         if (flags & UpdateFlags.Planes) {
-            stream.writeIterator(this.planes, this.planes.size, 4, (plane) => {
+            stream.writeArray(this.planes, 4, (plane) => {
                 stream.writeVector(
                     plane.position,
                     -GameConstants.maxPosition,
@@ -525,7 +525,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.MapPings) {
-            stream.writeIterator(this.mapPings, this.mapPings.size, 4, (ping) => {
+            stream.writeArray(this.mapPings, 4, (ping) => {
                 stream.writePosition(ping);
             });
         }
@@ -539,51 +539,51 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.DeletedObjects) {
-            this.deletedObjects = new Set(stream.readIterator(OBJECT_ID_BITS, () => {
+            stream.readArray(this.deletedObjects, OBJECT_ID_BITS, () => {
                 return stream.readObjectID();
-            }));
+            });
         }
 
         if (flags & UpdateFlags.FullObjects) {
-            this.fullDirtyObjects = new Set(stream.readIterator(OBJECT_ID_BITS, () => {
+            stream.readArray(this.fullDirtyObjects, OBJECT_ID_BITS, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializeFull(stream);
                 return { id, type, data };
-            }));
+            });
         }
 
         if (flags & UpdateFlags.PartialObjects) {
-            this.partialDirtyObjects = new Set(stream.readIterator(OBJECT_ID_BITS, () => {
+            stream.readArray(this.partialDirtyObjects, OBJECT_ID_BITS, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializePartial(stream);
                 return { id, type, data };
-            }));
+            });
         }
 
         if (flags & UpdateFlags.Bullets) {
-            this.deserializedBullets = new Set(stream.readIterator(8, () => {
+            stream.readArray(this.deserializedBullets, 8, () => {
                 return BaseBullet.deserialize(stream);
-            }));
+            });
         }
 
         if (flags & UpdateFlags.Explosions) {
-            this.explosions = new Set(stream.readIterator(8, () => {
+            stream.readArray(this.explosions, 8, () => {
                 return {
                     definition: Explosions.readFromStream(stream),
                     position: stream.readPosition()
                 };
-            }));
+            });
         }
 
         if (flags & UpdateFlags.Emotes) {
-            this.emotes = new Set(stream.readIterator(8, () => {
+            stream.readArray(this.emotes, 8, () => {
                 return {
                     definition: Emotes.readFromStream(stream),
                     playerID: stream.readObjectID()
                 };
-            }));
+            });
         }
 
         if (flags & UpdateFlags.Gas) {
@@ -606,7 +606,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.NewPlayers) {
-            this.newPlayers = new Set(stream.readIterator(8, () => {
+            stream.readArray(this.newPlayers, 8, () => {
                 const id = stream.readObjectID();
                 const name = stream.readPlayerName();
                 const hasColor = stream.readBoolean();
@@ -620,13 +620,13 @@ export class UpdatePacket extends Packet {
                         badge: Badges.readOptional(stream)
                     }
                 };
-            }));
+            });
         }
 
         if (flags & UpdateFlags.DeletedPlayers) {
-            this.deletedObjects = new Set(stream.readIterator(8, () => {
+            stream.readArray(this.deletedPlayers, 8, () => {
                 return stream.readObjectID();
-            }));
+            });
         }
 
         if (flags & UpdateFlags.AliveCount) {
@@ -635,13 +635,13 @@ export class UpdatePacket extends Packet {
         }
 
         if (flags & UpdateFlags.KillFeedMessages) {
-            this.killFeedMessages = new Set(stream.readIterator(8, () => {
+            stream.readArray(this.killFeedMessages, 8, () => {
                 return deserializeKillFeedMessage(stream);
-            }));
+            });
         }
 
         if (flags & UpdateFlags.Planes) {
-            this.planes = new Set(stream.readIterator(4, () => {
+            stream.readArray(this.planes, 4, () => {
                 const position = stream.readVector(
                     -GameConstants.maxPosition,
                     -GameConstants.maxPosition,
@@ -652,13 +652,13 @@ export class UpdatePacket extends Packet {
                 const direction = stream.readRotation(16);
 
                 return { position, direction };
-            }));
+            });
         }
 
         if (flags & UpdateFlags.MapPings) {
-            this.mapPings = new Set(stream.readIterator(4, () => {
+            stream.readArray(this.mapPings, 4, () => {
                 return stream.readPosition();
-            }));
+            });
         }
     }
 }

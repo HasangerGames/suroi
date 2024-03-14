@@ -45,14 +45,14 @@ export class MapPacket extends Packet {
         stream.writeUint16(this.oceanSize);
         stream.writeUint16(this.beachSize);
 
-        stream.writeIterator(this.rivers, this.rivers.length, 4, (river) => {
+        stream.writeArray(this.rivers, 4, (river) => {
             stream.writeUint8(river.width);
-            stream.writeIterator(river.points, river.points.length, 8, (point) => {
+            stream.writeArray(river.points, 8, (point) => {
                 stream.writePosition(point);
             });
         });
 
-        stream.writeIterator(this.objects, this.objects.length, 16, (object) => {
+        stream.writeArray(this.objects, 16, (object) => {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
@@ -72,7 +72,7 @@ export class MapPacket extends Packet {
             }
         });
 
-        stream.writeIterator(this.places, this.places.length, 4, (place) => {
+        stream.writeArray(this.places, 4, (place) => {
             stream.writeASCIIString(place.name);
             stream.writePosition(place.position);
         });
@@ -85,14 +85,16 @@ export class MapPacket extends Packet {
         this.oceanSize = stream.readUint16();
         this.beachSize = stream.readUint16();
 
-        this.rivers = [...stream.readIterator(4, () => {
-            return {
+        stream.readArray(this.rivers, 4, () => {
+            const river = {
                 width: stream.readUint8(),
-                points: [...stream.readIterator(8, () => stream.readPosition())]
+                points: [] as Vector[]
             };
-        })];
+            stream.readArray(river.points, 8, () => stream.readPosition());
+            return river;
+        });
 
-        this.objects = [...stream.readIterator(16, () => {
+        stream.readArray(this.objects, 16, () => {
             const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
             const position = stream.readPosition();
 
@@ -128,13 +130,13 @@ export class MapPacket extends Packet {
                     };
                 }
             }
-        })];
+        });
 
-        this.places = [...stream.readIterator(4, () => {
+        stream.readArray(this.places, 4, () => {
             return {
                 name: stream.readASCIIString(),
                 position: stream.readPosition()
             };
-        })];
+        });
     }
 }

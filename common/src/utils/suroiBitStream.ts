@@ -291,41 +291,39 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write an iterator to the stream
-     * @param iterator Array, set etc containing the iterator
+     * Write an array to the stream
+     * @param arr An array containing the items to serialize
      * @param serializeFn The function to serialize each iterator item
-     * @param bits The maximum length of bits to write the iterator size
      * @param size The iterator size (eg. array.length or set.size)
      */
-    writeIterator<T>(iterator: Iterable<T>, size: number, bits: number, serializeFn: (item: T) => void): void {
+    writeArray<T>(arr: T[], bits: number, serializeFn: (item: T) => void): void {
         if (bits < 0 || bits >= 31) {
             throw new Error(`Invalid bit count ${bits}`);
         }
 
-        this.writeBits(size, bits);
+        this.writeBits(arr.length, bits);
 
         const max = 1 << bits;
-        let i = 0;
-        for (const item of iterator) {
-            i++;
+        for (let i = 0; i < arr.length; i++) {
             if (i > max) {
-                console.warn(`writeIterator: iterator overflow: ${bits} bits, ${size} size`);
+                console.warn(`writeArray: iterator overflow: ${bits} bits, ${arr.length} size`);
                 break;
             }
-            serializeFn(item);
+            serializeFn(arr[i]);
         }
     }
 
     /**
-     * Read an iterator to the stream
+     * Read an array from the stream
+     * @param arr The array to add the deserialized elements;
      * @param serializeFn The function to de-serialize each iterator item
      * @param bits The maximum length of bits to read
      */
-    * readIterator<T>(bits: number, deserializeFn: () => T): IterableIterator<T> {
+    readArray<T>(arr: T[], bits: number, deserializeFn: () => T): void {
         const size = this.readBits(bits);
 
         for (let i = 0; i < size; i++) {
-            yield deserializeFn();
+            arr.push(deserializeFn());
         }
     }
 }
