@@ -51,6 +51,22 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
         game.updateObjects = true;
     }
 
+    /**
+     * Sets this object as fully fully dirty
+     * This means all the serialization data will be sent to clients
+     */
+    setDirty(): void {
+        this.game.fullDirtyObjects.add(this);
+    }
+
+    /**
+     * Sets this object as partially dirty
+     * This means the partial data will be sent to clients
+     */
+    setPartialDirty(): void {
+        this.game.partialDirtyObjects.add(this);
+    }
+
     abstract damage(amount: number, source?: GameObject): void;
 
     abstract get data(): FullData<Cat>;

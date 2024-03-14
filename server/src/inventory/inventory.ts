@@ -187,7 +187,7 @@ export class Inventory {
         owner.attacking = false;
         owner.recoil.active = false;
         owner.dirty.weapons = true;
-        owner.game.fullDirtyObjects.add(this.owner);
+        this.owner.setDirty();
 
         owner.updateAndApplyModifiers();
 

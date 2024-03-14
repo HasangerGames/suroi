@@ -130,7 +130,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         }
 
         if (!Vec.equals(this._oldPosition, this.position)) {
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
             this.game.grid.updateObject(this);
         }
     }
@@ -245,7 +245,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                         weapon.definition === definition
                     ) {
                         player.dirty.weapons = true;
-                        player.game.fullDirtyObjects.add(player);
+                        player.setDirty();
 
                         const wasReloading = player.action?.type === PlayerActions.Reload;
                         if (wasReloading) {
@@ -309,7 +309,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                         } else /* if (currentCount + this.count > maxCapacity) */ {
                             inventory.items.setItem(idString, maxCapacity);
                             countToRemove = maxCapacity - currentCount;
-                            this.game.fullDirtyObjects.add(this);
+                            this.setDirty();
                         }
                     }
                 };
@@ -343,14 +343,14 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                         player.inventory.vest = definition;
                 }
 
-                this.game.fullDirtyObjects.add(player);
+                player.setDirty();
                 break;
             }
             case ItemType.Backpack: {
                 if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
                 player.inventory.backpack = definition;
 
-                this.game.fullDirtyObjects.add(player);
+                player.setDirty();
                 break;
             }
             case ItemType.Scope: {
@@ -366,7 +366,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 createNewItem(player.loadout.skin);
                 player.loadout.skin = definition;
 
-                this.game.fullDirtyObjects.add(player);
+                player.setDirty();
                 break;
             }
         }

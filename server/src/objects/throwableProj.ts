@@ -258,7 +258,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this._collideWithOwner ||= this.game.now - this._spawnTime >= 250;
         this._damagedLastTick = damagedThisTick;
         this.game.grid.updateObject(this);
-        this.game.partialDirtyObjects.add(this);
+        this.setPartialDirty();
     }
 
     damage(_amount: number, _source?: BaseGameObject<ObjectCategory> | undefined): void { }

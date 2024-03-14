@@ -166,7 +166,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
             return;
         }
 
-        this.game.partialDirtyObjects.add(this);
+        this.setPartialDirty();
 
         const dt = GameConstants.msPerTick;
 

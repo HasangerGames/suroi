@@ -28,7 +28,7 @@ import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
-import { type GameObject } from "./objects/gameObject";
+import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
@@ -49,8 +49,8 @@ export class Game {
     readonly gas: Gas;
     readonly grid: Grid;
 
-    readonly partialDirtyObjects = new Set<GameObject>();
-    readonly fullDirtyObjects = new Set<GameObject>();
+    readonly partialDirtyObjects = new Set<BaseGameObject>();
+    readonly fullDirtyObjects = new Set<BaseGameObject>();
 
     updateObjects = false;
 
@@ -499,7 +499,7 @@ export class Game {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
             player.attacking = false;
-            this.partialDirtyObjects.add(player);
+            player.setPartialDirty();
         }
 
         if (player.spectating !== undefined) {

@@ -92,7 +92,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
         this._height = Numeric.lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
 
-        this.game.partialDirtyObjects.add(this);
+        this.setPartialDirty();
     }
 
     override get data(): FullData<ObjectCategory.Parachute> {

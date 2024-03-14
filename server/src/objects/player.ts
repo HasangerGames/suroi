@@ -507,7 +507,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
 
             if (this.isMoving) {
                 this.floor = this.game.map.terrain.getFloor(this.position);
