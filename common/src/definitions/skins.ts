@@ -36,7 +36,6 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
     })
 )(
     apply => [
-        // @ts-expect-error Ts being weird again
         apply("with_role", {}, ["hasanger"], ["Hasanger"]),
         apply("with_role", {}, ["leia"], ["Leia"]),
         apply("with_role", {}, ["limenade"], ["LimeNade"]),
