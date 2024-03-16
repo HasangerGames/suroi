@@ -64,11 +64,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     disconnected = false;
 
     private _team!: Team;
-    public get team(): Team {
+    get team(): Team {
         return this._team;
     }
 
-    public set team(value: Team) {
+    set team(value: Team) {
         this.dirty.team = true;
         this._team = value;
     }
@@ -459,7 +459,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.inventory.items.setItem("8x_scope", 1);
             this.inventory.items.setItem("15x_scope", 1);
             this.inventory.scope = "4x_scope";
-        } */
+        }
 
         this.updateAndApplyModifiers();
 
