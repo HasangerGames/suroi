@@ -8,7 +8,7 @@ import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { GasRender } from "./gas";
 
@@ -30,9 +30,9 @@ export class Minimap {
 
     readonly sprite = new Sprite();
     texture?: Texture;
-    readonly indicator = new SuroiSprite("player_indicator.svg");
-    readonly teammates = new Set<TeammateIndicator>();
-    readonly teammatesContainer = new Container();
+    readonly indicator = new SuroiSprite("player_indicator.svg").setTint(TEAMMATE_COLORS[0]);
+    readonly teammateIndicators = new Set<TeammateIndicator>();
+    readonly teammateIndicatorContainer = new Container();
 
     width = 0;
     height = 0;
@@ -71,7 +71,7 @@ export class Minimap {
             this.pingGraphics,
             this.pingsContainer,
             this.indicator,
-            this.teammatesContainer
+            this.teammateIndicatorContainer
         ).sortChildren();
 
         this.borderContainer.on("click", e => {
@@ -264,8 +264,8 @@ export class Minimap {
                     image.scale.set((mapObject.scale ?? 1) * (1 / PIXI_SCALE));
 
                     mapRender.addChild(image);
-                }
                     break;
+                }
 
                 case ObjectCategory.Building: {
                     const definition = mapObject.definition;
@@ -297,8 +297,8 @@ export class Minimap {
                         const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
                         this.terrain.addFloor(floor.type, hitbox);
                     }
-                }
                     break;
+                }
             }
         }
 
@@ -460,12 +460,10 @@ export class Minimap {
             .stroke();
 
         // Teammate updates
-        if (this.teammates.size > 0) {
-            for (const teammate of this.teammates) {
-                if (!teammate.initialized) {
-                    this.teammatesContainer.addChild(teammate.image);
-                    teammate.initialized = true;
-                }
+        for (const indicator of this.teammateIndicators) {
+            if (!indicator.initialized) {
+                this.teammateIndicatorContainer.addChild(indicator);
+                indicator.initialized = true;
             }
         }
     }
@@ -493,7 +491,6 @@ export class Minimap {
             ) / uiScale;
             closeButton.css("left", `${closeButtonPos}px`);
 
-            this.indicator.scale.set(0.2);
             this.border.clear();
             this.border.setStrokeStyle({
                 width: 4,
@@ -501,6 +498,11 @@ export class Minimap {
             });
             this.border.rect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
             this.border.stroke();
+
+            this.indicator.scale.set(1);
+            for (const indicator of this.teammateIndicators) {
+                indicator.setScale(1);
+            }
         } else {
             if (!this.visible) return;
 
@@ -517,7 +519,10 @@ export class Minimap {
                 this.container.scale.set(1 / 2 * uiScale);
             }
 
-            this.indicator.scale.set(0.1);
+            this.indicator.scale.set(0.75);
+            for (const indicator of this.teammateIndicators) {
+                indicator.setScale(0.75);
+            }
         }
 
         this.mask.clear();
@@ -620,34 +625,20 @@ export class Ping {
     }
 }
 
-export class TeammateIndicator {
-    position: Vector;
+export class TeammateIndicator extends SuroiSprite {
     id: number;
-    image: SuroiSprite;
     initialized: boolean;
     color: Color;
 
     constructor(position: Vector, id: number, color: Color) {
+        super();
         this.position = position;
-        this.image = new SuroiSprite("teammate_icon").setVPos(position);
+        this
+            .setFrame("player_indicator")
+            .setVPos(position)
+            .setTint(color);
         this.initialized = false;
         this.color = color;
         this.id = id;
-
-        this.image.setTint(this.color);
-        this.image.scale.set(0.15);
-    }
-
-    updatePosition(pos: Vector): void {
-        this.position = pos;
-        this.image.setVPos(this.position);
-    }
-
-    updateImage(image: string): void {
-        this.image = new SuroiSprite(image);
-        this.image.setTint(this.color);
-        this.image.scale.set(0.15);
-
-        this.image.setVPos(this.position);
     }
 }

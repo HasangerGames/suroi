@@ -447,8 +447,8 @@ export class Game {
             this.map.pingGraphics.clear();
             this.map.pings.clear();
             this.map.pingsContainer.removeChildren();
-            this.map.teammatesContainer.removeChildren();
-            this.map.teammates.clear();
+            this.map.teammateIndicators.clear();
+            this.map.teammateIndicatorContainer.removeChildren();
             this.playerNames.clear();
             this._timeouts.clear();
 
