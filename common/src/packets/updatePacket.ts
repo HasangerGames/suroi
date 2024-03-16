@@ -46,6 +46,7 @@ export interface PlayerData {
             id: number
             pos: Vector
             health: number
+            knocked: boolean
         }>
     }
 
@@ -112,6 +113,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             stream.writeObjectID(player.id);
             stream.writePosition(player.pos ?? Vec.create(0, 0));
             stream.writeUint8(player.health);
+            stream.writeBoolean(player.knocked)
         }
     }
 
@@ -205,7 +207,8 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
             data.team.players.push({
                 id: stream.readObjectID(),
                 pos: stream.readPosition(),
-                health: stream.readUint8()
+                health: stream.readUint8(),
+                knocked: stream.readBoolean()
             });
         }
     }
