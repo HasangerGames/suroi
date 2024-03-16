@@ -13,7 +13,7 @@ import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/obje
 import { Vec } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { COLORS } from "../constants";
-import { type InputManager } from "../inputManager";
+import { type InputManager } from "../../managers/inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
 

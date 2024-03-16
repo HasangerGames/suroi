@@ -9,8 +9,8 @@ import { type GameOverPacket } from "../../../../common/src/packets/gameOverPack
 import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
-import { UI_DEBUG_MODE, GHILLIE_TINT, TEAMMATE_COLORS } from "./constants";
-import { formatDate } from "./misc";
+import { UI_DEBUG_MODE, GHILLIE_TINT, TEAMMATE_COLORS } from "../utils/constants";
+import { formatDate } from "../utils/misc";
 import { TeammateIndicator } from "../rendering/minimap";
 
 function safeRound(value: number): number {

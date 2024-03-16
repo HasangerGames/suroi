@@ -8,7 +8,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { MODE } from "./constants";
+import { MODE } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 

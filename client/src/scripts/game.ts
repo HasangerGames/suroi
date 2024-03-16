@@ -45,11 +45,11 @@ import { resetPlayButtons, setupUI } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
-import { InputManager } from "./utils/inputManager";
+import { InputManager } from "./managers/inputManager";
 import { loadTextures } from "./utils/pixi";
-import { SoundManager } from "./utils/soundManager";
+import { SoundManager } from "./managers/soundManager";
 import { Tween } from "./utils/tween";
-import { UIManager } from "./utils/uiManager";
+import { UIManager } from "./managers/uiManager";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 
 interface ObjectClassMapping {

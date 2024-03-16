@@ -4,7 +4,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
-import { type GameSound } from "../utils/soundManager";
+import { type GameSound } from "../managers/soundManager";
 
 export class Plane {
     readonly game: Game;

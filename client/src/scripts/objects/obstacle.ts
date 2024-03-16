@@ -11,7 +11,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { type GameSound } from "../utils/soundManager";
+import { type GameSound } from "../managers/soundManager";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";

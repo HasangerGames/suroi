@@ -8,9 +8,9 @@ import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { defaultBinds } from "./console/defaultClientCVars";
-import { type GameSettings } from "./console/gameConsole";
-import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
+import { defaultBinds } from "../utils/console/defaultClientCVars";
+import { type GameSettings } from "../utils/console/gameConsole";
+import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
 import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 
 export class InputManager {
