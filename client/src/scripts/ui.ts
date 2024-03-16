@@ -115,39 +115,35 @@ export async function setupUI(game: Game): Promise<void> {
     // Get player counts + find server w/ best ping
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
-    const loadServers = async(): Promise<void> => {
-        for (const [regionID, region] of regionMap) {
-            const listItem = $(`.server-list-item[data-region=${regionID}]`);
-            try {
-                const pingStartTime = Date.now();
-                const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(2000) }))?.json();
-                const ping = Date.now() - pingStartTime;
+    for (const [regionID, region] of regionMap) {
+        const listItem = $(`.server-list-item[data-region=${regionID}]`);
+        try {
+            const pingStartTime = Date.now();
+            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(2000) }))?.json();
+            const ping = Date.now() - pingStartTime;
 
-                if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-                    listItem.addClass("server-list-item-disabled");
-                    console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
-                    continue;
-                }
-
-                regionInfo[regionID] = {
-                    ...region,
-                    ...serverInfo,
-                    ping
-                };
-
-                listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
-                // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
-
-                if (ping < bestPing) {
-                    bestPing = ping;
-                    bestRegion = regionID;
-                }
-            } catch (e) {
-                listItem.addClass("server-list-item-disabled");
-                console.error(`Failed to load server info for region ${regionID}. Details:`, e);
+            if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
+                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
+                continue;
             }
+
+            regionInfo[regionID] = {
+                ...region,
+                ...serverInfo,
+                ping
+            };
+
+            listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+            // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+
+            if (ping < bestPing) {
+                bestPing = ping;
+                bestRegion = regionID;
+            }
+        } catch (e) {
+            console.error(`Failed to load server info for region ${regionID}. Details:`, e);
         }
-    };
+    }
 
     const updateServerSelector = (): void => {
         if (!selectedRegion) { // Handle invalid region
@@ -159,18 +155,7 @@ export async function setupUI(game: Game): Promise<void> {
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
 
-    const region = game.console.getBuiltInCVar("cv_region");
-    if (region) {
-        void (async() => {
-            await loadServers();
-            selectedRegion = regionInfo[region];
-            updateServerSelector();
-        })();
-        selectedRegion = regionInfo[region];
-    } else {
-        await loadServers();
-        selectedRegion = regionInfo[bestRegion ?? Config.defaultRegion];
-    }
+    selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
     updateServerSelector();
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -193,90 +178,86 @@ export async function setupUI(game: Game): Promise<void> {
 
     let lastPlayButtonClickTime = 0;
 
-    // Join server when play button is clicked
-    const addPlayButtonClickHandler = (button: JQuery): void => {
-        button.on("click", () => {
-            const now = Date.now();
-            if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
-            lastPlayButtonClickTime = now;
-            $("#splash-options").addClass("loading");
-            const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
-            void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
-                if (data.success) {
-                    let address = `ws${urlPart}/play?gameID=${data.gameID}`;
+    // Join server when play buttons are clicked
+    $("#btn-play-solo, #btn-play-duo").on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
+        $("#splash-options").addClass("loading");
+        const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
+        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
+            if (data.success) {
+                let address = `ws${urlPart}/play?gameID=${data.gameID}`;
 
-                    const devPass = game.console.getBuiltInCVar("dv_password");
-                    const role = game.console.getBuiltInCVar("dv_role");
-                    const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-                    const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+                const devPass = game.console.getBuiltInCVar("dv_password");
+                const role = game.console.getBuiltInCVar("dv_role");
+                const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+                const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
 
-                    if (devPass) address += `&password=${devPass}`;
-                    if (role) address += `&role=${role}`;
-                    if (lobbyClearing) address += "&lobbyClearing=true";
-                    if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
+                if (devPass) address += `&password=${devPass}`;
+                if (role) address += `&role=${role}`;
+                if (lobbyClearing) address += "&lobbyClearing=true";
+                if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
 
-                    const nameColor = game.console.getBuiltInCVar("dv_name_color");
-                    if (nameColor) {
-                        try {
-                            const finalColor = new Color(nameColor).toNumber();
-                            address += `&nameColor=${finalColor}`;
-                        } catch (e) {
-                            game.console.setBuiltInCVar("dv_name_color", "");
-                            console.error(e);
-                        }
-                    }
-
-                    game.connect(address);
-                    $("#splash-server-message").hide();
-                } else {
-                    let showWarningModal = false;
-                    let title: string | undefined;
-                    let message: string;
-                    switch (data.message) {
-                        case "rateLimit":
-                            message = "Error joining game.<br>Please try again in a few minutes.";
-                            break;
-                        case "warning":
-                            showWarningModal = true;
-                            title = "Teaming is against the rules!";
-                            message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
-                            break;
-                        case "tempBan":
-                            showWarningModal = true;
-                            title = "You have been banned for 1 day for teaming!";
-                            message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
-                            break;
-                        case "permaBan":
-                            showWarningModal = true;
-                            title = "You have been permanently banned for hacking!";
-                            message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
-                            break;
-                        default:
-                            message = "Error joining game.<br>Please try again in 30 seconds.";
-                            break;
-                    }
-                    resetPlayButtons();
-                    if (showWarningModal) {
-                        $("#warning-modal-title").text(title ?? "");
-                        $("#warning-modal-text").html(message ?? "");
-                        $("#warning-modal-agree-options").toggle(data.message === "warning");
-                        $("#warning-modal-agree-checkbox").prop("checked", false);
-                        $("#warning-modal").show();
-                        $("#btn-play-solo").addClass("btn-disabled");
-                    } else {
-                        $("#splash-server-message-text").html(message);
-                        $("#splash-server-message").show();
+                const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                if (nameColor) {
+                    try {
+                        const finalColor = new Color(nameColor).toNumber();
+                        address += `&nameColor=${finalColor}`;
+                    } catch (e) {
+                        game.console.setBuiltInCVar("dv_name_color", "");
+                        console.error(e);
                     }
                 }
-            }).fail(() => {
-                $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
-                $("#splash-server-message").show();
+
+                game.connect(address);
+                $("#splash-server-message").hide();
+            } else {
+                let showWarningModal = false;
+                let title: string | undefined;
+                let message: string;
+                switch (data.message) {
+                    case "rateLimit":
+                        message = "Error joining game.<br>Please try again in a few minutes.";
+                        break;
+                    case "warning":
+                        showWarningModal = true;
+                        title = "Teaming is against the rules!";
+                        message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
+                        break;
+                    case "tempBan":
+                        showWarningModal = true;
+                        title = "You have been banned for 1 day for teaming!";
+                        message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
+                        break;
+                    case "permaBan":
+                        showWarningModal = true;
+                        title = "You have been permanently banned for hacking!";
+                        message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
+                        break;
+                    default:
+                        message = "Error joining game.<br>Please try again in 30 seconds.";
+                        break;
+                }
+                if (showWarningModal) {
+                    $("#warning-modal-title").text(title ?? "");
+                    $("#warning-modal-text").html(message ?? "");
+                    $("#warning-modal-agree-options").toggle(data.message === "warning");
+                    $("#warning-modal-agree-checkbox").prop("checked", false);
+                    $("#warning-modal").show();
+                    $("#splash-options").addClass("loading");
+                } else {
+                    $("#splash-server-message-text").html(message);
+                    $("#splash-server-message").show();
+                }
                 resetPlayButtons();
-            });
+            }
+        }).fail(() => {
+            $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
+            $("#splash-server-message").show();
+            resetPlayButtons();
         });
-    };
-    addPlayButtonClickHandler($("#btn-play-solo"));
-    addPlayButtonClickHandler($("#btn-play-duo"));
+    });
 
     const params = new URLSearchParams(window.location.search);
 
