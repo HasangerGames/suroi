@@ -182,7 +182,7 @@ export class UIManager {
 
         if (!packet.won) {
             $("#btn-spectate").removeClass("btn-disabled").show();
-            game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
+            game.map.indicator.setFrame("player_indicator_dead");
         } else {
             $("#btn-spectate").hide();
         }
@@ -232,23 +232,22 @@ export class UIManager {
             this.game.team = data.team;
             /*eslint array-callback-return: */
             data.team.players.forEach((player, index) => {
-                const color = TEAMMATE_COLORS[index];
                 this.ui.teamHealthContainer
                     .html(data.team.players.map(player => {
                         return `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`;
                     }).join("<br>"));
 
                 if (player.id !== this.game.activePlayerID) {
-                    if (index >= this.game.map.teammates.size) {
-                        this.game.map.teammates.add(new TeammateIndicator(player.pos, player.id, color));
+                    if (index >= this.game.map.teammateIndicators.size) {
+                        this.game.map.teammateIndicators.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index]));
                     }
 
-                    this.game.map.teammates.forEach(teammate => {
+                    this.game.map.teammateIndicators.forEach(teammate => {
                         if (teammate.id === player.id) {
                             if (player.health === 0) {
-                                teammate.updateImage("teammate_icon_dead");
+                                teammate.setFrame("teammate_icon_dead");
                             } else {
-                                teammate.updatePosition(player.pos);
+                                teammate.setVPos(player.pos);
                             }
                         }
                     });
