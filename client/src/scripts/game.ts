@@ -837,8 +837,3 @@ export class Game {
         };
     })();
 }
-
-void (async() => {
-    // eslint-disable-next-line no-new
-    new Game();
-})();
