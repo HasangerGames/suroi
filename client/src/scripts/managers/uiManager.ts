@@ -239,7 +239,7 @@ export class UIManager {
 
                 if (player.id !== this.game.activePlayerID) {
                     if (index >= this.game.map.teammateIndicators.size) {
-                        this.game.map.teammateIndicators.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index]));
+                        this.game.map.teammateIndicators.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index], this.game.map.expanded ? 1 : 0.75));
                     }
 
                     this.game.map.teammateIndicators.forEach(teammate => {

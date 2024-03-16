@@ -630,13 +630,14 @@ export class TeammateIndicator extends SuroiSprite {
     initialized: boolean;
     color: Color;
 
-    constructor(position: Vector, id: number, color: Color) {
+    constructor(position: Vector, id: number, color: Color, scale: number) {
         super();
         this.position = position;
         this
             .setFrame("player_indicator")
             .setVPos(position)
-            .setTint(color);
+            .setTint(color)
+            .setScale(scale);
         this.initialized = false;
         this.color = color;
         this.id = id;
