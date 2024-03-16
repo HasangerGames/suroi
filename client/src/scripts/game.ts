@@ -50,6 +50,8 @@ import { loadTextures } from "./utils/pixi";
 import { SoundManager } from "./utils/soundManager";
 import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
+import { resetPlayButtons } from "./main";
+import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
