@@ -41,7 +41,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap, Ping } from "./rendering/minimap";
-import { setupUI } from "./ui";
+import { resetPlayButtons, setupUI } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
@@ -50,7 +50,6 @@ import { loadTextures } from "./utils/pixi";
 import { SoundManager } from "./utils/soundManager";
 import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
-import { resetPlayButtons } from "./main";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 
 interface ObjectClassMapping {
@@ -156,7 +155,7 @@ export class Game {
         // Hide modals
         $(".dialog").hide();
 
-        void (async() => {
+        const initPixi = async(): Promise<void> => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
 
             const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
@@ -184,7 +183,7 @@ export class Game {
             await loadTextures(
                 this.pixi.renderer,
                 this.console.getBuiltInCVar("cv_high_res_textures")
-            ).then(resetPlayButtons);
+            );
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
@@ -218,13 +217,16 @@ export class Game {
                     $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
                 }
             }, 500);
-        })();
+        };
+
+        void Promise.all([
+            initPixi(),
+            setupUI(this)
+        ]).then(resetPlayButtons);
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
         this.inputManager.generateBindsConfigScreen();
-
-        setupUI(this);
 
         this.music = sound.add("menu_music", {
             url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
@@ -835,3 +837,8 @@ export class Game {
         };
     })();
 }
+
+void (async() => {
+    // eslint-disable-next-line no-new
+    new Game();
+})();

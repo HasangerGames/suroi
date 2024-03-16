@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
+import { Color, isMobile, isWebGPUSupported } from "pixi.js";
+import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -16,8 +16,30 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { dropItemListener, requestFullscreen } from "./utils/misc";
+import { pickRandomInArray } from "../../../common/src/utils/random";
+import { Config } from "./config";
 
-export function setupUI(game: Game): void {
+interface RegionInfo {
+    name: string
+    address: string
+    https: boolean
+    playerCount?: number
+    maxTeamSize?: number
+    ping?: number
+}
+
+let selectedRegion: RegionInfo;
+
+const regionInfo: Record<string, RegionInfo> = Config.regions;
+
+export function resetPlayButtons(): void {
+    $("#splash-options").removeClass("loading");
+    const info = selectedRegion ?? regionInfo[Config.defaultRegion];
+    $("#btn-play-solo").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Solo);
+    $("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Duo);
+}
+
+export async function setupUI(game: Game): Promise<void> {
     if (UI_DEBUG_MODE) {
         // Kill message
         $("#kill-msg-kills").text("Kills: 7");
@@ -50,6 +72,217 @@ export function setupUI(game: Game): void {
     }
 
     // createDropdown("#splash-more");
+
+    const regionMap = Object.entries(regionInfo);
+    const serverList = $("#server-list");
+
+    // Load server list
+    for (const [regionID, region] of regionMap) {
+        const listItem = $(`
+                <li class="server-list-item" data-region="${regionID}">
+                    <span class="server-name">${region.name}</span>
+                    <span style="margin-left: auto">
+                      <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                      <span class="server-player-count">-</span>
+                    </span>
+                </li>
+            `);
+        /* <span style="margin-left: 5px">
+          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+          <span class="server-ping">-</span>
+        </span> */
+        serverList.append(listItem);
+    }
+
+    // Get player counts + find server w/ best ping
+    let bestPing = Number.MAX_VALUE;
+    let bestRegion: string | undefined;
+    const loadServers = async(): Promise<void> => {
+        for (const [regionID, region] of regionMap) {
+            const listItem = $(`.server-list-item[data-region=${regionID}]`);
+            try {
+                const pingStartTime = Date.now();
+                const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(2000) }))?.json();
+                const ping = Date.now() - pingStartTime;
+
+                if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
+                    listItem.addClass("server-list-item-disabled");
+                    console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
+                    continue;
+                }
+
+                regionInfo[regionID] = {
+                    ...region,
+                    ...serverInfo,
+                    ping
+                };
+
+                listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+                // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+
+                if (ping < bestPing) {
+                    bestPing = ping;
+                    bestRegion = regionID;
+                }
+            } catch (e) {
+                listItem.addClass("server-list-item-disabled");
+                console.error(`Failed to load server info for region ${regionID}. Details:`, e);
+            }
+        }
+    };
+
+    const updateServerSelector = (): void => {
+        if (!selectedRegion) { // Handle invalid region
+            selectedRegion = regionInfo[Config.defaultRegion];
+            game.console.setBuiltInCVar("cv_region", "");
+        }
+        $("#server-name").text(selectedRegion.name);
+        $("#server-player-count").text(selectedRegion.playerCount ?? "-");
+        // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
+    };
+
+    const region = game.console.getBuiltInCVar("cv_region");
+    if (region) {
+        void (async() => {
+            await loadServers();
+            selectedRegion = regionInfo[region];
+            updateServerSelector();
+        })();
+        selectedRegion = regionInfo[region];
+    } else {
+        await loadServers();
+        selectedRegion = regionInfo[bestRegion ?? Config.defaultRegion];
+    }
+    updateServerSelector();
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
+        const region = this.getAttribute("data-region");
+
+        if (region === null) return;
+
+        const info = regionInfo[region];
+        if (info === undefined) return;
+
+        resetPlayButtons();
+
+        selectedRegion = info;
+
+        game.console.setBuiltInCVar("cv_region", region);
+
+        updateServerSelector();
+    });
+
+    let lastPlayButtonClickTime = 0;
+
+    // Join server when play button is clicked
+    const addPlayButtonClickHandler = (button: JQuery): void => {
+        button.on("click", () => {
+            const now = Date.now();
+            if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+            lastPlayButtonClickTime = now;
+            $("#splash-options").addClass("loading");
+            const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
+            void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
+                if (data.success) {
+                    let address = `ws${urlPart}/play?gameID=${data.gameID}`;
+
+                    const devPass = game.console.getBuiltInCVar("dv_password");
+                    const role = game.console.getBuiltInCVar("dv_role");
+                    const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+                    const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+
+                    if (devPass) address += `&password=${devPass}`;
+                    if (role) address += `&role=${role}`;
+                    if (lobbyClearing) address += "&lobbyClearing=true";
+                    if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
+
+                    const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                    if (nameColor) {
+                        try {
+                            const finalColor = new Color(nameColor).toNumber();
+                            address += `&nameColor=${finalColor}`;
+                        } catch (e) {
+                            game.console.setBuiltInCVar("dv_name_color", "");
+                            console.error(e);
+                        }
+                    }
+
+                    game.connect(address);
+                    $("#splash-server-message").hide();
+                } else {
+                    let showWarningModal = false;
+                    let title: string | undefined;
+                    let message: string;
+                    switch (data.message) {
+                        case "rateLimit":
+                            message = "Error joining game.<br>Please try again in a few minutes.";
+                            break;
+                        case "warning":
+                            showWarningModal = true;
+                            title = "Teaming is against the rules!";
+                            message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
+                            break;
+                        case "tempBan":
+                            showWarningModal = true;
+                            title = "You have been banned for 1 day for teaming!";
+                            message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
+                            break;
+                        case "permaBan":
+                            showWarningModal = true;
+                            title = "You have been permanently banned for hacking!";
+                            message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
+                            break;
+                        default:
+                            message = "Error joining game.<br>Please try again in 30 seconds.";
+                            break;
+                    }
+                    resetPlayButtons();
+                    if (showWarningModal) {
+                        $("#warning-modal-title").text(title ?? "");
+                        $("#warning-modal-text").html(message ?? "");
+                        $("#warning-modal-agree-options").toggle(data.message === "warning");
+                        $("#warning-modal-agree-checkbox").prop("checked", false);
+                        $("#warning-modal").show();
+                        $("#btn-play-solo").addClass("btn-disabled");
+                    } else {
+                        $("#splash-server-message-text").html(message);
+                        $("#splash-server-message").show();
+                    }
+                }
+            }).fail(() => {
+                $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
+                $("#splash-server-message").show();
+                resetPlayButtons();
+            });
+        });
+    };
+    addPlayButtonClickHandler($("#btn-play-solo"));
+    addPlayButtonClickHandler($("#btn-play-duo"));
+
+    const params = new URLSearchParams(window.location.search);
+
+    const nameColor = params.get("nameColor");
+    if (nameColor) {
+        game.console.setBuiltInCVar("dv_name_color", nameColor);
+    }
+
+    const lobbyClearing = params.get("lobbyClearing");
+    if (lobbyClearing) {
+        game.console.setBuiltInCVar("dv_lobby_clearing", lobbyClearing === "true");
+    }
+
+    const devPassword = params.get("password");
+    if (devPassword) {
+        game.console.setBuiltInCVar("dv_password", devPassword);
+        location.search = "";
+    }
+
+    const roleParam = params.get("role");
+    if (roleParam) {
+        game.console.setBuiltInCVar("dv_role", roleParam);
+        location.search = "";
+    }
 
     const usernameField = $("#username-input");
 
@@ -96,7 +329,7 @@ export function setupUI(game: Game): void {
         }
     ];
 
-    const youtuber = youtubers[Math.floor(Math.random() * youtubers.length)];
+    const youtuber = pickRandomInArray(youtubers);
     $("#youtube-featured-name").text(youtuber.name);
     $("#youtube-featured-content").attr("href", youtuber.link);
 
@@ -107,7 +340,7 @@ export function setupUI(game: Game): void {
         }
     ];
 
-    const streamer = streamers[Math.floor(Math.random() * streamers.length)];
+    const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
     $("#twitch-featured-content").attr("href", streamer.link);
 
@@ -265,6 +498,7 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         if (skin.hideFromLoadout || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
