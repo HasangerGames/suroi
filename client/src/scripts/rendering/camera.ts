@@ -5,6 +5,7 @@ import { type Game } from "../game";
 import { type Tween } from "../utils/tween";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 import { PIXI_SCALE } from "../utils/constants";
+import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
 
 export class Camera {
     pixi: Application;
@@ -13,7 +14,7 @@ export class Camera {
 
     position = Vec.create(0, 0);
 
-    private _zoom = 48;
+    private _zoom = DEFAULT_SCOPE.zoomLevel;
     get zoom(): number { return this._zoom; }
     set zoom(zoom: number) {
         this._zoom = zoom;
