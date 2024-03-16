@@ -252,6 +252,10 @@ export class UIManager {
                             }
                         }
                     });
+                } else {
+                    if(player.knocked) {
+                        this.ui.healthBar.css("background-color", "#8B0000");
+                    }
                 }
             });
         }

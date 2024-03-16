@@ -333,6 +333,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
+    knocked = false;
+
     get position(): Vector {
         return this.hitbox.position;
     }
@@ -539,13 +541,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *                // Base speed
+        let speed = Config.movementSpeed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
+
+        if(this.knocked) {
+            speed *= 0.5;
+        }
 
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
@@ -759,7 +765,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     return {
                         id: playerId,
                         pos: player?.position ?? Vec.create(0, 0),
-                        health: player?.health ?? 0
+                        health: player?.health ?? 0,
+                        knocked: player?.knocked ?? false
                     };
                 })
             },
@@ -1042,7 +1049,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             }
 
-            this.die(source, weaponUsed);
+            let teammatesDead = true;
+
+            for(let i = 0; i < this.team.players.length; i++) {
+                const teammate: any = Array.from(this.game.livingPlayers.values()).find(p => p.id === this.team.players[i])
+                if(!teammate.knocked) {
+                    teammatesDead = false;
+                }
+            }
+
+            if(!this.knocked) {
+                this.knock();
+            } else {
+                this.die(source, weaponUsed);
+            }
         }
     }
 
@@ -1223,6 +1243,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (this === this.game.killLeader) {
             this.game.killLeaderDead(source instanceof Player ? source : undefined);
         }
+    }
+
+    knock(): void {
+        this.knocked = true;
+        this.health = 100;
+    }
+
+    revived(): void {
+        this.knocked = false;
+        this.health = 30;
     }
 
     sendGameOverPacket(won = false): void {
