@@ -2027,7 +2027,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port_complex",
             name: "Port Complex",
-            spawnHitbox: RectangleHitbox.fromRect(360, 285, Vec.create(-25, 0)),
+            spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
             subBuildings: [
                 { idString: "port", position: Vec.create(-120, 0) },
