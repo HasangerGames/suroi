@@ -56,6 +56,11 @@ export class CommandSyntaxError extends SyntaxError { }
 // When opening the console with a key, the key will be typed to the console,
 // because the keypress event is triggered for the input field, but only on the main menu screen
 let invalidateNextCharacter = false;
+
+// goofy infinite loop prevention for resizes
+let noWidthAdjust = false;
+let noHeightAdjust = false;
+
 export class GameConsole {
     private _isOpen = false;
     get isOpen(): boolean { return this._isOpen; }
@@ -86,6 +91,7 @@ export class GameConsole {
         let width = NaN;
         let height = NaN;
         const T = this;
+        let set: ConsoleVariables["set"]["builtIn"] | undefined;
 
         return {
             get width() { return width; },
@@ -96,14 +102,7 @@ export class GameConsole {
                     window.innerWidth - (Number.isNaN(T._position?.left ?? NaN) ? -Infinity : T._position.left)
                 );
 
-                if (width !== w) {
-                    T.variables.set.builtIn("cv_console_width", width = w);
-
-                    if (!T._ui.container[0].style.width) {
-                        T._ui.container.css("width", width);
-                    }
-                    T._ui.autocomplete.css("width", width);
-                }
+                (set ??= T.variables.set.builtIn)("cv_console_width", width = w);
             },
 
             get height() { return height; },
@@ -114,14 +113,7 @@ export class GameConsole {
                     window.innerHeight - (Number.isNaN(T._position?.top ?? NaN) ? -Infinity : T._position.top)
                 );
 
-                if (height !== h) {
-                    T.variables.set.builtIn("cv_console_height", height = h);
-
-                    if (!T._ui.container[0].style.height) {
-                        T._ui.container.css("height", height);
-                    }
-                    T._ui.autocomplete.css("top", T._position.top + height);
-                }
+                (set ??= T.variables.set.builtIn)("cv_console_height", height = h);
             }
         };
     })();
@@ -132,6 +124,8 @@ export class GameConsole {
 
         const magicalPadding /* that prevents scroll bars from showing up */ = 1;
         const T = this;
+        let set: ConsoleVariables["set"]["builtIn"] | undefined;
+        const { container, autocomplete } = this._ui;
 
         return {
             get left() { return left; },
@@ -143,9 +137,9 @@ export class GameConsole {
                 );
 
                 if (left !== l) {
-                    T.variables.set.builtIn("cv_console_left", left = l);
-                    T._ui.container.css("left", left);
-                    T._ui.autocomplete.css("left", left);
+                    (set ??= T.variables.set.builtIn)("cv_console_left", left = l);
+                    container.css("left", left);
+                    autocomplete.css("left", left);
                 }
             },
 
@@ -158,9 +152,9 @@ export class GameConsole {
                 );
 
                 if (top !== t) {
-                    T.variables.set.builtIn("cv_console_top", top = t);
-                    T._ui.container.css("top", top);
-                    T._ui.autocomplete.css("top", top + T._dimensions.height);
+                    (set ??= T.variables.set.builtIn)("cv_console_top", top = t);
+                    container.css("top", top);
+                    autocomplete.css("top", top + T._dimensions.height);
                 }
             }
         };
@@ -457,13 +451,53 @@ export class GameConsole {
             if (err.filename) {
                 this.error(
                     {
-                        main: `Javascript ${err.error ? `'${Object.getPrototypeOf(err.error)?.constructor?.name}'` : "error"} occurred at ${err.filename.replace(location.origin + location.pathname, "./")}:${err.lineno}:${err.colno}`,
-                        detail: err.error
+                        main: `Javascript ${err.error ? `'${Object.getPrototypeOf(err.error)?.constructor?.name}'` : err.type} occurred at ${err.filename.replace(location.origin + location.pathname, "./")}:${err.lineno}:${err.colno}`,
+                        detail: err.error ?? err.message
                     },
                     true
                 );
+
+                console.error(err);
             }
         });
+
+        const addChangeListener = this.variables.addChangeListener.bind(this.variables);
+        addChangeListener(
+            "cv_console_left",
+            (game, value) => {
+                this._position.left = value;
+            }
+        );
+
+        addChangeListener(
+            "cv_console_top",
+            (game, value) => {
+                this._position.top = value;
+            }
+        );
+
+        const { container, autocomplete } = this._ui;
+        addChangeListener(
+            "cv_console_width",
+            (game, value) => {
+                if (!noWidthAdjust) {
+                    container.css("width", value);
+                }
+
+                autocomplete.css("width", value);
+            }
+        );
+
+        addChangeListener(
+            "cv_console_height",
+            (game, value) => {
+                if (!noHeightAdjust) {
+                    container.css("height", value);
+                }
+
+                autocomplete.css("top", this._position.top + value);
+            }
+        );
 
         this.isOpen = this._isOpen;
         // sanity check
@@ -524,8 +558,13 @@ export class GameConsole {
                 // With a left-to-right writing mode, inline is horizontal and block is vertical
                 // This might not work with languages where inline is vertical
 
+                noWidthAdjust = true;
                 this._dimensions.width = size.inlineSize;
+                noWidthAdjust = false;
+
+                noHeightAdjust = true;
                 this._dimensions.height = size.blockSize;
+                noHeightAdjust = false;
             }).observe(this._ui.container[0]);
         }
 

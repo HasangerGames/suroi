@@ -1,6 +1,17 @@
 import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
+import { type Game } from "../../game";
 import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
+
+/*
+    eslint-disable
+
+    @typescript-eslint/indent
+*/
+
+/*
+    `@typescript-eslint/indent`   How hard is it to have sensible indenting rules for generics
+*/
 
 // todo figure out what flags we're gonna actually use and how we're gonna use them kekw
 // todo expect breaking changes to this api (again)
@@ -86,6 +97,14 @@ export const Casters = Object.freeze({
 });
 
 export type ExtractConVarValue<CVar extends ConVar<Stringable>> = CVar extends ConVar<infer V> ? V : never;
+
+export type CVarChangeListener<Value> = (
+    game: Game,
+    newValue: Value,
+    oldValue: Value,
+    cvar: ConVar<Value>
+) => void;
+
 export class ConVar<Value = string> {
     readonly name: string;
     readonly flags: CVarFlags;
@@ -117,6 +136,9 @@ export class ConVar<Value = string> {
         this._typeCaster = typeCaster;
     }
 
+    /**
+     * **Warning**: Does not call any change listeners; for that to happen, call {@linkcode ConsoleVariables.set}
+     */
     setValue(value: Stringable, writeToLS = true): PossibleError<string> {
         switch (true) {
             case this.flags.readonly: {
@@ -170,7 +192,9 @@ export class ConsoleVariables {
 
             const defaultVar = defaultClientCVars[name];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
-            const flags = typeof defaultVar === "object" ? defaultVar.flags : {};
+            const changeListeners = typeof defaultVar === "object"
+                ? [defaultVar.changeListeners].flat() as unknown as Array<CVarChangeListener<Stringable>>
+                : [];
 
             vars[name] = new ConVar(
                 name,
@@ -180,10 +204,11 @@ export class ConsoleVariables {
                 {
                     archive: true,
                     readonly: false,
-                    cheat: false,
-                    ...flags
+                    cheat: false
                 }
             );
+
+            this._changeListeners.set(name, changeListeners);
         }
 
         this._builtInCVars = vars as unknown as CVarTypeMapping;
@@ -220,8 +245,20 @@ export class ConsoleVariables {
         };
 
         const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS = true): PossibleError<string> => {
-            return (this._builtInCVars[key] as ConVar<CVarTypeMapping[K]["value"]>).setValue(value, writeToLS);
+            const cvar = this._builtInCVars[key] as ConVar<CVarTypeMapping[K]["value"]>;
+            const oldValue = cvar.value;
+            const res = cvar.setValue(value, writeToLS);
+            const newValue = cvar.value;
+
+            if (res === undefined && oldValue !== newValue) {
+                for (const listener of this._changeListeners.get(key) ?? []) {
+                    listener(this.console.game, newValue, oldValue, cvar);
+                }
+            }
+
+            return res;
         };
+
         const setCustom = (key: string, value: Stringable): PossibleError<string> => {
             const cvar = this._userCVars.get(key);
 
@@ -271,6 +308,52 @@ export class ConsoleVariables {
 
         return fn;
     })();
+
+    private readonly _changeListeners = new (class <K, V> extends Map<K, V> {
+        // note: maybe extract this anon class to… an actual class
+        // if this sort of operation becomes too common lol
+        /**
+         * Retrieves the value at a given key, placing (and returning) a user-defined
+         * default value if no mapping for the key exists
+         * @param key The key to retrieve from
+         * @param fallback A value to place at the given key if it currently not associated with a value
+         * @returns The value emplaced at key `key`; either the one that was already there or `fallback` if
+         * none was present
+         */
+        getAndSetIfAbsent(key: K, fallback: V): V {
+            if (this.has(key)) return this.get(key)!;
+
+            this.set(key, fallback);
+            return fallback;
+        }
+    })<
+        keyof CVarTypeMapping,
+        Array<CVarChangeListener<Stringable>>
+    >();
+
+    addChangeListener<K extends keyof CVarTypeMapping>(
+        cvar: K,
+        callback: CVarChangeListener<ExtractConVarValue<CVarTypeMapping[K]>>
+    ): void {
+        this._changeListeners
+            .getAndSetIfAbsent(cvar, [])
+            .push(callback as unknown as CVarChangeListener<Stringable>);
+        //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        //                 this cast is technically unsafe and unsound,
+        //                 but we have total control over insertion, deletion,
+        //                 and access of these listeners, so it's fine
+    }
+
+    removeChangeListener<K extends keyof CVarTypeMapping>(
+        cvar: K,
+        callback: CVarChangeListener<Stringable>
+    ): void {
+        const listeners = this._changeListeners.get(cvar);
+
+        if (!listeners) return;
+
+        this._changeListeners.set(cvar, listeners.filter(l => l !== callback));
+    }
 
     /**
      * Do **not** call this yourself! This is an internal method,

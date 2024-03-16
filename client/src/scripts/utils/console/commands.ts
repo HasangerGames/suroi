@@ -617,7 +617,9 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_minimap",
         function(): undefined {
-            if (!$("canvas").hasClass("over-hud")) { game.map.toggleMinimap(); }
+            if (!$("canvas").hasClass("over-hud")) {
+                game.console.setBuiltInCVar("cv_minimap_minimized", !game.console.getBuiltInCVar("cv_minimap_minimized"));
+            }
         },
         game,
         {
@@ -1197,7 +1199,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            const retVal = gameConsole.variables.get(name)!.setValue(value);
+            const retVal = gameConsole.variables.set(name, value);
             gameConsole.writeToLocalStorage();
 
             return retVal;
