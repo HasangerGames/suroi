@@ -22,11 +22,6 @@ export class Tween<T> {
     readonly onUpdate?: () => void;
     readonly onComplete?: () => void;
 
-    /**
-     * @deprecated
-     * Directly calling this constructor in order to create a `Tween` that is tied to a `Game` is deprecated.
-     * Please use {@linkcode Game.addTween} instead.
-     */
     constructor(
         game: Game,
         config: {
@@ -52,7 +47,6 @@ export class Tween<T> {
         this.onUpdate = config.onUpdate;
         this.onComplete = config.onComplete;
         this._endTime = this.startTime + this.duration;
-        this.game.tweens.add(this);
     }
 
     update(): void {

@@ -62,7 +62,8 @@ export const CVarCasters = Object.freeze({
     dv_password: Casters.toString,
     dv_role: Casters.toString,
     dv_name_color: Casters.toString,
-    dv_lobby_clearing: Casters.toBoolean
+    dv_lobby_clearing: Casters.toBoolean,
+    dv_weapon_preset: Casters.toString
 } satisfies Record<string, (val: string) => Result<unknown, string>>);
 
 type GetRes<R extends Result<unknown, unknown>> = R extends ResultRes<infer Res> ? Res : never;
@@ -137,7 +138,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     dv_password: "",
     dv_role: "",
     dv_name_color: "",
-    dv_lobby_clearing: false
+    dv_lobby_clearing: false,
+    dv_weapon_preset: ""
 } satisfies SimpleCVarMapping);
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

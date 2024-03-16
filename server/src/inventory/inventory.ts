@@ -188,7 +188,7 @@ export class Inventory {
         owner.attacking = false;
         owner.recoil.active = false;
         owner.dirty.weapons = true;
-        owner.game.fullDirtyObjects.add(this.owner);
+        this.owner.setDirty();
 
         owner.updateAndApplyModifiers();
 
@@ -288,7 +288,7 @@ export class Inventory {
      */
     addOrReplaceWeapon(slot: number, item: ReifiableItem): void {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
-        this.owner.game.fullDirtyObjects.add(this.owner);
+        this.owner.setDirty();
 
         /**
          * `dropWeapon` changes the active item index to something potentially undesirable,
@@ -443,7 +443,7 @@ export class Inventory {
             }
         }
 
-        this.owner.game.fullDirtyObjects.add(this.owner);
+        this.owner.setDirty();
         this.owner.dirty.items = true;
         this.owner.dirty.weapons = true;
 
@@ -650,7 +650,7 @@ export class Inventory {
             }
             case ItemType.Throwable: {
                 this.throwable = idString;
-                this.owner.game.fullDirtyObjects.add(this.owner);
+                this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
                 // Let's hope there's only one throwable slot…

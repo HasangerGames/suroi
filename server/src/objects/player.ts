@@ -9,6 +9,7 @@ import { Loots, type WeaponDefinition } from "../../../common/src/definitions/lo
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
+import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { type Packet } from "../../../common/src/packets/packet";
@@ -39,12 +40,12 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
+import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
+    override readonly allocBytes = 16;
     override readonly damageable = true;
 
     readonly hitbox: CircleHitbox;
@@ -123,7 +124,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _adrenaline = this._minAdrenaline;
     get adrenaline(): number { return this._adrenaline; }
     set adrenaline(adrenaline: number) {
-        this._adrenaline = Math.min(Math.max(adrenaline, this._minAdrenaline), this._maxAdrenaline);
+        this._adrenaline = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
 
         this.dirty.adrenaline = true;
     }
@@ -265,16 +266,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (this._scope === scope) return;
 
         this._scope = scope;
-        this.xCullDist = this._scope.zoomLevel * 1.8;
-        this.yCullDist = this._scope.zoomLevel * 1.35;
         this.dirty.zoom = true;
         this.updateObjects = true;
     }
 
     get zoom(): number { return this._scope.zoomLevel; }
-
-    xCullDist!: number;
-    yCullDist!: number;
 
     readonly socket: WebSocket<PlayerContainer>;
 
@@ -396,16 +392,67 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
 
+        const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
-        /*if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
-            this.inventory.addOrReplaceWeapon(0, "deathray");
-            (this.inventory.getWeapon(0) as GunItem).ammo = 1;
+        if (specialFunnies) {
+            const [weaponA, weaponB, melee] = userData.weaponPreset;
 
-            this.inventory.addOrReplaceWeapon(1, "revitalizer");
-            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.inventory.items.setItem("12g", 15);
+            const determinePreset = (slot: 0 | 1 | 2, char: string): void => {
+                switch (slot) {
+                    case 0:
+                    case 1: {
+                        switch (char) {
+                            case "0": {
+                                this.inventory.addOrReplaceWeapon(slot, "deathray");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 1;
+                                break;
+                            }
+                            case "1":
+                            case "2":
+                            case "3":
+                            case "4":
+                            case "5":
+                            case "6": {
+                                this.inventory.addOrReplaceWeapon(slot, "revitalizer");
+                                const revit = this.inventory.getWeapon(slot) as GunItem;
+                                revit.ammo = 5;
+                                revit.stats.kills = Number.parseInt(char, 10) - 1;
+                                this.inventory.items.setItem("12g", 15);
+                                break;
+                            }
+                            case "7": {
+                                this.inventory.addOrReplaceWeapon(slot, "usas12");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 10;
+                                this.inventory.items.setItem("12g", 15);
+                                break;
+                            }
+                            case "8": {
+                                this.inventory.addOrReplaceWeapon(slot, "s_g17");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 100;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case 2: {
+                        switch (char) {
+                            case "0": {
+                                this.inventory.addOrReplaceWeapon(2, "heap_sword");
+                                break;
+                            }
+                            case "1": {
+                                this.inventory.addOrReplaceWeapon(2, "kbar");
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            };
 
-            this.inventory.addOrReplaceWeapon(2, "heap_sword");
+            determinePreset(0, weaponA);
+            determinePreset(1, weaponB);
+            determinePreset(2, melee);
 
             this.inventory.items.setItem("2x_scope", 1);
             this.inventory.items.setItem("4x_scope", 1);
@@ -413,6 +460,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.inventory.items.setItem("15x_scope", 1);
             this.inventory.scope = "4x_scope";
         } */
+
+        this.updateAndApplyModifiers();
+
+        // good chance that if these were changed, they're meant to be applied
+        if (this.maxHealth !== GameConstants.player.defaultHealth) {
+            this.health = this.maxHealth;
+        }
+
+        if (this.maxAdrenaline !== GameConstants.player.maxAdrenaline) {
+            this.adrenaline = this.maxAdrenaline;
+        }
 
         this.dirty.weapons = true;
 
@@ -444,7 +502,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const emote = this.loadout.emotes[slot];
 
         if (emote) {
-            this.game.emotes.add(new Emote(emote, this));
+            this.game.emotes.push(new Emote(emote, this));
         }
     }
 
@@ -524,7 +582,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             let collided = false;
             for (const potential of this.nearObjects) {
                 if (
-                    potential instanceof Obstacle &&
+                    potential.type === ObjectCategory.Obstacle &&
                     potential.collidable &&
                     this.hitbox.collidesWith(potential.hitbox)
                 ) {
@@ -546,7 +604,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
 
             if (this.isMoving) {
                 this.floor = this.game.map.terrain.getFloor(this.position);
@@ -649,8 +707,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.updateObjects = false;
 
             this.screenHitbox = RectangleHitbox.fromRect(
-                2 * player.xCullDist,
-                2 * player.yCullDist,
+                this.zoom * 2 + 8,
+                this.zoom * 2 + 8,
                 player.position
             );
 
@@ -659,27 +717,27 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
                     this.visibleObjects.delete(object);
-                    packet.deletedObjects.add(object.id);
+                    packet.deletedObjects.push(object.id);
                 }
             }
 
             for (const object of newVisibleObjects) {
                 if (!this.visibleObjects.has(object)) {
                     this.visibleObjects.add(object);
-                    packet.fullDirtyObjects.add(object);
+                    packet.fullObjectsCache.push(object);
                 }
             }
         }
 
         for (const object of game.fullDirtyObjects) {
-            if (this.visibleObjects.has(object)) {
-                packet.fullDirtyObjects.add(object);
+            if (this.visibleObjects.has(object as GameObject) && !packet.fullObjectsCache.includes(object)) {
+                packet.fullObjectsCache.push(object);
             }
         }
 
         for (const object of game.partialDirtyObjects) {
-            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
-                packet.partialDirtyObjects.add(object);
+            if (this.visibleObjects.has(object as GameObject) && !packet.fullObjectsCache.includes(object)) {
+                packet.partialObjectsCache.push(object);
             }
         }
 
@@ -731,7 +789,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             for (const key in packet.playerData.dirty) {
                 packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
             }
-            packet.fullDirtyObjects.add(this.spectating);
+            packet.fullDirtyObjects.push(this.spectating);
             this.startedSpectating = false;
         }
 
@@ -741,7 +799,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
-                packet.bullets.add(bullet);
+                packet.bullets.push(bullet);
             }
         }
 
@@ -749,14 +807,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const explosion of game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
-                packet.explosions.add(explosion);
+                packet.explosions.push(explosion);
             }
         }
 
         // Emotes
         for (const emote of game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
-                packet.emotes.add(emote);
+                packet.emotes.push(emote);
             }
         }
 
@@ -773,7 +831,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // new and deleted players
         packet.newPlayers = this._firstPacket
-            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
             : game.newPlayers;
 
         packet.deletedPlayers = game.deletedPlayers;
@@ -787,7 +845,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
-            packet.killFeedMessages.add({
+            packet.killFeedMessages.push({
                 messageType: KillFeedMessageType.KillLeaderAssigned,
                 playerID: killLeader.id,
                 kills: killLeader.kills,
@@ -1076,7 +1134,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 killFeedMessage.killType = source;
             }
 
-            this.game.killFeedMessages.add(killFeedMessage);
+            this.game.killFeedMessages.push(killFeedMessage);
         }
 
         // Destroy physics body; reset movement and attacking variables
@@ -1294,11 +1352,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Obstacle && object.canInteract(this)) &&
+                            (object.type === ObjectCategory.Obstacle && object.canInteract(this)) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if (object instanceof Obstacle && dist < interactable.minDist) {
+                            if (object.type === ObjectCategory.Obstacle  && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
                             }
@@ -1312,7 +1370,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
-                                    object instanceof Obstacle &&
+                                    object.type === ObjectCategory.Obstacle &&
                                     object.isDoor &&
                                     !object.door?.locked &&
                                     object !== interactable.object &&

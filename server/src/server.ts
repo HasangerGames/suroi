@@ -9,6 +9,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
+import { VPN_IPV4 } from "./utils/VPN_IPV4";
 
 /**
  * Apply CORS headers to a response.
@@ -232,6 +233,17 @@ export interface PlayerContainer {
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean
+    readonly weaponPreset: string
+}
+
+function convertToIPv4(ip: string): string {
+    if (ip.includes(":")) {
+        const parts = ip.split(":");
+        const ipv4Parts = parts.slice(-4);
+        return ipv4Parts.join(".");
+    } else {
+        return ip;
+    }
 }
 
 app.ws("/play", {
@@ -246,9 +258,17 @@ app.ws("/play", {
         res.onAborted((): void => { });
 
         //
-        // Bot & cheater protection
+        // Bot, cheater & VPN protection
         //
         const ip = getIP(res, req);
+        const ipv4 = convertToIPv4(ip); // Shouldnt REALLY need to do this but idk if people will have an ipv6 its happened before :shrug:
+        if (
+            VPN_IPV4.includes(ipv4)
+        ) {
+            Logger.log(`VPN detected: ${ipv4}`);
+            forbidden(res);
+            return;
+        }
         if (Config.protection) {
             const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections ?? Infinity;
             const maxJoinAttempts = Config.protection.maxJoinAttempts;
@@ -325,7 +345,8 @@ app.ws("/play", {
             role,
             isDev,
             nameColor,
-            lobbyClearing: searchParams.get("lobbyClearing") === "true"
+            lobbyClearing: searchParams.get("lobbyClearing") === "true",
+            weaponPreset: searchParams.get("weaponPreset") ?? ""
         };
         res.upgrade(
             userData,
@@ -345,7 +366,7 @@ app.ws("/play", {
         const game = games[data.gameID];
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
-        // data.player.sendGameOverPacket(false) // uncomment to test game over screen
+        // data.player.sendGameOverPacket(false); // uncomment to test game over screen
     },
 
     /**

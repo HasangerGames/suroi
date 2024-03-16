@@ -1,4 +1,4 @@
-import { GameConstants } from "../../../common/src/constants";
+import { GameConstants, ObjectCategory } from "../../../common/src/constants";
 import { Bullets } from "../../../common/src/definitions/bullets";
 import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
@@ -11,8 +11,8 @@ import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
+import { type Obstacle } from "./obstacle";
+import { type Player } from "./player";
 
 type Weapon = GunItem | Explosion;
 
@@ -91,11 +91,11 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object instanceof Player) {
+            if (object.type === ObjectCategory.Player) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
-                    object,
+                    object: object as Player,
                     damage: this.definition.damage / (this.reflectionCount + 1),
                     weapon: this.sourceGun,
                     source: this.shooter,
@@ -107,18 +107,18 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object instanceof Obstacle) {
+            if (object.type === ObjectCategory.Obstacle) {
                 this.damagedIDs.add(object.id);
 
                 records.push({
-                    object,
+                    object: object as Obstacle,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
                     weapon: this.sourceGun,
                     source: this.shooter,
                     position: collision.intersection.point
                 });
 
-                if (this.definition.penetration.obstacles && !object.definition.impenetrable) continue;
+                if (this.definition.penetration.obstacles) continue;
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
                 if (!object.definition.noCollisions) {

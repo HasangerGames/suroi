@@ -41,7 +41,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
         this._lastUse = owner.game.now;
         owner.animation = AnimationType.Melee;
-        owner.game.partialDirtyObjects.add(owner);
+        owner.setPartialDirty();
 
         owner.action?.cancel();
 

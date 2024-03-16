@@ -70,7 +70,7 @@ export class InputPacket extends Packet {
             }
         }
 
-        stream.writeIterator(this.actions, this.actions.length, 3, (action) => {
+        stream.writeArray(this.actions, 3, (action) => {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);
 
             switch (action.type) {
@@ -114,7 +114,7 @@ export class InputPacket extends Packet {
         }
 
         // Actions
-        this.actions = [...stream.readIterator(3, () => {
+        stream.readArray(this.actions, 3, () => {
             const type = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
@@ -134,7 +134,7 @@ export class InputPacket extends Packet {
             }
 
             return { type, item, slot };
-        })];
+        });
     }
 
     /**

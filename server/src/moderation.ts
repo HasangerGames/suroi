@@ -28,7 +28,7 @@ switch (process.argv[2]) {
         const permanent = process.argv[4] === "perm";
         punishments[ip] = {
             type: permanent ? "permaBan" : "tempBan",
-            expires: permanent ? undefined : now + 3600000 // = 1 day
+            expires: permanent ? undefined : now + 6.048e8 // = 1 day
         };
         console.log(`${ip} banned ${permanent ? "permanently" : "temporarily"}`);
         break;

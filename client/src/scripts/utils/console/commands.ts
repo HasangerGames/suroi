@@ -1,6 +1,6 @@
 // noinspection JSConstantReassignment
 import $ from "jquery";
-import { Graphics, Rectangle, Sprite } from "pixi.js";
+import { Rectangle, Sprite } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
@@ -734,24 +734,21 @@ export function setUpCommands(game: Game): void {
             const { width, height } = game.camera;
             const container = game.camera.container;
 
-            // add a temporary background with the grass color
-            // because the grass color is actually the canvas clear color
-            // and pixi doesn't draw the clear color when extracting something
-            const graphics = new Graphics();
-
-            graphics.beginFill(COLORS.grass);
-            graphics.drawRect(0, 0, width, height);
-            graphics.zIndex = -999;
-            container.addChild(graphics);
-            container.sortChildren();
-
-            const rectangle = new Rectangle(0, 0, width, height);
-
-            const canvas = game.pixi.renderer.extract.canvas(
-                container,
-                rectangle
+            const rectangle = new Rectangle(
+                game.camera.position.x - (width / 2 / container.scale.x),
+                game.camera.position.y - (height / 2 / container.scale.y),
+                width / container.scale.x,
+                height / container.scale.y
             );
-            graphics.destroy();
+
+            const canvas = game.pixi.renderer.extract.canvas({
+                clearColor: COLORS.grass,
+                target: container,
+                frame: rectangle,
+                resolution: container.scale.x,
+                antialias: true
+            });
+
             if (canvas.toBlob) {
                 canvas.toBlob((blob) => {
                     if (blob) window.open(URL.createObjectURL(blob));

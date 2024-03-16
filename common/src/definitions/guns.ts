@@ -1474,8 +1474,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fists: {
                 left: Vec.create(40, 0),
                 right: Vec.create(40, 0),
-                leftZIndex: 3,
-                rightZIndex: 3,
+                leftZIndex: 4,
+                rightZIndex: 4,
                 animationDuration: 80
             },
             noMuzzleFlash: true,
@@ -1536,7 +1536,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 damage: 800,
                 obstacleMultiplier: 2,
                 speed: 4,
-                range: 400,
+                range: 800,
                 penetration: {
                     players: true,
                     obstacles: true
