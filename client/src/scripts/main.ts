@@ -5,8 +5,7 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { stringIsPositiveNumber } from "./utils/misc";
-import { TeamSize } from "../../../common/src/constants";
+import { GameConstants, TeamSize } from "../../../common/src/constants";
 
 interface RegionInfo {
     name: string
@@ -71,28 +70,22 @@ $(async(): Promise<void> => {
             const listItem = $(`.server-list-item[data-region=${regionID}]`);
             try {
                 const pingStartTime = Date.now();
-
-                const getValue = async(api: string): Promise<number | undefined> => {
-                    const result = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/${api}`, { signal: AbortSignal.timeout(2000) })
-                        .catch(() => {
-                            console.error(`Could not load ${api} for ${region.address}.`);
-                        })
-                    )?.text();
-                    return result && stringIsPositiveNumber(result) ? parseInt(result) : undefined;
-                };
-
-                const playerCount = await getValue("playerCount");
-                const maxTeamSize = await getValue("maxTeamSize");
-
+                const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(2000) }))?.json();
                 const ping = Date.now() - pingStartTime;
+
+                if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
+                    listItem.addClass("server-list-item-disabled");
+                    console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
+                    continue;
+                }
+
                 regionInfo[regionID] = {
                     ...region,
-                    playerCount,
-                    maxTeamSize,
+                    ...serverInfo,
                     ping
                 };
 
-                listItem.find(".server-player-count").text(playerCount ?? "-");
+                listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
                 // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
                 if (ping < bestPing) {
@@ -101,7 +94,7 @@ $(async(): Promise<void> => {
                 }
             } catch (e) {
                 listItem.addClass("server-list-item-disabled");
-                console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
+                console.error(`Failed to load server info for region ${regionID}. Details:`, e);
             }
         }
     };
@@ -130,7 +123,6 @@ $(async(): Promise<void> => {
     }
     updateServerSelector();
 
-    //serverListToFind
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");

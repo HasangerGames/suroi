@@ -10,6 +10,7 @@ import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
 import { VPN_IPV4 } from "./utils/VPN_IPV4";
+import { GameConstants } from "../../common/src/constants";
 
 /**
  * Apply CORS headers to a response.
@@ -101,25 +102,17 @@ function removePunishment(ip: string): void {
     }
 }
 
-app.get("/api/playerCount", (res) => {
+app.get("/api/serverInfo", (res) => {
     cors(res);
-    const playerCount = games.reduce((a, b) => {
-        return a + (b ? b.connectedPlayers.size : 0);
-    }, 0);
-    res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
-});
-
-app.get("/api/maxTeamSize", (res) => {
-    cors(res);
-    for (let gameID = 0; gameID < games.length; gameID++) {
-        const game = games[gameID];
-        let response: number;
-        if (canJoin(game) && game?.allowJoin) {
-            response = game.maxTeamSize;
-            res.writeHeader("Content-Type", "text/plain").end(response.toString());
-            break;
-        }
-    }
+    res
+        .writeHeader("Content-Type", "application/json")
+        .end(JSON.stringify({
+            playerCount: games.reduce((a, b) => {
+                return a + (b ? b.connectedPlayers.size : 0);
+            }, 0),
+            maxTeamSize: Config.maxTeamSize,
+            protocolVersion: GameConstants.protocolVersion
+        }));
 });
 
 app.get("/api/getGame", async(res, req) => {
