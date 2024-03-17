@@ -28,7 +28,7 @@ export const Decals = ObjectDefinitions.create<DecalDefinition>()(
         }
     })
 )(
-    apply => [
+    ({ apply, simple }) => [
         apply(
             "decal_factory",
             { rotationMode: RotationMode.Full },
@@ -44,13 +44,13 @@ export const Decals = ObjectDefinitions.create<DecalDefinition>()(
             { rotationMode: RotationMode.Full },
             "Smoke Explosion Decal"
         ),
-        apply("decal_factory", {}, "Floor Oil 01"),
-        apply("decal_factory", {}, "Floor Oil 02"),
-        apply("decal_factory", {}, "Floor Oil 03"),
-        apply("decal_factory", {}, "Floor Oil 04"),
-        apply("decal_factory", {}, "Floor Oil 05"),
-        apply("decal_factory", {}, "Floor Oil 06"),
-        apply("decal_factory", {}, "Floor Oil 07"),
+        simple("decal_factory", "Floor Oil 01"),
+        simple("decal_factory", "Floor Oil 02"),
+        simple("decal_factory", "Floor Oil 03"),
+        simple("decal_factory", "Floor Oil 04"),
+        simple("decal_factory", "Floor Oil 05"),
+        simple("decal_factory", "Floor Oil 06"),
+        simple("decal_factory", "Floor Oil 07"),
         apply(
             "decal_factory",
             { zIndex: ZIndexes.BuildingsFloor },

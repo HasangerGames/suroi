@@ -270,14 +270,71 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         templatesSupplier: (defaultTemplate: typeof _defaultTemplateSymbol) => TemplateDecl
     ) => (
         definitionsDecl: (
-            apply: <
-                Key extends keyof TemplateDecl & AllowedTemplateKeys,
-                Overrides extends DeepPartial<Def>
-            >(
-                name: Key,
-                overrides: Overrides,
-                ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-            ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides,
+            /**
+             * A function with two custom properties containing two functions for invoking a factory;
+             * `apply` is the "normal" function and used to both invoke a factory and provide overrides.
+             * If the factory is invoked and no overrides are needed, then the `simple` function can be used.
+             * Note that the `apply` property is identical to the function it is defined on (that is,
+             * `appliers === appliers.apply`)
+             */
+            appliers: {
+                /**
+                 * A function used to create a definition that inherits from a previously-declared template
+                 * definition.
+                 *
+                 * @template Key The specific name of the template to inherit from
+                 * @template Overrides The specific type of the provided overrides
+                 * @param name The name of the template from which this definition should inherit
+                 * @param overrides A set of overrides to apply to the contents of the template
+                 * @param args A collection of arguments to pass to the inherited template's function.
+                 * See {@linkcode GetInheritedDef} for more info
+                 */
+                <
+                    Key extends keyof TemplateDecl & AllowedTemplateKeys,
+                    Overrides extends DeepPartial<Def>
+                >(
+                    name: Key,
+                    overrides: Overrides,
+                    ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
+                ): ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides
+
+                /**
+                 * A function used to create a definition that inherits from a previously-declared template
+                 * definition.
+                 *
+                 * @template Key The specific name of the template to inherit from
+                 * @template Overrides The specific type of the provided overrides
+                 * @param name The name of the template from which this definition should inherit
+                 * @param overrides A set of overrides to apply to the contents of the template
+                 * @param args A collection of arguments to pass to the inherited template's function.
+                 * See {@linkcode GetInheritedDef} for more info
+                 */
+                readonly apply: <
+                    Key extends keyof TemplateDecl & AllowedTemplateKeys,
+                    Overrides extends DeepPartial<Def>
+                >(
+                    name: Key,
+                    overrides: Overrides,
+                    ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
+                ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides
+
+                /**
+                 * A function used to create a definition that inherits from a previously-declared template
+                 * definition.
+                 *
+                 * @template Key The specific name of the template to inherit from
+                 * @template Overrides The specific type of the provided overrides
+                 * @param name The name of the template from which this definition should inherit
+                 * @param args A collection of arguments to pass to the inherited template's function.
+                 * See {@linkcode GetInheritedDef} for more info
+                 */
+                readonly simple: <
+                    Key extends keyof TemplateDecl & AllowedTemplateKeys
+                >(
+                    name: Key,
+                    ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
+                ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
+            },
             symbols: {
                 readonly inheritFrom: typeof _inheritFromSymbol
                 readonly noDefaultInherit: typeof _noDefaultInheritSymbol
@@ -318,6 +375,22 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
              */
             type Keys = keyof TemplateDecl & AllowedTemplateKeys;
 
+            type ApplyFn = <
+                Key extends keyof TemplateDecl & AllowedTemplateKeys,
+                Overrides extends DeepPartial<Def>
+            >(
+                name: Key,
+                overrides: Overrides,
+                ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
+            ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides;
+
+            type SimpleApplyFn = <
+                Key extends keyof TemplateDecl & AllowedTemplateKeys
+            >(
+                name: Key,
+                ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
+            ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>;
+
             /**
              * A function used to declare the definitions to use inside this definition list.
              *
@@ -330,25 +403,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
              */
             return (
                 definitionsDecl: (
-                    /**
-                     * A function used to create a definition that inherits from a previously-declared template
-                     * definition.
-                     *
-                     * @template Key The specific name of the template to inherit from
-                     * @template Overrides The specific type of the provided overrides
-                     * @param name The name of the template from which this definition should inherit
-                     * @param overrides A set of overrides to apply to the contents of the template
-                     * @param args A collection of arguments to pass to the inherited template's function.
-                     * See {@linkcode GetInheritedDef} for more info
-                     */
-                    apply: <
-                        const Key extends Keys,
-                        const Overrides extends Partial<Def>
-                    >(
-                        name: Key,
-                        overrides: Overrides,
-                        ...args: Parameters<GetPartialDeclFn<Def, Keys, TemplateDecl, Key>>
-                    ) => ReturnType<GetPartialDeclFn<Def, Keys, TemplateDecl, Key>> & Overrides,
+                    appliers: ApplyFn & {
+                        readonly apply: ApplyFn
+                        readonly simple: SimpleApplyFn
+                    },
                     symbols: {
                         readonly inheritFrom: typeof _inheritFromSymbol
                         readonly noDefaultInherit: typeof _noDefaultInheritSymbol
@@ -434,18 +492,26 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                     ? ReturnType<TemplateDecl[typeof _defaultTemplateSymbol]>
                     : Record<string, never>;
 
+                const applier = ((name, overrides, ...args) => {
+                    type GoofySillyHelper = ReturnType<GetPartialDeclFn<Def, Keys, TemplateDecl, typeof name>> & typeof overrides;
+
+                    return mergeDeep<GoofySillyHelper>(
+                        {} as GoofySillyHelper,
+                        templates[name](...args) as DeepPartial<GoofySillyHelper>,
+                        overrides as DeepPartial<GoofySillyHelper>
+                    );
+                }) as Parameters<typeof definitionsDecl>[0];
+
+                // @ts-expect-error init code
+                applier.apply = applier;
+
+                // @ts-expect-error init code
+                applier.simple = (name, ...args) => applier(name, {}, ...args);
+
                 return new ObjectDefinitions<Def>(
                     defaultTemplate,
                     definitionsDecl(
-                        (name, overrides, ...args) => {
-                            type GoofySillyHelper = ReturnType<GetPartialDeclFn<Def, Keys, TemplateDecl, typeof name>> & typeof overrides;
-
-                            return mergeDeep<GoofySillyHelper>(
-                                {} as GoofySillyHelper,
-                                templates[name](...args) as DeepPartial<GoofySillyHelper>,
-                                overrides as DeepPartial<GoofySillyHelper>
-                            );
-                        },
+                        applier,
                         {
                             inheritFrom: _inheritFromSymbol,
                             noDefaultInherit: _noDefaultInheritSymbol

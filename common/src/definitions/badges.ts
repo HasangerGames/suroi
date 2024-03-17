@@ -18,7 +18,7 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
         })
     })
 )(
-    apply => [
+    ({ apply, simple }) => [
         apply(
             "badge_factory",
             { roles: ["developr"] },
@@ -44,10 +44,10 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
             { roles: ["katie", "leia"] },
             "Contributr+"
         ),
-        apply("badge_factory", {}, "Bleh"),
-        apply("badge_factory", {}, "Froog"),
-        apply("badge_factory", {}, "AEGIS Logo"),
-        apply("badge_factory", {}, "Flint Logo"),
-        apply("badge_factory", {}, "Duel")
+        simple("badge_factory", "Bleh"),
+        simple("badge_factory", "Froog"),
+        simple("badge_factory", "AEGIS Logo"),
+        simple("badge_factory", "Flint Logo"),
+        simple("badge_factory", "Duel")
     ]
 );
