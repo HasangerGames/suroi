@@ -41,6 +41,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { isTeamMode, type Team } from "./team";
+import { type MapPingDefinition, MapPings } from "../../common/src/definitions/mapPings";
 
 export class Game {
     readonly _id: number;
@@ -96,12 +97,19 @@ export class Game {
     /**
      * All planes this tick
      */
-    readonly planes: Array<{ readonly position: Vector, readonly direction: number }> = [];
+    readonly planes: Array<{
+        readonly position: Vector
+        readonly direction: number
+    }> = [];
 
     /**
      * All map pings this tick
      */
-    readonly mapPings: Vector[] = [];
+    readonly mapPings: Array<{
+        readonly definition: MapPingDefinition
+        readonly position: Vector
+        readonly playerId?: number
+    }> = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -299,7 +307,7 @@ export class Game {
                     movement.left = false;
                     movement.right = false;
                     lastManStanding.attacking = false;
-                    if (lastManStanding.loadout.emotes[5]?.idString !== "none") lastManStanding.emote(5);
+                    lastManStanding.emote(lastManStanding.loadout.emotes[5]);
                     lastManStanding.sendGameOverPacket(true);
                 }
 
@@ -735,7 +743,10 @@ export class Game {
         this.addTimeout(() => {
             const parachute = new Parachute(this, position, airdrop);
             this.grid.addObject(parachute);
-            this.mapPings.push(position);
+            this.mapPings.push({
+                definition: MapPings.fromString("airdrop_ping"),
+                position
+            });
         }, GameConstants.airdrop.flyTime);
     }
 

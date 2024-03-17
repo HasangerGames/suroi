@@ -47,6 +47,9 @@ importers:
       nipplejs:
         specifier: ^0.10.1
         version: 0.10.1
+      pixi-filters:
+        specifier: ^6.0.0
+        version: 6.0.0(pixi.js@8.0.2)
       pixi.js:
         specifier: 8.0.2
         version: 8.0.2
@@ -3403,6 +3406,14 @@ packages:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /pixi-filters@6.0.0(pixi.js@8.0.2):
+    resolution: {integrity: sha512-9wJn4bfQKak+lefyk9BSCenhMBvGQi2t4Uz+BVqw6WK8wM2NgqeTC64mhXRtrdYeCG9gIFX0Lc6q1S8rBqwJbg==}
+    peerDependencies:
+      pixi.js: '>=8.0.0-0'
+    dependencies:
+      pixi.js: 8.0.2
+    dev: false
 
   /pixi.js@8.0.2:
     resolution: {integrity: sha512-E4oHF+cIkHB1BUHka8jKRih3ywDAKt/uRaTNIm4+7rEWMX5LhZZVryp8bcx516ZyQ8VrpBOs5ohrEViqYhCDAw==}

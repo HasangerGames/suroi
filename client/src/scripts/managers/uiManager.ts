@@ -6,12 +6,14 @@ import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
+import { type UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE, GHILLIE_TINT, TEAMMATE_COLORS } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { TeammateIndicator } from "../rendering/minimap";
+import type { EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { MapPings } from "../../../../common/src/definitions/mapPings";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -39,6 +41,10 @@ export class UIManager {
         items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
+
+    emotes: Array<EmoteDefinition | undefined> = [];
+
+    teammates: UpdatePacket["playerData"]["teammates"] = [];
 
     constructor(game: Game) {
         this.game = game;
@@ -120,7 +126,10 @@ export class UIManager {
         interactMsg: $("#interact-message"),
         interactKey: $("#interact-key"),
 
-        teamHealthContainer: $("#team-health")
+        teamHealthContainer: $("#team-health"),
+
+        emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
+            .map(selector => $(`#emote-wheel > ${selector}`))
     };
 
     action = {
@@ -216,6 +225,20 @@ export class UIManager {
         $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
     }
 
+    readonly mapPings = ["arrow_ping", "gift_ping", "warning_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
+
+    updateEmoteWheel(): void {
+        const pingWheel = this.game.inputManager.pingWheelActive;
+        for (let i = 0; i < 4; i++) {
+            const definition = pingWheel ? this.mapPings[i] : this.emotes[i];
+
+            this.ui.emoteSelectors[i].css(
+                "background-image",
+                definition ? `url("./img/game/${pingWheel ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
+            );
+        }
+    }
+
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
 
@@ -229,6 +252,8 @@ export class UIManager {
         }
 
         if (data.dirty.teammates) {
+            this.teammates = data.teammates;
+
             this.ui.teamHealthContainer
                 .html(data.teammates.map(player => {
                     return `${player.id} ${this.game.playerNames.get(player.id)?.name}: ${player.normalizedHealth} HP`;
@@ -248,7 +273,6 @@ export class UIManager {
 
                 for (const indicator of this.game.map.teammateIndicators) {
                     if (indicator.id !== player.id) continue;
-
                     indicator.setVPos(player.position);
 
                     if (player.knocked) {

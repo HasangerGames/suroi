@@ -126,7 +126,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emote: new SuroiSprite().setPos(0, 0),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
         };
 
         this.container.addChild(

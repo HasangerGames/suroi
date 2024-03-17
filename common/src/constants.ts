@@ -78,10 +78,8 @@ export enum InputActions {
     Reload,
     Cancel,
     UseItem,
-    TopEmoteSlot,
-    RightEmoteSlot,
-    BottomEmoteSlot,
-    LeftEmoteSlot,
+    Emote,
+    MapPing,
     Loot
 }
 

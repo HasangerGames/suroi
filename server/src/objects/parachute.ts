@@ -27,8 +27,6 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         super(game, position);
         this.hitbox.position = position;
         this._airdrop = airdrop;
-
-        this.game.mapPings.push(this.position);
     }
 
     update(): void {
