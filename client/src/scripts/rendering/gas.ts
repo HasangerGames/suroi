@@ -92,7 +92,7 @@ export class Gas {
                     this._ui.msgText.css("color", "white");
                 } else {
                     this._ui.msgText.css("color", "cyan");
-                    setTimeout(() => $("#gas-msg").fadeOut(1000), 5000);
+                    setTimeout(() => this._ui.msgContainer.fadeOut(1000), 5000);
                 }
             }
         }

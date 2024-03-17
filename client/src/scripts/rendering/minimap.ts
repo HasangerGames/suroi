@@ -67,6 +67,8 @@ export class Minimap {
         this.container.addChild(this.objectsContainer);
         this.container.addChild(this.border);
 
+        this.teammateIndicatorContainer.zIndex = 999;
+
         this.objectsContainer.addChild(
             this.sprite,
             this.placesContainer,
@@ -641,8 +643,7 @@ export class TeammateIndicator extends SuroiSprite {
             .setFrame("player_indicator")
             .setVPos(position)
             .setTint(color)
-            .setScale(scale)
-            .setZIndex(999);
+            .setScale(scale);
         this.initialized = false;
         this.color = color;
         this.id = id;

@@ -142,7 +142,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.muzzleFlash,
             this.images.waterOverlay
         );
-        this.images.body.eventMode = "static";
 
         this.images.aimTrail.angle = 90;
         this.images.aimTrail.position = Vec.create(6000, -8);
@@ -202,6 +201,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         });
 
+        this.images.body.eventMode = "static";
         this.images.body.on("pointerdown", (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
             const packet = new SpectatePacket();
@@ -209,6 +209,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             packet.playerID = this.id;
             this.game.sendPacket(packet);
         });
+
         this.updateFromData(data, true);
     }
 
