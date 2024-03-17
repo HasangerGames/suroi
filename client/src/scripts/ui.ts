@@ -528,7 +528,7 @@ Video evidence is required.`)) {
         emoteList.empty();
 
         const noEmoteItem =
-                $(`<div id="emote-none" class="emotes-list-item-container">
+            $(`<div id="emote-none" class="emotes-list-item-container">
             <div class="emotes-list-item" style="background-image: none"></div>
         <span class="emote-name">None</span>
         </div>`);
@@ -1122,16 +1122,23 @@ Video evidence is required.`)) {
             $("#emote-wheel").show();
         });
 
-        const createEmoteWheelListener = (slot: string, action: InputActions): void => {
+        const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 $("#emote-wheel").hide();
-                game.inputManager.addAction(action);
+
+                const emote = game.uiManager.emotes[emoteSlot];
+                if (emote) {
+                    game.inputManager.addAction({
+                        type: InputActions.Emote,
+                        emote
+                    });
+                }
             });
         };
-        createEmoteWheelListener("top", InputActions.TopEmoteSlot);
-        createEmoteWheelListener("right", InputActions.RightEmoteSlot);
-        createEmoteWheelListener("bottom", InputActions.BottomEmoteSlot);
-        createEmoteWheelListener("left", InputActions.LeftEmoteSlot);
+        createEmoteWheelListener("top", 0);
+        createEmoteWheelListener("right", 1);
+        createEmoteWheelListener("bottom", 2);
+        createEmoteWheelListener("left", 3);
 
         // Game menu
         $("#btn-game-menu")

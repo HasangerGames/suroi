@@ -40,6 +40,8 @@ class Bot {
 
     interact = false;
 
+    emotes: EmoteDefinition[];
+
     emote = false;
 
     angle = random(-Math.PI, Math.PI);
@@ -72,6 +74,10 @@ class Bot {
 
         this.ws.binaryType = "arraybuffer";
 
+        const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
+
+        this.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
+
         this.ws.onmessage = (message: MessageEvent): void => {
             const stream = new SuroiBitStream(message.data as ArrayBuffer);
             switch (stream.readPacketType()) {
@@ -96,8 +102,7 @@ class Bot {
         joinPacket.isMobile = false;
 
         joinPacket.skin = Loots.reify(pickRandomInArray(skins));
-        const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
-        joinPacket.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
+        joinPacket.emotes = this.emotes;
 
         joinPacket.serialize();
 
@@ -125,12 +130,8 @@ class Bot {
             this.emote = false;
 
             action = {
-                type: pickRandomInArray([
-                    InputActions.TopEmoteSlot,
-                    InputActions.RightEmoteSlot,
-                    InputActions.BottomEmoteSlot,
-                    InputActions.LeftEmoteSlot
-                ])
+                type: InputActions.Emote,
+                emote: pickRandomInArray(this.emotes)
             };
         } else if (this.interact) {
             action = { type: InputActions.Interact };

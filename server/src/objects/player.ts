@@ -43,6 +43,7 @@ import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 import { Team, isTeamMode } from "../team";
+import { type MapPingDefinition } from "../../../common/src/definitions/mapPings";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -340,8 +341,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
+    spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+
+    mapPings: Game["mapPings"] = [];
+
     // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
-    //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -495,11 +499,37 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.throwableItemMap.get(idString)!.count = this.inventory.items.getItem(idString);
     }
 
-    emote(slot: number): void {
-        const emote = this.loadout.emotes[slot];
+    spawnPos(position: Vector): void {
+        this.spawnPosition = position;
+    }
+
+    emote(emote?: EmoteDefinition): void {
+        if (!this.loadout.emotes.includes(emote)) return;
 
         if (emote) {
             this.game.emotes.push(new Emote(emote, this));
+        }
+    }
+
+    sendMapPing(ping: MapPingDefinition, position: Vector): void {
+        if (!ping.isPlayerPing) return;
+
+        if (this.team) {
+            for (const player of this.team.players) {
+                if (player) {
+                    player.mapPings.push({
+                        definition: ping,
+                        position,
+                        playerId: this.id
+                    });
+                }
+            }
+        } else {
+            this.mapPings.push({
+                definition: ping,
+                position,
+                playerId: this.id
+            });
         }
     }
 
@@ -856,7 +886,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         packet.planes = game.planes;
-        packet.mapPings = game.mapPings;
+        packet.mapPings = [...game.mapPings, ...this.mapPings];
+        this.mapPings.length = 0;
 
         // serialize and send update packet
         this.sendPacket(packet);
@@ -1158,7 +1189,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
-        if (this.loadout.emotes[4]?.idString !== "none") this.emote(4);
+        if (this.loadout.emotes[4]?.idString !== "none") this.emote(this.loadout.emotes[4]);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);
@@ -1375,7 +1406,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if (object.type === ObjectCategory.Obstacle  && dist < interactable.minDist) {
+                            if (object.type === ObjectCategory.Obstacle && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
                             }
@@ -1413,17 +1444,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 case InputActions.Cancel:
                     this.action?.cancel();
                     break;
-                case InputActions.TopEmoteSlot:
-                    this.emote(0);
+                case InputActions.Emote:
+                    this.emote(action.emote);
                     break;
-                case InputActions.RightEmoteSlot:
-                    this.emote(1);
-                    break;
-                case InputActions.BottomEmoteSlot:
-                    this.emote(2);
-                    break;
-                case InputActions.LeftEmoteSlot:
-                    this.emote(3);
+                case InputActions.MapPing:
+                    this.sendMapPing(action.ping, action.position);
                     break;
             }
         }

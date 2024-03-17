@@ -16,7 +16,7 @@ import { type Packet } from "../../../common/src/packets/packet";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
+import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
@@ -40,7 +40,7 @@ import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
-import { Minimap, Ping } from "./rendering/minimap";
+import { Minimap } from "./rendering/minimap";
 import { resetPlayButtons, setupUI } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -386,17 +386,8 @@ export class Game {
             // reload the page with a time stamp to try clearing cache
             location.search = `t=${Date.now()}`;
         }
-
-        const selectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
-        for (let i = 0; i < 4; i++) {
-            const emote = packet.emotes[i];
-
-            $(`#emote-wheel > ${selectors[i]}`)
-                .css(
-                    "background-image",
-                    emote ? `url("./img/game/emotes/${emote.idString}.svg")` : ""
-                );
-        }
+        this.uiManager.emotes = packet.emotes;
+        this.uiManager.updateEmoteWheel();
 
         $("canvas").addClass("active");
         $("#splash-ui").fadeOut(400, resetPlayButtons);
@@ -608,8 +599,7 @@ export class Game {
         }
 
         for (const ping of updateData.mapPings) {
-            this.soundManager.play("airdrop_ping");
-            this.map.pings.add(new Ping(ping));
+            this.map.addMapPing(ping.position, ping.definition, ping.playerId);
         }
     }
 

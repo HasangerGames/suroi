@@ -36,10 +36,15 @@ export class InputManager {
 
     emoteWheelActive = false;
     emoteWheelPosition = Vec.create(0, 0);
+    pingWheelActive = false;
+    /**
+     * If the ping wheel was activated in the minimap
+     */
+    pingWheelMinimap = false;
+    pingWheelPosition = Vec.create(0, 0);
+    selectedEmote?: number;
 
     rotation = 0;
-
-    selectedEmote?: InputActions;
 
     readonly actions: InputAction[] = [];
 
@@ -54,6 +59,7 @@ export class InputManager {
         this.actions.push(action);
     }
 
+    gameMousePosition = Vec.create(0, 0);
     distanceToMouse = 0;
 
     attacking = false;
@@ -139,12 +145,12 @@ export class InputManager {
 
         if (!this.isMobile) {
             // Prevents continued firing when cursor leaves the page
-            gameContainer.addEventListener("pointerleave", (event) => {
+            gameContainer.addEventListener("pointerleave", () => {
                 this.attacking = false;
             });
 
             // Prevents continued firing when RMB is pressed
-            gameContainer.addEventListener("pointerup", (event) => {
+            gameContainer.addEventListener("pointerup", () => {
                 this.attacking = false;
             });
         }
@@ -176,16 +182,16 @@ export class InputManager {
                     let slotName: string | undefined;
 
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
-                        this.selectedEmote = InputActions.TopEmoteSlot;
+                        this.selectedEmote = 0;
                         slotName = "top";
                     } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
-                        this.selectedEmote = InputActions.RightEmoteSlot;
+                        this.selectedEmote = 1;
                         slotName = "right";
                     } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
-                        this.selectedEmote = InputActions.BottomEmoteSlot;
+                        this.selectedEmote = 2;
                         slotName = "bottom";
                     } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
-                        this.selectedEmote = InputActions.LeftEmoteSlot;
+                        this.selectedEmote = 3;
                         slotName = "left";
                     }
                     $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
@@ -200,8 +206,8 @@ export class InputManager {
             if (!game.gameOver && game.activePlayer) {
                 const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
-                const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-                this.distanceToMouse = Geometry.distance(game.activePlayer.position, gamePos);
+                this.gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+                this.distanceToMouse = Geometry.distance(game.activePlayer.position, this.gameMousePosition);
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
@@ -454,6 +460,7 @@ export class InputManager {
         toggle_minimap: "Toggle Minimap",
         toggle_hud: "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
+        "+map_ping_wheel": "Map Ping Wheel",
         toggle_console: "Toggle Console"
     };
 

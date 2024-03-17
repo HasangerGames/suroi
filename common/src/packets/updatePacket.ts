@@ -11,6 +11,7 @@ import { Vec, type Vector } from "../utils/vector";
 import { calculateEnumPacketBits, OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 
 import { Packet } from "./packet";
+import { type MapPingDefinition, MapPings } from "../definitions/mapPings";
 
 interface ObjectFullData {
     readonly id: number
@@ -436,9 +437,16 @@ export class UpdatePacket extends Packet {
 
     killFeedMessages: KillFeedMessage[] = [];
 
-    planes: Array<{ readonly position: Vector, readonly direction: number }> = [];
+    planes: Array<{
+        readonly position: Vector
+        readonly direction: number
+    }> = [];
 
-    mapPings: Vector[] = [];
+    mapPings: Array<{
+        readonly position: Vector
+        readonly definition: MapPingDefinition
+        readonly playerId?: number
+    }> = [];
 
     override serialize(): void {
         super.serialize();
@@ -565,7 +573,11 @@ export class UpdatePacket extends Packet {
 
         if (flags & UpdateFlags.MapPings) {
             stream.writeArray(this.mapPings, 4, (ping) => {
-                stream.writePosition(ping);
+                MapPings.writeToStream(stream, ping.definition);
+                stream.writePosition(ping.position);
+                if (ping.definition.isPlayerPing) {
+                    stream.writeObjectID(ping.playerId!);
+                }
             });
         }
     }
@@ -712,7 +724,14 @@ export class UpdatePacket extends Packet {
 
         if (flags & UpdateFlags.MapPings) {
             stream.readArray(this.mapPings, 4, () => {
-                return stream.readPosition();
+                const definition = MapPings.readFromStream(stream);
+                const position = stream.readPosition();
+                const playerId = definition.isPlayerPing ? stream.readObjectID() : undefined;
+                return {
+                    definition,
+                    position,
+                    playerId
+                };
             });
         }
     }

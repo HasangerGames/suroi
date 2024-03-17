@@ -112,10 +112,9 @@ export class Command<
         creatingPair?: boolean
     ) {
         const anyLetterAndUnderscore = "A-Z-a-z_";
-        const firstCharacterRegEx = `[${
-            creatingPair
-                ? `${anyLetterAndUnderscore}+-`
-                : anyLetterAndUnderscore
+        const firstCharacterRegEx = `[${creatingPair
+            ? `${anyLetterAndUnderscore}+-`
+            : anyLetterAndUnderscore
         }]`;
         const commandNameRegExpFilter = new RegExp(
             `^${firstCharacterRegEx}[${anyLetterAndUnderscore}0-9]*$`
@@ -434,7 +433,7 @@ export function setUpCommands(game: Game): void {
         "drop",
         function(): undefined {
             this.inputManager.addAction({
-                type: InputActions.DropItem,
+                type: InputActions.DropWeapon,
                 slot: this.uiManager.inventory.activeWeaponIndex
             });
         },
@@ -674,6 +673,10 @@ export function setUpCommands(game: Game): void {
 
             const scale = this.console.getBuiltInCVar("cv_ui_scale");
 
+            if (!this.inputManager.pingWheelMinimap) {
+                this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
+            }
+
             $("#emote-wheel")
                 .css("left", `${mouseX / scale}px`)
                 .css("top", `${mouseY / scale}px`)
@@ -685,9 +688,25 @@ export function setUpCommands(game: Game): void {
         function(): undefined {
             if (this.inputManager.emoteWheelActive) {
                 this.inputManager.emoteWheelActive = false;
+                this.inputManager.pingWheelMinimap = false;
+
                 $("#emote-wheel").hide();
-                const emote = this.inputManager.selectedEmote;
-                if (emote) this.inputManager.addAction(emote);
+
+                if (this.inputManager.selectedEmote === undefined) return;
+
+                const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
+                if (emote && !this.inputManager.pingWheelActive) {
+                    this.inputManager.addAction({
+                        type: InputActions.Emote,
+                        emote
+                    });
+                } else if (this.inputManager.pingWheelActive) {
+                    this.inputManager.addAction({
+                        type: InputActions.MapPing,
+                        ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
+                        position: this.inputManager.pingWheelPosition
+                    });
+                }
                 this.inputManager.selectedEmote = undefined;
             }
         },
@@ -700,6 +719,29 @@ export function setUpCommands(game: Game): void {
         {
             short: "Closes the emote wheel, using the designated emote, if any",
             long: "When invoked, the emote wheel will be closed, and if an emote has been selected, it will be displayed",
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
+    Command.createInvertiblePair(
+        "map_ping_wheel",
+        function(): undefined {
+            this.inputManager.pingWheelActive = true;
+            this.uiManager.updateEmoteWheel();
+        },
+        function(): undefined {
+            this.inputManager.pingWheelActive = false;
+            this.uiManager.updateEmoteWheel();
+        },
+        game,
+        {
+            short: "Enables the emote wheel to ping mode",
+            long: "When invoked, the emote wheel will switch from triggering emotes to trigger map pings",
+            signatures: [{ args: [], noexcept: true }]
+        },
+        {
+            short: "Disables the emote wheel's ping mode",
+            long: "When invoked, the emote wheel will revert back to trigger emotes",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -849,16 +891,15 @@ export function setUpCommands(game: Game): void {
                 "Given the name of an input (such as a key or mouse button) and a console query, this command establishes a new link between the two.<br>" +
                 'For alphanumeric keys, simply giving the key as-is (e.g. "a", or "1") will do. However, keys with no textual representation, or that represent ' +
                 'punctuation will have to given by name, such as "Enter" or "Period".<br>' +
-                `For mouse buttons, the encodings are as follows:<br><table><tbody>${
-                    (
-                        [
-                            ["Primary (usually left click)", "Mouse0"],
-                            ["Auxillary (usually middle click)", "Mouse1"],
-                            ["Secondary (usually right click)", "Mouse2"],
-                            ["Backwards (usually back-left side-button)", "Mouse3"],
-                            ["Forwards (usually front-left side-button)", "Mouse4"]
-                        ] as Array<[string, string]>
-                    ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")
+                `For mouse buttons, the encodings are as follows:<br><table><tbody>${(
+                    [
+                        ["Primary (usually left click)", "Mouse0"],
+                        ["Auxillary (usually middle click)", "Mouse1"],
+                        ["Secondary (usually right click)", "Mouse2"],
+                        ["Backwards (usually back-left side-button)", "Mouse3"],
+                        ["Forwards (usually front-left side-button)", "Mouse4"]
+                    ] as Array<[string, string]>
+                ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")
                 }</tbody></table>` +
                 "For the scroll wheel, the encoding is simply <code>MWheel</code>, followed by the capitalized direction (ex: <code>MWheelUp</code>)<br>" +
                 'Remember that if your query contains spaces, you must enclose the whole query in double quotes ("") so that it is properly parsed.',
@@ -1328,10 +1369,9 @@ export function setUpCommands(game: Game): void {
                             ? ` ${signature.args
                                 .map(
                                     (arg) =>
-                                        `<em>${arg.rest ? ".." : ""}${arg.name}${arg.optional ? "?" : ""}: ${
-                                            arg.type
-                                                .map(type => `<span class="command-desc-arg-type">${type}</span>`)
-                                                .join(" | ")
+                                        `<em>${arg.rest ? ".." : ""}${arg.name}${arg.optional ? "?" : ""}: ${arg.type
+                                            .map(type => `<span class="command-desc-arg-type">${type}</span>`)
+                                            .join(" | ")
                                         }</em>`
                                 )
                                 .join(", ")}`
