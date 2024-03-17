@@ -5,6 +5,7 @@ import { type Game } from "../../game";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./variables";
+import { sanitizeHTML } from "../misc";
 
 /*
     eslint-disable
@@ -750,13 +751,13 @@ export class GameConsole {
 
             const node = $<HTMLDivElement>("<div tabindex=\"0\" class=\"console-input-autocomplete-entry\"></div>")
                 .append(
-                    this._sanitizeHTML(text, { strict: true, escapeSpaces: true })
+                    sanitizeHTML(text, { strict: true, escapeSpaces: true })
                         .replace(
                             new RegExp(
                                 matches.map(m => this._sanitizeRegExp(m)).join("|"),
                                 "g"
                             ),
-                            r => `<b>${this._sanitizeHTML(r, { strict: true, escapeSpaces: true })}</b>`
+                            r => `<b>${sanitizeHTML(r, { strict: true, escapeSpaces: true })}</b>`
                         )
                 );
 
@@ -984,6 +985,11 @@ export class GameConsole {
              */
             let inString = false;
             /**
+             * Only applicable when in a string, determines whether special characters like `"` and `\` should
+             * be treated as literal characters or if they should fulfill their special functions
+             */
+            let escaping = false;
+            /**
              * A stack of parser nodes, each one corresponding to where a group "begins".
              *
              * Consider the following query:
@@ -1204,7 +1210,13 @@ export class GameConsole {
                         }
                         case "\"": {
                             if (inString) {
-                                args.push("");
+                                if (escaping) {
+                                    addCharToLast();
+                                    escaping = false;
+                                    break;
+                                } else {
+                                    args.push("");
+                                }
                             } else if (args.at(-1)?.length) {
                                 // If we encounter a " in the middle of an argument
                                 // such as `say hel"lo`
@@ -1213,7 +1225,21 @@ export class GameConsole {
                             inString = !inString;
                             break;
                         }
+                        case "\\": {
+                            if (inString) {
+                                if (escaping) {
+                                    addCharToLast();
+                                    escaping = false;
+                                } else {
+                                    escaping = true;
+                                }
+                            } else {
+                                addCharToLast();
+                            }
+                            break;
+                        }
                         default: {
+                            escaping = false;
                             addCharToLast();
                             break;
                         }
@@ -1230,6 +1256,10 @@ export class GameConsole {
 
             if (inString) {
                 throw new CommandSyntaxError("Unterminated string argument");
+            }
+
+            if (escaping) {
+                throw new CommandSyntaxError("Unresolved escape character");
             }
 
             if (groupAnchors.has() && !expectingEndOfGroup) {
@@ -1468,45 +1498,6 @@ export class GameConsole {
         this._ui.output.append(this._generateHTML(entry, raw));
     }
 
-    private readonly _allowedTags = [
-        // Headings
-        "h1", "h2", "h3", "h4", "h5", "h6",
-
-        // Text stuff
-        "blockquote", "p", "pre", "span",
-
-        // List stuff
-        "li", "ol", "ul",
-
-        // Inline elements
-        "a", "em", "b", "bdi", "br", "cite", "code", "del", "ins",
-        "kbd", "mark", "q", "s", "samp", "small", "span", "strong",
-        "sub", "sup", "time", "u", "var",
-
-        // Table stuff
-        "caption", "col", "colgroup", "table", "tbody", "td", "tfoot",
-        "th", "thead", "tr"
-    ];
-
-    private _sanitizeHTML(message: string, opts?: { readonly strict: boolean, readonly escapeSpaces?: boolean }): string {
-        return message.replace(
-            /<\/?.*?>/g,
-            match => {
-                const tag = match.replace(/<\/?|>/g, "").split(" ")[0];
-
-                let str = !opts?.strict && this._allowedTags.includes(tag)
-                    ? match
-                    : match
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;");
-
-                opts?.escapeSpaces && (str = str.replace(/ /g, "&nbsp;"));
-
-                return str;
-            }
-        );
-    }
-
     private _generateHTML(entry: ConsoleData, raw = false): JQuery<HTMLDivElement> {
         const date = (() => {
             const timestamp = new Date(entry.timestamp);
@@ -1537,11 +1528,11 @@ export class GameConsole {
             sanitizer
         ]: [
             "html" | "text",
-            typeof GameConsole["prototype"]["_sanitizeHTML"]
+            typeof sanitizeHTML
         ] = raw
             ? [
                 "html",
-                this._sanitizeHTML.bind(this)
+                sanitizeHTML
             ]
             : [
                 "text",

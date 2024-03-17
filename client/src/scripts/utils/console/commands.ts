@@ -11,13 +11,13 @@ import { Numeric } from "../../../../../common/src/utils/math";
 import { handleResult, type Result } from "../../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
+import { Config } from "../../config";
 import { type Game } from "../../game";
 import { COLORS } from "../constants";
 import { type InputManager } from "../inputManager";
+import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
-import { Config } from "../../config";
-import { stringify } from "../misc";
 
 type CommandExecutor<ErrorType = never> = (
     this: Game,
@@ -1346,7 +1346,7 @@ export function setUpCommands(game: Game): void {
             const alias = gameConsole.aliases.get(name);
 
             if (alias) {
-                gameConsole.log(`Alias '${name}' is defined as <code>${alias}</code>`);
+                gameConsole.log.raw(`Alias '${name}' is defined as <code>${sanitizeHTML(alias)}</code>`);
             } else {
                 return { err: `No alias named '${name}' exists` };
             }

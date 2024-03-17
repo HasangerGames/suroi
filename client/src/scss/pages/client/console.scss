@@ -179,15 +179,15 @@
                 padding: 0 0 0 20px;
             }
 
+            code {
+                background-color: #404040;
+                padding: 1px;
+                color: white;
+            }
+
             details {
                 summary {
                     cursor: pointer;
-                }
-
-                code {
-                    background-color: #404040;
-                    padding: 1px;
-                    color: white;
                 }
 
                 em {
