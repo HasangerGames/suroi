@@ -424,6 +424,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
                     if (typeof value === "function") {
                         if (isDefaultTemplate && value.length !== 0) {
+                            //fixme change this?
                             throw new DefinitionFactoryInitError("Default template must be a no-parameter factory");
                         }
 
@@ -531,6 +532,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         this.definitions = definitions.map(
             def => (
                 function withTrace(def: StageZeroDefinition<Def, () => typeof defaultTemplate>, ...trace: readonly string[]): Def {
+                    if (_noDefaultInheritSymbol in def) {
+                        console.warn("noDefaultInherit does nothing right now, and will probably be removed eventually. so don't use it");
+                    }
+
                     if (!(_inheritFromSymbol in def)) {
                         return mergeDeep<Def>(
                             {} as Def,
