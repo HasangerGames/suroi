@@ -29,3 +29,16 @@ export function stringIsPositiveNumber(str: string): boolean {
     const matches = str.match(/\d+/);
     return matches !== null && matches[0].length === str.length;
 }
+
+export function stringify(val: unknown): string {
+    switch (typeof val) {
+        case "string":
+        case "number":
+        case "undefined":
+        case "object":
+        case "boolean": return `${String(val)}`;
+        case "bigint": return `${val}n`;
+        case "symbol": return val.toString();
+        case "function": return `function ${val.name}(${Array.from({ length: val.length }, (_, i) => `arg${i}`).join(", ")}) -> any`;
+    }
+}

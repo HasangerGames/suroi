@@ -17,6 +17,7 @@ import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
 import { Config } from "../../config";
+import { stringify } from "../misc";
 
 type CommandExecutor<ErrorType = never> = (
     this: Game,
@@ -1079,8 +1080,21 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "",
-            long: "",
+            short: "Prints out the values of CVars",
+            long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:" +
+            `<ul>${(
+                [
+                    [null, "null"],
+                    [undefined, "undefined"],
+                    ["abcd", "string"],
+                    [1234, "number"],
+                    [false, "boolean"],
+                    [5678n, "bigint"],
+                    [Symbol.for("efgh"), "symbol"],
+                    [function sin(x: number): void {}, "function"],
+                    [{}, "object"]
+                ] as Array<[unknown, string]>
+            ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
             signatures: [{ args: [], noexcept: true }]
         }
     );

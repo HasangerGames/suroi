@@ -1,5 +1,6 @@
 import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
+import { stringify } from "../misc";
 import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 
@@ -404,7 +405,7 @@ export class ConsoleVariables {
                     `${cvar.flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : ""}`,
                     `${cvar.flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : ""}`,
                     `${cvar.flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""}`
-                ].join(" ")} =>&nbsp;<code>${cvar.value}</code></li>`
+                ].join(" ")} &rightarrow;&nbsp;<code class="cvar-value-${cvar.value === null ? "null" : typeof cvar.value}">${stringify(cvar.value)}</code></li>`
             ).join("");
     }
 }
