@@ -637,6 +637,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.piercingDamage(this.game.gas.dps, KillType.Gas);
         }
 
+        // Knocked out damage
+        if (this.knocked) {
+            this.piercingDamage(0.04);
+        }
+
         let isInsideBuilding = false;
         const depleters = new Set<SyncedParticleDefinition>();
         for (const object of this.nearObjects) {
