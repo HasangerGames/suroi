@@ -384,7 +384,7 @@ export class Game {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
                             getPosition: isTeamMode && this.teamSpawnPoint
-                                ? () => randomPointInsideCircle(this.teamSpawnPoint!, 10, 5)
+                                ? () => randomPointInsideCircle(this.teamSpawnPoint!, 12, 8)
                                 : undefined,
                             collides: (position) => {
                                 return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
