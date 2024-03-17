@@ -420,8 +420,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.dead = full.dead;
 
             this.teamID = data.full.teamID;
-            if (!this.isActivePlayer && this.teamID === this.game.activeTeamID) {
-                console.log("got here");
+            if (!this.isActivePlayer && this.teamID === this.game.teamID) {
                 this.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
                 this.nameText.style.fill = this.game.playerNames.get(this.id)?.nameColor ?? "#FFFFFF";
             }

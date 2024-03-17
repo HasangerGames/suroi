@@ -97,7 +97,7 @@ export class Game {
 
     activePlayerID = -1;
 
-    activeTeamID = -1;
+    teamID = -1;
 
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
@@ -388,6 +388,8 @@ export class Game {
         }
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
+
+        this.teamID = packet.teamID;
 
         $("canvas").addClass("active");
         $("#splash-ui").fadeOut(400, resetPlayButtons);
