@@ -228,32 +228,33 @@ export class UIManager {
             $("#spectating-container").toggle(data.spectating);
         }
 
-        if (data.dirty.team) {
-            this.game.team = data.team;
+        if (data.dirty.teammates) {
+            this.ui.teamHealthContainer
+                .html(data.teammates.map(player => {
+                    return `${player.id} ${this.game.playerNames.get(player.id)?.name}: ${player.normalizedHealth} HP`;
+                }).join("<br>"));
             /*eslint array-callback-return: */
-            data.team.players.forEach((player, index) => {
-                this.ui.teamHealthContainer
-                    .html(data.team.players.map(player => {
-                        return `${this.game.playerNames.get(player.id)?.name}: ${player.health} HP`;
-                    }).join("<br>"));
+            data.teammates.forEach((player, index) => {
+                if (index >= this.game.map.teammateIndicators.size) {
+                    this.game.map.teammateIndicators.add(
+                        new TeammateIndicator(
+                            player.position,
+                            player.id,
+                            TEAMMATE_COLORS[index + 1],
+                            this.game.map.expanded ? 1 : 0.75
+                        )
+                    );
+                }
 
-                if (player.id !== this.game.activePlayerID) {
-                    if (index >= this.game.map.teammateIndicators.size) {
-                        this.game.map.teammateIndicators.add(new TeammateIndicator(player.pos, player.id, TEAMMATE_COLORS[index], this.game.map.expanded ? 1 : 0.75));
-                    }
+                for (const indicator of this.game.map.teammateIndicators) {
+                    if (indicator.id !== player.id) continue;
 
-                    this.game.map.teammateIndicators.forEach(teammate => {
-                        if (teammate.id === player.id) {
-                            if (player.health === 0) {
-                                teammate.setFrame("teammate_icon_dead");
-                            } else {
-                                teammate.setVPos(player.pos);
-                            }
-                        }
-                    });
-                } else {
-                    if(player.knocked) {
-                        this.ui.healthBar.css("background-color", "#8B0000");
+                    indicator.setVPos(player.position);
+
+                    if (player.knocked) {
+                        indicator.setFrame("player_indicator_knocked");
+                    } else if (player.normalizedHealth === 0) {
+                        indicator.setFrame("player_indicator_dead");
                     }
                 }
             });

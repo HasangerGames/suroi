@@ -30,7 +30,11 @@ export class Minimap {
 
     readonly sprite = new Sprite();
     texture?: Texture;
-    readonly indicator = new SuroiSprite("player_indicator.svg").setTint(TEAMMATE_COLORS[0]);
+
+    readonly indicator = new SuroiSprite("player_indicator")
+        .setTint(TEAMMATE_COLORS[0])
+        .setZIndex(1000);
+
     readonly teammateIndicators = new Set<TeammateIndicator>();
     readonly teammateIndicatorContainer = new Container();
 
@@ -637,7 +641,8 @@ export class TeammateIndicator extends SuroiSprite {
             .setFrame("player_indicator")
             .setVPos(position)
             .setTint(color)
-            .setScale(scale);
+            .setScale(scale)
+            .setZIndex(999);
         this.initialized = false;
         this.color = color;
         this.id = id;

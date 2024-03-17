@@ -75,7 +75,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     }
 
     /**
-     * Sets this object as fully fully dirty
+     * Sets this object as fully dirty
      * This means all the serialization data will be sent to clients
      */
     setDirty(): void {

@@ -40,17 +40,10 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-
-export interface Team {
-    tid: number
-    teamLeader: number
-    players: number[]
-    kills: number
-}
+import { isTeamMode, type Team } from "./team";
 
 export class Game {
     readonly _id: number;
-    tidSpawn!: Vector;
     get id(): number { return this._id; }
 
     readonly map: Map;
@@ -65,7 +58,6 @@ export class Game {
     readonly livingPlayers = new Set<Player>();
     readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
-    readonly teams: Team[] = [];
     /**
      * New players created this tick
      */
@@ -74,6 +66,10 @@ export class Game {
     * Players deleted this tick
     */
     readonly deletedPlayers: number[] = [];
+
+    readonly teams: Team[] = [];
+    incompleteTeam?: Team;
+    teamSpawnPoint?: Vector;
 
     readonly explosions: Explosion[] = [];
     readonly emotes: Emote[] = [];
@@ -134,8 +130,6 @@ export class Game {
 
     tickTimes: number[] = [];
 
-    maxTeamSize: number;
-
     constructor(id: number) {
         this._id = id;
 
@@ -149,8 +143,6 @@ export class Game {
         this.gas = new Gas(this);
 
         this.allowJoin = true;
-
-        this.maxTeamSize = Config.maxTeamSize;
 
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
@@ -379,8 +371,6 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
 
-        const playerTID = this.nextPlayerTID;
-
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
@@ -393,6 +383,9 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            getPosition: isTeamMode && this.teamSpawnPoint
+                                ? () => randomPointInsideCircle(this.teamSpawnPoint!, 10, 5)
+                                : undefined,
                             collides: (position) => {
                                 return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
                             }
@@ -401,46 +394,11 @@ export class Game {
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player) {
+                        if (object instanceof Player && (!isTeamMode || !this.incompleteTeam?.players.includes(object))) {
                             foundPosition = false;
                         }
                     }
                     tries++;
-                }
-                break;
-            }
-            case SpawnMode.SameTID: {
-                if (this.playersWithTID === 1) {
-                    const gasRadius = this.gas.newRadius ** 2;
-                    let foundPosition = false;
-                    let tries = 0;
-                    while (!foundPosition && tries < 100) {
-                        spawnPosition = this.map.getRandomPosition(
-                            hitbox,
-                            {
-                                maxAttempts: 500,
-                                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                                collides: (position) => {
-                                    return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                                }
-                            }
-                        ) ?? spawnPosition;
-
-                        const radiusHitbox = new CircleHitbox(50, spawnPosition);
-                        for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                            if (object instanceof Player) {
-                                foundPosition = false;
-                            }
-                        }
-                        tries++;
-                    }
-
-                    this.tidSpawn = spawnPosition;
-                } else {
-                    spawnPosition = randomPointInsideCircle(
-                        this.tidSpawn,
-                        Config.spawn.radius
-                    );
                 }
                 break;
             }
@@ -472,33 +430,8 @@ export class Game {
             // No case for SpawnMode.Center because that's the default
         }
 
-        const player = new Player(this, socket, spawnPosition);
-        player.tid = playerTID;
-
-        if (!this.teams[playerTID]) {
-            // Create team
-            const team: Team = {
-                tid: playerTID,
-                players: [player.id],
-                kills: 0,
-                teamLeader: player.id
-            };
-
-            this.teams[playerTID] = team;
-            player.team = team;
-        } else {
-            this.teams[playerTID].players.push(player.id);
-            player.team = this.teams[playerTID];
-
-            this.teams[playerTID].players.forEach((playerId) => {
-                const player = this.getConnectedPlayer(playerId);
-                if (!player) return;
-                player.team = this.teams[playerTID];
-            });
-        }
-        player.dirty.team = true;
         // Player is added to the players array when a JoinPacket is received from the client
-        return player;
+        return new Player(this, socket, spawnPosition);
     }
 
     // Called when a JoinPacket is sent by the client
@@ -806,42 +739,14 @@ export class Game {
         }, GameConstants.airdrop.flyTime);
     }
 
-    getLivingPlayer(id: number): Player | undefined {
-        for (const player of this.livingPlayers) {
-            if (player.id === id) return player;
-        }
-    }
-
-    getConnectedPlayer(id: number): Player | undefined {
-        for (const player of this.connectedPlayers) {
-            if (player.id === id) return player;
-        }
-    }
-
     get aliveCount(): number {
         return this.livingPlayers.size;
     }
 
     idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
-    currentTID: number = 0;
-    playersWithTID: number = 0;
-
     get nextObjectID(): number {
         return this.idAllocator.takeNext();
-    }
-
-    get nextPlayerTID(): number {
-        if (this.playersWithTID === Config.maxTeamSize) {
-            this.currentTID += 1;
-            this.playersWithTID = 1;
-        } else {
-            this.playersWithTID += 1;
-        }
-
-        const tid = this.currentTID;
-
-        return tid;
     }
 }
 

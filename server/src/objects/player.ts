@@ -25,7 +25,7 @@ import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
-import { type Team, type Game } from "../game";
+import { type Game } from "../game";
 import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
@@ -42,6 +42,7 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { Team, isTeamMode } from "../team";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -52,7 +53,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     name: string;
     readonly ip?: string;
-    tid: number = 0;
+    teamID?: number;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -63,13 +64,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     joined = false;
     disconnected = false;
 
-    private _team!: Team;
-    get team(): Team {
+    private _team?: Team;
+    get team(): Team | undefined {
         return this._team;
     }
 
     set team(value: Team) {
-        this.dirty.team = true;
+        this.dirty.teammates = true;
         this._team = value;
     }
 
@@ -85,11 +86,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
         this.dirty.maxMinStats = true;
-        this.team?.players.forEach(playerId => {
-            const player = this.game.getLivingPlayer(playerId);
-            if (!player) return;
-            player.dirty.team = true;
-        });
+        this.team?.setDirty();
         this.health = this._health;
     }
 
@@ -97,11 +94,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     get health(): number { return this._health; }
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
-        this.team?.players.forEach(playerId => {
-            const player = this.game.getLivingPlayer(playerId);
-            if (!player) return;
-            player.dirty.team = true;
-        });
+        this.team?.setDirty();
         this.dirty.health = true;
     }
 
@@ -201,7 +194,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     readonly dirty: PlayerData["dirty"] = {
         id: true,
-        team: true,
+        teammates: true,
         health: true,
         maxMinStats: true,
         adrenaline: true,
@@ -318,7 +311,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     invulnerable = true;
 
     /**
-     * Determines if the player can despawn\
+     * Determines if the player can despawn
      * Set to false once the player picks up loot
      */
     canDespawn = true;
@@ -341,23 +334,29 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     set position(position: Vector) {
         this.hitbox.position = position;
-        this.team?.players.forEach(playerId => {
-            const player = this.game.getLivingPlayer(playerId);
-            if (!player) return;
-            player.dirty.team = true;
-        });
+        this.team?.setDirty();
     }
 
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
-
-    spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
 
     // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
     //objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
+
+        if (isTeamMode) {
+            if (!this.game.incompleteTeam || this.game.incompleteTeam?.players.length === Config.maxTeamSize) {
+                this.game.teamSpawnPoint = position;
+                this.game.incompleteTeam = new Team((this.game.incompleteTeam?.id ?? -1) + 1, this);
+                this.game.teams.push(this.game.incompleteTeam);
+            } else {
+                this.game.incompleteTeam.players.push(this);
+            }
+            this.team = this.game.incompleteTeam;
+            this.dirty.teammates = true;
+        }
 
         const userData = socket.getUserData();
         this.socket = socket;
@@ -496,10 +495,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.throwableItemMap.get(idString)!.count = this.inventory.items.getItem(idString);
     }
 
-    spawnPos(position: Vector): void {
-        this.spawnPosition = position;
-    }
-
     emote(slot: number): void {
         const emote = this.loadout.emotes[slot];
 
@@ -541,17 +536,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         /* eslint-disable no-multi-spaces */
-        let speed = Config.movementSpeed *                // Base speed
+        const speed = Config.movementSpeed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
+            (this.knocked ? 0.5 : 1) *                      // Knocked out speed multiplier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
-
-        if(this.knocked) {
-            speed *= 0.5;
-        }
 
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
@@ -758,18 +750,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            team: {
-                tid: this.tid,
-                players: this.team.players.map(playerId => {
-                    const player = Array.from(this.game.livingPlayers.values()).find(p => p.id === playerId);
+            teammates: isTeamMode
+                ? this.team!.players.filter(p => p !== this).map(player => {
                     return {
-                        id: playerId,
-                        pos: player?.position ?? Vec.create(0, 0),
-                        health: player?.health ?? 0,
-                        knocked: player?.knocked ?? false
+                        id: player.id,
+                        position: player.position,
+                        normalizedHealth: player.health / player.maxHealth,
+                        knocked: player.knocked
                     };
                 })
-            },
+                : [],
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
             inventory: {
@@ -1002,8 +992,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
     piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
-        if (this.invulnerable) return;
-        if (source instanceof Player && source.tid === this.tid && source.id !== this.id) return;
+        if (
+            this.invulnerable ||
+            (source instanceof Player && source.teamID === this.teamID && source.id !== this.id)
+        ) return;
 
         amount = this._clampDamageAmount(amount);
 
@@ -1049,20 +1041,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             }
 
-            let teammatesDead = true;
-
-            for(let i = 0; i < this.team.players.length; i++) {
-                const teammate: any = Array.from(this.game.livingPlayers.values()).find(p => p.id === this.team.players[i])
-                if(!teammate.knocked) {
-                    teammatesDead = false;
-                }
-            }
-
-            if(!this.knocked) {
+            if (isTeamMode && this.team!.players.some(p => !p.dead) && !this.knocked) {
                 this.knock();
             } else {
                 this.die(source, weaponUsed);
             }
+            this.team?.setDirty();
         }
     }
 
@@ -1250,7 +1234,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.health = 100;
     }
 
-    revived(): void {
+    revive(): void {
         this.knocked = false;
         this.health = 30;
     }
@@ -1451,7 +1435,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             rotation: this.rotation,
             full: {
                 dead: this.dead,
-                tid: this.tid,
+                teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,

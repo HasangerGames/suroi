@@ -95,18 +95,9 @@ export class Game {
         readonly badge?: BadgeDefinition
     }>();
 
-    private _activePlayerID = -1;
+    activePlayerID = -1;
 
-    public get activePlayerID(): number {
-        return this._activePlayerID;
-    }
-
-    public set activePlayerID(value) {
-        console.trace(value);
-        this._activePlayerID = value;
-    }
-
-    activePlayerTID = -1;
+    activeTeamID = -1;
 
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
@@ -137,8 +128,6 @@ export class Game {
     readonly music: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
-
-    team: PlayerData["team"] | undefined;
 
     private readonly _timeouts = new Set<Timeout>();
 

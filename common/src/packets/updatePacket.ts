@@ -32,7 +32,7 @@ export interface PlayerData {
         weapons: boolean
         items: boolean
         id: boolean
-        team: boolean
+        teammates: boolean
         zoom: boolean
         throwable: boolean
     }
@@ -40,15 +40,12 @@ export interface PlayerData {
     id: number
     spectating: boolean
 
-    team: {
-        tid: number
-        players: Array<{
-            id: number
-            pos: Vector
-            health: number
-            knocked: boolean
-        }>
-    }
+    teammates: Array<{
+        id: number
+        position: Vector
+        normalizedHealth: number
+        knocked: boolean
+    }>
 
     health: number
     adrenaline: number
@@ -104,17 +101,14 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         stream.writeBoolean(data.spectating);
     }
 
-    stream.writeBoolean(dirty.team);
-    if (dirty.team) {
-        stream.writeUint8(data.team.tid);
-        stream.writeUint8(data.team.players.length);
-
-        for (const player of data.team.players) {
+    stream.writeBoolean(dirty.teammates);
+    if (dirty.teammates) {
+        stream.writeArray(data.teammates, 2, player => {
             stream.writeObjectID(player.id);
-            stream.writePosition(player.pos ?? Vec.create(0, 0));
-            stream.writeUint8(player.health);
-            stream.writeBoolean(player.knocked)
-        }
+            stream.writePosition(player.position ?? Vec.create(0, 0));
+            stream.writeFloat(player.normalizedHealth, 0, 1, 8);
+            stream.writeBoolean(player.knocked);
+        });
     }
 
     const inventory = data.inventory;
@@ -196,21 +190,16 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
         data.spectating = stream.readBoolean();
     }
 
-    if (dirty.team = stream.readBoolean()) {
-        data.team = {
-            tid: stream.readUint8(),
-            players: [] as PlayerData["team"]["players"]
-        };
-
-        const playersLength = stream.readUint8();
-        for (let i = 0; i < playersLength; i++) {
-            data.team.players.push({
+    if (dirty.teammates = stream.readBoolean()) {
+        data.teammates = [];
+        stream.readArray(data.teammates, 2, () => {
+            return {
                 id: stream.readObjectID(),
-                pos: stream.readPosition(),
-                health: stream.readUint8(),
+                position: stream.readPosition(),
+                normalizedHealth: stream.readFloat(0, 1, 8),
                 knocked: stream.readBoolean()
-            });
-        }
+            };
+        });
     }
 
     if (dirty.weapons = stream.readBoolean()) {

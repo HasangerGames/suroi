@@ -32,7 +32,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
 
     name!: string;
-    tid!: number;
+    teamID!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
@@ -74,13 +74,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly emoteBackground: SuroiSprite
         readonly emote: SuroiSprite
         readonly waterOverlay: SuroiSprite
-        readonly nameText: Text
     };
 
     hideEquipment = false;
 
     readonly emoteContainer: Container;
+
+    readonly nameText: Text;
     readonly nameContainer: Container;
+
     healingParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
@@ -125,31 +127,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emote: new SuroiSprite().setPos(0, 0),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
-            nameText: new Text(
-                "",
-                {
-                    fontSize: 36,
-                    fontFamily: "Inter",
-                    dropShadow: true,
-                    dropShadowBlur: 2,
-                    dropShadowDistance: 2,
-                    dropShadowColor: 0
-                }
-            )
         };
 
         this.container.addChild(
             this.images.aimTrail,
             this.images.vest,
             this.images.body,
-            this.images.waterOverlay,
             this.images.leftFist,
             this.images.rightFist,
+            this.images.backpack,
+            this.images.helmet,
             this.images.weapon,
             this.images.altWeapon,
             this.images.muzzleFlash,
-            this.images.backpack,
-            this.images.helmet
+            this.images.waterOverlay
         );
         this.images.body.eventMode = "static";
 
@@ -168,7 +159,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.camera.addObject(this.nameContainer);
         this.nameContainer.zIndex = ZIndexes.DeathMarkers;
 
-        this.nameContainer.addChild(this.images.nameText);
+        this.nameText = new Text(
+            {
+                text: "",
+                style: {
+                    fontFamily: "Inter",
+                    fontSize: 36,
+                    dropShadow: { blur: 2, distance: 2, color: 0, alpha: 0.5, angle: 0 }
+                }
+            }
+        );
+        this.nameContainer.addChild(this.nameText);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -308,22 +309,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        if (data.full) {
-            this.tid = data.full.tid;
-        }
-
-        if (this.game) {
-            if (!this.isActivePlayer && this.game.activePlayerTID === this.tid) {
-                this.images.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
-                const player = this.game.playerNames.get(this.id);
-                if (player) {
-                    this.images.nameText.style.fill = player.nameColor.toHex();
-                } else {
-                    this.images.nameText.style.fill = "#FFFFFF";
-                }
-            }
-        }
-
         this.rotation = data.rotation;
 
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
@@ -432,6 +417,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.container.visible = !full.dead;
             this.dead = full.dead;
+
+            this.teamID = data.full.teamID;
+            if (!this.isActivePlayer && this.teamID === this.game.activeTeamID) {
+                console.log("got here");
+                this.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
+                this.nameText.style.fill = this.game.playerNames.get(this.id)?.nameColor ?? "#FFFFFF";
+            }
 
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
@@ -1236,6 +1228,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.actionSound?.stop();
         if (this.isActivePlayer) $("#action-container").hide();
         this.emoteContainer.destroy();
+        this.nameText.destroy();
+        this.nameContainer.destroy();
 
         const anims = this.anims;
         anims.emoteHide?.kill();

@@ -9,7 +9,7 @@ export class JoinedPacket extends Packet {
 
     protocolVersion!: number;
 
-    tid!: number;
+    teamID!: number;
     emotes: Array<EmoteDefinition | undefined> = [];
 
     override serialize(): void {
@@ -22,7 +22,7 @@ export class JoinedPacket extends Packet {
             Emotes.writeOptional(stream, emote);
         }
 
-        stream.writeUint16(this.tid);
+        stream.writeBits(this.teamID, 6);
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -30,6 +30,6 @@ export class JoinedPacket extends Packet {
 
         this.emotes = Array.from({ length: 6 }, () => Emotes.readOptional(stream));
 
-        this.tid = stream.readUint16();
+        this.teamID = stream.readBits(6);
     }
 }
