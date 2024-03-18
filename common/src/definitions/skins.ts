@@ -40,7 +40,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         apply("with_role", {}, ["leia"], ["Leia"]),
         apply("with_role", {}, ["limenade"], ["LimeNade"]),
         apply("with_role", {}, ["katie"], ["Katie"]),
-        apply("with_role", {}, ["eipi"], ["eiπ"]),
+        apply("with_role", {}, ["eipi"], ["eipi"]),
         apply("with_role", {}, ["123op"], ["123OP"]),
         apply("with_role", {}, ["radians"], ["Radians"]),
         apply("with_role", {}, ["developr"], ["Developr Swag"]),
