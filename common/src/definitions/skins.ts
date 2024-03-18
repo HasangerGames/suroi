@@ -327,5 +327,35 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         grassTint: true,
         hideEquipment: true,
         hideFromLoadout: true
+    },
+    {
+        idString: "lemon",
+        name: "Lemon",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "flamingo",
+        name: "Flamingo",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "terracotta",
+        name: "Terracotta",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "deep_sea",
+        name: "Deep Sea",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "The_amatuer",
+        name: "The Amatuer",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "The_pro",
+        name: "The Pro",
+        itemType: ItemType.Skin
     }
 ]);
