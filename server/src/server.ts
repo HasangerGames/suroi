@@ -83,7 +83,7 @@ const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
 
 export interface Punishment { readonly type: "rateLimit" | "warning" | "tempBan" | "permaBan", readonly expires?: number }
-let punishments: Record<string, Punishment> = {};
+export let punishments: Record<string, Punishment> = {};
 
 function removePunishment(ip: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -178,6 +178,26 @@ app.get("/api/punishments", (res, req) => {
     }
 });
 
+app.post("/api/addPunishment", (res, req) => {
+    cors(res);
+
+    res.onAborted(() => {});
+
+    const password = req.getHeader("password");
+    res.onData((data) => {
+        if (password === Config.protection?.punishments?.password) {
+            const body = decoder.decode(data);
+            punishments = {
+                ...punishments,
+                ...JSON.parse(body)
+            };
+            res.writeStatus("204 No Content").endWithoutBody(0);
+        } else {
+            forbidden(res);
+        }
+    });
+});
+
 app.get("/api/removePunishment", (res, req) => {
     cors(res);
 
@@ -195,6 +215,7 @@ export interface PlayerContainer {
     player?: Player
     readonly ip: string | undefined
     readonly role?: string
+
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean
@@ -273,10 +294,12 @@ app.ws("/play", {
             role = givenRole;
             isDev = !Config.roles[givenRole].noPrivileges;
 
-            try {
-                const colorString = searchParams.get("nameColor");
-                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-            } catch { }
+            if (isDev) {
+                try {
+                    const colorString = searchParams.get("nameColor");
+                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+                } catch {}
+            }
         }
 
         //

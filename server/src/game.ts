@@ -3,7 +3,7 @@ import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketTyp
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { SyncedParticles, type SyncedParticleSpawnerDefinition, type SyncedParticleDefinition } from "../../common/src/definitions/syncedParticles";
+import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -131,8 +131,9 @@ export class Game {
 
         const start = Date.now();
 
+        const map = Maps[Config.mapName];
         // Generate map
-        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height);
+        this.grid = new Grid(map.width, map.height);
         this.map = new Map(this, Config.mapName);
 
         this.gas = new Gas(this);
@@ -291,6 +292,7 @@ export class Game {
                     movement.left = false;
                     movement.right = false;
                     lastManStanding.attacking = false;
+                    if (lastManStanding.loadout.emotes[5]?.idString !== "none") lastManStanding.emote(5);
                     lastManStanding.sendGameOverPacket(true);
                 }
 
@@ -425,7 +427,7 @@ export class Game {
     activatePlayer(player: Player, packet: JoinPacket): void {
         let name = packet.name;
         if (
-            name.length === 0 ||
+            !name.length ||
             (Config.censorUsernames && hasBadWords(name)) ||
             // eslint-disable-next-line no-control-regex
             /[^\x00-\x7F]/g.test(name) // extended ASCII chars
@@ -436,10 +438,15 @@ export class Game {
         const skin = packet.skin;
         if (
             skin.itemType === ItemType.Skin &&
-            !skin.notInLoadout &&
-            (skin.roleRequired === undefined || skin.roleRequired === player.role)
+            !skin.hideFromLoadout &&
+            ((skin.roleRequired ?? player.role) === player.role)
         ) {
             player.loadout.skin = skin;
+        }
+
+        const badge = packet.badge;
+        if (badge && (!badge.roles || (player.role !== undefined && badge.roles?.includes(player.role)))) {
+            player.loadout.badge = packet.badge;
         }
         player.loadout.emotes = packet.emotes;
 

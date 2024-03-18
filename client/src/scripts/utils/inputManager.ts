@@ -64,6 +64,9 @@ export class InputManager {
 
     turning = false;
 
+    // Initialize an array to store focus state for keypresses
+    focusController: string[] = [];
+
     private _lastInputPacket: InputPacket | undefined;
     private _inputPacketTimer = 0;
 
@@ -73,6 +76,7 @@ export class InputManager {
 
         // assigning it directly breaks comparing last and current input packet
         // since javascript will pass it by reference
+        // TODO will spread syntax work? packet.movement = { ...this.movement };
         packet.movement = {
             up: this.movement.up,
             down: this.movement.down,
@@ -105,7 +109,8 @@ export class InputManager {
 
         this._inputPacketTimer++;
 
-        if (!this._lastInputPacket ||
+        if (
+            !this._lastInputPacket ||
             packet.didChange(this._lastInputPacket) ||
             this._inputPacketTimer >= GameConstants.tickrate
         ) {
@@ -132,14 +137,23 @@ export class InputManager {
         const game = this.game;
         const gameContainer = $("#game")[0];
 
-        // Prevents continued firing when cursor leaves the page
-        gameContainer.addEventListener("pointerleave", (event) => {
-            this.attacking = false;
-        });
+        if (!this.isMobile) {
+            // Prevents continued firing when cursor leaves the page
+            gameContainer.addEventListener("pointerleave", (event) => {
+                this.attacking = false;
+            });
 
-        // Prevents continued firing when RMB is pressed
-        gameContainer.addEventListener("pointerup", (event) => {
-            this.attacking = false;
+            // Prevents continued firing when RMB is pressed
+            gameContainer.addEventListener("pointerup", (event) => {
+                this.attacking = false;
+            });
+        }
+
+        window.addEventListener("blur", () => {
+            for (const k of this.focusController) {
+                this.handleLostFocus(k);
+            }
+            this.focusController = [];
         });
 
         // different event targets… why?
@@ -251,9 +265,7 @@ export class InputManager {
 
                 const def = activePlayer.activeItem;
 
-                if (def.itemType === ItemType.Gun) {
-                    activePlayer.images.aimTrail.alpha = 1;
-                }
+                activePlayer.images.aimTrail.alpha = 1;
 
                 const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
                 if (def.itemType === ItemType.Gun && def.shootOnRelease) {
@@ -302,6 +314,15 @@ export class InputManager {
         */
 
         if (event instanceof KeyboardEvent) {
+            // This statement cross references and updates focus checks for key presses.
+            if (down) {
+                if (!this.focusController.includes(event.key)) {
+                    this.focusController.push(event.key);
+                }
+            } else {
+                this.focusController = this.focusController.filter(item => item !== event.key);
+            }
+
             let modifierCount = 0;
             (
                 [
@@ -347,6 +368,11 @@ export class InputManager {
         }
     }
 
+    // Update keypresses when the page looses focus
+    private handleLostFocus(key: string): void {
+        this.fireAllEventsAtKey(key.toUpperCase(), false);
+    }
+
     private fireAllEventsAtKey(input: string, down: boolean): number {
         const actions = this.binds.getActionsBoundToInput(input) ?? [];
         for (const action of actions) {
@@ -356,8 +382,11 @@ export class InputManager {
                     query = query.replace("+", "-");
                 } else query = ""; // If the action isn't invertible, then we do nothing
             }
-
+            //little exception for those without the loot bind bound
             this.game.console.handleQuery(query);
+            if (this.binds.getInputsBoundToAction("loot").length === 0 && query === "interact") {
+                this.game.console.handleQuery("loot");
+            }
         }
 
         return actions.length;
@@ -402,6 +431,7 @@ export class InputManager {
         "+left": "Move Left",
         "+right": "Move Right",
         interact: "Interact",
+        loot: "Loot",
         "slot 0": "Equip Primary",
         "slot 1": "Equip Secondary",
         "slot 2": "Equip Melee",
@@ -507,9 +537,7 @@ export class InputManager {
         );
 
         let activeButton: HTMLButtonElement | undefined;
-        for (const a in defaultBinds) {
-            const action = a as keyof (typeof defaultBinds);
-
+        for (const action in defaultBinds) {
             const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
 
             $("<div/>", {
@@ -533,7 +561,6 @@ export class InputManager {
             actions.forEach((bind, i) => {
                 const bindButton = buttons[i];
 
-                // eslint-disable-next-line no-inner-declarations
                 const setKeyBind = (event: KeyboardEvent | MouseEvent | WheelEvent): void => {
                     event.stopImmediatePropagation();
 

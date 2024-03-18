@@ -1,6 +1,5 @@
-import "@pixi/graphics-extras";
 import $ from "jquery";
-import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile, type ColorSource } from "pixi.js";
+import { Container, Graphics, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
@@ -58,12 +57,14 @@ export class Minimap {
         this.game = game;
         game.pixi.stage.addChild(this.container);
 
+        // note: since pixi v8 masks also need to be added to the stage
+        // so they update properly when redrawing
+        game.pixi.stage.addChild(this.mask);
         this.objectsContainer.mask = this.mask;
 
         this.container.addChild(this.objectsContainer);
         this.container.addChild(this.border);
 
-        window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
@@ -125,29 +126,20 @@ export class Minimap {
 
         const drawTerrain = (ctx: Graphics, scale: number, gridLineWidth: number): void => {
             ctx.zIndex = ZIndexes.Ground;
-            ctx.beginFill();
-
-            ctx.fill.color = COLORS.water.toNumber();
-            ctx.drawRect(0, 0, width * scale, height * scale);
 
             const radius = 20 * scale;
 
             const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
             // The grass is a hole in the map shape, the background clear color is the grass color
-            ctx.beginHole();
-            ctx.drawRoundedShape?.(beach, radius);
-            ctx.endHole();
+            ctx.roundShape(beach, radius);
+            ctx.cut();
 
-            ctx.fill.color = COLORS.beach.toNumber();
-
-            ctx.drawRoundedShape?.(beach, radius);
-
-            ctx.beginHole();
+            ctx.roundShape?.(beach, radius);
+            ctx.fill(COLORS.beach);
 
             const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
-            ctx.drawRoundedShape?.(grass, radius);
-
-            ctx.endHole();
+            ctx.roundShape(grass, radius);
+            ctx.cut();
 
             // gets the river polygon with the middle 2 points not rounded
             // so it joins nicely with other rivers
@@ -162,25 +154,26 @@ export class Minimap {
                 });
             }
 
-            // no rivers breaks map graphics
-            if (rivers.length) {
-                // river bank needs to be draw first
-                for (const river of rivers) {
-                    ctx.fill.color = COLORS.riverBank.toNumber();
-                    ctx.drawRoundedShape?.(getRiverPoly(river.bankHitbox.points), 0, true);
-                }
-                for (const river of rivers) {
-                    ctx.fill.color = COLORS.water.toNumber();
-                    ctx.drawRoundedShape?.(getRiverPoly(river.waterHitbox.points), 0, true);
-                }
-                // clip the river polygons
-                ctx.drawRect(0, 0, width * scale, height * scale);
-                ctx.beginHole();
-                ctx.drawRoundedShape?.(beach, radius);
-                ctx.endHole();
+            // river bank needs to be draw first
+            ctx.beginPath();
+            for (const river of rivers) {
+                ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
             }
+            ctx.fill(COLORS.riverBank);
 
-            ctx.lineStyle({
+            ctx.beginPath();
+            for (const river of rivers) {
+                ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+            }
+            ctx.fill(COLORS.water);
+
+            ctx.beginPath();
+            ctx.rect(0, 0, width * scale, height * scale);
+            ctx.fill(COLORS.water);
+            ctx.roundShape(beach, radius);
+            ctx.cut();
+
+            ctx.setStrokeStyle({
                 color: 0x000000,
                 alpha: 0.1,
                 width: gridLineWidth
@@ -199,37 +192,40 @@ export class Minimap {
                 ctx.lineTo(gridWidth, y);
             }
 
-            ctx.endFill();
-            ctx.lineStyle();
+            ctx.stroke();
 
             for (const building of mapPacket.objects) {
                 if (building.type !== ObjectCategory.Building) continue;
 
                 const definition = building.definition;
                 if (definition.groundGraphics) {
-                    const drawGroundGraphics = (color: ColorSource, hitbox: Hitbox): void => {
+                    const drawGroundGraphics = (hitbox: Hitbox): void => {
                         // TODO Make this code prettier
-                        if (!(hitbox instanceof HitboxGroup)) ctx.beginFill(color);
                         if (hitbox instanceof RectangleHitbox) {
                             const width = hitbox.max.x - hitbox.min.x;
                             const height = hitbox.max.y - hitbox.min.y;
-                            ctx.drawRect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
+                            ctx.rect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
                         } else if (hitbox instanceof CircleHitbox) {
                             ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
                         } else if (hitbox instanceof PolygonHitbox) {
-                            ctx.drawPolygon(hitbox.points.map(v => Vec.scale(v, scale)));
+                            ctx.poly(hitbox.points.map(v => {
+                                const vec = Vec.scale(v, scale);
+                                return [vec.x, vec.y];
+                            }).flat());
                         } else if (hitbox instanceof HitboxGroup) {
                             for (const hitBox of hitbox.hitboxes) {
-                                drawGroundGraphics(color, hitBox);
+                                drawGroundGraphics(hitBox);
                             }
                         }
                         if (!(hitbox instanceof HitboxGroup)) {
                             ctx.closePath();
-                            ctx.endFill();
                         }
                     };
                     for (const ground of definition.groundGraphics) {
-                        drawGroundGraphics(ground.color, ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
+                        ctx.beginPath();
+                        drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
+                        ctx.closePath();
+                        ctx.fill(ground.color);
                     }
                 }
             }
@@ -244,12 +240,11 @@ export class Minimap {
         const realWidth = width * PIXI_SCALE;
         const realHeight = height * PIXI_SCALE;
 
-        terrainGraphics.beginFill(COLORS.border);
-        terrainGraphics.drawRect(-margin, -margin, realWidth + doubleMargin, margin);
-        terrainGraphics.drawRect(-margin, realHeight, realWidth + doubleMargin, margin);
-        terrainGraphics.drawRect(-margin, -margin, margin, realHeight + doubleMargin);
-        terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + doubleMargin);
-        terrainGraphics.endFill();
+        terrainGraphics.rect(-margin, -margin, realWidth + doubleMargin, margin);
+        terrainGraphics.rect(-margin, realHeight, realWidth + doubleMargin, margin);
+        terrainGraphics.rect(-margin, -margin, margin, realHeight + doubleMargin);
+        terrainGraphics.rect(realWidth, -margin, margin, realHeight + doubleMargin);
+        terrainGraphics.fill(COLORS.border);
 
         this.game.camera.addObject(terrainGraphics);
 
@@ -321,9 +316,7 @@ export class Minimap {
             resolution: isMobile.any ? 1 : 2
         });
 
-        renderTexture.baseTexture.clearColor = COLORS.grass;
-
-        this.game.pixi.renderer.render(mapRender, { renderTexture });
+        this.game.pixi.renderer.render({ container: mapRender, target: renderTexture, clearColor: COLORS.grass });
         this.sprite.texture.destroy(true);
         this.sprite.texture = renderTexture;
         mapRender.destroy({
@@ -335,18 +328,24 @@ export class Minimap {
         this.placesContainer.removeChildren();
         for (const place of mapPacket.places) {
             const text = new Text(
-                place.name,
                 {
-                    fill: "white",
-                    fontFamily: "Inter",
-                    fontWeight: "600",
-                    stroke: "black",
-                    strokeThickness: 2,
-                    fontSize: 18,
-                    dropShadow: true,
-                    dropShadowAlpha: 0.8,
-                    dropShadowColor: "black",
-                    dropShadowBlur: 2
+                    text: place.name,
+                    style: {
+                        fill: "white",
+                        fontFamily: "Inter",
+                        fontWeight: "600",
+                        stroke: {
+                            color: "black",
+                            width: 2
+                        },
+                        fontSize: 18,
+                        dropShadow: {
+                            alpha: 0.8,
+                            color: "black",
+                            blur: 2,
+                            distance: 5
+                        }
+                    }
                 }
             );
             text.alpha = 0.7;
@@ -374,25 +373,23 @@ export class Minimap {
                 drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
                 drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
 
-                debugGraphics.lineStyle({
+                debugGraphics.setStrokeStyle({
                     width: 10,
                     color: 0
                 });
 
+                debugGraphics.beginPath();
                 debugGraphics.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; i++) {
                     const point = points[i];
                     debugGraphics.lineTo(point.x, point.y);
                 }
+                debugGraphics.stroke();
 
-                debugGraphics.endFill();
-
-                debugGraphics.lineStyle();
-                debugGraphics.fill.alpha = 1;
                 for (const point of points) {
-                    debugGraphics.beginFill(0xff0000);
+                    debugGraphics.beginPath();
                     debugGraphics.arc(point.x, point.y, 20, 0, Math.PI * 2);
-                    debugGraphics.endFill();
+                    debugGraphics.fill(0xff0000);
                 }
             }
 
@@ -403,10 +400,10 @@ export class Minimap {
     update(): void {
         if (this.pings.size > 0) {
             this.pingGraphics.clear();
-            this.pingGraphics.lineStyle({
+            this.pingGraphics.setStrokeStyle({
                 color: 0x00ffff,
                 width: 5,
-                cap: LINE_CAP.ROUND
+                cap: "round"
             });
 
             const now = Date.now();
@@ -422,7 +419,7 @@ export class Minimap {
                     continue;
                 }
                 this.pingGraphics.arc(ping.position.x, ping.position.y, radius, 0, Math.PI * 2);
-                this.pingGraphics.endFill();
+                this.pingGraphics.stroke();
             }
         }
 
@@ -444,20 +441,27 @@ export class Minimap {
 
         this.gasGraphics.clear();
 
-        this.gasGraphics.lineStyle({
+        this.gasGraphics.beginPath();
+        this.gasGraphics.setStrokeStyle({
             color: 0x00f9f9,
             width: 2,
-            cap: LINE_CAP.ROUND
+            cap: "round"
         });
-
+        // draw line from player to gas center
         this.gasGraphics.moveTo(this.position.x, this.position.y)
-            .lineTo(this.gasPos.x, this.gasPos.y);
+            .lineTo(this.gasPos.x, this.gasPos.y)
+            .closePath().stroke();
 
-        this.gasGraphics.endFill();
-
-        this.gasGraphics.line.color = 0xffffff;
-        this.gasGraphics.arc(this.gasPos.x, this.gasPos.y, this.gasRadius, 0, Math.PI * 2);
-        this.gasGraphics.endFill();
+        // draw circle
+        this.gasGraphics.beginPath()
+            .setStrokeStyle({
+                color: 0xffffff,
+                width: 2,
+                cap: "round"
+            })
+            .arc(this.gasPos.x, this.gasPos.y, this.gasRadius, 0, Math.PI * 2)
+            .closePath()
+            .stroke();
     }
 
     borderContainer = $("#minimap-border");
@@ -486,12 +490,12 @@ export class Minimap {
             this.indicator.scale.set(0.2);
 
             this.border.clear();
-            this.border.fill.alpha = 0;
-            this.border.lineStyle({
+            this.border.setStrokeStyle({
                 width: 4,
                 color: 0x00000
             });
-            this.border.drawRect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
+            this.border.rect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
+            this.border.stroke();
         } else {
             if (!this.visible) return;
 
@@ -512,8 +516,9 @@ export class Minimap {
         }
 
         this.mask.clear();
-        this.mask.beginFill(0);
-        this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
+        this.mask.rect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
+        this.mask.fill();
+
         this.updatePosition();
         this.updateTransparency();
 

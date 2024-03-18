@@ -3,12 +3,13 @@ import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
+import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { MapPacket } from "../../../common/src/packets/mapPacket";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
@@ -85,7 +86,12 @@ export class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    readonly playerNames = new Map<number, { readonly name: string, readonly hasColor: boolean, readonly nameColor: Color }>();
+    readonly playerNames = new Map<number, {
+        readonly name: string
+        readonly hasColor: boolean
+        readonly nameColor: Color
+        readonly badge?: BadgeDefinition
+    }>();
 
     activePlayerID = -1;
     get activePlayer(): Player | undefined {
@@ -103,11 +109,11 @@ export class Game {
 
     private _tickTimeoutID: number | undefined;
 
-    readonly pixi: Application<HTMLCanvasElement>;
+    readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map: Minimap;
-    readonly camera: Camera;
+    readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
 
@@ -130,18 +136,30 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
-        // Initialize the Application object
-        this.pixi = new Application({
-            resizeTo: window,
-            background: COLORS.grass,
-            antialias: this.console.getBuiltInCVar("cv_antialias"),
-            autoDensity: true,
-            resolution: window.devicePixelRatio || 1
-        });
+        void (async() => {
+            const renderMode = this.console.getBuiltInCVar("cv_renderer");
+            await this.pixi.init({
+                resizeTo: window,
+                background: COLORS.grass,
+                antialias: this.console.getBuiltInCVar("cv_antialias"),
+                autoDensity: true,
+                preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
+                preference: renderMode === "webgpu" ? "webgpu" : "webgl",
+                resolution: window.devicePixelRatio || 1,
+                hello: true,
+                canvas: document.getElementById("game-canvas") as HTMLCanvasElement
+            });
 
-        $("#game").append(this.pixi.view);
+            this.pixi.ticker.add(this.render.bind(this));
+            this.camera.init();
+            this.pixi.renderer.on("resize", () => this.resize());
 
-        this.pixi.ticker.add(this.render.bind(this));
+            setInterval(() => {
+                if (this.console.getBuiltInCVar("pf_show_fps")) {
+                    $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                }
+            }, 500);
+        })();
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
@@ -149,7 +167,6 @@ export class Game {
 
         setupUI(this);
 
-        this.camera = new Camera(this);
         this.map = new Minimap(this);
 
         this.music = sound.add("menu_music", {
@@ -159,12 +176,11 @@ export class Game {
             autoPlay: true,
             volume: this.console.getBuiltInCVar("cv_music_volume")
         });
+    }
 
-        setInterval(() => {
-            if (this.console.getBuiltInCVar("pf_show_fps")) {
-                $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
-            }
-        }, 500);
+    resize(): void {
+        this.map.resize();
+        this.camera.resize(true);
     }
 
     connect(address: string): void {
@@ -199,7 +215,12 @@ export class Game {
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
-            for (const emote of ["top", "right", "bottom", "left"] as const) {
+            const badge = this.console.getBuiltInCVar("cv_loadout_badge");
+            if (badge) {
+                joinPacket.badge = Badges.fromString(badge);
+            }
+
+            for (const emote of ["top", "right", "bottom", "left", "death", "win"] as const) {
                 joinPacket.emotes.push(Emotes.fromString(this.console.getBuiltInCVar(`cv_loadout_${emote}_emote`)));
             }
 
@@ -364,6 +385,7 @@ export class Game {
         this.camera.container.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
+        this.map.pingGraphics.clear();
         this.map.pings.clear();
         this.map.pingsContainer.removeChildren();
         this.playerNames.clear();
@@ -380,10 +402,12 @@ export class Game {
     }
 
     sendData(buffer: ArrayBuffer): void {
-        try {
-            this._socket?.send(buffer);
-        } catch (e) {
-            console.warn("Error sending packet. Details:", e);
+        if (this._socket && this._socket.readyState === this._socket.OPEN) {
+            try {
+                this._socket.send(buffer);
+            } catch (e) {
+                console.warn("Error sending packet. Details:", e);
+            }
         }
     }
 
@@ -451,7 +475,8 @@ export class Game {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
                 hasColor: newPlayer.hasColor,
-                nameColor: new Color(newPlayer.nameColor)
+                nameColor: new Color(newPlayer.nameColor),
+                badge: newPlayer.loadout.badge
             });
         }
 
@@ -655,7 +680,7 @@ export class Game {
                     (
                         this.inputManager.isMobile
                             // Only show interact message on mobile if object needs to be tapped to pick up
-                            ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee || type === ItemType.Skin)) || object instanceof Obstacle)
+                            ? (object instanceof Loot || object instanceof Obstacle)
                             : object !== undefined
                     ) ||
                     isAction

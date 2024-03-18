@@ -25,8 +25,22 @@ export class JoinedPacket extends Packet {
     override deserialize(stream: SuroiBitStream): void {
         this.protocolVersion = stream.readUint16();
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 6; i++) {
             this.emotes.push(Emotes.readFromStream(stream));
+        }
+
+        for (let i = 0; i < 4; i++) {
+            if (this.emotes[i].idString === "none") {
+                this.emotes = [
+                    Emotes.fromString("happy_face"),
+                    Emotes.fromString("thumbs_up"),
+                    Emotes.fromString("suroi_logo"),
+                    Emotes.fromString("sad_face"),
+                    Emotes.fromString("none"),
+                    Emotes.fromString("none")
+                ];
+                break;
+            }
         }
     }
 }

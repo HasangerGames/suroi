@@ -140,7 +140,7 @@ export interface BaseBulletDefinition {
     readonly rangeVariance?: number
     readonly shrapnel?: boolean
     readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
-    readonly goToMouse?: boolean
+    readonly allowRangeOverride?: boolean
     readonly lastShotFX?: boolean
     readonly noCollision?: boolean
 }

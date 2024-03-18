@@ -149,7 +149,8 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, 2) },
         casingParticles: [{
-            position: Vec.create(4, 0.6)
+            frame: "casing_762x39mm",
+            position: Vec.create(4, 0.4)
         }],
         ballistics: {
             damage: 14,
@@ -183,7 +184,8 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(70, 0) },
         casingParticles: [{
-            position: Vec.create(4, 0.6)
+            frame: "casing_762x39mm",
+            position: Vec.create(4, 0.4)
         }],
         ballistics: {
             damage: 12.25,
@@ -215,7 +217,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(75, -4) },
         casingParticles: [{
-            position: Vec.create(4, 0.5)
+            position: Vec.create(2.5, 0.5)
         }],
         capacity: 30,
         reloadTime: 2.25,
@@ -504,6 +506,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, 6.5) },
         casingParticles: [{
+            frame: "casing_762x54mmR",
             position: Vec.create(4, 0.6),
             ejectionDelay: 700
         }],
@@ -555,6 +558,46 @@ const GunsRaw: RawGunDefinition[] = [
             tracer: {
                 width: 1.6,
                 length: 3.5
+            }
+        }
+    },
+    {
+        idString: "cz600",
+        name: "CZ-600",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 2.2,
+        fireDelay: 600,
+        switchDelay: 600,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.6,
+        recoilDuration: 750,
+        fireMode: FireMode.Single,
+        shotSpread: 0.75,
+        moveSpread: 1.25,
+        length: 8.3,
+        shootOnRelease: true,
+        fists: {
+            left: Vec.create(115, -4),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(95, 3.5) },
+        casingParticles: [{
+            position: Vec.create(5, 0.4),
+            ejectionDelay: 250
+        }],
+        ballistics: {
+            damage: 55,
+            obstacleMultiplier: 1,
+            speed: 0.3,
+            range: 250,
+            tracer: {
+                width: 1.3,
+                length: 2.4
             }
         }
     },
@@ -622,16 +665,17 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(70, 0) },
         casingParticles: [{
+            frame: "casing_762x38mmR",
             position: Vec.create(3.5, 0.5),
             count: 7,
             velocity: {
                 x: {
-                    min: -15,
-                    max: -4
+                    min: -8,
+                    max: -2
                 },
                 y: {
-                    min: 5,
-                    max: 18,
+                    min: 2,
+                    max: 9,
                     randomSign: true
                 }
             },
@@ -711,7 +755,7 @@ const GunsRaw: RawGunDefinition[] = [
         ammoType: "curadell",
         ammoSpawnAmount: 1,
         fireDelay: 500,
-        switchDelay: 0,
+        switchDelay: 250,
         speedMultiplier: 0.92,
         recoilMultiplier: 1,
         recoilDuration: 0,
@@ -864,7 +908,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(100, 0) },
         casingParticles: [{
-            position: Vec.create(3.5, 0.5)
+            position: Vec.create(4, 0.5)
         }],
         ballistics: {
             damage: 21,
@@ -931,7 +975,7 @@ const GunsRaw: RawGunDefinition[] = [
             animationDuration: 100
         },
         casingParticles: [{
-            position: Vec.create(4.5, 0.6)
+            position: Vec.create(4.7, 0.3)
         }],
         image: { position: Vec.create(80, 0) },
         ballistics: {
@@ -939,6 +983,44 @@ const GunsRaw: RawGunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.25,
             range: 85
+        }
+    },
+    {
+        idString: "pp19",
+        name: "PP-19",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.3,
+        fireDelay: 50,
+        switchDelay: 300,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 6.75,
+        length: 6.9, // nice
+        noMuzzleFlash: true,
+        fists: {
+            left: Vec.create(88, -5),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        casingParticles: [{
+            position: Vec.create(3.5, 0.5)
+        }],
+        image: { position: Vec.create(80, 0) },
+        ballistics: {
+            damage: 10.5,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 160,
+            tracer: {
+                opacity: 0.5
+            }
         }
     },
     {
@@ -1037,6 +1119,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(120, 0) },
         casingParticles: [{
+            frame: "casing_30-06",
             position: Vec.create(4.7, 1.6)
         }],
         ballistics: {
@@ -1136,6 +1219,7 @@ const GunsRaw: RawGunDefinition[] = [
         image: { position: Vec.create(87, 1) },
         casingParticles: [
             {
+                frame: "casing_30-06",
                 position: Vec.create(4, 0.6),
                 velocity: {
                     y: {
@@ -1145,8 +1229,8 @@ const GunsRaw: RawGunDefinition[] = [
                 }
             },
             {
-                position: Vec.create(4, 0.6),
                 frame: "enbloc",
+                position: Vec.create(4, 0.6),
                 velocity: {
                     x: {
                         min: 1,
@@ -1198,6 +1282,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(80, 0) },
         casingParticles: [{
+            frame: "casing_9x39mm",
             position: Vec.create(4, 0.5)
         }],
         noMuzzleFlash: true,
@@ -1237,7 +1322,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(80, 0) },
         casingParticles: [{
-            position: Vec.create(4.2, 0.5)
+            position: Vec.create(4.2, 0.4)
         }],
         ballistics: {
             damage: 28.5,
@@ -1292,6 +1377,47 @@ const GunsRaw: RawGunDefinition[] = [
             }
         }
     },
+    {
+        idString: "model_89",
+        name: "Model 89",
+        itemType: ItemType.Gun,
+        ammoType: "127mm",
+        ammoSpawnAmount: 28,
+        capacity: 7,
+        reloadTime: 0.6,
+        singleReload: true,
+        fireDelay: 375,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 300,
+        fireMode: FireMode.Single,
+        shotSpread: 1,
+        moveSpread: 4,
+        length: 7.6,
+        fists: {
+            left: Vec.create(106, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(90, 0) },
+        casingParticles: [{
+            frame: "casing_500sw",
+            position: Vec.create(5, 0.5),
+            ejectionDelay: 175
+        }],
+        ballistics: {
+            damage: 62.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            range: 250,
+            tracer: {
+                width: 1.8,
+                length: 1.5
+            }
+        }
+    },
 
     // only event weapons below this point
 
@@ -1320,6 +1446,7 @@ const GunsRaw: RawGunDefinition[] = [
         },
         image: { position: Vec.create(90, -3.5) },
         casingParticles: [{
+            frame: "casing_12ga_he",
             position: Vec.create(4, 0.6)
         }],
         ballistics: {
@@ -1328,7 +1455,7 @@ const GunsRaw: RawGunDefinition[] = [
             speed: 0.16,
             range: 55,
             onHitExplosion: "usas_explosion",
-            goToMouse: true,
+            allowRangeOverride: true,
             tracer: {
                 length: 0.5,
                 color: 0xff0000

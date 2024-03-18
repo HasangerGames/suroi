@@ -185,8 +185,18 @@
         font-size: 25px;
         @include text-shadow;
 
+        .badge-icon {
+            width: 25px;
+            margin-left: 5px;
+            margin-bottom: -4px;
+        }
+
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
+
+            .badge-icon {
+                width: 12px;
+            }
         }
     }
 
@@ -244,6 +254,7 @@
 
     #kill-feed {
         margin-right: 180px;
+        margin-top: -10px;
         @media screen and (max-width: $screen_large) {
             margin-right: 80px;
         }
@@ -257,6 +268,10 @@
             background: $transparent_bg;
             border-radius: 4px;
             font-weight: 600;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
             @include text-shadow;
 
             @media screen and (max-width: $screen_large) {
@@ -271,8 +286,18 @@
 
             .kill-icon {
                 position: relative;
-                bottom: -2px;
-                margin-right: 2px;
+                margin-right: 1px;
+                margin-top: -1px;
+
+                @media screen and (max-width: $screen_large) {
+                    height: 12px;
+                }
+            }
+
+            .badge-icon {
+                width: 18px;
+                margin-top: -1px;
+                margin-left: -1px;
 
                 @media screen and (max-width: $screen_large) {
                     height: 12px;
@@ -689,10 +714,22 @@
     width: 320px;
     @include text-shadow;
 
+    .badge-icon {
+        width: 18px;
+        margin-bottom: -3px;
+        margin-left: 3px;
+    }
+
     @media screen and (max-width: $screen_large) {
         width: 220px;
         bottom: 60px;
         font-size: 12px;
+
+        .badge-icon {
+            width: 14px;
+            margin-bottom: -3px;
+            margin-left: 2px;
+        }
     }
 
     #kill-msg-player-name {
@@ -908,8 +945,8 @@
 
         &.has-item {
             opacity: 1;
-            background: rgb(197,197,197);
-            background: linear-gradient(90deg, rgba(197,197,197,0.45) 0%, rgba(197,197,197,0.45) 25%, rgba(22,22,22,0.5) 100%);
+            background: hsl(0, 0%, 77%);
+            background: linear-gradient(90deg, hsla(0, 0%, 77%, 0.45) 0%, hsla(0, 0%, 77%, 0.45) 25%, hsla(0, 0%, 9%, 0.5) 100%);
         }
     }
 
@@ -923,7 +960,7 @@
             width: 50px;
             height: 50px;
         }
-        
+
         @media screen and (max-width: $screen_medium) {
             width: 35px;
             height: 35px;
@@ -950,7 +987,7 @@
 
 .items-container#healing {
     flex-direction: row;
-    left: 10px;
+    left: 5px;
 
     .inventory-container {
         justify-content: end;
@@ -958,7 +995,7 @@
         bottom: 50px;
         @media screen and (max-width: $screen_medium) {
             bottom: 125px;
-            left: -7px;
+            left: -2px;
         }
         @media screen and (max-height: 400px) {
             bottom: 10px;
@@ -967,7 +1004,7 @@
 }
 .items-container#ammo {
     flex-direction: row-reverse;
-    right: 10px;
+    right: 5px;
 
     .inventory-container {
         justify-content: end;
@@ -979,7 +1016,7 @@
 
         @media screen and (max-width: $screen_medium) {
             bottom: 190px;
-            right: -7px;
+            right: -2px;
         }
 
         @media screen and (max-height: 500px) and (max-width: $screen_large) {
@@ -1304,6 +1341,18 @@
 
         @media screen and (max-width: $screen_large) {
             font-size: 20px;
+        }
+    }
+
+    .badge-icon {
+        width: 32px;
+        margin-left: 5px;
+        margin-bottom: -5px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 25px;
+            margin-left: 4px;
+            margin-bottom: -4px;
         }
     }
 

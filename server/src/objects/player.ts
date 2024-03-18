@@ -2,17 +2,20 @@ import { randomBytes } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
 import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { type Packet } from "../../../common/src/packets/packet";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
@@ -38,7 +41,7 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
+import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -50,6 +53,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly ip?: string;
 
     readonly loadout: {
+        badge?: BadgeDefinition
         skin: SkinDefinition
         emotes: EmoteDefinition[]
     };
@@ -233,17 +237,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     ticksSinceLastUpdate = 0;
 
-    private _zoom!: number;
-    get zoom(): number { return this._zoom; }
-    set zoom(zoom: number) {
-        if (this._zoom === zoom) return;
+    private _scope!: ScopeDefinition;
+    get effectiveScope(): ScopeDefinition { return this._scope; }
+    set effectiveScope(target: ScopeDefinition | ReferenceTo<ScopeDefinition>) {
+        const scope = Scopes.reify(target);
+        if (this._scope === scope) return;
 
-        this._zoom = zoom;
-        this.xCullDist = this._zoom * 1.8;
-        this.yCullDist = this._zoom * 1.35;
+        this._scope = scope;
+        this.xCullDist = this._scope.zoomLevel * 1.8;
+        this.yCullDist = this._scope.zoomLevel * 1.35;
         this.dirty.zoom = true;
         this.updateObjects = true;
     }
+
+    get zoom(): number { return this._scope.zoomLevel; }
 
     xCullDist!: number;
     yCullDist!: number;
@@ -335,7 +342,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "mobile_home_wall_3", position);
+        this.objectToPlace = new Obstacle(game, "window2", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -345,19 +352,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 Emotes.fromString("happy_face"),
                 Emotes.fromString("thumbs_up"),
                 Emotes.fromString("suroi_logo"),
-                Emotes.fromString("sad_face")
+                Emotes.fromString("sad_face"),
+                Emotes.fromString("none"),
+                Emotes.fromString("none")
             ]
         };
 
         this.rotation = 0;
-
         this.joinTime = game.now;
-
         this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
+        this.effectiveScope = DEFAULT_SCOPE;
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -392,8 +400,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         );
     }
 
+    giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {
+        this.inventory.items.incrementItem(idString, count ?? 3);
+        this.inventory.useItem(idString);
+        this.inventory.throwableItemMap.get(idString)!.count = this.inventory.items.getItem(idString);
+    }
+
     emote(slot: number): void {
-        this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
+        if (this.loadout.emotes[slot]) this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
     }
 
     update(): void {
@@ -543,22 +557,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (
                 object instanceof SyncedParticle &&
-                object.definition.depletePerMs &&
                 object.hitbox?.collidesWith(this.hitbox)
             ) {
                 depleters.add(object.definition);
             }
         }
 
-        if (isInsideBuilding && !this.isInsideBuilding) {
-            this.zoom = 48;
-        } else if (!this.isInsideBuilding) {
-            this.zoom = this.inventory.scope.zoomLevel;
+        if (!this.isInsideBuilding) {
+            this.effectiveScope = isInsideBuilding
+                ? DEFAULT_SCOPE
+                : this.inventory.scope;
         }
         this.isInsideBuilding = isInsideBuilding;
 
+        let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
         depleters.forEach(def => {
             const depletion = def.depletePerMs;
+
+            // we arbitrarily take the first scope target we find and stick with it
+            scopeTarget ??= (def as SyncedParticleDefinition & { readonly hitbox: Hitbox }).snapScopeTo;
 
             if (depletion?.health) {
                 this.piercingDamage(depletion.health * dt, KillType.Gas);
@@ -569,6 +586,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.adrenaline = Math.max(0, this.adrenaline - depletion.adrenaline * dt);
             }
         });
+
+        if (scopeTarget !== undefined) {
+            this.effectiveScope = scopeTarget;
+        }
 
         this.turning = false;
     }
@@ -632,7 +653,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxHealth: player.maxHealth,
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,
-            zoom: player.zoom,
+            zoom: player._scope.zoomLevel,
             id: player.id,
             spectating: this.spectating !== undefined,
             dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
@@ -983,6 +1004,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillFeedMessageType.Kill,
                 playerID: this.id,
+                playerBadge: this.loadout.badge,
                 weaponUsed: weaponUsed?.definition
             };
 
@@ -991,6 +1013,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     killFeedMessage.killType = KillType.TwoPartyInteraction;
                     killFeedMessage.killerID = source.id;
                     killFeedMessage.kills = source.kills;
+                    if (source.loadout.badge) {
+                        killFeedMessage.killerBadge = source.loadout.badge;
+                    }
 
                     if (source.activeItem.definition.killstreak) {
                         killFeedMessage.killstreak = source.activeItem.stats.kills;
@@ -1015,6 +1040,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
+        if (this.loadout.emotes[4]?.idString !== "none") this.emote(4);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);
@@ -1067,7 +1093,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        if (this.loadout.skin.notInLoadout && this.loadout.skin.noDrop !== true) {
+        if (this.loadout.skin.hideFromLoadout && this.loadout.skin.noDrop !== true) {
             this.game.addLoot(
                 this.loadout.skin,
                 this.position
@@ -1127,7 +1153,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         const inventory = this.inventory;
-
         for (const action of packet.actions) {
             switch (action.type) {
                 case InputActions.UseItem: {
@@ -1157,19 +1182,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     inventory.swapGunSlots();
                     break;
                 }
-                case InputActions.Interact: {
-                    if (this.game.now - this.lastInteractionTime < 120) return;
-                    this.lastInteractionTime = this.game.now;
-
+                case InputActions.Loot: {
                     interface CloseObject {
-                        object: Loot | Obstacle | undefined
+                        object: Loot | undefined
                         minDist: number
                     }
 
-                    const interactable: CloseObject = {
-                        object: undefined,
-                        minDist: Number.MAX_VALUE
-                    };
                     const uninteractable: CloseObject = {
                         object: undefined,
                         minDist: Number.MAX_VALUE
@@ -1179,20 +1197,53 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
+                            (object instanceof Loot) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
-                                interactable.minDist = dist;
-                                interactable.object = object;
-                            } else if (
+                            if (
                                 object instanceof Loot &&
-                                object.definition.itemType !== ItemType.Gun &&
-                                dist < uninteractable.minDist
+                                dist < uninteractable.minDist &&
+                                object.canInteract(this)
                             ) {
                                 uninteractable.minDist = dist;
                                 uninteractable.object = object;
+                            }
+                        }
+                    }
+                    if (uninteractable.object) {
+                        uninteractable.object?.interact(this, false);
+                    }
+
+                    this.canDespawn = false;
+                    this.disableInvulnerability();
+                    break;
+                }
+                case InputActions.Interact: {
+                    if (this.game.now - this.lastInteractionTime < 120) return;
+                    this.lastInteractionTime = this.game.now;
+
+                    interface CloseObject {
+                        object: Obstacle | undefined
+                        minDist: number
+                    }
+
+                    const interactable: CloseObject = {
+                        object: undefined,
+                        minDist: Number.MAX_VALUE
+                    };
+                    const detectionHitbox = new CircleHitbox(3, this.position);
+                    const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
+
+                    for (const object of nearObjects) {
+                        if (
+                            (object instanceof Obstacle && object.canInteract(this)) &&
+                            object.hitbox.collidesWith(detectionHitbox)
+                        ) {
+                            const dist = Geometry.distanceSquared(object.position, this.position);
+                            if (object instanceof Obstacle && dist < interactable.minDist) {
+                                interactable.minDist = dist;
+                                interactable.object = object;
                             }
                         }
                     }
@@ -1200,7 +1251,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (interactable.object) {
                         interactable.object.interact(this);
 
-                        if ((interactable.object as Obstacle).isDoor) {
+                        if ((interactable.object).isDoor) {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
@@ -1214,8 +1265,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                 }
                             }
                         }
-                    } else if (uninteractable.object) {
-                        uninteractable.object?.interact(this, true);
                     }
 
                     this.canDespawn = false;

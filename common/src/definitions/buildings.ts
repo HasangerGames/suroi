@@ -43,6 +43,11 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
 
+    readonly bridgeSpawnOptions?: {
+        maxRiverWidth: number
+        landCheckDist: number
+    }
+
     readonly obstacles?: BuildingObstacle[]
     readonly lootSpawners?: LootSpawner[]
     readonly subBuildings?: SubBuilding[]
@@ -211,6 +216,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     porta_potty_toilet_closed: 0.3
                 },
                 position: Vec.create(0, -5),
+                lootSpawnOffset: Vec.create(0, 5),
                 rotation: 0
             },
             {
@@ -813,6 +819,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 idString: { gun_mount_mcx_spear: 0.99, gun_mount_stoner_63: 0.01 },
                 position: Vec.create(-46.8, 28),
+                lootSpawnOffset: Vec.create(4, 0),
                 rotation: 1
             },
             //
@@ -1366,7 +1373,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Main hitbox
             { idString: "ship", position: Vec.create(0, 0), rotation: 0 },
 
-            { idString: "ship_thing_1", position: Vec.create(-14, -111), rotation: 0 },
+            { idString: "ship_oil_tank", position: Vec.create(-14, -111), rotation: 0 },
             { idString: "generator", position: Vec.create(23, 75), rotation: 0, puzzlePiece: true },
             { idString: "barrel", position: Vec.create(24, 66) },
             {
@@ -1377,16 +1384,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec.create(-4, 61) },
 
             // Captain's cabin
-            { idString: "panel_without_button_small", position: Vec.create(14.5, -57), rotation: 2 },
-            { idString: "panel_without_button", position: Vec.create(5, -57), rotation: 2 },
+            { idString: "control_panel_small", position: Vec.create(14.5, -57), rotation: 2 },
+            { idString: "control_panel2", position: Vec.create(5, -57), rotation: 2 },
             { idString: "regular_crate", position: Vec.create(-7, -84) },
             { idString: "barrel", position: Vec.create(2, -85) },
             { idString: "bookshelf", position: Vec.create(23.5, -86.5), rotation: 2 },
 
-            { idString: "ship_cabin_window", position: Vec.create(-16, -50.5), rotation: 1 },
-            { idString: "ship_cabin_window", position: Vec.create(-6, -50.5), rotation: 1 },
-            { idString: "ship_cabin_window", position: Vec.create(7, -50.5), rotation: 1 },
-            { idString: "ship_cabin_window", position: Vec.create(18, -50.5), rotation: 1 }
+            { idString: "window2", position: Vec.create(-16, -50.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(-6, -50.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(7, -50.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(18, -50.5), rotation: 1 }
 
         ],
         subBuildings: [
@@ -1493,18 +1500,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "large_oil_tank", position: Vec.create(9, 88), rotation: -Math.PI / 2 },
 
             // Cabin Windows
-            { idString: "ship_cabin_window", position: Vec.create(-0.25, -87.5), rotation: 1 },
-            { idString: "ship_cabin_window", position: Vec.create(9.75, -87.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(-0.25, -87.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(9.75, -87.5), rotation: 1 },
 
-            { idString: "ship_cabin_window", position: Vec.create(22, -87.5), rotation: 1 },
-            { idString: "ship_cabin_window", position: Vec.create(31, -87.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(22, -87.5), rotation: 1 },
+            { idString: "window2", position: Vec.create(31, -87.5), rotation: 1 },
 
             // Cabin Furniture
-            { idString: "panel_without_button_small", position: Vec.create(-1, -93.8), rotation: 2 },
+            { idString: "control_panel_small", position: Vec.create(-1, -93.8), rotation: 2 },
             { idString: "large_drawer", position: Vec.create(9.5, -93.5), rotation: 2 },
 
-            { idString: "panel_with_a_button", position: Vec.create(22, -93.8), rotation: 2, puzzlePiece: true },
-            { idString: "panel_without_button_small", position: Vec.create(31.7, -93.8), rotation: 2 },
+            { idString: "control_panel", position: Vec.create(22, -93.8), rotation: 2, puzzlePiece: true },
+            { idString: "control_panel_small", position: Vec.create(31.7, -93.8), rotation: 2 },
 
             // Vector Vault
             { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
@@ -2124,7 +2131,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     puzzlePiece: ["y", "o", "j", "l"][i]
                 } satisfies BuildingObstacle)
             ),
-            { idString: "panel_without_button", position: Vec.create(30.7, -14), rotation: 1 },
+            { idString: "control_panel2", position: Vec.create(30.7, -14), rotation: 1 },
             { idString: "ammo_crate", position: Vec.create(-20, -14.8), rotation: 0 },
             { idString: "regular_crate", position: Vec.create(-29.8, -14.8), rotation: 0 },
             { idString: "barrel", position: Vec.create(-30.9, 11.3) },
@@ -2392,7 +2399,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         wallsToDestroy: 2,
         obstacles: [
             { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
-            { idString: "door", position: Vec.create(6.45, 8.33), rotation: 0 },
+            { idString: "door", position: Vec.create(5.5, 8.33), rotation: 2 },
             { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
             { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
             { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
@@ -2403,12 +2410,165 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_drawer", position: Vec.create(17.45, 3.27), rotation: 3 },
             { idString: "mobile_home_sink", position: Vec.create(-12.8, 3.4), rotation: 2 },
             { idString: "mobile_home_stove", position: Vec.create(-3.75, 3.57), rotation: 2 },
-            { idString: "mobile_home_tire", position: Vec.create(-21.25, 4.85), rotation: 0 },
+            { idString: "tire", position: Vec.create(-21.25, 4.85), rotation: 0 },
             { idString: "mobile_home_window", position: Vec.create(-5.6, -10.42), rotation: 0 },
 
             { idString: "box", position: Vec.create(26.2, -3.43), rotation: 0 },
             { idString: "box", position: Vec.create(28, 1.52), rotation: 0 },
             { idString: "barrel", position: Vec.create(-18.9, 14.62), rotation: 0 }
+        ]
+    },
+    {
+        idString: "tugboat_red",
+        name: "Tugboat",
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
+        floorImages: [{
+            key: "tugboat_red_floor",
+            position: Vec.create(90, 0)
+        }],
+        ceilingImages: [{
+            key: "tugboat_red_ceiling",
+            position: Vec.create(90, 12.5)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
+        ],
+        obstacles: [
+            { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(81.48, -37.36) },
+            { idString: "regular_crate", position: Vec.create(101.49, -11.45) },
+            { idString: "grenade_crate", position: Vec.create(102.3, -38.43) },
+            { idString: "barrel", position: Vec.create(102.74, -26.23) },
+            { idString: "tugboat_control_panel", position: Vec.create(90, 24.1), rotation: 0 },
+            { idString: "office_chair", position: Vec.create(90, 16.65), rotation: 0 },
+            { idString: "door", position: Vec.create(90.45, -4.8), rotation: 0 },
+            { idString: "large_drawer", position: Vec.create(99.29, 2.98), rotation: 3 },
+            { idString: "life_preserver", position: Vec.create(101.23, 14.67), rotation: 0 },
+            { idString: "lux_crate", position: Vec.create(80.38, 4.29), rotation: 1 },
+            { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
+            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
+        ]
+    },
+    {
+        idString: "tugboat_white",
+        name: "Tugboat",
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
+        scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
+        floorImages: [{
+            key: "tugboat_white_floor",
+            position: Vec.create(90, 0)
+        }],
+        ceilingImages: [{
+            key: "tugboat_white_ceiling",
+            position: Vec.create(90, 12.5)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+            { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
+        ],
+        obstacles: [
+            { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0 },
+            { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0 },
+            { idString: "regular_crate", position: Vec.create(81.48, -37.36) },
+            { idString: "regular_crate", position: Vec.create(101.49, -11.45) },
+            { idString: "grenade_crate", position: Vec.create(102.3, -38.43) },
+            { idString: "barrel", position: Vec.create(102.74, -26.23) },
+            { idString: "tugboat_control_panel", position: Vec.create(90, 24.1), rotation: 0 },
+            { idString: "office_chair", position: Vec.create(90, 16.65), rotation: 0 },
+            { idString: "door", position: Vec.create(90.45, -4.8), rotation: 0 },
+            { idString: "large_drawer", position: Vec.create(99.29, 2.98), rotation: 3 },
+            { idString: "life_preserver", position: Vec.create(101.23, 14.67), rotation: 0 },
+            { idString: "gun_case", position: Vec.create(80.38, 4.29), rotation: 1 },
+            { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
+            { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
+        ]
+    },
+    {
+        idString: "sea_traffic_control",
+        name: "Sea Traffic Control",
+        spawnHitbox: RectangleHitbox.fromRect(48, 98, Vec.create(0, 15)),
+        scopeHitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)),
+        spawnMode: MapObjectSpawnMode.Beach,
+        floorImages: [{
+            key: "sea_traffic_control_floor",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [{
+            key: "sea_traffic_control_ceiling",
+            position: Vec.create(-0.25, -2.4)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)) },
+            { type: "stone", hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
+        ],
+        obstacles: [
+            { idString: "sea_traffic_control", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "sandbags", position: Vec.create(-16.79, 33.53), rotation: 1 },
+            { idString: "sandbags", position: Vec.create(-16.79, 47.1), rotation: 1 },
+            { idString: "sandbags", position: Vec.create(-14.15, 58.27), rotation: 2 },
+            { idString: "barrel", position: Vec.create(-7.67, 47.77) },
+            { idString: "barrel", position: Vec.create(14.07, 42) },
+            { idString: "regular_crate", position: Vec.create(11.03, 32.15) },
+            { idString: "door", position: Vec.create(-1.35, 25.19), rotation: 0 },
+            { idString: "gun_case", position: Vec.create(-13.41, 20.92), rotation: 2 },
+            { idString: "large_drawer", position: Vec.create(13.83, 1.1), rotation: 3 },
+            { idString: "office_chair", position: Vec.create(0.43, -16.77), rotation: 2 },
+            { idString: "office_chair", position: Vec.create(-11.78, -16.82), rotation: 2 },
+            { idString: "office_chair", position: Vec.create(5.67, 13.88), rotation: 1 },
+            { idString: "aegis_crate", position: Vec.create(13.27, -23.45) },
+            { idString: "life_preserver", position: Vec.create(-17.63, -2.6), rotation: 2 },
+            { idString: "life_preserver", position: Vec.create(-17.63, 7.05), rotation: 2 },
+            { idString: "table", position: Vec.create(13.47, 13.95), rotation: 2 },
+            { idString: "control_panel_activated", position: Vec.create(-5.75, -24.7), rotation: 0 },
+            { idString: "control_panel_small", position: Vec.create(3.81, -24.7), rotation: 0 },
+            { idString: "control_panel_small", position: Vec.create(-15.34, -24.7), rotation: 0 },
+            { idString: "window2", position: Vec.create(20.57, -4.5), rotation: 0 },
+            { idString: "window2", position: Vec.create(20.57, 7.4), rotation: 0 },
+            { idString: "window2", position: Vec.create(20.57, 19.2), rotation: 0 }
+        ],
+        lootSpawners: [
+            { table: "sea_traffic_control_floor", position: Vec.create(0, 0) }
+        ]
+    },
+    {
+        idString: "small_bridge",
+        name: "Small Bridge",
+        spawnHitbox: RectangleHitbox.fromRect(20, 62),
+        bridgeSpawnOptions: {
+            maxRiverWidth: 20,
+            landCheckDist: 30
+        },
+        floorImages: [{
+            key: "small_bridge",
+            position: Vec.create(0, 0)
+        }],
+        floors: [
+            { type: "wood", hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec.create(0, 0)) }
+        ],
+        obstacles: [
+            { idString: "small_bridge", position: Vec.create(0, 0), rotation: 0 }
+        ],
+        lootSpawners: [
+            { table: "ground_loot", position: Vec.create(0, 0) }
         ]
     }
 ]);

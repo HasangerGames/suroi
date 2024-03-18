@@ -2,7 +2,7 @@ import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objec
 
 export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
-    readonly notInLoadout?: boolean
+    readonly hideFromLoadout?: boolean
     readonly grassTint?: boolean
     readonly hideEquipment?: boolean
     readonly roleRequired?: string
@@ -52,16 +52,16 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         roleRequired: "radians"
     },
     {
-        idString: "dev",
-        name: "Developer Swag",
+        idString: "developr",
+        name: "Developr Swag",
         itemType: ItemType.Skin,
-        roleRequired: "dev"
+        roleRequired: "developr"
     },
     {
-        idString: "artist",
-        name: "Artist Swag",
+        idString: "designr",
+        name: "Designr Swag",
         itemType: ItemType.Skin,
-        roleRequired: "artist"
+        roleRequired: "designr"
     },
     {
         idString: "hazel_jumpsuit",
@@ -212,7 +212,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         idString: "basic_outfit",
         name: "Basic Outfit",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "swiss_cheese",
@@ -250,70 +250,75 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         itemType: ItemType.Skin
     },
     {
+        idString: "distant_shores",
+        name: "Distant Shores",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "peppermint",
         name: "Peppermint",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "spearmint",
         name: "Spearmint",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "coal",
         name: "Coal",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "henrys_little_helper",
         name: "Henry's Little Helper",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "candy_cane",
         name: "Candy Cane",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "christmas_tree_skin",
         name: "Christmas Tree",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "gingerbread",
         name: "Gingerbread",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "verified",
         name: "Verified",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "nokilpls",
         name: "no kil pls",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "stardust",
         name: "Stardust",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "aurora",
         name: "Aurora",
         itemType: ItemType.Skin,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "ghillie_suit",
@@ -321,7 +326,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         itemType: ItemType.Skin,
         grassTint: true,
         hideEquipment: true,
-        notInLoadout: true
+        hideFromLoadout: true
     },
     {
         idString: "lemon",

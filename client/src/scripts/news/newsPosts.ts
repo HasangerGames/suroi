@@ -3,6 +3,47 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1708892369000,
+        author: "HAZEL",
+        title: "A Sailor's Dream",
+        bannerImage: "../img/news/v0.16.0.png",
+        content: `We're back with new guns, structures, and more for ye landlubbers to check out! Two new powerful weapons are available in golden airdrops, and a new sniper has joined the ranks. Where do you find it? Why, in the captain's tugboat, of course! The soggy pants will be worth it.<br><br>
+
+Lily pads, river crates, bridges, and more are making an appearance this update, as well as a multitude of changes and bug fixes to make your experience better. Duos are coming in the next update, so stay tuned!`,
+        longContent: `<h2>Suroi v0.16.0</h2>
+<h3>New features</h3>
+<ul>
+  <li>New structures: tugboat, sea traffic control, bridges.</li>
+  <li>New guns: Model 89 (a DMR), CZ-600 (a sniper), and PP-19 (a suppressed SMG).</li>
+  <li>New crate: river crate.</li>
+  <li>New obstacles: lily pads.</li>
+  <li>New crate: grenade box. Sometimes spawns in place of boxes in the warehouse.</li>
+  <li>Added win and death emotes.</li>
+  <li>New skin: Distant Shores.</li>
+  <li>Added a loading screen.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Scope is now reduced to 1x inside of smoke.</li>
+  <li>Added quit button to spectate menu.</li>
+  <li>Nerfed HP18.</li>
+  <li>Added 12.7mm and Curadell (radio ammo) to ammo crates.</li>
+  <li>Made rivers slightly narrower.</li>
+  <li>Added a strap to the M1 Garand loot image, to make it easier to tell apart from the Mosin.</li>
+  <li>New Curadell loot image.</li>
+  <li>Improved mobile home and porta potty footstep hitboxes.</li>
+  <li>Removed Fireball and Blueberry Smoothie skins.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed grenades sometimes going to the right on mobile regardless of joystick position.</li>
+  <li>Fixed not being able to cycle throwables by clicking/tapping on the slot.</li>
+  <li>Fixed aim line not showing up on mobile.</li>
+</ul>`
+    },
+    {
         date: 1705262400000,
         author: "HAZEL",
         title: "Pulling the Pin",

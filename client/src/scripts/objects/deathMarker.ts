@@ -1,18 +1,20 @@
 import { Text, type Container } from "pixi.js";
-import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { BadgeDefinition } from "../../../../common/src/definitions/badges";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
 
     playerName!: string;
     nameColor = 0xdcdcdc;
+    playerBadge!: BadgeDefinition;
 
     readonly image: SuroiSprite;
     playerNameText: Text;
@@ -24,17 +26,19 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         super(game, id);
 
         this.image = new SuroiSprite("death_marker");
-        this.playerNameText = new Text(
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? GameConstants.player.defaultName : "",
-            {
+        this.playerNameText = new Text({
+            text: "",
+            style: {
                 fontSize: 36,
                 fontFamily: "Inter",
-                dropShadow: true,
-                dropShadowBlur: 2,
-                dropShadowDistance: 2,
-                dropShadowColor: 0
+                dropShadow: {
+                    alpha: 0.8,
+                    color: "black",
+                    blur: 2,
+                    distance: 2
+                }
             }
-        );
+        });
         this.playerNameText.y = 95;
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
@@ -59,6 +63,20 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         if (player) {
             this.playerName = playerName;
             this.playerNameText.text = this.playerName;
+
+            if (player.badge) {
+                const badgeSprite = new SuroiSprite(player.badge.idString);
+
+                const oldWidth = badgeSprite.width;
+                badgeSprite.width = this.playerNameText.height / 1.25;
+                badgeSprite.height = badgeSprite.height * (badgeSprite.width / oldWidth);
+                badgeSprite.position = Vec.create(
+                    this.playerNameText.width / 2 + 20,
+                    96
+                );
+
+                this.container.addChild(badgeSprite);
+            }
 
             if (player.hasColor) {
                 this.nameColor = player.nameColor.toNumber();

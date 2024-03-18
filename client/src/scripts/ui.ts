@@ -1,16 +1,18 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { isMobile } from "pixi.js";
+import { isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
+import { Badges } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
-import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
+import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
@@ -159,7 +161,7 @@ export function setupUI(game: Game): void {
     // Event listener for rules button
     rulesBtn.on("click", () => {
         game.console.setBuiltInCVar("cv_rules_acknowledged", true);
-        location.href = "/rules/";
+        location.href = "./rules/";
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(); });
@@ -236,7 +238,13 @@ Video evidence is required.`)) {
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
+    const role = game.console.getBuiltInCVar("dv_role");
+
     // Load skins
+    if (!(game.console.getBuiltInCVar("cv_loadout_skin") in Skins.idStringToNumber)) {
+        game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
+    }
+
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css(
             "background-image",
@@ -249,8 +257,7 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        if (skin.notInLoadout ?? (skin.roleRequired !== undefined &&
-            skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))) continue;
+        if (skin.hideFromLoadout === true || (skin.roleRequired ?? role) !== role) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -273,46 +280,62 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
-    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
-    for (const emote of Emotes.definitions) {
-        // noinspection CssUnknownTarget
-        const emoteItem =
-            $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-  <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
-  <span class="emote-name">${emote.name}</span>
-</div>`);
-        emoteItem.on("click", function() {
-            if (selectedEmoteSlot === undefined) return;
-            game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
-            $(this).addClass("selected").siblings().removeClass("selected");
-            $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
-                "background-image",
-                `url("./img/game/emotes/${emote.idString}.svg")`
-            );
-        });
-        $("#emotes-list").append(emoteItem);
+    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
+    function updateEmotesList(): void {
+        $("#emotes-list").empty();
+        for (const emote of ((selectedEmoteSlot === "win" || selectedEmoteSlot === "death") ? Emotes.definitions : Emotes.definitions.slice(1))) {
+            // noinspection CssUnknownTarget
+            const emoteItem =
+                $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    <span class="emote-name">${emote.name}</span>
+    </div>`);
+            emoteItem.on("click", function() {
+                if (selectedEmoteSlot === undefined) return;
+                game.console.setBuiltInCVar(
+                    `cv_loadout_${selectedEmoteSlot}_emote`,
+                    emote.idString
+                );
+
+                $(this).addClass("selected").siblings().removeClass("selected");
+
+                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
+                    "background-image",
+                    emote.idString !== "none" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
+                );
+            });
+            $("#emotes-list").append(emoteItem);
+        }
     }
 
-    for (const slot of ["top", "right", "bottom", "left"] as const) {
+    updateEmotesList();
+    const slots = ["top", "right", "bottom", "left", "win", "death"] as const;
+    for (const slot of slots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
-        $(`#emote-customize-wheel > .emote-${slot}`)
-            .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
+        $(`#emote-wheel-container .emote-${slot}`)
+            .css("background-image", Emotes.fromString(emote).idString !== "none" ? `url("./img/game/emotes/${emote}.svg")` : "none")
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
+                    $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).removeClass("selected");
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
-                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
-                    $(`#emote-${emote}`).addClass("selected");
-                } else {
-                    selectedEmoteSlot = undefined;
-                    $("#emote-customize-wheel").css(
-                        "background-image",
-                        'url("./img/misc/emote_wheel.svg")'
-                    );
+                    updateEmotesList();
+                    if (slots.slice(0, 4).find((_slot) => _slot === slot)) {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
+                        );
+                    } else {
+                        $("#emote-customize-wheel").css(
+                            "background-image",
+                            "url('/img/misc/emote_wheel.svg')"
+                        );
+                        $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
+                    }
                     $(".emotes-list-item-container")
                         .removeClass("selected")
-                        .css("cursor", "default");
+                        .css("cursor", "pointer");
+                    $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`)}`).addClass("selected");
                 }
             });
     }
@@ -369,6 +392,49 @@ Video evidence is required.`)) {
     });
 
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+
+    // Load badges
+    const allowedBadges = Badges.definitions.filter(badge => !("roles" in badge) || (role !== "" && badge.roles!.includes(role)));
+
+    if (allowedBadges.length > 0) {
+        $("#tab-badges").show();
+
+        // ???
+        /* eslint-disable @typescript-eslint/quotes, quotes */
+        const noBadgeItem = $(
+            `<div id="badge-" class="badges-list-item-container">\
+            <div class="badges-list-item"> </div>\
+            <span class="badge-name">None</span>\
+            </div>`
+        );
+
+        noBadgeItem.on("click", function() {
+            game.console.setBuiltInCVar("cv_loadout_badge", "");
+            $(this).addClass("selected").siblings().removeClass("selected");
+        });
+
+        $("#badges-list").append(noBadgeItem);
+        for (const badge of allowedBadges) {
+            // noinspection CssUnknownTarget
+            const badgeItem = $(
+                `<div id="badge-${badge.idString}" class="badges-list-item-container">\
+                <div class="badges-list-item">\
+                    <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>\
+                </div>\
+                <span class="badge-name">${badge.name}</span>\
+                </div>`
+            );
+
+            badgeItem.on("click", function() {
+                game.console.setBuiltInCVar("cv_loadout_badge", badge.idString);
+                $(this).addClass("selected").siblings().removeClass("selected");
+            });
+
+            $("#badges-list").append(badgeItem);
+        }
+
+        $(`#badge-${game.console.getBuiltInCVar("cv_loadout_badge")}`).addClass("selected");
+    }
 
     addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
         game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
@@ -467,7 +533,9 @@ Video evidence is required.`)) {
     });
     $("#coordinates-hud").toggle(game.console.getBuiltInCVar("pf_show_pos"));
 
-    // Text kill feed toggle
+    // lmao one day, we'll have dropdown menus
+
+    // Text killfeed toggle
     {
         const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
 
@@ -477,6 +545,28 @@ Video evidence is required.`)) {
 
         element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
     }
+
+    // Weapon slot style toggle
+    {
+        const element = $("#toggle-colored-slots")[0] as HTMLInputElement;
+
+        element.addEventListener("input", () => {
+            game.console.setBuiltInCVar("cv_weapon_slot_style", element.checked ? "colored" : "simple");
+        });
+
+        element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
+    }
+
+    // render mode select menu
+    const renderSelect = $("#render-mode-select")[0] as HTMLSelectElement;
+    renderSelect.addEventListener("input", () => {
+        game.console.setBuiltInCVar("cv_renderer", renderSelect.value as unknown as "webgl2");
+    });
+    renderSelect.value = game.console.getBuiltInCVar("cv_renderer");
+
+    void (async() => {
+        $("#webgpu-option").toggle(await isWebGPUSupported());
+    })();
 
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");
@@ -607,6 +697,10 @@ Video evidence is required.`)) {
             (e: PointerEvent): void => {
                 if (slotElement.hasClass("has-item")) {
                     e.stopImmediatePropagation();
+                    if (slot === 3) { // Check if the slot is 4 (0-indexed)
+                        const step = 1; // Define the step for cycling
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
+                    }
                     game.inputManager.addAction({
                         type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
                         slot

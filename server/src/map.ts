@@ -16,7 +16,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
-import { Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
 export class Map {
     readonly game: Game;
@@ -151,6 +151,47 @@ export class Map {
             this.seed,
             rivers
         );
+
+        for (const bridge of mapDefinition.bridges ?? []) {
+            const { bridgeSpawnOptions } = Buildings.reify(bridge);
+            if (!bridgeSpawnOptions) {
+                Logger.warn("Attempting to spawn non-bridge building as a bridge");
+                continue;
+            }
+
+            for (const river of this.terrain.rivers.filter(river => river.width <= bridgeSpawnOptions.maxRiverWidth)) {
+                const generateBridge = (start: number, end: number): void => {
+                    let shortestDistance = Number.MAX_VALUE;
+                    let bestPosition = 0.5;
+                    let bestOrientation: Orientation = 0;
+                    for (let pos = start; pos <= end; pos += 0.05) {
+                        // Find the best orientation
+                        const direction = Angle.unitVectorToRadians(river.getTangent(pos));
+                        for (let orientation: Orientation = 0; orientation < 4; orientation++) {
+                            const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
+                            if (distance < shortestDistance) {
+                                shortestDistance = distance;
+                                bestPosition = pos;
+                                bestOrientation = orientation as Orientation;
+                            }
+                        }
+                    }
+                    const position = river.getPosition(bestPosition);
+
+                    // Make sure there's dry land on either side of the bridge
+                    if (
+                        [
+                            Vec.addAdjust(position, Vec.create(0, bridgeSpawnOptions.landCheckDist), bestOrientation),
+                            Vec.addAdjust(position, Vec.create(0, -bridgeSpawnOptions.landCheckDist), bestOrientation)
+                        ].some(point => this.terrain.getFloor(point) === "water")
+                    ) return;
+
+                    this.generateBuilding(bridge, position, bestOrientation);
+                };
+                generateBridge(0.2, 0.4);
+                generateBridge(0.6, 0.8);
+            }
+        }
 
         // Generate buildings
         for (const building in mapDefinition.buildings) {
@@ -457,7 +498,7 @@ export class Map {
         // so it can retry on different orientations
         getOrientation?: (orientation: Orientation) => void
     }): Vector | undefined {
-        let position = Vec.create(0, 0);
+        let position: Vector | undefined = Vec.create(0, 0);
 
         const scale = params?.scale ?? 1;
         let orientation = params?.orientation ?? 0;
@@ -470,7 +511,7 @@ export class Map {
 
         const spawnMode = params?.spawnMode ?? MapObjectSpawnMode.Grass;
 
-        let getPosition: () => Vector;
+        let getPosition: () => Vector | undefined;
 
         const rect = initialHitbox.toRectangle();
         const width = rect.max.x - rect.min.x;
@@ -544,7 +585,7 @@ export class Map {
 
             position = getPosition();
 
-            if (params?.collides?.(position)) {
+            if (!position || params?.collides?.(position)) {
                 collided = true;
                 continue;
             }

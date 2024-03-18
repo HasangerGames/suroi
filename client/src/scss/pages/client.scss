@@ -6,41 +6,41 @@
 @import "./client/console.scss";
 @import "./dialog.scss";
 
-
 body {
-    background: $grass_bg;
+  background: $grass_bg;
+  & > :not(#loading-logo) { opacity: 1 !important }
+  #loading-logo { animation: none; }
+  display: flex;
+  flex-direction: column;
 
-    display: flex;
-    flex-direction: column;
-
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 // NOTE: WIP, will refactor later
 
 .modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: $transparent_bg;
-    max-width: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: $transparent_bg;
+  max-width: 350px;
+  width: 100%;
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  .modal-item input[type="range"] {
+    display: block;
     width: 100%;
-    border-radius: 20px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
+    margin: 0.7rem 0;
+  }
 
-    .modal-item input[type="range"] {
-        display: block;
-        width: 100%;
-        margin: .7rem 0;
-    }
-
-    .modal-item>button {
-        margin: .2rem 0;
-        width: 100%;
-        display: inline-block;
-    }
+  .modal-item > button {
+    margin: 0.2rem 0;
+    width: 100%;
+    display: inline-block;
+  }
 }

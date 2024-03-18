@@ -73,7 +73,8 @@ export enum InputActions {
     TopEmoteSlot,
     RightEmoteSlot,
     BottomEmoteSlot,
-    LeftEmoteSlot
+    LeftEmoteSlot,
+    Loot
 }
 
 export enum SpectateActions {
@@ -118,7 +119,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 13,
+    protocolVersion: 16,
     gridSize: 32,
     tickrate,
     // this is fine cause the object is frozen anyways, so

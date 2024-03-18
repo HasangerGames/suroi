@@ -1,5 +1,18 @@
-import { defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
+import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
+import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
+
+// todo figure out what flags we're gonna actually use and how we're gonna use them kekw
+// todo expect breaking changes to this api (again)
+// Basically, use a bitfield when all flags are known,
+// and use the `Partial`-ized interface when "unset" is a possibility
+
+export enum CVarFlagsEnum {
+    archive = 1 >> 0,
+    readonly = 1 >> 1,
+    cheat = 1 >> 2,
+    replicated = 1 >> 3
+}
 
 export interface CVarFlags {
     readonly archive: boolean
@@ -8,45 +21,128 @@ export interface CVarFlags {
     readonly replicated: boolean
 }
 
+export function flagInterfaceToBitfield(flags: CVarFlags): number {
+    return (+flags.archive & CVarFlagsEnum.archive) |
+        (+flags.readonly & CVarFlagsEnum.readonly) |
+        (+flags.cheat & CVarFlagsEnum.cheat) |
+        (+flags.replicated & CVarFlagsEnum.replicated);
+}
+
+export function flagBitfieldToInterface(flags: number): CVarFlags {
+    return {
+        archive: !!(flags & CVarFlagsEnum.archive),
+        readonly: !!(flags & CVarFlagsEnum.readonly),
+        cheat: !!(flags & CVarFlagsEnum.cheat),
+        replicated: !!(flags & CVarFlagsEnum.replicated)
+    };
+}
+
+export const Casters = Object.freeze({
+    toString<T extends string>(val: T): ResultRes<T> {
+        return { res: val };
+    },
+    toNumber(val: string): Result<number, string> {
+        const num = +val;
+
+        if (Number.isNaN(num)) {
+            return { err: `'${val}' is not a valid numeric value` };
+        }
+
+        return { res: num };
+    },
+    toInt(val: string): Result<number, string> {
+        const num = Casters.toNumber(val);
+
+        if ("err" in num) return num;
+
+        if (num.res % 1) {
+            return { err: `'${val}' is not an integer value` };
+        }
+
+        return num;
+    },
+    toBoolean(val: string): Result<boolean, string> {
+        val = val.toLowerCase();
+
+        switch (true) {
+            case ["1", "t", "true", "y", "yes"].includes(val): return { res: true };
+            case ["0", "f", "false", "n", "no"].includes(val): return { res: false };
+            default: {
+                return { err: `'${val}' is not a valid boolean value` };
+            }
+        }
+    },
+    generateUnionCaster<const T extends string>(options: readonly T[]) {
+        return (val: string): Result<T, string> => {
+            if (options.includes(val as T)) return { res: val as T };
+
+            return {
+                err: `Value must be either ${
+                    options.map((v, i, a) => `${i === a.length - 1 ? "or " : ""}'${v}'`).join(", ")
+                }; received ${val}`
+            };
+        };
+    }
+});
+
 export type ExtractConVarValue<CVar extends ConVar<Stringable>> = CVar extends ConVar<infer V> ? V : never;
 export class ConVar<Value = string> {
     readonly name: string;
     readonly flags: CVarFlags;
+    private readonly _typeCaster: (value: string) => Result<Value, string>;
+
     private _value: Value;
-    readonly console: GameConsole;
     get value(): Value { return this._value; }
 
-    constructor(name: string, value: Value, console: GameConsole, flags?: Partial<CVarFlags>) {
+    readonly console: GameConsole;
+
+    constructor(
+        name: string,
+        value: Value,
+        console: GameConsole,
+        typeCaster: (value: string) => Result<Value, string>,
+        flags?: Partial<CVarFlags>
+    ) {
         this.name = name;
         this._value = value;
         this.console = console;
 
         this.flags = {
             archive: flags?.archive ?? false,
-            readonly: flags?.readonly ?? true,
-            cheat: flags?.cheat ?? true,
+            readonly: flags?.readonly ?? false,
+            cheat: flags?.cheat ?? false,
             replicated: flags?.replicated ?? false
         };
+
+        this._typeCaster = typeCaster;
     }
 
-    setValue(value: Value, writeToLS = true): PossibleError<string> {
+    setValue(value: Stringable, writeToLS = true): PossibleError<string> {
         switch (true) {
             case this.flags.readonly: {
                 return { err: `Cannot set value of readonly CVar '${this.name}'` };
             }
             case this.flags.replicated: {
                 // todo allow server operators to modify replicated cvars
-                return { err: `Value of replicated CVar '${this.name}' can only be modified by server operators.` };
+                return { err: `Value of replicated CVar '${this.name}' can only be modified by server operators` };
             }
             case this.flags.cheat: {
                 // todo allow modification of value when cheats are enabled
-                return { err: `Cannot set value of cheat CVar '${this.name}' because cheats are disabled.` };
+                return { err: `Cannot set value of cheat CVar '${this.name}' because cheats are disabled` };
             }
         }
 
-        if (this.value === value) return;
-        this._value = value;
-        // to not write built in cvars again when they are being loaded
+        const cast = this._typeCaster(String(value));
+        if ("err" in cast) {
+            return cast;
+        }
+
+        const casted = cast.res;
+        if (this._value === casted) return;
+
+        this._value = casted;
+
+        // To not write built-in cvars again when they are being loaded
         if (this.flags.archive && writeToLS) {
             this.console.writeToLocalStorage();
         }
@@ -65,10 +161,12 @@ export class ConsoleVariables {
 
         const vars: Record<string, ConVar<Stringable>> = {};
 
-        for (const variable in defaultClientCVars) {
+        for (const v in defaultClientCVars) {
+            const variable = v as keyof CVarTypeMapping;
+
             if (varExists(variable)) continue;
 
-            const name = variable as keyof CVarTypeMapping;
+            const name = v as keyof CVarTypeMapping;
 
             const defaultVar = defaultClientCVars[name];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
@@ -78,12 +176,14 @@ export class ConsoleVariables {
                 name,
                 defaultValue,
                 console,
+                CVarCasters[variable],
                 {
                     archive: true,
                     readonly: false,
                     cheat: false,
                     ...flags
-                });
+                }
+            );
         }
 
         this._builtInCVars = vars as unknown as CVarTypeMapping;
@@ -114,13 +214,13 @@ export class ConsoleVariables {
 
     readonly set = (() => {
         type GoofyParameterType<K extends string> = K extends keyof CVarTypeMapping ? ExtractConVarValue<CVarTypeMapping[K]> : Stringable;
-        type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>) => void) & {
+        type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>) => PossibleError<string>) & {
             builtIn: <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS?: boolean) => void
             custom: (key: string, value: Stringable) => PossibleError<string>
         };
 
-        const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS = true): void => {
-            (this._builtInCVars[key] as ConVar<CVarTypeMapping[K]["value"]>).setValue(value, writeToLS);
+        const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS = true): PossibleError<string> => {
+            return (this._builtInCVars[key] as ConVar<CVarTypeMapping[K]["value"]>).setValue(value, writeToLS);
         };
         const setCustom = (key: string, value: Stringable): PossibleError<string> => {
             const cvar = this._userCVars.get(key);
@@ -129,15 +229,15 @@ export class ConsoleVariables {
                 return { err: `Could not find console variable '${key}'` };
             }
 
-            cvar.setValue(value);
+            return cvar.setValue(value);
         };
-        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLs = false): void => {
+        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLs = false): PossibleError<string> => {
             if (key in this._builtInCVars) {
                 setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLs);
                 return;
             }
 
-            setCustom(key, value);
+            return setCustom(key, value);
         };
 
         fn.builtIn = setBuiltIn;
@@ -147,12 +247,16 @@ export class ConsoleVariables {
     })();
 
     readonly has = (() => {
+        // There's a way to do overloading while using function properties, but it's fugly
+        /* eslint-disable @typescript-eslint/method-signature-style */
         type HasChecker = (<K extends string>(key: K) => boolean) & {
-            builtIn: (key: keyof CVarTypeMapping) => boolean
+            builtIn(key: keyof CVarTypeMapping): true
+            builtIn(key: string): boolean
+
             custom: (key: string) => boolean
         };
 
-        const hasBuiltIn = (key: keyof CVarTypeMapping): boolean => key in this._builtInCVars;
+        const hasBuiltIn = ((key: string): boolean => key in this._builtInCVars) as HasChecker["builtIn"];
         const hasCustom = (key: string): boolean => this._userCVars.has(key);
         const fn: HasChecker = <K extends string>(key: K): boolean => {
             if (key in this._builtInCVars) {
@@ -175,19 +279,25 @@ export class ConsoleVariables {
      */
     declareCVar(cvar: ConVar<Stringable>): PossibleError<string> {
         if (this._userCVars.has(cvar.name)) {
-            return { err: `CVar ${cvar.name} has already been declared.` };
+            return { err: `CVar ${cvar.name} has already been declared` };
         }
 
         this._userCVars.set(cvar.name, cvar);
     }
 
-    getAll(): GameSettings["variables"] {
+    removeCVar(name: string): PossibleError<string> {
+        if (!this._userCVars.delete(name)) {
+            return { err: `CVar ${name} doesn't exist` };
+        }
+    }
+
+    getAll(omitDefaults = false): GameSettings["variables"] {
         const variables: GameSettings["variables"] = {};
 
-        for (const varName in this._userCVars.entries()) {
-            const cvar = this._userCVars.get(varName)!;
-            variables[varName] = { value: cvar.value, flags: cvar.flags };
+        for (const [varName, cvar] of this._userCVars.entries()) {
+            variables[varName] = { value: cvar.value, flags: flagInterfaceToBitfield(cvar.flags) };
         }
+
         for (const varName in this._builtInCVars) {
             const cvarName = varName as keyof CVarTypeMapping;
             const cvar = this._builtInCVars[cvarName];
@@ -195,7 +305,7 @@ export class ConsoleVariables {
             const defaultVar = defaultClientCVars[cvarName];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
 
-            if (cvar.value !== defaultValue) {
+            if (!omitDefaults || cvar.value !== defaultValue) {
                 variables[varName] = cvar.value;
             }
         }
@@ -206,12 +316,12 @@ export class ConsoleVariables {
     dump(): string {
         return [...Object.entries(this._builtInCVars), ...this._userCVars.entries()]
             .map(([key, cvar]) =>
-                `<li>'${key}' ${[
-                    `${cvar.flags.archive ? "<span class=\"cvar-detail-archived\">A</span>" : ""}`,
-                    `${cvar.flags.cheat ? "<span class=\"cvar-detail-cheat\">C</span>" : ""}`,
-                    `${cvar.flags.readonly ? "<span class=\"cvar-detail-readonly\">R</span>" : ""}`,
-                    `${cvar.flags.replicated ? "<span class=\"cvar-detail-replicated\">S</span>" : ""}`
-                ].join(" ")} => ${cvar.value}</li>`
+                `<li><code>${key}</code> ${[
+                    `${cvar.flags.archive ? "<span class=\"cvar-detail-archived\" title=\"Archived CVar\">A</span>" : ""}`,
+                    `${cvar.flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : ""}`,
+                    `${cvar.flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : ""}`,
+                    `${cvar.flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""}`
+                ].join(" ")} =>&nbsp;<code>${cvar.value}</code></li>`
             ).join("");
     }
 }

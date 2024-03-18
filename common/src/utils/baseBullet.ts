@@ -14,7 +14,7 @@ export interface BulletOptions {
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
-    readonly clipDistance?: number
+    readonly rangeOverride?: number
 }
 
 type GameObject = {
@@ -75,8 +75,8 @@ export class BaseBullet {
 
         let range = this.definition.range;
 
-        if (this.definition.goToMouse && options.clipDistance !== undefined) {
-            range = Numeric.clamp(options.clipDistance, 0, this.definition.range);
+        if (this.definition.allowRangeOverride && options.rangeOverride !== undefined) {
+            range = Numeric.clamp(options.rangeOverride, 0, this.definition.range);
         }
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
@@ -145,7 +145,7 @@ export class BaseBullet {
         stream.writeBits(this.reflectionCount, 2);
         stream.writeObjectID(this.sourceID);
 
-        if (this.definition.goToMouse) {
+        if (this.definition.allowRangeOverride) {
             stream.writeFloat(this.maxDistance, 0, this.definition.range, 16);
         }
     }
@@ -157,7 +157,7 @@ export class BaseBullet {
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readBits(2);
         const sourceID = stream.readObjectID();
-        const clipDistance = source.goToMouse ? stream.readFloat(0, source.range, 16) : undefined;
+        const clipDistance = source.allowRangeOverride ? stream.readFloat(0, source.range, 16) : undefined;
 
         return {
             source,
@@ -166,7 +166,7 @@ export class BaseBullet {
             variance,
             reflectionCount,
             sourceID,
-            clipDistance
+            rangeOverride: clipDistance
         };
     }
 }

@@ -1,147 +1,159 @@
 @import "../palette.scss";
 
 .btn {
-    display: block;
+  display: block;
 
-    color: #ffffff;
-    cursor: pointer;
+  color: #ffffff;
+  cursor: pointer;
 
-    font-size: 20px;
+  font-size: 20px;
 
-    padding: 8px 15px;
+  padding: 8px 15px;
 
-    border: none;
-    border-radius: 10px;
+  border: none;
+  border-radius: 10px;
 
-    text-decoration: none;
-    text-shadow: 3px 3px 8px #00000064;
+  text-decoration: none;
+  text-shadow: 3px 3px 8px #00000064;
 }
 
 .btn-lg {
-    height: 45px;
+  height: 45px;
 }
 
 // Button hover interaction
 .btn-darken {
-    border: none;
-    transition: filter 0.25s ease;
+  border: none;
+  transition: filter 0.25s ease;
 }
 
 .link-darken:hover,
 .link-darken:active,
 .btn-darken:hover,
 .btn-darken:active {
-    color: inherit;
-    filter: brightness(80%);
+  color: inherit;
+  filter: brightness(80%);
 }
 
 .btn-disabled {
-    filter: brightness(80%);
-    pointer-events: none;
-    user-select: none;
+  filter: brightness(80%);
+  pointer-events: none;
+  user-select: none;
 }
 
 // Regular buttons
 .btn-primary {
-    background: $blue;
-    border-bottom: 2px solid $blue_bg;
-    box-shadow: inset 0 -2px $blue_bg;
+  background: $blue;
+  border-bottom: 2px solid $blue_bg;
+  box-shadow: inset 0 -2px $blue_bg;
 }
 
 .btn-secondary {
-    background: $grey;
-    border-bottom: 2px solid $grey_bg;
-    box-shadow: inset 0 -2px $grey_bg;
+  background: $grey;
+  border-bottom: 2px solid $grey_bg;
+  box-shadow: inset 0 -2px $grey_bg;
 }
 
 .btn-danger {
-    background: $danger;
-    border-bottom: 2px solid $transparent_bg;
-    box-shadow: inset 0 -2px $transparent_bg;
+  background: $danger;
+  border-bottom: 2px solid $transparent_bg;
+  box-shadow: inset 0 -2px $transparent_bg;
 }
 
 .btn-alert {
-    margin-top: 10px;
-    background: $orange;
-    border-bottom: 2px solid $orange_bg;
-    box-shadow: inset 0 -2px $orange_bg;
+  margin-top: 10px;
+  background: $orange;
+  border-bottom: 2px solid $orange_bg;
+  box-shadow: inset 0 -2px $orange_bg;
 }
 
 // Socials
 .btn-social {
-    display: inline-block;
+  display: inline-block;
 
-    height: 45px;
-    width: 45px;
+  height: 45px;
+  width: 45px;
 
-    margin: 4px 0;
+  margin: 4px 0;
 
-    font-size: large;
+  font-size: large;
 
-    border: none;
-    border-radius: 12px;
+  border: none;
+  border-radius: 12px;
 
-    background-size: 65%;
-    background-position: center;
-    background-repeat: no-repeat;
-    text-align: center;
+  background-size: 65%;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
 }
 
 .btn-twitter {
-    background-image: url("/img/socials/twitter.svg");
-    background-color: $twitter;
-    box-shadow: inset 0 -4px $twitter_bg;
+  background-image: url("/img/socials/twitter.svg");
+  background-color: $twitter;
+  box-shadow: inset 0 -4px $twitter_bg;
 }
 
 .btn-instagram {
-    background-image: url("/img/socials/instagram.svg");
-    background-color: $instagram;
-    box-shadow: inset 0 -4px $instagram_bg;
+  background-image: url("/img/socials/instagram.svg");
+  background-color: $instagram;
+  box-shadow: inset 0 -4px $instagram_bg;
 }
 
 .btn-reddit {
-    background-image: url("/img/socials/reddit.svg");
-    background-color: $reddit;
-    box-shadow: inset 0 -4px $reddit_bg;
+  background-image: url("/img/socials/reddit.svg");
+  background-color: $reddit;
+  box-shadow: inset 0 -4px $reddit_bg;
 }
 
 .btn-discord {
-    background-image: url("/img/socials/discord.svg");
-    background-color: $discord;
-    box-shadow: inset 0 -4px $discord_bg;
+  background-image: url("/img/socials/discord.svg");
+  background-color: $discord;
+  box-shadow: inset 0 -4px $discord_bg;
 }
 
 .btn-youtube {
-    background-image: url("/img/socials/youtube.svg");
-    background-color: $youtube;
-    box-shadow: inset 0 -4px $youtube_bg;
+  background-image: url("/img/socials/youtube.svg");
+  background-color: $youtube;
+  box-shadow: inset 0 -4px $youtube_bg;
 }
 
 .btn-github {
-    background-image: url("/img/socials/github.svg");
-    background-color: $github;
-    box-shadow: inset 0 -4px $github_bg;
+  background-image: url("/img/socials/github.svg");
+  background-color: $github;
+  box-shadow: inset 0 -4px $github_bg;
+}
+
+.btn-wiki {
+  background-color: $orange;
+  box-shadow: inset 0 -4px $orange_bg;
+  padding: 0;
+  display: flex;
+  span {
+    color: white;
+    font-weight: 800;
+    margin: auto;
+  }
 }
 
 .btn-bind {
-    display: flex;
-    font-size: 14px;
-    margin-inline: 2.5%;
-    width: 45%;
+  display: flex;
+  font-size: 14px;
+  margin-inline: 2.5%;
+  width: 45%;
 
-    &.active {
-        outline: 5px solid $blue;
-    }
+  &.active {
+    outline: 5px solid $blue;
+  }
 }
 
 .rules-close-btn {
-    position: absolute;
-    transform: translate(125px, 6px);
-    width: 25px;
-    height: 25px;
-    z-index: 10;
-    text-align: center;
-    border-radius: 50%;
-    background-color: $danger;
-    cursor: pointer;
+  position: absolute;
+  transform: translate(125px, 6px);
+  width: 25px;
+  height: 25px;
+  z-index: 10;
+  text-align: center;
+  border-radius: 50%;
+  background-color: $danger;
+  cursor: pointer;
 }

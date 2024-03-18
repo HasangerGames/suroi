@@ -146,11 +146,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
             }
         }
 
-        const clipDistance = this.owner.distanceToMouse - this.definition.length;
+        const rangeOverride = this.owner.distanceToMouse - this.definition.length;
+        const projCount = definition.bulletCount ?? 1;
 
-        const limit = definition.bulletCount ?? 1;
-
-        for (let i = 0; i < limit; i++) {
+        for (let i = 0; i < projCount; i++) {
             this.owner.game.addBullet(
                 this,
                 this.owner,
@@ -160,9 +159,9 @@ export class GunItem extends InventoryItem<GunDefinition> {
                         : position,
                     rotation: owner.rotation + Math.PI / 2 +
                         (definition.consistentPatterning === true
-                            ? 2 * (i / limit - 0.5)
+                            ? 2 * (i / projCount - 0.5)
                             : randomFloat(-1, 1)) * spread,
-                    clipDistance
+                    rangeOverride
                 }
             );
         }

@@ -1,5 +1,8 @@
+import $ from "jquery";
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
+import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
@@ -8,7 +11,6 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
 import { formatDate } from "./misc";
-import $ from "jquery";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -70,6 +72,26 @@ export class UIManager {
         element.text(name);
 
         return element.prop("outerHTML");
+    }
+
+    getPlayerBadge(id: number): BadgeDefinition | undefined {
+        if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            return;
+        }
+
+        const player = this.game.playerNames.get(id);
+
+        switch (true) {
+            case this.game.console.getBuiltInCVar("cv_anonymize_player_names"): {
+                return;
+            }
+            case player === undefined: {
+                console.warn(`Unknown player name with id ${id}`); return;
+            }
+            default: {
+                return player.badge;
+            }
+        }
     }
 
     readonly ui = {
@@ -164,13 +186,19 @@ export class UIManager {
 
         $("#chicken-dinner").toggle(packet.won);
 
+        const playerName = this.getPlayerName(packet.playerID);
+        const playerBadge = this.getPlayerBadge(packet.playerID);
+        const playerBadgeText = playerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            : "";
+
         $("#game-over-text").html(
             packet.won
                 ? "Winner winner chicken dinner!"
                 : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
         );
 
-        $("#game-over-player-name").html(this.getPlayerName(packet.playerID));
+        $("#game-over-player-name").html(playerName + playerBadgeText);
 
         $("#game-over-kills").text(packet.kills);
         $("#game-over-damage-done").text(packet.damageDone);
@@ -326,14 +354,33 @@ export class UIManager {
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
+        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active").css("outline-color", "");
         const max = GameConstants.player.maxWeapons;
         for (let i = 0; i < max; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
             const weapon = inventory.weapons[i];
+            const isActive = this.inventory.activeWeaponIndex === i;
 
             if (weapon) {
+                const isGun = "ammoType" in weapon.definition;
+                const color = isGun
+                    ? Ammos.fromString((weapon.definition as GunDefinition).ammoType).characteristicColor
+                    : { hue: 0, saturation: 0, lightness: 0 };
+
                 container
                     .addClass("has-item")
+                    .toggleClass("active", isActive)
+                    .css(isGun && this.game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored"
+                        ? {
+                            "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
+                            "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
+                            color: `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                        }
+                        : {
+                            "outline-color": "",
+                            "background-color": "",
+                            color: ""
+                        })
                     .children(".item-name")
                     .text(weapon.definition.name);
 
@@ -352,15 +399,12 @@ export class UIManager {
                         .css("color", weapon.count > 0 ? "inherit" : "red");
                 }
             } else {
-                container.removeClass("has-item");
-                container.children(".item-name").text("");
+                container.removeClass("has-item").css("background-color", "");
+                container.children(".item-name").css("color", "").text("");
                 container.children(".item-image").removeAttr("src").hide();
                 container.children(".item-ammo").text("");
             }
         }
-
-        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active");
-        $(`#weapon-slot-${this.inventory.activeWeaponIndex + 1}`).addClass("active");
     }
 
     updateItems(): void {
@@ -447,7 +491,21 @@ export class UIManager {
         const weaponPresent = weaponUsed !== undefined;
         const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
 
+        // TODO Clean up this code
+
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
+
+        const playerBadge = playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
+        const playerBadgeText = playerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            : "";
+
+        const killerName = killerID !== undefined ? this.getPlayerName(killerID) : "";
+
+        const killerBadge = killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
+        const killerBadgeText = killerBadge
+            ? `<img class="badge-icon" src="./img/game/badges/${killerBadge.idString}.svg" alt="${killerBadge.name} badge">`
+            : "";
 
         let messageText: string | undefined;
         const classes: string[] = [];
@@ -460,20 +518,20 @@ export class UIManager {
                         let killMessage = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                killMessage = `${playerName} committed suicide`;
+                                killMessage = `${playerName}${playerBadgeText} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                killMessage = `${this.getPlayerName(killerID!)} killed ${playerName}`;
+                                killMessage = `${killerName}${killerBadgeText} killed ${playerName}${playerBadgeText}`;
                                 break;
                             case KillType.Gas:
-                                killMessage = `${playerName} died to the gas`;
+                                killMessage = `${playerName}${playerBadgeText} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                killMessage = `${playerName} was crushed by an airdrop`;
+                                killMessage = `${playerName}${playerBadgeText} was crushed by an airdrop`;
                                 break;
                         }
 
-                        const fullyQualifiedName = weaponPresent ? `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}` : "";
+                        const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
                          * English being complicated means that this will sometimes return bad results (ex: "hour", "NSA", "one" and "university")
                          * but to be honest, short of downloading a library off of somewhere, this'll have to do
@@ -488,7 +546,7 @@ export class UIManager {
                         break;
                     }
                     case "icon": {
-                        const killerName = killType === KillType.TwoPartyInteraction ? this.getPlayerName(killerID!) : "";
+                        const killerName2 = killType === KillType.TwoPartyInteraction ? killerName : "";
                         let iconName = "";
                         switch (killType) {
                             case KillType.Gas:
@@ -509,10 +567,12 @@ export class UIManager {
                             </span>`
                             : "";
 
-                        messageText = `
-                        ${killerName}
-                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">
-                        ${killstreakText}
+                        messageText = `\
+                        ${killerName2}\
+                        ${killerBadgeText}\
+                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
+                        ${killstreakText}\
+                        ${playerBadgeText}\
                         ${playerName}`;
                         break;
                     }
@@ -525,7 +585,7 @@ export class UIManager {
                     }
                     case killerID === this.game.activePlayerID: { // killed other
                         classes.push("kill-feed-item-killer");
-                        this._addKillMessage(kills!, playerName, weaponUsed?.name ?? "", killstreak);
+                        this._addKillMessage(kills!, `${playerName}${playerBadgeText}`, weaponUsed?.name ?? "", killstreak);
                         break;
                     }
                 }
@@ -535,11 +595,11 @@ export class UIManager {
             case KillFeedMessageType.KillLeaderAssigned: {
                 if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
 
-                $("#kill-leader-leader").html(playerName);
+                $("#kill-leader-leader").html(`${playerName}${playerBadgeText}`);
                 $("#kill-leader-kills-counter").text(kills!);
 
                 if (!hideInKillfeed) {
-                    messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
+                    messageText = `<i class="fa-solid fa-crown"></i> ${playerName}${playerBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
                 $("#btn-spectate-kill-leader").show();
@@ -555,7 +615,12 @@ export class UIManager {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID ? `${this.getPlayerName(killerID)} killed Kill Leader!` : "The Kill Leader is dead!"}`;
+                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID
+                    ? `${killerID !== playerID
+                        ? `${killerName}${killerBadgeText} killed Kill Leader!`
+                        : "The Kill Leader is dead!"}`
+                    : "The Kill Leader killed themselves!"
+                }`;
                 if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");

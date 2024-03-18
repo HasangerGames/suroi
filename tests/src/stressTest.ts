@@ -19,7 +19,7 @@ const config = {
 const skins: string[] = [];
 
 for (const skin of Skins) {
-    if (!skin.notInLoadout && !skin.roleRequired) skins.push(skin.idString);
+    if (!skin.hideFromLoadout && !skin.roleRequired) skins.push(skin.idString);
 }
 
 const bots = new Set<Bot>();
