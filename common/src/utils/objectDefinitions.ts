@@ -307,7 +307,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                  * @param name The name of the template from which this definition should inherit
                  * @param overrides A set of overrides to apply to the contents of the template
                  * @param args A collection of arguments to pass to the inherited template's function.
-                 * See {@linkcode GetInheritedDef} for more info
+                 * See {@linkcode GetPartialDeclFn} for more info
                  */
                 readonly apply: <
                     Key extends keyof TemplateDecl & AllowedTemplateKeys,
@@ -326,7 +326,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                  * @template Overrides The specific type of the provided overrides
                  * @param name The name of the template from which this definition should inherit
                  * @param args A collection of arguments to pass to the inherited template's function.
-                 * See {@linkcode GetInheritedDef} for more info
+                 * See {@linkcode GetPartialDeclFn} for more info
                  */
                 readonly simple: <
                     Key extends keyof TemplateDecl & AllowedTemplateKeys
