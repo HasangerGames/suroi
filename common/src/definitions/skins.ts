@@ -45,6 +45,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         apply("with_role", {}, ["radians"], ["Radians"]),
         apply("with_role", {}, ["developr"], ["Developr Swag"]),
         apply("with_role", {}, ["designr"], ["Designr Swag"]),
+        apply("with_role", {}, ["composr"], ["Composr Swag"]),
         apply("skin_factory", {}, "HAZEL Jumpsuit"),
         apply("skin_factory", {}, "Forest Camo"),
         apply("skin_factory", {}, "Desert Camo"),
