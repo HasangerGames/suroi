@@ -35,6 +35,7 @@ export const Config = {
     roles: {
         developr: { password: "developr" },
         designr: { password: "designr", noPrivileges: true },
+        composr: { password: "composr", noPrivileges: true },
         youtubr: { password: "youtubr", noPrivileges: true },
         hasanger: { password: "hasanger" },
         leia: { password: "leia" },
