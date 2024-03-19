@@ -144,10 +144,12 @@ $(async(): Promise<void> => {
                 const devPass = game.console.getBuiltInCVar("dv_password");
                 const role = game.console.getBuiltInCVar("dv_role");
                 const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+                const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
 
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
+                if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
 
                 const nameColor = game.console.getBuiltInCVar("dv_name_color");
                 if (nameColor) {

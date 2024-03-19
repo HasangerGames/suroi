@@ -350,6 +350,7 @@ export const Maps: Record<string, MapDefinition> = {
             //map.game.addLoot("8x_scope", Vec.create(this.width / 2, this.height / 2 - 20));
             //map.game.addLoot("usas12", Vec.create(this.width / 2, this.height / 2 - 20));
             //map.game.addLoot("12g", Vec.create(this.width / 2, this.height / 2 - 20), Infinity);
+            // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
         }
     },
     singleObstacle: {

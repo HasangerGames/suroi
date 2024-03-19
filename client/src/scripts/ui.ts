@@ -13,7 +13,7 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { UI_DEBUG_MODE } from "./utils/constants";
+import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 
@@ -234,7 +234,10 @@ Video evidence is required.`)) {
     });
 
     const customizeMenu = $("#customize-menu");
-    $("#btn-customize").on("click", () => { customizeMenu.fadeToggle(250); $(".dialog").hide(); });
+    $("#btn-customize").on("click", () => {
+        $(".dialog").hide();
+        customizeMenu.fadeToggle(250);
+    });
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
@@ -281,7 +284,7 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
-    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | "win" | "death" | undefined;
+    let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
     function updateEmotesList(): void {
         const emoteList = $("#emotes-list");
 
@@ -336,8 +339,7 @@ Video evidence is required.`)) {
     }
 
     updateEmotesList();
-    const slots = ["top", "right", "bottom", "left", "win", "death"] as const;
-    for (const slot of slots) {
+    for (const slot of emoteSlots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-wheel-container .emote-${slot}`)
@@ -351,7 +353,7 @@ Video evidence is required.`)) {
 
                 updateEmotesList();
 
-                if (slots.indexOf(slot) > 3) {
+                if (emoteSlots.indexOf(slot) > 3) {
                     // win / death emote
                     $("#emote-customize-wheel").css(
                         "background-image",
@@ -494,7 +496,7 @@ Video evidence is required.`)) {
 
     // Load settings values and event listeners
     function addSliderListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: number) => void): void {
-        const element = $(elementId)[0] as HTMLInputElement;
+        const element = $<HTMLInputElement>(elementId)[0];
         if (!element) console.error("Invalid element id");
 
         element.addEventListener("input", () => {
@@ -508,7 +510,7 @@ Video evidence is required.`)) {
     }
 
     function addCheckboxListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: boolean) => void): void {
-        const element = $(elementId)[0] as HTMLInputElement;
+        const element = $<HTMLInputElement>(elementId)[0];
 
         element.addEventListener("input", () => {
             const value = element.checked;
@@ -569,7 +571,7 @@ Video evidence is required.`)) {
 
     // Text killfeed toggle
     {
-        const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
+        const element = $<HTMLInputElement>("#toggle-text-kill-feed")[0];
 
         element.addEventListener("input", () => {
             game.console.setBuiltInCVar("cv_killfeed_style", element.checked ? "text" : "icon");
@@ -580,7 +582,7 @@ Video evidence is required.`)) {
 
     // Weapon slot style toggle
     {
-        const element = $("#toggle-colored-slots")[0] as HTMLInputElement;
+        const element = $<HTMLInputElement>("#toggle-colored-slots")[0];
 
         element.addEventListener("input", () => {
             game.console.setBuiltInCVar("cv_weapon_slot_style", element.checked ? "colored" : "simple");
@@ -590,9 +592,9 @@ Video evidence is required.`)) {
     }
 
     // render mode select menu
-    const renderSelect = $("#render-mode-select")[0] as HTMLSelectElement;
+    const renderSelect = $<HTMLSelectElement>("#render-mode-select")[0];
     renderSelect.addEventListener("input", () => {
-        game.console.setBuiltInCVar("cv_renderer", renderSelect.value as unknown as "webgl2");
+        game.console.setBuiltInCVar("cv_renderer", renderSelect.value as unknown as "webgl1" | "webgl2" | "webgpu");
     });
     renderSelect.value = game.console.getBuiltInCVar("cv_renderer");
 
@@ -601,9 +603,9 @@ Video evidence is required.`)) {
     })();
 
     // render resolution select menu
-    const renderResSelect = $("#render-res-select")[0] as HTMLSelectElement;
+    const renderResSelect = $<HTMLSelectElement>("#render-res-select")[0];
     renderResSelect.addEventListener("input", () => {
-        game.console.setBuiltInCVar("cv_renderer_res", renderResSelect.value as unknown as "auto");
+        game.console.setBuiltInCVar("cv_renderer_res", renderResSelect.value as unknown as "auto" | "0.5" | "1" | "2" | "3");
     });
     renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
 
@@ -880,12 +882,12 @@ Video evidence is required.`)) {
             );
     }
 
-    $("input[type=range]")
-        .on("input", (e) => {
-            updateRangeInput(e.target as HTMLInputElement);
+    $<HTMLInputElement>("input[type=range]")
+        .on("input", e => {
+            updateRangeInput(e.target);
         })
         .each((_i, element) => {
-            updateRangeInput(element as HTMLInputElement);
+            updateRangeInput(element);
         });
 
     $(".tab").on("click", (ev) => {

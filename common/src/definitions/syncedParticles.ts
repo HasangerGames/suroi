@@ -146,6 +146,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     mean: 20000,
                     deviation: 1000
                 },
+                frame: "smoke_grenade_particle",
                 zIndex: ZIndexes.ObstaclesLayer4
             })
         }

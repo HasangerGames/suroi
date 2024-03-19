@@ -74,7 +74,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (this.ammo <= 0) {
             if (!owner.inventory.items.hasItem(definition.ammoType)) {
                 owner.animation = AnimationType.GunClick;
-                owner.game.partialDirtyObjects.add(owner);
+                owner.setPartialDirty();
             }
 
             this._shots = 0;
@@ -90,7 +90,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 ? AnimationType.GunAlt
                 : AnimationType.Gun;
 
-        owner.game.partialDirtyObjects.add(owner);
+        owner.setPartialDirty();
 
         owner.dirty.weapons = true;
 

@@ -31,6 +31,11 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
         ),
         apply(
             "badge_factory",
+            { roles: ["composr"] },
+            "Composr"
+        ),
+        apply(
+            "badge_factory",
             { roles: ["youtubr", "123op"] },
             "Youtubr"
         ),

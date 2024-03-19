@@ -76,6 +76,9 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         "Shushing Face",
         "Zipper Mouth Face",
         "Sighing Face",
-        "Chicken Dinner"
+        "Frustrated Face",
+        "Chicken Dinner",
+        "oof",
+        "real"
     ].map(name => apply("emote_factory", {}, name))
 );

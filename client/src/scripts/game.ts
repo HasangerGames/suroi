@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
-import "pixi.js/prepare";
 import { Application, Color } from "pixi.js";
+import "pixi.js/prepare";
 import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
@@ -45,12 +45,12 @@ import { Minimap, Ping } from "./rendering/minimap";
 import { setupUI } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
+import { loadTextures } from "./utils/pixi";
 import { SoundManager } from "./utils/soundManager";
 import { Tween } from "./utils/tween";
 import { UIManager } from "./utils/uiManager";
-import { loadTextures } from "./utils/pixi";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -259,7 +259,7 @@ export class Game {
                 joinPacket.badge = Badges.fromString(badge);
             }
 
-            joinPacket.emotes = (["top", "right", "bottom", "left", "death", "win"] as const).map(
+            joinPacket.emotes = emoteSlots.map(
                 slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
             );
 
@@ -602,7 +602,6 @@ export class Game {
     }
 
     addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
-        // ignore deprecation
         const tween = new Tween(this, config);
 
         this.tweens.add(tween);

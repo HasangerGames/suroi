@@ -4,8 +4,9 @@ import { Geometry } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
+import { type Obstacle } from "./obstacle";
+import { type Player } from "./player";
+import { ObjectCategory } from "../../../../common/src/constants";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -50,19 +51,17 @@ export class Bullet extends BaseBullet {
             for (const collision of collisions) {
                 const object = collision.object;
 
-                const isObstacle = object instanceof Obstacle;
-                const isPlayer = object instanceof Player;
+                const isObstacle = object.type === ObjectCategory.Obstacle;
+                const isPlayer = object.type === ObjectCategory.Player;
                 if (isObstacle || isPlayer) {
-                    object.hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
+                    (object as Obstacle | Player).hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
                 }
 
                 this.damagedIDs.add(object.id);
 
                 if (isObstacle) {
-                    if (
-                        (this.definition.penetration.obstacles && !object.definition.impenetrable) ??
-                        object.definition.noCollisions
-                    ) continue;
+                    if (this.definition.penetration.obstacles && !object.definition.impenetrable) continue;
+                    if (object.definition.noBulletCollision || object.definition.noCollisions) continue;
                 }
                 if (this.definition.penetration.players && isPlayer) continue;
 

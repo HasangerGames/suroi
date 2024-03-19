@@ -43,7 +43,8 @@ interface InternalAnimation<T> {
 }
 
 export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle> {
-    readonly type = ObjectCategory.SyncedParticle;
+    override readonly type = ObjectCategory.SyncedParticle;
+    override readonly allocBytes = 16;
 
     alpha: number;
     alphaActive = false;
@@ -143,7 +144,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         }
     }
 
-    override damage(amount: number, source?: unknown): void {}
+    override damage(_amount: number, _source?: unknown): void {}
 
     setTarget(target: Vector, timespan: number, easing: EasingFunction): void {
         this._target = {
@@ -166,7 +167,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
             return;
         }
 
-        this.game.partialDirtyObjects.add(this);
+        this.setPartialDirty();
 
         const dt = GameConstants.msPerTick;
 

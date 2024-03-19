@@ -12,6 +12,7 @@ import { Player } from "./player";
 
 export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
+    override readonly allocBytes = 8;
 
     private _height = 1;
     get height(): number { return this._height; }
@@ -27,13 +28,13 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         this.hitbox.position = position;
         this._airdrop = airdrop;
 
-        this.game.mapPings.add(this.position);
+        this.game.mapPings.push(this.position);
     }
 
     update(): void {
         if (this._height < 0) {
             this.game.removeObject(this);
-            this.game.airdrops.delete(this._airdrop);
+            this.game.airdrops.splice(this.game.airdrops.indexOf(this._airdrop), 1);
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
@@ -92,7 +93,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
         this._height = Numeric.lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
 
-        this.game.partialDirtyObjects.add(this);
+        this.setPartialDirty();
     }
 
     override get data(): FullData<ObjectCategory.Parachute> {

@@ -14,6 +14,7 @@ export const VARIATION_BITS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 3;
 
+// @ts-expect-error private field moment
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
         super(source, byteOffset, byteLength);
@@ -291,41 +292,77 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write an iterator to the stream
-     * @param iterator Array, set etc containing the iterator
+     * Write an array to the stream
+     * @param arr An array containing the items to serialize
      * @param serializeFn The function to serialize each iterator item
-     * @param bits The maximum length of bits to write the iterator size
      * @param size The iterator size (eg. array.length or set.size)
      */
-    writeIterator<T>(iterator: Iterable<T>, size: number, bits: number, serializeFn: (item: T) => void): void {
+    writeArray<T>(arr: T[], bits: number, serializeFn: (item: T) => void): void {
         if (bits < 0 || bits >= 31) {
             throw new Error(`Invalid bit count ${bits}`);
         }
 
-        this.writeBits(size, bits);
+        this.writeBits(arr.length, bits);
 
         const max = 1 << bits;
-        let i = 0;
-        for (const item of iterator) {
-            i++;
+        for (let i = 0; i < arr.length; i++) {
             if (i > max) {
-                console.warn(`writeIterator: iterator overflow: ${bits} bits, ${size} size`);
+                console.warn(`writeArray: iterator overflow: ${bits} bits, ${arr.length} size`);
                 break;
             }
-            serializeFn(item);
+            serializeFn(arr[i]);
         }
     }
 
     /**
-     * Read an iterator to the stream
+     * Read an array from the stream
+     * @param arr The array to add the deserialized elements;
      * @param serializeFn The function to de-serialize each iterator item
      * @param bits The maximum length of bits to read
      */
-    * readIterator<T>(bits: number, deserializeFn: () => T): IterableIterator<T> {
+    readArray<T>(arr: T[], bits: number, deserializeFn: () => T): void {
         const size = this.readBits(bits);
 
         for (let i = 0; i < size; i++) {
-            yield deserializeFn();
+            arr.push(deserializeFn());
         }
+    }
+
+    // private field L
+    declare _view: {
+        _view: Uint8Array
+    };
+
+    /**
+     * Copy bytes from a source stream to this stream
+     * !!!NOTE: Both streams index must be byte aligned
+     * @param {BitStream} src
+     * @param {number} offset
+     * @param {number} length
+     */
+    writeBytes(src: SuroiBitStream, offset: number, length: number): void {
+        if (this.index % 8 !== 0) {
+            throw new Error("WriteBytes: stream must be byte aligned");
+        }
+        const data = new Uint8Array(src._view._view.buffer, offset, length);
+        this._view._view.set(data, this.index / 8);
+        this.index += length * 8;
+    }
+
+    /**
+     * Writes a byte alignment to the stream
+     * This is to ensure the stream index is a multiple of 8
+     */
+    writeAlignToNextByte(): void {
+        const offset = 8 - this.index % 8;
+        if (offset < 8) this.writeBits(0, offset);
+    }
+
+    /**
+     * Read a byte alignment from the stream
+     */
+    readAlignToNextByte(): void {
+        const offset = 8 - this.index % 8;
+        if (offset < 8) this.readBits(offset);
     }
 }

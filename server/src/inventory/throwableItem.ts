@@ -40,7 +40,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
         this._lastUse = owner.game.now;
         owner.animation = AnimationType.ThrowableCook;
-        owner.game.partialDirtyObjects.add(owner);
+        owner.setPartialDirty();
 
         owner.action?.cancel();
 
@@ -111,7 +111,7 @@ class GrenadeHandler {
         }
 
         owner.animation = AnimationType.ThrowableThrow;
-        owner.game.partialDirtyObjects.add(owner);
+        owner.setPartialDirty();
     }
 
     cook(): void {

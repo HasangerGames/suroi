@@ -13,6 +13,7 @@ import { type Obstacle } from "./obstacle";
 
 export class Building extends BaseGameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
+    override readonly allocBytes = 8;
 
     readonly definition: BuildingDefinition;
 
@@ -69,7 +70,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
         }
     }
 
@@ -110,12 +111,12 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
             this.solvePuzzle();
         } else if (this.puzzle.inputOrder.length >= order.length) {
             this.puzzle.errorSeq = !this.puzzle.errorSeq;
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
             this.puzzle.resetTimeout = this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
         } else {
             this.puzzle.resetTimeout = this.game.addTimeout(() => {
                 this.puzzle!.errorSeq = !this.puzzle!.errorSeq;
-                this.game.partialDirtyObjects.add(this);
+                this.setPartialDirty();
                 this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
             }, 10000);
         }
@@ -130,7 +131,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         const puzzleDef = this.definition.puzzle!;
         this.game.addTimeout(() => {
             this.puzzle!.solved = true;
-            this.game.partialDirtyObjects.add(this);
+            this.setPartialDirty();
         }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.interactDelay);
         this.game.addTimeout(() => {
             for (const obstacle of this.interactableObstacles) {
@@ -149,8 +150,8 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         this.puzzle.inputOrder = [];
         for (const piece of this.puzzlePieces) {
             piece.activated = false;
-            this.game.fullDirtyObjects.add(piece);
+            piece.setDirty();
         }
-        this.game.partialDirtyObjects.add(this);
+        this.setPartialDirty();
     }
 }

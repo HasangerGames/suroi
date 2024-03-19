@@ -2,8 +2,10 @@ import { Container, type Application } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { EaseFunctions } from "../../../../common/src/utils/math";
+import { PIXI_SCALE } from "../utils/constants";
+import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
 
 export class Camera {
     pixi: Application;
@@ -12,7 +14,7 @@ export class Camera {
 
     position = Vec.create(0, 0);
 
-    private _zoom = 48;
+    private _zoom = DEFAULT_SCOPE.zoomLevel;
     get zoom(): number { return this._zoom; }
     set zoom(zoom: number) {
         this._zoom = zoom;
@@ -42,14 +44,15 @@ export class Camera {
         this.width = this.pixi.screen.width;
         this.height = this.pixi.screen.height;
 
-        const size = this.height < this.width ? this.width : this.height;
-        const scale = (size / 2560) * (48 / this.zoom); // 2560 = 1x, 5120 = 2x
+        const minDimension = Math.min(this.width, this.height);
+        const maxDimension = Math.max(this.width, this.height);
+        const maxScreenDim = Math.max(minDimension * (16 / 9), maxDimension);
+        const scale = (maxScreenDim * 0.5) / (this._zoom * PIXI_SCALE);
 
         this.zoomTween?.kill();
 
         if (animation) {
-            this.zoomTween = new Tween(
-                this.game,
+            this.zoomTween = this.game.addTween(
                 {
                     target: this.container.scale,
                     to: { x: scale, y: scale },

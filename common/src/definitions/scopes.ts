@@ -23,16 +23,16 @@ export const Scopes = ObjectDefinitions.create<ScopeDefinition>()(
         apply(
             "scope_factory",
             {
-                zoomLevel: 48,
+                zoomLevel: 70,
                 noDrop: true,
                 giveByDefault: true
             },
             1
         ),
-        apply("scope_factory", { zoomLevel: 62 }, 2),
-        apply("scope_factory", { zoomLevel: 83 }, 4),
-        apply("scope_factory", { zoomLevel: 116 }, 8),
-        apply("scope_factory", { zoomLevel: 178 }, 15)
+        apply("scope_factory", { zoomLevel: 100 }, 2),
+        apply("scope_factory", { zoomLevel: 135 }, 4),
+        apply("scope_factory", { zoomLevel: 185 }, 8),
+        apply("scope_factory", { zoomLevel: 255 }, 15)
     ]
 );
 

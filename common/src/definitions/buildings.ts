@@ -2261,7 +2261,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port_complex",
             name: "Port Complex",
-            spawnHitbox: RectangleHitbox.fromRect(360, 285, Vec.create(-25, 0)),
+            spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
             subBuildings: [
                 { idString: "port", position: Vec.create(-120, 0) },
@@ -2709,6 +2709,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "lux_crate", position: Vec.create(80.38, 4.29), rotation: 1 },
                 { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
                 { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
+            ],
+            lootSpawners: [
+                { table: "tugboat_red_floor", position: Vec.create(89, -25) }
             ]
         },
         {
@@ -2797,7 +2800,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "window2", position: Vec.create(20.57, 19.2), rotation: 0 }
             ],
             lootSpawners: [
-                { table: "sea_traffic_control_floor", position: Vec.create(0, 0) }
+                { table: "sea_traffic_control_floor", position: Vec.create(0, 0) },
+                { table: "sea_traffic_control_outside", position: Vec.create(1.5, 48) }
             ]
         },
         {
