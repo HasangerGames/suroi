@@ -9,7 +9,6 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
-import { exec } from "child_process";
 import { VPN_IPV4 } from "./utils/VPN_IPV4";
 
 /**
@@ -388,35 +387,6 @@ app.ws("/play", {
     }
 });
 
-const openPageInBrowserEnabled = false;
-function openPageInBrowser(url: string): void {
-    let command: string;
-
-    switch (process.platform) {
-        case "darwin":
-            command = `open "${url}"`;
-            break;
-        case "win32":
-            command = `start "" "${url}"`;
-            break;
-        case "linux":
-            command = `xdg-open "${url}"`;
-            break;
-        default:
-            console.error("Unsupported platform:", process.platform);
-            return;
-    }
-    if (openPageInBrowserEnabled) {
-        exec(command, (error) => {
-            if (error) {
-                console.error("Error opening page:", error);
-            } else {
-                Logger.log("Page opened successfully.");
-            }
-        });
-    }
-}
-
 // Start the server
 app.listen(Config.host, Config.port, (): void => {
     console.log(
@@ -432,8 +402,6 @@ app.listen(Config.host, Config.port, (): void => {
     Logger.log(`Suroi Server v${version}`);
     Logger.log(`Listening on ${Config.host}:${Config.port}`);
     Logger.log("Press Ctrl+C to exit.");
-    Logger.log(`Open page in browser is ${(openPageInBrowserEnabled) ? "enabled" : "disabled"} `);
-    openPageInBrowser("http://localhost:3000");
 
     newGame(0);
 
