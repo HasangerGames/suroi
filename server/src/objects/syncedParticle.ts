@@ -222,6 +222,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         if (this.hitbox instanceof CircleHitbox && this.definition.hitbox !== undefined) {
             this.hitbox.position = this.position;
             this.hitbox.radius = this.definition.hitbox.radius * this.scale;
+            this.game.grid.updateObject(this);
         }
     }
 
