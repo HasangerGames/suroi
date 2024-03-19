@@ -14,7 +14,8 @@ import { Player } from "./player";
 
 export class ThrowableProjectile extends BaseGameObject<ObjectCategory.ThrowableProjectile> {
     override readonly type = ObjectCategory.ThrowableProjectile;
-    override readonly allocBytes = 16;
+    override readonly fullAllocBytes = 16;
+    override readonly partialAllocBytes = 4;
 
     readonly definition: ThrowableDefinition;
 

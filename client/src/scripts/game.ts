@@ -8,15 +8,6 @@ import { Badges, type BadgeDefinition } from "../../../common/src/definitions/ba
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
-import { JoinPacket } from "../../../common/src/packets/joinPacket";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { type Packet } from "../../../common/src/packets/packet";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
@@ -51,6 +42,11 @@ import { SoundManager } from "./managers/soundManager";
 import { Tween } from "./utils/tween";
 import { UIManager } from "./managers/uiManager";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
+import { PingPacket } from "../../../common/src/packets/pingPacket";
+import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
+import type { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import type { UpdatePacket } from "../../../common/src/packets/updatePacket";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -140,9 +136,6 @@ export class Game {
     constructor() {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
-
-        // Hide modals
-        $(".dialog").hide();
 
         const initPixi = async(): Promise<void> => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
@@ -279,83 +272,11 @@ export class Game {
 
         // Handle incoming messages
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
-            const stream = new SuroiBitStream(message.data);
-            switch (stream.readPacketType()) {
-                case PacketType.Joined: {
-                    const packet = new JoinedPacket();
-                    packet.deserialize(stream);
-                    this.startGame(packet);
-                    break;
-                }
-                case PacketType.Map: {
-                    const packet = new MapPacket();
-                    packet.deserialize(stream);
-                    this.map.updateFromPacket(packet);
-                    break;
-                }
-                case PacketType.Update: {
-                    const packet = new UpdatePacket();
-                    packet.previousData = this.uiManager;
-                    packet.deserialize(stream);
-                    this.processUpdate(packet);
-                    break;
-                }
-                case PacketType.GameOver: {
-                    const packet = new GameOverPacket();
-                    packet.deserialize(stream);
-                    this.uiManager.showGameOverScreen(packet);
-                    break;
-                }
-                case PacketType.Ping: {
-                    const ping = Date.now() - this.lastPingDate;
-                    $("#ping-counter").text(`${ping} ms`);
-                    setTimeout((): void => {
-                        this.sendPacket(new PingPacket());
-                        this.lastPingDate = Date.now();
-                    }, 5000);
-                    break;
-                }
-                case PacketType.Report: {
-                    const packet = new ReportPacket();
-                    packet.deserialize(stream);
-                    $("#reporting-name").text(packet.playerName);
-                    $("#report-id").text(packet.reportID);
-                    $("#report-modal").fadeIn(250);
-                    break;
-                }
-                case PacketType.Pickup: {
-                    const packet = new PickupPacket();
-                    packet.deserialize(stream);
-
-                    let soundID: string;
-                    switch (packet.item.itemType) {
-                        case ItemType.Ammo:
-                            soundID = "ammo_pickup";
-                            break;
-                        case ItemType.Healing:
-                            soundID = `${packet.item.idString}_pickup`;
-                            break;
-                        case ItemType.Scope:
-                            soundID = "scope_pickup";
-                            break;
-                        case ItemType.Armor:
-                            if (packet.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
-                            else soundID = "vest_pickup";
-                            break;
-                        case ItemType.Backpack:
-                            soundID = "backpack_pickup";
-                            break;
-                        case ItemType.Throwable:
-                            soundID = "throwable_pickup";
-                            break;
-                        default:
-                            soundID = "pickup";
-                            break;
-                    }
-
-                    this.soundManager.play(soundID);
-                    break;
-                }
+            const stream = new PacketStream(new SuroiBitStream(message.data));
+            while (true) {
+                const packet = stream.readPacket();
+                if (packet === undefined) break;
+                this.onPacket(packet);
             }
         };
 
@@ -378,6 +299,72 @@ export class Game {
                 if (!this.error) this.endGame();
             }
         };
+    }
+
+    onPacket(packet: Packet): void {
+        switch (packet.type) {
+            case PacketType.Joined: {
+                this.startGame(packet);
+                break;
+            }
+            case PacketType.Map: {
+                this.map.updateFromPacket(packet);
+                break;
+            }
+            case PacketType.Update: {
+                this.processUpdate(packet);
+                break;
+            }
+            case PacketType.GameOver: {
+                this.uiManager.showGameOverScreen(packet);
+                break;
+            }
+            case PacketType.Ping: {
+                const ping = Date.now() - this.lastPingDate;
+                $("#ping-counter").text(`${ping} ms`);
+                setTimeout((): void => {
+                    this.sendPacket(new PingPacket());
+                    this.lastPingDate = Date.now();
+                }, 5000);
+                break;
+            }
+            case PacketType.Report: {
+                $("#reporting-name").text(packet.playerName);
+                $("#report-id").text(packet.reportID);
+                $("#report-modal").fadeIn(250);
+                break;
+            }
+            case PacketType.Pickup: {
+                let soundID: string;
+                switch (packet.item.itemType) {
+                    case ItemType.Ammo:
+                        soundID = "ammo_pickup";
+                        break;
+                    case ItemType.Healing:
+                        soundID = `${packet.item.idString}_pickup`;
+                        break;
+                    case ItemType.Scope:
+                        soundID = "scope_pickup";
+                        break;
+                    case ItemType.Armor:
+                        if (packet.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
+                        else soundID = "vest_pickup";
+                        break;
+                    case ItemType.Backpack:
+                        soundID = "backpack_pickup";
+                        break;
+                    case ItemType.Throwable:
+                        soundID = "throwable_pickup";
+                        break;
+                    default:
+                        soundID = "pickup";
+                        break;
+                }
+
+                this.soundManager.play(soundID);
+                break;
+            }
+        }
     }
 
     startGame(packet: JoinedPacket): void {
@@ -442,8 +429,9 @@ export class Game {
     }
 
     sendPacket(packet: Packet): void {
-        packet.serialize();
-        this.sendData(packet.getBuffer());
+        const stream = new PacketStream(SuroiBitStream.alloc(packet.allocBytes));
+        stream.serializePacket(packet);
+        this.sendData(stream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {

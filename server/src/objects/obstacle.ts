@@ -21,7 +21,8 @@ import { type Player } from "./player";
 
 export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
-    override readonly allocBytes = 8;
+    override readonly fullAllocBytes = 8;
+    override readonly partialAllocBytes = 4;
     override readonly damageable = true;
 
     health: number;

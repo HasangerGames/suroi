@@ -3,11 +3,11 @@ import { InputActions, PacketType } from "../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { Skins } from "../../common/src/definitions/skins";
-import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 import { InputPacket, type InputAction } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
 
 const config = {
     address: "127.0.0.1:8000",
@@ -79,18 +79,25 @@ class Bot {
         this.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
 
         this.ws.onmessage = (message: MessageEvent): void => {
-            const stream = new SuroiBitStream(message.data as ArrayBuffer);
-            switch (stream.readPacketType()) {
-                case PacketType.GameOver: {
-                    const packet = new GameOverPacket();
-                    packet.deserialize(stream);
-                    console.log(`Bot ${id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
-                    this.disconnect = true;
-                    this.connected = false;
-                    this.ws.close();
-                }
+            const stream = new PacketStream(new SuroiBitStream(message.data as ArrayBuffer));
+            while (true) {
+                const packet = stream.readPacket();
+                if (packet === undefined) break;
+                this.onPacket(packet);
             }
         };
+    }
+
+    onPacket(packet: Packet): void {
+        switch (packet.type) {
+            case PacketType.GameOver: {
+                console.log(`Bot ${this.id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
+                this.disconnect = true;
+                this.connected = false;
+                this.ws.close();
+                break;
+            }
+        }
     }
 
     join(): void {
@@ -104,9 +111,10 @@ class Bot {
         joinPacket.skin = Loots.reify(pickRandomInArray(skins));
         joinPacket.emotes = this.emotes;
 
-        joinPacket.serialize();
+        const stream = new PacketStream(SuroiBitStream.alloc(joinPacket.allocBytes));
+        stream.serializePacket(joinPacket);
 
-        this.ws.send(joinPacket.getBuffer());
+        this.ws.send(stream.getBuffer());
     }
 
     sendInputs(): void {
@@ -140,8 +148,9 @@ class Bot {
         if (action) inputPacket.actions = [action];
 
         if (!this.lastInputPacket || inputPacket.didChange(this.lastInputPacket)) {
-            inputPacket.serialize();
-            this.ws.send(inputPacket.getBuffer());
+            const stream = new PacketStream(SuroiBitStream.alloc(inputPacket.allocBytes));
+            stream.serializePacket(inputPacket);
+            this.ws.send(stream.getBuffer());
             this.lastInputPacket = inputPacket;
         }
     }

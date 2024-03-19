@@ -5,11 +5,9 @@ import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { type JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
@@ -42,6 +40,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { isTeamMode, type Team } from "./team";
 import { type MapPingDefinition, MapPings } from "../../common/src/definitions/mapPings";
+import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
 
 export class Game {
     readonly _id: number;
@@ -158,28 +157,28 @@ export class Game {
         this.tick(GameConstants.msPerTick);
     }
 
-    handlePacket(stream: SuroiBitStream, player: Player): void {
-        switch (stream.readPacketType()) {
+    onMessage(stream: SuroiBitStream, player: Player): void {
+        const packetStream = new PacketStream(stream);
+        while (true) {
+            const packet = packetStream.readPacket();
+            if (packet === undefined) break;
+            this.onPacket(packet, player);
+        }
+    }
+
+    onPacket(packet: Packet, player: Player): void {
+        switch (packet.type) {
             case PacketType.Join: {
-                if (player.joined) return;
-                const packet = new JoinPacket();
-                packet.deserialize(stream);
                 this.activatePlayer(player, packet);
                 break;
             }
             case PacketType.Input: {
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
-
-                const packet = new InputPacket();
-                packet.isMobile = player.isMobile;
-                packet.deserialize(stream);
                 player.processInputs(packet);
                 break;
             }
             case PacketType.Spectate: {
-                const packet = new SpectatePacket();
-                packet.deserialize(stream);
                 player.spectate(packet);
                 break;
             }
@@ -260,11 +259,16 @@ export class Game {
             // First loop over players: movement, animations, & actions
             for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
                 if (!player.dead) player.update();
-                player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
 
-            for (const object of new Set([...this.fullDirtyObjects, ...this.partialDirtyObjects])) {
-                object.serialize();
+            // Cache objects serialization
+            for (const partialObject of this.partialDirtyObjects) {
+                if (!this.fullDirtyObjects.has(partialObject)) {
+                    partialObject.serializePartial();
+                }
+            }
+            for (const fullObject of this.fullDirtyObjects) {
+                fullObject.serializeFull();
             }
 
             // Second loop over players: calculate visible objects & send updates

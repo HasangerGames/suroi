@@ -44,7 +44,8 @@ interface InternalAnimation<T> {
 
 export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle> {
     override readonly type = ObjectCategory.SyncedParticle;
-    override readonly allocBytes = 16;
+    override readonly fullAllocBytes = 16;
+    override readonly partialAllocBytes = 8;
 
     alpha: number;
     alphaActive = false;

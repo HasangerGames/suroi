@@ -1,9 +1,9 @@
 import { GameConstants, PacketType } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
-export class JoinedPacket extends Packet {
+export class JoinedPacket extends AbstractPacket {
     override readonly allocBytes = 34;
     override readonly type = PacketType.Joined;
 
@@ -12,10 +12,7 @@ export class JoinedPacket extends Packet {
     teamID!: number;
     emotes: Array<EmoteDefinition | undefined> = [];
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         stream.writeUint16(GameConstants.protocolVersion);
 
         for (const emote of this.emotes) {

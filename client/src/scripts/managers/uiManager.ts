@@ -14,6 +14,7 @@ import { formatDate } from "../utils/misc";
 import { TeammateIndicator } from "../rendering/minimap";
 import type { EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { MapPings } from "../../../../common/src/definitions/mapPings";
+import { Numeric } from "../../../../common/src/utils/math";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -309,7 +310,7 @@ export class UIManager {
 
         if (data.dirty.health) {
             const oldHealth = this.health;
-            this.health = data.health;
+            this.health = Numeric.remap(this.health, 0, 1, 0, this.maxHealth);
 
             const realPercentage = 100 * this.health / this.maxHealth;
             const percentage = safeRound(realPercentage);
@@ -335,8 +336,7 @@ export class UIManager {
         }
 
         if (data.dirty.adrenaline) {
-            this.adrenaline = data.adrenaline;
-
+            this.adrenaline = Numeric.remap(data.normalizedAdrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
             const percentage = 100 * this.adrenaline / this.maxAdrenaline;
 
             this.ui.adrenalineBar.width(`${percentage}%`);

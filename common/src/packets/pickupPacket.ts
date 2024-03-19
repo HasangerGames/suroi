@@ -1,17 +1,16 @@
 import { PacketType } from "../constants";
 import { Loots, type LootDefinition } from "../definitions/loots";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
-export class PickupPacket extends Packet {
+export class PickupPacket extends AbstractPacket {
     override readonly allocBytes = 2;
     override readonly type = PacketType.Pickup;
 
     item!: LootDefinition;
 
-    override serialize(): void {
-        super.serialize();
-        Loots.writeToStream(this.stream, this.item);
+    override serialize(stream: SuroiBitStream): void {
+        Loots.writeToStream(stream, this.item);
     }
 
     override deserialize(stream: SuroiBitStream): void {

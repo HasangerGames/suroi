@@ -1,20 +1,10 @@
 import { type PacketType } from "../constants";
-import { SuroiBitStream } from "../utils/suroiBitStream";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
 
-export abstract class Packet {
+export abstract class AbstractPacket {
     abstract readonly allocBytes: number;
     abstract readonly type: PacketType;
 
-    stream!: SuroiBitStream;
-
-    serialize(): void {
-        this.stream = SuroiBitStream.alloc(this.allocBytes);
-        this.stream.writePacketType(this.type);
-    }
-
+    abstract serialize(stream: SuroiBitStream): void;
     abstract deserialize(stream: SuroiBitStream): void;
-
-    getBuffer(): ArrayBuffer {
-        return this.stream.buffer.slice(0, Math.ceil(this.stream.index / 8));
-    }
 }

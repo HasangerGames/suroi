@@ -9,7 +9,8 @@ import { BaseGameObject } from "./gameObject";
 
 export class Decal extends BaseGameObject<ObjectCategory.Decal> {
     override readonly type = ObjectCategory.Decal;
-    override readonly allocBytes = 4;
+    override readonly fullAllocBytes = 4;
+    override readonly partialAllocBytes = 4;
 
     readonly definition: DecalDefinition;
 

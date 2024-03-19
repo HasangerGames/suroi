@@ -10,7 +10,7 @@ import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
@@ -37,7 +37,7 @@ export type InputAction = {
     InputActions.MapPing>
 };
 
-export class InputPacket extends Packet {
+export class InputPacket extends AbstractPacket {
     override readonly allocBytes = 24;
     override readonly type = PacketType.Input;
 
@@ -62,10 +62,7 @@ export class InputPacket extends Packet {
 
     actions: InputAction[] = [];
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.movement.up);
         stream.writeBoolean(this.movement.down);
         stream.writeBoolean(this.movement.left);
