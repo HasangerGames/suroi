@@ -310,7 +310,7 @@ export class UIManager {
 
         if (data.dirty.health) {
             const oldHealth = this.health;
-            this.health = Numeric.remap(this.health, 0, 1, 0, this.maxHealth);
+            this.health = Numeric.remap(data.normalizedHealth, 0, 1, 0, this.maxHealth);
 
             const realPercentage = 100 * this.health / this.maxHealth;
             const percentage = safeRound(realPercentage);
