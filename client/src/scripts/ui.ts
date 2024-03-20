@@ -119,7 +119,7 @@ export async function setupUI(game: Game): Promise<void> {
         const listItem = $(`.server-list-item[data-region=${regionID}]`);
         try {
             const pingStartTime = Date.now();
-            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(2000) }))?.json();
+            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
             const ping = Date.now() - pingStartTime;
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
