@@ -48,7 +48,7 @@ export class InputPacket extends AbstractPacket {
         right: boolean
     };
 
-    isMobile!: boolean;
+    isMobile = false;
     mobile!: {
         moving: boolean
         angle: number
@@ -68,6 +68,7 @@ export class InputPacket extends AbstractPacket {
         stream.writeBoolean(this.movement.left);
         stream.writeBoolean(this.movement.right);
 
+        stream.writeBoolean(this.isMobile)
         if (this.isMobile) {
             stream.writeBoolean(this.mobile.moving);
             stream.writeRotation(this.mobile.angle, 16);
@@ -116,7 +117,8 @@ export class InputPacket extends AbstractPacket {
             right: stream.readBoolean()
         };
 
-        if (this.isMobile) {
+        if (stream.readBoolean()) {
+            this.isMobile = true;
             this.mobile = {
                 moving: stream.readBoolean(),
                 angle: stream.readRotation(16)
