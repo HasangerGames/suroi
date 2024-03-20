@@ -1,5 +1,4 @@
-import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets, type Renderer } from "pixi.js";
-import { atlases } from "virtual:spritesheets-jsons";
+import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets, type Renderer, RendererType, type WebGLRenderer } from "pixi.js";
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
@@ -7,17 +6,27 @@ import { MODE, PIXI_SCALE } from "./constants";
 const textures: Record<string, Texture> = {};
 
 export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
-    const typedAtlases = atlases as Record<string, {
-        low: SpritesheetData[]
-        high: SpritesheetData[]
-    }>;
+    // If device doesn't support 4096x4096 textures
+    // force low resolution textures since they are 2048x2048
+    if (renderer.type === RendererType.WEBGL) {
+        const gl = (renderer as WebGLRenderer).gl;
+        if (gl.getParameter(gl.MAX_TEXTURE_SIZE) < 4096) {
+            highResolution = false;
+        }
+    }
+
+    let atlases: Record<string, SpritesheetData[]>;
+
+    if (highResolution) {
+        atlases = (await import("virtual:spritesheets-jsons-high-res")).atlases;
+    } else {
+        atlases = (await import("virtual:spritesheets-jsons-low-res")).atlases;
+    }
 
     const promises: Array<Promise<void>> = [];
-    const atlas = typedAtlases.main;
+    const mainAtlas = atlases.main;
 
-    const resolution = highResolution ? "high" : "low";
-
-    for (const sheet of atlas[resolution]) {
+    for (const sheet of mainAtlas) {
         promises.push(loadSpritesheet(sheet, renderer));
     }
 
@@ -25,7 +34,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     // load mode reskins after main mode assets have loaded
     if (MODE.reskin) {
-        for (const sheet of typedAtlases[MODE.reskin][resolution]) {
+        for (const sheet of atlases[MODE.reskin]) {
             await loadSpritesheet(sheet, renderer);
         }
     }
