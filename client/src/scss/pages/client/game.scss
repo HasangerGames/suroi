@@ -325,6 +325,8 @@
     #action-timer {
         position: relative;
         top: -10%;
+        text-align: center;
+        justify-content: center;
         @include drop-shadow;
 
         #action-time {
