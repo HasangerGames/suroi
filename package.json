@@ -21,6 +21,10 @@
     "validateDefinitions": "cd tests && tsc && pnpm validateDefinitions",
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install"
   },
+  "engines": {
+    "node": ">=18.8.0",
+    "pnpm": ">=8.0.0"
+  },
   "keywords": [
     "nodejs",
     "typescript"
@@ -30,7 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
     "eslint": "^8.57.0",
-    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-config-love": "^43.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",

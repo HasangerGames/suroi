@@ -10,9 +10,6 @@
     "preview": "vite preview",
     "start": "sirv dist --no-clear -p 3000"
   },
-  "engines": {
-    "node": ">=18.8.0"
-  },
   "keywords": [
     "nodejs",
     "typescript",
