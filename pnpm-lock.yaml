@@ -130,6 +130,9 @@ importers:
       '@damienvesper/bit-buffer':
         specifier: ^1.0.1
         version: 1.0.1
+      nanotimer:
+        specifier: ^0.3.15
+        version: 0.3.15
       uWebSockets.js:
         specifier: github:uNetworking/uWebSockets.js#v20.41.0
         version: github.com/uNetworking/uWebSockets.js/105d9ec47126cb82e4a6f3a08aa2ac78b4bb14f1
@@ -137,6 +140,9 @@ importers:
         specifier: ^8.16.0
         version: 8.16.0
     devDependencies:
+      '@types/nanotimer':
+        specifier: ^0.3.2
+        version: 0.3.2
       '@types/node':
         specifier: ^20.11.30
         version: 20.11.30
@@ -1198,6 +1204,10 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/nanotimer@0.3.2:
+    resolution: {integrity: sha512-KdUvVLlifjNSkjb5OOyu0hJmHtNfLv/IUXmSOyf3cAMluefhBpY3XikvvC5wKBEVKbMnFLeJ1cb15PbRq/nDQA==}
     dev: true
 
   /@types/node@20.11.30:
@@ -3226,6 +3236,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /nanotimer@0.3.15:
+    resolution: {integrity: sha512-xj8HcwceqeRbfSuwNIzYhdbyZu3zoiHX3y2cyVB/cLn0RzVCI8ZZVQLZELEUMG2tYEsjqbCLb3b4q1lDC7ENnA==}
+    dev: false
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
