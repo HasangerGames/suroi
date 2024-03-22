@@ -14,7 +14,7 @@ import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
@@ -136,7 +136,6 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
-
     timer = new NanoTimer();
 
     tickTimes: number[] = [];
@@ -189,7 +188,9 @@ export class Game {
             case PacketType.Ping: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
-                player.sendPacket(new PingPacket());
+                const stream = new PacketStream(SuroiBitStream.alloc(8));
+                stream.serializePacket(new PingPacket());
+                player.sendData(stream.getBuffer());
                 break;
             }
         }

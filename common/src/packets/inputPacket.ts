@@ -68,7 +68,7 @@ export class InputPacket extends AbstractPacket {
         stream.writeBoolean(this.movement.left);
         stream.writeBoolean(this.movement.right);
 
-        stream.writeBoolean(this.isMobile)
+        stream.writeBoolean(this.isMobile);
         if (this.isMobile) {
             stream.writeBoolean(this.mobile.moving);
             stream.writeRotation(this.mobile.angle, 16);
