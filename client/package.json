@@ -36,7 +36,7 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "typescript": "^5.4.3",
-    "vite": "^5.2.2",
+    "vite": "^5.2.3",
     "vite-plugin-image-optimizer": "^1.1.7"
   },
   "dependencies": {
@@ -44,6 +44,6 @@
     "@pixi/sound": "^6.0.0",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.1",
-    "pixi.js": "8.0.3"
+    "pixi.js": "8.0.4"
   }
 }
