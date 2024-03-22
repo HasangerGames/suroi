@@ -1237,7 +1237,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: "small_house_exterior",
                     position: Vec.create(0, 0),
                     rotation: 2
-                },
+                }
 
             ],
             lootSpawners: [{
