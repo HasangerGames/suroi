@@ -1137,7 +1137,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(16.2, -29.5),
                     rotation: 2
                 },
-                // Living Room Cough
+                // Living Room Couch
                 {
                     idString: "couch",
                     position: Vec.create(-21.6, -1.8),
@@ -1238,7 +1238,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     rotation: 2
                 }
-            ]
+
+            ],
+            lootSpawners: [{
+                position: Vec.create(-15.4, 6.8),
+                table: "ground_loot"
+            }]
         },
         {
             idString: "crane",

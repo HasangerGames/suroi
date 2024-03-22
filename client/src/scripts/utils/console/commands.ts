@@ -668,6 +668,7 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "emote_wheel",
         function(): undefined {
+            if (game.console.getBuiltInCVar("cv_hide_emotes")) return;
             if (this.gameOver) return;
             const { mouseX, mouseY } = this.inputManager;
 

@@ -764,6 +764,8 @@ Video evidence is required.`)) {
 
     addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
 
+    addCheckboxListener("#toggle-hide-emote", "cv_hide_emotes");
+
     // Music volume
     addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {
         game.music.volume = value;
