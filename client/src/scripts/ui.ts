@@ -291,7 +291,7 @@ Video evidence is required.`)) {
         emoteList.empty();
 
         const noEmoteItem =
-                $(`<div id="emote-none" class="emotes-list-item-container">
+            $(`<div id="emote-none" class="emotes-list-item-container">
             <div class="emotes-list-item" style="background-image: none"></div>
         <span class="emote-name">None</span>
         </div>`);
@@ -526,6 +526,8 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-scope-looping", "cv_loop_scope_selection");
 
     addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
+
+    addCheckboxListener("#toggle-hide-emote", "cv_hide_emotes");
 
     // Music volume
     addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {

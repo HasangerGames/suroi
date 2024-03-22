@@ -124,7 +124,6 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
-
     timer = new NanoTimer();
 
     tickTimes: number[] = [];
