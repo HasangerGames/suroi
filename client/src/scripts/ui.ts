@@ -274,7 +274,7 @@ Video evidence is required.`)) {
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function() {
+        skinItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_skin", skin.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             updateSplashCustomize(skin.idString);
@@ -291,12 +291,12 @@ Video evidence is required.`)) {
         emoteList.empty();
 
         const noEmoteItem =
-                $(`<div id="emote-none" class="emotes-list-item-container">
+            $(`<div id="emote-none" class="emotes-list-item-container">
             <div class="emotes-list-item" style="background-image: none"></div>
         <span class="emote-name">None</span>
         </div>`);
 
-        noEmoteItem.on("click", function() {
+        noEmoteItem.on("click", function () {
             if (selectedEmoteSlot === undefined) return;
             game.console.setBuiltInCVar(
                 `cv_loadout_${selectedEmoteSlot}_emote`,
@@ -319,7 +319,7 @@ Video evidence is required.`)) {
     <span class="emote-name">${emote.name}</span>
     </div>`);
 
-            emoteItem.on("click", function() {
+            emoteItem.on("click", function () {
                 if (selectedEmoteSlot === undefined) return;
                 game.console.setBuiltInCVar(
                     `cv_loadout_${selectedEmoteSlot}_emote`,
@@ -416,7 +416,7 @@ Video evidence is required.`)) {
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function() {
+        crosshairItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
@@ -442,7 +442,7 @@ Video evidence is required.`)) {
             </div>`
         );
 
-        noBadgeItem.on("click", function() {
+        noBadgeItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_badge", "");
             $(this).addClass("selected").siblings().removeClass("selected");
         });
@@ -459,7 +459,7 @@ Video evidence is required.`)) {
                 </div>`
             );
 
-            badgeItem.on("click", function() {
+            badgeItem.on("click", function () {
                 game.console.setBuiltInCVar("cv_loadout_badge", badge.idString);
                 $(this).addClass("selected").siblings().removeClass("selected");
             });
@@ -526,6 +526,8 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-scope-looping", "cv_loop_scope_selection");
 
     addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
+
+    addCheckboxListener("#toggle-hide-emote", "cv_hide_emotes");
 
     // Music volume
     addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {
@@ -598,7 +600,7 @@ Video evidence is required.`)) {
     });
     renderSelect.value = game.console.getBuiltInCVar("cv_renderer");
 
-    void (async() => {
+    void (async () => {
         $("#webgpu-option").toggle(await isWebGPUSupported());
     })();
 
@@ -906,7 +908,7 @@ Video evidence is required.`)) {
         tabContent.show();
     });
 
-    $("#warning-modal-agree-checkbox").on("click", function() {
+    $("#warning-modal-agree-checkbox").on("click", function () {
         $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !$(this).prop("checked"));
     });
     $("#warning-btn-play-solo").on("click", () => {

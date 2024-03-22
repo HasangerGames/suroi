@@ -138,7 +138,7 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
-        void (async() => {
+        void (async () => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
 
             const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
@@ -574,7 +574,7 @@ export class Game {
         for (const emote of updateData.emotes) {
             const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
-                player.emote(emote.definition);
+                if (this.console.getBuiltInCVar("cv_hide_emotes") == false) { player.emote(emote.definition); }
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
             }
