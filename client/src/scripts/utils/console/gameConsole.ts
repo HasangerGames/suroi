@@ -1012,43 +1012,83 @@ export class GameConsole {
             let expectingEndOfGroup = 0;
 
             /**
-             * The parser advances character-by-character, and the handlers are just the
-             * code that should be run to process each character, depending on the current
-             * parser mode
+             * An alias for `current.args`, maintained to reduce property access spam
              */
-            const handlers: Record<typeof parserPhase, (char: string) => void> = {
-                /**
-                 * Handles a character in "command" mode; this is the default mode of operation,
-                 * and simply searches to build a command's name, create groups and perform chaining
-                 * @param char The character to handle
-                 */
-                cmd(char: string) {
-                    switch (char) {
-                        case " ":
-                        case "\n": {
-                            /*
-                                Ignore whitespace if there's currently no command
-                                and if we're not expecting any groups to be closed
+            let args = current.args;
 
-                                The last condition might not be totally needed, but it
-                                makes the control-flow a bit neater
+            /**
+             * Simply adds the given character to the last argument of the current command
+             * @param char The character to add
+             */
+            const addCharToLast = (char: string): void => {
+                if (!args.length) {
+                    current.args = args = [char];
+                } else {
+                    args[args.length - 1] += char;
+                }
+            };
 
-                                For what it's worth, it's meant to allow things like
-                                `(a; b) & c` to parse correctly without ever switching
-                                to args mode
+            /**
+             * Advances the `currentNode`, setting it as the successor (or `next`) of a given target and establishing
+             * the given chaining relation between the two nodes
+             * @param target The target to which the new node should be appended
+             * @param chaining The chaining type to use when associating the newly-created node and the `target` node
+             */
+            const advance = (target: { next?: ParserNode }, chaining: keyof typeof chainingChars): void => {
+                prevNode = currentNode;
+                target.next = currentNode = {
+                    cmd: current = {
+                        name: "",
+                        args: args = []
+                    },
+                    chaining: chainingChars[chaining]
+                };
+            };
 
-                                (Also, even though newlines can't be typed in manually, they can
-                                be pasted in, so that's why that case is handled)
-                            */
+            /**
+             * Benchmarks show that chunking actually hurts performance except in specific contrived examples,
+             * the detection of which would also lead to an overall loss in performance
+             */
+            for (const char of input) {
+                switch (char) {
+                    case " ":
+                    case "\n": {
+                        /*
+                            Ignore whitespace if there's currently no command
+                            and if we're not expecting any groups to be closed
+
+                            The last condition (`!expectingEndOfGroup`) might
+                            not be totally needed, but it makes the control-flow
+                            a bit neater
+
+                            For what it's worth, it's meant to allow things like
+                            `(a; b) & c` to parse correctly without ever switching
+                            to args mode
+
+                            (Also, even though newlines can't be typed in manually, they can
+                            be pasted in, so that's why that case is handled)
+                        */
+                        if (parserPhase === "cmd") {
                             if (current.name && !expectingEndOfGroup) {
                                 parserPhase = "args";
                             }
+
                             break;
                         }
-                        case ";":
-                        case "&":
-                        case "|": {
-                            // Error messages explain what this is for
+
+                        if (inString || char === "\n") {
+                            addCharToLast(char);
+                            break;
+                        }
+
+                        args.push("");
+                        break;
+                    }
+                    case ";":
+                    case "&":
+                    case "|": {
+                        // Error messages explain what this is for
+                        if (parserPhase === "cmd") {
                             if (!current.name) {
                                 if (commands === currentNode) {
                                     throw new CommandSyntaxError("Unexpected chaining character encountered at start of query");
@@ -1057,8 +1097,7 @@ export class GameConsole {
                                 throw new CommandSyntaxError("Expected a query following a chaining character, but found another chaining character");
                             }
 
-                            prevNode = currentNode;
-                            (
+                            advance(
                                 /*
                                     If we're jumping out of a group, then we pop a parser node off of the
                                     group anchor stack and use that as a target; otherwise, we just use the
@@ -1066,24 +1105,33 @@ export class GameConsole {
                                 */
                                 expectingEndOfGroup
                                     ? groupAnchors.pop()
-                                    : current
-                            ).next = currentNode = {
-                                cmd: current = {
-                                    name: "",
-                                    args: []
-                                },
-                                chaining: chainingChars[char]
-                            };
+                                    : current,
+                                char
+                            );
 
                             if (expectingEndOfGroup) {
                                 expectingEndOfGroup--;
                             }
-
                             break;
                         }
-                        case "(": {
-                            // `ab(d` is complete nonsense
+
+                        if (inString) {
+                            addCharToLast(char);
+                            break;
+                        }
+
+                        if (args.at(-1)?.length === 0) {
+                            args.length -= 1;
+                        }
+
+                        advance(current, char);
+                        parserPhase = "cmd";
+                        break;
+                    }
+                    case "(": {
+                        if (parserPhase === "cmd") {
                             if (current.name) {
+                                // `ab(d` is complete nonsense
                                 throw new CommandSyntaxError("Unexpected opening parentheses character '(' found");
                             }
 
@@ -1092,164 +1140,98 @@ export class GameConsole {
                             groupAnchors.push(currentNode);
                             break;
                         }
-                        case ")": {
+
+                        if (inString) {
+                            addCharToLast(char);
+                            break;
+                        }
+
+                        throw new CommandSyntaxError("Unexpected grouping character '('");
+                    }
+                    case ")": {
+                        if (parserPhase === "args") {
+                            if (inString) {
+                                addCharToLast(char);
+                                break;
+                            }
+
                             // Every `(` pushes onto the stack—therefore, no stack entries -> no group to close
                             if (!groupAnchors.has()) {
-                                throw new CommandSyntaxError("Unexpected closing parentheses character ')' found");
+                                throw new CommandSyntaxError("Unexpected grouping character ')'");
                             }
 
-                            if (expectingEndOfGroup) {
-                                /*
-                                    If we're here, then we're at the end of smth like `a | (b & (c; d))`; in that example, we'd
-                                    end up here when parsing the last `)`. At this point, the group anchor stack is holding—from
-                                    bottom to top—`a`'s parser node and `b`'s parser node. Since we're at the second `)`, that means
-                                    that `b`'s parser node is completely useless, since we're not going to attach anything to it—if we
-                                    were, then we'd've seen a chaining character instead.
+                            parserPhase = "cmd";
+                            // fallthrough
+                        }
 
-                                    Thus, we pop it off the stack and discard it, which puts `a`'s parser node on top.
-                                */
-                                groupAnchors.pop();
-                            } else {
-                                if (!current.name) {
-                                    // No name -> we got smth like `a & ()`
-                                    throw new CommandSyntaxError("Unexpected empty group");
-                                }
+                        if (!groupAnchors.has()) {
+                            throw new CommandSyntaxError("Unexpected closing parentheses character ')' found");
+                        }
 
-                                expectingEndOfGroup++;
-                            }
+                        if (expectingEndOfGroup) {
+                            /*
+                                If we're here, then we're at the end of smth like `a | (b & (c; d))`; in that example, we'd
+                                end up here when parsing the last `)`. At this point, the group anchor stack is holding—from
+                                bottom to top—`a`'s parser node and `b`'s parser node. Since we're at the second `)`, that means
+                                that `b`'s parser node is completely useless, since we're not going to attach anything to it—if we
+                                were, then we'd've seen a chaining character instead.
+
+                                Thus, we pop it off the stack and discard it, which puts `a`'s parser node on top.
+                            */
+                            groupAnchors.pop();
                             break;
                         }
-                        default: {
-                            // Prevent `a & (b; c) d`
+
+                        if (!current.name) {
+                            // No name -> we got smth like `a & ()`
+                            throw new CommandSyntaxError("Unexpected empty group");
+                        }
+
+                        expectingEndOfGroup++;
+                        break;
+                    }
+                    case "\"": {
+                        if (parserPhase === "cmd") break;
+
+                        if (inString) {
+                            if (escaping) {
+                                addCharToLast(char);
+                                escaping = false;
+                                break;
+                            }
+
+                            args.push("");
+                        } else if (args.at(-1)?.length) {
+                            // If we encounter a " in the middle of an argument
+                            // such as `say hel"lo`
+                            throw new CommandSyntaxError("Unexpected double-quote (\") character found.");
+                        }
+
+                        inString = !inString;
+                        break;
+                    }
+                    case "\\": {
+                        if (parserPhase === "cmd" || !inString || (escaping = !escaping)) break;
+
+                        addCharToLast(char);
+                        break;
+                    }
+                    default: {
+                        if (parserPhase === "cmd") {
                             if (expectingEndOfGroup) {
+                                // Prevent `a & (b; c) d`
                                 throw new CommandSyntaxError(`Expected a chaining character following the end of a group (found '${char}')`);
                             }
+
                             current.name += char;
-                        }
-                    }
-                },
-                /**
-                 * Handles a character in "args" mode; this mode is responsible for assembling the arguments
-                 * for a command invocation
-                 * @param char The character to handle
-                 */
-                args(char: string) {
-                    /**
-                     * An alias for `current.args`, maintained to reduce property access spam
-                     */
-                    const args = current.args;
-                    /**
-                     * Appends the current character (`char`) to the last argument of `current`'s
-                     * argument array
-                     */
-                    const addCharToLast = (): void => {
-                        if (!args.length) {
-                            args.push(char);
-                        } else {
-                            args[args.length - 1] += char;
-                        }
-                    };
-
-                    // this part is way more self-documenting than the others, so i won't
-                    // bother writing too many comments for the args phase
-
-                    switch (char) {
-                        case " ":
-                        case "\n": {
-                        //    ^^ included for the case where a query is pasted in
-                            if (inString) {
-                                addCharToLast();
-                            } else {
-                                args.push("");
-                            }
                             break;
                         }
-                        case ";":
-                        case "&":
-                        case "|": {
-                            if (inString) {
-                                addCharToLast();
-                            } else {
-                                if (args.at(-1)?.length === 0) {
-                                    args.length -= 1;
-                                }
 
-                                prevNode = currentNode;
-                                current.next = currentNode = {
-                                    cmd: current = {
-                                        name: "",
-                                        args: []
-                                    },
-                                    chaining: chainingChars[char]
-                                };
-                                parserPhase = "cmd";
-                            }
-                            break;
-                        }
-                        case "(": {
-                            if (inString) {
-                                addCharToLast();
-                                break;
-                            } else {
-                                throw new CommandSyntaxError("Unexpected grouping character '('");
-                            }
-                        }
-                        case ")": {
-                            if (inString) {
-                                addCharToLast();
-                                break;
-                            }
-
-                            if (groupAnchors.has()) {
-                                parserPhase = "cmd";
-                                handlers.cmd(")");
-                                break;
-                            }
-
-                            throw new CommandSyntaxError("Unexpected grouping character ')'");
-                        }
-                        case "\"": {
-                            if (inString) {
-                                if (escaping) {
-                                    addCharToLast();
-                                    escaping = false;
-                                    break;
-                                } else {
-                                    args.push("");
-                                }
-                            } else if (args.at(-1)?.length) {
-                                // If we encounter a " in the middle of an argument
-                                // such as `say hel"lo`
-                                throw new CommandSyntaxError("Unexpected double-quote (\") character found.");
-                            }
-                            inString = !inString;
-                            break;
-                        }
-                        case "\\": {
-                            if (inString) {
-                                if (escaping) {
-                                    addCharToLast();
-                                    escaping = false;
-                                } else {
-                                    escaping = true;
-                                }
-                            } else {
-                                addCharToLast();
-                            }
-                            break;
-                        }
-                        default: {
-                            escaping = false;
-                            addCharToLast();
-                            break;
-                        }
+                        escaping = false;
+                        addCharToLast(char);
+                        break;
                     }
                 }
-            };
-
-            //todo split the input into chunks instead of singular characters; `abcdefg` needn't be parsed as 7 characters
-            for (const char of input) {
-                handlers[parserPhase](char);
             }
 
             // Self-explanatory error conditions after we reach end-of-input
@@ -1293,6 +1275,7 @@ export class GameConsole {
              * signifies that we're done with the query and that no more processing is to be done
              */
             let currentNode: ParserNode | undefined = extractCommandsAndArgs(query);
+            console.log(currentNode);
             /**
              * Plays a similar role to the `groupAnchors` stack used in the parser, that being
              * to keep track of where we should jump to after finishing the execution of a command

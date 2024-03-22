@@ -572,11 +572,13 @@ export class Game {
 
         for (const emote of updateData.emotes) {
             const player = this.objects.get(emote.playerID);
-            if (player instanceof Player) {
-                if (!this.console.getBuiltInCVar("cv_hide_emotes")) { player.emote(emote.definition); }
-            } else {
+            if (!(player instanceof Player)) {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
+                continue;
             }
+
+            if (this.console.getBuiltInCVar("cv_hide_emotes")) continue;
+            player.emote(emote.definition);
         }
 
         this.gas.updateFrom(updateData);
