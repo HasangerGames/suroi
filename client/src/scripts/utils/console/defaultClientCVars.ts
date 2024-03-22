@@ -23,6 +23,7 @@ export const CVarCasters = Object.freeze({
     cv_loadout_death_emote: Casters.toString,
     cv_loop_scope_selection: Casters.toBoolean,
     cv_anonymize_player_names: Casters.toBoolean,
+    cv_hide_emotes: Casters.toBoolean,
     cv_master_volume: Casters.toNumber,
     cv_music_volume: Casters.toNumber,
     cv_sfx_volume: Casters.toNumber,
@@ -97,13 +98,13 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_loadout_left_emote: "sad_face",
     cv_loadout_death_emote: "",
     cv_loadout_win_emote: "",
-
     cv_music_volume: 1,
     cv_sfx_volume: 1,
     cv_master_volume: 1,
 
     cv_loop_scope_selection: false,
     cv_anonymize_player_names: false,
+    cv_hide_emotes: false,
     cv_use_old_menu_music: false,
     cv_region: "",
     cv_camera_shake_fx: true,

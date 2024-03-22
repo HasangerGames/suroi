@@ -114,10 +114,9 @@ export class Command<
         creatingPair?: boolean
     ) {
         const anyLetterAndUnderscore = "A-Z-a-z_";
-        const firstCharacterRegEx = `[${
-            creatingPair
-                ? `${anyLetterAndUnderscore}+-`
-                : anyLetterAndUnderscore
+        const firstCharacterRegEx = `[${creatingPair
+            ? `${anyLetterAndUnderscore}+-`
+            : anyLetterAndUnderscore
         }]`;
         const commandNameRegExpFilter = new RegExp(
             `^${firstCharacterRegEx}[${anyLetterAndUnderscore}0-9]*$`
@@ -673,6 +672,7 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "emote_wheel",
         function(): undefined {
+            if (game.console.getBuiltInCVar("cv_hide_emotes")) return;
             if (this.gameOver) return;
             const { mouseX, mouseY } = this.inputManager;
 
@@ -853,16 +853,15 @@ export function setUpCommands(game: Game): void {
                 "Given the name of an input (such as a key or mouse button) and a console query, this command establishes a new link between the two.<br>" +
                 'For alphanumeric keys, simply giving the key as-is (e.g. "a", or "1") will do. However, keys with no textual representation, or that represent ' +
                 'punctuation will have to given by name, such as "Enter" or "Period".<br>' +
-                `For mouse buttons, the encodings are as follows:<br><table><tbody>${
-                    (
-                        [
-                            ["Primary (usually left click)", "Mouse0"],
-                            ["Auxillary (usually middle click)", "Mouse1"],
-                            ["Secondary (usually right click)", "Mouse2"],
-                            ["Backwards (usually back-left side-button)", "Mouse3"],
-                            ["Forwards (usually front-left side-button)", "Mouse4"]
-                        ] as Array<[string, string]>
-                    ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")
+                `For mouse buttons, the encodings are as follows:<br><table><tbody>${(
+                    [
+                        ["Primary (usually left click)", "Mouse0"],
+                        ["Auxillary (usually middle click)", "Mouse1"],
+                        ["Secondary (usually right click)", "Mouse2"],
+                        ["Backwards (usually back-left side-button)", "Mouse3"],
+                        ["Forwards (usually front-left side-button)", "Mouse4"]
+                    ] as Array<[string, string]>
+                ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")
                 }</tbody></table>` +
                 "For the scroll wheel, the encoding is simply <code>MWheel</code>, followed by the capitalized direction (ex: <code>MWheelUp</code>)<br>" +
                 'Remember that if your query contains spaces, you must enclose the whole query in double quotes ("") so that it is properly parsed.',
@@ -1404,10 +1403,9 @@ export function setUpCommands(game: Game): void {
                             ? ` ${signature.args
                                 .map(
                                     (arg) =>
-                                        `<em>${arg.rest ? ".." : ""}${arg.name}${arg.optional ? "?" : ""}: ${
-                                            arg.type
-                                                .map(type => `<span class="command-desc-arg-type">${type}</span>`)
-                                                .join(" | ")
+                                        `<em>${arg.rest ? ".." : ""}${arg.name}${arg.optional ? "?" : ""}: ${arg.type
+                                            .map(type => `<span class="command-desc-arg-type">${type}</span>`)
+                                            .join(" | ")
                                         }</em>`
                                 )
                                 .join(", ")}`
