@@ -226,7 +226,7 @@ export class UIManager {
         $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
     }
 
-    readonly mapPings = ["arrow_ping", "gift_ping", "warning_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
+    readonly mapPings = ["warning_ping", "arrow_ping", "gift_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
 
     updateEmoteWheel(): void {
         const pingWheel = this.game.inputManager.pingWheelActive;
