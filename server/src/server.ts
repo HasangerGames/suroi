@@ -1,7 +1,7 @@
 import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
-import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
+import { App, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
 import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { version } from "../../package.json";
@@ -234,7 +234,6 @@ function convertToIPv4(ip: string): string {
 }
 
 app.ws("/play", {
-    compression: DEDICATED_COMPRESSOR_256KB,
     idleTimeout: 30,
 
     /**
