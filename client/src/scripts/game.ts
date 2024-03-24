@@ -2,7 +2,7 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory, PacketType, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -94,6 +94,8 @@ export class Game {
     activePlayerID = -1;
 
     teamID = -1;
+
+    teamMode = false;
 
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
@@ -377,6 +379,7 @@ export class Game {
         this.uiManager.updateEmoteWheel();
 
         this.teamID = packet.teamID;
+        this.teamMode = packet.maxTeamSize > TeamSize.Solo;
 
         $("canvas").addClass("active");
         $("#splash-ui").fadeOut(400, resetPlayButtons);
@@ -396,6 +399,7 @@ export class Game {
         void this.music.play();
 
         $("#splash-ui").fadeIn(400, () => {
+            $("#team-container").html("");
             $("#action-container").hide();
             $("#game-menu").hide();
             $("#game-over-overlay").hide();
@@ -567,7 +571,7 @@ export class Game {
         for (const emote of updateData.emotes) {
             const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
-                if (!this.console.getBuiltInCVar("cv_hide_emotes")) { player.emote(emote.definition); }
+                if (!this.console.getBuiltInCVar("cv_hide_emotes")) player.sendEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
             }

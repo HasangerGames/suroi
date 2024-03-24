@@ -41,7 +41,7 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { Team, isTeamMode } from "../team";
+import { Team, teamMode } from "../team";
 import { type MapPingDefinition } from "../../../common/src/definitions/mapPings";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Packet, PacketStream } from "../../../common/src/packets/packetStream";
@@ -333,7 +333,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
-    knocked = false;
+    downed = false;
 
     get position(): Vector {
         return this.hitbox.position;
@@ -356,7 +356,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
-        if (isTeamMode) {
+        if (teamMode) {
             if (!this.game.incompleteTeam || this.game.incompleteTeam?.players.length === Config.maxTeamSize) {
                 this.game.teamSpawnPoint = position;
                 this.game.incompleteTeam = new Team((this.game.incompleteTeam?.id ?? -1) + 1, this);
@@ -578,7 +578,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
-            (this.knocked ? 0.5 : 1) *                      // Knocked out speed multiplier
+            (this.downed ? 0.5 : 1) *                      // Knocked out speed multiplier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
@@ -674,8 +674,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Knocked out damage
-        if (this.knocked) {
-            this.piercingDamage(0.04);
+        if (this.downed) {
+            this.piercingDamage(0.08);
         }
 
         let isInsideBuilding = false;
@@ -794,13 +794,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            teammates: isTeamMode
+            teammates: teamMode
                 ? this.team!.players.filter(p => p !== this).map(player => {
                     return {
                         id: player.id,
                         position: player.position,
                         normalizedHealth: player.normalizedHealth,
-                        knocked: player.knocked
+                        downed: player.downed
                     };
                 })
                 : [],
@@ -1092,8 +1092,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             }
 
-            if (isTeamMode && this.team!.players.some(p => !p.dead) && !this.knocked) {
-                this.knock();
+            if (teamMode && this.team!.players.some(p => !p.dead) && !this.downed) {
+                this.down();
             } else {
                 this.die(source, weaponUsed);
             }
@@ -1280,13 +1280,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
-    knock(): void {
-        this.knocked = true;
+    down(): void {
+        this.downed = true;
         this.health = 100;
+        this.setDirty();
     }
 
     revive(): void {
-        this.knocked = false;
+        this.downed = false;
         this.health = 30;
     }
 
@@ -1479,6 +1480,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             rotation: this.rotation,
             full: {
                 dead: this.dead,
+                downed: this.downed,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,

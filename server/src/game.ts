@@ -38,7 +38,7 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import { isTeamMode, type Team } from "./team";
+import { teamMode, type Team } from "./team";
 import { type MapPingDefinition, MapPings } from "../../common/src/definitions/mapPings";
 import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
 import NanoTimer from "nanotimer";
@@ -398,7 +398,7 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: isTeamMode && this.teamSpawnPoint
+                            getPosition: teamMode && this.teamSpawnPoint
                                 ? () => randomPointInsideCircle(this.teamSpawnPoint!, 12, 8)
                                 : undefined,
                             collides: (position) => {
@@ -409,7 +409,7 @@ export class Game {
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player && (!isTeamMode || !this.incompleteTeam?.players.includes(object))) {
+                        if (object instanceof Player && (!teamMode || !this.incompleteTeam?.players.includes(object))) {
                             foundPosition = false;
                         }
                     }
@@ -488,8 +488,10 @@ export class Game {
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
+        joinedPacket.protocolVersion = GameConstants.protocolVersion;
+        joinedPacket.maxTeamSize = Config.maxTeamSize;
+        joinedPacket.teamID = player.teamID ?? 0;
         joinedPacket.emotes = player.loadout.emotes;
-
         player.sendPacket(joinedPacket);
 
         player.sendData(this.map.buffer);
