@@ -512,7 +512,7 @@ Video evidence is required.`)) {
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
     const createTeamMenu = $("#create-team-menu");
-    $("#btn-create-team").on("click", () => { createTeamMenu.fadeToggle(250); $(".dialog").hide(); });
+    $("#btn-create-team").on("click", () => { $(".dialog").hide(); createTeamMenu.fadeToggle(250); });
     $("#close-create-team").on("click", () => createTeamMenu.fadeOut(250));
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
