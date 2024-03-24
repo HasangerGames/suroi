@@ -46,6 +46,7 @@ export interface PlayerData {
         position: Vector
         normalizedHealth: number
         downed: boolean
+        disconnected: boolean
     }>
 
     normalizedHealth: number
@@ -109,6 +110,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             stream.writePosition(player.position ?? Vec.create(0, 0));
             stream.writeFloat(player.normalizedHealth, 0, 1, 8);
             stream.writeBoolean(player.downed);
+            stream.writeBoolean(player.disconnected);
         });
     }
 
@@ -188,7 +190,8 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
                 id: stream.readObjectID(),
                 position: stream.readPosition(),
                 normalizedHealth: stream.readFloat(0, 1, 8),
-                downed: stream.readBoolean()
+                downed: stream.readBoolean(),
+                disconnected: stream.readBoolean()
             };
         });
     }

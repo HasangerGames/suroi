@@ -800,7 +800,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         id: player.id,
                         position: player.position,
                         normalizedHealth: player.normalizedHealth,
-                        downed: player.downed
+                        downed: player.downed,
+                        disconnected: player.disconnected
                     };
                 })
                 : [],

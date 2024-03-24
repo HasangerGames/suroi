@@ -426,14 +426,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.visible = !full.dead;
             this.dead = full.dead;
 
-            if (this.dead) {
-                clearInterval(this.bleedEffectInterval);
-            }
-
             this.teamID = data.full.teamID;
             if (
                 !this.isActivePlayer &&
                 !this.teammateName &&
+                !this.dead &&
                 this.teamID === this.game.teamID
             ) {
                 const name = this.game.playerNames.get(this.id);
@@ -518,7 +515,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateWeapon(isNew);
             }
 
-            if (this.downed !== full.downed) {
+            if (this.downed !== full.downed && !this.dead) {
                 this.downed = full.downed;
                 this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
@@ -526,6 +523,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.bleedEffectInterval = setInterval(() => {
                     this.hitEffect(this.position, randomRotation(), "bleed");
                 }, 1000);
+            }
+
+            if (this.dead) {
+                clearInterval(this.bleedEffectInterval);
             }
         }
 

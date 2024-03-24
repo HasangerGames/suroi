@@ -116,6 +116,24 @@ export class UIManager {
         }
     }
 
+    getIndicatorImage(
+        player: {
+            id: number
+            normalizedHealth: number
+            downed?: boolean
+            disconnected: boolean
+        }
+    ): string {
+        switch (true) {
+            case player.normalizedHealth === 0:
+                return "player_indicator_dead";
+            case player.downed:
+                return "player_indicator_downed";
+            default:
+                return "player_indicator";
+        }
+    }
+
     readonly ui = {
         ammoCounterContainer: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
@@ -274,6 +292,7 @@ export class UIManager {
                     id: this.game.activePlayerID,
                     normalizedHealth: this.health / this.maxHealth,
                     downed: this.game.activePlayer?.downed,
+                    disconnected: false,
                     position: undefined
                 },
                 ...data.teammates
@@ -309,7 +328,9 @@ export class UIManager {
                     this.ui.teamContainer.append(playerHealthUI);
                 }
 
-                playerHealthUI.toggleClass("downed", player.downed && player.normalizedHealth > 0);
+                playerHealthUI
+                    .toggleClass("downed", player.downed && player.normalizedHealth > 0)
+                    .toggleClass("disconnected", player.disconnected);
 
                 playerHealthUI
                     .find("circle")
@@ -317,7 +338,7 @@ export class UIManager {
                     .css("stroke-dashoffset", 132 - (player.normalizedHealth * 132));
 
                 const teammateIndicator = playerHealthUI.find(".teammate-indicator");
-                const src = `./img/game/player/player_indicator${player.normalizedHealth === 0 ? "_dead" : player.downed ? "_downed" : ""}.svg`;
+                const src = `./img/game/player/${this.getIndicatorImage(player)}.svg`;
                 if (src !== teammateIndicator.attr("src")) teammateIndicator.attr("src", src);
 
                 if (player.id === this.game.activePlayerID) return;
@@ -336,7 +357,7 @@ export class UIManager {
                 for (const indicator of this.game.map.teammateIndicators) {
                     if (indicator.id !== player.id) continue;
                     indicator.setVPos(player.position!);
-                    indicator.setFrame(player.normalizedHealth === 0 ? "player_indicator_dead" : player.downed ? "player_indicator_downed" : "player_indicator");
+                    indicator.setFrame(this.getIndicatorImage(player));
                 }
             });
         }
@@ -380,7 +401,7 @@ export class UIManager {
 
             this.ui.healthBarAmount
                 .text(safeRound(this.health))
-                .css("color", percentage <= 40 ? "#ffffff" : "#000000");
+                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
         if (data.dirty.adrenaline) {

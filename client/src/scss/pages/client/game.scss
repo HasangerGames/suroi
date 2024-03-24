@@ -195,6 +195,10 @@
             }
         }
 
+        &.disconnected .teammate-indicator-container {
+            opacity: 50%;
+        }
+
         .teammate-indicator-container {
             width: 36px;
             height: 36px;
