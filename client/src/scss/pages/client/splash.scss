@@ -208,6 +208,9 @@
     .server-list-item {
         backdrop-filter: blur(8px);
     }
+    .create-team-server-list-item {
+        backdrop-filter: blur(8px);
+    }
 }
 
 
@@ -216,6 +219,10 @@
 #splash-customize,
 #splash-server-message,
 #btn-server-select {
+    text-shadow: 3px 3px 8px #00000064;
+}
+
+#btn-create-team-server-select {
     text-shadow: 3px 3px 8px #00000064;
 }
 
@@ -434,52 +441,6 @@
         }
     }
 
-    #server-list {
-        z-index: 1000;
-        width: calc(100% - 40px);
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-        margin: 0;
-        padding: 0;
-        border-radius: 10px;
-        border: 2px solid #ff7500;
-
-        .server-list-item {
-            list-style-type: none;
-            display: flex;
-            padding: 10px 18px 10px 18px;
-            font-size: 18px;
-            color: white;
-            text-shadow: none;
-            user-select: none;
-            cursor: pointer;
-
-            background-color: rgba($color: #000000, $alpha: 0.8);
-
-            &:hover {
-                filter: brightness(80%);
-            }
-
-            transition: filter 0.25s ease;
-
-            &:first-child {
-                border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
-                border-top-left-radius: 10px;
-                border-top-right-radius: 10px;
-                padding-top: 12px;
-            }
-
-            &:last-child {
-                border-bottom-left-radius: 10px;
-                border-bottom-right-radius: 10px;
-                padding-bottom: 12px;
-            }
-        }
-
-        img {
-            display: inline-block;
-        }
-    }
-
     .btn {
         font-size: 18px;
         width: 100%;
@@ -487,6 +448,131 @@
 
     #btn-play-solo, #btn-play-duo {
         margin-bottom: 5px;
+    }
+}
+
+#btn-create-team-server-select {
+    background: transparent;
+    color: white;
+
+    width: 100%;
+    height: 50px;
+
+    padding: 0.375rem 1rem 0.375rem 1rem;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    border: 3px solid $orange;
+    border-radius: 10px;
+
+    transition: 0.15s box-shadow;
+
+    font-size: 18px;
+    text-align-last: center;
+    line-height: 1.5;
+
+    display: flex;
+    align-items: center;
+
+    i {
+        // caret
+        margin-left: 10px;
+        margin-top: -2px;
+    }
+}
+
+#server-list {
+    z-index: 1000;
+    width: calc(100% - 40px);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    border: 2px solid #ff7500;
+
+    .server-list-item {
+        list-style-type: none;
+        display: flex;
+        padding: 10px 18px 10px 18px;
+        font-size: 18px;
+        color: white;
+        text-shadow: none;
+        user-select: none;
+        cursor: pointer;
+
+        background-color: rgba($color: #000000, $alpha: 0.8);
+
+        &:hover {
+            filter: brightness(80%);
+        }
+
+        transition: filter 0.25s ease;
+
+        &:first-child {
+            border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding-top: 12px;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding-bottom: 12px;
+        }
+    }
+
+    img {
+        display: inline-block;
+    }
+}
+
+#create-team-server-list {
+    z-index: 1000;
+    width: calc(100% - 40px);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    border: 2px solid #ff7500;
+    width: 255px;
+
+    .create-team-server-list-item {
+        list-style-type: none;
+        display: flex;
+        padding: 10px 18px 10px 18px;
+        font-size: 18px;
+        color: white;
+        text-shadow: none;
+        user-select: none;
+        width: 250px;
+        cursor: pointer;
+
+        background-color: rgba($color: #000000, $alpha: 0.8);
+
+        &:hover {
+            filter: brightness(80%);
+        }
+
+        transition: filter 0.25s ease;
+
+        &:first-child {
+            border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding-top: 12px;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding-bottom: 12px;
+        }
+    }
+
+    img {
+        display: inline-block;
     }
 }
 

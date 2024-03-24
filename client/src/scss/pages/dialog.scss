@@ -60,6 +60,36 @@
     align-items: center;
 }
 
+#create-team-customize {
+    width: 50%;
+    height: 100%;
+}
+
+#create-team-server-select-container {
+    width: 100%;
+    height: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#create-team-options {
+    display: flex;
+    justify-content: space-evenly;
+    height: 35%;
+    align-items: center;
+    border: 5px solid red;
+}
+
+#btn-start-game {
+    border: 5px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 #create-team-fill-type,
 #create-team-gamemode {
     width: 25%;
@@ -70,7 +100,7 @@
     flex-wrap: wrap;
 }
 
-.create-team-option {
+.create-team-fill-option {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.1);
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -96,12 +126,12 @@
   height: 50px;
 }
 
-.create-team-option:hover {
+.create-team-fill-option:hover {
   border-color: rgba(0, 255, 8, 0.5);
   box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
 }
 
-.create-team-option:active {
+.create-team-fill-option:active {
  border-color: rgba(0, 255, 8, 1);
   box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
   color: rgba(0, 0, 0, 0.65);

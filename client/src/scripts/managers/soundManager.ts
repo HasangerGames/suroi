@@ -231,7 +231,7 @@ export class SoundManager {
 
         for (const ping of MapPings) {
             if (ping.sound) {
-                soundsToLoad[ping.idString] = `audio/sfx/pings/${ping.idString}`
+                soundsToLoad[ping.idString] = `audio/sfx/pings/${ping.idString}`;
             }
         }
 
