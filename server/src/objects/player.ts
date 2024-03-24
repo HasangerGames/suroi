@@ -1046,7 +1046,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         if (
             this.invulnerable ||
-            (source instanceof Player && source.teamID === this.teamID && source.id !== this.id)
+            (
+                source instanceof Player &&
+                source.teamID === this.teamID &&
+                source.id !== this.id &&
+                !this.disconnected
+            )
         ) return;
 
         amount = this._clampDamageAmount(amount);
