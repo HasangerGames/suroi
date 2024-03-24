@@ -993,40 +993,57 @@
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
     </div>
     <div id="create-team-container">
-      <div id="create-team-customize">
-      <div id="create-team-server-select-container">
-        <div id="create-team-server-select" class="dropdown">
-          <button id="btn-create-team-server-select">
-            <span id="create-team-server-name">-</span>
-            <span style="margin-left: auto">
-              <img
-                src="./img/misc/player_icon.svg"
-                width="16"
-                height="16"
-                alt="Player count"
-              />
-              <span id="create-team-server-player-count">-</span>
-            </span>
-            <!--<span style="margin-left: 5px">
-              <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-              <span id="server-ping">-</span>
-            </span>-->
-            <i class="fa-solid fa-caret-down"></i>
-          </button>
-          <ul class="dropdown-content" id="create-team-server-list"></ul>
+      <div id="create-team-players">
+        <div class="create-team-player-container">
+          <i class="fa-solid fa-crown"></i>
+          <div class="skin">
+            <div class="skin-base" style="background-image: url('./img/game/skins/hasanger_base.svg')"></div>
+            <div class="skin-left-fist" style="background-image: url('./img/game/skins/hasanger_fist.svg')"></div>
+            <div class="skin-right-fist" style="background-image: url('./img/game/skins/hasanger_fist.svg')"></div>
+          </div>
+          <div class="create-team-player-name-container">
+            <span class="create-team-player-name" style="color: red;">hasanger</span>
+            <img class="create-team-player-badge" src="./img/game/badges/ownr.svg" />
+          </div>
         </div>
-       </div>
-       <div id="create-team-options">
-       <div id="create-team-gamemode">
-        <button class="create-team-fill-option" id="gamemode-duos" role="button">Duos</button>
-        <button class="create-team-fill-option" id="gamemode-squads" role="button">Squads</button>
-       </div>
-       <div id="create-team-fill-type">
-        <button class="create-team-fill-option" id="fill-type-nofill" role="button">No Fill</button>
-        <button class="create-team-fill-option" id="fill-type-fill" role="button">Auto Fill</button>
-       </div>
+        <div class="create-team-player-container">
+          <div class="skin">
+            <div class="skin-base" style="background-image: url('./img/game/skins/katie_base.svg')"></div>
+            <div class="skin-left-fist" style="background-image: url('./img/game/skins/katie_fist.svg')"></div>
+            <div class="skin-right-fist" style="background-image: url('./img/game/skins/katie_fist.svg')"></div>
+          </div>
+          <div class="create-team-player-name-container">
+            <span class="create-team-player-name" style="color: #7784f0;">Amyklae</span>
+            <img class="create-team-player-badge" src="./img/game/badges/contributr+.svg" />
+          </div>
+        </div>
+        <div class="create-team-player-container"></div>
+        <div class="create-team-player-container"></div>
       </div>
-      <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">Start Game</button>
+      <div id="create-team-options">
+        <div class="create-team-url-container">
+          <input
+            type="text"
+            readonly
+            value="https://suroi.io/#74ae"
+            id="create-team-url-field"
+          />
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
+            <i class="fa-solid fa-clipboard"></i>
+            Copy
+          </button>
+        </div>
+        <div class="create-team-toggles">
+          <label>
+            <span class="setting-title">Auto Fill</span>
+            <input type="checkbox" id="create-team-toggle-auto-fill">
+          </label>
+          <label>
+            <span class="setting-title">Lock Team</span>
+            <input type="checkbox" id="create-team-toggle-lock">
+          </label>
+        </div>
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">Start Game</button>
       </div>
     </div>
   </div>

@@ -195,8 +195,8 @@
             }
         }
 
-        &.disconnected .teammate-indicator-container {
-            opacity: 50%;
+        &.disconnected {
+            filter: brightness(50%);
         }
 
         .teammate-indicator-container {

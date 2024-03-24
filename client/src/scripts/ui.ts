@@ -410,21 +410,11 @@ export async function setupUI(game: Game): Promise<void> {
     });
 
     createDropdown("#server-select");
-    createDropdown("#create-team-server-select");
 
     const serverSelect = $<HTMLSelectElement>("#server-select");
-    const createTeamserverSelect = $<HTMLSelectElement>("#create-team-server-select");
 
     // Select region
     serverSelect.on("change", () => {
-        // const value = serverSelect.val() as string | undefined;
-
-        /*if (value !== undefined) {
-            game.console.setBuiltInCVar("cv_region", value);
-        }*/
-    });
-
-    createTeamserverSelect.on("change", () => {
         // const value = serverSelect.val() as string | undefined;
 
         /*if (value !== undefined) {
@@ -553,7 +543,7 @@ Video evidence is required.`)) {
         // noinspection CssUnknownTarget
         const skinItem =
             $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
-  <div class="skins-list-item">
+  <div class="skin">
     <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
     <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
     <div class="skin-right-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
