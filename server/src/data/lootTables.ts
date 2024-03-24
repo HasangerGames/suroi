@@ -253,8 +253,11 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "verified", weight: 2 },
-            { item: "no_kil_pls", weight: 1 }
+            { item: "lemon", weight: 1 },
+            { item: "flamingo", weight: 1 },
+            { item: "verified", weight: 0.5 },
+            { item: "no_kil_pls", weight: 0.5 },
+            { item: "basic_outfit", weight: 0.001 }
         ]
     },
     toilet: {
@@ -417,7 +420,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "ammo", weight: 1 },
-            { item: "127mm", weight: 0.1 },
+            { item: "127mm", count: 10, weight: 0.1 },
             { item: "curadell", weight: 0.1 }
         ]
     },
@@ -454,6 +457,20 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "radio", weight: 1 }
+        ]
+    },
+    sea_traffic_control_outside: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "peachy_breeze", weight: 1 }
+        ]
+    },
+    tugboat_red_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "deep_sea", weight: 1 }
         ]
     }
 };
@@ -599,6 +616,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: null, weight: 1 },
         { item: "stardust", weight: 0.5 },
         { item: "aurora", weight: 0.5 },
+        { item: "nebula", weight: 0.4 },
         { item: "ghillie_suit", weight: 0.1 },
         { item: "basic_outfit", weight: 0.001 }
     ],

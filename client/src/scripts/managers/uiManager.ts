@@ -14,6 +14,7 @@ import { formatDate } from "../utils/misc";
 import { TeammateIndicator } from "../rendering/minimap";
 import type { EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { MapPings } from "../../../../common/src/definitions/mapPings";
+import { Numeric } from "../../../../common/src/utils/math";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -101,6 +102,20 @@ export class UIManager {
         }
     }
 
+    getHealthColor(normalizedHealth: number, downed?: boolean): string {
+        switch (true) {
+            case normalizedHealth <= 0.25:
+            case downed:
+                return "#ff0000";
+            case normalizedHealth > 0.25 && normalizedHealth < 0.6:
+                return `rgb(255, ${((normalizedHealth * 100) - 10) * 4}, ${((normalizedHealth * 100) - 10) * 4})`;
+            case normalizedHealth === 1:
+                return "#bdc7d0";
+            default:
+                return "#f8f9fa";
+        }
+    }
+
     readonly ui = {
         ammoCounterContainer: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
@@ -126,7 +141,7 @@ export class UIManager {
         interactMsg: $("#interact-message"),
         interactKey: $("#interact-key"),
 
-        teamHealthContainer: $("#team-health"),
+        teamContainer: $("#team-container"),
 
         emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
             .map(selector => $(`#emote-wheel > ${selector}`))
@@ -225,7 +240,7 @@ export class UIManager {
         $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
     }
 
-    readonly mapPings = ["arrow_ping", "gift_ping", "warning_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
+    readonly mapPings = ["warning_ping", "arrow_ping", "gift_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
 
     updateEmoteWheel(): void {
         const pingWheel = this.game.inputManager.pingWheelActive;
@@ -254,18 +269,65 @@ export class UIManager {
         if (data.dirty.teammates) {
             this.teammates = data.teammates;
 
-            this.ui.teamHealthContainer
-                .html(data.teammates.map(player => {
-                    return `${player.id} ${this.game.playerNames.get(player.id)?.name}: ${player.normalizedHealth} HP`;
-                }).join("<br>"));
-            /*eslint array-callback-return: */
-            data.teammates.forEach((player, index) => {
+            [
+                {
+                    id: this.game.activePlayerID,
+                    normalizedHealth: this.health / this.maxHealth,
+                    downed: this.game.activePlayer?.downed,
+                    position: undefined
+                },
+                ...data.teammates
+            ].forEach((player, index) => {
+                let playerHealthUI = this.ui.teamContainer.find(`[data-id="${player.id}"]`);
+                if (!playerHealthUI.length) {
+                    const name = this.game.playerNames.get(player.id);
+                    playerHealthUI = $(`
+                      <div class="teammate-container" data-id="${player.id}">
+                        <svg
+                          class="teammate-health-indicator"
+                          width="48"
+                          height="48"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            r="21"
+                            cy="24"
+                            cx="24"
+                            stroke-width="6"
+                            stroke-dasharray="132"
+                            fill="none"
+                            style="transition: stroke-dashoffset ease-in-out 50ms;"
+                          />
+                        </svg>
+                        <div class="teammate-indicator-container" style="background-color: ${TEAMMATE_COLORS[index].toHex()};">
+                          <img class="teammate-indicator" />
+                        </div>
+                        <span class="teammate-name"${name?.hasColor ? ` style="color: ${name.nameColor.toHex()};"` : ""}>${name?.name}</span>
+                        ${name?.badge ? `<img class="teammate-badge" src="./img/game/badges/${name?.badge.idString}.svg" />` : ""}
+                      </div>
+                    `);
+                    this.ui.teamContainer.append(playerHealthUI);
+                }
+
+                playerHealthUI.toggleClass("downed", player.downed && player.normalizedHealth > 0);
+
+                playerHealthUI
+                    .find("circle")
+                    .css("stroke", this.getHealthColor(player.normalizedHealth, player.downed))
+                    .css("stroke-dashoffset", 132 - (player.normalizedHealth * 132));
+
+                const teammateIndicator = playerHealthUI.find(".teammate-indicator");
+                const src = `./img/game/player/player_indicator${player.normalizedHealth === 0 ? "_dead" : player.downed ? "_downed" : ""}.svg`;
+                if (src !== teammateIndicator.attr("src")) teammateIndicator.attr("src", src);
+
+                if (player.id === this.game.activePlayerID) return;
+
                 if (index >= this.game.map.teammateIndicators.size) {
                     this.game.map.teammateIndicators.add(
                         new TeammateIndicator(
-                            player.position,
+                            player.position!,
                             player.id,
-                            TEAMMATE_COLORS[index + 1],
+                            TEAMMATE_COLORS[index],
                             this.game.map.expanded ? 1 : 0.75
                         )
                     );
@@ -273,13 +335,8 @@ export class UIManager {
 
                 for (const indicator of this.game.map.teammateIndicators) {
                     if (indicator.id !== player.id) continue;
-                    indicator.setVPos(player.position);
-
-                    if (player.knocked) {
-                        indicator.setFrame("player_indicator_knocked");
-                    } else if (player.normalizedHealth === 0) {
-                        indicator.setFrame("player_indicator_dead");
-                    }
+                    indicator.setVPos(player.position!);
+                    indicator.setFrame(player.normalizedHealth === 0 ? "player_indicator_dead" : player.downed ? "player_indicator_downed" : "player_indicator");
                 }
             });
         }
@@ -308,40 +365,32 @@ export class UIManager {
         }
 
         if (data.dirty.health) {
-            const oldHealth = this.health;
-            this.health = data.health;
+            this.health = Numeric.remap(data.normalizedHealth, 0, 1, 0, this.maxHealth);
 
-            const realPercentage = 100 * this.health / this.maxHealth;
+            const normalizedHealth = this.health / this.maxHealth;
+            const realPercentage = 100 * normalizedHealth;
             const percentage = safeRound(realPercentage);
 
-            this.ui.healthBar.width(`${realPercentage}%`);
+            this.ui.healthBar
+                .width(`${realPercentage}%`)
+                .css("background-color", this.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
+                .toggleClass("flashing", percentage <= 25);
 
-            if (oldHealth > this.health) this.ui.healthAnim.width(`${realPercentage}%`);
+            this.ui.healthAnim.width(`${realPercentage}%`);
 
-            this.ui.healthBarAmount.text(safeRound(this.health));
-
-            if (percentage === 100) {
-                this.ui.healthBar.css("background-color", "#bdc7d0");
-            } else if (percentage < 60 && percentage > 25) {
-                this.ui.healthBar.css("background-color", `rgb(255, ${(percentage - 10) * 4}, ${(percentage - 10) * 4})`);
-            } else if (percentage <= 25) {
-                this.ui.healthBar.css("background-color", "#ff0000");
-            } else {
-                this.ui.healthBar.css("background-color", "#f8f9fa");
-            }
-            this.ui.healthBar.toggleClass("flashing", percentage <= 25);
-
-            this.ui.healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
+            this.ui.healthBarAmount
+                .text(safeRound(this.health))
+                .css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
 
         if (data.dirty.adrenaline) {
-            this.adrenaline = data.adrenaline;
-
+            this.adrenaline = Numeric.remap(data.normalizedAdrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
             const percentage = 100 * this.adrenaline / this.maxAdrenaline;
 
             this.ui.adrenalineBar.width(`${percentage}%`);
 
-            this.ui.adrenalineBarPercentage.text(safeRound(this.adrenaline))
+            this.ui.adrenalineBarPercentage
+                .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 

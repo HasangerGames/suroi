@@ -21,4 +21,4 @@ export class Team {
     }
 }
 
-export const isTeamMode = Config.maxTeamSize > TeamSize.Solo;
+export const teamMode = Config.maxTeamSize > TeamSize.Solo;

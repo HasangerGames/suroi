@@ -16,7 +16,7 @@ import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/mat
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomSign, randomVector } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -60,28 +60,39 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     damageable = true;
 
+    hideEquipment = false;
+
+    downed = false;
+    bleedEffectInterval?: NodeJS.Timeout;
+
     readonly images: {
         readonly aimTrail: TilingSprite
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
         readonly rightFist: SuroiSprite
+        readonly leftLeg?: SuroiSprite
+        readonly rightLeg?: SuroiSprite
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
         readonly altWeapon: SuroiSprite
         readonly muzzleFlash: SuroiSprite
-        readonly emoteBackground: SuroiSprite
-        readonly emote: SuroiSprite
         readonly waterOverlay: SuroiSprite
+        readonly badge?: SuroiSprite
     };
 
-    hideEquipment = false;
+    readonly emote: {
+        image: SuroiSprite
+        background: SuroiSprite
+        container: Container
+    };
 
-    readonly emoteContainer: Container;
-
-    readonly nameText: Text;
-    readonly nameContainer: Container;
+    teammateName?: {
+        text: Text
+        //badge?: SuroiSprite
+        container: Container
+    };
 
     healingParticlesEmitter: ParticleEmitter;
 
@@ -119,13 +130,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
+            leftLeg: game.teamMode ? new SuroiSprite().setPos(-38, 26) : undefined,
+            rightLeg: game.teamMode ? new SuroiSprite().setPos(-38, -26) : undefined,
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
-            emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
-            emote: new SuroiSprite().setPos(0, 0),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
         };
 
@@ -135,6 +146,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
+            ...(game.teamMode ? [this.images.leftLeg!, this.images.rightLeg!] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -143,32 +155,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.waterOverlay
         );
 
+        if (game.teamMode) {
+            this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
+        }
+
         this.images.aimTrail.angle = 90;
         this.images.aimTrail.position = Vec.create(6000, -8);
         this.images.aimTrail.alpha = 0;
         if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
-        this.emoteContainer = new Container();
-        this.game.camera.addObject(this.emoteContainer);
-        this.emoteContainer.addChild(this.images.emoteBackground, this.images.emote);
-        this.emoteContainer.zIndex = ZIndexes.Emotes;
-        this.emoteContainer.visible = false;
+        this.emote = {
+            background: new SuroiSprite("emote_background").setPos(0, 0),
+            image: new SuroiSprite().setPos(0, 0),
+            container: new Container()
+        };
 
-        this.nameContainer = new Container();
-        this.game.camera.addObject(this.nameContainer);
-        this.nameContainer.zIndex = ZIndexes.DeathMarkers;
-
-        this.nameText = new Text(
-            {
-                text: "",
-                style: {
-                    fontFamily: "Inter",
-                    fontSize: 36,
-                    dropShadow: { blur: 2, distance: 2, color: 0, alpha: 0.5, angle: 0 }
-                }
-            }
-        );
-        this.nameContainer.addChild(this.nameText);
+        this.game.camera.addObject(this.emote.container);
+        this.emote.container.addChild(this.emote.background, this.emote.image);
+        this.emote.container.zIndex = ZIndexes.Emotes;
+        this.emote.container.visible = false;
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -215,8 +220,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
-        this.nameContainer.position = Vec.addComponent(this.container.position, -75, 75);
-        if (!this.destroyed) this.emoteContainer.position = Vec.addComponent(this.container.position, 0, -175);
+        if (!this.destroyed) {
+            this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
+            if (this.teammateName) this.teammateName.container.position = Vec.addComponent(this.container.position, -75, 75);
+        }
     }
 
     spawnCasingParticles(filterBy: "fire" | "reload", altFire = false): void {
@@ -406,7 +413,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
-            this.emoteContainer.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
+            this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
         }
 
         if (data.animation !== undefined) {
@@ -419,10 +426,39 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.visible = !full.dead;
             this.dead = full.dead;
 
+            if (this.dead) {
+                clearInterval(this.bleedEffectInterval);
+            }
+
             this.teamID = data.full.teamID;
-            if (!this.isActivePlayer && this.teamID === this.game.teamID) {
-                this.nameText.text = this.game.uiManager.getRawPlayerName(this.id);
-                this.nameText.style.fill = this.game.playerNames.get(this.id)?.nameColor ?? "#FFFFFF";
+            if (
+                !this.isActivePlayer &&
+                !this.teammateName &&
+                this.teamID === this.game.teamID
+            ) {
+                const name = this.game.playerNames.get(this.id);
+                this.teammateName = {
+                    text: new Text({
+                        text: this.game.uiManager.getRawPlayerName(this.id),
+                        style: {
+                            fill: name?.nameColor ?? "#FFFFFF",
+                            fontSize: 36,
+                            fontFamily: "Inter",
+                            dropShadow: {
+                                alpha: 0.8,
+                                color: "black",
+                                blur: 2,
+                                distance: 2
+                            }
+                        }
+                    }),
+                    //badge: name?.badge ? new SuroiSprite(name.badge.idString) : undefined,
+                    container: new Container()
+                };
+                this.teammateName.container.zIndex = ZIndexes.DeathMarkers;
+                this.teammateName.container.addChild(this.teammateName.text);
+                //if (this.teammateName.badge) this.teammateName.container.addChild(this.teammateName.badge);
+                this.game.camera.addObject(this.teammateName.container);
             }
 
             this.container.alpha = full.invulnerable ? 0.5 : 1;
@@ -447,6 +483,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 .setTint(tint);
             this.images.rightFist
                 .setFrame(`${skinID}_fist`)
+                .setTint(tint);
+            this.images.leftLeg
+                ?.setFrame(`${skinID}_fist`)
+                .setTint(tint);
+            this.images.rightLeg
+                ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
 
             const {
@@ -474,6 +516,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (itemDirty) {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
+            }
+
+            if (this.downed !== full.downed) {
+                this.downed = full.downed;
+                this.updateFistsPosition(false);
+                this.updateWeapon(isNew);
+
+                this.bleedEffectInterval = setInterval(() => {
+                    this.hitEffect(this.position, randomRotation(), "bleed");
+                }, 1000);
             }
         }
 
@@ -590,6 +642,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.anims.rightFist?.kill();
         this.anims.weapon?.kill();
 
+        this.images.leftFist.setZIndex(this.downed ? 1 : 3);
+        this.images.rightFist.setZIndex(this.downed ? 1 : 3);
+        this.images.leftLeg?.setVisible(this.downed);
+        this.images.rightLeg?.setVisible(this.downed);
+
+        if (this.downed) {
+            this.images.leftFist.setPos(38, 32);
+            this.images.rightFist.setPos(38, -32);
+            return;
+        }
+
         const reference = this._getItemReference();
         const fists = reference.fists ?? {
             left: Vec.create(38, -35),
@@ -630,6 +693,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateWeapon(isNew = false): void {
+        if (this.downed) {
+            this.images.weapon.setVisible(false);
+            this.images.altWeapon.setVisible(false);
+            this.images.muzzleFlash.setVisible(false);
+            return;
+        }
+
         const weaponDef = this.activeItem;
         const reference = this._getItemReference();
 
@@ -699,7 +769,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
         const image = this.images[type];
-        if (def && def.level > 0 && !this.hideEquipment) {
+        if (
+            def &&
+            def.level > 0 &&
+            !this.hideEquipment &&
+            (type === "vest" || !this.downed)
+        ) {
             image.setFrame(`${def.idString}_world`).setVisible(true);
         } else {
             image.setVisible(false);
@@ -761,7 +836,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return equipment;
     }
 
-    emote(type: EmoteDefinition): void {
+    sendEmote(type: EmoteDefinition): void {
         this.anims.emote?.kill();
         this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
@@ -772,19 +847,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 maxRange: 128
             }
         );
-        this.images.emote.setFrame(`${type.idString}`);
+        this.emote.image.setFrame(`${type.idString}`);
 
-        this.emoteContainer.visible = true;
-        this.emoteContainer.scale.set(0);
-        this.emoteContainer.alpha = 0;
+        this.emote.container.visible = true;
+        this.emote.container.scale.set(0);
+        this.emote.container.alpha = 0;
 
         this.anims.emote = this.game.addTween({
-            target: this.emoteContainer,
+            target: this.emote.container,
             to: { alpha: 1 },
             duration: 250,
             ease: EaseFunctions.backOut,
             onUpdate: () => {
-                this.emoteContainer.scale.set(this.emoteContainer.alpha);
+                this.emote.container.scale.set(this.emote.container.alpha);
             },
             onComplete: () => {
                 this.anims.emote = undefined;
@@ -793,17 +868,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this._emoteHideTimeout = this.addTimeout(() => {
             this.anims.emoteHide = this.game.addTween({
-                target: this.emoteContainer,
+                target: this.emote.container,
                 to: { alpha: 0 },
                 duration: 200,
                 onUpdate: () => {
-                    this.emoteContainer.scale.set(this.emoteContainer.alpha);
+                    this.emote.container.scale.set(this.emote.container.alpha);
                 },
                 onComplete: () => {
                     this._emoteHideTimeout = undefined;
                     this.anims.emoteHide = undefined;
 
-                    this.emoteContainer.visible = false;
+                    this.emote.container.visible = false;
                     this.anims.emote?.kill();
                     this.anims.emote = undefined;
                     this._emoteHideTimeout = undefined;
@@ -1180,9 +1255,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    hitEffect(position: Vector, angle: number): void {
+    hitEffect(position: Vector, angle: number, sound?: string): void {
         this.game.soundManager.play(
-            randomBoolean() ? "player_hit_1" : "player_hit_2",
+            sound ?? (randomBoolean() ? "player_hit_1" : "player_hit_2"),
             {
                 position,
                 falloff: 0.2,
@@ -1209,7 +1284,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     destroy(): void {
         super.destroy();
 
-        const images = this.images;
+        const { images, emote, teammateName, anims } = this;
+
         images.aimTrail.destroy();
         images.vest.destroy();
         images.body.destroy();
@@ -1220,18 +1296,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
         images.weapon.destroy();
         images.altWeapon.destroy();
         images.muzzleFlash.destroy();
-        images.emoteBackground.destroy();
-        images.emote.destroy();
         images.waterOverlay.destroy();
 
-        this.healingParticlesEmitter.destroy();
-        this.actionSound?.stop();
-        if (this.isActivePlayer) $("#action-container").hide();
-        this.emoteContainer.destroy();
-        this.nameText.destroy();
-        this.nameContainer.destroy();
+        emote.image.destroy();
+        emote.background.destroy();
+        emote.container.destroy();
 
-        const anims = this.anims;
+        teammateName?.text.destroy();
+        //teammateName?.badge?.destroy();
+        teammateName?.container.destroy();
+
         anims.emoteHide?.kill();
         anims.waterOverlay?.kill();
         anims.emote?.kill();
@@ -1240,5 +1314,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         anims.weapon?.kill();
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
+
+        this.healingParticlesEmitter.destroy();
+        this.actionSound?.stop();
+        clearInterval(this.bleedEffectInterval);
+        if (this.isActivePlayer) $("#action-container").hide();
     }
 }

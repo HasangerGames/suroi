@@ -1,8 +1,8 @@
 import { PacketType } from "../constants";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
-export class GameOverPacket extends Packet {
+export class GameOverPacket extends AbstractPacket {
     override readonly allocBytes = 1 << 6;
     override readonly type = PacketType.GameOver;
 
@@ -14,10 +14,7 @@ export class GameOverPacket extends Packet {
     timeAlive!: number;
     rank!: number;
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.won);
         stream.writeObjectID(this.playerID);
         stream.writeUint8(this.kills);

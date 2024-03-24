@@ -3,11 +3,13 @@ import { Buildings, type BuildingDefinition } from "../../common/src/definitions
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { MapPacket } from "../../common/src/packets/mapPacket";
+import { PacketStream } from "../../common/src/packets/packetStream";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric } from "../../common/src/utils/math";
 import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -223,8 +225,9 @@ export class Map {
             }
         }
 
-        packet.serialize();
-        this.buffer = packet.getBuffer();
+        const stream = new PacketStream(SuroiBitStream.alloc(packet.allocBytes));
+        stream.serializePacket(packet);
+        this.buffer = stream.getBuffer();
     }
 
     generateRiver(

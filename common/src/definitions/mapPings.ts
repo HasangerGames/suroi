@@ -48,9 +48,9 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
 )(
     apply => [
         apply("gamePingFactory", {}, "airdrop_ping", 0x00ffff),
+        apply("playerPingFactory", {}, "warning_ping"),
         apply("playerPingFactory", {}, "arrow_ping"),
         apply("playerPingFactory", {}, "gift_ping"),
-        apply("playerPingFactory", {}, "warning_ping"),
         apply("playerPingFactory", {}, "heal_ping")
     ]
 );

@@ -4,9 +4,9 @@ import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Loots } from "../definitions/loots";
 import { type SkinDefinition } from "../definitions/skins";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
-export class JoinPacket extends Packet {
+export class JoinPacket extends AbstractPacket {
     override readonly allocBytes = 25;
     override readonly type = PacketType.Join;
 
@@ -18,10 +18,7 @@ export class JoinPacket extends Packet {
 
     emotes: Array<EmoteDefinition | undefined> = [];
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         stream.writePlayerName(this.name);
         stream.writeBoolean(this.isMobile);
 

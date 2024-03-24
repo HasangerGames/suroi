@@ -372,7 +372,7 @@ app.ws("/play", {
         try {
             const player = socket.getUserData().player;
             if (player === undefined) return;
-            player.game.handlePacket(stream, player);
+            player.game.onMessage(stream, player);
         } catch (e) {
             console.warn("Error parsing message:", e);
         }

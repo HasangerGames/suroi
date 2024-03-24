@@ -10,7 +10,7 @@ import { ObjectSerializations, type FullData, type ObjectsNetData } from "../uti
 import { Vec, type Vector } from "../utils/vector";
 import { calculateEnumPacketBits, OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 import { type MapPingDefinition, MapPings } from "../definitions/mapPings";
 
 interface ObjectFullData {
@@ -45,11 +45,11 @@ export interface PlayerData {
         id: number
         position: Vector
         normalizedHealth: number
-        knocked: boolean
+        downed: boolean
     }>
 
-    health: number
-    adrenaline: number
+    normalizedHealth: number
+    normalizedAdrenaline: number
 
     maxHealth: number
     minAdrenaline: number
@@ -83,12 +83,12 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 
     stream.writeBoolean(dirty.health);
     if (dirty.health) {
-        stream.writeFloat(data.health, 0, data.maxHealth, 12);
+        stream.writeFloat(data.normalizedHealth, 0, 1, 12);
     }
 
     stream.writeBoolean(dirty.adrenaline);
     if (dirty.adrenaline) {
-        stream.writeFloat(data.adrenaline, data.minAdrenaline, data.maxAdrenaline, 12);
+        stream.writeFloat(data.normalizedAdrenaline, 0, 1, 12);
     }
 
     stream.writeBoolean(dirty.zoom);
@@ -108,7 +108,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             stream.writeObjectID(player.id);
             stream.writePosition(player.position ?? Vec.create(0, 0));
             stream.writeFloat(player.normalizedHealth, 0, 1, 8);
-            stream.writeBoolean(player.knocked);
+            stream.writeBoolean(player.downed);
         });
     }
 
@@ -152,13 +152,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
     }
 }
 
-interface PreviousData {
-    readonly maxHealth: number
-    readonly minAdrenaline: number
-    readonly maxAdrenaline: number
-}
-
-function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousData): PlayerData {
+function deserializePlayerData(stream: SuroiBitStream): PlayerData {
     /* eslint-disable @typescript-eslint/consistent-type-assertions, no-cond-assign */
     const dirty = {} as PlayerData["dirty"];
     const inventory = {} as PlayerData["inventory"];
@@ -171,15 +165,11 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     }
 
     if (dirty.health = stream.readBoolean()) {
-        data.health = stream.readFloat(0, data.maxHealth ?? previousData.maxHealth, 12);
+        data.normalizedHealth = stream.readFloat(0, 1, 12);
     }
 
     if (dirty.adrenaline = stream.readBoolean()) {
-        data.adrenaline = stream.readFloat(
-            data.minAdrenaline ?? previousData.minAdrenaline,
-            data.maxAdrenaline ?? previousData.maxAdrenaline,
-            12
-        );
+        data.normalizedAdrenaline = stream.readFloat(0, 1, 12);
     }
 
     if (dirty.zoom = stream.readBoolean()) {
@@ -198,7 +188,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
                 id: stream.readObjectID(),
                 position: stream.readPosition(),
                 normalizedHealth: stream.readFloat(0, 1, 8),
-                knocked: stream.readBoolean()
+                downed: stream.readBoolean()
             };
         });
     }
@@ -372,15 +362,11 @@ const UpdateFlags = Object.freeze({
 
 const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
-export class UpdatePacket extends Packet {
+export class UpdatePacket extends AbstractPacket {
     override readonly allocBytes = 1 << 16;
     override readonly type = PacketType.Update;
 
     playerData!: PlayerData;
-
-    // client side only
-    // used to store previous sent max and min health / adrenaline
-    previousData!: PreviousData;
 
     deletedObjects: number[] = [];
 
@@ -391,12 +377,12 @@ export class UpdatePacket extends Packet {
     // server side only
 
     fullObjectsCache: Array<{
-        stream: SuroiBitStream
+        partialStream: SuroiBitStream
+        fullStream: SuroiBitStream
     }> = [];
 
     partialObjectsCache: Array<{
-        stream: SuroiBitStream
-        partialLength: number
+        partialStream: SuroiBitStream
     }> = [];
 
     bullets: BaseBullet[] = [];
@@ -448,10 +434,7 @@ export class UpdatePacket extends Packet {
         readonly playerId?: number
     }> = [];
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         const playerDataDirty = Object.values(this.playerData.dirty).some(v => v);
 
         const flags =
@@ -486,14 +469,15 @@ export class UpdatePacket extends Packet {
         if (flags & UpdateFlags.FullObjects) {
             stream.writeAlignToNextByte();
             stream.writeArray(this.fullObjectsCache, 16, (object) => {
-                stream.writeBytes(object.stream, 0, object.stream.byteIndex);
+                stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
+                stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
             });
         }
 
         if (flags & UpdateFlags.PartialObjects) {
             stream.writeAlignToNextByte();
             stream.writeArray(this.partialObjectsCache, 16, (object) => {
-                stream.writeBytes(object.stream, 0, object.partialLength);
+                stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
             });
         }
 
@@ -586,7 +570,7 @@ export class UpdatePacket extends Packet {
         const flags = stream.readBits(UPDATE_FLAGS_BITS);
 
         if (flags & UpdateFlags.PlayerData) {
-            this.playerData = deserializePlayerData(stream, this.previousData);
+            this.playerData = deserializePlayerData(stream);
         }
 
         if (flags & UpdateFlags.DeletedObjects) {

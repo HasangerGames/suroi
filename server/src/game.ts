@@ -5,18 +5,16 @@ import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { type JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
@@ -40,8 +38,10 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import { isTeamMode, type Team } from "./team";
+import { teamMode, type Team } from "./team";
 import { type MapPingDefinition, MapPings } from "../../common/src/definitions/mapPings";
+import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
+import NanoTimer from "nanotimer";
 
 export class Game {
     readonly _id: number;
@@ -136,6 +136,8 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
+    timer = new NanoTimer();
+
     tickTimes: number[] = [];
 
     constructor(id: number) {
@@ -155,186 +157,191 @@ export class Game {
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
-        this.tick(GameConstants.msPerTick);
+        this.timer.setInterval(() => this.tick(), "", `${GameConstants.msPerTick}m`);
     }
 
-    handlePacket(stream: SuroiBitStream, player: Player): void {
-        switch (stream.readPacketType()) {
+    onMessage(stream: SuroiBitStream, player: Player): void {
+        const packetStream = new PacketStream(stream);
+        while (true) {
+            const packet = packetStream.readPacket();
+            if (packet === undefined) break;
+            this.onPacket(packet, player);
+        }
+    }
+
+    onPacket(packet: Packet, player: Player): void {
+        switch (packet.type) {
             case PacketType.Join: {
-                if (player.joined) return;
-                const packet = new JoinPacket();
-                packet.deserialize(stream);
                 this.activatePlayer(player, packet);
                 break;
             }
             case PacketType.Input: {
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
-
-                const packet = new InputPacket();
-                packet.isMobile = player.isMobile;
-                packet.deserialize(stream);
                 player.processInputs(packet);
                 break;
             }
             case PacketType.Spectate: {
-                const packet = new SpectatePacket();
-                packet.deserialize(stream);
                 player.spectate(packet);
                 break;
             }
             case PacketType.Ping: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
-                player.sendPacket(new PingPacket());
+                const stream = new PacketStream(SuroiBitStream.alloc(8));
+                stream.serializePacket(new PingPacket());
+                player.sendData(stream.getBuffer());
                 break;
             }
         }
     }
 
-    tick(delay: number): void {
-        setTimeout((): void => {
-            this._now = Date.now();
+    tick(): void {
+        this._now = Date.now();
 
-            if (this.stopped) return;
+        if (this.stopped) {
+            this.timer.clearInterval();
+            return;
+        }
 
-            // execute timeouts
-            for (const timeout of this._timeouts) {
-                if (timeout.killed) {
-                    this._timeouts.delete(timeout);
-                    continue;
+        // execute timeouts
+        for (const timeout of this._timeouts) {
+            if (timeout.killed) {
+                this._timeouts.delete(timeout);
+                continue;
+            }
+
+            if (this.now > timeout.end) {
+                timeout.callback();
+                this._timeouts.delete(timeout);
+            }
+        }
+
+        // Update loots
+        for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
+            loot.update();
+        }
+
+        for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
+            parachute.update();
+        }
+
+        for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
+            projectile.update();
+        }
+
+        for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
+            syncedParticle.update();
+        }
+        // Update bullets
+        let records: DamageRecord[] = [];
+        for (const bullet of this.bullets) {
+            records = records.concat(bullet.update());
+
+            if (bullet.dead) {
+                if (bullet.definition.onHitExplosion && !bullet.reflected) {
+                    this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
                 }
+                this.bullets.delete(bullet);
+            }
+        }
 
-                if (this.now > timeout.end) {
-                    timeout.callback();
-                    this._timeouts.delete(timeout);
-                }
+        // Do the damage after updating all bullets
+        // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
+        // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
+        // while on the server, without this, some bullets won't because the first bullets will kill the crate
+        for (const { object, damage, source, weapon, position } of records) {
+            object.damage(damage, source, weapon, position);
+        }
+
+        // Handle explosions
+        for (const explosion of this.explosions) {
+            explosion.explode();
+        }
+
+        // Update gas
+        this.gas.tick();
+
+        // First loop over players: movement, animations, & actions
+        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
+            if (!player.dead) player.update();
+        }
+
+        // Cache objects serialization
+        for (const partialObject of this.partialDirtyObjects) {
+            if (!this.fullDirtyObjects.has(partialObject)) {
+                partialObject.serializePartial();
+            }
+        }
+        for (const fullObject of this.fullDirtyObjects) {
+            fullObject.serializeFull();
+        }
+
+        // Second loop over players: calculate visible objects & send updates
+        for (const player of this.connectedPlayers) {
+            if (!player.joined) continue;
+            player.secondUpdate();
+        }
+
+        // Third loop: clean up after all packets have been sent
+        for (const player of this.connectedPlayers) {
+            if (!player.joined) continue;
+
+            player.postPacket();
+        }
+
+        // Reset everything
+        this.fullDirtyObjects.clear();
+        this.partialDirtyObjects.clear();
+        this.newBullets.length = 0;
+        this.explosions.length = 0;
+        this.emotes.length = 0;
+        this.newPlayers.length = 0;
+        this.deletedPlayers.length = 0;
+        this.killFeedMessages.length = 0;
+        this.planes.length = 0;
+        this.mapPings.length = 0;
+        this.aliveCountDirty = false;
+        this.gas.dirty = false;
+        this.gas.completionRatioDirty = false;
+        this.updateObjects = false;
+
+        // Winning logic
+        if (this._started && this.aliveCount < 2 && !this.over) {
+            // Send game over packet to the last man standing
+            if (this.aliveCount === 1) {
+                const lastManStanding = [...this.livingPlayers][0];
+                const movement = lastManStanding.movement;
+                movement.up = false;
+                movement.down = false;
+                movement.left = false;
+                movement.right = false;
+                lastManStanding.attacking = false;
+                lastManStanding.emote(lastManStanding.loadout.emotes[5]);
+                lastManStanding.sendGameOverPacket(true);
             }
 
-            // Update loots
-            for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
-                loot.update();
-            }
+            // End the game in 1 second
+            // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
+            const shouldCreateNewGame = this.allowJoin;
+            this.allowJoin = false;
+            this.over = true;
 
-            for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
-                parachute.update();
-            }
+            this.addTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
+        }
 
-            for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
-                projectile.update();
-            }
+        // Record performance and start the next tick
+        // THIS TICK COUNTER IS WORKING CORRECTLY!
+        // It measures the time it takes to calculate a tick, not the time between ticks.
+        const tickTime = Date.now() - this.now;
+        this.tickTimes.push(tickTime);
 
-            for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
-                syncedParticle.update();
-            }
+        if (this.tickTimes.length >= 200) {
+            const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-            // Update bullets
-            let records: DamageRecord[] = [];
-            for (const bullet of this.bullets) {
-                records = records.concat(bullet.update());
-
-                if (bullet.dead) {
-                    if (bullet.definition.onHitExplosion && !bullet.reflected) {
-                        this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
-                    }
-                    this.bullets.delete(bullet);
-                }
-            }
-
-            // Do the damage after updating all bullets
-            // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
-            // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
-            // while on the server, without this, some bullets won't because the first bullets will kill the crate
-            for (const { object, damage, source, weapon, position } of records) {
-                object.damage(damage, source, weapon, position);
-            }
-
-            // Handle explosions
-            for (const explosion of this.explosions) {
-                explosion.explode();
-            }
-
-            // Update gas
-            this.gas.tick();
-
-            // First loop over players: movement, animations, & actions
-            for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
-                if (!player.dead) player.update();
-                player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
-            }
-
-            for (const object of new Set([...this.fullDirtyObjects, ...this.partialDirtyObjects])) {
-                object.serialize();
-            }
-
-            // Second loop over players: calculate visible objects & send updates
-            for (const player of this.connectedPlayers) {
-                if (!player.joined) continue;
-                player.secondUpdate();
-            }
-
-            // Third loop: clean up after all packets have been sent
-            for (const player of this.connectedPlayers) {
-                if (!player.joined) continue;
-
-                player.postPacket();
-            }
-
-            // Reset everything
-            this.fullDirtyObjects.clear();
-            this.partialDirtyObjects.clear();
-            this.newBullets.length = 0;
-            this.explosions.length = 0;
-            this.emotes.length = 0;
-            this.newPlayers.length = 0;
-            this.deletedPlayers.length = 0;
-            this.killFeedMessages.length = 0;
-            this.planes.length = 0;
-            this.mapPings.length = 0;
-            this.aliveCountDirty = false;
-            this.gas.dirty = false;
-            this.gas.completionRatioDirty = false;
-            this.updateObjects = false;
-
-            // Winning logic
-            if (this._started && this.aliveCount < 2 && !this.over) {
-                // Send game over packet to the last man standing
-                if (this.aliveCount === 1) {
-                    const lastManStanding = [...this.livingPlayers][0];
-                    const movement = lastManStanding.movement;
-                    movement.up = false;
-                    movement.down = false;
-                    movement.left = false;
-                    movement.right = false;
-                    lastManStanding.attacking = false;
-                    lastManStanding.emote(lastManStanding.loadout.emotes[5]);
-                    lastManStanding.sendGameOverPacket(true);
-                }
-
-                // End the game in 1 second
-                // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
-                const shouldCreateNewGame = this.allowJoin;
-                this.allowJoin = false;
-                this.over = true;
-
-                this.addTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
-            }
-
-            // Record performance and start the next tick
-            // THIS TICK COUNTER IS WORKING CORRECTLY!
-            // It measures the time it takes to calculate a tick, not the time between ticks.
-            const tickTime = Date.now() - this.now;
-            this.tickTimes.push(tickTime);
-
-            if (this.tickTimes.length >= 200) {
-                const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-
-                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
-                this.tickTimes = [];
-            }
-
-            this.tick(Math.max(0, GameConstants.msPerTick - tickTime));
-        }, delay);
+            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
+            this.tickTimes = [];
+        }
     }
 
     private _killLeader: Player | undefined;
@@ -391,7 +398,7 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: isTeamMode && this.teamSpawnPoint
+                            getPosition: teamMode && this.teamSpawnPoint
                                 ? () => randomPointInsideCircle(this.teamSpawnPoint!, 12, 8)
                                 : undefined,
                             collides: (position) => {
@@ -402,7 +409,7 @@ export class Game {
 
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player && (!isTeamMode || !this.incompleteTeam?.players.includes(object))) {
+                        if (object instanceof Player && (!teamMode || !this.incompleteTeam?.players.includes(object))) {
                             foundPosition = false;
                         }
                     }
@@ -481,8 +488,10 @@ export class Game {
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
+        joinedPacket.protocolVersion = GameConstants.protocolVersion;
+        joinedPacket.maxTeamSize = Config.maxTeamSize;
+        joinedPacket.teamID = player.teamID ?? 0;
         joinedPacket.emotes = player.loadout.emotes;
-
         player.sendPacket(joinedPacket);
 
         player.sendData(this.map.buffer);

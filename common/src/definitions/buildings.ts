@@ -1137,7 +1137,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(16.2, -29.5),
                     rotation: 2
                 },
-                // Living Room Cough
+                // Living Room Couch
                 {
                     idString: "couch",
                     position: Vec.create(-21.6, -1.8),
@@ -1238,7 +1238,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     rotation: 2
                 }
-            ]
+
+            ],
+            lootSpawners: [{
+                position: Vec.create(-15.4, 6.8),
+                table: "ground_loot"
+            }]
         },
         {
             idString: "crane",
@@ -2475,6 +2480,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "lux_crate", position: Vec.create(80.38, 4.29), rotation: 1 },
                 { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
                 { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
+            ],
+            lootSpawners: [
+                { table: "tugboat_red_floor", position: Vec.create(89, -25) }
             ]
         },
         {
@@ -2563,7 +2571,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "window2", position: Vec.create(19.2, -20.57), rotation: 1 }
             ],
             lootSpawners: [
-                { table: "sea_traffic_control_floor", position: Vec.create(0, 0) }
+                { table: "sea_traffic_control_floor", position: Vec.create(0, 0) },
+                { table: "sea_traffic_control_outside", position: Vec.create(1.5, 48) }
             ]
         },
         {

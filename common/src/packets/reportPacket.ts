@@ -1,18 +1,17 @@
 import { PacketType } from "../constants";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
-export class ReportPacket extends Packet {
-    readonly allocBytes = 25;
+export class ReportPacket extends AbstractPacket {
+    override readonly allocBytes = 25;
     readonly type = PacketType.Report;
 
     playerName!: string; // TODO refactor to use player ID
     reportID!: string;
 
-    override serialize(): void {
-        super.serialize();
-        this.stream.writePlayerName(this.playerName);
-        this.stream.writeASCIIString(this.reportID, 8);
+    override serialize(stream: SuroiBitStream): void {
+        stream.writePlayerName(this.playerName);
+        stream.writeASCIIString(this.reportID, 8);
     }
 
     override deserialize(stream: SuroiBitStream): void {

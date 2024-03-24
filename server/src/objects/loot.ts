@@ -16,7 +16,8 @@ import { type Player } from "./player";
 
 export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     override readonly type = ObjectCategory.Loot;
-    override readonly allocBytes = 8;
+    override readonly fullAllocBytes = 8;
+    override readonly partialAllocBytes = 4;
 
     declare readonly hitbox: CircleHitbox;
 

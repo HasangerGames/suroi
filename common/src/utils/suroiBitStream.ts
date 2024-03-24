@@ -114,10 +114,13 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Read a packet type from stream
-     * @return The packet type
+     * @return The packet type, undefined if at the end of the stream
      */
-    readPacketType(): PacketType {
-        return this.readBits(PACKET_TYPE_BITS) as PacketType;
+    readPacketType(): PacketType | undefined {
+        if (this.length - this.byteIndex * 8 >= 1) {
+            return this.readBits(PACKET_TYPE_BITS) as PacketType;
+        }
+        return undefined;
     }
 
     /**

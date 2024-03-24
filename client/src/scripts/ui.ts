@@ -138,7 +138,7 @@ export async function setupUI(game: Game): Promise<void> {
         const createTeamlistItem = $(`.create-team-server-list-item[data-region=create-team-${regionID}]`);
         try {
             const pingStartTime = Date.now();
-            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(2000) }))?.json();
+            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
             const ping = Date.now() - pingStartTime;
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
@@ -812,6 +812,8 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-scope-looping", "cv_loop_scope_selection");
 
     addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
+
+    addCheckboxListener("#toggle-hide-emote", "cv_hide_emotes");
 
     // Music volume
     addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {

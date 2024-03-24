@@ -12,7 +12,6 @@ import { type SyncedParticleDefinition } from "../../../common/src/definitions/s
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
-import { type Packet } from "../../../common/src/packets/packet";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
@@ -42,12 +41,15 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { Team, isTeamMode } from "../team";
+import { Team, teamMode } from "../team";
 import { type MapPingDefinition } from "../../../common/src/definitions/mapPings";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { type Packet, PacketStream } from "../../../common/src/packets/packetStream";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
-    override readonly allocBytes = 16;
+    override readonly fullAllocBytes = 16;
+    override readonly partialAllocBytes = 4;
     override readonly damageable = true;
 
     readonly hitbox: CircleHitbox;
@@ -92,14 +94,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     private _health = this._maxHealth;
+
+    normalizedHealth = 0;
+
     get health(): number { return this._health; }
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
         this.team?.setDirty();
         this.dirty.health = true;
+        this.normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
     }
 
     private _maxAdrenaline = GameConstants.player.maxAdrenaline;
+
+    normalizedAdrenaline = 0;
+
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
         this._maxAdrenaline = maxAdrenaline;
@@ -119,8 +128,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     get adrenaline(): number { return this._adrenaline; }
     set adrenaline(adrenaline: number) {
         this._adrenaline = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
-
         this.dirty.adrenaline = true;
+        this.normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
     private _modifiers = {
@@ -204,9 +213,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         throwable: true,
         zoom: true
     };
-
-    // save current tick dirty status to send to spectators
-    thisTickDirty?: this["dirty"];
 
     readonly inventory = new Inventory(this);
 
@@ -327,7 +333,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
-    knocked = false;
+    downed = false;
 
     get position(): Vector {
         return this.hitbox.position;
@@ -350,7 +356,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
 
-        if (isTeamMode) {
+        if (teamMode) {
             if (!this.game.incompleteTeam || this.game.incompleteTeam?.players.length === Config.maxTeamSize) {
                 this.game.teamSpawnPoint = position;
                 this.game.incompleteTeam = new Team((this.game.incompleteTeam?.id ?? -1) + 1, this);
@@ -572,7 +578,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
-            (this.knocked ? 0.5 : 1) *                      // Knocked out speed multiplier
+            (this.downed ? 0.5 : 1) *                      // Knocked out speed multiplier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
@@ -668,8 +674,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Knocked out damage
-        if (this.knocked) {
-            this.piercingDamage(0.04);
+        if (this.downed) {
+            this.piercingDamage(0.08);
         }
 
         let isInsideBuilding = false;
@@ -725,11 +731,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private _firstPacket = true;
 
+    packetStream = new PacketStream(SuroiBitStream.alloc(1 << 16));
+
     /**
      * Calculate visible objects, check team, and send packets
      */
     secondUpdate(): void {
         const packet = new UpdatePacket();
+
         const player = this.spectating ?? this;
         const game = this.game;
 
@@ -778,25 +787,25 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // player data
         packet.playerData = {
-            health: player.health,
-            adrenaline: player.adrenaline,
+            normalizedHealth: player.normalizedHealth,
+            normalizedAdrenaline: player.normalizedAdrenaline,
             maxHealth: player.maxHealth,
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            teammates: isTeamMode
+            teammates: teamMode
                 ? this.team!.players.filter(p => p !== this).map(player => {
                     return {
                         id: player.id,
                         position: player.position,
-                        normalizedHealth: player.health / player.maxHealth,
-                        knocked: player.knocked
+                        normalizedHealth: player.normalizedHealth,
+                        downed: player.downed
                     };
                 })
                 : [],
             spectating: this.spectating !== undefined,
-            dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
+            dirty: player.dirty,
             inventory: {
                 activeWeaponIndex: inventory.activeWeaponIndex,
                 scope: inventory.scope,
@@ -891,12 +900,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // serialize and send update packet
         this.sendPacket(packet);
-
-        // reset stuff
         this._firstPacket = false;
-        for (const key in this.dirty) {
-            this.dirty[key as keyof PlayerData["dirty"]] = false;
+
+        this.packetStream.stream.index = 0;
+        for (const packet of this.packets) {
+            this.packetStream.serializePacket(packet);
         }
+        this.packets.length = 0;
+        this.sendData(this.packetStream.getBuffer());
     }
 
     /**
@@ -906,6 +917,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      * depend on it
      */
     postPacket(): void {
+        for (const key in this.dirty) {
+            this.dirty[key as keyof PlayerData["dirty"]] = false;
+        }
         this._animation.dirty = false;
         this._action.dirty = false;
     }
@@ -984,9 +998,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
+    packets: Packet[] = [];
+
     sendPacket(packet: Packet): void {
-        packet.serialize();
-        this.sendData(packet.getBuffer());
+        this.packets.push(packet);
     }
 
     sendData(buffer: ArrayBuffer): void {
@@ -1077,8 +1092,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             }
 
-            if (isTeamMode && this.team!.players.some(p => !p.dead) && !this.knocked) {
-                this.knock();
+            if (teamMode && this.team!.players.some(p => !p.dead) && !this.downed) {
+                this.down();
             } else {
                 this.die(source, weaponUsed);
             }
@@ -1265,13 +1280,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
     }
 
-    knock(): void {
-        this.knocked = true;
+    down(): void {
+        this.downed = true;
         this.health = 100;
+        this.setDirty();
     }
 
     revive(): void {
-        this.knocked = false;
+        this.downed = false;
         this.health = 30;
     }
 
@@ -1284,11 +1300,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.damageTaken = this.damageTaken;
         packet.timeAlive = (this.game.now - this.joinTime) / 1000;
         packet.rank = this.game.aliveCount + 1;
-        packet.serialize();
-        const buffer = packet.getBuffer();
-        this.sendData(buffer);
+        this.sendPacket(packet);
+
         for (const spectator of this.spectators) {
-            spectator.sendData(buffer);
+            spectator.sendPacket(packet);
         }
     }
 
@@ -1465,6 +1480,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             rotation: this.rotation,
             full: {
                 dead: this.dead,
+                downed: this.downed,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,

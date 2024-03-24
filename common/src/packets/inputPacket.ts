@@ -10,7 +10,7 @@ import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { AbstractPacket } from "./packet";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
@@ -37,7 +37,7 @@ export type InputAction = {
     InputActions.MapPing>
 };
 
-export class InputPacket extends Packet {
+export class InputPacket extends AbstractPacket {
     override readonly allocBytes = 24;
     override readonly type = PacketType.Input;
 
@@ -48,7 +48,7 @@ export class InputPacket extends Packet {
         right: boolean
     };
 
-    isMobile!: boolean;
+    isMobile = false;
     mobile!: {
         moving: boolean
         angle: number
@@ -62,15 +62,13 @@ export class InputPacket extends Packet {
 
     actions: InputAction[] = [];
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.movement.up);
         stream.writeBoolean(this.movement.down);
         stream.writeBoolean(this.movement.left);
         stream.writeBoolean(this.movement.right);
 
+        stream.writeBoolean(this.isMobile);
         if (this.isMobile) {
             stream.writeBoolean(this.mobile.moving);
             stream.writeRotation(this.mobile.angle, 16);
@@ -119,7 +117,8 @@ export class InputPacket extends Packet {
             right: stream.readBoolean()
         };
 
-        if (this.isMobile) {
+        if (stream.readBoolean()) {
+            this.isMobile = true;
             this.mobile = {
                 moving: stream.readBoolean(),
                 angle: stream.readRotation(16)
