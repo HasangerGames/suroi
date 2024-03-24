@@ -25,6 +25,7 @@ export abstract class Action {
     }
 
     execute(): void {
+        if (this.player.downed) return;
         this.player.action = undefined;
         this.player.setPartialDirty();
     }

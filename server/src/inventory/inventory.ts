@@ -625,7 +625,7 @@ export class Inventory {
         const definition = Loots.reify(itemString);
         const idString = definition.idString;
 
-        if (!this.items.hasItem(idString)) return;
+        if (!this.items.hasItem(idString) || this.owner.downed) return;
 
         switch (definition.itemType) {
             case ItemType.Healing: {
