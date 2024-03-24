@@ -142,7 +142,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     }
 
     canInteract(player: Player): boolean {
-        if (this.dead) return false;
+        if (this.dead || player.downed) return false;
         const inventory = player.inventory;
 
         switch (this.definition.itemType) {

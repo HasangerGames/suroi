@@ -1288,6 +1288,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     down(): void {
         this.downed = true;
+        this.action?.cancel();
         this.health = 100;
         this.setDirty();
     }
@@ -1476,6 +1477,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     executeAction(action: Action): void {
+        if (this.downed) return;
         this.action?.cancel();
         this.action = action;
     }

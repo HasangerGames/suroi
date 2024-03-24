@@ -164,6 +164,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
 
     protected _bufferAttack(cooldown: number, internalCallback: (this: this) => void): void {
         const owner = this.owner;
+        if (owner.downed) return;
         const now = owner.game.now;
 
         const timeToFire = cooldown - (now - this._lastUse);
