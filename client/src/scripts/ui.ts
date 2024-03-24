@@ -93,6 +93,7 @@ export async function setupUI(game: Game): Promise<void> {
 
     const regionMap = Object.entries(regionInfo);
     const serverList = $("#server-list");
+    const createTeamServerList = $("#create-team-server-list");
 
     // Load server list
     for (const [regionID, region] of regionMap) {
@@ -112,11 +113,29 @@ export async function setupUI(game: Game): Promise<void> {
         serverList.append(listItem);
     }
 
+    for (const [regionID, region] of regionMap) {
+        const listItem = $(`
+                <li class="create-team-server-list-item" data-region="create-team-${regionID}">
+                    <span class="create-team-server-name">${region.name}</span>
+                    <span style="margin-left: auto">
+                      <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                      <span class="create-team-server-player-count">-</span>
+                    </span>
+                </li>
+            `);
+        /* <span style="margin-left: 5px">
+          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+          <span class="server-ping">-</span>
+        </span> */
+        createTeamServerList.append(listItem);
+    }
+
     // Get player counts + find server w/ best ping
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
     for (const [regionID, region] of regionMap) {
         const listItem = $(`.server-list-item[data-region=${regionID}]`);
+        const createTeamlistItem = $(`.create-team-server-list-item[data-region=create-team-${regionID}]`);
         try {
             const pingStartTime = Date.now();
             const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
@@ -134,6 +153,7 @@ export async function setupUI(game: Game): Promise<void> {
             };
 
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+            createTeamlistItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
@@ -145,18 +165,19 @@ export async function setupUI(game: Game): Promise<void> {
         }
     }
 
-    const updateServerSelector = (): void => {
+    const updateServerSelectors = (): void => {
         if (!selectedRegion) { // Handle invalid region
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", "");
         }
         $("#server-name").text(selectedRegion.name);
-        $("#server-player-count").text(selectedRegion.playerCount ?? "-");
+        $("#create-team-server-name").text(selectedRegion.name);
+        $("#create-team-server-player-count").text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
 
     selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
-    updateServerSelector();
+    updateServerSelectors();
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
@@ -173,7 +194,25 @@ export async function setupUI(game: Game): Promise<void> {
 
         game.console.setBuiltInCVar("cv_region", region);
 
-        updateServerSelector();
+        updateServerSelectors();
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    createTeamServerList.children("li.create-team-server-list-item").on("click", async function(this: HTMLLIElement) {
+        const region = this.getAttribute("data-region");
+
+        if (region === null) return;
+
+        const info = regionInfo[region];
+        if (info === undefined) return;
+
+        resetPlayButtons();
+
+        selectedRegion = info;
+
+        game.console.setBuiltInCVar("cv_region", region);
+
+        updateServerSelectors();
     });
 
     let lastPlayButtonClickTime = 0;
@@ -371,11 +410,21 @@ export async function setupUI(game: Game): Promise<void> {
     });
 
     createDropdown("#server-select");
+    createDropdown("#create-team-server-select");
 
     const serverSelect = $<HTMLSelectElement>("#server-select");
+    const createTeamserverSelect = $<HTMLSelectElement>("#create-team-server-select");
 
     // Select region
     serverSelect.on("change", () => {
+        // const value = serverSelect.val() as string | undefined;
+
+        /*if (value !== undefined) {
+            game.console.setBuiltInCVar("cv_region", value);
+        }*/
+    });
+
+    createTeamserverSelect.on("change", () => {
         // const value = serverSelect.val() as string | undefined;
 
         /*if (value !== undefined) {

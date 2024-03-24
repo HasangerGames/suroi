@@ -993,9 +993,11 @@
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
     </div>
     <div id="create-team-container">
+      <div id="create-team-customize">
+      <div id="create-team-server-select-container">
         <div id="create-team-server-select" class="dropdown">
-          <button id="btn-server-select">
-            <span id="server-name">-</span>
+          <button id="btn-create-team-server-select">
+            <span id="create-team-server-name">-</span>
             <span style="margin-left: auto">
               <img
                 src="./img/misc/player_icon.svg"
@@ -1003,7 +1005,7 @@
                 height="16"
                 alt="Player count"
               />
-              <span id="server-player-count">-</span>
+              <span id="create-team-server-player-count">-</span>
             </span>
             <!--<span style="margin-left: 5px">
               <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
@@ -1011,16 +1013,21 @@
             </span>-->
             <i class="fa-solid fa-caret-down"></i>
           </button>
-          <ul class="dropdown-content" id="server-list"></ul>
+          <ul class="dropdown-content" id="create-team-server-list"></ul>
         </div>
+       </div>
+       <div id="create-team-options">
        <div id="create-team-gamemode">
-        <button class="create-team-option" id="gamemode-duos" role="button">Duos</button>
-        <button class="create-team-option" id="gamemode-squads" role="button">Squads</button>
+        <button class="create-team-fill-option" id="gamemode-duos" role="button">Duos</button>
+        <button class="create-team-fill-option" id="gamemode-squads" role="button">Squads</button>
        </div>
        <div id="create-team-fill-type">
-        <button class="create-team-option" id="fill-type-nofill" role="button">No Fill</button>
-        <button class="create-team-option" id="fill-type-fill" role="button">Auto Fill</button>
+        <button class="create-team-fill-option" id="fill-type-nofill" role="button">No Fill</button>
+        <button class="create-team-fill-option" id="fill-type-fill" role="button">Auto Fill</button>
        </div>
+      </div>
+      <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">Start Game</button>
+      </div>
     </div>
   </div>
   <script src="./src/index.ts" type="module"></script>
