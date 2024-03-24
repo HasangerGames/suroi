@@ -130,8 +130,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: game.teamMode ? new SuroiSprite().setPos(-38, 26) : undefined,
-            rightLeg: game.teamMode ? new SuroiSprite().setPos(-38, -26) : undefined,
+            leftLeg: game.teamMode ? new SuroiSprite().setPos(-38, 26).setZIndex(-1) : undefined,
+            rightLeg: game.teamMode ? new SuroiSprite().setPos(-38, -26).setZIndex(-1) : undefined,
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
@@ -460,6 +460,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
+            if (this.downed !== full.downed && !this.dead) {
+                this.downed = full.downed;
+                this.updateFistsPosition(false);
+                this.updateWeapon(isNew);
+
+                this.bleedEffectInterval = setInterval(() => {
+                    this.hitEffect(this.position, randomRotation(), "bleed");
+                }, 1000);
+            }
+
+            if (this.dead) {
+                clearInterval(this.bleedEffectInterval);
+            }
+
             this._oldItem = this.activeItem;
             const itemDirty = this.activeItem !== full.activeItem;
             this.activeItem = full.activeItem;
@@ -513,20 +527,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (itemDirty) {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
-            }
-
-            if (this.downed !== full.downed && !this.dead) {
-                this.downed = full.downed;
-                this.updateFistsPosition(false);
-                this.updateWeapon(isNew);
-
-                this.bleedEffectInterval = setInterval(() => {
-                    this.hitEffect(this.position, randomRotation(), "bleed");
-                }, 1000);
-            }
-
-            if (this.dead) {
-                clearInterval(this.bleedEffectInterval);
             }
         }
 
@@ -643,8 +643,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.anims.rightFist?.kill();
         this.anims.weapon?.kill();
 
-        this.images.leftFist.setZIndex(this.downed ? 1 : 3);
-        this.images.rightFist.setZIndex(this.downed ? 1 : 3);
+        this.images.leftFist.setZIndex(this.downed ? -1 : 3);
+        this.images.rightFist.setZIndex(this.downed ? -1 : 3);
         this.images.leftLeg?.setVisible(this.downed);
         this.images.rightLeg?.setVisible(this.downed);
 
