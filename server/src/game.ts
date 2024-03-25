@@ -456,7 +456,7 @@ export class Game {
             !name.length ||
             (Config.censorUsernames && hasBadWords(name)) ||
             // eslint-disable-next-line no-control-regex
-            /[^\x00-\x7F]/g.test(name) // extended ASCII chars
+            /[^\x20-\x7E]/g.test(name) // extended ASCII chars
         ) name = GameConstants.player.defaultName;
         player.name = name;
 

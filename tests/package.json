@@ -8,9 +8,6 @@
     "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
     "stressTest": "tsc && node --enable-source-maps dist/tests/src/stressTest.js"
   },
-  "engines": {
-    "node": ">=18.8.0"
-  },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {

@@ -6,7 +6,7 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:import/typescript",
         "eslint:recommended",
-        "standard-with-typescript"
+        "love"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

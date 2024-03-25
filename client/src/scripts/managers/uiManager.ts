@@ -49,6 +49,12 @@ export class UIManager {
 
     teammates: UpdatePacket["playerData"]["teammates"] = [];
 
+    readonly debugReadouts = Object.freeze({
+        fps: $("#fps-counter"),
+        ping: $("#ping-counter"),
+        pos: $("#coordinates-hud")
+    });
+
     constructor(game: Game) {
         this.game = game;
     }
@@ -450,6 +456,12 @@ export class UIManager {
             this.ui.killStreakIndicator.show();
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
+
+        this.updateWeaponSlots();
+    }
+
+    updateWeaponSlots(): void {
+        const inventory = this.inventory;
 
         this.ui.weaponsContainer.children(".inventory-slot").removeClass("active").css("outline-color", "");
         const max = GameConstants.player.maxWeapons;

@@ -10,9 +10,6 @@
     "preview": "vite preview",
     "start": "sirv dist --no-clear -p 3000"
   },
-  "engines": {
-    "node": ">=18.8.0"
-  },
   "keywords": [
     "nodejs",
     "typescript",
@@ -39,7 +36,7 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "typescript": "^5.4.3",
-    "vite": "^5.2.2",
+    "vite": "^5.2.3",
     "vite-plugin-image-optimizer": "^1.1.7"
   },
   "dependencies": {
@@ -48,6 +45,6 @@
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.1",
     "pixi-filters": "^6.0.0",
-    "pixi.js": "^8.0.3"
+    "pixi.js": "^8.0.4"
   }
 }

@@ -11,9 +11,6 @@
     "dev": "ts-node-dev --respawn --rs --transpile-only src/server.ts",
     "dev:test": "tsc && node --enable-source-maps dist/server/src/stressTest.js"
   },
-  "engines": {
-    "node": ">=18.8.0"
-  },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {

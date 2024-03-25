@@ -141,7 +141,6 @@ export class Game {
 
         const initPixi = async(): Promise<void> => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
-
             const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
 
             await this.pixi.init({
@@ -198,7 +197,7 @@ export class Game {
 
             setInterval(() => {
                 if (this.console.getBuiltInCVar("pf_show_fps")) {
-                    $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                    this.uiManager.debugReadouts.fps.text(`${Math.round(this.pixi.ticker.FPS)} fps`);
                 }
             }, 500);
         };
@@ -323,7 +322,7 @@ export class Game {
             }
             case PacketType.Ping: {
                 const ping = Date.now() - this.lastPingDate;
-                $("#ping-counter").text(`${ping} ms`);
+                this.uiManager.debugReadouts.ping.text(`${ping} ms`);
                 setTimeout((): void => {
                     this.sendPacket(new PingPacket());
                     this.lastPingDate = Date.now();
@@ -569,11 +568,13 @@ export class Game {
         }
 
         for (const emote of updateData.emotes) {
+            if (!this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
-                if (!this.console.getBuiltInCVar("cv_hide_emotes")) player.sendEmote(emote.definition);
+                player.sendEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
+                continue;
             }
         }
 

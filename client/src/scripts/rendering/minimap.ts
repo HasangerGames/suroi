@@ -18,7 +18,9 @@ import { GasRender } from "./gas";
 export class Minimap {
     game: Game;
     expanded = false;
+
     visible = true;
+
     position = Vec.create(0, 0);
     lastPosition = Vec.create(0, 0);
 
@@ -84,7 +86,7 @@ export class Minimap {
             this.teammateIndicatorContainer
         ).sortChildren();
 
-        this.borderContainer.on("click", e => {
+        this._borderContainer.on("click", e => {
             if (!this.game.inputManager.isMobile) return;
             this.switchToBigMap();
             e.stopImmediatePropagation();
@@ -486,7 +488,7 @@ export class Minimap {
         }
     }
 
-    borderContainer = $("#minimap-border");
+    private readonly _borderContainer = $("#minimap-border");
 
     resize(): void {
         this.border.visible = this.expanded;
@@ -524,8 +526,8 @@ export class Minimap {
         } else {
             if (!this.visible) return;
 
-            const bounds = this.borderContainer[0].getBoundingClientRect();
-            const border = parseInt(this.borderContainer.css("border-width")) * uiScale;
+            const bounds = this._borderContainer[0].getBoundingClientRect();
+            const border = parseInt(this._borderContainer.css("border-width")) * uiScale;
 
             this.minimapWidth = bounds.width - border * 2;
             this.minimapHeight = bounds.height - border * 2;
@@ -583,7 +585,7 @@ export class Minimap {
     switchToBigMap(): void {
         this.expanded = true;
         this.container.visible = true;
-        this.borderContainer.hide();
+        this._borderContainer.hide();
         $("#scopes-container").hide();
         $("#spectating-container").hide();
         $("#gas-msg-info").hide();
@@ -608,24 +610,24 @@ export class Minimap {
             this.container.visible = false;
             return;
         }
-        this.borderContainer.show();
+        this._borderContainer.show();
         this.resize();
     }
 
     updateTransparency(): void {
-        this.container.alpha = this.game.console.getBuiltInCVar(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency");
+        this.container.alpha = this.game.console.getBuiltInCVar(
+            this.expanded
+                ? "cv_map_transparency"
+                : "cv_minimap_transparency"
+        );
     }
 
-    toggleMinimap(noSwitchToggle = false): void {
+    toggleMinimap(): void {
         this.visible = !this.visible;
 
         this.switchToSmallMap();
         this.container.visible = this.visible;
-        this.borderContainer.toggle(this.visible);
-        this.game.console.setBuiltInCVar("cv_minimap_minimized", !this.visible);
-        if (!noSwitchToggle) {
-            $("#toggle-hide-minimap").prop("checked", !this.visible);
-        }
+        this._borderContainer.toggle(this.visible);
     }
 
     addMapPing(position: Vector, definition: MapPingDefinition, playerId?: number): void {
