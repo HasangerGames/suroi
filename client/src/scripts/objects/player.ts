@@ -90,7 +90,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     teammateName?: {
         text: Text
-        //badge?: SuroiSprite
+        badge?: SuroiSprite
         container: Container
     };
 
@@ -222,7 +222,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         super.updateContainerPosition();
         if (!this.destroyed) {
             this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-            if (this.teammateName) this.teammateName.container.position = Vec.addComponent(this.container.position, -75, 75);
+            if (this.teammateName) this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
         }
     }
 
@@ -414,6 +414,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
+            this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
         }
 
         if (data.animation !== undefined) {
@@ -449,13 +450,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             }
                         }
                     }),
-                    //badge: name?.badge ? new SuroiSprite(name.badge.idString) : undefined,
+                    badge: name?.badge ? new SuroiSprite(name.badge.idString) : undefined,
                     container: new Container()
                 };
-                this.teammateName.container.zIndex = ZIndexes.DeathMarkers;
-                this.teammateName.container.addChild(this.teammateName.text);
-                //if (this.teammateName.badge) this.teammateName.container.addChild(this.teammateName.badge);
-                this.game.camera.addObject(this.teammateName.container);
+                const { text, badge, container } = this.teammateName;
+
+                text.anchor.set(0.5);
+                container.addChild(this.teammateName.text);
+
+                if (badge) {
+                    const oldWidth = badge.width;
+                    badge.width = text.height / 1.25;
+                    badge.height *= badge.width / oldWidth;
+                    badge.position = Vec.create(
+                        text.width / 2 + 20,
+                        0
+                    );
+                    container.addChild(badge);
+                }
+
+                container.zIndex = ZIndexes.DeathMarkers;
+                this.game.camera.addObject(container);
             }
 
             this.container.alpha = full.invulnerable ? 0.5 : 1;
@@ -1304,7 +1319,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         emote.container.destroy();
 
         teammateName?.text.destroy();
-        //teammateName?.badge?.destroy();
+        teammateName?.badge?.destroy();
         teammateName?.container.destroy();
 
         anims.emoteHide?.kill();
