@@ -16,6 +16,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { type UIManager } from "./utils/uiManager";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -376,7 +377,7 @@ Video evidence is required.`)) {
 
     // Load crosshairs
     function loadCrosshair(): void {
-        const size = game.console.getBuiltInCVar("cv_crosshair_size");
+        const size = 20 * game.console.getBuiltInCVar("cv_crosshair_size");
         const crosshair = getCrosshair(
             game.console.getBuiltInCVar("cv_loadout_crosshair"),
             game.console.getBuiltInCVar("cv_crosshair_color"),
@@ -397,6 +398,14 @@ Video evidence is required.`)) {
         $("#crosshair-preview, #game").css({ cursor });
     }
     loadCrosshair();
+
+    game.console.variables.addChangeListener(
+        "cv_loadout_crosshair",
+        (game, value) => {
+            $(`#crosshair-${value}`).addClass("selected").siblings().removeClass("selected");
+            loadCrosshair();
+        }
+    );
 
     Crosshairs.forEach((_, crosshairIndex) => {
         const crosshairItem = $(`
@@ -470,80 +479,137 @@ Video evidence is required.`)) {
         $(`#badge-${game.console.getBuiltInCVar("cv_loadout_badge")}`).addClass("selected");
     }
 
-    addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
-        game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
-        loadCrosshair();
-    });
-    $("#slider-crosshair-size").val(game.console.getBuiltInCVar("cv_crosshair_size") / 20);
-
-    addSliderListener("#slider-crosshair-stroke-size", "cv_crosshair_stroke_size", () => {
-        loadCrosshair();
-    });
-    $("#slider-crosshair-stroke-size").val(game.console.getBuiltInCVar("cv_crosshair_stroke_size"));
-
-    $<HTMLInputElement>("#crosshair-color-picker").on("input", e => {
-        game.console.setBuiltInCVar("cv_crosshair_color", e.target.value);
-        loadCrosshair();
-    }).val(game.console.getBuiltInCVar("cv_crosshair_color"));
-
-    $<HTMLInputElement>("#crosshair-stroke-picker").on("input", (e) => {
-        game.console.setBuiltInCVar("cv_crosshair_stroke_color", e.target.value);
-        loadCrosshair();
-    }).val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
-
-    // Disable context menu
-    $("#game").on("contextmenu", e => { e.preventDefault(); });
-
-    // Load settings values and event listeners
-    function addSliderListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: number) => void): void {
-        const element = $<HTMLInputElement>(elementId)[0];
+    function addSliderListener(
+        elementId: string,
+        settingName: keyof CVarTypeMapping,
+        callback?: (value: number) => void
+    ): void {
+        const element = ($<HTMLInputElement>(elementId))[0];
         if (!element) console.error("Invalid element id");
 
         element.addEventListener("input", () => {
             const value = +element.value;
             game.console.setBuiltInCVar(settingName, value);
-
             callback?.(value);
+        });
+
+        game.console.variables.addChangeListener(settingName, (game, newValue) => {
+            const casted = +newValue;
+
+            callback?.(casted);
+            element.value = `${casted}`;
+            element.dispatchEvent(new InputEvent("input"));
         });
 
         element.value = (game.console.getBuiltInCVar(settingName) as number).toString();
     }
 
-    function addCheckboxListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: boolean) => void): void {
-        const element = $<HTMLInputElement>(elementId)[0];
+    function addCheckboxListener(
+        elementId: string,
+        settingName: keyof CVarTypeMapping,
+        callback?: (value: boolean) => void
+    ): void {
+        const element = ($<HTMLInputElement>(elementId))[0];
+        if (!element) console.error("Invalid element id");
 
         element.addEventListener("input", () => {
             const value = element.checked;
             game.console.setBuiltInCVar(settingName, value);
-
             callback?.(value);
+        });
+
+        game.console.variables.addChangeListener(settingName, (game, newValue) => {
+            const casted = !!newValue;
+
+            callback?.(casted);
+            element.checked = casted;
         });
 
         element.checked = game.console.getBuiltInCVar(settingName) as boolean;
     }
 
-    // Scope looping toggle
-    addCheckboxListener("#toggle-scope-looping", "cv_loop_scope_selection");
+    addSliderListener(
+        "#slider-crosshair-size",
+        "cv_crosshair_size",
+        loadCrosshair
+    );
+    addSliderListener(
+        "#slider-crosshair-stroke-size",
+        "cv_crosshair_stroke_size",
+        loadCrosshair
+    );
 
-    addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
+    const crosshairColor = $<HTMLInputElement>("#crosshair-color-picker");
+
+    crosshairColor.on("input", () => {
+        game.console.setBuiltInCVar("cv_crosshair_color", crosshairColor.val()!);
+        loadCrosshair();
+    });
+
+    game.console.variables.addChangeListener(
+        "cv_crosshair_color",
+        (game, value) => {
+            crosshairColor.val(value);
+        }
+    );
+
+    const crosshairStrokeColor = $<HTMLInputElement>("#crosshair-stroke-picker");
+
+    crosshairStrokeColor.on("input", () => {
+        game.console.setBuiltInCVar("cv_crosshair_stroke_color", crosshairStrokeColor.val()!);
+        loadCrosshair();
+    });
+
+    game.console.variables.addChangeListener(
+        "cv_crosshair_stroke_color",
+        (game, value) => {
+            crosshairStrokeColor.val(value);
+        }
+    );
+
+    // Disable context menu
+    $("#game").on("contextmenu", e => { e.preventDefault(); });
+
+    // Scope looping toggle
+    addCheckboxListener(
+        "#toggle-scope-looping",
+        "cv_loop_scope_selection"
+    );
+
+    // Anonymous player names toggle
+    addCheckboxListener(
+        "#toggle-anonymous-player",
+        "cv_anonymize_player_names"
+    );
 
     addCheckboxListener("#toggle-hide-emote", "cv_hide_emotes");
 
     // Music volume
-    addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {
-        game.music.volume = value;
-    });
+    addSliderListener(
+        "#slider-music-volume",
+        "cv_music_volume",
+        value => {
+            game.music.volume = value;
+        }
+    );
 
     // SFX volume
-    addSliderListener("#slider-sfx-volume", "cv_sfx_volume", (value: number) => {
-        game.soundManager.volume = value;
-    });
+    addSliderListener(
+        "#slider-sfx-volume",
+        "cv_sfx_volume",
+        value => {
+            game.soundManager.volume = value;
+        }
+    );
 
     // Master volume
-    addSliderListener("#slider-master-volume", "cv_master_volume", (value: number) => {
-        sound.volumeAll = value;
-    });
-    sound.volumeAll = game.console.getBuiltInCVar("cv_master_volume");
+    addSliderListener(
+        "#slider-master-volume",
+        "cv_master_volume",
+        value => {
+            sound.volumeAll = value;
+        }
+    );
 
     // Old menu music
     addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");
@@ -551,23 +617,33 @@ Video evidence is required.`)) {
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 
+    let debugReadouts: UIManager["debugReadouts"] | undefined;
     // FPS toggle
-    addCheckboxListener("#toggle-fps", "pf_show_fps", (value: boolean) => {
-        $("#fps-counter").toggle(value);
-    });
-    $("#fps-counter").toggle(game.console.getBuiltInCVar("pf_show_fps"));
+    addCheckboxListener(
+        "#toggle-fps",
+        "pf_show_fps",
+        value => {
+            (debugReadouts ??= game.uiManager.debugReadouts).fps.toggle(value);
+        }
+    );
 
     // Ping toggle
-    addCheckboxListener("#toggle-ping", "pf_show_ping", (value: boolean) => {
-        $("#ping-counter").toggle(value);
-    });
-    $("#ping-counter").toggle(game.console.getBuiltInCVar("pf_show_ping"));
+    addCheckboxListener(
+        "#toggle-ping",
+        "pf_show_ping",
+        value => {
+            (debugReadouts ??= game.uiManager.debugReadouts).ping.toggle(value);
+        }
+    );
 
     // Coordinates toggle
-    addCheckboxListener("#toggle-coordinates", "pf_show_pos", (value: boolean) => {
-        $("#coordinates-hud").toggle(value);
-    });
-    $("#coordinates-hud").toggle(game.console.getBuiltInCVar("pf_show_pos"));
+    addCheckboxListener(
+        "#toggle-coordinates",
+        "pf_show_pos",
+        value => {
+            (debugReadouts ??= game.uiManager.debugReadouts).pos.toggle(value);
+        }
+    );
 
     // lmao one day, we'll have dropdown menus
 
@@ -579,6 +655,11 @@ Video evidence is required.`)) {
             game.console.setBuiltInCVar("cv_killfeed_style", element.checked ? "text" : "icon");
         });
 
+        game.console.variables.addChangeListener("cv_killfeed_style", (game, value) => {
+            element.checked = value === "text";
+            game.uiManager.updateWeaponSlots();
+        });
+
         element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
     }
 
@@ -588,6 +669,13 @@ Video evidence is required.`)) {
 
         element.addEventListener("input", () => {
             game.console.setBuiltInCVar("cv_weapon_slot_style", element.checked ? "colored" : "simple");
+            game.uiManager.updateWeaponSlots();
+        });
+
+        game.console.variables.addChangeListener("cv_weapon_slot_style", (game, value) => {
+            console.trace();
+            element.checked = value === "colored";
+            game.uiManager.updateWeaponSlots();
         });
 
         element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
@@ -639,10 +727,14 @@ Video evidence is required.`)) {
     updateUiScale();
     window.addEventListener("resize", () => updateUiScale());
 
-    addSliderListener("#slider-ui-scale", "cv_ui_scale", () => {
-        updateUiScale();
-        game.map.resize();
-    });
+    addSliderListener(
+        "#slider-ui-scale",
+        "cv_ui_scale",
+        () => {
+            updateUiScale();
+            game.map.resize();
+        }
+    );
 
     // TODO: fix joysticks on mobile when UI scale is not 1
     if (game.inputManager.isMobile) {
@@ -651,31 +743,54 @@ Video evidence is required.`)) {
     }
 
     // Minimap stuff
-    addSliderListener("#slider-minimap-transparency", "cv_minimap_transparency", () => {
-        game.map.updateTransparency();
-    });
-
-    addSliderListener("#slider-big-map-transparency", "cv_map_transparency", () => {
-        game.map.updateTransparency();
-    });
-
-    addCheckboxListener("#toggle-hide-minimap", "cv_minimap_minimized", () => {
-        game.map.toggleMinimap(true);
-    });
+    addSliderListener(
+        "#slider-minimap-transparency",
+        "cv_minimap_transparency",
+        () => {
+            game.map.updateTransparency();
+        }
+    );
+    addSliderListener(
+        "#slider-big-map-transparency",
+        "cv_map_transparency",
+        () => {
+            game.map.updateTransparency();
+        }
+    );
+    addCheckboxListener(
+        "#toggle-hide-minimap",
+        "cv_minimap_minimized",
+        value => {
+            //hack minimap code is hacky and it scares me too much
+            //hack for me to add a "setVisible" method or smth
+            while (game.map.visible === value) {
+                game.map.toggleMinimap();
+            }
+        }
+    );
 
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
+    let splashUi: JQuery<HTMLInputElement> | undefined;
     // Blur splash screen
-    addCheckboxListener("#toggle-blur-splash", "cv_blur_splash", (value: boolean) => {
-        $("#splash-ui").toggleClass("blur", value);
-    });
+    addCheckboxListener(
+        "#toggle-blur-splash",
+        "cv_blur_splash",
+        value => {
+            (splashUi ??= $("#splash-ui")).toggleClass("blur", value);
+        }
+    );
 
+    let button: JQuery<HTMLButtonElement> | undefined;
     // Hide rules button
-    addCheckboxListener("#toggle-hide-rules", "cv_hide_rules_button", (value: boolean) => {
-        $("#btn-rules, #rules-close-btn").toggle(!value);
-    });
-    rulesBtn.toggle(!game.console.getBuiltInCVar("cv_hide_rules_button"));
+    addCheckboxListener(
+        "#toggle-hide-rules",
+        "cv_hide_rules_button",
+        value => {
+            (button ??= $("#btn-rules, #rules-close-btn")).toggle(!value);
+        }
+    );
 
     // Hide option to hide rules if rules haven't been acknowledged
     $(".checkbox-setting").has("#toggle-hide-rules").toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
@@ -911,6 +1026,7 @@ Video evidence is required.`)) {
     $("#warning-modal-agree-checkbox").on("click", function() {
         $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !$(this).prop("checked"));
     });
+
     $("#warning-btn-play-solo").on("click", () => {
         $("#warning-modal").hide();
         $("#btn-play-solo").trigger("click");

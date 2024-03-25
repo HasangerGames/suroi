@@ -200,7 +200,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         }
     })
 )(
-    apply => [
+    ({ simple }) => [
         {
             idString: "porta_potty",
             name: "Porta Potty",
@@ -1311,16 +1311,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ]
         },
-        apply("container", {}, 1, ContainerTints.White, 1, "closed"),
-        apply("container", {}, 2, ContainerTints.Red, 1, "closed"),
-        apply("container", {}, 3, ContainerTints.Green, 2, "open1"),
-        apply("container", {}, 4, ContainerTints.Green, 2, "open1", true),
-        apply("container", {}, 5, ContainerTints.Blue, 3, "open1"),
-        apply("container", {}, 6, ContainerTints.Blue, 3, "open1", true),
-        apply("container", {}, 7, ContainerTints.Blue, 4, "open2"),
-        apply("container", {}, 8, ContainerTints.Blue, 4, "open2", true),
-        apply("container", {}, 9, ContainerTints.Yellow, 5, "open1"),
-        apply("container", {}, 10, ContainerTints.Yellow, 6, "open2"),
+        simple("container", 1, ContainerTints.White, 1, "closed"),
+        simple("container", 2, ContainerTints.Red, 1, "closed"),
+        simple("container", 3, ContainerTints.Green, 2, "open1"),
+        simple("container", 4, ContainerTints.Green, 2, "open1", true),
+        simple("container", 5, ContainerTints.Blue, 3, "open1"),
+        simple("container", 6, ContainerTints.Blue, 3, "open1", true),
+        simple("container", 7, ContainerTints.Blue, 4, "open2"),
+        simple("container", 8, ContainerTints.Blue, 4, "open2", true),
+        simple("container", 9, ContainerTints.Yellow, 5, "open1"),
+        simple("container", 10, ContainerTints.Yellow, 6, "open2"),
         {
             idString: "container_11",
             name: "Invisible Container",
@@ -1460,7 +1460,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: randomContainer1,
                     position: Vec.create(31, -110)
                 }
-            ],
+            ] as SubBuilding[],
             lootSpawners: [{
                 position: Vec.create(10, -73),
                 table: "gas_can"
