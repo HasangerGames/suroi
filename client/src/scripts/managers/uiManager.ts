@@ -12,7 +12,7 @@ import { type GameOverPacket } from "../../../../common/src/packets/gameOverPack
 import { type KillFeedMessage, type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { TeammateIndicator } from "../rendering/minimap";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
@@ -738,7 +738,7 @@ export class UIManager {
 
 class Wrapper<T> {
     private _dirty = true;
-    get dirty() {
+    get dirty(): boolean {
         return this._dirty;
     }
 
@@ -840,7 +840,7 @@ class PlayerHealthUI {
         this.update(data);
     }
 
-    update(data?: UpdateDataType) {
+    update(data?: UpdateDataType): void {
         if (data !== undefined) {
             ([
                 "id",
@@ -937,6 +937,7 @@ class PlayerHealthUI {
         }
 
         if (
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing --- ????????
             (this._hasColor.dirty && this._nameColor.value) ||
             (this._nameColor.dirty && this._hasColor.value)
         ) {
