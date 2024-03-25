@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Color } from "pixi.js";
+import { type Color } from "pixi.js";
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
@@ -120,10 +120,10 @@ export class UIManager {
 
     static getIndicatorImage(
         player: {
-            readonly id: number;
-            readonly normalizedHealth: number;
-            readonly downed?: boolean;
-            readonly disconnected: boolean;
+            readonly id: number
+            readonly normalizedHealth: number
+            readonly downed?: boolean
+            readonly disconnected: boolean
         }
     ): string {
         switch (true) {
@@ -759,9 +759,9 @@ class Wrapper<T> {
         if (!this._dirty) return;
         this._dirty = false;
     }
-};
+}
 
-type UpdateDataType = {
+interface UpdateDataType {
     readonly id?: number | null
     readonly normalizedHealth?: number | null
     readonly downed?: boolean | null
@@ -772,7 +772,7 @@ type UpdateDataType = {
     readonly hasColor?: boolean | null
     readonly nameColor?: Color | null
     readonly badge?: BadgeDefinition | null
-};
+}
 
 class PlayerHealthUI {
     readonly game: Game;
@@ -816,15 +816,15 @@ class PlayerHealthUI {
 
     constructor(game: Game, data?: UpdateDataType) {
         this.game = game;
-        this.container = $<HTMLDivElement>(`<div class="teammate-container"></div>`);
-        this.svgContainer = $<SVGElement>(`<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>`);
+        this.container = $<HTMLDivElement>("<div class=\"teammate-container\"></div>");
+        this.svgContainer = $<SVGElement>("<svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"></svg>");
 
         //hack wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
-        this.healthDisplay = $<SVGCircleElement>(`<svg><circle r="21" cy="24" cx="24" stroke-width="6" stroke-dasharray="132" fill="none" style="transition: stroke-dashoffset ease-in-out 50ms;" /></svg>`).find("circle");
-        this.indicatorContainer = $<HTMLDivElement>(`<div class="teammate-indicator-container"></div>`);
-        this.teammateIndicator = $<HTMLImageElement>(`<img class="teammate-indicator" />`);
-        this.nameLabel = $<HTMLSpanElement>(`<span class="teammate-name"></span>`);
-        this.badgeImage = $<HTMLImageElement>(`<img class="teammate-badge" />`);
+        this.healthDisplay = $<SVGCircleElement>("<svg><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset ease-in-out 50ms;\" /></svg>").find("circle");
+        this.indicatorContainer = $<HTMLDivElement>("<div class=\"teammate-indicator-container\"></div>");
+        this.teammateIndicator = $<HTMLImageElement>("<img class=\"teammate-indicator\" />");
+        this.nameLabel = $<HTMLSpanElement>("<span class=\"teammate-name\"></span>");
+        this.badgeImage = $<HTMLImageElement>("<img class=\"teammate-badge\" />");
 
         this.container.append(
             this.svgContainer.append(
@@ -854,7 +854,7 @@ class PlayerHealthUI {
                 "nameColor",
                 "badge"
             ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
-                const value = data[prop as keyof UpdateDataType];
+                const value = data[prop];
                 if (prop in data && value !== null) {
                     type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
 
@@ -956,9 +956,9 @@ class PlayerHealthUI {
                     .css({ display: "", visibility: "" });
             } else {
                 this.badgeImage
-                .attr("src", "")
-                .css({ display: "none", visibility: "none" });
+                    .attr("src", "")
+                    .css({ display: "none", visibility: "none" });
             }
         }
     }
-};
+}
