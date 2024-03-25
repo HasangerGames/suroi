@@ -70,6 +70,7 @@ export class Minimap {
         this.container.addChild(this.objectsContainer);
         this.container.addChild(this.border);
 
+        this.gasGraphics.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
         this.objectsContainer.addChild(
