@@ -1,20 +1,22 @@
 import $ from "jquery";
+import { Color } from "pixi.js";
 import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
+import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
+import { MapPings } from "../../../../common/src/definitions/mapPings";
 import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type Game } from "../game";
-import { UI_DEBUG_MODE, GHILLIE_TINT, TEAMMATE_COLORS } from "../utils/constants";
-import { formatDate } from "../utils/misc";
-import { TeammateIndicator } from "../rendering/minimap";
-import type { EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { MapPings } from "../../../../common/src/definitions/mapPings";
+import { type KillFeedMessage, type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { TeammateIndicator } from "../rendering/minimap";
+import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { formatDate } from "../utils/misc";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -102,7 +104,7 @@ export class UIManager {
         }
     }
 
-    getHealthColor(normalizedHealth: number, downed?: boolean): string {
+    static getHealthColor(normalizedHealth: number, downed?: boolean): string {
         switch (true) {
             case normalizedHealth <= 0.25:
             case downed:
@@ -116,12 +118,12 @@ export class UIManager {
         }
     }
 
-    getIndicatorImage(
+    static getIndicatorImage(
         player: {
-            id: number
-            normalizedHealth: number
-            downed?: boolean
-            disconnected: boolean
+            readonly id: number;
+            readonly normalizedHealth: number;
+            readonly downed?: boolean;
+            readonly disconnected: boolean;
         }
     ): string {
         switch (true) {
@@ -272,6 +274,8 @@ export class UIManager {
         }
     }
 
+    private readonly _teammateDataCache: Record<number, PlayerHealthUI> = {};
+
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
 
@@ -297,68 +301,32 @@ export class UIManager {
                 },
                 ...data.teammates
             ].forEach((player, index) => {
-                let playerHealthUI = this.ui.teamContainer.find(`[data-id="${player.id}"]`);
-                if (!playerHealthUI.length) {
-                    const name = this.game.playerNames.get(player.id);
-                    playerHealthUI = $(`
-                      <div class="teammate-container" data-id="${player.id}">
-                        <svg
-                          class="teammate-health-indicator"
-                          width="48"
-                          height="48"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle
-                            r="21"
-                            cy="24"
-                            cx="24"
-                            stroke-width="6"
-                            stroke-dasharray="132"
-                            fill="none"
-                            style="transition: stroke-dashoffset ease-in-out 50ms;"
-                          />
-                        </svg>
-                        <div class="teammate-indicator-container" style="background-color: ${TEAMMATE_COLORS[index].toHex()};">
-                          <img class="teammate-indicator" />
-                        </div>
-                        <span class="teammate-name"${name?.hasColor ? ` style="color: ${name.nameColor.toHex()};"` : ""}>${name?.name}</span>
-                        ${name?.badge ? `<img class="teammate-badge" src="./img/game/badges/${name?.badge.idString}.svg" />` : ""}
-                      </div>
-                    `);
-                    this.ui.teamContainer.append(playerHealthUI);
+                const id = player.id;
+                if (id in this._teammateDataCache) {
+                    this._teammateDataCache[id].update({
+                        ...player,
+                        colorIndex: index
+                    });
+                    return;
                 }
 
-                playerHealthUI
-                    .toggleClass("downed", player.downed && player.normalizedHealth > 0)
-                    .toggleClass("disconnected", player.disconnected);
+                const nameData = this.game.playerNames.get(id);
+                const ele = this._teammateDataCache[id] = new PlayerHealthUI(
+                    this.game,
+                    {
+                        id,
+                        colorIndex: index,
+                        downed: player.downed,
+                        normalizedHealth: player.normalizedHealth,
+                        position: player.position,
+                        hasColor: nameData?.hasColor,
+                        nameColor: nameData?.hasColor ? nameData.nameColor : null,
+                        name: nameData?.name,
+                        badge: nameData?.badge ?? null
+                    }
+                );
 
-                playerHealthUI
-                    .find("circle")
-                    .css("stroke", this.getHealthColor(player.normalizedHealth, player.downed))
-                    .css("stroke-dashoffset", 132 - (player.normalizedHealth * 132));
-
-                const teammateIndicator = playerHealthUI.find(".teammate-indicator");
-                const src = `./img/game/player/${this.getIndicatorImage(player)}.svg`;
-                if (src !== teammateIndicator.attr("src")) teammateIndicator.attr("src", src);
-
-                if (player.id === this.game.activePlayerID) return;
-
-                if (index >= this.game.map.teammateIndicators.size) {
-                    this.game.map.teammateIndicators.add(
-                        new TeammateIndicator(
-                            player.position!,
-                            player.id,
-                            TEAMMATE_COLORS[index],
-                            this.game.map.expanded ? 1 : 0.75
-                        )
-                    );
-                }
-
-                for (const indicator of this.game.map.teammateIndicators) {
-                    if (indicator.id !== player.id) continue;
-                    indicator.setVPos(player.position!);
-                    indicator.setFrame(this.getIndicatorImage(player));
-                }
+                this.ui.teamContainer.append(ele.container);
             });
         }
 
@@ -394,7 +362,7 @@ export class UIManager {
 
             this.ui.healthBar
                 .width(`${realPercentage}%`)
-                .css("background-color", this.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
+                .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
                 .toggleClass("flashing", percentage <= 25);
 
             this.ui.healthAnim.width(`${realPercentage}%`);
@@ -767,3 +735,230 @@ export class UIManager {
         if (messageText) this._addKillFeedMessage(messageText, classes);
     }
 }
+
+class Wrapper<T> {
+    private _dirty = true;
+    get dirty() {
+        return this._dirty;
+    }
+
+    private _value: T;
+    get value(): T { return this._value; }
+    set value(value: T) {
+        if (this._value === value) return;
+
+        this._dirty = true;
+        this._value = value;
+    }
+
+    constructor(value: T) {
+        this._value = value;
+    }
+
+    markClean(): void {
+        if (!this._dirty) return;
+        this._dirty = false;
+    }
+};
+
+type UpdateDataType = {
+    readonly id?: number | null
+    readonly normalizedHealth?: number | null
+    readonly downed?: boolean | null
+    readonly disconnected?: boolean | null
+    readonly position?: Vector | null
+    readonly colorIndex?: number | null
+    readonly name?: string | null
+    readonly hasColor?: boolean | null
+    readonly nameColor?: Color | null
+    readonly badge?: BadgeDefinition | null
+};
+
+class PlayerHealthUI {
+    readonly game: Game;
+
+    readonly container: JQuery<HTMLElement>;
+
+    readonly svgContainer: JQuery<SVGElement>;
+    readonly healthDisplay: JQuery<SVGCircleElement>;
+
+    readonly indicatorContainer: JQuery<HTMLDivElement>;
+    readonly teammateIndicator: JQuery<HTMLImageElement>;
+
+    readonly nameLabel: JQuery<HTMLSpanElement>;
+    readonly badgeImage: JQuery<HTMLImageElement>;
+
+    /*
+        hierarchy:
+
+        container
+        |
+        |-> svgContainer
+        |   |-> healthAmount
+        |
+        |-> indicatorContainer
+        |   |-> teammateIndicator
+        |
+        |-> nameLabel
+        |-> badgeImage
+    */
+
+    private readonly _id = new Wrapper<number>(-1);
+    private readonly _normalizedHealth = new Wrapper<number>(1);
+    private readonly _downed = new Wrapper<boolean | undefined>(undefined);
+    private readonly _disconnected = new Wrapper<boolean>(false);
+    private readonly _position = new Wrapper<Vector | undefined>(undefined);
+    private readonly _colorIndex = new Wrapper<number>(0);
+    private readonly _name = new Wrapper<string>(GameConstants.player.defaultName);
+    private readonly _hasColor = new Wrapper<boolean>(false);
+    private readonly _nameColor = new Wrapper<Color | undefined>(undefined);
+    private readonly _badge = new Wrapper<BadgeDefinition | undefined>(undefined);
+
+    constructor(game: Game, data?: UpdateDataType) {
+        this.game = game;
+        this.container = $<HTMLDivElement>(`<div class="teammate-container"></div>`);
+        this.svgContainer = $<SVGElement>(`<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>`);
+
+        //hack wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
+        this.healthDisplay = $<SVGCircleElement>(`<svg><circle r="21" cy="24" cx="24" stroke-width="6" stroke-dasharray="132" fill="none" style="transition: stroke-dashoffset ease-in-out 50ms;" /></svg>`).find("circle");
+        this.indicatorContainer = $<HTMLDivElement>(`<div class="teammate-indicator-container"></div>`);
+        this.teammateIndicator = $<HTMLImageElement>(`<img class="teammate-indicator" />`);
+        this.nameLabel = $<HTMLSpanElement>(`<span class="teammate-name"></span>`);
+        this.badgeImage = $<HTMLImageElement>(`<img class="teammate-badge" />`);
+
+        this.container.append(
+            this.svgContainer.append(
+                this.healthDisplay
+            ),
+            this.indicatorContainer.append(
+                this.teammateIndicator
+            ),
+            this.nameLabel,
+            this.badgeImage
+        );
+
+        this.update(data);
+    }
+
+    update(data?: UpdateDataType) {
+        if (data !== undefined) {
+            ([
+                "id",
+                "colorIndex",
+                "downed",
+                "disconnected",
+                "normalizedHealth",
+                "position",
+                "name",
+                "hasColor",
+                "nameColor",
+                "badge"
+            ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
+                const value = data[prop as keyof UpdateDataType];
+                if (prop in data && value !== null) {
+                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+
+                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+                }
+            });
+        }
+
+        if (this._id.dirty) {
+            // uh… no-op?
+        }
+
+        let recalcIndicatorFrame = false;
+
+        if (this._normalizedHealth.dirty) {
+            this.healthDisplay
+                .css("stroke", UIManager.getHealthColor(this._normalizedHealth.value, this._downed.value))
+                .css("stroke-dashoffset", 132 * (1 - this._normalizedHealth.value));
+
+            recalcIndicatorFrame = true;
+        }
+
+        if (this._downed.dirty) {
+            this.container.toggleClass("downed", this._downed.value);
+
+            recalcIndicatorFrame = true;
+        }
+
+        if (this._disconnected.dirty) {
+            this.container.toggleClass("disconnected", this._disconnected.value);
+
+            recalcIndicatorFrame = true;
+        }
+
+        let indicator: TeammateIndicator | undefined;
+
+        if (this._id.value !== this.game.activePlayerID) {
+            const teammateIndicators = this.game.map.teammateIndicators;
+            const id = this._id.value;
+            if (this._position.dirty && this._position.value) {
+                if (!teammateIndicators.has(id)) {
+                    teammateIndicators.set(
+                        id,
+                        indicator = new TeammateIndicator(
+                            this._position.value,
+                            id,
+                            TEAMMATE_COLORS[this._colorIndex.value],
+                            this.game.map.expanded ? 1 : 0.75
+                        )
+                    );
+                } else {
+                    (indicator = teammateIndicators.get(id)!).setVPos(this._position.value);
+                }
+            }
+
+            indicator ??= teammateIndicators.get(id)!;
+        }
+
+        if (recalcIndicatorFrame) {
+            const frame = UIManager.getIndicatorImage({
+                id: this._id.value,
+                normalizedHealth: this._normalizedHealth.value,
+                downed: this._downed.value,
+                disconnected: this._disconnected.value
+            });
+
+            this.teammateIndicator.attr("src", `./img/game/player/${frame}.svg`);
+            indicator?.setFrame(frame);
+        }
+
+        if (this._colorIndex.dirty) {
+            this.indicatorContainer.css(
+                "background-color",
+                TEAMMATE_COLORS[this._colorIndex.value]?.toHex() ?? ""
+            );
+        }
+
+        if (this._name.dirty) {
+            this.nameLabel.text(this._name.value);
+        }
+
+        if (
+            (this._hasColor.dirty && this._nameColor.value) ||
+            (this._nameColor.dirty && this._hasColor.value)
+        ) {
+            this.nameLabel.css(
+                "color",
+                this._hasColor && this._nameColor.value ? this._nameColor.value.toHex() : ""
+            );
+        }
+
+        if (this._badge.dirty) {
+            if (this._badge.value) {
+                this.badgeImage
+                    .attr(
+                        "src",
+                        `./img/game/badges/${this._badge.value.idString}.svg`
+                    )
+                    .css({ display: "", visibility: "" });
+            } else {
+                this.badgeImage
+                .attr("src", "")
+                .css({ display: "none", visibility: "none" });
+            }
+        }
+    }
+};

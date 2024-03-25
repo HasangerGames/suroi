@@ -1,7 +1,8 @@
 import $ from "jquery";
-import { type Color, Container, Graphics, RenderTexture, Sprite, Text, type Texture, isMobile, type ColorSource } from "pixi.js";
 import { DropShadowFilter } from "pixi-filters";
+import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type Color, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -9,11 +10,10 @@ import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type Player } from "../objects/player";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
-import type { MapPingDefinition } from "../../../../common/src/definitions/mapPings";
-import type { Player } from "../objects/player";
 
 export class Minimap {
     game: Game;
@@ -38,7 +38,7 @@ export class Minimap {
         .setTint(TEAMMATE_COLORS[0])
         .setZIndex(1000);
 
-    readonly teammateIndicators = new Set<TeammateIndicator>();
+    readonly teammateIndicators = new Map<number, TeammateIndicator>();
     readonly teammateIndicatorContainer = new Container();
 
     width = 0;
@@ -478,7 +478,7 @@ export class Minimap {
             .stroke();
 
         // Teammate updates
-        for (const indicator of this.teammateIndicators) {
+        for (const [, indicator] of this.teammateIndicators) {
             if (!indicator.initialized) {
                 this.teammateIndicatorContainer.addChild(indicator);
                 indicator.initialized = true;
@@ -518,7 +518,7 @@ export class Minimap {
             this.border.stroke();
 
             this.indicator.scale.set(1);
-            for (const indicator of this.teammateIndicators) {
+            for (const [, indicator] of this.teammateIndicators) {
                 indicator.setScale(1);
             }
         } else {
@@ -538,7 +538,7 @@ export class Minimap {
             }
 
             this.indicator.scale.set(0.75);
-            for (const indicator of this.teammateIndicators) {
+            for (const [, indicator] of this.teammateIndicators) {
                 indicator.setScale(0.75);
             }
         }
@@ -723,8 +723,7 @@ export class TeammateIndicator extends SuroiSprite {
     constructor(position: Vector, id: number, color: Color, scale: number) {
         super();
         this.position = position;
-        this
-            .setFrame("player_indicator")
+        this.setFrame("player_indicator")
             .setVPos(position)
             .setTint(color)
             .setScale(scale);

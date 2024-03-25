@@ -6,12 +6,14 @@ import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { type MapPingDefinition } from "../../../common/src/definitions/mapPings";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
@@ -21,6 +23,7 @@ import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
@@ -32,6 +35,7 @@ import { CountableInventoryItem, type InventoryItem } from "../inventory/invento
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
+import { Team, teamMode } from "../team";
 import { Logger, removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
@@ -41,10 +45,6 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { Team, teamMode } from "../team";
-import { type MapPingDefinition } from "../../../common/src/definitions/mapPings";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type Packet, PacketStream } from "../../../common/src/packets/packetStream";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -578,7 +578,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
-            (this.downed ? 0.5 : 1) *                      // Knocked out speed multiplier
+            (this.downed ? 0.5 : 1) *                       // Knocked out speed multiplier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
