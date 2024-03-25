@@ -4,24 +4,24 @@ export interface MapPingDefinition extends ObjectDefinition {
     /**
      * Color to tint the ping sprite and color the map pulse effect
      */
-    color: number
+    readonly color: number
     /**
      * If the ping sprite will be added to the game camera
      */
-    showInGame: boolean
+    readonly showInGame: boolean
     /**
      * For how many seconds the ping will appear, in seconds
      */
-    lifeTime: number
+    readonly lifetime: number
     /**
      * If the ping is a player ping
-     * When set to true it will send the player that sent the ping to clients;
-     * delete previous pings from that player in the client
-     * And use the player teammate color instead of definition color
+     *
+     * When set to `true`, clients will be informed of the pinging player,
+     * the player's teammate color will be used instead of definition color,
+     * any previous pings from that player will be removed
      */
-    isPlayerPing: boolean
-
-    sound?: string
+    readonly isPlayerPing: boolean
+    readonly sound?: string
 }
 
 export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
@@ -31,7 +31,7 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
             color,
             name: idString,
             showInGame: false,
-            lifeTime: 10,
+            lifetime: 10,
             isPlayerPing: false,
             sound: idString
         }),
@@ -39,7 +39,7 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
             idString,
             name: idString,
             showInGame: true,
-            lifeTime: 120,
+            lifetime: 120,
             isPlayerPing: true,
             color: 0xffffff,
             sound: idString

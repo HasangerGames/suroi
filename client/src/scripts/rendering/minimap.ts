@@ -665,7 +665,7 @@ export class MapPing {
         this.definition = definition;
         this.player = player;
         this.startTime = Date.now();
-        this.endTime = this.startTime + (this.definition.lifeTime * 1000);
+        this.endTime = this.startTime + (this.definition.lifetime * 1000);
 
         this.color = definition.color;
 
