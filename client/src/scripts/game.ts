@@ -794,20 +794,25 @@ export class Game {
                     this.inputManager.isMobile &&
                     canInteract &&
                     (
-                        ( this.console.getBuiltInCVar("cv_auto_pickup") && (
+                        (
+                            this.console.getBuiltInCVar("cv_auto_pickup") && (
                                 // Auto pickup
                                 object instanceof Loot &&
+
                                 // Only pick up melees if no melee is equipped
                                 (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+
                                 // Only pick up guns if there's a free slot
                                 (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+
+                                // Don't pick up skins
                                 type !== ItemType.Skin
                             )
                         ) ||
                         ( // Auto open doors
                             object instanceof Obstacle &&
                             object.canInteract(player) &&
-                            object.door?.offset === 0
+                            object.definition.role === ObstacleSpecialRoles.Door
                         )
                     )
                 ) {
