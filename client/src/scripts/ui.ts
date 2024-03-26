@@ -945,6 +945,8 @@ Video evidence is required.`)) {
             .on("click", () => {
                 game.console.handleQuery("reload");
             });
+        // Active weapon ammo button also reloads (surviv muscle memory lol)
+        $("#weapon-clip-ammo").on("click", () => game.console.handleQuery("reload"));
 
         // Emote button & wheel
         $("#emote-wheel")
