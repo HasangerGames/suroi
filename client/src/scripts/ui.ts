@@ -576,6 +576,12 @@ Video evidence is required.`)) {
         "cv_loop_scope_selection"
     );
 
+    // Toggle auto pickup
+    addCheckboxListener(
+        "#toggle-auto-pickup",
+        "cv_auto_pickup"
+    );
+
     // Anonymous player names toggle
     addCheckboxListener(
         "#toggle-anonymous-player",
