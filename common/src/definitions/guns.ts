@@ -1291,6 +1291,36 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
+            idString: "mg36",
+            name: "MG36",
+            ammoType: "556mm",
+            ammoSpawnAmount: 120,
+            capacity: 40,
+            reloadTime: 2.75,
+            fireDelay: 75,
+            switchDelay: 400,
+            speedMultiplier: 0.92,
+            recoilMultiplier: 0.75,
+            recoilDuration: 140,
+            fireMode: FireMode.Auto,
+            shotSpread: 3.5,
+            moveSpread: 8,
+            length: 8.4,
+            fists: {
+                left: Vec.create(105, -3),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            image: { position: Vec.create(90, 0) },
+            ballistics: {
+                damage: 11,
+                obstacleMultiplier: 2,
+                speed: 0.28,
+                range: 160
+            }
+        },
+        {
             idString: "m1_garand",
             name: "M1 Garand",
             ammoType: "762mm",
