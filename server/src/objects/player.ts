@@ -1304,7 +1304,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     canInteract(player: Player): boolean {
-        return this.downed && this.teamID === player.teamID;
+        return this.downed && !this.reviving && this !== player && this.teamID === player.teamID;
     }
 
     interact(player: Player): void {
