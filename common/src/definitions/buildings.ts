@@ -884,7 +884,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "red_house_ceiling",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, -0.25)
             }],
             floors: [
                 {
