@@ -1290,6 +1290,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.downed = true;
         this.action?.cancel();
         this.health = 100;
+        this.adrenaline = this.minAdrenaline;
         this.setDirty();
     }
 
