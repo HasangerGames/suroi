@@ -966,11 +966,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(7, 15.8, Vec.create(-0.2, 0)),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle"
-            }
+            hitbox: RectangleHitbox.fromRect(6.85, 15.4, Vec.create(-0.3, 0)),
+            rotationMode: RotationMode.Limited
         },
         {
             idString: "tv",
