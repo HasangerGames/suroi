@@ -31,7 +31,6 @@ import { type ParticleEmitter } from "./particles";
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
 
-    name!: string;
     teamID!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
@@ -891,6 +890,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
         }
         return equipment;
+    }
+
+    canInteract(player: Player): boolean {
+        return this.game.teamMode &&
+            this.downed &&
+            !this.reviving &&
+            this !== player &&
+            this.teamID === player.teamID;
     }
 
     sendEmote(type: EmoteDefinition): void {

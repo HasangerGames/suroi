@@ -43,7 +43,7 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { type Obstacle } from "./obstacle";
+import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
@@ -1454,7 +1454,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (interactable.object) {
                         interactable.object.interact(this);
 
-                        if ((interactable.object).isDoor) {
+                        if (interactable.object.type === ObjectCategory.Obstacle && interactable.object.isDoor) {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (

@@ -626,7 +626,7 @@ export class Game {
          * - whether the user can interact with it
         */
         const cache: {
-            object?: Loot | Obstacle
+            object?: Loot | Obstacle | Player
             offset?: number
             isAction?: boolean
             bind?: string
@@ -661,7 +661,7 @@ export class Game {
             }
 
             interface CloseObject {
-                object?: Loot | Obstacle
+                object?: Loot | Obstacle | Player
                 minDist: number
             }
 
@@ -677,11 +677,11 @@ export class Game {
 
             for (const object of this.objects) {
                 if (
-                    (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
+                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player))) &&
                     object.hitbox.collidesWith(detectionHitbox)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
+                    if ((object instanceof Obstacle || object instanceof Player || object.canInteract(player)) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;
                     } else if (object instanceof Loot && dist < uninteractable.minDist) {
@@ -722,18 +722,10 @@ export class Game {
                 cache.canInteract = canInteract;
 
                 const { interactKey, interactMsg } = this.uiManager.ui;
-                const type = (object?.definition as LootDefinition)?.itemType;
+                const type = object instanceof Loot ? object.definition.itemType : undefined;
 
                 // Update interact message
-                if (
-                    (
-                        this.inputManager.isMobile
-                            // Only show interact message on mobile if object needs to be tapped to pick up
-                            ? (object instanceof Loot || object instanceof Obstacle)
-                            : object !== undefined
-                    ) ||
-                    isAction
-                ) {
+                if (object !== undefined || isAction) {
                     // If the loot object hasn't changed, we don't need to redo the text
                     if (differences.object || differences.offset || differences.isAction) {
                         let interactText;
@@ -751,6 +743,10 @@ export class Game {
                             }
                             case object instanceof Loot: {
                                 interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                break;
+                            }
+                            case object instanceof Player: {
+                                interactText = `Revive ${this.uiManager.getRawPlayerName(object.id)}`;
                                 break;
                             }
                             case isAction: {
