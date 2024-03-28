@@ -911,7 +911,7 @@ const GunsRaw: RawGunDefinition[] = [
             position: Vec.create(4, 0.5)
         }],
         ballistics: {
-            damage: 21,
+            damage: 18.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
             range: 180
