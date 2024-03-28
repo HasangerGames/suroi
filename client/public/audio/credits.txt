@@ -38,6 +38,8 @@ Guns:
 
   MG5 fire - "072807_Heavy Machine Gun (.50 Caliber)" from Pixabay: https://pixabay.com/sound-effects/072807-heavy-machine-gun-50-caliber-39765/
 
+  Negev fire - "Machine Gun Automatic Fire A" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/automatic-gunfire-rifle-299 -> https://www.fesliyanstudios.com/play-mp3/7423
+
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Obstacles:

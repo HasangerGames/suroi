@@ -1231,6 +1231,66 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
+            idString: "negev",
+            name: "Negev",
+            ammoType: "556mm",
+            ammoSpawnAmount: 200,
+            capacity: 200,
+            reloadTime: 5.8,
+            fireDelay: 70,
+            switchDelay: 400,
+            speedMultiplier: 0.8,
+            recoilMultiplier: 0.65,
+            recoilDuration: 200,
+            fireMode: FireMode.Auto,
+            shotSpread: 3,
+            moveSpread: 8,
+            length: 8.4,
+            fists: {
+                left: Vec.create(105, -3),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            image: { position: Vec.create(90, 0) },
+            casingParticles: [
+                {
+                    position: Vec.create(4, 0.6),
+                    frame: "casing_762x51mm",
+                    velocity: {
+                        y: {
+                            min: -15,
+                            max: -10
+                        }
+                    }
+                },
+                {
+                    position: Vec.create(4.2, 0.6),
+                    frame: "m13_link",
+                    velocity: {
+                        x: {
+                            min: -6,
+                            max: 8
+                        },
+                        y: {
+                            min: -25,
+                            max: -10
+                        }
+                    }
+                }
+            ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+            ballistics: {
+                damage: 12.5,
+                obstacleMultiplier: 2,
+                speed: 0.28,
+                range: 180,
+                tracer: {
+                    width: 1.1,
+                    length: 1.4
+                }
+            }
+        },
+        {
             idString: "m1_garand",
             name: "M1 Garand",
             ammoType: "762mm",
