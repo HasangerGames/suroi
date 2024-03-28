@@ -69,7 +69,7 @@ export const Maps: Record<string, MapDefinition> = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            small_house: 6,
+            red_house: 6,
             green_house: 2,
             mobile_home: 9,
             porta_potty: 12,
@@ -193,7 +193,7 @@ export const Maps: Record<string, MapDefinition> = {
         buildings: {
             refinery: 1,
             warehouse: 4,
-            small_house: 5,
+            red_house: 5,
             porta_potty: 10,
             container_3: 1,
             container_4: 1,

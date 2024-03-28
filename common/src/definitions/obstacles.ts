@@ -835,39 +835,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
-            idString: "house_exterior",
-            name: "House Exterior",
-            material: "stone",
-            health: 1000,
-            indestructible: true,
-            hideOnMap: true,
-            invisible: true,
-            allowFlyover: FlyoverPref.Never,
-            hitbox: new HitboxGroup(
-                // Comments assume the building is not rotated (rotation = 0)
-                RectangleHitbox.fromRect(14.33, 2, Vec.create(-41.16, -34.15)), // First Topmost wall
-                RectangleHitbox.fromRect(17, 2, Vec.create(-15, -34.15)), // Topmost wall after the first window
-                RectangleHitbox.fromRect(44.33, 2, Vec.create(26.16, -34.15)), // Topmost wall after the second window
-                RectangleHitbox.fromRect(2, 22.3, Vec.create(12.88, -22.05)), // Wall coming off of topmost wall
-                RectangleHitbox.fromRect(2, 42.68, Vec.create(47.36, -11.86)), // Rightmost wall
-                RectangleHitbox.fromRect(5.38, 2, Vec.create(43.74, 8.53)), // Short wall coming off of rightmost wall
-                RectangleHitbox.fromRect(5.51, 2, Vec.create(16.62, 8.54)), // Short wall to the left of the previous one
-                RectangleHitbox.fromRect(2, 22.7, Vec.create(12.88, 10.15)), // Wall coming off of the longer bottommost wall
-                RectangleHitbox.fromRect(40.06, 2, Vec.create(-6.17, 22.54)), // Longer bottommost wall
-                RectangleHitbox.fromRect(12.08, 2, Vec.create(-42.29, 22.54)), // Shorter bottommost wall
-                RectangleHitbox.fromRect(2, 22.2, Vec.create(-47.36, -22.1)), // Leftmost wall until left window
-                RectangleHitbox.fromRect(2, 24, Vec.create(-47.36, 11.5)), // Leftmost wall after the window
-
-                RectangleHitbox.fromRect(3.25, 3.25, Vec.create(-40.27, 33.56)), // Left post
-                RectangleHitbox.fromRect(3.25, 3.25, Vec.create(-22.48, 33.56)) // Right post
-            ),
-            rotationMode: RotationMode.Limited,
-            noResidue: true,
-            frames: {
-                particle: "wall_particle"
-            }
-        },
-        {
             idString: "door",
             name: "Door",
             material: "wood",
@@ -1604,7 +1571,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         ),
         {
-            idString: "small_house_exterior",
+            idString: "red_house_exterior",
             name: "Small House Exterior",
             material: "stone",
             health: 1000,
