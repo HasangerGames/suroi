@@ -51,12 +51,21 @@ export function spritesheet(): Plugin[] {
     let watcher: FSWatcher;
     let config: ResolvedConfig;
 
-    const virtualModuleId = "virtual:spritesheets-jsons";
-    const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+    const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
+    const highResresolvedVirtualModuleId = `\0${highResVirtualModuleId}`;
+
+    const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
+    const lowResResolvedVirtualModuleId = `\0${lowResVirtualModuleId}`;
 
     let atlases: multiResAtlasList = {};
 
-    let exportedAtlases: Record<string, { low: SpritesheetData[], high: SpritesheetData[] }> = {};
+    const exportedAtlases: {
+        low: Record<string, SpritesheetData[]>
+        high: Record<string, SpritesheetData[]>
+    } = {
+        low: {},
+        high: {}
+    };
 
     let buildTimeout: NodeJS.Timeout | undefined;
 
@@ -67,12 +76,10 @@ export function spritesheet(): Plugin[] {
             async buildStart() {
                 this.info("Building spritesheets");
                 atlases = await buildSpritesheets();
-                exportedAtlases = {};
+
                 for (const atlasId in atlases) {
-                    exportedAtlases[atlasId] = {
-                        high: atlases[atlasId].high.map(sheet => sheet.json),
-                        low: atlases[atlasId].low.map(sheet => sheet.json)
-                    };
+                    exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
+                    exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
                 }
             },
             generateBundle() {
@@ -89,13 +96,17 @@ export function spritesheet(): Plugin[] {
                 }
             },
             resolveId(id) {
-                if (id === virtualModuleId) {
-                    return resolvedVirtualModuleId;
+                if (id === highResVirtualModuleId) {
+                    return highResresolvedVirtualModuleId;
+                } else if (id === lowResVirtualModuleId) {
+                    return lowResResolvedVirtualModuleId;
                 }
             },
             load(id) {
-                if (id === resolvedVirtualModuleId) {
-                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases)}')`;
+                if (id === highResresolvedVirtualModuleId) {
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
+                } else if (id === lowResResolvedVirtualModuleId) {
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
                 }
             }
         },
@@ -113,8 +124,10 @@ export function spritesheet(): Plugin[] {
                         config.logger.info("Rebuilding spritesheets");
 
                         buildSheets().then(() => {
-                            const module = server.moduleGraph.getModuleById(resolvedVirtualModuleId);
+                            const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
                             if (module !== undefined) void server.reloadModule(module);
+                            const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
+                            if (module2 !== undefined) void server.reloadModule(module2);
                         }).catch(console.error);
                     }, 500);
                 }
@@ -132,12 +145,9 @@ export function spritesheet(): Plugin[] {
                 async function buildSheets(): Promise<void> {
                     atlases = await buildSpritesheets();
 
-                    exportedAtlases = {};
                     for (const atlasId in atlases) {
-                        exportedAtlases[atlasId] = {
-                            high: atlases[atlasId].high.map(sheet => sheet.json),
-                            low: atlases[atlasId].low.map(sheet => sheet.json)
-                        };
+                        exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
+                        exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
                     }
 
                     files.clear();
@@ -169,13 +179,17 @@ export function spritesheet(): Plugin[] {
                 await watcher.close();
             },
             resolveId(id) {
-                if (id === virtualModuleId) {
-                    return resolvedVirtualModuleId;
+                if (id === highResVirtualModuleId) {
+                    return highResresolvedVirtualModuleId;
+                } else if (id === lowResVirtualModuleId) {
+                    return lowResResolvedVirtualModuleId;
                 }
             },
             load(id) {
-                if (id === resolvedVirtualModuleId) {
-                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases)}')`;
+                if (id === highResresolvedVirtualModuleId) {
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
+                } else if (id === lowResResolvedVirtualModuleId) {
+                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
                 }
             }
         }

@@ -40,6 +40,7 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
+import NanoTimer from "nanotimer";
 
 export class Game {
     readonly _id: number;
@@ -123,6 +124,8 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
+    timer = new NanoTimer();
+
     tickTimes: number[] = [];
 
     constructor(id: number) {
@@ -142,7 +145,7 @@ export class Game {
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
-        this.tick(GameConstants.msPerTick);
+        this.timer.setInterval(() => this.tick(), "", `${GameConstants.msPerTick}m`);
     }
 
     handlePacket(stream: SuroiBitStream, player: Player): void {
@@ -179,150 +182,149 @@ export class Game {
         }
     }
 
-    tick(delay: number): void {
-        setTimeout((): void => {
-            this._now = Date.now();
+    tick(): void {
+        this._now = Date.now();
 
-            if (this.stopped) return;
+        if (this.stopped) {
+            this.timer.clearInterval();
+            return;
+        }
 
-            // execute timeouts
-            for (const timeout of this._timeouts) {
-                if (timeout.killed) {
-                    this._timeouts.delete(timeout);
-                    continue;
+        // execute timeouts
+        for (const timeout of this._timeouts) {
+            if (timeout.killed) {
+                this._timeouts.delete(timeout);
+                continue;
+            }
+
+            if (this.now > timeout.end) {
+                timeout.callback();
+                this._timeouts.delete(timeout);
+            }
+        }
+
+        // Update loots
+        for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
+            loot.update();
+        }
+
+        for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
+            parachute.update();
+        }
+
+        for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
+            projectile.update();
+        }
+
+        for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
+            syncedParticle.update();
+        }
+
+        // Update bullets
+        let records: DamageRecord[] = [];
+        for (const bullet of this.bullets) {
+            records = records.concat(bullet.update());
+
+            if (bullet.dead) {
+                if (bullet.definition.onHitExplosion && !bullet.reflected) {
+                    this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
                 }
+                this.bullets.delete(bullet);
+            }
+        }
 
-                if (this.now > timeout.end) {
-                    timeout.callback();
-                    this._timeouts.delete(timeout);
-                }
+        // Do the damage after updating all bullets
+        // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
+        // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
+        // while on the server, without this, some bullets won't because the first bullets will kill the crate
+        for (const { object, damage, source, weapon, position } of records) {
+            object.damage(damage, source, weapon, position);
+        }
+
+        // Handle explosions
+        for (const explosion of this.explosions) {
+            explosion.explode();
+        }
+
+        // Update gas
+        this.gas.tick();
+
+        // First loop over players: movement, animations, & actions
+        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
+            if (!player.dead) player.update();
+            player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
+        }
+
+        for (const object of new Set([...this.fullDirtyObjects, ...this.partialDirtyObjects])) {
+            object.serialize();
+        }
+
+        // Second loop over players: calculate visible objects & send updates
+        for (const player of this.connectedPlayers) {
+            if (!player.joined) continue;
+
+            player.secondUpdate();
+        }
+
+        // Third loop: clean up after all packets have been sent
+        for (const player of this.connectedPlayers) {
+            if (!player.joined) continue;
+
+            player.postPacket();
+        }
+
+        // Reset everything
+        this.fullDirtyObjects.clear();
+        this.partialDirtyObjects.clear();
+        this.newBullets.length = 0;
+        this.explosions.length = 0;
+        this.emotes.length = 0;
+        this.newPlayers.length = 0;
+        this.deletedPlayers.length = 0;
+        this.killFeedMessages.length = 0;
+        this.planes.length = 0;
+        this.mapPings.length = 0;
+        this.aliveCountDirty = false;
+        this.gas.dirty = false;
+        this.gas.completionRatioDirty = false;
+        this.updateObjects = false;
+
+        // Winning logic
+        if (this._started && this.aliveCount < 2 && !this.over) {
+            // Send game over packet to the last man standing
+            if (this.aliveCount === 1) {
+                const lastManStanding = [...this.livingPlayers][0];
+                const movement = lastManStanding.movement;
+                movement.up = false;
+                movement.down = false;
+                movement.left = false;
+                movement.right = false;
+                lastManStanding.attacking = false;
+                if (lastManStanding.loadout.emotes[5]?.idString !== "none") lastManStanding.emote(5);
+                lastManStanding.sendGameOverPacket(true);
             }
 
-            // Update loots
-            for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
-                loot.update();
-            }
+            // End the game in 1 second
+            // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
+            const shouldCreateNewGame = this.allowJoin;
+            this.allowJoin = false;
+            this.over = true;
 
-            for (const parachute of this.grid.pool.getCategory(ObjectCategory.Parachute)) {
-                parachute.update();
-            }
+            this.addTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
+        }
 
-            for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
-                projectile.update();
-            }
+        // Record performance and start the next tick
+        // THIS TICK COUNTER IS WORKING CORRECTLY!
+        // It measures the time it takes to calculate a tick, not the time between ticks.
+        const tickTime = Date.now() - this.now;
+        this.tickTimes.push(tickTime);
 
-            for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
-                syncedParticle.update();
-            }
+        if (this.tickTimes.length >= 200) {
+            const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-            // Update bullets
-            let records: DamageRecord[] = [];
-            for (const bullet of this.bullets) {
-                records = records.concat(bullet.update());
-
-                if (bullet.dead) {
-                    if (bullet.definition.onHitExplosion && !bullet.reflected) {
-                        this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
-                    }
-                    this.bullets.delete(bullet);
-                }
-            }
-
-            // Do the damage after updating all bullets
-            // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
-            // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
-            // while on the server, without this, some bullets won't because the first bullets will kill the crate
-            for (const { object, damage, source, weapon, position } of records) {
-                object.damage(damage, source, weapon, position);
-            }
-
-            // Handle explosions
-            for (const explosion of this.explosions) {
-                explosion.explode();
-            }
-
-            // Update gas
-            this.gas.tick();
-
-            // First loop over players: movement, animations, & actions
-            for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
-                if (!player.dead) player.update();
-                player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
-            }
-
-            for (const object of new Set([...this.fullDirtyObjects, ...this.partialDirtyObjects])) {
-                object.serialize();
-            }
-
-            // Second loop over players: calculate visible objects & send updates
-            for (const player of this.connectedPlayers) {
-                if (!player.joined) continue;
-
-                player.secondUpdate();
-            }
-
-            // Third loop: clean up after all packets have been sent
-            for (const player of this.connectedPlayers) {
-                if (!player.joined) continue;
-
-                player.postPacket();
-            }
-
-            // Reset everything
-            this.fullDirtyObjects.clear();
-            this.partialDirtyObjects.clear();
-            this.newBullets.length = 0;
-            this.explosions.length = 0;
-            this.emotes.length = 0;
-            this.newPlayers.length = 0;
-            this.deletedPlayers.length = 0;
-            this.killFeedMessages.length = 0;
-            this.planes.length = 0;
-            this.mapPings.length = 0;
-            this.aliveCountDirty = false;
-            this.gas.dirty = false;
-            this.gas.completionRatioDirty = false;
-            this.updateObjects = false;
-
-            // Winning logic
-            if (this._started && this.aliveCount < 2 && !this.over) {
-                // Send game over packet to the last man standing
-                if (this.aliveCount === 1) {
-                    const lastManStanding = [...this.livingPlayers][0];
-                    const movement = lastManStanding.movement;
-                    movement.up = false;
-                    movement.down = false;
-                    movement.left = false;
-                    movement.right = false;
-                    lastManStanding.attacking = false;
-                    if (lastManStanding.loadout.emotes[5]?.idString !== "none") lastManStanding.emote(5);
-                    lastManStanding.sendGameOverPacket(true);
-                }
-
-                // End the game in 1 second
-                // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
-                const shouldCreateNewGame = this.allowJoin;
-                this.allowJoin = false;
-                this.over = true;
-
-                this.addTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
-            }
-
-            // Record performance and start the next tick
-            // THIS TICK COUNTER IS WORKING CORRECTLY!
-            // It measures the time it takes to calculate a tick, not the time between ticks.
-            const tickTime = Date.now() - this.now;
-            this.tickTimes.push(tickTime);
-
-            if (this.tickTimes.length >= 200) {
-                const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-
-                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
-                this.tickTimes = [];
-            }
-
-            this.tick(Math.max(0, GameConstants.msPerTick - tickTime));
-        }, delay);
+            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
+            this.tickTimes = [];
+        }
     }
 
     private _killLeader: Player | undefined;
@@ -433,7 +435,7 @@ export class Game {
             !name.length ||
             (Config.censorUsernames && hasBadWords(name)) ||
             // eslint-disable-next-line no-control-regex
-            /[^\x00-\x7F]/g.test(name) // extended ASCII chars
+            /[^\x20-\x7E]/g.test(name) // extended ASCII chars
         ) name = GameConstants.player.defaultName;
         player.name = name;
 

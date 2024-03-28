@@ -75,7 +75,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
         })
     })
 )(
-    apply => [
+    () => [
         {
             idString: "frag_grenade",
             name: "Frag Grenade",

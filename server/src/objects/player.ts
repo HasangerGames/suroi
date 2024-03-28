@@ -922,7 +922,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     sendData(buffer: ArrayBuffer): void {
         try {
-            this.socket.send(buffer, true, true);
+            this.socket.send(buffer, true, false);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
