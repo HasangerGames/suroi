@@ -331,7 +331,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "stove", position: Vec.create(-45.15, 12.3), rotation: 1 },
                 { idString: "large_drawer", position: Vec.create(-45.12, 1.28), rotation: 1 },
                 { idString: "gun_mount_hp18", position: Vec.create(30.33, -2.98), rotation: 3 },
-                { idString: "bookshelf", position: Vec.create(-10.88, -22.62), rotation: 1 },
+                { idString: "bookshelf", position: Vec.create(-10.88, -22.62), rotation: 1 }
             ],
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(18.48, 6.37) },
