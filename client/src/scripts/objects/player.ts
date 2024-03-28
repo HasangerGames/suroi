@@ -479,6 +479,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.downed = full.downed;
                 this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
+                this.updateEquipment();
 
                 this.bleedEffectInterval = setInterval(() => {
                     this.hitEffect(this.position, randomRotation(), "bleed");
@@ -531,7 +532,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.vestLevel = (this.equipment.vest = full.vest)?.level ?? 0;
             this.backpackLevel = (this.equipment.backpack = full.backpack).level;
 
-            const equipmentDirty = hideEquipment !== this.hideEquipment ||
+            const equipmentDirty =
+                hideEquipment !== this.hideEquipment ||
                 helmetLevel !== this.helmetLevel ||
                 vestLevel !== this.vestLevel ||
                 backpackLevel !== this.backpackLevel;
@@ -659,8 +661,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.anims.rightFist?.kill();
         this.anims.weapon?.kill();
 
-        this.images.leftFist.setZIndex(this.downed ? -1 : 3);
-        this.images.rightFist.setZIndex(this.downed ? -1 : 3);
         this.images.leftLeg?.setVisible(this.downed);
         this.images.rightLeg?.setVisible(this.downed);
 
@@ -714,6 +714,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setVisible(false);
             this.images.altWeapon.setVisible(false);
             this.images.muzzleFlash.setVisible(false);
+            this.images.leftFist.setZIndex(-1);
+            this.images.rightFist.setZIndex(-1);
+            this.container.sortChildren();
             return;
         }
 
@@ -790,7 +793,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             def &&
             def.level > 0 &&
             !this.hideEquipment &&
-            (type === "vest" || !this.downed)
+            (type !== "backpack" || !this.downed)
         ) {
             image.setFrame(`${def.idString}_world`).setVisible(true);
         } else {
