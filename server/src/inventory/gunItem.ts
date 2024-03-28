@@ -63,6 +63,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
+            owner.downed ||
             owner.disconnected ||
             this !== this.owner.activeItem ||
             (definition.summonAirdrop && owner.isInsideBuilding)

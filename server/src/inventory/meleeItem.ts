@@ -50,6 +50,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 this.owner.activeItem === this &&
                 (owner.attacking || skipAttackCheck) &&
                 !owner.dead &&
+                !owner.downed &&
                 !owner.disconnected
             ) {
                 const rotated = Vec.rotate(definition.offset, owner.rotation);

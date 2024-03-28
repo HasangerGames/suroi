@@ -31,6 +31,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
         if (
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
+            owner.downed ||
             owner.disconnected ||
             this !== this.owner.activeItem ||
             this._activeHandler
