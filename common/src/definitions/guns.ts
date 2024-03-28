@@ -1245,7 +1245,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Auto,
             shotSpread: 3,
             moveSpread: 8,
-            length: 8.4,
+            length: 7.9,
             fists: {
                 left: Vec.create(105, -3),
                 right: Vec.create(40, 0),
@@ -1305,14 +1305,14 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Auto,
             shotSpread: 3.5,
             moveSpread: 8,
-            length: 8.4,
+            length: 7.5,
             fists: {
-                left: Vec.create(105, -3),
+                left: Vec.create(95, -4),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(90, 0) },
+            image: { position: Vec.create(67, 0) },
             ballistics: {
                 damage: 11,
                 obstacleMultiplier: 2,
