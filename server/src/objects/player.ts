@@ -19,7 +19,7 @@ import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../co
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, ObjectDefinition } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
@@ -40,7 +40,7 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
+import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
