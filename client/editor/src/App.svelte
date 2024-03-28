@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { Circle } from "pixi.js";
     import {
+    CircleHitbox,
         HitboxGroup,
         HitboxType,
         RectangleHitbox
@@ -10,14 +12,32 @@
 
     let hitboxes = [
         ...new HitboxGroup(
-            RectangleHitbox.fromRect(20.8, 1.87, Vec.create(-20.4, -19.6)),
-            RectangleHitbox.fromRect(1.52, 2.37, Vec.create(1.62, -19.85)),
-            RectangleHitbox.fromRect(1.74, 17.25, Vec.create(25.14, -11.91)),
-            RectangleHitbox.fromRect(55, 1.78, Vec.create(-2.5, 20.19)),
-            RectangleHitbox.fromRect(1.51, 2.4, Vec.create(13.27, -19.87)),
-            RectangleHitbox.fromRect(1.78, 14.31, Vec.create(25.12, 13.93)),
-            RectangleHitbox.fromRect(1.78, 40.08, Vec.create(-29.91, 1.04))
-        ).transform(Vec.create(0, 0), 1, 3).toJSON().hitboxes
+                // Right walls
+                // Above window
+                RectangleHitbox.fromRect(2, 10.5, Vec.create(-31, 21.3)),
+                // First below window
+                RectangleHitbox.fromRect(2, 8.5, Vec.create(-31, 1.9)),
+                // Second below window
+                RectangleHitbox.fromRect(2, 14, Vec.create(-31, -20)),
+
+                // Top walls
+                // Left of window
+                RectangleHitbox.fromRect(20, 2, Vec.create(37, 27.3)),
+                // Right of window
+                RectangleHitbox.fromRect(48.7, 2, Vec.create(-7.5, 27.3)),
+
+                // Left Wall
+                // Whole side of building
+                RectangleHitbox.fromRect(2, 55.2, Vec.create(46.5, 0)),
+
+                // Bottom Walls
+                // Left of back door
+                RectangleHitbox.fromRect(9, 2, Vec.create(43, -26.5)),
+                // Right of back door
+                RectangleHitbox.fromRect(39.6, 2, Vec.create(8, -26.5)),
+                // Right of window
+                RectangleHitbox.fromRect(10.2, 2, Vec.create(-26.7, -26.5))
+            ).transform(Vec.create(0, 0), 1.076, 3).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -28,17 +48,38 @@
     let scale = 1;
 
     let dragging = false;
+    let rightDragging = false; // Flag for right mouse button drag
     function pointerDown(e: PointerEvent) {
-        dragging = true;
+        if (e.button === 0) { // Left mouse button
+            dragging = true;
+        } else if (e.button === 2) { // Right mouse button
+            rightDragging = true;
+        }
     }
+
     function pointerUp(e: PointerEvent) {
-        dragging = false;
+        if (e.button === 0) {
+            dragging = false;
+        } else if (e.button === 2) {
+            rightDragging = false;
+        }
     }
 
     function pointermove(e: PointerEvent) {
-        if (dragging) {
+        if (dragging && !rightDragging) {
             x += e.movementX;
             y += e.movementY;
+        } else if (rightDragging && !dragging) {
+            if (selected.type === HitboxType.Circle) {
+                selected.position.x += e.movementX;
+                selected.position.y += e.movementY;
+            } else if (selected.type === HitboxType.Rect) {
+                selected.min.x += e.movementX / 10;
+                selected.min.y += e.movementY / 10;
+                selected.max.x += e.movementX / 10;
+                selected.max.y += e.movementY / 10;
+            }
+            updateSelected();
         }
     }
 
@@ -87,7 +128,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/small_bridge.svg");
+    const bgImage = loadImage("/img/game/buildings/green_house_floor.svg");
 
 </script>
 
@@ -168,6 +209,7 @@
         on:pointerup={pointerUp}
         on:pointermove={pointermove}
         on:wheel={mouseWheel}
+        oncontextmenu="return false"
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">

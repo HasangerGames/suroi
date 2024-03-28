@@ -151,7 +151,7 @@ app.get("/api/getGame", async(res, req) => {
         }
 
         if (!foundGame) {
-            // Create a game if there's a free slot
+            // Create a game if there"s a free slot
             const gameID = newGame();
             if (gameID !== -1) {
                 response = { success: true, gameID };

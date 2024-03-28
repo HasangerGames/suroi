@@ -51,11 +51,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 4;
     override readonly damageable = true;
-
     readonly hitbox: CircleHitbox;
 
     name: string;
     readonly ip?: string;
+
     teamID?: number;
 
     readonly loadout: {
@@ -378,7 +378,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "tire", position);
+        this.objectToPlace = new Obstacle(game, "window2", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -596,7 +596,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         );
         const obj = this.objectToPlace;
         obj.position = position;
-        if (this.game.emotes.size > 0) {
+        if (this.game.emotes.length > 0) {
             obj.rotation += 1;
             obj.rotation %= 4;
         }
