@@ -1145,7 +1145,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Send kill packets
         if (source instanceof Player) {
             this.killedBy = source;
-            if (source !== this) source.kills++;
+            if (source !== this && (!teamMode || source.teamID !== this.teamID)) source.kills++;
 
             /*
             // Weapon swap event
