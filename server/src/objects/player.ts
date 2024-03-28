@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
-import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, KillFeedMessageType, KillType, ObjectCategory, PlayerActions, SpectateActions, SPEED_EMOTE_MODE } from "../../../common/src/constants";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -19,7 +19,7 @@ import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../co
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, ObjectDefinition } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { FloorTypes } from "../../../common/src/utils/terrain";
@@ -40,18 +40,23 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { type Obstacle } from "./obstacle";
+import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
     override readonly allocBytes = 16;
     override readonly damageable = true;
-
     readonly hitbox: CircleHitbox;
 
     name: string;
     readonly ip?: string;
+
+    // Speed toggler utils
+    // TODO: SET TO FALSE BEFORE RELEASE
+    isTestMode = SPEED_EMOTE_MODE;
+    speed: number = Config.movementSpeed;
+    fast = false;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -338,7 +343,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "window2", position);
+        this.objectToPlace = new Obstacle(game, "large_drawer", position);
         game.grid.addObject(this.objectToPlace);
         // Object placing code end */
 
@@ -504,7 +509,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *                // Base speed
+        const speed = this.speed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
@@ -527,7 +532,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         );
         const obj = this.objectToPlace;
         obj.position = position;
-        if (this.game.emotes.size > 0) {
+        if (this.game.emotes.length > 0) {
             obj.rotation += 1;
             obj.rotation %= 4;
         }
@@ -542,6 +547,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
+
+        if (this.isTestMode && this.game.emotes.length > 0) {
+            console.log("Current speed:", this.speed, "Current Fast:", this.fast);
+            this.speed = this.fast ? this.speed / 4 : this.speed * 4;
+            this.fast = !this.fast;
+        }
 
         for (let step = 0; step < 10; step++) {
             let collided = false;

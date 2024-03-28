@@ -69,7 +69,8 @@ export const Maps: Record<string, MapDefinition> = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            small_house: 6,
+            red_house: 6,
+            green_house: 2,
             mobile_home: 9,
             porta_potty: 12,
             container_3: 1,
@@ -192,7 +193,7 @@ export const Maps: Record<string, MapDefinition> = {
         buildings: {
             refinery: 1,
             warehouse: 4,
-            small_house: 5,
+            red_house: 5,
             porta_potty: 10,
             container_3: 1,
             container_4: 1,
@@ -344,8 +345,12 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
+            //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
+            //map.game.addLoot("8x_scope", Vec.create(this.width / 2, this.height / 2 - 20));
+            //map.game.addLoot("usas12", Vec.create(this.width / 2, this.height / 2 - 20));
+            //map.game.addLoot("12g", Vec.create(this.width / 2, this.height / 2 - 20), Infinity);
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("sea_traffic_control", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -354,7 +359,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("control_panel", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("potted_plant", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
