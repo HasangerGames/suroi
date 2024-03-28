@@ -41,7 +41,7 @@ export function resetPlayButtons(): void {
     $("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Duo);
 }
 
-export async function setupUI(game: Game): Promise<void> {
+export async function setUpUI(game: Game): Promise<void> {
     if (UI_DEBUG_MODE) {
         // Kill message
         $("#kill-msg-kills").text("Kills: 7");

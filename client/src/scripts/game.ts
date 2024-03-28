@@ -32,7 +32,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setupUI } from "./ui";
+import { resetPlayButtons, setUpUI } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
@@ -204,7 +204,7 @@ export class Game {
 
         void Promise.all([
             initPixi(),
-            setupUI(this)
+            setUpUI(this)
         ]).then(resetPlayButtons);
 
         setUpCommands(this);
