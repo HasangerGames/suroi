@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, TilingSprite, Text } from "pixi.js";
+import { Container, TilingSprite, Text, Color } from "pixi.js";
 import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
@@ -439,7 +439,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     text: new Text({
                         text: this.game.uiManager.getRawPlayerName(this.id),
                         style: {
-                            fill: name?.nameColor ?? "#FFFFFF",
+                            fill: name?.hasColor ? name?.nameColor : "#ffffff",
                             fontSize: 36,
                             fontFamily: "Inter",
                             dropShadow: {
@@ -486,6 +486,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
 
             if (this.dead) {
+                if (this.teammateName) this.teammateName.text.visible = false;
                 clearInterval(this.bleedEffectInterval);
             }
 
