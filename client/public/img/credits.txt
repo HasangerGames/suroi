@@ -71,6 +71,9 @@ Weapons:
   MCX Spear (Loot Image): megashark25098
   MCX Spear (World Image):
 
+  MG5 (Loot Image): jchen
+  MG5 (World Image): 1092384
+
   Micro Uzi (Loot Image): Glek
   Micro Uzi (World Image): TacomyLoh, modified by Astronautical, shortened by jchen
 

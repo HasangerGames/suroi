@@ -1197,6 +1197,40 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
+            idString: "mg5",
+            name: "MG5",
+            ammoType: "762mm",
+            ammoSpawnAmount: 240,
+            capacity: 120,
+            reloadTime: 5.2,
+            fireDelay: 95,
+            switchDelay: 400,
+            speedMultiplier: 0.8,
+            recoilMultiplier: 0.65,
+            recoilDuration: 200,
+            fireMode: FireMode.Auto,
+            shotSpread: 2,
+            moveSpread: 4.5,
+            length: 8.4,
+            fists: {
+                left: Vec.create(105, -3),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            image: { position: Vec.create(90, 0) },
+            ballistics: {
+                damage: 16.5,
+                obstacleMultiplier: 2,
+                speed: 0.26,
+                range: 180,
+                tracer: {
+                    width: 1.1,
+                    length: 1.4
+                }
+            }
+        },
+        {
             idString: "m1_garand",
             name: "M1 Garand",
             ammoType: "762mm",
