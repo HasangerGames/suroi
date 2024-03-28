@@ -1275,7 +1275,6 @@ export class GameConsole {
              * signifies that we're done with the query and that no more processing is to be done
              */
             let currentNode: ParserNode | undefined = extractCommandsAndArgs(query);
-            console.log(currentNode);
             /**
              * Plays a similar role to the `groupAnchors` stack used in the parser, that being
              * to keep track of where we should jump to after finishing the execution of a command

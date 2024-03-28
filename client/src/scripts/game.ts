@@ -568,7 +568,7 @@ export class Game {
         }
 
         for (const emote of updateData.emotes) {
-            if (!this.console.getBuiltInCVar("cv_hide_emotes")) break;
+            if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
                 player.sendEmote(emote.definition);
