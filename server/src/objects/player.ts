@@ -28,7 +28,7 @@ import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, ReloadAction, type Action } from "../inventory/action";
+import { HealingAction, ReloadAction, type Action, ReviveAction } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, type InventoryItem } from "../inventory/inventoryItem";
@@ -334,6 +334,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
     downed = false;
+    reviving = false;
 
     get position(): Vector {
         return this.hitbox.position;
@@ -509,7 +510,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.spawnPosition = position;
     }
 
-    emote(emote?: EmoteDefinition): void {
+    sendEmote(emote?: EmoteDefinition): void {
         if (!this.loadout.emotes.includes(emote)) return;
 
         if (emote) {
@@ -579,6 +580,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             (this.downed ? 0.5 : 1) *                       // Knocked out speed multiplier
+            (this.reviving ? 0.5 : 1) *                     // Reviving speed multiplier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
@@ -674,8 +676,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Knocked out damage
-        if (this.downed) {
-            this.piercingDamage(0.08);
+        if (this.downed && !this.reviving) {
+            this.piercingDamage(0.05);
         }
 
         let isInsideBuilding = false;
@@ -1210,7 +1212,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
-        if (this.loadout.emotes[4]?.idString !== "none") this.emote(this.loadout.emotes[4]);
+        if (this.loadout.emotes[4]?.idString !== "none") this.sendEmote(this.loadout.emotes[4]);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);
@@ -1296,7 +1298,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     revive(): void {
         this.downed = false;
+        this.reviving = false;
         this.health = 30;
+        this.setDirty();
+    }
+
+    canInteract(player: Player): boolean {
+        return this.downed && this.teamID === player.teamID;
+    }
+
+    interact(player: Player): void {
+        this.reviving = true;
+        this.setDirty();
+        player.animation = AnimationType.Revive;
+        player.executeAction(new ReviveAction(player, this));
     }
 
     sendGameOverPacket(won = false): void {
@@ -1412,7 +1427,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     this.lastInteractionTime = this.game.now;
 
                     interface CloseObject {
-                        object: Obstacle | undefined
+                        object: Obstacle | Player | undefined
                         minDist: number
                     }
 
@@ -1425,11 +1440,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object.type === ObjectCategory.Obstacle && object.canInteract(this)) &&
+                            ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && object.canInteract(this)) &&
                             object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
-                            if (object.type === ObjectCategory.Obstacle && dist < interactable.minDist) {
+                            if ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && dist < interactable.minDist) {
                                 interactable.minDist = dist;
                                 interactable.object = object;
                             }
@@ -1468,7 +1483,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     this.action?.cancel();
                     break;
                 case InputActions.Emote:
-                    this.emote(action.emote);
+                    this.sendEmote(action.emote);
                     break;
                 case InputActions.MapPing:
                     this.sendMapPing(action.ping, action.position);
@@ -1490,6 +1505,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             full: {
                 dead: this.dead,
                 downed: this.downed,
+                reviving: this.reviving,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,

@@ -45,7 +45,8 @@ export enum AnimationType {
     Gun,
     GunAlt,
     GunClick,
-    LastShot
+    LastShot,
+    Revive
 }
 
 export enum KillFeedMessageType {
@@ -94,7 +95,8 @@ export enum SpectateActions {
 export enum PlayerActions {
     None,
     Reload,
-    UseItem
+    UseItem,
+    Revive
 }
 
 export enum KillType {
@@ -140,7 +142,9 @@ export const GameConstants = freezeDeep({
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
         killLeaderMinKills: 3,
-        maxMouseDist: 128
+        maxMouseDist: 128,
+        reviveTime: 8,
+        maxReviveDist: 5
     },
     airdrop: {
         fallTime: 8000,

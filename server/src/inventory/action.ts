@@ -1,4 +1,4 @@
-import { PlayerActions } from "../../../common/src/constants";
+import { AnimationType, GameConstants, PlayerActions } from "../../../common/src/constants";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Loots } from "../../../common/src/definitions/loots";
 import { type Timeout } from "../../../common/src/utils/misc";
@@ -28,6 +28,37 @@ export abstract class Action {
         if (this.player.downed) return;
         this.player.action = undefined;
         this.player.setPartialDirty();
+    }
+}
+
+export class ReviveAction extends Action {
+    private readonly _type = PlayerActions.Revive;
+    get type(): PlayerActions.Revive { return this._type; }
+    readonly reviving: Player;
+
+    override readonly speedMultiplier = 0.5;
+
+    constructor(player: Player, reviving: Player) {
+        super(player, GameConstants.player.reviveTime);
+        this.reviving = reviving;
+    }
+
+    override execute(): void {
+        super.execute();
+
+        this.reviving.revive();
+        this.player.animation = AnimationType.None;
+        this.player.setDirty();
+    }
+
+    override cancel(): void {
+        super.cancel();
+
+        this.reviving.reviving = false;
+        this.reviving.setDirty();
+
+        this.player.animation = AnimationType.None;
+        this.player.setDirty();
     }
 }
 

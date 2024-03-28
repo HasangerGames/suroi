@@ -63,6 +63,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hideEquipment = false;
 
     downed = false;
+    reviving = false;
     bleedEffectInterval?: NodeJS.Timeout;
 
     readonly images: {
@@ -475,20 +476,30 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
-            if (this.downed !== full.downed && !this.dead) {
+            if (this.downed !== full.downed) {
                 this.downed = full.downed;
                 this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
                 this.updateEquipment();
 
+                if (!this.dead) {
+                    this.updateFistsPosition(false);
+                    this.updateWeapon(isNew);
+                }
+            }
+
+            this.reviving = full.reviving;
+
+            if (this.downed && !this.reviving && !this.bleedEffectInterval) {
                 this.bleedEffectInterval = setInterval(() => {
                     this.hitEffect(this.position, randomRotation(), "bleed");
                 }, 1000);
             }
 
-            if (this.dead) {
+            if (this.dead || this.reviving) {
                 if (this.teammateName) this.teammateName.text.visible = false;
                 clearInterval(this.bleedEffectInterval);
+                this.bleedEffectInterval = undefined;
             }
 
             this._oldItem = this.activeItem;
@@ -558,6 +569,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             switch (action.type) {
                 case PlayerActions.None: {
+                    // Reset fists after reviving
+                    if (this.action.type === PlayerActions.Revive) {
+                        this.anims.leftFist = this.game.addTween({
+                            target: this.images.leftFist,
+                            to: Vec.create(38, -35),
+                            duration: 100,
+                            onComplete: () => {
+                                this.anims.leftFist = undefined;
+                            }
+                        });
+                        this.anims.rightFist = this.game.addTween({
+                            target: this.images.rightFist,
+                            to: Vec.create(38, 35),
+                            duration: 100,
+                            onComplete: () => {
+                                this.anims.rightFist = undefined;
+                            }
+                        });
+                    }
+
                     if (this.isActivePlayer) {
                         this.game.uiManager.cancelAction();
                     }
@@ -585,6 +616,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
                         this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
+                    }
+                    break;
+                }
+                case PlayerActions.Revive: {
+                    if (this.isActivePlayer) {
+                        this.game.uiManager.animateAction("Reviving...", GameConstants.player.reviveTime);
                     }
                     break;
                 }
@@ -1270,6 +1307,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 });
 
+                break;
+            }
+            case AnimationType.Revive: {
+                this.anims.leftFist = this.game.addTween({
+                    target: this.images.leftFist,
+                    to: Vec.create(28, -45),
+                    duration: 100,
+                    onComplete: () => {
+                        this.anims.leftFist = undefined;
+                    }
+                });
+                this.anims.rightFist = this.game.addTween({
+                    target: this.images.rightFist,
+                    to: Vec.create(58, 48),
+                    duration: 100,
+                    onComplete: () => {
+                        this.anims.rightFist = undefined;
+                    }
+                });
                 break;
             }
         }

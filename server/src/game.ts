@@ -317,7 +317,7 @@ export class Game {
                 movement.left = false;
                 movement.right = false;
                 lastManStanding.attacking = false;
-                lastManStanding.emote(lastManStanding.loadout.emotes[5]);
+                lastManStanding.sendEmote(lastManStanding.loadout.emotes[5]);
                 lastManStanding.sendGameOverPacket(true);
             }
 
