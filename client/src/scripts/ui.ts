@@ -10,16 +10,16 @@ import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { pickRandomInArray } from "../../../common/src/utils/random";
+import { Config } from "./config";
 import { type Game } from "./game";
+import type { UIManager } from "./managers/uiManager";
+import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { dropItemListener, requestFullscreen } from "./utils/misc";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { Config } from "./config";
-import { news } from "./news/newsPosts";
-import type { UIManager } from "./managers/uiManager";
+import { requestFullscreen } from "./utils/misc";
 
 interface RegionInfo {
     name: string
@@ -567,47 +567,25 @@ Video evidence is required.`)) {
 
         emoteList.empty();
 
-        const noEmoteItem =
-            $(`<div id="emote-none" class="emotes-list-item-container">
-            <div class="emotes-list-item" style="background-image: none"></div>
-        <span class="emote-name">None</span>
-        </div>`);
+        for (const emote of [{ idString: "", name: "None" }, ...Emotes.definitions]) {
+            if (emote.isTeamEmote) continue;
 
-        noEmoteItem.on("click", function() {
-            if (selectedEmoteSlot === undefined) return;
-            game.console.setBuiltInCVar(
-                `cv_loadout_${selectedEmoteSlot}_emote`,
-                ""
-            );
-
-            $(this).addClass("selected").siblings().removeClass("selected");
-
-            $(`#emote-wheel-container .emote-${selectedEmoteSlot}`)
-                .css("background-image", "none");
-        });
-
-        emoteList.append(noEmoteItem);
-
-        for (const emote of Emotes.definitions) {
             // noinspection CssUnknownTarget
             const emoteItem =
                 $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    ${emote.idString !== "none" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
 
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
-                game.console.setBuiltInCVar(
-                    `cv_loadout_${selectedEmoteSlot}_emote`,
-                    emote.idString
-                );
+                game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
 
                 $(this).addClass("selected").siblings().removeClass("selected");
 
                 $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
                     "background-image",
-                    emote.idString !== "none" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
+                    emote.idString !== "" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
                 );
             });
 
@@ -1134,23 +1112,27 @@ Video evidence is required.`)) {
     const maxWeapons = GameConstants.player.maxWeapons;
     for (let slot = 0; slot < maxWeapons; slot++) {
         const slotElement = $(`#weapon-slot-${slot + 1}`);
-        slotElement[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                if (slotElement.hasClass("has-item")) {
-                    e.stopImmediatePropagation();
-                    if (slot === 3) { // Check if the slot is 4 (0-indexed)
-                        const step = 1; // Define the step for cycling
-                        if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
-                    }
-                    game.inputManager.addAction({
-                        type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
-                        slot
-                    });
+        slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+            if (slotElement.hasClass("has-item")) {
+                e.stopImmediatePropagation();
+                if (slot === 3) { // Check if the slot is 4 (0-indexed)
+                    const step = 1; // Define the step for cycling
+                    if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
                 }
+                game.inputManager.addAction({
+                    type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
+                    slot
+                });
             }
-        );
+        });
     }
+
+    const slotListener = (idString: string, listener: (button: number) => void): void => {
+        $(`#${idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+            listener(e.button);
+            e.stopPropagation();
+        });
+    };
 
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
@@ -1160,25 +1142,19 @@ Video evidence is required.`)) {
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        dropItemListener(game, $(`#${scope.idString}-slot`), scope);
-
-        $(`#${scope.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if (e.button === 2) {
-                    game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: scope
-                    });
-                } else {
-                    game.inputManager.addAction({
-                        type: InputActions.UseItem,
-                        item: scope
-                    });
-                }
+        slotListener(scope.idString, (button: number): void => {
+            if (button === 0) {
+                game.inputManager.addAction({
+                    type: InputActions.UseItem,
+                    item: scope
+                });
+            } else if (button === 2) {
+                game.inputManager.addAction({
+                    type: InputActions.DropItem,
+                    item: scope
+                });
             }
-        );
+        });
 
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
@@ -1197,14 +1173,26 @@ Video evidence is required.`)) {
             </div>
         </div>`);
 
-        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.inputManager.addAction({
-                type: InputActions.UseItem,
-                item
-            });
-            e.stopPropagation();
+        slotListener(item.idString, (button: number) => {
+            if (button === 0) {
+                if (game.inputManager.pingWheelActive) {
+                    game.inputManager.addAction({
+                        type: InputActions.Emote,
+                        emote: Emotes.fromString(item.idString)
+                    });
+                } else {
+                    game.inputManager.addAction({
+                        type: InputActions.UseItem,
+                        item
+                    });
+                }
+            } else if (button === 2) {
+                game.inputManager.addAction({
+                    type: InputActions.DropItem,
+                    item
+                });
+            }
         });
-        dropItemListener(game, $(`#${item.idString}-slot`), item);
     }
 
     for (const ammo of Ammos) {
@@ -1216,24 +1204,30 @@ Video evidence is required.`)) {
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);
 
-        dropItemListener(game, $(`#${ammo.idString}-slot`), ammo);
+        slotListener(ammo.idString, (button: number) => {
+            if (button === 0 && game.inputManager.pingWheelActive) {
+                game.inputManager.addAction({
+                    type: InputActions.Emote,
+                    emote: Emotes.fromString(ammo.idString)
+                });
+            } else if (button === 2) {
+                game.inputManager.addAction({
+                    type: InputActions.DropItem,
+                    item: ammo
+                });
+            }
+        });
     }
 
     for (const armor of ["helmet", "vest"] as const) {
-        const armorContainer = $(`#${armor}-slot`);
-
-        armorContainer[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if (e.button === 2 && game.activePlayer) {
-                    game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: game.activePlayer.getEquipment(armor)
-                    });
-                }
+        slotListener(armor, (button: number): void => {
+            if (button === 2 && game.activePlayer) {
+                game.inputManager.addAction({
+                    type: InputActions.DropItem,
+                    item: game.activePlayer.getEquipment(armor)
+                });
             }
-        );
+        });
     }
 
     // Hide mobile settings on desktop

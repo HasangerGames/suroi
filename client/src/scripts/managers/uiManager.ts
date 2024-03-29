@@ -251,13 +251,13 @@ export class UIManager {
     readonly mapPings = ["warning_ping", "arrow_ping", "gift_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
 
     updateEmoteWheel(): void {
-        const pingWheel = this.game.inputManager.pingWheelActive;
+        const { pingWheelActive } = this.game.inputManager;
         for (let i = 0; i < 4; i++) {
-            const definition = pingWheel ? this.mapPings[i] : this.emotes[i];
+            const definition = pingWheelActive ? this.mapPings[i] : this.emotes[i];
 
             this.ui.emoteSelectors[i].css(
                 "background-image",
-                definition ? `url("./img/game/${pingWheel ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
+                definition ? `url("./img/game/${pingWheelActive ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
             );
         }
     }

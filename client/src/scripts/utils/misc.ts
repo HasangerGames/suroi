@@ -34,21 +34,6 @@ export function formatDate(seconds: number): string {
     return timeString;
 }
 
-export function dropItemListener(game: Game, container: JQuery, item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition): void {
-    container[0].addEventListener(
-        "pointerdown",
-        (e: PointerEvent): void => {
-            e.stopPropagation();
-            if (e.button === 2) {
-                game.inputManager.addAction({
-                    type: InputActions.DropItem,
-                    item
-                });
-            }
-        }
-    );
-}
-
 export function stringify(val: unknown): string {
     switch (typeof val) {
         case "string":

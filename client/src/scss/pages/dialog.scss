@@ -333,8 +333,13 @@
         }
 
         .emote-name {
+            text-align: center;
             font-weight: bold;
             @include text-shadow;
+        }
+
+        #emote- {
+            justify-content: flex-end;
         }
     }
 
