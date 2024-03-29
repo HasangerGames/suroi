@@ -14,9 +14,9 @@ import { Numeric } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { TeammateIndicator } from "../rendering/minimap";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -289,7 +289,7 @@ export class UIManager {
                 },
                 ...data.teammates
             ].forEach((player, index) => {
-                const id = player.id;
+                const { id } = player;
                 if (id in this._teammateDataCache) {
                     this._teammateDataCache[id].update({
                         ...player,
@@ -879,7 +879,7 @@ class PlayerHealthUI {
             recalcIndicatorFrame = true;
         }
 
-        let indicator: TeammateIndicator | undefined;
+        let indicator: SuroiSprite | undefined;
 
         if (this._id.value !== this.game.activePlayerID) {
             const { teammateIndicators } = this.game.map;
@@ -888,13 +888,12 @@ class PlayerHealthUI {
                 if (!teammateIndicators.has(id)) {
                     teammateIndicators.set(
                         id,
-                        indicator = new TeammateIndicator(
-                            this._position.value,
-                            id,
-                            TEAMMATE_COLORS[this._colorIndex.value],
-                            this.game.map.expanded ? 1 : 0.75
-                        )
+                        indicator = new SuroiSprite("player_indicator")
+                            .setVPos(toPixiCoords(this._position.value))
+                            .setTint(TEAMMATE_COLORS[this._colorIndex.value])
+                            .setScale(this.game.map.expanded ? 1 : 0.75)
                     );
+                    this.game.map.teammateIndicatorContainer.addChild(indicator);
                 } else {
                     (indicator = teammateIndicators.get(id)!).setVPos(this._position.value);
                 }

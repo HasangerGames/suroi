@@ -1143,7 +1143,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.health = 0;
         this.dead = true;
+        this.downed = false;
         this.canDespawn = false;
+        this.team?.setDirty();
 
         // Send kill packets
         if (source instanceof Player) {

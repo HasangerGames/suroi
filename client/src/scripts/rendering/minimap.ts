@@ -40,7 +40,7 @@ export class Minimap {
         .setTint(TEAMMATE_COLORS[0])
         .setZIndex(1000);
 
-    readonly teammateIndicators = new Map<number, TeammateIndicator>();
+    readonly teammateIndicators = new Map<number, SuroiSprite>();
     readonly teammateIndicatorContainer = new Container();
 
     width = 0;
@@ -478,14 +478,6 @@ export class Minimap {
             .arc(this.gasPos.x, this.gasPos.y, this.gasRadius, 0, Math.PI * 2)
             .closePath()
             .stroke();
-
-        // Teammate updates
-        for (const [, indicator] of this.teammateIndicators) {
-            if (!indicator.initialized) {
-                this.teammateIndicatorContainer.addChild(indicator);
-                indicator.initialized = true;
-            }
-        }
     }
 
     private readonly _borderContainer = $("#minimap-border");
@@ -714,23 +706,5 @@ export class MapPing {
     destroy(): void {
         this.mapImage.destroy();
         this.inGameImage?.destroy();
-    }
-}
-
-export class TeammateIndicator extends SuroiSprite {
-    id: number;
-    initialized: boolean;
-    color: Color;
-
-    constructor(position: Vector, id: number, color: Color, scale: number) {
-        super();
-        this.position = position;
-        this.setFrame("player_indicator")
-            .setVPos(position)
-            .setTint(color)
-            .setScale(scale);
-        this.initialized = false;
-        this.color = color;
-        this.id = id;
     }
 }
