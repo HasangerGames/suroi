@@ -10,7 +10,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         })
     })
 )(
-    apply => [
+    ({ simple }) => [
         "Happy Face",
         "Sad Face",
         "Thumbs Up",
@@ -80,5 +80,5 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         "Chicken Dinner",
         "oof",
         "real"
-    ].map(name => apply("emote_factory", {}, name))
+    ].map(name => simple("emote_factory", name))
 );

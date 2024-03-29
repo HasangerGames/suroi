@@ -140,7 +140,6 @@ export class Game {
 
         void (async() => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
-
             const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
 
             await this.pixi.init({
@@ -197,7 +196,7 @@ export class Game {
 
             setInterval(() => {
                 if (this.console.getBuiltInCVar("pf_show_fps")) {
-                    $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                    this.uiManager.debugReadouts.fps.text(`${Math.round(this.pixi.ticker.FPS)} fps`);
                 }
             }, 500);
         })();
@@ -303,7 +302,7 @@ export class Game {
                 }
                 case PacketType.Ping: {
                     const ping = Date.now() - this.lastPingDate;
-                    $("#ping-counter").text(`${ping} ms`);
+                    this.uiManager.debugReadouts.ping.text(`${ping} ms`);
                     setTimeout((): void => {
                         this.sendPacket(new PingPacket());
                         this.lastPingDate = Date.now();
@@ -573,11 +572,13 @@ export class Game {
 
         for (const emote of updateData.emotes) {
             const player = this.objects.get(emote.playerID);
-            if (player instanceof Player) {
-                if (!this.console.getBuiltInCVar("cv_hide_emotes")) { player.emote(emote.definition); }
-            } else {
+            if (!(player instanceof Player)) {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
+                continue;
             }
+
+            if (this.console.getBuiltInCVar("cv_hide_emotes")) continue;
+            player.emote(emote.definition);
         }
 
         this.gas.updateFrom(updateData);
@@ -793,18 +794,25 @@ export class Game {
                     this.inputManager.isMobile &&
                     canInteract &&
                     (
-                        ( // Auto pickup
-                            object instanceof Loot &&
-                            // Only pick up melees if no melee is equipped
-                            (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
-                            // Only pick up guns if there's a free slot
-                            (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
-                            type !== ItemType.Skin
+                        (
+                            this.console.getBuiltInCVar("cv_auto_pickup") && (
+                                // Auto pickup
+                                object instanceof Loot &&
+
+                                // Only pick up melees if no melee is equipped
+                                (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+
+                                // Only pick up guns if there's a free slot
+                                (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+
+                                // Don't pick up skins
+                                type !== ItemType.Skin
+                            )
                         ) ||
                         ( // Auto open doors
                             object instanceof Obstacle &&
                             object.canInteract(player) &&
-                            object.door?.offset === 0
+                            object.definition.role === ObstacleSpecialRoles.Door
                         )
                     )
                 ) {

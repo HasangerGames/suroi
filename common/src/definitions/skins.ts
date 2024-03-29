@@ -35,17 +35,17 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         }
     })
 )(
-    apply => [
-        apply("with_role", {}, ["hasanger"], ["Hasanger"]),
-        apply("with_role", {}, ["leia"], ["Leia"]),
-        apply("with_role", {}, ["limenade"], ["LimeNade"]),
-        apply("with_role", {}, ["katie"], ["Katie"]),
-        apply("with_role", {}, ["eipi"], ["eipi"]),
-        apply("with_role", {}, ["123op"], ["123OP"]),
-        apply("with_role", {}, ["radians"], ["Radians"]),
-        apply("with_role", {}, ["developr"], ["Developr Swag"]),
-        apply("with_role", {}, ["designr"], ["Designr Swag"]),
-        apply("with_role", {}, ["composr"], ["Composr Swag"]),
+    ({ apply, simple }) => [
+        simple("with_role", ["hasanger"], ["Hasanger"]),
+        simple("with_role", ["leia"], ["Leia"]),
+        simple("with_role", ["limenade"], ["LimeNade"]),
+        simple("with_role", ["katie"], ["Katie"]),
+        simple("with_role", ["eipi"], ["eipi"]),
+        simple("with_role", ["123op"], ["123OP"]),
+        simple("with_role", ["radians"], ["Radians"]),
+        simple("with_role", ["developr"], ["Developr Swag"]),
+        simple("with_role", ["designr"], ["Designr Swag"]),
+        simple("with_role", ["composr"], ["Composr Swag"]),
         ...[
             "HAZEL Jumpsuit",
             "The Amateur",
@@ -86,7 +86,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             "Armadillo",
             "Printer",
             "Distant Shores"
-        ].map(name => apply("skin_factory", {}, name)),
+        ].map(name => simple("skin_factory", name)),
         ...[
             "Lemon",
             "Flamingo",
@@ -105,7 +105,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             "Stardust",
             "Aurora",
             "Nebula"
-        ].map(name => apply("hidden_skin", {}, [], [name])),
+        ].map(name => simple("hidden_skin", [], [name])),
         apply(
             "hidden_skin",
             {
