@@ -535,13 +535,6 @@ export class Game {
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
-            if (teamMode) {
-                const team = this.teams.find(team => team.id === player.teamID);
-                if (team) {
-                    removeFrom(team.players, player);
-                    team.setDirty();
-                }
-            }
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
