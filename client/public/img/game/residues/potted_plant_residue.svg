@@ -16,7 +16,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
+
      id="defs1" />
+
   <sodipodi:namedview
      id="namedview54"
      pagecolor="#505050"
@@ -308,4 +310,5 @@
      style="fill:none;stroke:#090503;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
      d="m 38.154093,22.299189 c 4.387723,-0.696007 11.126269,-2.60391 14.938091,-6.514201"
      id="path9" />
+
 </svg>

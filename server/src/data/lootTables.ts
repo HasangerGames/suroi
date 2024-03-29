@@ -321,6 +321,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "maul", weight: 1 }
         ]
     },
+    gun_mount_hp18: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "hp18", weight: 1 }
+        ]
+    },
     gas_can: {
         min: 1,
         max: 1,
@@ -471,6 +478,15 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "deep_sea", weight: 1 }
+        ]
+    },
+    potted_plant: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "healing_items", weight: 0.5 },
+            { tier: "equipment", weight: 0.3 }
         ]
     }
 };

@@ -19,16 +19,9 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"><defs
-   id="defs19" />
-<style
+   id="defs19" />&#10;<style
    type="text/css"
-   id="style1">
-	.st0{fill:#8A4C25;stroke:#58310E;stroke-width:6.3199;stroke-linejoin:round;stroke-miterlimit:11.3386;}
-	.st1{fill:#713E1E;stroke:#58310E;stroke-width:6.3199;stroke-linejoin:round;stroke-miterlimit:11.3386;}
-	.st2{fill:#5C3924;stroke:#301B08;stroke-width:6.3199;stroke-linejoin:round;stroke-miterlimit:11.3386;}
-	.st3{fill:#5C3924;stroke:#301B08;stroke-width:6;stroke-linejoin:round;stroke-miterlimit:11.3386;}
-</style>
-<sodipodi:namedview
+   id="style1">&#10;	.st0{fill:#8A4C25;stroke:#58310E;stroke-width:6.3199;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;	.st1{fill:#713E1E;stroke:#58310E;stroke-width:6.3199;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;	.st2{fill:#5C3924;stroke:#301B08;stroke-width:6.3199;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;	.st3{fill:#5C3924;stroke:#301B08;stroke-width:6;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;</style>&#10;<sodipodi:namedview
    bordercolor="#ffffff"
    borderopacity="0.24705882"
    id="namedview1"
@@ -47,56 +40,42 @@
    inkscape:window-y="0"
    inkscape:zoom="0.40378396"
    pagecolor="#505050"
-   showgrid="false">
-	</sodipodi:namedview>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<rect
+   showgrid="false">&#10;	</sodipodi:namedview>&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;<rect
    x="15.119902"
    y="1097.8699"
    class="st0"
    width="269.83011"
    height="38.299999"
-   id="rect26" /><rect
+   id="rect26"
+   style="fill:#713e1e;fill-opacity:1" /><rect
    x="15.119902"
    y="1059.5699"
    class="st1"
    width="269.83011"
    height="38.299999"
-   id="rect27" /><rect
+   id="rect27"
+   style="fill:#8a4c25;fill-opacity:1" /><rect
    x="15.119902"
    y="944.66998"
    class="st0"
    width="269.83011"
    height="38.299999"
-   id="rect28" /><rect
+   id="rect28"
+   style="fill:#713e1e;fill-opacity:1" /><rect
    x="15.119902"
    y="1021.27"
    class="st0"
    width="269.83011"
    height="38.299999"
-   id="rect29" /><rect
+   id="rect29"
+   style="fill:#713e1e;fill-opacity:1" /><rect
    x="15.119902"
    y="982.96997"
    class="st1"
    width="269.83011"
    height="38.299999"
-   id="rect30" /><rect
+   id="rect30"
+   style="fill:#8a4c25;fill-opacity:1" /><rect
    x="15.119902"
    y="906.37"
    class="st0"
@@ -240,49 +219,24 @@
    class="st1"
    width="269.83011"
    height="38.299999"
-   id="rect18" />
-<g
+   id="rect18" />&#10;<g
    id="layer1"
    inkscape:groupmode="layer"
    inkscape:label="Layer 1"
-   transform="translate(-223.38011,-107.22993)">
-	
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	<rect
+   transform="translate(-223.38011,-107.22993)">&#10;	&#10;		&#10;	&#10;		&#10;	&#10;		&#10;	&#10;		&#10;	&#10;		&#10;	&#10;		&#10;	<rect
    id="rect19"
    x="493.79007"
    y="132.54001"
    class="st3"
    width="14.7"
-   height="1111.0198" />
-	
-		<rect
+   height="1111.0198" />&#10;	&#10;		<rect
    id="rect13_00000022555540556800429040000002834010471983543956_"
    x="238.34006"
    y="132.54001"
    class="st3"
    width="14.7"
    height="1111.0198"
-   style="stroke:#301b08;stroke-opacity:1" />
-	
-		
-	
-		
-	
-		
-	
-		
-<path
+   style="stroke:#301b08;stroke-opacity:1" />&#10;	&#10;		&#10;	&#10;		&#10;	&#10;		&#10;	&#10;		&#10;<path
    id="path6_00000070092079030562847080000014733248964584088961_"
    sodipodi:arc-type="arc"
    sodipodi:cx="501.14008"
@@ -450,5 +404,4 @@
    sodipodi:start="3.1669708"
    sodipodi:type="arc"
    class="st2"
-   d="m 481.99631,1246.0739 a 19.149935,19.150055 0 0 1 19.62893,-18.658 19.149935,19.150055 0 0 1 18.65864,19.6283 19.149935,19.150055 0 0 1 -19.62741,18.6596 19.149935,19.150055 0 0 1 -18.66024,-19.6268" /></g>
-</svg>
+   d="m 481.99631,1246.0739 a 19.149935,19.150055 0 0 1 19.62893,-18.658 19.149935,19.150055 0 0 1 18.65864,19.6283 19.149935,19.150055 0 0 1 -19.62741,18.6596 19.149935,19.150055 0 0 1 -18.66024,-19.6268" /></g>&#10;</svg>

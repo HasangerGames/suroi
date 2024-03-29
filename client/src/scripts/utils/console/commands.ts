@@ -1,6 +1,6 @@
 // noinspection JSConstantReassignment
 import $ from "jquery";
-import { Rectangle, Sprite } from "pixi.js";
+import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
@@ -11,9 +11,11 @@ import { Numeric } from "../../../../../common/src/utils/math";
 import { handleResult, type Result } from "../../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
+import { Config } from "../../config";
 import { type Game } from "../../game";
 import { COLORS } from "../constants";
 import { type InputManager } from "../inputManager";
+import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
 
@@ -616,7 +618,9 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_minimap",
         function(): undefined {
-            if (!$("canvas").hasClass("over-hud")) { game.map.toggleMinimap(); }
+            if (!$("canvas").hasClass("over-hud")) {
+                game.console.setBuiltInCVar("cv_minimap_minimized", !game.console.getBuiltInCVar("cv_minimap_minimized"));
+            }
         },
         game,
         {
@@ -1075,8 +1079,21 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "",
-            long: "",
+            short: "Prints out the values of CVars",
+            long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:" +
+            `<ul>${(
+                [
+                    [null, "null"],
+                    [undefined, "undefined"],
+                    ["abcd", "string"],
+                    [1234, "number"],
+                    [false, "boolean"],
+                    [5678n, "bigint"],
+                    [Symbol.for("efgh"), "symbol"],
+                    [function sin(x: number): void {}, "function"],
+                    [{}, "object"]
+                ] as Array<[unknown, string]>
+            ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -1104,7 +1121,7 @@ export function setUpCommands(game: Game): void {
 
             if (gameConsole.variables.has.custom(name)) {
                 return {
-                    err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do <code>assign ${name} ${value}</code>)`
+                    err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do 'assign ${name} ${value}')`
                 };
             }
 
@@ -1196,7 +1213,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            const retVal = gameConsole.variables.get(name)!.setValue(value);
+            const retVal = gameConsole.variables.set(name, value);
             gameConsole.writeToLocalStorage();
 
             return retVal;
@@ -1215,6 +1232,65 @@ export function setUpCommands(game: Game): void {
                         {
                             name: "value",
                             type: ["string", "number", "boolean"]
+                        }
+                    ],
+                    noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<string>(
+        "toggle",
+        (name, ...values) => {
+            if (name === undefined) {
+                return {
+                    err: "Expected at least 1 argument, received none"
+                };
+            }
+
+            if (!gameConsole.variables.has(name)) {
+                return {
+                    err: `CVar '${name}' doesn't exist`
+                };
+            }
+
+            const cvar = gameConsole.variables.get(name)!;
+
+            if (values.length === 0) {
+                values = ["true", "false"];
+            }
+
+            const index = values.indexOf(`${cvar.value}`);
+
+            if (index === -1) {
+                return {
+                    err: `CVar '${name}' has a value not contained in the list of options (${cvar.value})`
+                };
+            }
+
+            return cvar.setValue(values[(index + 1) % values.length]);
+        },
+        game,
+        {
+            short: "Cycles a CVar's value through a set of values",
+            long:
+                "When invoked, this command retrieves the CVar designated by <code>name</code>. If its current value is not in " +
+                "<code>values</code>, or if the CVar doesn't exist, an error is thrown. Otherwise, the CVar is assigned to the " +
+                "element in the list following the one corresponding to the current CVar's value. Any errors from this assignment are " +
+                "rethrown by this command. Invoking this command with only a CVar's name is equivalent to passing in <code>true false</code>" +
+                "for <code>values</code>",
+            signatures: [
+                {
+                    args: [
+                        {
+                            name: "name",
+                            type: ["string"]
+                        },
+                        {
+                            name: "values",
+                            type: ["string", "number", "boolean"],
+                            rest: true
                         }
                     ],
                     noexcept: false
@@ -1269,7 +1345,7 @@ export function setUpCommands(game: Game): void {
             const alias = gameConsole.aliases.get(name);
 
             if (alias) {
-                gameConsole.log(`Alias '${name}' is defined as <code>${alias}</code>`);
+                gameConsole.log.raw(`Alias '${name}' is defined as <code>${sanitizeHTML(alias)}</code>`);
             } else {
                 return { err: `No alias named '${name}' exists` };
             }
@@ -1346,7 +1422,7 @@ export function setUpCommands(game: Game): void {
             long:
                 // eslint-disable-next-line prefer-template
                 "If given the name of a command, this command logs that command's help info, along with its signatures.<br>" +
-                "The signatures of a command are all the different possible ways in can be invoked. Each signature follows" +
+                "The signatures of a command are all the different possible ways in can be invoked. Each signature follows " +
                 "the following format: <code>noexcept-marker? command-name params</code>" +
                 `<ul>${(
                     [
@@ -1402,6 +1478,71 @@ export function setUpCommands(game: Game): void {
                         type: ["boolean"]
                     }],
                     noexcept: false
+                }
+            ]
+        }
+    );
+
+    Command.createCommand<string>(
+        "dump_client_info",
+        function(raw): undefined {
+            const data = {
+                version: APP_VERSION,
+                api_url: API_URL,
+                client_protocol_version: GameConstants.protocolVersion,
+                pixi: {
+                    version: VERSION,
+                    renderer_info: {
+                        type: RendererType[game.pixi.renderer.type],
+                        resolution: game.pixi.renderer.resolution
+                    }
+                },
+                user_agent: {
+                    ua_string: navigator.userAgent,
+                    language: navigator.language,
+                    online: navigator.onLine
+                },
+                regions: Config.regions,
+                mode: Config.mode,
+                default_region: Config.defaultRegion
+            };
+
+            if (handleResult(Casters.toBoolean(raw ?? "false"), () => false)) {
+                game.console.log.raw(
+                    JSON.stringify(data, null, 2)
+                        .replace(/\n| /g, r => ({ "\n": "<br>", " ": "&nbsp;" }[r] ?? ""))
+                );
+            } else {
+                const construct = (obj: Record<string, unknown>, namespace = ""): string => {
+                    let retVal = "<ul>";
+
+                    for (const [key, value] of Object.entries(obj)) {
+                        retVal += `<li><b>${key}</b>: ${typeof value === "object" && value !== null ? construct(value as Record<string, unknown>) : String(value)}</li>`;
+                    }
+
+                    return `${retVal}</ul>`;
+                };
+
+                game.console.log.raw(
+                    construct(data)
+                );
+            }
+        },
+        game,
+        {
+            short: "Gives info about the client",
+            long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, " +
+                "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
+            signatures: [
+                {
+                    args: [
+                        {
+                            name: "raw",
+                            type: ["boolean"],
+                            optional: true
+                        }
+                    ],
+                    noexcept: true
                 }
             ]
         }

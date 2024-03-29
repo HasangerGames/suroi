@@ -1,7 +1,7 @@
 import { isMobile } from "pixi.js";
 import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
 import { type Stringable } from "./gameConsole";
-import { Casters, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
+import { Casters, type CVarChangeListener, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
@@ -80,11 +80,15 @@ export type CVarTypeMapping = {
 };
 
 type SimpleCVarMapping = {
-    [K in keyof typeof CVarCasters]: ExtractConVarValue<CVarTypeMapping[K]> | JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>>
+    [K in keyof typeof CVarCasters]: ExtractConVarValue<CVarTypeMapping[K]> | {
+        readonly value: ExtractConVarValue<CVarTypeMapping[K]>
+        readonly changeListeners: CVarChangeListener<ExtractConVarValue<CVarTypeMapping[K]>> | Array<CVarChangeListener<ExtractConVarValue<CVarTypeMapping[K]>>>
+    }
 };
 
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
+
     cv_loadout_skin: "hazel_jumpsuit",
     cv_loadout_badge: "",
     cv_loadout_crosshair: 0,
@@ -94,38 +98,43 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_loadout_left_emote: "sad_face",
     cv_loadout_death_emote: "",
     cv_loadout_win_emote: "",
+    cv_music_volume: 1,
+    cv_sfx_volume: 1,
+    cv_master_volume: 1,
+
     cv_loop_scope_selection: false,
     cv_anonymize_player_names: false,
     cv_hide_emotes: false,
-    cv_master_volume: 1,
-    cv_music_volume: 1,
-    cv_sfx_volume: 1,
     cv_use_old_menu_music: false,
     cv_region: "",
     cv_camera_shake_fx: true,
     cv_killfeed_style: "text",
-    cv_weapon_slot_style: "simple",
+    cv_weapon_slot_style: "simple", // change to "colored"?
     cv_movement_smoothing: true,
     cv_responsive_rotation: true,
+
     cv_antialias: true,
     cv_renderer: "webgl2",
     cv_renderer_res: "auto",
     cv_high_res_textures: true,
-    // blur kills splash screen performance on phones from my testing
-    cv_blur_splash: !isMobile.any,
-    cv_minimap_minimized: false,
-    cv_leave_warning: true,
-    cv_ui_scale: 1,
-    cv_minimap_transparency: 0.8,
-    cv_map_transparency: 0.9,
+    cv_blur_splash: !isMobile.any, // blur kills splash screen performance on phones from my testing
+
     cv_rules_acknowledged: false,
     cv_hide_rules_button: false,
+    cv_leave_warning: true,
+    cv_ui_scale: 1,
+
+    cv_minimap_minimized: false,
+    cv_minimap_transparency: 0.8,
+    cv_map_transparency: 0.9,
+
     cv_console_width: window.innerWidth / 2,
     cv_console_height: window.innerWidth / 2,
     cv_console_left: window.innerWidth / 4,
     cv_console_top: window.innerWidth / 4,
+
     cv_crosshair_color: "#000000",
-    cv_crosshair_size: 30,
+    cv_crosshair_size: 1.5,
     cv_crosshair_stroke_color: "#000000",
     cv_crosshair_stroke_size: 0,
 
