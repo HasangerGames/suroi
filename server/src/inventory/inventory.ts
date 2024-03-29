@@ -341,7 +341,7 @@ export class Inventory {
         return -1;
     }
 
-    private _dropItem(toDrop: Parameters<Game["addLoot"]>[0], options?: { readonly position?: Vector, readonly count?: number, readonly pushForce?: number }): void {
+    private _dropItem(toDrop: ReifiableDef<LootDefinition>, options?: { readonly position?: Vector, readonly count?: number, readonly pushForce?: number }): void {
         this.owner.game
             .addLoot(toDrop, options?.position ?? this.owner.position, options?.count ?? 1)
             .push(this.owner.rotation, options?.pushForce ?? -0.03);
@@ -454,63 +454,69 @@ export class Inventory {
      * Attempts to drop a item with given `idString`
      * @param itemString The `idString` of the item;
      */
-    dropItem(itemString: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | AmmoDefinition | ArmorDefinition | BackpackDefinition, pushForce = -0.03): void {
-        const definition = itemString.itemType === ItemType.Armor || ItemType.Backpack ? Loots.fromString(itemString.idString) : Loots.reify(itemString);
-        const idString = definition.idString;
+    dropItem(itemString: ReifiableDef<LootDefinition>, pushForce = -0.03): void {
+        const definition = Loots.reify(itemString);
+        const { idString } = definition;
 
-        if (!this.items.hasItem(idString) && definition.itemType !== ItemType.Armor && definition.itemType !== ItemType.Backpack) return;
-
-        Logger.log(`${itemString.idString}`);
+        if (
+            (
+                !this.items.hasItem(idString) &&
+                definition.itemType !== ItemType.Armor &&
+                definition.itemType !== ItemType.Backpack
+            ) ||
+            definition.noDrop
+        ) return;
 
         switch (definition.itemType) {
-            case ItemType.Healing: {
-                this._dropItem(definition, { pushForce });
-                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1);
+            case ItemType.Healing:
+            case ItemType.Ammo: {
+                const itemAmount = this.items.getItem(idString);
+                const removalAmount = Math.min(itemAmount, Math.ceil(itemAmount / 2));
+
+                this._dropItem(definition, { pushForce, count: removalAmount });
+                this.items.decrementItem(idString, removalAmount);
                 break;
             }
             case ItemType.Scope: {
                 this._dropItem(definition, { pushForce });
-                const newScope = Scopes.definitions.indexOf(definition) - 1;
-                if (newScope >= 0) {
-                    this.scope = Scopes.definitions[newScope];
+                this.items.setItem(idString, 0);
+
+                if (this.scope.idString !== idString) break;
+
+                // Switch to next highest scope
+                for (let i = Scopes.definitions.length - 1; i >= 0; i--) {
+                    const scope = Scopes.definitions[i];
+                    if (this.items.hasItem(scope.idString)) {
+                        this.scope = this.owner.effectiveScope = scope;
+                        break;
+                    }
                 }
-                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1);
                 break;
             }
             case ItemType.Throwable: {
-                this._dropItem(definition, { pushForce });
-                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1);
-                break;
-            }
-            case ItemType.Ammo: {
-                this._dropItem(definition, { pushForce });
-                this.owner.inventory.items.setItem(idString, this.owner.inventory.items.getItem(definition.idString) - 1);
+                this.removeThrowable(definition, true);
                 break;
             }
             case ItemType.Armor: {
-                if (definition) {
-                    this._dropItem(definition.idString, { pushForce });
-                }
+                this._dropItem(definition, { pushForce });
                 switch (definition.armorType) {
                     case ArmorType.Helmet: {
-                        this.owner.inventory.helmet = undefined;
+                        this.helmet = undefined;
                         break;
                     }
                     case ArmorType.Vest: {
-                        this.owner.inventory.vest = undefined;
+                        this.vest = undefined;
                         break;
                     }
                 }
                 break;
             }
             case ItemType.Backpack: {
-                this._dropItem(definition, { pushForce });
-                this.owner.inventory.backpack = Loots.fromString("bag");
-                break;
+                return;
             }
         }
 
-        this.owner.game.fullDirtyObjects.add(this.owner);
+        this.owner.setDirty();
         this.owner.dirty.items = true;
     }
 

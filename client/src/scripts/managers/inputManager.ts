@@ -56,6 +56,10 @@ export class InputManager {
             action = { type: action } as InputAction;
         }
 
+        if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
+            this.game.soundManager.play("pickup");
+        }
+
         this.actions.push(action);
     }
 

@@ -1219,7 +1219,7 @@ Video evidence is required.`)) {
         dropItemListener(game, $(`#${ammo.idString}-slot`), ammo);
     }
 
-    for (const armor of ["helmet", "vest"]) {
+    for (const armor of ["helmet", "vest"] as const) {
         const armorContainer = $(`#${armor}-slot`);
 
         armorContainer[0].addEventListener(
@@ -1235,21 +1235,6 @@ Video evidence is required.`)) {
             }
         );
     }
-
-    const backpackContainer = $("#backpack-slot");
-
-    backpackContainer[0].addEventListener(
-        "pointerdown",
-        (e: PointerEvent): void => {
-            e.stopImmediatePropagation();
-            if (e.button === 2 && game.activePlayer) {
-                game.inputManager.addAction({
-                    type: InputActions.DropItem,
-                    item: game.activePlayer.getEquipment("backpack")
-                });
-            }
-        }
-    );
 
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(isMobile.any);

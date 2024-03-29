@@ -487,7 +487,7 @@ export class Game {
         this.connectedPlayers.add(player);
         this.newPlayers.push(player);
         this.grid.addObject(player);
-        this.fullDirtyObjects.add(player);
+        player.setDirty();
         this.aliveCountDirty = true;
         this.updateObjects = true;
 

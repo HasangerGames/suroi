@@ -603,7 +603,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             obj.rotation += 1;
             obj.rotation %= 4;
         }
-        this.game.fullDirtyObjects.add(this.objectToPlace);
+        this.objectToPlace.setDirty();
         if (this.startedAttacking) {
             const map = this.game.map;
             const round = (n: number): number => Math.round(n * 100) / 100;
@@ -998,7 +998,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     disableInvulnerability(): void {
         if (this.invulnerable) {
             this.invulnerable = false;
-            this.game.fullDirtyObjects.add(this);
+            this.setDirty();
         }
     }
 
@@ -1378,7 +1378,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
                 case InputActions.DropItem: {
                     this.action?.cancel();
-                    Logger.log(action.item.idString);
                     inventory.dropItem(action.item);
                     break;
                 }
