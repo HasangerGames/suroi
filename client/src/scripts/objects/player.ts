@@ -496,10 +496,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
 
             if (this.dead || this.reviving) {
-                if (this.teammateName) this.teammateName.text.visible = false;
                 clearInterval(this.bleedEffectInterval);
                 this.bleedEffectInterval = undefined;
             }
+
+            if (this.dead && this.teammateName) this.teammateName.container.visible = false;
 
             this._oldItem = this.activeItem;
             const itemDirty = this.activeItem !== full.activeItem;
