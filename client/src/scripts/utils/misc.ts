@@ -1,11 +1,3 @@
-import { InputActions } from "../../../../common/src/constants";
-import type { AmmoDefinition } from "../../../../common/src/definitions/ammos";
-import type { ArmorDefinition } from "../../../../common/src/definitions/armors";
-import type { BackpackDefinition } from "../../../../common/src/definitions/backpacks";
-import type { HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import type { ScopeDefinition } from "../../../../common/src/definitions/scopes";
-import type { ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import type { Game } from "../game";
 
 declare global {
     interface Element {
