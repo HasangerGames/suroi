@@ -704,6 +704,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.downed) {
             this.images.leftFist.setPos(38, 32);
             this.images.rightFist.setPos(38, -32);
+            this.images.helmet.setPos(10, 0)
             return;
         }
 
