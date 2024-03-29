@@ -14,7 +14,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             idString,
             name: idString,
             isTeamEmote: true
-        }),
+        })
     })
 )(
     ({ simple }) => [
