@@ -1101,7 +1101,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             }
 
-            if (teamMode && this.team!.players.some(p => !p.dead) && !this.downed) {
+            if (teamMode && this.team!.players.some(p => !p.dead && !p.downed) && !this.downed) {
                 this.down();
             } else {
                 this.die(source, weaponUsed);
