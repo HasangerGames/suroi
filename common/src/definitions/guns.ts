@@ -1245,14 +1245,14 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Auto,
             shotSpread: 3,
             moveSpread: 8,
-            length: 7.9,
+            length: 8.1,
             fists: {
-                left: Vec.create(105, -3),
+                left: Vec.create(117, -12),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(90, 0) },
+            image: { position: Vec.create(90, -2) },
             casingParticles: [
                 {
                     position: Vec.create(4, 0.6),
