@@ -2713,7 +2713,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                         ];
                     }).flat();
                 }).flat()
-            )
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(21.02, 69.69, Vec.create(0, 0))
         },
         {
             idString: "viking_chest",

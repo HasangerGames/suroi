@@ -830,6 +830,12 @@ Video evidence is required.`)) {
         "cv_loop_scope_selection"
     );
 
+    // Toggle auto pickup
+    addCheckboxListener(
+        "#toggle-auto-pickup",
+        "cv_auto_pickup"
+    );
+
     // Anonymous player names toggle
     addCheckboxListener(
         "#toggle-anonymous-player",
@@ -1248,6 +1254,8 @@ Video evidence is required.`)) {
             .on("click", () => {
                 game.console.handleQuery("reload");
             });
+        // Active weapon ammo button also reloads (surviv muscle memory lol)
+        $("#weapon-clip-ammo").on("click", () => game.console.handleQuery("reload"));
 
         // Emote button & wheel
         $("#emote-wheel")
