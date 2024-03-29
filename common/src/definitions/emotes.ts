@@ -7,6 +7,11 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         emote_factory: (name: string) => ({
             idString: name.toLowerCase().replace(/ /g, "_"),
             name
+        }),
+        team_emote: (idString: string) => ({
+            idString,
+            name: idString,
+            isTeamEmote: true
         })
     })
 )(
