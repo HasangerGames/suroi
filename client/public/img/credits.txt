@@ -92,7 +92,7 @@ Weapons:
   MP40 (Loot Image): jchen
   MP40 (World Image): Yeet120
 
-  Negev (Loot Image): DogEnjoyer, jchen
+  Negev (Loot Image): DogEnjoyer, jchen, Yeet120
   Negev (World Image): cobby
 
   Revitalizer (Loot Image): eiπ
