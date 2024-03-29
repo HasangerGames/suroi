@@ -124,24 +124,6 @@ export class UIManager {
         }
     }
 
-    static getIndicatorImage(
-        player: {
-            readonly id: number
-            readonly normalizedHealth: number
-            readonly downed?: boolean
-            readonly disconnected: boolean
-        }
-    ): string {
-        switch (true) {
-            case player.normalizedHealth === 0:
-                return "player_indicator_dead";
-            case player.downed:
-                return "player_indicator_downed";
-            default:
-                return "player_indicator";
-        }
-    }
-
     readonly ui = {
         ammoCounterContainer: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
@@ -828,23 +810,19 @@ class PlayerHealthUI {
 
     constructor(game: Game, data?: UpdateDataType) {
         this.game = game;
-        this.container = $<HTMLDivElement>("<div class=\"teammate-container\"></div>");
-        this.svgContainer = $<SVGElement>("<svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"></svg>");
+        this.container = $<HTMLDivElement>('<div class="teammate-container"></div>');
+        this.svgContainer = $<SVGElement>('<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>');
 
         //hack wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
-        this.healthDisplay = $<SVGCircleElement>("<svg><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset ease-in-out 50ms;\" /></svg>").find("circle");
-        this.indicatorContainer = $<HTMLDivElement>("<div class=\"teammate-indicator-container\"></div>");
-        this.teammateIndicator = $<HTMLImageElement>("<img class=\"teammate-indicator\" />");
-        this.nameLabel = $<HTMLSpanElement>("<span class=\"teammate-name\"></span>");
-        this.badgeImage = $<HTMLImageElement>("<img class=\"teammate-badge\" />");
+        this.healthDisplay = $<SVGCircleElement>('<svg><circle r="21" cy="24" cx="24" stroke-width="6" stroke-dasharray="132" fill="none" style="transition: stroke-dashoffset ease-in-out 50ms;" /></svg>').find("circle");
+        this.indicatorContainer = $<HTMLDivElement>('<div class="teammate-indicator-container"></div>');
+        this.teammateIndicator = $<HTMLImageElement>('<img class="teammate-indicator" />');
+        this.nameLabel = $<HTMLSpanElement>('<span class="teammate-name"></span>');
+        this.badgeImage = $<HTMLImageElement>('<img class="teammate-badge" />');
 
         this.container.append(
-            this.svgContainer.append(
-                this.healthDisplay
-            ),
-            this.indicatorContainer.append(
-                this.teammateIndicator
-            ),
+            this.svgContainer.append(this.healthDisplay),
+            this.indicatorContainer.append(this.teammateIndicator),
             this.nameLabel,
             this.badgeImage
         );
@@ -904,7 +882,7 @@ class PlayerHealthUI {
         let indicator: TeammateIndicator | undefined;
 
         if (this._id.value !== this.game.activePlayerID) {
-            const teammateIndicators = this.game.map.teammateIndicators;
+            const { teammateIndicators } = this.game.map;
             const id = this._id.value;
             if (this._position.dirty && this._position.value) {
                 if (!teammateIndicators.has(id)) {
@@ -926,13 +904,7 @@ class PlayerHealthUI {
         }
 
         if (recalcIndicatorFrame) {
-            const frame = UIManager.getIndicatorImage({
-                id: this._id.value,
-                normalizedHealth: this._normalizedHealth.value,
-                downed: this._downed.value,
-                disconnected: this._disconnected.value
-            });
-
+            const frame = `player_indicator${this._normalizedHealth.value === 0 ? "_dead" : this._downed.value ? "_downed" : ""}`;
             this.teammateIndicator.attr("src", `./img/game/player/${frame}.svg`);
             indicator?.setFrame(frame);
         }
