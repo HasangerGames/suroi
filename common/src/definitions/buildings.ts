@@ -264,254 +264,78 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "house",
-            name: "House",
-            spawnHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(41, 51, Vec.create(31.50, -14.50)), // Garage
-                RectangleHitbox.fromRect(68, 68, Vec.create(-18, -6)), // Main House
-                RectangleHitbox.fromRect(28, 17, Vec.create(-31, 31.50)) // Doorstep
-            ),
+            idString: "green_house",
+            name: "Green House",
+            spawnHitbox: RectangleHitbox.fromRect(110, 70),
             scopeHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(34.50, 42, Vec.create(29.25, -15.50)), // Garage
-                RectangleHitbox.fromRect(60.50, 56, Vec.create(-17.25, -8.50)), // Main House
-                RectangleHitbox.fromRect(15, 11, Vec.create(-31.50, 24.50)) // Doorstep
+                RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
+                RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1))
             ),
             floorImages: [{
-                key: "house_floor",
+                key: "green_house_floor",
                 position: Vec.create(0, 0)
             }],
             ceilingImages: [{
-                key: "house_ceiling",
-                position: Vec.create(0, -1.5)
+                key: "green_house_ceiling",
+                position: Vec.create(-2, -1.1)
             }],
             floors: [
                 {
-                    type: "stone",
-                    hitbox: RectangleHitbox.fromRect(33, 41.50, Vec.create(29.50, -15.25)) // Garage
-                },
-                {
                     type: "wood",
                     hitbox: new HitboxGroup(
-                        RectangleHitbox.fromRect(60, 56, Vec.create(-18, -9)), // Main House
-                        RectangleHitbox.fromRect(18.80, 14, Vec.create(-31.40, 27)) // Doorstep
+                        RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
+                        RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1)),
+                        RectangleHitbox.fromRect(6, 13.5, Vec.create(47.7, 7.1))
                     )
+                },
+                {
+                    type: "stone",
+                    hitbox: RectangleHitbox.fromRect(10.3, 5, Vec.create(-35.7, 30.2))
                 }
             ],
             obstacles: [
-                // Bathroom Left
-                {
-                    idString: "house_wall_4",
-                    position: Vec.create(-3.6, 8.5),
-                    rotation: 1
-                },
-                // Bathroom Top
-                {
-                    idString: "house_wall_1",
-                    position: Vec.create(-2.6, -2.8),
-                    rotation: 0
-                },
-                // Entrance Right
-                {
-                    idString: "house_wall_4",
-                    position: Vec.create(-25.2, 8.5),
-                    rotation: 1
-                },
-                // Kitchen Top
-                {
-                    idString: "house_wall_1",
-                    position: Vec.create(-21.65, -2.8),
-                    rotation: 0
-                },
-                // Living Room Bottom Right
-                {
-                    idString: "house_wall_3",
-                    position: Vec.create(6.35, -14.5),
-                    rotation: 0
-                },
-                // Living Room Left
-                {
-                    idString: "house_wall_2",
-                    position: Vec.create(-18.25, -25.6),
-                    rotation: 1
-                },
-                // Bedroom Bottom Left
-                {
-                    idString: "house_wall_3",
-                    position: Vec.create(-41, -14.5),
-                    rotation: 0
-                },
-                // Bedroom Bottom Right/Living Room Bottom Left
-                {
-                    idString: "house_wall_5",
-                    position: Vec.create(-17.28, -14.5),
-                    rotation: 0
-                },
-                {
-                    idString: {
-                        toilet: 0.7,
-                        used_toilet: 0.3
-                    },
-                    position: Vec.create(7, 14.4),
-                    rotation: 2
-                },
-                {
-                    idString: "stove",
-                    position: Vec.create(-9.3, 15.3),
-                    rotation: 2
-                },
-                {
-                    idString: "fridge",
-                    position: Vec.create(-19.5, 15.3),
-                    rotation: 2
-                },
-                // Living Room Couch
-                {
-                    idString: "couch",
-                    position: Vec.create(-13.3, -26),
-                    rotation: 0
-                },
-                // Living Room Large Drawers
-                {
-                    idString: "large_drawer",
-                    position: Vec.create(8.2, -26),
-                    rotation: 3
-                },
-                // Living Room TV
-                {
-                    idString: "tv",
-                    position: Vec.create(11.5, -26),
-                    rotation: 0
-                },
-                // House Exterior
-                {
-                    idString: "house_exterior",
-                    position: Vec.create(0, -2.6),
-                    rotation: 0
-                },
-                // Chair Bottom
-                {
-                    idString: "chair",
-                    position: Vec.create(-41, 13),
-                    rotation: 0
-                },
-                // Chair Top
-                {
-                    idString: "chair",
-                    position: Vec.create(-41, 3),
-                    rotation: 2
-                },
-                {
-                    idString: "table",
-                    position: Vec.create(-41, 8),
-                    rotation: 0
-                },
-                {
-                    idString: "bed",
-                    position: Vec.create(-40.6, -27.5),
-                    rotation: 0
-                },
-                // Bedroom Bookshelf
-                {
-                    idString: "bookshelf",
-                    position: Vec.create(-21.6, -29.25),
-                    rotation: 1
-                },
-                // Bedroom Drawer
-                {
-                    idString: "small_drawer",
-                    position: Vec.create(-23, -19.3),
-                    rotation: 3
-                },
-                // Toilet Bookshelf
-                {
-                    idString: "bookshelf",
-                    position: Vec.create(-0.2, 12.5),
-                    rotation: 1
-                },
-                // Garage Washing Machine
-                {
-                    idString: "washing_machine",
-                    position: Vec.create(18.7, -31.9),
-                    rotation: 0
-                },
-                // Garage Crate
-                {
-                    idString: "regular_crate",
-                    position: Vec.create(41.5, -30.9),
-                    rotation: 0
-                },
-                // Garage Barrel
-                {
-                    idString: "barrel",
-                    position: Vec.create(41.5, -20),
-                    rotation: 0
-                },
-                // Garage Bookshelf
-                {
-                    idString: "bookshelf",
-                    position: Vec.create(44.05, -1.55),
-                    rotation: 1
-                },
-                // Garage Door
-                {
-                    idString: "garage_door",
-                    position: Vec.create(30.18, 6.5),
-                    rotation: 0
-                },
-                // Front Door
-                {
-                    idString: "door",
-                    position: Vec.create(-30.85, 20),
-                    rotation: 0
-                },
-                // Bedroom Door
-                {
-                    idString: "door",
-                    position: Vec.create(-29.85, -14.5),
-                    rotation: 0
-                },
-                // Living Room Door
-                {
-                    idString: "door",
-                    position: Vec.create(-3.85, -14.5),
-                    rotation: 0
-                },
-                // Kitchen Door
-                {
-                    idString: "door",
-                    position: Vec.create(-12.6, -2.8),
-                    rotation: 2
-                },
-                // Door to Garage
-                {
-                    idString: "door",
-                    position: Vec.create(13, -8.1),
-                    rotation: 3
-                },
-                // Bathroom Door
-                {
-                    idString: "door",
-                    position: Vec.create(6.5, -2.8),
-                    rotation: 2
-                },
-                // Living Room Window
-                {
-                    idString: "window",
-                    position: Vec.create(-1.4, -36.75),
-                    rotation: 1
-                },
-                // Bedroom Window
-                {
-                    idString: "window",
-                    position: Vec.create(-28.65, -36.75),
-                    rotation: 1
-                },
-                // Dining Room Window
-                {
-                    idString: "window",
-                    position: Vec.create(-47.35, -8.35),
-                    rotation: 0
-                }
+                { idString: "green_house_exterior", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "window", position: Vec.create(32.99, -12.81), rotation: 0 },
+                { idString: "window", position: Vec.create(17.59, 27.52), rotation: 1 },
+                { idString: "window", position: Vec.create(-23.44, -30.22), rotation: 1 },
+                { idString: "door", position: Vec.create(33.03, 6.74), rotation: 1 },
+                { idString: "door", position: Vec.create(11.92, -13.22), rotation: 1 },
+                { idString: "door", position: Vec.create(-36.15, 27.47), rotation: 2 },
+                { idString: "door", position: Vec.create(-22.56, -6.26), rotation: 0 },
+                { idString: "house_wall_1", position: Vec.create(-13.3, -6.24), rotation: 0 },
+                { idString: "house_wall_3", position: Vec.create(11.99, -23.64), rotation: 1 },
+                { idString: "house_wall_4", position: Vec.create(-7.26, -18.54), rotation: 1 },
+                { idString: "house_wall_5", position: Vec.create(2.24, -6.35), rotation: 0 },
+                { idString: "house_wall_6", position: Vec.create(-7.33, 18.92), rotation: 1 },
+                { idString: "house_wall_7", position: Vec.create(-38.53, -6.29), rotation: 0 },
+                { idString: "house_column", position: Vec.create(-7.33, 9.98), rotation: 0 },
+                { idString: "house_column", position: Vec.create(11.76, -6.26), rotation: 0 },
+                { idString: "house_column", position: Vec.create(-7.27, -6.32), rotation: 0 },
+
+                { idString: "toilet", position: Vec.create(-2.32, -24.62), rotation: 0 },
+                { idString: "mobile_home_sink", position: Vec.create(5.91, -25.11), rotation: 0 },
+                { idString: "bed", position: Vec.create(-43.06, -20.98), rotation: 0 },
+                { idString: "small_drawer", position: Vec.create(-33.63, -25.48), rotation: 0 },
+                { idString: "potted_plant", position: Vec.create(17.46, -25.03) },
+                { idString: "potted_plant", position: Vec.create(-12.73, -12.13) },
+                { idString: "washing_machine", position: Vec.create(27.07, -25.54), rotation: 0 },
+                { idString: "tv", position: Vec.create(2.43, -4.51), rotation: 1 },
+                { idString: "large_drawer", position: Vec.create(28.24, 20), rotation: 3 },
+                { idString: "couch", position: Vec.create(2.36, 22.18), rotation: 1 },
+                { idString: "green_house_small_table", position: Vec.create(2.02, 11.51), rotation: 1 },
+                { idString: "green_house_large_table", position: Vec.create(-15.91, 16.87), rotation: 0 },
+                { idString: "chair", position: Vec.create(-21.87, 20.61), rotation: 3 },
+                { idString: "chair", position: Vec.create(-21.87, 13.45), rotation: 3 },
+                { idString: "chair", position: Vec.create(-16.02, 8.25), rotation: 2 },
+                { idString: "fridge", position: Vec.create(-45.15, 21.66), rotation: 1 },
+                { idString: "stove", position: Vec.create(-45.15, 12.3), rotation: 1 },
+                { idString: "large_drawer", position: Vec.create(-45.12, 1.28), rotation: 1 },
+                { idString: "gun_mount_hp18", position: Vec.create(30.33, -2.98), rotation: 3 },
+                { idString: "bookshelf", position: Vec.create(-10.88, -22.62), rotation: 1 }
+            ],
+            lootSpawners: [
+                { table: "ground_loot", position: Vec.create(18.48, 6.37) },
+                { table: "ground_loot", position: Vec.create(-23.91, -18.07) }
             ]
         },
         {
@@ -1050,16 +874,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "small_house",
-            name: "Small House",
+            idString: "red_house",
+            name: "Red House",
             spawnHitbox: RectangleHitbox.fromRect(80, 80),
             scopeHitbox: RectangleHitbox.fromRect(60, 56),
             floorImages: [{
-                key: "house_floor_small",
+                key: "red_house_floor",
                 position: Vec.create(0, 0)
             }],
             ceilingImages: [{
-                key: "house_ceiling_small",
+                key: "red_house_ceiling",
                 position: Vec.create(0, 0)
             }],
             floors: [
@@ -1078,30 +902,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                // Bedroom Right
-                {
-                    idString: "house_wall_2",
-                    position: Vec.create(-19.5, -6.75),
-                    rotation: 2
-                },
-                // Bedroom Bottom Right
-                {
-                    idString: "house_wall_1",
-                    position: Vec.create(5.4, -6.75),
-                    rotation: 2
-                },
-                // Bedroom Bottom Left
-                {
-                    idString: "house_wall_2",
-                    position: Vec.create(8.85, -18),
-                    rotation: 1
-                },
-                // Bedroom Door
-                {
-                    idString: "door",
-                    position: Vec.create(-4.5, -6.75),
-                    rotation: 2
-                },
+                { idString: "house_wall_4", position: Vec.create(8.75, -18), rotation: 1 },
+                { idString: "house_wall_1", position: Vec.create(2.73, -6.07), rotation: 0 },
+                { idString: "house_wall_9", position: Vec.create(-20.94, -6.07), rotation: 0 },
+                { idString: "house_column", position: Vec.create(8.75, -6.12), rotation: 0 },
+                { idString: "door", position: Vec.create(-7.36, -6.06), rotation: 2 },
+                { idString: "bookshelf", position: Vec.create(5.11, -21.95), rotation: 1 },
+                { idString: "couch", position: Vec.create(-21.48, -1.01), rotation: 3 },
+                { idString: "large_drawer", position: Vec.create(-25.98, 21.3), rotation: 1 },
                 // Bathroom Left
                 {
                     idString: "house_wall_4",
@@ -1129,25 +937,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // Front Door
                 {
                     idString: "door",
-                    position: Vec.create(-14.8, 29),
+                    position: Vec.create(-14.85, 29),
                     rotation: 2
                 },
                 {
                     idString: "door",
                     position: Vec.create(16.2, -29.5),
                     rotation: 2
-                },
-                // Living Room Couch
-                {
-                    idString: "couch",
-                    position: Vec.create(-21.6, -1.8),
-                    rotation: 3
-                },
-                // Living Room Drawer
-                {
-                    idString: "large_drawer",
-                    position: Vec.create(-26.2, 21.5),
-                    rotation: 1
                 },
                 // Living Room Bookshelf
                 {
@@ -1203,12 +999,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(-26, -11.5),
                     rotation: 1
                 },
-                // Bedroom Bookshelf
-                {
-                    idString: "bookshelf",
-                    position: Vec.create(5.5, -22),
-                    rotation: 1
-                },
                 // Bedroom Window
                 {
                     idString: "window",
@@ -1234,16 +1024,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: 2
                 },
                 {
-                    idString: "small_house_exterior",
+                    idString: "red_house_exterior",
                     position: Vec.create(0, 0),
                     rotation: 2
                 }
-
             ],
-            lootSpawners: [{
-                position: Vec.create(-15.4, 6.8),
-                table: "ground_loot"
-            }]
+            lootSpawners: [
+                { table: "ground_loot", position: Vec.create(16.44, -15.64) },
+                { table: "ground_loot", position: Vec.create(-15.42, 17.44) }
+            ]
         },
         {
             idString: "crane",
