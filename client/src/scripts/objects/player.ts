@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, TilingSprite, Text, Color } from "pixi.js";
+import { Container, Text, TilingSprite } from "pixi.js";
 import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
@@ -20,9 +20,9 @@ import { random, randomBoolean, randomFloat, randomRotation, randomSign, randomV
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type GameSound } from "../managers/soundManager";
 import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { type GameSound } from "../managers/soundManager";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";

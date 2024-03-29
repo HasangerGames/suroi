@@ -6,8 +6,13 @@ import { GameConstants, InputActions, ObjectCategory, PacketType, TeamSize } fro
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { Loots } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
+import type { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
+import { PingPacket } from "../../../common/src/packets/pingPacket";
+import type { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
@@ -15,6 +20,9 @@ import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/object
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { InputManager } from "./managers/inputManager";
+import { SoundManager } from "./managers/soundManager";
+import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
@@ -34,19 +42,11 @@ import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
 import { resetPlayButtons, setUpUI } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
+import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
-import { InputManager } from "./managers/inputManager";
 import { loadTextures } from "./utils/pixi";
-import { SoundManager } from "./managers/soundManager";
 import { Tween } from "./utils/tween";
-import { UIManager } from "./managers/uiManager";
-import { defaultClientCVars } from "./utils/console/defaultClientCVars";
-import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { JoinPacket } from "../../../common/src/packets/joinPacket";
-import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
-import type { JoinedPacket } from "../../../common/src/packets/joinedPacket";
-import type { UpdatePacket } from "../../../common/src/packets/updatePacket";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -255,7 +255,17 @@ export class Game {
             const joinPacket = new JoinPacket();
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
-            joinPacket.skin = Loots.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_skin")) ?? Loots.fromString(defaultClientCVars.cv_loadout_skin);
+
+            // why are you enforcing this here and not in the giant file filled from top-to-bottom with snake case
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            let cv_loadout_skin: typeof defaultClientCVars["cv_loadout_skin"];
+            joinPacket.skin = Loots.fromStringSafe(
+                this.console.getBuiltInCVar("cv_loadout_skin")
+            ) ?? Loots.fromString(
+                typeof (cv_loadout_skin = defaultClientCVars.cv_loadout_skin) === "object"
+                    ? cv_loadout_skin.value
+                    : cv_loadout_skin
+            );
 
             joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));
 

@@ -28,7 +28,7 @@ import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, ReloadAction, type Action, ReviveAction } from "../inventory/action";
+import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, type InventoryItem } from "../inventory/inventoryItem";
@@ -36,14 +36,14 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
 import { Team, teamMode } from "../team";
-import { Logger, removeFrom } from "../utils/misc";
+import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
+import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
