@@ -508,26 +508,16 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always
             }
         ),
-        {
-            idString: "melee_crate",
-            name: "Melee Crate",
-            material: "crate",
-            health: 100,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.6
-            },
-            spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: RectangleHitbox.fromRect(6.1, 6.1),
-            rotationMode: RotationMode.None,
-            allowFlyover: FlyoverPref.Always,
-            hasLoot: true,
-            frames: {
-                particle: "crate_particle",
-                residue: "regular_crate_residue"
+        apply(
+            "crate",
+            {
+                idString: "melee_crate",
+                name: "Melee Crate",
+                hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+                rotationMode: RotationMode.None,
+                allowFlyover: FlyoverPref.Always
             }
-        },
+        ),
         {
             idString: "ammo_crate",
             name: "Ammo Crate",
