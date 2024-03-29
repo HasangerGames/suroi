@@ -367,7 +367,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
             this.team = this.game.incompleteTeam;
             this.teamID = this.game.incompleteTeam.id;
-            this.dirty.teammates = true;
+            this.team.setDirty();
         }
 
         const userData = socket.getUserData();
