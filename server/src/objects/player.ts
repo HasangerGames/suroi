@@ -68,9 +68,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     disconnected = false;
 
     private _team?: Team;
-    get team(): Team | undefined {
-        return this._team;
-    }
+    get team(): Team | undefined { return this._team; }
 
     set team(value: Team) {
         this.dirty.teammates = true;
@@ -1101,7 +1099,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             }
 
-            if (teamMode && this.team!.players.some(p => !p.dead && !p.downed) && !this.downed) {
+            if (teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this) && !this.downed) {
                 this.down();
             } else {
                 this.die(source, weaponUsed);
@@ -1138,7 +1136,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     // dies of death
     die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
         // Death logic
-        if (this.health > 0 || this.dead) return;
+        if (this._health > 0 || this.dead) return;
 
         this.health = 0;
         this.dead = true;
@@ -1224,6 +1222,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.activeItem.stopUse();
         }
 
+        let players: Player[] | undefined;
+        if ((players = this._team?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
+            for (const player of players) {
+                if (player === this) continue;
+
+                player.health = 0;
+                player.die();
+            }
+        }
+
         //
         // Drop loot
         //
@@ -1296,7 +1304,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.health = 100;
         this.adrenaline = this.minAdrenaline;
         this.setDirty();
-        this.team?.setDirty();
+        this._team?.setDirty();
     }
 
     revive(): void {
@@ -1304,7 +1312,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.reviving = false;
         this.health = 30;
         this.setDirty();
-        this.team?.setDirty();
+        this._team?.setDirty();
     }
 
     canInteract(player: Player): boolean {
