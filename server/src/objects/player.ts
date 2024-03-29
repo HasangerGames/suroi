@@ -798,7 +798,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             zoom: player._scope.zoomLevel,
             id: player.id,
             teammates: teamMode
-                ? this.team!.players.filter(p => p !== this).map(player => {
+                ? this.team!.players.filter(p => p.id !== this.id).map(player => {
                     return {
                         id: player.id,
                         position: player.position,
@@ -1106,7 +1106,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             } else {
                 this.die(source, weaponUsed);
             }
-            this.team?.setDirty();
         }
     }
 
@@ -1297,6 +1296,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.health = 100;
         this.adrenaline = this.minAdrenaline;
         this.setDirty();
+        this.team?.setDirty();
     }
 
     revive(): void {
@@ -1304,6 +1304,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.reviving = false;
         this.health = 30;
         this.setDirty();
+        this.team?.setDirty();
     }
 
     canInteract(player: Player): boolean {

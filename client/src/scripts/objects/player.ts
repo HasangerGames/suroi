@@ -490,6 +490,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.reviving = full.reviving;
 
             if (this.downed && !this.reviving && !this.bleedEffectInterval) {
+                this.hitEffect(this.position, randomRotation(), "bleed");
                 this.bleedEffectInterval = setInterval(() => {
                     this.hitEffect(this.position, randomRotation(), "bleed");
                 }, 1000);
