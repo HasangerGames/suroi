@@ -307,18 +307,24 @@ export class Game {
         this.updateObjects = false;
 
         // Winning logic
-        if (this._started && this.aliveCount < 2 && !this.over) {
-            // Send game over packet to the last man standing
-            if (this.aliveCount === 1) {
-                const lastManStanding = [...this.livingPlayers][0];
-                const movement = lastManStanding.movement;
+        if (
+            this._started &&
+            !this.over &&
+            (
+                teamMode
+                    ? new Set([...this.livingPlayers].map(p => p.teamID)).size === 1
+                    : this.aliveCount === 1
+            )
+        ) {
+            for (const player of this.livingPlayers) {
+                const { movement } = player;
                 movement.up = false;
                 movement.down = false;
                 movement.left = false;
                 movement.right = false;
-                lastManStanding.attacking = false;
-                lastManStanding.sendEmote(lastManStanding.loadout.emotes[5]);
-                lastManStanding.sendGameOverPacket(true);
+                player.attacking = false;
+                player.sendEmote(player.loadout.emotes[5]);
+                player.sendGameOverPacket(true);
             }
 
             // End the game in 1 second
@@ -498,7 +504,11 @@ export class Game {
 
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
-        if (this.aliveCount > 1 && !this._started && this.startTimeout === undefined) {
+        if (
+            (teamMode ? this.teams.length : this.aliveCount) > 1 &&
+            !this._started &&
+            this.startTimeout === undefined
+        ) {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;

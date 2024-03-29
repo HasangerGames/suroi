@@ -366,6 +366,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.game.incompleteTeam.players.push(this);
             }
             this.team = this.game.incompleteTeam;
+            this.teamID = this.game.incompleteTeam.id;
             this.dirty.teammates = true;
         }
 
