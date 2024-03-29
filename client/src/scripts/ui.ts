@@ -340,7 +340,7 @@ export async function setUpUI(game: Game): Promise<void> {
         },
         {
             name: "AWMZ",
-            link: "https://www.youtube.com/@AWMZ6000"
+            link: "https://www.youtube.com/@AWMZfn"
         },
         {
             name: "Ukraines dude",
