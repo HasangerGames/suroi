@@ -1,4 +1,3 @@
-
 declare global {
     interface Element {
         requestFullscreen: (options?: FullscreenOptions) => Promise<void>
