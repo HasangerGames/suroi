@@ -323,7 +323,7 @@ export class Game {
                 movement.left = false;
                 movement.right = false;
                 player.attacking = false;
-                player.sendEmote(player.loadout.emotes[5]);
+                player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
             }
 

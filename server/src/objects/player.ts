@@ -1213,7 +1213,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
-        if (this.loadout.emotes[4]?.idString !== "none") this.sendEmote(this.loadout.emotes[4]);
+        this.sendEmote(this.loadout.emotes[5]);
 
         this.game.livingPlayers.delete(this);
         this.game.fullDirtyObjects.add(this);
