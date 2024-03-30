@@ -404,7 +404,7 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: teamMode && this.teamSpawnPoint
+                            getPosition: teamMode && this.teamSpawnPoint && this.incompleteTeam!.players.length < Config.maxTeamSize
                                 ? () => randomPointInsideCircle(this.teamSpawnPoint!, 12, 8)
                                 : undefined,
                             collides: (position) => {
