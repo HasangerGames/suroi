@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { type Color } from "pixi.js";
-import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
+import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
@@ -11,9 +11,12 @@ import { type ScopeDefinition } from "../../../../common/src/definitions/scopes"
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedMessage, type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
+import { freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type GameObject } from "../objects/gameObject";
+import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -571,60 +574,136 @@ export class UIManager {
         );
     }
 
+    private static readonly _eventDescriptionMap: Record<KillfeedEventType, Record<KillfeedEventSeverity, string>> = freezeDeep({
+        [KillfeedEventType.Suicide]: {
+            [KillfeedEventSeverity.Kill]: "committed suicide",
+            [KillfeedEventSeverity.Down]: "knocked themselves out"
+        },
+        [KillfeedEventType.NormalTwoParty]: {
+            [KillfeedEventSeverity.Kill]: "killed",
+            [KillfeedEventSeverity.Down]: "knocked out"
+        },
+        [KillfeedEventType.BleedOut]: {
+            [KillfeedEventSeverity.Kill]: "bled out",
+            [KillfeedEventSeverity.Down]: "bled out non-lethally" // should be impossible
+        },
+        [KillfeedEventType.FinishedOff]: {
+            [KillfeedEventSeverity.Kill]: "finished off",
+            [KillfeedEventSeverity.Down]: "gently finished off" // should be impossible
+        },
+        [KillfeedEventType.FinallyKilled]: {
+            [KillfeedEventSeverity.Kill]: "finally killed",
+            [KillfeedEventSeverity.Down]: "finally knocked out" // should be impossible
+        },
+        [KillfeedEventType.Gas]: {
+            [KillfeedEventSeverity.Kill]: "died to",
+            [KillfeedEventSeverity.Down]: "was knocked out by"
+        },
+        [KillfeedEventType.Airdrop]: {
+            [KillfeedEventSeverity.Kill]: "was fatally crushed",
+            [KillfeedEventSeverity.Down]: "was knocked out"
+        }
+    });
+
     processKillFeedMessage(message: KillFeedMessage): void {
         const {
             messageType,
-            playerID,
+            victimId,
 
-            killType,
-            killerID,
-            kills,
+            eventType,
+            severity,
+
+            attackerId,
+            attackerKills,
             weaponUsed,
             killstreak,
 
-            hideInKillfeed
-        } = message;
+            hideFromKillfeed
+        } = {
+            eventType: KillfeedEventType.Suicide,
+            severity: KillfeedEventSeverity.Kill,
+            ...message
+        };
 
         const weaponPresent = weaponUsed !== undefined;
         const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
 
-        // TODO Clean up this code
+        const getNameAndBadge = (id?: number): { readonly name: string, readonly badgeText: string } => {
+            const hasId = id !== undefined;
+            const badge = hasId ? this.getPlayerBadge(id) : undefined;
 
-        const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
+            return {
+                name: hasId ? this.getPlayerName(id) : "",
+                badgeText: badge
+                    ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                    : ""
+            };
+        };
 
-        const playerBadge = playerID !== undefined ? this.getPlayerBadge(playerID) : undefined;
-        const playerBadgeText = playerBadge
-            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
-            : "";
+        const {
+            name: victimName,
+            badgeText: victimBadgeText
+        } = getNameAndBadge(victimId);
 
-        const killerName = killerID !== undefined ? this.getPlayerName(killerID) : "";
+        const {
+            name: attackerName,
+            badgeText: attackerBadgeText
+        } = getNameAndBadge(attackerId);
 
-        const killerBadge = killerID !== undefined ? this.getPlayerBadge(killerID) : undefined;
-        const killerBadgeText = killerBadge
-            ? `<img class="badge-icon" src="./img/game/badges/${killerBadge.idString}.svg" alt="${killerBadge.name} badge">`
-            : "";
+        const victimText = victimName + victimBadgeText;
+        const attackerText = attackerName + attackerBadgeText;
 
         let messageText: string | undefined;
         const classes: string[] = [];
 
         switch (messageType) {
-            case KillFeedMessageType.Kill: {
+            case KillfeedMessageType.DeathOrDown: {
                 const hasKillstreak = killstreak! > 1;
+
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         let killMessage = "";
-                        switch (killType) {
-                            case KillType.Suicide:
-                                killMessage = `${playerName}${playerBadgeText} committed suicide`;
+
+                        const description = UIManager._eventDescriptionMap[eventType][severity];
+                        // sod off
+                        // eslint-disable-next-line no-labels
+                        outer:
+                        switch (eventType) {
+                            case KillfeedEventType.FinallyKilled:
+                                switch (attackerId) {
+                                    case undefined:
+                                        // this can happen if the player is knocked out by a non-player entity (like gas or airdrop)
+                                        // if their team is then wiped, then no one "finally" killed them, they just… finally died
+                                        killMessage = `${victimText} finally died`;
+
+                                        // eslint-disable-next-line no-labels
+                                        break outer;
+                                    case victimId:
+                                        /*
+                                            usually, a case where attacker and victim are the same would be counted under the "suicide"
+                                            event type, but there was no easy way to route the event through the "suicide" type whilst
+                                            having it retain the "finally killed" part; this is the best option until someone comes up
+                                            with another
+                                        */
+                                        killMessage = `${victimText} finally ended themselves`;
+
+                                        // eslint-disable-next-line no-labels
+                                        break outer;
+                                }
+                                // fallthrough
+                            case KillfeedEventType.NormalTwoParty:
+                            case KillfeedEventType.FinishedOff:
+                                killMessage = `${attackerText} ${description} ${victimText}`;
                                 break;
-                            case KillType.TwoPartyInteraction:
-                                killMessage = `${killerName}${killerBadgeText} killed ${playerName}${playerBadgeText}`;
+                            case KillfeedEventType.Suicide:
+                            case KillfeedEventType.BleedOut:
+                                killMessage = `${victimText} ${description}`;
                                 break;
-                            case KillType.Gas:
-                                killMessage = `${playerName}${playerBadgeText} died to the gas`;
+                            case KillfeedEventType.Gas:
+                                killMessage = `${victimText} ${description} the gas`;
                                 break;
-                            case KillType.Airdrop:
-                                killMessage = `${playerName}${playerBadgeText} was crushed by an airdrop`;
+                            case KillfeedEventType.Airdrop:
+                                killMessage = `${victimText} ${description} by an airdrop`;
                                 break;
                         }
 
@@ -635,28 +714,27 @@ export class UIManager {
                          */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
                         const weaponNameText = weaponPresent ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}` : "";
+                        const icon = (() => {
+                            switch (severity) {
+                                case KillfeedEventSeverity.Down:
+                                    return "<img class=\"kill-icon\" src=\"./img/misc/downed.svg\" alt=\"Downed\">";
+                                case KillfeedEventSeverity.Kill:
+                                    return "<img class=\"kill-icon\" src=\"./img/misc/skull_icon.svg\" alt=\"Skull\">";
+                            }
+                        })();
 
                         messageText = `
-                        ${hasKillstreak ? killstreak : ""}
-                        <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
+                        ${hasKillstreak && severity === KillfeedEventSeverity.Kill ? killstreak : ""}
+                        ${icon}
                         ${killMessage}${weaponNameText}`;
                         break;
                     }
                     case "icon": {
-                        const killerName2 = killType === KillType.TwoPartyInteraction ? killerName : "";
-                        let iconName = "";
-                        switch (killType) {
-                            case KillType.Gas:
-                                iconName = "gas";
-                                break;
-                            case KillType.Airdrop:
-                                iconName = "airdrop";
-                                break;
-                            default:
-                                iconName = weaponUsed?.idString ?? "";
-                                break;
-                        }
-                        const altText = weaponUsed ? weaponUsed.name : iconName;
+                        const downedIcon = "<img class=\"kill-icon\" src=\"./img/misc/downed.svg\" alt=\"Downed\">";
+                        const skullIcon = "<img class=\"kill-icon\" src=\"./img/misc/skull_icon.svg\" alt=\"Finished off\">";
+                        const bleedOutIcon = "<img class=\"kill-icon\" src=\"./img/misc/bleed_out.svg\" alt=\"Bleed out\">";
+                        const finallyKilledIcon = "<img class=\"kill-icon\" src=\"./img/misc/finally_killed.svg\" alt=\"Finally killed\">";
+
                         const killstreakText = hasKillstreak
                             ? `
                             <span style="font-size: 80%">(${killstreak}
@@ -664,62 +742,126 @@ export class UIManager {
                             </span>`
                             : "";
 
-                        messageText = `\
-                        ${killerName2}\
-                        ${killerBadgeText}\
-                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
-                        ${killstreakText}\
-                        ${playerBadgeText}\
-                        ${playerName}`;
+                        let iconName = "";
+                        switch (eventType) {
+                            case KillfeedEventType.Gas:
+                                iconName = "gas";
+                                break;
+                            case KillfeedEventType.Airdrop:
+                                iconName = "airdrop";
+                                break;
+                            default:
+                                iconName = weaponUsed?.idString ?? "";
+                                break;
+                        }
+                        const altText = weaponUsed ? weaponUsed.name : iconName;
+                        const weaponText = `<img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">`;
+
+                        const severityIcon = (() => {
+                            switch (severity) {
+                                case KillfeedEventSeverity.Down:
+                                    return downedIcon;
+                                case KillfeedEventSeverity.Kill:
+                                    return "";
+                            }
+                        })();
+
+                        let body = "";
+                        switch (eventType) {
+                            case KillfeedEventType.FinallyKilled:
+                                console.log(attackerId);
+                                switch (attackerId) {
+                                    case undefined:
+                                        body = `${skullIcon} ${victimText}`;
+                                        break;
+                                    case victimId:
+                                        body = `${finallyKilledIcon} ${victimText}`;
+                                        break;
+                                    default:
+                                        body = `${attackerText} ${killstreakText} ${finallyKilledIcon} ${victimText}`;
+                                        break;
+                                }
+                                break;
+                            case KillfeedEventType.NormalTwoParty:
+                                body = `${attackerText} ${killstreakText} ${weaponText} ${victimText}`;
+                                break;
+                            case KillfeedEventType.FinishedOff:
+                                body = `${skullIcon} ${attackerText} ${killstreakText} ${weaponText} ${victimText}`;
+                                break;
+                            case KillfeedEventType.Suicide:
+                            case KillfeedEventType.Gas:
+                            case KillfeedEventType.Airdrop:
+                                body = `${weaponText} ${victimText}`;
+                                break;
+                            case KillfeedEventType.BleedOut:
+                                body = `${bleedOutIcon} ${victimText}`;
+                                break;
+                        }
+
+                        messageText = severityIcon + body;
                         break;
                     }
                 }
 
+                /**
+                 * Whether the player pointed to by the given id is on the active player's team
+                 */
+                const playerIsOnThisTeam = (id?: number): boolean | undefined => {
+                    let target: GameObject | undefined;
+
+                    return id === this.game.activePlayerID || (
+                        id !== undefined &&
+                        (target = this.game.objects.get(id)) &&
+                        target instanceof Player &&
+                        target.teamID === this.game.teamID
+                    );
+                };
+
                 switch (true) {
-                    case playerID === this.game.activePlayerID: { // was killed
+                    case playerIsOnThisTeam(victimId): {
                         classes.push("kill-feed-item-victim");
                         break;
                     }
-                    case killerID === this.game.activePlayerID: { // killed other
+                    case playerIsOnThisTeam(attackerId): {
                         classes.push("kill-feed-item-killer");
-                        this._addKillMessage(kills!, `${playerName}${playerBadgeText}`, weaponUsed?.name ?? "", killstreak);
+                        this._addKillMessage(attackerKills!, `${victimName}${victimBadgeText}`, weaponUsed?.name ?? "", killstreak);
                         break;
                     }
                 }
                 break;
             }
 
-            case KillFeedMessageType.KillLeaderAssigned: {
-                if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+            case KillfeedMessageType.KillLeaderAssigned: {
+                if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
 
-                $("#kill-leader-leader").html(`${playerName}${playerBadgeText}`);
-                $("#kill-leader-kills-counter").text(kills!);
+                $("#kill-leader-leader").html(`${victimName}${victimBadgeText}`);
+                $("#kill-leader-kills-counter").text(attackerKills!);
 
-                if (!hideInKillfeed) {
-                    messageText = `<i class="fa-solid fa-crown"></i> ${playerName}${playerBadgeText} promoted to Kill Leader!`;
+                if (!hideFromKillfeed) {
+                    messageText = `<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
                 $("#btn-spectate-kill-leader").show();
                 break;
             }
 
-            case KillFeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(kills!);
+            case KillfeedMessageType.KillLeaderUpdated: {
+                $("#kill-leader-kills-counter").text(attackerKills!);
                 break;
             }
 
-            case KillFeedMessageType.KillLeaderDead: {
+            case KillfeedMessageType.KillLeaderDead: {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID
-                    ? `${killerID !== playerID
-                        ? `${killerName}${killerBadgeText} killed Kill Leader!`
+                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
+                    ? `${attackerId !== victimId
+                        ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
                         : "The Kill Leader is dead!"}`
                     : "The Kill Leader killed themselves!"
                 }`;
-                if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
-                else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
+                if (attackerId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+                else if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
                 $("#btn-spectate-kill-leader").hide();
                 break;

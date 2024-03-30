@@ -1,5 +1,5 @@
 import { type WebSocket } from "uWebSockets.js";
-import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketType } from "../../common/src/constants";
+import { GameConstants, KillfeedMessageType, KillfeedEventType, ObjectCategory, PacketType } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
@@ -360,15 +360,15 @@ export class Game {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
-                this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
+                this._sendKillFeedMessage(KillfeedMessageType.KillLeaderAssigned);
             }
         } else if (player === oldKillLeader) {
-            this._sendKillFeedMessage(KillFeedMessageType.KillLeaderUpdated);
+            this._sendKillFeedMessage(KillfeedMessageType.KillLeaderUpdated);
         }
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { killType: KillType.TwoPartyInteraction, killerID: killer?.id });
+        this._sendKillFeedMessage(KillfeedMessageType.KillLeaderDead, { eventType: KillfeedEventType.NormalTwoParty, attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -376,15 +376,15 @@ export class Game {
             }
         }
         this._killLeader = newKillLeader;
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
+        this._sendKillFeedMessage(KillfeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
+    private _sendKillFeedMessage(messageType: KillfeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
         if (this._killLeader === undefined) return;
         this.killFeedMessages.push({
             messageType,
-            playerID: this._killLeader.id,
-            kills: this._killLeader.kills,
+            victimId: this._killLeader.id,
+            attackerKills: this._killLeader.kills,
             ...options
         });
     }

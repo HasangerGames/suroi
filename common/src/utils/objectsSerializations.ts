@@ -47,7 +47,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         full?: {
             dead: boolean
             downed: boolean
-            reviving: boolean
+            beingRevived: boolean
             teamID: number
             invulnerable: boolean
             activeItem: WeaponDefinition
@@ -190,7 +190,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const full = data.full;
             stream.writeBoolean(full.dead);
             stream.writeBoolean(full.downed);
-            stream.writeBoolean(full.reviving);
+            stream.writeBoolean(full.beingRevived);
             stream.writeBits(full.teamID, 6);
             stream.writeBoolean(full.invulnerable);
             Loots.writeToStream(stream, full.activeItem);
@@ -232,7 +232,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const data: ObjectsNetData[ObjectCategory.Player]["full"] = {
                 dead: stream.readBoolean(),
                 downed: stream.readBoolean(),
-                reviving: stream.readBoolean(),
+                beingRevived: stream.readBoolean(),
                 teamID: stream.readBits(6),
                 invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),

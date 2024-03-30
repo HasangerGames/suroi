@@ -62,7 +62,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hideEquipment = false;
 
     downed = false;
-    reviving = false;
+    beingRevived = false;
     bleedEffectInterval?: NodeJS.Timeout;
 
     readonly images: {
@@ -487,16 +487,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
             }
 
-            this.reviving = full.reviving;
+            this.beingRevived = full.beingRevived;
 
-            if (this.downed && !this.reviving && !this.bleedEffectInterval) {
+            if (this.downed && !this.beingRevived && !this.bleedEffectInterval) {
                 this.hitEffect(this.position, randomRotation(), "bleed");
                 this.bleedEffectInterval = setInterval(() => {
                     this.hitEffect(this.position, randomRotation(), "bleed");
                 }, 1000);
             }
 
-            if (this.dead || this.reviving) {
+            if (this.dead || this.beingRevived) {
                 clearInterval(this.bleedEffectInterval);
                 this.bleedEffectInterval = undefined;
             }
@@ -515,19 +515,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
             const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
 
-            this.images.body
+            const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
+
+            body
                 .setFrame(`${skinID}_base`)
                 .setTint(tint);
-            this.images.leftFist
+            leftFist
                 .setFrame(`${skinID}_fist`)
                 .setTint(tint);
-            this.images.rightFist
+            rightFist
                 .setFrame(`${skinID}_fist`)
                 .setTint(tint);
-            this.images.leftLeg
+            leftLeg
                 ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
-            this.images.rightLeg
+            rightLeg
                 ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
 
@@ -705,7 +707,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.downed) {
             this.images.leftFist.setPos(38, 32);
             this.images.rightFist.setPos(38, -32);
-            this.images.helmet.setPos(10, 0)
+            this.images.helmet.setPos(10, 0);
             return;
         }
 
@@ -898,7 +900,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     canInteract(player: Player): boolean {
         return this.game.teamMode &&
             this.downed &&
-            !this.reviving &&
+            !this.beingRevived &&
             this !== player &&
             this.teamID === player.teamID;
     }

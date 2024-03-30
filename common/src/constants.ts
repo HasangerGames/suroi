@@ -49,8 +49,8 @@ export enum AnimationType {
     Revive
 }
 
-export enum KillFeedMessageType {
-    Kill,
+export enum KillfeedMessageType {
+    DeathOrDown,
     KillLeaderAssigned,
     KillLeaderDead,
     KillLeaderUpdated
@@ -99,11 +99,19 @@ export enum PlayerActions {
     Revive
 }
 
-export enum KillType {
+export enum KillfeedEventType {
     Suicide,
-    TwoPartyInteraction,
+    NormalTwoParty,
+    FinishedOff,
+    FinallyKilled,
     Gas,
+    BleedOut,
     Airdrop
+}
+
+export enum KillfeedEventSeverity {
+    Kill,
+    Down
 }
 
 export const DEFAULT_INVENTORY: Record<string, number> = {};
@@ -126,12 +134,13 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 17,
+    protocolVersion: 18,
     gridSize: 32,
     tickrate,
     // this is fine cause the object is frozen anyways, so
     // these two attributes can't ever be desynced
     msPerTick: 1000 / tickrate,
+    bleedOutDPMs: 0.002, // === 2 dps
     maxPosition: 1632,
     player: {
         radius: 2.25,

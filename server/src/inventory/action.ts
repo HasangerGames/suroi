@@ -34,19 +34,20 @@ export abstract class Action {
 export class ReviveAction extends Action {
     private readonly _type = PlayerActions.Revive;
     get type(): PlayerActions.Revive { return this._type; }
-    readonly reviving: Player;
+
+    readonly target: Player;
 
     override readonly speedMultiplier = 0.5;
 
-    constructor(player: Player, reviving: Player) {
-        super(player, GameConstants.player.reviveTime);
-        this.reviving = reviving;
+    constructor(reviver: Player, target: Player) {
+        super(reviver, GameConstants.player.reviveTime);
+        this.target = target;
     }
 
     override execute(): void {
         super.execute();
 
-        this.reviving.revive();
+        this.target.revive();
         this.player.animation = AnimationType.None;
         this.player.setDirty();
     }
@@ -54,8 +55,8 @@ export class ReviveAction extends Action {
     override cancel(): void {
         super.cancel();
 
-        this.reviving.reviving = false;
-        this.reviving.setDirty();
+        this.target.beingRevived = false;
+        this.target.setDirty();
 
         this.player.animation = AnimationType.None;
         this.player.setDirty();

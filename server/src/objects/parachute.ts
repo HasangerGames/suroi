@@ -1,4 +1,4 @@
-import { GameConstants, KillType, ObjectCategory } from "../../../common/src/constants";
+import { GameConstants, KillfeedEventType, ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
@@ -56,7 +56,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
                     switch (true) {
                         case object instanceof Player: {
-                            object.piercingDamage(GameConstants.airdrop.damage, KillType.Airdrop);
+                            object.piercingDamage(GameConstants.airdrop.damage, KillfeedEventType.Airdrop);
                             break;
                         }
                         case object instanceof Obstacle: {

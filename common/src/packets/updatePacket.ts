@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType, PacketType, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, PacketType, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
@@ -7,11 +7,11 @@ import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
-import { Vec, type Vector } from "../utils/vector";
 import { calculateEnumPacketBits, OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { Vec, type Vector } from "../utils/vector";
 
+import { MapPings, type MapPingDefinition } from "../definitions/mapPings";
 import { AbstractPacket } from "./packet";
-import { type MapPingDefinition, MapPings } from "../definitions/mapPings";
 
 interface ObjectFullData {
     readonly id: number
@@ -230,22 +230,35 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
     return data;
 }
 
-const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
-const KILL_TYPE_BITS = calculateEnumPacketBits(KillType);
+const KILLFEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillfeedMessageType);
+const KILLFEED_EVENT_TYPE_BITS = calculateEnumPacketBits(KillfeedEventType);
+const KILLFEED_EVENT_SEVERITY_BITS = calculateEnumPacketBits(KillfeedEventSeverity);
 
 const damageSourcesDefinitions = ObjectDefinitions.create<LootDefinition | ExplosionDefinition>([...Loots, ...Explosions]);
 
 function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessage): void {
-    stream.writeBits(message.messageType, KILL_FEED_MESSAGE_TYPE_BITS);
+    stream.writeBits(message.messageType, KILLFEED_MESSAGE_TYPE_BITS);
     switch (message.messageType) {
-        case KillFeedMessageType.Kill: {
-            stream.writeObjectID(message.playerID!);
+        case KillfeedMessageType.DeathOrDown: {
+            stream.writeObjectID(message.victimId!);
 
-            stream.writeBits(message.killType ?? KillType.Suicide, KILL_TYPE_BITS);
-            if (message.killType === KillType.TwoPartyInteraction) {
-                stream.writeObjectID(message.killerID!);
-                stream.writeUint8(message.kills!);
+            const type = message.eventType ?? KillfeedEventType.Suicide;
+            stream.writeBits(type, KILLFEED_EVENT_TYPE_BITS);
+            if (
+                [
+                    KillfeedEventType.NormalTwoParty,
+                    KillfeedEventType.FinishedOff,
+                    KillfeedEventType.FinallyKilled
+                ].includes(type)
+            ) {
+                const hasAttacker = message.attackerId !== undefined;
+                stream.writeBoolean(hasAttacker);
+                if (hasAttacker) {
+                    stream.writeObjectID(message.attackerId!);
+                    stream.writeUint8(message.attackerKills!);
+                }
             }
+            stream.writeBits(message.severity ?? KillfeedEventSeverity.Kill, KILLFEED_EVENT_SEVERITY_BITS);
 
             const weaponWasUsed = message.weaponUsed !== undefined;
             stream.writeBoolean(weaponWasUsed);
@@ -262,53 +275,62 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
             break;
         }
 
-        case KillFeedMessageType.KillLeaderAssigned: {
-            stream.writeObjectID(message.playerID!);
-            stream.writeUint8(message.kills!);
-            stream.writeBoolean(message.hideInKillfeed ?? false);
+        case KillfeedMessageType.KillLeaderAssigned: {
+            stream.writeObjectID(message.victimId!);
+            stream.writeUint8(message.attackerKills!);
+            stream.writeBoolean(message.hideFromKillfeed ?? false);
             break;
         }
 
-        case KillFeedMessageType.KillLeaderUpdated: {
-            stream.writeUint8(message.kills!);
+        case KillfeedMessageType.KillLeaderUpdated: {
+            stream.writeUint8(message.attackerKills!);
             break;
         }
 
-        case KillFeedMessageType.KillLeaderDead: {
-            stream.writeObjectID(message.playerID!);
-            stream.writeObjectID(message.killerID!);
+        case KillfeedMessageType.KillLeaderDead: {
+            stream.writeObjectID(message.victimId!);
+            stream.writeObjectID(message.attackerId!);
             break;
         }
     }
 }
 
 export interface KillFeedMessage {
-    messageType: KillFeedMessageType
-    playerID?: number
-    playerBadge?: BadgeDefinition
-    killType?: KillType
-    killerID?: number
-    killerBadge?: BadgeDefinition
-    kills?: number
+    messageType: KillfeedMessageType
+    victimId?: number
+    victimBadge?: BadgeDefinition
+    eventType?: KillfeedEventType
+    severity?: KillfeedEventSeverity
+    attackerId?: number
+    attackBadge?: BadgeDefinition
+    attackerKills?: number
     killstreak?: number
-    hideInKillfeed?: boolean
+    hideFromKillfeed?: boolean
     weaponUsed?: LootDefinition | ExplosionDefinition
 }
 
 function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
     const message = {
-        messageType: stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS)
+        messageType: stream.readBits(KILLFEED_MESSAGE_TYPE_BITS)
     } as KillFeedMessage;
 
     switch (message.messageType) {
-        case KillFeedMessageType.Kill: {
-            message.playerID = stream.readObjectID();
+        case KillfeedMessageType.DeathOrDown: {
+            message.victimId = stream.readObjectID();
 
-            message.killType = stream.readBits(KILL_TYPE_BITS);
-            if (message.killType === KillType.TwoPartyInteraction) {
-                message.killerID = stream.readObjectID();
-                message.kills = stream.readUint8();
+            const type = message.eventType = stream.readBits(KILLFEED_EVENT_TYPE_BITS);
+            if (
+                [
+                    KillfeedEventType.NormalTwoParty,
+                    KillfeedEventType.FinishedOff,
+                    KillfeedEventType.FinallyKilled
+                ].includes(type) &&
+                stream.readBoolean() // attacker present
+            ) {
+                message.attackerId = stream.readObjectID();
+                message.attackerKills = stream.readUint8();
             }
+            message.severity = stream.readBits(KILLFEED_EVENT_SEVERITY_BITS);
 
             if (stream.readBoolean()) { // used a weapon
                 message.weaponUsed = damageSourcesDefinitions.readFromStream(stream);
@@ -324,21 +346,21 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
             break;
         }
 
-        case KillFeedMessageType.KillLeaderAssigned: {
-            message.playerID = stream.readObjectID();
-            message.kills = stream.readUint8();
-            message.hideInKillfeed = stream.readBoolean();
+        case KillfeedMessageType.KillLeaderAssigned: {
+            message.victimId = stream.readObjectID();
+            message.attackerKills = stream.readUint8();
+            message.hideFromKillfeed = stream.readBoolean();
             break;
         }
 
-        case KillFeedMessageType.KillLeaderUpdated: {
-            message.kills = stream.readUint8();
+        case KillfeedMessageType.KillLeaderUpdated: {
+            message.attackerKills = stream.readUint8();
             break;
         }
 
-        case KillFeedMessageType.KillLeaderDead: {
-            message.playerID = stream.readObjectID();
-            message.killerID = stream.readObjectID();
+        case KillfeedMessageType.KillLeaderDead: {
+            message.victimId = stream.readObjectID();
+            message.attackerId = stream.readObjectID();
             break;
         }
     }
