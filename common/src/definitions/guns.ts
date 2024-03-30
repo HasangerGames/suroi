@@ -1247,7 +1247,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             moveSpread: 8,
             length: 8.1,
             fists: {
-                left: Vec.create(117, -12),
+                left: Vec.create(121, -16),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
