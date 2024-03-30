@@ -490,10 +490,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.beingRevived = full.beingRevived;
 
             if (this.downed && !this.beingRevived && !this.bleedEffectInterval) {
-                this.hitEffect(this.position, randomRotation(), "bleed");
-                this.bleedEffectInterval = setInterval(() => {
-                    this.hitEffect(this.position, randomRotation(), "bleed");
-                }, 1000);
+                const bleed = (): void => this.hitEffect(this.position, randomRotation(), "bleed");
+                bleed();
+                this.bleedEffectInterval = setInterval(bleed, 1000);
             }
 
             if (this.dead || this.beingRevived) {
@@ -533,12 +532,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
 
-            const {
-                hideEquipment,
-                helmetLevel,
-                vestLevel,
-                backpackLevel
-            } = this;
+            const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
             this.hideEquipment = skinDef.hideEquipment;
 
@@ -574,22 +568,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 case PlayerActions.None: {
                     // Reset fists after reviving
                     if (this.action.type === PlayerActions.Revive) {
-                        this.anims.leftFist = this.game.addTween({
-                            target: this.images.leftFist,
-                            to: Vec.create(38, -35),
-                            duration: 100,
-                            onComplete: () => {
-                                this.anims.leftFist = undefined;
-                            }
-                        });
-                        this.anims.rightFist = this.game.addTween({
-                            target: this.images.rightFist,
-                            to: Vec.create(38, 35),
-                            duration: 100,
-                            onComplete: () => {
-                                this.anims.rightFist = undefined;
-                            }
-                        });
+                        this.updateFistsPosition(true);
+                        this.updateWeapon();
                     }
 
                     if (this.isActivePlayer) {
@@ -1322,6 +1302,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.Revive: {
+                this.images.weapon.setVisible(false);
+                this.images.altWeapon.setVisible(false);
+                this.images.muzzleFlash.setVisible(false);
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
                 this.anims.leftFist = this.game.addTween({
                     target: this.images.leftFist,
                     to: Vec.create(28, -45),
