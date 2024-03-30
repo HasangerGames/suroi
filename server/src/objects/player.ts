@@ -353,20 +353,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
 
-        if (teamMode) {
-            if (!this.game.incompleteTeam || this.game.incompleteTeam?.players.length === Config.maxTeamSize) {
-                this.game.teamSpawnPoint = position;
-                this.game.incompleteTeam = new Team((this.game.incompleteTeam?.id ?? -1) + 1, this);
-                this.game.teams.push(this.game.incompleteTeam);
-            } else {
-                this.game.incompleteTeam.players.push(this);
-            }
-            this.team = this.game.incompleteTeam;
-            this.teamID = this.game.incompleteTeam.id;
-            this.team.setDirty();
+        if (team) {
+            this.team = team;
+            this.teamID = team.id;
+
+            team.players.push(this);
+            team.spawnPoint ??= position;
+            team.setDirty();
         }
 
         const userData = socket.getUserData();

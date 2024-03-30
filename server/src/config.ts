@@ -4,8 +4,6 @@ import { type Maps } from "./data/maps";
 
 export enum SpawnMode {
     Normal,
-    SameTID,
-    Random,
     Radius,
     Fixed,
     Center
@@ -70,20 +68,14 @@ export interface ConfigType {
     readonly mapName: keyof typeof Maps
 
     /**
-     * There are 5 spawn modes: `Normal`, `Random`, `Radius`, `Fixed`, and `Center`.
-     * - `SpawnMode.Normal` spawns the player at a random location with a minimum distance between players.
-     * - `SpawnMode.Random` spawns the player at a random location.
+     * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
+     * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
     readonly spawn: {
         readonly mode: SpawnMode.Normal
-    } | {
-        readonly mode: SpawnMode.SameTID
-        readonly radius: number
-    } | {
-        readonly mode: SpawnMode.Random
     } | {
         readonly mode: SpawnMode.Radius
         readonly position: Vector

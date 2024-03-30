@@ -769,7 +769,6 @@ export class UIManager {
                         let body = "";
                         switch (eventType) {
                             case KillfeedEventType.FinallyKilled:
-                                console.log(attackerId);
                                 switch (attackerId) {
                                     case undefined:
                                         body = `${skullIcon} ${victimText}`;

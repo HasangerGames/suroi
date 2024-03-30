@@ -43,7 +43,7 @@ interface MapDefinition {
     readonly genCallback?: (map: Map) => void
 }
 
-export const Maps: Record<string, MapDefinition> = {
+export const Maps = {
     main: {
         width: 1632,
         height: 1632,
@@ -343,7 +343,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1024,
         beachSize: 32,
         oceanSize: 64,
-        genCallback(map) {
+        genCallback(map: Map) {
             //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
             map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
         }
@@ -353,7 +353,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        genCallback(map) {
+        genCallback(map: Map) {
             map.generateObstacle("potted_plant", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
@@ -362,7 +362,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        genCallback(map) {
+        genCallback(map: Map) {
             map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
             map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
         }
@@ -375,7 +375,7 @@ export const Maps: Record<string, MapDefinition> = {
             height: 48 + (16 * Guns.length),
             beachSize: 8,
             oceanSize: 8,
-            genCallback(map) {
+            genCallback(map: Map) {
                 for (let i = 0, l = Guns.length; i < l; i++) {
                     const player = new Player(
                         map.game,
@@ -401,7 +401,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 48 + (32 * Obstacles.definitions.length),
         beachSize: 4,
         oceanSize: 4,
-        genCallback(map) {
+        genCallback(map: Map) {
             for (let i = 0; i < Obstacles.definitions.length; i++) {
                 const obstacle = Obstacles.definitions[i];
                 // setInterval(() => player.activeItem.useItem(), 30);
@@ -414,7 +414,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 256,
         beachSize: 16,
         oceanSize: 16,
-        genCallback(map) {
+        genCallback(map: Map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
                     const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));

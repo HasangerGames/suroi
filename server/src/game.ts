@@ -13,7 +13,7 @@ import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
@@ -38,7 +38,7 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import { teamMode, type Team } from "./team";
+import { teamMode, Team } from "./team";
 import { type MapPingDefinition, MapPings } from "../../common/src/definitions/mapPings";
 import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
 import NanoTimer from "nanotimer";
@@ -69,8 +69,9 @@ export class Game {
     readonly deletedPlayers: number[] = [];
 
     readonly teams: Team[] = [];
-    incompleteTeam?: Team;
-    teamSpawnPoint?: Vector;
+
+    private _nextTeamID = -1;
+    get nextTeamID(): number { return ++this._nextTeamID; }
 
     readonly explosions: Explosion[] = [];
     readonly emotes: Emote[] = [];
@@ -392,49 +393,47 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
 
-        const hitbox = new CircleHitbox(5);
+        let team: Team | undefined;
+        if (teamMode) {
+            const vacantTeams = this.teams.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
+            if (!vacantTeams.length) {
+                this.teams.push(team = new Team(this.nextTeamID));
+            } else {
+                team = pickRandomInArray(vacantTeams);
+            }
+        }
+
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
+                const hitbox = new CircleHitbox(5);
+                const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
+
                 let foundPosition = false;
                 let tries = 0;
                 while (!foundPosition && tries < 100) {
+                    // Find a random position
                     spawnPosition = this.map.getRandomPosition(
                         hitbox,
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: teamMode && this.teamSpawnPoint && this.incompleteTeam!.players.length < Config.maxTeamSize
-                                ? () => randomPointInsideCircle(this.teamSpawnPoint!, 12, 8)
+                            getPosition: teamMode && team!.spawnPoint
+                                ? () => randomPointInsideCircle(team!.spawnPoint!, 12, 8)
                                 : undefined,
-                            collides: (position) => {
-                                return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                            }
+                            collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius
                         }
                     ) ?? spawnPosition;
 
+                    // Ensure the position is at least 50 units from other players
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player && (!teamMode || !this.incompleteTeam?.players.includes(object))) {
+                        if (object instanceof Player && (!teamMode || !team!.players.includes(object))) {
                             foundPosition = false;
                         }
                     }
                     tries++;
                 }
-                break;
-            }
-            case SpawnMode.Random: {
-                const gasRadius = this.gas.newRadius ** 2;
-                spawnPosition = this.map.getRandomPosition(
-                    hitbox,
-                    {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: (position) => {
-                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                        }
-                    }
-                ) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Radius: {
@@ -452,7 +451,7 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, socket, spawnPosition);
+        return new Player(this, socket, spawnPosition, team);
     }
 
     // Called when a JoinPacket is sent by the client

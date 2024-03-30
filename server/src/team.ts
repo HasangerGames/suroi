@@ -1,17 +1,22 @@
 import { TeamSize } from "../../common/src/constants";
+import { type Vector } from "../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Player } from "./objects/player";
 
 export class Team {
     id: number;
-    leader: Player;
-    players: Player[];
+
+    players: Player[] = [];
+
+    spawnPoint?: Vector;
+
     kills = 0;
 
-    constructor(id: number, leader: Player) {
+    autoFill: boolean;
+
+    constructor(id: number, autoFill = true) {
         this.id = id;
-        this.leader = leader;
-        this.players = [leader];
+        this.autoFill = autoFill;
     }
 
     setDirty(): void {
