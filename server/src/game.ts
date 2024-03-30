@@ -312,7 +312,7 @@ export class Game {
             !this.over &&
             (
                 teamMode
-                    ? new Set([...this.livingPlayers].map(p => p.teamID)).size === 1
+                    ? this.aliveCount <= Config.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size === 1
                     : this.aliveCount === 1
             )
         ) {
