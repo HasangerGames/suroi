@@ -342,10 +342,10 @@ export const Maps: Record<string, MapDefinition> = {
         width: 1024,
         height: 1024,
         beachSize: 32,
-        oceanSize: 512,
+        oceanSize: 64,
         genCallback(map) {
             //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("sea_traffic_control", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
