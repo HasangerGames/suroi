@@ -359,7 +359,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     joinedTeam = true;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
-                    $("#create-team-url-field").val(`https://suroi.io/#${teamID}`);
+                    $("#create-team-url-field").val(`${window.location.origin}/#${teamID}`);
                     $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
                     $("#create-team-toggle-lock").prop("checked", data.locked);
                     $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
