@@ -330,7 +330,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "fridge", position: Vec.create(-45.15, 21.66), rotation: 1 },
                 { idString: "stove", position: Vec.create(-45.15, 12.3), rotation: 1 },
                 { idString: "large_drawer", position: Vec.create(-45.12, 1.28), rotation: 1 },
-                { idString: "gun_mount_hp18", position: Vec.create(30.33, -2.98), rotation: 3 },
+                { idString: "gun_mount_hp18", position: Vec.create(30.33, -2.98), rotation: 3, lootSpawnOffset: Vec.create(-4, 0) },
                 { idString: "bookshelf", position: Vec.create(-10.88, -22.62), rotation: 1 }
             ],
             lootSpawners: [
@@ -884,7 +884,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "red_house_ceiling",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, -0.25)
             }],
             floors: [
                 {
@@ -2295,25 +2295,25 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
-                { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0 },
-                { idString: "regular_crate", position: Vec.create(81.48, -37.36) },
-                { idString: "regular_crate", position: Vec.create(101.49, -11.45) },
-                { idString: "grenade_crate", position: Vec.create(102.3, -38.43) },
-                { idString: "barrel", position: Vec.create(102.74, -26.23) },
-                { idString: "tugboat_control_panel", position: Vec.create(90, 24.1), rotation: 0 },
-                { idString: "office_chair", position: Vec.create(90, 16.65), rotation: 0 },
-                { idString: "door", position: Vec.create(90.45, -4.8), rotation: 0 },
-                { idString: "large_drawer", position: Vec.create(99.29, 2.98), rotation: 3 },
-                { idString: "life_preserver", position: Vec.create(101.23, 14.67), rotation: 0 },
-                { idString: "gun_case", position: Vec.create(80.38, 4.29), rotation: 1 },
-                { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
-                { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
+                { idString: "tugboat", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "tire", position: Vec.create(21.28, 5.18), rotation: 0 },
+                { idString: "tire", position: Vec.create(21.4, 14.57), rotation: 0 },
+                { idString: "tire", position: Vec.create(21.4, 24.17), rotation: 0 },
+                { idString: "tire", position: Vec.create(-21.55, 24.17), rotation: 0 },
+                { idString: "tire", position: Vec.create(-21.5, 14.57), rotation: 0 },
+                { idString: "tire", position: Vec.create(-21.45, 5.12), rotation: 0 },
+                { idString: "regular_crate", position: Vec.create(-11.48, -37.36) },
+                { idString: "regular_crate", position: Vec.create(11.49, -11.45) },
+                { idString: "grenade_crate", position: Vec.create(12.3, -38.43) },
+                { idString: "barrel", position: Vec.create(12.74, -26.23) },
+                { idString: "tugboat_control_panel", position: Vec.create(0, 24.1), rotation: 0 },
+                { idString: "office_chair", position: Vec.create(0, 16.65), rotation: 0 },
+                { idString: "door", position: Vec.create(0.45, -4.8), rotation: 0 },
+                { idString: "large_drawer", position: Vec.create(9.29, 2.98), rotation: 3 },
+                { idString: "life_preserver", position: Vec.create(11.23, 14.67), rotation: 0 },
+                { idString: "lux_crate", position: Vec.create(-9.62, 4.29), rotation: 1 },
+                { idString: "window2", position: Vec.create(-6.09, 30.75), rotation: 1 },
+                { idString: "window2", position: Vec.create(5.63, 30.75), rotation: 1 }
             ]
         },
         {
@@ -2386,6 +2386,4 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { table: "ground_loot", position: Vec.create(0, 0) }
             ]
         }
-    ]
-    // not very fun to do, but type inference doesn't seem to be working well
-);
+    ]);

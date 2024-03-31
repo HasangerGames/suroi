@@ -47,6 +47,117 @@
     max-width: 850px;
 }
 
+#create-team-menu {
+    background-color: $bg;
+    width: fit-content;
+    max-width: unset;
+    display: flex;
+
+    #create-team-container {
+        display: flex;
+        flex-direction: column;
+
+        width: fit-content;
+        padding: 10px;
+
+        #create-team-players {
+            display: flex;
+            gap: 8px;
+
+            .create-team-player-container {
+                min-width: 150px;
+                height: 150px;
+                background-color: #545663;
+                border-radius: 8px;
+
+                position: relative;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                // leader indicator
+                .fa-crown {
+                    position: absolute;
+                    top: 5px;
+                    left: 5px;
+                }
+
+                .create-team-player-name-container {
+                    display: flex;
+                    justify-content: center;
+                    margin: 10px 5px 0 5px;
+
+                    .create-team-player-name {
+                        font-size: 20px;
+                        font-weight: bold;
+                        @include text-shadow;
+                    }
+
+                    .create-team-player-badge {
+                        display: inline-block;
+                        height: 28px;
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
+
+        #create-team-url {
+            display: flex;
+            padding-top: 10px;
+
+            #create-team-url-field {
+                color: black;
+                font-size: 18px;
+                width: 220px;
+                padding: 4px 8px;
+                outline: none;
+                border: none;
+                border-top-left-radius: 8px;
+                border-bottom-left-radius: 8px;
+            }
+
+            #btn-copy-team-url {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+        }
+
+        #create-team-options {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding-top: 12px;
+
+            #create-team-toggles {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 12px;
+
+                &.disabled {
+                    pointer-events: none;
+                    filter: brightness(80%);
+                }
+
+                label {
+                    display: flex;
+
+                    span {
+                        margin-right: 10px;
+                    }
+
+                    input {
+                        margin-left: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
 // TODO Refactor this, make classes
 .dialog {
     user-select: none;
@@ -95,6 +206,34 @@
         font-weight: bold;
     }
 
+    .skin {
+        position: relative;
+        width: 102px;
+        height: 98px;
+
+        .skin-base {
+            position: relative;
+            top: 0;
+            left: 6px;
+            width: 90px;
+            height: 90px;
+            transform: rotate(90deg);
+        }
+
+        .skin-left-fist,
+        .skin-right-fist {
+            position: absolute;
+            top: 64px;
+            width: 34px;
+            height: 34px;
+            transform: rotate(90deg);
+        }
+
+        .skin-right-fist {
+            left: 68px;
+        }
+    }
+
     #skins-list {
         display: flex;
         align-items: center;
@@ -116,34 +255,6 @@
 
             &.selected {
                 border-color: $orange;
-            }
-        }
-
-        .skins-list-item {
-            position: relative;
-            width: 102px;
-            height: 98px;
-
-            .skin-base {
-                position: relative;
-                top: 0;
-                left: 6px;
-                width: 90px;
-                height: 90px;
-                transform: rotate(90deg);
-            }
-
-            .skin-left-fist,
-            .skin-right-fist {
-                position: absolute;
-                top: 64px;
-                width: 34px;
-                height: 34px;
-                transform: rotate(90deg);
-            }
-
-            .skin-right-fist {
-                left: 68px;
             }
         }
 
@@ -228,8 +339,13 @@
         }
 
         .emote-name {
+            text-align: center;
             font-weight: bold;
             @include text-shadow;
+        }
+
+        #emote- {
+            justify-content: flex-end;
         }
     }
 
@@ -328,7 +444,7 @@
         align-items: center;
         flex-wrap: wrap;
         height: 100%;
-      
+
         .badges-list-item-container {
             width: 140px;
             height: 170px;
@@ -341,12 +457,12 @@
             align-items: center;
             gap: 16px;
             cursor: pointer;
-      
+
             &.selected {
                 border-color: $orange;
             }
         }
-      
+
         .badges-list-item {
             position: relative;
             width: 102px;
@@ -359,7 +475,7 @@
                 background-size: cover;
             }
         }
-      
+
         .badge-name {
             font-weight: bold;
             @include text-shadow;

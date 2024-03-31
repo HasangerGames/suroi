@@ -12,6 +12,7 @@ import { Explosions } from "../../common/src/definitions/explosions";
 import { Guns, type DualGunNarrowing, type SingleGunNarrowing } from "../../common/src/definitions/guns";
 import { HealingItems } from "../../common/src/definitions/healingItems";
 import { Loots } from "../../common/src/definitions/loots";
+import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
 import { Modes } from "../../common/src/definitions/modes";
 import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
@@ -1525,6 +1526,24 @@ logger.indent("Validating loots", () => {
     tester.assertNoDuplicateIDStrings(Loots.definitions, "Loots", "loots");
 });
 
+logger.indent("Validating map pings", () => {
+    tester.assertNoDuplicateIDStrings(MapPings.definitions, "MapPings", "map pings");
+
+    for (const mapPing of MapPings) {
+        const errorPath = tester.createPath("map pings", `map ping '${mapPing.idString}'`);
+
+        logger.indent(`Validating map ping '${mapPing.idString}'`, () => {
+            validators.color(tester.createPath(errorPath, "field color"), mapPing.color);
+
+            tester.assertIsPositiveReal({
+                obj: mapPing,
+                field: "lifetime",
+                baseErrorPath: errorPath
+            });
+        });
+    }
+});
+
 logger.indent("Validating melees", () => {
     tester.assertNoDuplicateIDStrings(Melees.definitions, "Melees", "melees");
 
@@ -2389,10 +2408,6 @@ logger.indent("Validating configurations", () => {
                 // nothing to do
                 break;
             }
-            case SpawnMode.Random: {
-                // nothing to do
-                break;
-            }
             case SpawnMode.Center: {
                 // nothing to do
                 break;
@@ -2542,7 +2557,7 @@ logger.indent("Validating configurations", () => {
 
                     tester.assertNoPointlessValue({
                         obj: role,
-                        field: "noPrivileges",
+                        field: "isDev",
                         defaultValue: false,
                         baseErrorPath: errorPath2
                     });

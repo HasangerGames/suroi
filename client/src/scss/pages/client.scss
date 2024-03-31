@@ -8,8 +8,13 @@
 
 body {
   background: $grass_bg;
-  & > :not(#loading-logo) { opacity: 1 !important }
-  #loading-logo { animation: none; }
+  & > :not(#loading-logo) {
+    opacity: 1;
+  }
+  & > .loading-logo {
+    display: none;
+    animation: none;
+  }
   display: flex;
   flex-direction: column;
   overflow-y: hidden;

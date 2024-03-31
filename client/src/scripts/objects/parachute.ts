@@ -6,7 +6,7 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { type GameSound } from "../utils/soundManager";
+import { type GameSound } from "../managers/soundManager";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 

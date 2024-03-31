@@ -1,4 +1,4 @@
-import { PlayerActions } from "../../../common/src/constants";
+import { AnimationType, GameConstants, PlayerActions } from "../../../common/src/constants";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Loots } from "../../../common/src/definitions/loots";
 import { type Timeout } from "../../../common/src/utils/misc";
@@ -25,14 +25,47 @@ export abstract class Action {
     }
 
     execute(): void {
+        if (this.player.downed) return;
         this.player.action = undefined;
         this.player.setPartialDirty();
     }
 }
 
+export class ReviveAction extends Action {
+    private readonly _type = PlayerActions.Revive;
+    override get type(): PlayerActions.Revive { return this._type; }
+
+    readonly target: Player;
+
+    override readonly speedMultiplier = 0.5;
+
+    constructor(reviver: Player, target: Player) {
+        super(reviver, GameConstants.player.reviveTime);
+        this.target = target;
+    }
+
+    override execute(): void {
+        super.execute();
+
+        this.target.revive();
+        this.player.animation = AnimationType.None;
+        this.player.setDirty();
+    }
+
+    override cancel(): void {
+        super.cancel();
+
+        this.target.beingRevivedBy = undefined;
+        this.target.setDirty();
+
+        this.player.animation = AnimationType.None;
+        this.player.setDirty();
+    }
+}
+
 export class ReloadAction extends Action {
     private readonly _type = PlayerActions.Reload;
-    get type(): PlayerActions.Reload { return this._type; }
+    override get type(): PlayerActions.Reload { return this._type; }
     readonly item: GunItem;
 
     constructor(player: Player, item: GunItem) {
@@ -66,7 +99,7 @@ export class ReloadAction extends Action {
 
 export class HealingAction extends Action {
     private readonly _type = PlayerActions.UseItem;
-    get type(): PlayerActions.UseItem { return this._type; }
+    override get type(): PlayerActions.UseItem { return this._type; }
 
     readonly item: HealingItemDefinition;
     override readonly speedMultiplier = 0.5;

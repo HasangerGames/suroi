@@ -1,22 +1,20 @@
 import { type WebSocket } from "uWebSockets.js";
-import { GameConstants, KillFeedMessageType, KillType, ObjectCategory, PacketType } from "../../common/src/constants";
+import { GameConstants, KillfeedMessageType, KillfeedEventType, ObjectCategory, PacketType } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { type JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
@@ -36,10 +34,13 @@ import { Player } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { endGame, newGame, type PlayerContainer } from "./server";
-import { hasBadWords } from "./utils/badWordFilter";
+import { cleanUsername } from "./utils/usernameFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
+import { teamMode, Team } from "./team";
+import { type MapPingDefinition, MapPings } from "../../common/src/definitions/mapPings";
+import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
 import NanoTimer from "nanotimer";
 
 export class Game {
@@ -67,6 +68,49 @@ export class Game {
     */
     readonly deletedPlayers: number[] = [];
 
+    readonly teams = new (class <T> extends Set<T> {
+        private _valueCache?: T[];
+        get valueArray(): T[] {
+            /*
+                this rule is stupid and a skill issue filter
+                "It's also possible that the intent was to use a comparison operator such as == and that this code is an error."
+
+                anyone who confuses "??=" for "==" should consult an eye doctor
+            */
+            // eslint-disable-next-line no-return-assign
+            return this._valueCache ??= [...super.values()];
+        }
+
+        add(value: T): this {
+            super.add(value);
+            this._valueCache = undefined;
+            return this;
+        }
+
+        delete(value: T): boolean {
+            const ret = super.delete(value);
+            this._valueCache = undefined;
+            return ret;
+        }
+
+        clear(): void {
+            super.clear();
+            this._valueCache = undefined;
+        }
+
+        values(): IterableIterator<T> {
+            const iterator = this.values();
+            this._valueCache ??= [...iterator];
+
+            return iterator;
+        }
+    })<Team>();
+
+    private _nextTeamID = -1;
+    get nextTeamID(): number { return ++this._nextTeamID; }
+
+    readonly customTeams: globalThis.Map<string, Team> = new globalThis.Map<string, Team>();
+
     readonly explosions: Explosion[] = [];
     readonly emotes: Emote[] = [];
 
@@ -92,12 +136,19 @@ export class Game {
     /**
      * All planes this tick
      */
-    readonly planes: Array<{ readonly position: Vector, readonly direction: number }> = [];
+    readonly planes: Array<{
+        readonly position: Vector
+        readonly direction: number
+    }> = [];
 
     /**
      * All map pings this tick
      */
-    readonly mapPings: Vector[] = [];
+    readonly mapPings: Array<{
+        readonly definition: MapPingDefinition
+        readonly position: Vector
+        readonly playerId?: number
+    }> = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -148,35 +199,37 @@ export class Game {
         this.timer.setInterval(() => this.tick(), "", `${GameConstants.msPerTick}m`);
     }
 
-    handlePacket(stream: SuroiBitStream, player: Player): void {
-        switch (stream.readPacketType()) {
+    onMessage(stream: SuroiBitStream, player: Player): void {
+        const packetStream = new PacketStream(stream);
+        while (true) {
+            const packet = packetStream.readPacket();
+            if (packet === undefined) break;
+            this.onPacket(packet, player);
+        }
+    }
+
+    onPacket(packet: Packet, player: Player): void {
+        switch (packet.type) {
             case PacketType.Join: {
-                if (player.joined) return;
-                const packet = new JoinPacket();
-                packet.deserialize(stream);
                 this.activatePlayer(player, packet);
                 break;
             }
             case PacketType.Input: {
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
-
-                const packet = new InputPacket();
-                packet.isMobile = player.isMobile;
-                packet.deserialize(stream);
                 player.processInputs(packet);
                 break;
             }
             case PacketType.Spectate: {
-                const packet = new SpectatePacket();
-                packet.deserialize(stream);
                 player.spectate(packet);
                 break;
             }
             case PacketType.Ping: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
-                player.sendPacket(new PingPacket());
+                const stream = new PacketStream(SuroiBitStream.alloc(8));
+                stream.serializePacket(new PingPacket());
+                player.sendData(stream.getBuffer());
                 break;
             }
         }
@@ -219,7 +272,6 @@ export class Game {
         for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
             syncedParticle.update();
         }
-
         // Update bullets
         let records: DamageRecord[] = [];
         for (const bullet of this.bullets) {
@@ -252,17 +304,21 @@ export class Game {
         // First loop over players: movement, animations, & actions
         for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
             if (!player.dead) player.update();
-            player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
         }
 
-        for (const object of new Set([...this.fullDirtyObjects, ...this.partialDirtyObjects])) {
-            object.serialize();
+        // Cache objects serialization
+        for (const partialObject of this.partialDirtyObjects) {
+            if (!this.fullDirtyObjects.has(partialObject)) {
+                partialObject.serializePartial();
+            }
+        }
+        for (const fullObject of this.fullDirtyObjects) {
+            fullObject.serializeFull();
         }
 
         // Second loop over players: calculate visible objects & send updates
         for (const player of this.connectedPlayers) {
             if (!player.joined) continue;
-
             player.secondUpdate();
         }
 
@@ -290,18 +346,24 @@ export class Game {
         this.updateObjects = false;
 
         // Winning logic
-        if (this._started && this.aliveCount < 2 && !this.over) {
-            // Send game over packet to the last man standing
-            if (this.aliveCount === 1) {
-                const lastManStanding = [...this.livingPlayers][0];
-                const movement = lastManStanding.movement;
+        if (
+            this._started &&
+            !this.over &&
+            (
+                teamMode
+                    ? this.aliveCount <= Config.maxTeamSize && this.teams.size <= 1
+                    : this.aliveCount === 1
+            )
+        ) {
+            for (const player of this.livingPlayers) {
+                const { movement } = player;
                 movement.up = false;
                 movement.down = false;
                 movement.left = false;
                 movement.right = false;
-                lastManStanding.attacking = false;
-                if (lastManStanding.loadout.emotes[5]?.idString !== "none") lastManStanding.emote(5);
-                lastManStanding.sendGameOverPacket(true);
+                player.attacking = false;
+                player.sendEmote(player.loadout.emotes[4]);
+                player.sendGameOverPacket(true);
             }
 
             // End the game in 1 second
@@ -337,15 +399,15 @@ export class Game {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
-                this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
+                this._sendKillFeedMessage(KillfeedMessageType.KillLeaderAssigned);
             }
         } else if (player === oldKillLeader) {
-            this._sendKillFeedMessage(KillFeedMessageType.KillLeaderUpdated);
+            this._sendKillFeedMessage(KillfeedMessageType.KillLeaderUpdated);
         }
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { killType: KillType.TwoPartyInteraction, killerID: killer?.id });
+        this._sendKillFeedMessage(KillfeedMessageType.KillLeaderDead, { eventType: KillfeedEventType.NormalTwoParty, attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -353,15 +415,15 @@ export class Game {
             }
         }
         this._killLeader = newKillLeader;
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
+        this._sendKillFeedMessage(KillfeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
+    private _sendKillFeedMessage(messageType: KillfeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
         if (this._killLeader === undefined) return;
         this.killFeedMessages.push({
             messageType,
-            playerID: this._killLeader.id,
-            kills: this._killLeader.kills,
+            victimId: this._killLeader.id,
+            attackerKills: this._killLeader.kills,
             ...options
         });
     }
@@ -369,46 +431,59 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
 
-        const hitbox = new CircleHitbox(5);
+        let team: Team | undefined;
+        if (teamMode) {
+            const { teamID, autoFill } = socket.getUserData();
+
+            if (teamID) {
+                if (this.customTeams.has(teamID)) {
+                    team = this.customTeams.get(teamID);
+                } else {
+                    this.teams.add(team = new Team(this.nextTeamID, autoFill));
+                    this.customTeams.set(teamID, team);
+                }
+            } else {
+                const vacantTeams = this.teams.valueArray.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
+                if (vacantTeams.length) {
+                    team = pickRandomInArray(vacantTeams);
+                } else {
+                    this.teams.add(team = new Team(this.nextTeamID));
+                }
+            }
+        }
+
         switch (Config.spawn.mode) {
             case SpawnMode.Normal: {
+                const hitbox = new CircleHitbox(5);
+                const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
+                const teamPosition = teamMode ? pickRandomInArray(team!.players)?.position : undefined;
+
                 let foundPosition = false;
                 let tries = 0;
                 while (!foundPosition && tries < 100) {
+                    // Find a random position
                     spawnPosition = this.map.getRandomPosition(
                         hitbox,
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            collides: (position) => {
-                                return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                            }
+                            getPosition: teamMode && teamPosition
+                                ? () => randomPointInsideCircle(teamPosition, 20, 10)
+                                : undefined,
+                            collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius
                         }
                     ) ?? spawnPosition;
 
+                    // Ensure the position is at least 50 units from other players
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player) {
+                        if (object instanceof Player && (!teamMode || !team!.players.includes(object))) {
                             foundPosition = false;
                         }
                     }
                     tries++;
                 }
-                break;
-            }
-            case SpawnMode.Random: {
-                const gasRadius = this.gas.newRadius ** 2;
-                spawnPosition = this.map.getRandomPosition(
-                    hitbox,
-                    {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: (position) => {
-                            return Geometry.distanceSquared(position, this.gas.currentPosition) >= gasRadius;
-                        }
-                    }
-                ) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Radius: {
@@ -424,20 +499,14 @@ export class Game {
             }
             // No case for SpawnMode.Center because that's the default
         }
+
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, socket, spawnPosition);
+        return new Player(this, socket, spawnPosition, team);
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
-        let name = packet.name;
-        if (
-            !name.length ||
-            (Config.censorUsernames && hasBadWords(name)) ||
-            // eslint-disable-next-line no-control-regex
-            /[^\x20-\x7E]/g.test(name) // extended ASCII chars
-        ) name = GameConstants.player.defaultName;
-        player.name = name;
+        player.name = cleanUsername(packet.name);
 
         player.isMobile = packet.isMobile;
         const skin = packet.skin;
@@ -450,7 +519,7 @@ export class Game {
         }
 
         const badge = packet.badge;
-        if (badge && (!badge.roles || (player.role !== undefined && badge.roles?.includes(player.role)))) {
+        if (badge && (!badge.roles || (player.role !== undefined && (Array.isArray(badge.roles) ? badge.roles?.includes(player.role) : badge.roles === player.role)))) {
             player.loadout.badge = packet.badge;
         }
         player.loadout.emotes = packet.emotes;
@@ -460,13 +529,16 @@ export class Game {
         this.connectedPlayers.add(player);
         this.newPlayers.push(player);
         this.grid.addObject(player);
-        this.fullDirtyObjects.add(player);
+        player.setDirty();
         this.aliveCountDirty = true;
         this.updateObjects = true;
 
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
+        joinedPacket.protocolVersion = GameConstants.protocolVersion;
+        joinedPacket.maxTeamSize = Config.maxTeamSize;
+        joinedPacket.teamID = player.teamID ?? 0;
         joinedPacket.emotes = player.loadout.emotes;
         player.sendPacket(joinedPacket);
 
@@ -474,7 +546,11 @@ export class Game {
 
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
-        if (this.aliveCount > 1 && !this._started && this.startTimeout === undefined) {
+        if (
+            (teamMode ? this.teams.size : this.aliveCount) > 1 &&
+            !this._started &&
+            this.startTimeout === undefined
+        ) {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;
@@ -501,6 +577,10 @@ export class Game {
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
+
+            if (teamMode && !this._started) {
+                player.team?.removePlayer(player);
+            }
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
@@ -728,7 +808,10 @@ export class Game {
         this.addTimeout(() => {
             const parachute = new Parachute(this, position, airdrop);
             this.grid.addObject(parachute);
-            this.mapPings.push(position);
+            this.mapPings.push({
+                definition: MapPings.fromString("airdrop_ping"),
+                position
+            });
         }, GameConstants.airdrop.flyTime);
     }
 

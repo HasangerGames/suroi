@@ -1,25 +1,49 @@
 import { GameConstants, InputActions, PacketType } from "../constants";
+import { type AmmoDefinition } from "../definitions/ammos";
+import { type ArmorDefinition } from "../definitions/armors";
+import { type BackpackDefinition } from "../definitions/backpacks";
+import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
+import { type MapPingDefinition, MapPings } from "../definitions/mapPings";
 import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { type Vector } from "../utils/vector";
+import { AbstractPacket } from "./packet";
+
+/* eslint-disable @typescript-eslint/indent */
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 export type InputAction = {
-    readonly type: InputActions.UseItem
-    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
+    readonly type: InputActions.UseItem | InputActions.DropItem
+    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
 } | {
-    readonly type: InputActions.EquipItem | InputActions.DropItem
+    readonly type: InputActions.EquipItem | InputActions.DropWeapon
     readonly slot: number
 } | {
-    readonly type: Exclude<InputActions, InputActions.EquipItem | InputActions.DropItem | InputActions.UseItem>
+    readonly type: InputActions.Emote
+    readonly emote: EmoteDefinition
+} | {
+    readonly type: InputActions.MapPing
+    readonly ping: MapPingDefinition
+    readonly position: Vector
+} | {
+    readonly type: Exclude<
+        InputActions,
+
+        InputActions.EquipItem |
+        InputActions.DropWeapon |
+        InputActions.DropItem |
+        InputActions.UseItem |
+        InputActions.Emote |
+        InputActions.MapPing
+    >
 };
 
-export class InputPacket extends Packet {
-    override readonly allocBytes = 16;
+export class InputPacket extends AbstractPacket {
+    override readonly allocBytes = 24;
     override readonly type = PacketType.Input;
 
     movement!: {
@@ -29,7 +53,7 @@ export class InputPacket extends Packet {
         right: boolean
     };
 
-    isMobile!: boolean;
+    isMobile = false;
     mobile!: {
         moving: boolean
         angle: number
@@ -43,15 +67,13 @@ export class InputPacket extends Packet {
 
     actions: InputAction[] = [];
 
-    override serialize(): void {
-        super.serialize();
-        const stream = this.stream;
-
+    override serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.movement.up);
         stream.writeBoolean(this.movement.down);
         stream.writeBoolean(this.movement.left);
         stream.writeBoolean(this.movement.right);
 
+        stream.writeBoolean(this.isMobile);
         if (this.isMobile) {
             stream.writeBoolean(this.mobile.moving);
             stream.writeRotation(this.mobile.angle, 16);
@@ -72,11 +94,21 @@ export class InputPacket extends Packet {
 
             switch (action.type) {
                 case InputActions.EquipItem:
-                case InputActions.DropItem:
+                case InputActions.DropWeapon:
                     stream.writeBits(action.slot, 2);
+                    break;
+                case InputActions.DropItem:
+                    Loots.writeToStream(stream, action.item);
                     break;
                 case InputActions.UseItem:
                     Loots.writeToStream(stream, action.item);
+                    break;
+                case InputActions.Emote:
+                    Emotes.writeToStream(stream, action.emote);
+                    break;
+                case InputActions.MapPing:
+                    MapPings.writeToStream(stream, action.ping);
+                    stream.writePosition(action.position);
                     break;
             }
         });
@@ -90,7 +122,8 @@ export class InputPacket extends Packet {
             right: stream.readBoolean()
         };
 
-        if (this.isMobile) {
+        if (stream.readBoolean()) {
+            this.isMobile = true;
             this.mobile = {
                 moving: stream.readBoolean(),
                 angle: stream.readRotation(16)
@@ -112,19 +145,32 @@ export class InputPacket extends Packet {
             const type = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
-            let item: HealingItemDefinition | ScopeDefinition | undefined;
+            let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | undefined;
+            let emote: EmoteDefinition | undefined;
+            let position: Vector | undefined;
+            let ping: MapPingDefinition | undefined;
 
             switch (type) {
                 case InputActions.EquipItem:
-                case InputActions.DropItem:
+                case InputActions.DropWeapon:
                     slot = stream.readBits(2);
+                    break;
+                case InputActions.DropItem:
+                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition>(stream);
                     break;
                 case InputActions.UseItem:
                     item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
                     break;
+                case InputActions.Emote:
+                    emote = Emotes.readFromStream(stream);
+                    break;
+                case InputActions.MapPing:
+                    ping = MapPings.readFromStream(stream);
+                    position = stream.readPosition();
+                    break;
             }
 
-            return { type, item, slot };
+            return { type, item, slot, emote, ping, position };
         });
     }
 

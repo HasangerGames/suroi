@@ -138,19 +138,18 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         if (on) {
             const { damageDealt, kill } = on;
 
-            if (kill) {
-                for (const entry of kill ?? []) {
-                    for (let i = 0, limit = Math.min(this._stats.kills, entry.limit ?? Infinity); i < limit; i++) {
-                        applyModifiers(entry);
-                    }
-                }
-            }
-
-            if (damageDealt) {
-                for (const entry of damageDealt ?? []) {
-                    for (let i = 0, limit = Math.min(this._stats.damage, entry.limit ?? Infinity); i < limit; i++) {
-                        applyModifiers(entry);
-                    }
+            for (
+                const { modifiers, count } of [
+                    { modifiers: damageDealt, count: this._stats.damage },
+                    { modifiers: kill, count: this._stats.kills }
+                ]
+            ) {
+                for (const entry of modifiers ?? []) {
+                    for (
+                        let i = 0, limit = Math.min(count, entry.limit ?? Infinity);
+                        i < limit;
+                        i++
+                    ) applyModifiers(entry);
                 }
             }
         }
@@ -164,6 +163,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
 
     protected _bufferAttack(cooldown: number, internalCallback: (this: this) => void): void {
         const owner = this.owner;
+        if (owner.downed) return;
         const now = owner.game.now;
 
         const timeToFire = cooldown - (now - this._lastUse);

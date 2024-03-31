@@ -2,14 +2,19 @@ import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { App, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
+import { GameConstants } from "../../common/src/constants";
+import { Badges } from "../../common/src/definitions/badges";
+import { Skins } from "../../common/src/definitions/skins";
 import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { version } from "../../package.json";
 import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
-import { Logger } from "./utils/misc";
+import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import { VPN_IPV4 } from "./utils/VPN_IPV4";
+import { Logger } from "./utils/misc";
+import { cleanUsername } from "./utils/usernameFilter";
 
 /**
  * Apply CORS headers to a response.
@@ -73,6 +78,30 @@ function canJoin(game?: Game): boolean {
     return game !== undefined && game.aliveCount < Config.maxPlayersPerGame && !game.over;
 }
 
+export function findGame(): { success: true, gameID: number } | { success: false } {
+    for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+        const game = games[gameID];
+        if (canJoin(game) && game?.allowJoin) {
+            return { success: true, gameID };
+        }
+    }
+
+    // Create a game if there's a free slot
+    const gameID = newGame();
+    if (gameID !== -1) {
+        return { success: true, gameID };
+    } else {
+        // Join the game that most recently started
+        const game = games
+            .filter((g => g && !g.over) as (g?: Game) => g is Game)
+            .reduce((a, b) => a.startedTime > b.startedTime ? a : b);
+
+        return game
+            ? { success: true, gameID: game.id }
+            : { success: false };
+    }
+}
+
 const decoder = new TextDecoder();
 function getIP(res: HttpResponse, req: HttpRequest): string {
     return Config.ipHeader
@@ -101,12 +130,17 @@ function removePunishment(ip: string): void {
     }
 }
 
-app.get("/api/playerCount", (res) => {
+app.get("/api/serverInfo", (res) => {
     cors(res);
-    const playerCount = games.reduce((a, b) => {
-        return a + (b ? b.connectedPlayers.size : 0);
-    }, 0);
-    res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
+    res
+        .writeHeader("Content-Type", "application/json")
+        .end(JSON.stringify({
+            playerCount: games.reduce((a, b) => {
+                return a + (b ? b.connectedPlayers.size : 0);
+            }, 0),
+            maxTeamSize: Config.maxTeamSize,
+            protocolVersion: GameConstants.protocolVersion
+        }));
 });
 
 app.get("/api/getGame", async(res, req) => {
@@ -133,33 +167,7 @@ app.get("/api/getGame", async(res, req) => {
             removePunishment(ip);
         }
     } else {
-        let foundGame = false;
-        const maxGames = Config.maxGames;
-        for (let gameID = 0; gameID < maxGames; gameID++) {
-            const game = games[gameID];
-            if (canJoin(game) && game?.allowJoin) {
-                response = { success: true, gameID };
-                foundGame = true;
-                break;
-            }
-        }
-
-        if (!foundGame) {
-            // Create a game if there's a free slot
-            const gameID = newGame();
-            if (gameID !== -1) {
-                response = { success: true, gameID };
-            } else {
-                // Join the game that most recently started
-                const game = games
-                    .filter((g => g && !g.over) as (g?: Game) => g is Game)
-                    .reduce((a, b) => a.startedTime > b.startedTime ? a : b);
-
-                response = game
-                    ? { success: true, gameID: game.id }
-                    : { success: false };
-            }
-        }
+        response = findGame();
     }
 
     if (!aborted) {
@@ -213,6 +221,8 @@ app.get("/api/removePunishment", (res, req) => {
 
 export interface PlayerContainer {
     readonly gameID: number
+    readonly teamID?: string
+    readonly autoFill: boolean
     player?: Player
     readonly ip: string | undefined
     readonly role?: string
@@ -295,6 +305,10 @@ app.ws("/play", {
             return;
         }
 
+        const teamID = searchParams.get("teamID") ?? undefined;
+
+        const autoFill = Boolean(searchParams.get("autoFill"));
+
         //
         // Role
         //
@@ -311,7 +325,7 @@ app.ws("/play", {
             Config.roles[givenRole].password === password
         ) {
             role = givenRole;
-            isDev = !Config.roles[givenRole].noPrivileges;
+            isDev = Config.roles[givenRole].isDev ?? false;
 
             if (isDev) {
                 try {
@@ -326,6 +340,8 @@ app.ws("/play", {
         //
         const userData: PlayerContainer = {
             gameID,
+            teamID,
+            autoFill,
             player: undefined,
             ip,
             role,
@@ -365,7 +381,7 @@ app.ws("/play", {
         try {
             const player = socket.getUserData().player;
             if (player === undefined) return;
-            player.game.handlePacket(stream, player);
+            player.game.onMessage(stream, player);
         } catch (e) {
             console.warn("Error parsing message:", e);
         }
@@ -383,6 +399,130 @@ app.ws("/play", {
         if (game === undefined || player === undefined) return;
         Logger.log(`Game ${data.gameID} | "${player.name}" left`);
         game.removePlayer(player);
+    }
+});
+
+export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
+
+app.ws("/team", {
+    idleTimeout: 30,
+
+    /**
+     * Upgrade the connection to WebSocket.
+     */
+    upgrade(res, req, context) {
+        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+        res.onAborted((): void => { });
+
+        const searchParams = new URLSearchParams(req.getQuery());
+
+        const teamID = searchParams.get("teamID");
+
+        if (teamID && !customTeams.has(teamID)) {
+            forbidden(res);
+            return;
+        }
+
+        let team: CustomTeam;
+        let isLeader: boolean;
+        if (!teamID) {
+            isLeader = true;
+            team = new CustomTeam();
+            customTeams.set(team.id, team);
+        } else {
+            isLeader = false;
+            team = customTeams.get(teamID)!;
+            if (team.locked || team.players.length >= Config.maxTeamSize) {
+                forbidden(res); // TODO "Team is locked" and "Team is full" messages
+                return;
+            }
+        }
+
+        const name = cleanUsername(searchParams.get("name"));
+        let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
+        let badge = searchParams.get("badge") ?? undefined;
+
+        //
+        // Role
+        //
+        const password = searchParams.get("password");
+        const givenRole = searchParams.get("role");
+        let role = "";
+        let nameColor: number | undefined;
+
+        if (
+            password !== null &&
+            givenRole !== null &&
+            givenRole in Config.roles &&
+            Config.roles[givenRole].password === password
+        ) {
+            role = givenRole;
+
+            if (Config.roles[givenRole].isDev) {
+                try {
+                    const colorString = searchParams.get("nameColor");
+                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+                } catch {}
+            }
+        }
+
+        // Validate skin
+        const roleRequired = Skins.fromStringSafe(skin)?.roleRequired;
+        if (roleRequired && roleRequired !== role) {
+            skin = GameConstants.player.defaultSkin;
+        }
+
+        // Validate badge
+        const roles = badge ? Badges.fromStringSafe(badge)?.roles : undefined;
+        if (roles?.length && !roles.includes(role)) {
+            badge = undefined;
+        }
+
+        res.upgrade(
+            {
+                player: new CustomTeamPlayer(
+                    team,
+                    isLeader,
+                    name,
+                    skin,
+                    badge,
+                    nameColor
+                )
+            },
+            req.getHeader("sec-websocket-key"),
+            req.getHeader("sec-websocket-protocol"),
+            req.getHeader("sec-websocket-extensions"),
+            context
+        );
+    },
+
+    /**
+     * Handle opening of the socket.
+     * @param socket The socket being opened.
+     */
+    open(socket: WebSocket<CustomTeamPlayerContainer>) {
+        const player = socket.getUserData().player;
+        player.socket = socket;
+        player.team.addPlayer(player);
+    },
+
+    /**
+     * Handle messages coming from the socket.
+     * @param socket The socket in question.
+     * @param message The message to handle.
+     */
+    message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
+        const player = socket.getUserData().player;
+        player.team.onMessage(player, JSON.parse(decoder.decode(message)));
+    },
+
+    /**
+     * Handle closing of the socket.
+     * @param socket The socket being closed.
+     */
+    close(socket: WebSocket<CustomTeamPlayerContainer>) {
+        const player = socket.getUserData().player;
+        player.team.removePlayer(player);
     }
 });
 

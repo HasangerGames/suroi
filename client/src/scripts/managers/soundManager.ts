@@ -1,5 +1,6 @@
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../common/src/definitions/loots";
+import { MapPings } from "../../../../common/src/definitions/mapPings";
 import { Reskins } from "../../../../common/src/definitions/modes";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Throwables } from "../../../../common/src/definitions/throwables";
@@ -8,7 +9,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { MODE } from "./constants";
+import { MODE } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
@@ -183,7 +184,6 @@ export class SoundManager {
             kill_leader_assigned: "audio/sfx/kill_leader_assigned",
             kill_leader_dead: "audio/sfx/kill_leader_dead",
 
-            airdrop_ping: "audio/sfx/airdrop/airdrop_ping",
             airdrop_plane: "audio/sfx/airdrop/airdrop_plane",
             airdrop_fall: "audio/sfx/airdrop/airdrop_fall",
             airdrop_unlock: "audio/sfx/airdrop/airdrop_unlock",
@@ -197,7 +197,9 @@ export class SoundManager {
 
             button_press: "audio/sfx/button_press",
             puzzle_error: "audio/sfx/puzzle_error",
-            puzzle_solved: "audio/sfx/puzzle_solved"
+            puzzle_solved: "audio/sfx/puzzle_solved",
+
+            bleed: "audio/sfx/bleed"
         };
 
         for (const material of Materials) {
@@ -227,6 +229,12 @@ export class SoundManager {
         for (const floorType in FloorTypes) {
             soundsToLoad[`${floorType}_step_1`] = `audio/sfx/footsteps/${floorType}_1`;
             soundsToLoad[`${floorType}_step_2`] = `audio/sfx/footsteps/${floorType}_2`;
+        }
+
+        for (const ping of MapPings) {
+            if (ping.sound) {
+                soundsToLoad[ping.idString] = `audio/sfx/pings/${ping.idString}`;
+            }
         }
 
         for (const key in soundsToLoad) {

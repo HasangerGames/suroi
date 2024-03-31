@@ -3,6 +3,57 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1711917946000,
+        author: "HAZEL",
+        title: "Just the Two of Us",
+        bannerImage: "../img/news/v0.17.0.png",
+        content: `Much requested. Long awaited. Duos mode is here! Grab a friend and battle towards that tasty chicken dinner! Either queue with a random or send a custom link to someone. If you'd like to voice chat, join the (Discord server). You could even use one of 3 new LMGs we've added to help you out…<br><br>
+
+The MG36 is for those who like assault rifles like the AK-47 but find themselves needing that little extra “oomph”. The lightness of an AR combined with the hard hitting obstacle multiplier of a LMG. Give it a try!<br><br>
+
+Our first true heavy hitter, the MG5, won't disappoint with 120 rounds of high damaging 7.62mm. Use its accuracy to punish your opponents at long range.<br><br>
+
+If the MG5 was peanut butter, the Negev is the jelly. 200 rounds of fast firing 5.56mm will leave your opponents scrambling for cover! Just make sure to get close enough to compensate for the accuracy.<br><br>
+
+There's so much to check out in this update, like new buildings, retextures, and performance improvements. Good luck!`,
+        longContent: `<h2>Suroi v0.17.0</h2>
+<h3>New features</h3>
+  <ul>
+  <li><strong>Duos!</strong> You can now play Suroi in teams of two.</li>
+  <ul>
+    <li>Duos only for the next week; starting in the next update, the game will switch between and solos and duos every 24 hours.</li>
+    <li>Ammo, healing items, equipment, and scopes are now droppable, but only in duos.</li>
+    <li>To request an item from your teammate, hold the keybind for the team ping wheel (default C), and click on the item you want.</li>
+  </ul>
+  <li><strong>3 new guns!</strong> Added 3 LMGs: the MG5, Negev, and MG36.</li>
+  <li><strong>New structure!</strong> Added the green house.</li>
+  <li>Added 7 new skins and 2 new emotes.</li>
+  <li>Added option to disable emotes.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Redesigned red house.</li>
+  <li>Doubled gas damage.</li>
+  <li>New melee weapon textures.</li>
+  <li>New radio texture.</li>
+  <li>Added ground loot to buildings.</li>
+  <li>New melee crate texture.</li>
+  <li>Ammo crates now drop 10 12.7mm ammo instead of 1.</li>
+  <li>Small improvements to various textures.</li>
+  <li>Various performance optimizations.</li>
+  <li>New wiki icon on menu.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed items glitching through porta potty and refinery walls.</li>
+  <li>Fixed the port spawning on top of rivers.</li>
+  <li>Fixed clicking on players to spectate them.</li>
+  <li>Fixed off center number in action countdown.</li>
+</ul>`
+    },
+    {
         date: 1708892369000,
         author: "HAZEL",
         title: "A Sailor's Dream",

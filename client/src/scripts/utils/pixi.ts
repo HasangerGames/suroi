@@ -69,7 +69,11 @@ export class SuroiSprite extends Sprite {
     }
 
     static getTexture(frame: string): Texture {
-        return textures[frame] ?? textures._missing_texture;
+        if (!textures[frame]) {
+            console.warn(`Texture not found: "${frame}"`);
+            return textures._missing_texture;
+        }
+        return textures[frame];
     }
 
     setFrame(frame: string): this {

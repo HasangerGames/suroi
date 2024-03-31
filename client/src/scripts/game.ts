@@ -2,21 +2,17 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, ObjectCategory, PacketType } from "../../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory, PacketType, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { Loots } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import type { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { JoinPacket } from "../../../common/src/packets/joinPacket";
-import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { type Packet } from "../../../common/src/packets/packet";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
+import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket } from "../../../common/src/packets/updatePacket";
+import type { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
@@ -24,7 +20,9 @@ import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/object
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { enablePlayButton } from "./main";
+import { InputManager } from "./managers/inputManager";
+import { SoundManager } from "./managers/soundManager";
+import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
@@ -41,16 +39,14 @@ import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
-import { Minimap, Ping } from "./rendering/minimap";
-import { setupUI } from "./ui";
+import { Minimap } from "./rendering/minimap";
+import { resetPlayButtons, setUpUI, teamSocket } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
+import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
-import { InputManager } from "./utils/inputManager";
 import { loadTextures } from "./utils/pixi";
-import { SoundManager } from "./utils/soundManager";
 import { Tween } from "./utils/tween";
-import { UIManager } from "./utils/uiManager";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -96,6 +92,11 @@ export class Game {
     }>();
 
     activePlayerID = -1;
+
+    teamID = -1;
+
+    teamMode = false;
+
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
@@ -105,7 +106,7 @@ export class Game {
     spectating = false;
     error = false;
 
-    uiManager = new UIManager(this);
+    readonly uiManager = new UIManager(this);
 
     lastPingDate = 0;
 
@@ -138,7 +139,7 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
-        void (async() => {
+        const initPixi = async(): Promise<void> => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
             const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
 
@@ -165,7 +166,7 @@ export class Game {
             await loadTextures(
                 this.pixi.renderer,
                 this.console.getBuiltInCVar("cv_high_res_textures")
-            ).then(enablePlayButton);
+            );
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
@@ -199,13 +200,16 @@ export class Game {
                     this.uiManager.debugReadouts.fps.text(`${Math.round(this.pixi.ticker.FPS)} fps`);
                 }
             }, 500);
-        })();
+        };
+
+        void Promise.all([
+            initPixi(),
+            setUpUI(this)
+        ]).then(resetPlayButtons);
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
         this.inputManager.generateBindsConfigScreen();
-
-        setupUI(this);
 
         this.music = sound.add("menu_music", {
             url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
@@ -251,12 +255,19 @@ export class Game {
             const joinPacket = new JoinPacket();
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
-            joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
-            const badge = this.console.getBuiltInCVar("cv_loadout_badge");
-            if (badge) {
-                joinPacket.badge = Badges.fromString(badge);
-            }
+            // why are you enforcing this here and not in the giant file filled from top-to-bottom with snake case
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            let cv_loadout_skin: typeof defaultClientCVars["cv_loadout_skin"];
+            joinPacket.skin = Loots.fromStringSafe(
+                this.console.getBuiltInCVar("cv_loadout_skin")
+            ) ?? Loots.fromString(
+                typeof (cv_loadout_skin = defaultClientCVars.cv_loadout_skin) === "object"
+                    ? cv_loadout_skin.value
+                    : cv_loadout_skin
+            );
+
+            joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));
 
             joinPacket.emotes = emoteSlots.map(
                 slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
@@ -267,89 +278,16 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
-
             this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.msPerTick);
         };
 
         // Handle incoming messages
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
-            const stream = new SuroiBitStream(message.data);
-            switch (stream.readPacketType()) {
-                case PacketType.Joined: {
-                    const packet = new JoinedPacket();
-                    packet.deserialize(stream);
-                    this.startGame(packet);
-                    break;
-                }
-                case PacketType.Map: {
-                    const packet = new MapPacket();
-                    packet.deserialize(stream);
-                    this.map.updateFromPacket(packet);
-                    break;
-                }
-                case PacketType.Update: {
-                    const packet = new UpdatePacket();
-                    packet.previousData = this.uiManager;
-                    packet.deserialize(stream);
-                    this.processUpdate(packet);
-                    break;
-                }
-                case PacketType.GameOver: {
-                    const packet = new GameOverPacket();
-                    packet.deserialize(stream);
-                    this.uiManager.showGameOverScreen(packet);
-                    break;
-                }
-                case PacketType.Ping: {
-                    const ping = Date.now() - this.lastPingDate;
-                    this.uiManager.debugReadouts.ping.text(`${ping} ms`);
-                    setTimeout((): void => {
-                        this.sendPacket(new PingPacket());
-                        this.lastPingDate = Date.now();
-                    }, 5000);
-                    break;
-                }
-                case PacketType.Report: {
-                    const packet = new ReportPacket();
-                    packet.deserialize(stream);
-                    $("#reporting-name").text(packet.playerName);
-                    $("#report-id").text(packet.reportID);
-                    $("#report-modal").fadeIn(250);
-                    break;
-                }
-                case PacketType.Pickup: {
-                    const packet = new PickupPacket();
-                    packet.deserialize(stream);
-
-                    let soundID: string;
-                    switch (packet.item.itemType) {
-                        case ItemType.Ammo:
-                            soundID = "ammo_pickup";
-                            break;
-                        case ItemType.Healing:
-                            soundID = `${packet.item.idString}_pickup`;
-                            break;
-                        case ItemType.Scope:
-                            soundID = "scope_pickup";
-                            break;
-                        case ItemType.Armor:
-                            if (packet.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
-                            else soundID = "vest_pickup";
-                            break;
-                        case ItemType.Backpack:
-                            soundID = "backpack_pickup";
-                            break;
-                        case ItemType.Throwable:
-                            soundID = "throwable_pickup";
-                            break;
-                        default:
-                            soundID = "pickup";
-                            break;
-                    }
-
-                    this.soundManager.play(soundID);
-                    break;
-                }
+            const stream = new PacketStream(new SuroiBitStream(message.data));
+            while (true) {
+                const packet = stream.readPacket();
+                if (packet === undefined) break;
+                this.onPacket(packet);
             }
         };
 
@@ -357,14 +295,14 @@ export class Game {
             this.error = true;
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
-            enablePlayButton();
+            resetPlayButtons();
         };
 
         this._socket.onclose = (): void => {
-            enablePlayButton();
+            resetPlayButtons();
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    $("#splash-ui").fadeIn();
+                    $("#splash-ui").fadeIn(400);
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
                 }
@@ -374,26 +312,86 @@ export class Game {
         };
     }
 
+    onPacket(packet: Packet): void {
+        switch (packet.type) {
+            case PacketType.Joined: {
+                this.startGame(packet);
+                break;
+            }
+            case PacketType.Map: {
+                this.map.updateFromPacket(packet);
+                break;
+            }
+            case PacketType.Update: {
+                this.processUpdate(packet);
+                break;
+            }
+            case PacketType.GameOver: {
+                this.uiManager.showGameOverScreen(packet);
+                break;
+            }
+            case PacketType.Ping: {
+                const ping = Date.now() - this.lastPingDate;
+                this.uiManager.debugReadouts.ping.text(`${ping} ms`);
+                setTimeout((): void => {
+                    this.sendPacket(new PingPacket());
+                    this.lastPingDate = Date.now();
+                }, 5000);
+                break;
+            }
+            case PacketType.Report: {
+                $("#reporting-name").text(packet.playerName);
+                $("#report-id").text(packet.reportID);
+                $("#report-modal").fadeIn(250);
+                break;
+            }
+            case PacketType.Pickup: {
+                let soundID: string;
+                switch (packet.item.itemType) {
+                    case ItemType.Ammo:
+                        soundID = "ammo_pickup";
+                        break;
+                    case ItemType.Healing:
+                        soundID = `${packet.item.idString}_pickup`;
+                        break;
+                    case ItemType.Scope:
+                        soundID = "scope_pickup";
+                        break;
+                    case ItemType.Armor:
+                        if (packet.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
+                        else soundID = "vest_pickup";
+                        break;
+                    case ItemType.Backpack:
+                        soundID = "backpack_pickup";
+                        break;
+                    case ItemType.Throwable:
+                        soundID = "throwable_pickup";
+                        break;
+                    default:
+                        soundID = "pickup";
+                        break;
+                }
+
+                this.soundManager.play(soundID);
+                break;
+            }
+        }
+    }
+
     startGame(packet: JoinedPacket): void {
         if (packet.protocolVersion !== GameConstants.protocolVersion) {
             alert("Invalid game version.");
             // reload the page with a time stamp to try clearing cache
             location.search = `t=${Date.now()}`;
         }
+        this.uiManager.emotes = packet.emotes;
+        this.uiManager.updateEmoteWheel();
 
-        const selectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
-        for (let i = 0; i < 4; i++) {
-            const emote = packet.emotes[i];
-
-            $(`#emote-wheel > ${selectors[i]}`)
-                .css(
-                    "background-image",
-                    emote ? `url("./img/game/emotes/${emote.idString}.svg")` : ""
-                );
-        }
+        this.teamID = packet.teamID;
+        this.teamMode = packet.maxTeamSize > TeamSize.Solo;
 
         $("canvas").addClass("active");
-        $("#splash-ui").fadeOut(enablePlayButton);
+        $("#splash-ui").fadeOut(400, resetPlayButtons);
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
@@ -403,42 +401,55 @@ export class Game {
     endGame(): void {
         clearTimeout(this._tickTimeoutID);
 
+        $("#splash-options").addClass("loading");
+
         this.soundManager.stopAll();
 
-        $("#action-container").hide();
-        $("#game-menu").hide();
-        $("#game-over-overlay").hide();
-        $("canvas").removeClass("active");
-        $("#kill-leader-leader").text("Waiting for leader");
-        $("#kill-leader-kills-counter").text("0");
-        $("#splash-ui").fadeIn();
-
-        this.gameStarted = false;
-        this._socket?.close();
-
-        // reset stuff
-        for (const object of this.objects) object.destroy();
-        for (const plane of this.planes) plane.destroy();
-        this.objects.clear();
-        this.bullets.clear();
-        this.planes.clear();
-        this.camera.container.removeChildren();
-        this.particleManager.clear();
-        this.map.gasGraphics.clear();
-        this.map.pingGraphics.clear();
-        this.map.pings.clear();
-        this.map.pingsContainer.removeChildren();
-        this.playerNames.clear();
-        this._timeouts.clear();
-
-        this.camera.zoom = Scopes.definitions[0].zoomLevel;
-
         void this.music.play();
+
+        $("#splash-ui").fadeIn(400, () => {
+            $("#team-container").html("");
+            $("#action-container").hide();
+            $("#game-menu").hide();
+            $("#game-over-overlay").hide();
+            $("canvas").removeClass("active");
+            $("#kill-leader-leader").text("Waiting for leader");
+            $("#kill-leader-kills-counter").text("0");
+
+            this.gameStarted = false;
+            this._socket?.close();
+
+            // reset stuff
+            for (const object of this.objects) object.destroy();
+            for (const plane of this.planes) plane.destroy();
+            this.objects.clear();
+            this.bullets.clear();
+            this.planes.clear();
+            this.camera.container.removeChildren();
+            this.particleManager.clear();
+            this.uiManager.clearTeammateCache();
+
+            const map = this.map;
+            map.gasGraphics.clear();
+            map.pingGraphics.clear();
+            map.pings.clear();
+            map.pingsContainer.removeChildren();
+            map.teammateIndicators.clear();
+            map.teammateIndicatorContainer.removeChildren();
+
+            this.playerNames.clear();
+            this._timeouts.clear();
+
+            this.camera.zoom = Scopes.definitions[0].zoomLevel;
+            resetPlayButtons();
+            if (teamSocket) $("#create-team-menu").fadeIn(250);
+        });
     }
 
     sendPacket(packet: Packet): void {
-        packet.serialize();
-        this.sendData(packet.getBuffer());
+        const stream = new PacketStream(SuroiBitStream.alloc(packet.allocBytes));
+        stream.serializePacket(packet);
+        this.sendData(stream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
@@ -521,6 +532,7 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
+
         if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
@@ -571,14 +583,14 @@ export class Game {
         }
 
         for (const emote of updateData.emotes) {
+            if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
-            if (!(player instanceof Player)) {
+            if (player instanceof Player) {
+                player.sendEmote(emote.definition);
+            } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
                 continue;
             }
-
-            if (this.console.getBuiltInCVar("cv_hide_emotes")) continue;
-            player.emote(emote.definition);
         }
 
         this.gas.updateFrom(updateData);
@@ -597,8 +609,7 @@ export class Game {
         }
 
         for (const ping of updateData.mapPings) {
-            this.soundManager.play("airdrop_ping");
-            this.map.pings.add(new Ping(ping));
+            this.map.addMapPing(ping.position, ping.definition, ping.playerId);
         }
     }
 
@@ -630,7 +641,7 @@ export class Game {
          * - whether the user can interact with it
         */
         const cache: {
-            object?: Loot | Obstacle
+            object?: Loot | Obstacle | Player
             offset?: number
             isAction?: boolean
             bind?: string
@@ -658,6 +669,7 @@ export class Game {
             }
 
             const isAction = this.uiManager.action.active;
+            const showCancel = isAction && !this.uiManager.action.fake;
             let canInteract = true;
 
             if (isAction) {
@@ -665,7 +677,7 @@ export class Game {
             }
 
             interface CloseObject {
-                object?: Loot | Obstacle
+                object?: Loot | Obstacle | Player
                 minDist: number
             }
 
@@ -681,11 +693,11 @@ export class Game {
 
             for (const object of this.objects) {
                 if (
-                    (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
+                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player))) &&
                     object.hitbox.collidesWith(detectionHitbox)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
+                    if ((object instanceof Obstacle || object instanceof Player || object.canInteract(player)) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;
                     } else if (object instanceof Loot && dist < uninteractable.minDist) {
@@ -726,18 +738,10 @@ export class Game {
                 cache.canInteract = canInteract;
 
                 const { interactKey, interactMsg } = this.uiManager.ui;
-                const type = (object?.definition as LootDefinition)?.itemType;
+                const type = object instanceof Loot ? object.definition.itemType : undefined;
 
                 // Update interact message
-                if (
-                    (
-                        this.inputManager.isMobile
-                            // Only show interact message on mobile if object needs to be tapped to pick up
-                            ? (object instanceof Loot || object instanceof Obstacle)
-                            : object !== undefined
-                    ) ||
-                    isAction
-                ) {
+                if (object !== undefined || (isAction && showCancel)) {
                     // If the loot object hasn't changed, we don't need to redo the text
                     if (differences.object || differences.offset || differences.isAction) {
                         let interactText;
@@ -755,6 +759,10 @@ export class Game {
                             }
                             case object instanceof Loot: {
                                 interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                break;
+                            }
+                            case object instanceof Player: {
+                                interactText = `Revive ${this.uiManager.getRawPlayerName(object.id)}`;
                                 break;
                             }
                             case isAction: {
@@ -779,9 +787,13 @@ export class Game {
                     }
 
                     if (canInteract || (object === undefined && isAction)) {
-                        interactKey.addClass("active").show();
+                        interactKey
+                            .addClass("active")
+                            .show();
                     } else {
-                        interactKey.removeClass("active").hide();
+                        interactKey
+                            .removeClass("active")
+                            .hide();
                     }
 
                     interactMsg.show();

@@ -508,26 +508,16 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always
             }
         ),
-        {
-            idString: "melee_crate",
-            name: "Melee Crate",
-            material: "crate",
-            health: 100,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.6
-            },
-            spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: RectangleHitbox.fromRect(6.1, 6.1),
-            rotationMode: RotationMode.None,
-            allowFlyover: FlyoverPref.Always,
-            hasLoot: true,
-            frames: {
-                particle: "crate_particle",
-                residue: "regular_crate_residue"
+        apply(
+            "crate",
+            {
+                idString: "melee_crate",
+                name: "Melee Crate",
+                hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+                rotationMode: RotationMode.None,
+                allowFlyover: FlyoverPref.Always
             }
-        },
+        ),
         {
             idString: "ammo_crate",
             name: "Ammo Crate",
@@ -966,11 +956,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(7, 15.8, Vec.create(-0.2, 0)),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle"
-            }
+            hitbox: RectangleHitbox.fromRect(6.85, 15.4, Vec.create(-0.3, 0)),
+            rotationMode: RotationMode.Limited
         },
         {
             idString: "tv",
@@ -1620,7 +1607,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(42.74, 1.87, Vec.create(-9.3, 27.46)),
                 RectangleHitbox.fromRect(10.02, 1.87, Vec.create(-45.79, 27.46)),
                 RectangleHitbox.fromRect(1.88, 15.98, Vec.create(33, 20.22)),
-                RectangleHitbox.fromRect(1.88, 11.08, Vec.create(33, -23.88))
+                RectangleHitbox.fromRect(1.88, 11.08, Vec.create(33, -23.88)),
+                RectangleHitbox.fromRect(3.5, 3.51, Vec.create(43.53, -0.98)),
+                RectangleHitbox.fromRect(3.5, 3.51, Vec.create(43.53, 15.12))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,

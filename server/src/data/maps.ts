@@ -14,7 +14,7 @@ import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type LootTables } from "./lootTables";
 
-interface MapDefinition {
+export interface MapDefinition {
     readonly width: number
     readonly height: number
     readonly oceanSize: number
@@ -43,7 +43,7 @@ interface MapDefinition {
     readonly genCallback?: (map: Map) => void
 }
 
-export const Maps: Record<string, MapDefinition> = {
+const maps = {
     main: {
         width: 1632,
         height: 1632,
@@ -64,7 +64,6 @@ export const Maps: Record<string, MapDefinition> = {
         buildings: {
             port_complex: 1,
             sea_traffic_control: 1,
-            tugboat_white: 5,
             tugboat_red: 1,
             armory: 1,
             refinery: 1,
@@ -122,7 +121,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1620,
         oceanSize: 128,
         beachSize: 32,
-        genCallback: (map: Map) => {
+        genCallback: (map) => {
             // Generate all buildings
 
             const buildingPos = Vec.create(200, map.height - 600);
@@ -238,7 +237,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 512,
         beachSize: 16,
         oceanSize: 40,
-        genCallback: (map: Map) => {
+        genCallback: (map) => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
                 const width = 70;
@@ -343,14 +342,10 @@ export const Maps: Record<string, MapDefinition> = {
         width: 1024,
         height: 1024,
         beachSize: 32,
-        oceanSize: 32,
+        oceanSize: 64,
         genCallback(map) {
-            //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
-            //map.game.addLoot("8x_scope", Vec.create(this.width / 2, this.height / 2 - 20));
-            //map.game.addLoot("usas12", Vec.create(this.width / 2, this.height / 2 - 20));
-            //map.game.addLoot("12g", Vec.create(this.width / 2, this.height / 2 - 20), Infinity);
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -479,4 +474,6 @@ export const Maps: Record<string, MapDefinition> = {
             barrel: 15
         }
     }
-};
+} satisfies Record<string, MapDefinition>;
+
+export const Maps: Record<keyof typeof maps, MapDefinition> = maps;

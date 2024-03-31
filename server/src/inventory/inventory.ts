@@ -1,6 +1,6 @@
 import { DEFAULT_INVENTORY, GameConstants } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { ArmorType, type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type DualGunNarrowing, type GunDefinition } from "../../../common/src/definitions/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
@@ -11,7 +11,6 @@ import { Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../common/src/utils/vector";
-import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
@@ -340,7 +339,7 @@ export class Inventory {
         return -1;
     }
 
-    private _dropItem(toDrop: Parameters<Game["addLoot"]>[0], options?: { readonly position?: Vector, readonly count?: number, readonly pushForce?: number }): void {
+    private _dropItem(toDrop: ReifiableDef<LootDefinition>, options?: { readonly position?: Vector, readonly count?: number, readonly pushForce?: number }): void {
         this.owner.game
             .addLoot(toDrop, options?.position ?? this.owner.position, options?.count ?? 1)
             .push(this.owner.rotation, options?.pushForce ?? -0.03);
@@ -450,6 +449,76 @@ export class Inventory {
     }
 
     /**
+     * Attempts to drop a item with given `idString`
+     * @param itemString The `idString` of the item;
+     */
+    dropItem(itemString: ReifiableDef<LootDefinition>, pushForce = -0.03): void {
+        const definition = Loots.reify(itemString);
+        const { idString } = definition;
+
+        if (
+            (
+                !this.items.hasItem(idString) &&
+                definition.itemType !== ItemType.Armor &&
+                definition.itemType !== ItemType.Backpack
+            ) ||
+            definition.noDrop
+        ) return;
+
+        switch (definition.itemType) {
+            case ItemType.Healing:
+            case ItemType.Ammo: {
+                const itemAmount = this.items.getItem(idString);
+                const removalAmount = Math.min(itemAmount, Math.ceil(itemAmount / 2));
+
+                this._dropItem(definition, { pushForce, count: removalAmount });
+                this.items.decrementItem(idString, removalAmount);
+                break;
+            }
+            case ItemType.Scope: {
+                this._dropItem(definition, { pushForce });
+                this.items.setItem(idString, 0);
+
+                if (this.scope.idString !== idString) break;
+
+                // Switch to next highest scope
+                for (let i = Scopes.definitions.length - 1; i >= 0; i--) {
+                    const scope = Scopes.definitions[i];
+                    if (this.items.hasItem(scope.idString)) {
+                        this.scope = this.owner.effectiveScope = scope;
+                        break;
+                    }
+                }
+                break;
+            }
+            case ItemType.Throwable: {
+                this.removeThrowable(definition, true);
+                break;
+            }
+            case ItemType.Armor: {
+                this._dropItem(definition, { pushForce });
+                switch (definition.armorType) {
+                    case ArmorType.Helmet: {
+                        this.helmet = undefined;
+                        break;
+                    }
+                    case ArmorType.Vest: {
+                        this.vest = undefined;
+                        break;
+                    }
+                }
+                break;
+            }
+            case ItemType.Backpack: {
+                return;
+            }
+        }
+
+        this.owner.setDirty();
+        this.owner.dirty.items = true;
+    }
+
+    /**
      * Drops all weapons from this inventory
      */
     dropWeapons(): void {
@@ -556,11 +625,11 @@ export class Inventory {
      * Attempts to use a consumable item or a scope with the given `idString`
      * @param itemString The `idString` of the consumable or scope to use
      */
-    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition>): void {
+    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | AmmoDefinition>): void {
         const definition = Loots.reify(itemString);
         const idString = definition.idString;
 
-        if (!this.items.hasItem(idString)) return;
+        if (!this.items.hasItem(idString) || this.owner.downed) return;
 
         switch (definition.itemType) {
             case ItemType.Healing: {

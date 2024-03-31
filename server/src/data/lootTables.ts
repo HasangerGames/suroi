@@ -509,6 +509,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "flues", weight: 0.1 },
         { item: "lewis_gun", weight: 0.05 },
         { item: "vss", weight: 0.02 },
+        { item: "mg36", weight: 0.015 },
         { item: "sr25", weight: 0.01 },
         { item: "mini14", weight: 0.01 },
         { item: "mcx_spear", weight: 0.01 },
@@ -518,6 +519,8 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "radio", weight: 0.005 },
         { item: "mosin", weight: 0.005 },
         { item: "vector", weight: 0.004 },
+        { item: "negev", weight: 0.003 },
+        { item: "mg5", weight: 0.003 },
         { item: "tango_51", weight: 0.002 }
     ],
     healing_items: [
@@ -572,6 +575,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "g19", weight: 0.45 },
         { item: "m1895", weight: 0.45 },
         { item: "vss", weight: 0.07 },
+        { item: "mg36", weight: 0.06 },
         { item: "sr25", weight: 0.05 },
         { item: "mini14", weight: 0.05 },
         { item: "mcx_spear", weight: 0.05 },
@@ -581,6 +585,8 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "radio", weight: 0.01 },
         { item: "mosin", weight: 0.01 },
         { item: "vector", weight: 0.008 },
+        { item: "negev", weight: 0.005 },
+        { item: "mg5", weight: 0.005 },
         { item: "tango_51", weight: 0.004 }
     ],
     special_healing_items: [
@@ -657,6 +663,8 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "m1_garand", weight: 1.1 },
         { item: "acr", weight: 1 },
         { item: "pp19", weight: 1 },
+        { item: "negev", weight: 1 },
+        { item: "mg5", weight: 1 },
         { item: "barrett", weight: 0.5 },
         { item: "model_89", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
@@ -681,12 +689,15 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "sr25", weight: 0.75 },
         { item: "vss", weight: 0.75 },
         { item: "mcx_spear", weight: 0.75 },
+        { item: "mg36", weight: 0.725 },
         { item: "cz600", weight: 0.7 },
         { item: "vepr12", weight: 0.6 },
         { item: "lewis_gun", weight: 0.6 },
         { item: "mosin", weight: 0.5 },
         { item: "vector", weight: 0.4 },
-        { item: "stoner_63", weight: 0.1 },
+        { item: "stoner_63", weight: 0.15 },
+        { item: "negev", weight: 0.1 },
+        { item: "mg5", weight: 0.1 },
         { item: "tango_51", weight: 0.1 },
         { item: "g19", weight: 0.1 }
     ],
@@ -697,6 +708,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "mcx_spear", weight: 0.55 },
         { item: "sr25", weight: 0.5 },
         { item: "vss", weight: 0.5 },
+        { item: "mg36", weight: 0.45 },
         { item: "mosin", weight: 0.45 },
         { item: "vector", weight: 0.4 },
         { item: "stoner_63", weight: 0.08 },

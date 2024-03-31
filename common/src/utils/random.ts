@@ -58,12 +58,13 @@ export function randomRotation(): number {
 /**
  * Generate a random point inside of a circle.
  * @param position The center of the circle.
- * @param radius The radius of the circle.
- * A vector representation of the randomized point.
+ * @param maxRadius The maximum radius of the circle.
+ * @param minRadius The minimum radius of the circle. Defaults to 0.
+ * @returns A vector representation of the randomized point.
  */
-export function randomPointInsideCircle(position: Vector, radius: number): Vector {
+export function randomPointInsideCircle(position: Vector, maxRadius: number, minRadius?: number): Vector {
     const angle = randomFloat(0, Math.PI * 2);
-    const length = randomFloat(0, radius);
+    const length = randomFloat(minRadius ?? 0, maxRadius);
     return {
         x: position.x + (Math.cos(angle) * length),
         y: position.y + (Math.sin(angle) * length)

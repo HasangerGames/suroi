@@ -1,6 +1,8 @@
 import $ from "jquery";
-import { Container, Graphics, RenderTexture, Sprite, Text, type Texture, isMobile } from "pixi.js";
+import { DropShadowFilter } from "pixi-filters";
+import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -8,8 +10,9 @@ import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { SuroiSprite, drawHitbox } from "../utils/pixi";
+import { type Player } from "../objects/player";
+import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
 export class Minimap {
@@ -32,7 +35,13 @@ export class Minimap {
 
     readonly sprite = new Sprite();
     texture?: Texture;
-    readonly indicator = new SuroiSprite("player_indicator.svg");
+
+    readonly indicator = new SuroiSprite("player_indicator")
+        .setTint(TEAMMATE_COLORS[0])
+        .setZIndex(1000);
+
+    readonly teammateIndicators = new Map<number, SuroiSprite>();
+    readonly teammateIndicatorContainer = new Container();
 
     width = 0;
     height = 0;
@@ -47,7 +56,7 @@ export class Minimap {
 
     terrain = new Terrain(0, 0, 0, 0, 0, []);
 
-    readonly pings = new Set<Ping>();
+    readonly pings = new Set<MapPing>();
     readonly border = new Graphics();
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
@@ -63,6 +72,9 @@ export class Minimap {
         this.container.addChild(this.objectsContainer);
         this.container.addChild(this.border);
 
+        this.gasGraphics.zIndex = 998;
+        this.teammateIndicatorContainer.zIndex = 999;
+
         this.objectsContainer.addChild(
             this.sprite,
             this.placesContainer,
@@ -70,13 +82,21 @@ export class Minimap {
             this.gasGraphics,
             this.pingGraphics,
             this.pingsContainer,
-            this.indicator
+            this.indicator,
+            this.teammateIndicatorContainer
         ).sortChildren();
 
         this._borderContainer.on("click", e => {
             if (!this.game.inputManager.isMobile) return;
             this.switchToBigMap();
             e.stopImmediatePropagation();
+        });
+
+        this.sprite.eventMode = "static";
+
+        this.sprite.on("pointerdown", e => {
+            this.game.inputManager.pingWheelPosition = this.sprite.toLocal(e);
+            this.game.inputManager.pingWheelMinimap = true;
         });
 
         $("#btn-close-minimap").on("pointerdown", e => {
@@ -263,8 +283,8 @@ export class Minimap {
                     image.scale.set((mapObject.scale ?? 1) * (1 / PIXI_SCALE));
 
                     mapRender.addChild(image);
-                }
                     break;
+                }
 
                 case ObjectCategory.Building: {
                     const definition = mapObject.definition;
@@ -296,8 +316,8 @@ export class Minimap {
                         const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
                         this.terrain.addFloor(floor.type, hitbox);
                     }
-                }
                     break;
+                }
             }
         }
 
@@ -395,24 +415,25 @@ export class Minimap {
     update(): void {
         if (this.pings.size > 0) {
             this.pingGraphics.clear();
-            this.pingGraphics.setStrokeStyle({
-                color: 0x00ffff,
-                width: 5,
-                cap: "round"
-            });
-
             const now = Date.now();
+
             for (const ping of this.pings) {
-                if (!ping.initialized) {
-                    this.pingsContainer.addChild(ping.image);
-                    ping.initialized = true;
-                }
                 const radius = Numeric.lerp(0, 2048, (now - ping.startTime) / 7000);
-                if (radius >= 2048) {
+
+                if (now > ping.endTime) {
                     this.pings.delete(ping);
-                    this.game.addTimeout(() => { ping.image.destroy(); }, 5000);
+                    ping.destroy();
                     continue;
                 }
+
+                if (radius >= 2048) continue;
+
+                this.pingGraphics.setStrokeStyle({
+                    color: ping.color,
+                    width: 5,
+                    cap: "round"
+                });
+
                 this.pingGraphics.arc(ping.position.x, ping.position.y, radius, 0, Math.PI * 2);
                 this.pingGraphics.stroke();
             }
@@ -482,8 +503,6 @@ export class Minimap {
             ) / uiScale;
             closeButton.css("left", `${closeButtonPos}px`);
 
-            this.indicator.scale.set(0.2);
-
             this.border.clear();
             this.border.setStrokeStyle({
                 width: 4,
@@ -491,6 +510,11 @@ export class Minimap {
             });
             this.border.rect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
             this.border.stroke();
+
+            this.indicator.scale.set(1);
+            for (const [, indicator] of this.teammateIndicators) {
+                indicator.setScale(1);
+            }
         } else {
             if (!this.visible) return;
 
@@ -507,7 +531,10 @@ export class Minimap {
                 this.container.scale.set(1 / 2 * uiScale);
             }
 
-            this.indicator.scale.set(0.1);
+            this.indicator.scale.set(0.75);
+            for (const [, indicator] of this.teammateIndicators) {
+                indicator.setScale(0.75);
+            }
         }
 
         this.mask.clear();
@@ -594,18 +621,90 @@ export class Minimap {
         this.container.visible = this.visible;
         this._borderContainer.toggle(this.visible);
     }
+
+    addMapPing(position: Vector, definition: MapPingDefinition, playerId?: number): void {
+        const ping = new MapPing(position, definition, playerId ? this.game.objects.get(playerId) as Player : undefined);
+        if (definition.sound) this.game.soundManager.play(definition.sound);
+
+        this.pingsContainer.addChild(ping.mapImage);
+        if (ping.inGameImage) this.game.camera.addObject(ping.inGameImage);
+
+        // delete previous pings from the same player
+        if (ping.definition.isPlayerPing) {
+            for (const otherPing of this.pings) {
+                if (otherPing.definition.idString === ping.definition.idString &&
+                    otherPing.player === ping.player) {
+                    otherPing.destroy();
+                    this.pings.delete(otherPing);
+                }
+            }
+        }
+
+        this.pings.add(ping);
+    }
 }
 
-export class Ping {
+export class MapPing {
     position: Vector;
     startTime: number;
-    image: SuroiSprite;
-    initialized: boolean;
+    endTime: number;
+    mapImage: SuroiSprite;
+    inGameImage?: SuroiSprite;
+    definition: MapPingDefinition;
+    player?: Player;
+    color: ColorSource;
 
-    constructor(position: Vector) {
+    constructor(position: Vector, definition: MapPingDefinition, player?: Player) {
         this.position = position;
+        this.definition = definition;
+        this.player = player;
         this.startTime = Date.now();
-        this.image = new SuroiSprite("airdrop_ping").setVPos(position);
-        this.initialized = false;
+        this.endTime = this.startTime + (this.definition.lifetime * 1000);
+
+        this.color = definition.color;
+
+        if (definition.isPlayerPing && player) {
+            this.color = TEAMMATE_COLORS[
+                Math.max(player.game.uiManager.teammates.findIndex(p => p.id === player.id) + 1, 0)
+            ];
+        }
+
+        this.mapImage = new SuroiSprite(definition.idString)
+            .setVPos(position)
+            .setTint(this.color)
+            .setScale(0.5);
+
+        this.mapImage.filters = new DropShadowFilter({
+            blur: 1,
+            quality: 3,
+            alpha: 1,
+            color: 0,
+            offset: {
+                x: 0,
+                y: 0
+            }
+        });
+
+        if (this.definition.showInGame) {
+            this.inGameImage = new SuroiSprite(definition.idString)
+                .setVPos(toPixiCoords(position))
+                .setTint(this.color)
+                .setZIndex(ZIndexes.Emotes);
+            this.inGameImage.filters = new DropShadowFilter({
+                blur: 1,
+                quality: 3,
+                alpha: 0.5,
+                color: 0,
+                offset: {
+                    x: 0,
+                    y: 0
+                }
+            });
+        }
+    }
+
+    destroy(): void {
+        this.mapImage.destroy();
+        this.inGameImage?.destroy();
     }
 }

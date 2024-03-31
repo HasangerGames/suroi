@@ -78,6 +78,10 @@
     @media screen and (max-width: $screen_large) {
         top: 5px;
         left: 5px;
+
+        .btn-lg {
+            height: unset;
+        }
     }
 }
 
@@ -154,6 +158,100 @@
         padding: 4px 6px 4px 6px;
         font-size: 14px;
         width: 60px;
+    }
+}
+
+#team-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: max-content;
+
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    @media screen and (max-width: $screen_large) {
+        flex-direction: row;
+        left: 75px;
+        top: 148px;
+        transform: scale(60%);
+        transform-origin: 0% 0%;
+    }
+
+    .teammate-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: $transparent_bg;
+        padding: 6px 10px 6px 7px;
+        border-radius: 8px;
+        position: relative;
+        width: max-content;
+
+        @media screen and (max-width: $screen_large) {
+            padding: 7px;
+        }
+
+        &.downed {
+            animation: downed 1s linear infinite;
+        }
+
+        @keyframes downed {
+            0% {
+                background-color: #ff0000aa;
+            }
+
+            50% {
+                background-color: #000000aa;
+            }
+
+            100% {
+                background-color: #ff0000aa;
+            }
+        }
+
+        &.disconnected {
+            filter: brightness(50%);
+        }
+
+        .teammate-indicator-container {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            position: absolute;
+            left: 13px;
+
+            .teammate-indicator {
+                width: 36px;
+                height: 36px;
+                mix-blend-mode: multiply;
+            }
+        }
+
+        .teammate-health-indicator {
+            -webkit-transform: rotate(90deg) scaleX(-1);
+            transform: rotate(90deg) scaleX(-1);
+        }
+
+        .teammate-name {
+            margin-left: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .teammate-badge {
+            margin-left: 5px;
+            width: 30px;
+        }
+
+        @media screen and (max-width: $screen_large) {
+            .teammate-name, .teammate-badge {
+                display: none;
+            }
+        }
     }
 }
 
@@ -813,10 +911,6 @@
 
         &:hover {
             outline: 1px solid $orange;
-
-            &.ammo-slot {
-                outline: none;
-            }
         }
 
         &.active {
@@ -1279,6 +1373,7 @@
     &>div {
         width: 84px;
         height: 84px;
+        background-size: 84px 84px;
         position: absolute;
     }
 

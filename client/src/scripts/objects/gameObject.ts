@@ -7,7 +7,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
-import { type GameSound, type SoundOptions } from "../utils/soundManager";
+import { type GameSound, type SoundOptions } from "../managers/soundManager";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;

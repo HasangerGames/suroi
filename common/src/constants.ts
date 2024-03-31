@@ -5,6 +5,12 @@ import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
+export enum TeamSize {
+    Solo = 1,
+    Duo = 2,
+    Squad = 4
+}
+
 export enum ObjectCategory {
     Player,
     Obstacle,
@@ -39,11 +45,12 @@ export enum AnimationType {
     Gun,
     GunAlt,
     GunClick,
-    LastShot
+    LastShot,
+    Revive
 }
 
-export enum KillFeedMessageType {
-    Kill,
+export enum KillfeedMessageType {
+    DeathOrDown,
     KillLeaderAssigned,
     KillLeaderDead,
     KillLeaderUpdated
@@ -64,16 +71,15 @@ export enum FireMode {
 export enum InputActions {
     EquipItem,
     EquipLastItem,
+    DropWeapon,
     DropItem,
     SwapGunSlots,
     Interact,
     Reload,
     Cancel,
     UseItem,
-    TopEmoteSlot,
-    RightEmoteSlot,
-    BottomEmoteSlot,
-    LeftEmoteSlot,
+    Emote,
+    MapPing,
     Loot
 }
 
@@ -89,14 +95,23 @@ export enum SpectateActions {
 export enum PlayerActions {
     None,
     Reload,
-    UseItem
+    UseItem,
+    Revive
 }
 
-export enum KillType {
+export enum KillfeedEventType {
     Suicide,
-    TwoPartyInteraction,
+    NormalTwoParty,
+    FinishedOff,
+    FinallyKilled,
     Gas,
+    BleedOut,
     Airdrop
+}
+
+export enum KillfeedEventSeverity {
+    Kill,
+    Down
 }
 
 export const DEFAULT_INVENTORY: Record<string, number> = {};
@@ -114,30 +129,32 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
 
 Object.freeze(DEFAULT_INVENTORY);
 
-export const SPEED_EMOTE_MODE = false;
-
 const tickrate = 40;
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 17,
+    protocolVersion: 18,
     gridSize: 32,
     tickrate,
     // this is fine cause the object is frozen anyways, so
     // these two attributes can't ever be desynced
     msPerTick: 1000 / tickrate,
+    bleedOutDPMs: 0.002, // === 2 dps
     maxPosition: 1632,
     player: {
         radius: 2.25,
         nameMaxLength: 16,
         defaultName: "Player",
+        defaultSkin: "hazel_jumpsuit",
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
         killLeaderMinKills: 3,
-        maxMouseDist: 128
+        maxMouseDist: 128,
+        reviveTime: 8,
+        maxReviveDist: 5
     },
     airdrop: {
         fallTime: 8000,
@@ -153,6 +170,7 @@ export enum ZIndexes {
     UnderWaterObstacles,
     UnderWaterLoot,
     UnderwaterGroundedThrowables,
+    UnderwaterDownedPlayers,
     UnderwaterPlayers,
     BuildingsFloor,
     Decals,
@@ -166,6 +184,7 @@ export enum ZIndexes {
     GroundedThrowables,
     ObstaclesLayer2,
     Bullets,
+    DownedPlayers,
     Players,
     /**
      * bushes, tables etc

@@ -154,7 +154,7 @@ type GetPartialDeclFn<
  * @template Def The type of definition
  * @template TemplateDecl The template declaration from which to extract the default template
  */
-type StageZeroDefinition<
+export type StageZeroDefinition<
     Def extends ObjectDefinition,
     DefaultTemplate extends ((...args: readonly unknown[]) => unknown) | undefined
 > = DefaultTemplate extends (...args: readonly unknown[]) => unknown
@@ -185,9 +185,7 @@ export type RawDefinition<Def extends ObjectDefinition> = Def | (
         /**
          * A collection of `idString`s pointing to the definitions which should be
          * inherited from. If an array is provided, the definitions are applied from
-         * first to last, with fields in later parents overriding those from earlier on
-         *
-         *es
+         * first to last, with fields in later parents overriding those from earlier ones
          */
         readonly [_inheritFromSymbol]: ReferenceTo<Def> | Array<ReferenceTo<Def>>
     }
@@ -353,7 +351,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     static create<Def extends ObjectDefinition = ObjectDefinition>(definitions?: ReadonlyArray<RawDefinition<Def>>) {
         if (Array.isArray(definitions)) {
-            return new ObjectDefinitions({}, definitions);
+            return new ObjectDefinitions(undefined, definitions);
         }
 
         /**
@@ -524,29 +522,31 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 
     protected constructor(
-        defaultTemplate: DeepPartial<Omit<Def, "idString">>,
-        definitions: ReadonlyArray<StageZeroDefinition<Def, () => typeof defaultTemplate>>
+        defaultTemplate: DeepPartial<Omit<Def, "idString">> | undefined,
+        definitions: ReadonlyArray<StageZeroDefinition<Def, () => typeof defaultTemplate & object>>
     ) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
 
         this.definitions = definitions.map(
             def => (
-                function withTrace(def: StageZeroDefinition<Def, () => typeof defaultTemplate>, ...trace: readonly string[]): Def {
+                function withTrace(def: StageZeroDefinition<Def, () => typeof defaultTemplate & object>, ...trace: readonly string[]): Def {
                     if (_noDefaultInheritSymbol in def) {
                         console.warn("noDefaultInherit does nothing right now, and will probably be removed eventually. so don't use it");
                     }
 
                     if (!(_inheritFromSymbol in def)) {
-                        return mergeDeep<Def>(
-                            {} as Def,
-                            defaultTemplate as DeepPartial<Def>,
-                            def
-                        );
+                        return defaultTemplate !== undefined
+                            ? mergeDeep<Def>(
+                                {} as Def,
+                                defaultTemplate as DeepPartial<Def>,
+                                def
+                            )
+                            : def as Def;
                     }
 
                     return mergeDeep<Def>(
                         {} as Def,
-                        defaultTemplate as DeepPartial<Def>,
+                        (defaultTemplate ?? {}) as DeepPartial<Def>,
                         ...([def[_inheritFromSymbol]].flat() as ReadonlyArray<ReferenceTo<Def>>)
                             .map(targetName => {
                                 const target = definitions.find(def => def.idString === targetName);
@@ -792,37 +792,11 @@ export interface InventoryItemDefinition extends ItemDefinition {
             /**
              * These attributes are applied whenever the player gets a kill
              */
-            readonly kill?: Array<{
-                /**
-                 * The upper limit after which this effect is no longer reapplied
-                 */
-                readonly limit?: number
-                /**
-                 * A fixed amount of HP restored
-                 */
-                readonly healthRestored?: number
-                /**
-                 * A fixed amount of adrenaline restored
-                 */
-                readonly adrenalineRestored?: number
-            } & WearerAttributes>
+            readonly kill?: readonly ExtendedWearerAttributes[]
             /**
              * These attributs are applied whenever the player deals damage
              */
-            readonly damageDealt?: Array<{
-                /**
-                 * The upper limit after which this effect is no longer reapplied
-                 */
-                readonly limit?: number
-                /**
-                 * A fixed amount of HP restored
-                 */
-                readonly healthRestored?: number
-                /**
-                 * A fixed amount of adrenaline restored
-                 */
-                readonly adrenalineRestored?: number
-            } & WearerAttributes>
+            readonly damageDealt?: readonly ExtendedWearerAttributes[]
         }
     }
 }

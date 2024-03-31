@@ -3,15 +3,15 @@ import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 import { GameConstants, InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
+import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { defaultBinds } from "./console/defaultClientCVars";
-import { type GameSettings } from "./console/gameConsole";
-import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
+import { defaultBinds } from "../utils/console/defaultClientCVars";
+import { type GameSettings } from "../utils/console/gameConsole";
+import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
 
 export class InputManager {
     readonly game: Game;
@@ -36,10 +36,15 @@ export class InputManager {
 
     emoteWheelActive = false;
     emoteWheelPosition = Vec.create(0, 0);
+    pingWheelActive = false;
+    /**
+     * If the ping wheel was activated in the minimap
+     */
+    pingWheelMinimap = false;
+    pingWheelPosition = Vec.create(0, 0);
+    selectedEmote?: number;
 
     rotation = 0;
-
-    selectedEmote?: InputActions;
 
     readonly actions: InputAction[] = [];
 
@@ -51,9 +56,43 @@ export class InputManager {
             action = { type: action } as InputAction;
         }
 
+        if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
+            const uiManager = this.game.uiManager;
+            const item: ItemDefinition | undefined = (
+                action as typeof action & { type: InputActions.DropItem }
+            ).item ?? this.game.activePlayer?.activeItem;
+
+            if (item !== undefined) {
+                let playSound = !item.noDrop;
+
+                if (playSound) {
+                    switch (item.itemType) {
+                        case ItemType.Ammo:
+                        case ItemType.Healing:
+                        case ItemType.Scope:
+                            playSound = uiManager.inventory.items[item.idString] > 0;
+                            break;
+                        case ItemType.Throwable:
+                        case ItemType.Armor:
+                        case ItemType.Gun:
+                        case ItemType.Melee:
+                        case ItemType.Skin:
+                            playSound = true; // probably fine…?
+                            break;
+                        case ItemType.Backpack:
+                            playSound = false; // womp womp
+                            break;
+                    }
+                }
+
+                playSound && this.game.soundManager.play("pickup");
+            }
+        }
+
         this.actions.push(action);
     }
 
+    gameMousePosition = Vec.create(0, 0);
     distanceToMouse = 0;
 
     attacking = false;
@@ -139,12 +178,12 @@ export class InputManager {
 
         if (!this.isMobile) {
             // Prevents continued firing when cursor leaves the page
-            gameContainer.addEventListener("pointerleave", (event) => {
+            gameContainer.addEventListener("pointerleave", () => {
                 this.attacking = false;
             });
 
             // Prevents continued firing when RMB is pressed
-            gameContainer.addEventListener("pointerup", (event) => {
+            gameContainer.addEventListener("pointerup", () => {
                 this.attacking = false;
             });
         }
@@ -176,16 +215,16 @@ export class InputManager {
                     let slotName: string | undefined;
 
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
-                        this.selectedEmote = InputActions.TopEmoteSlot;
+                        this.selectedEmote = 0;
                         slotName = "top";
                     } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
-                        this.selectedEmote = InputActions.RightEmoteSlot;
+                        this.selectedEmote = 1;
                         slotName = "right";
                     } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
-                        this.selectedEmote = InputActions.BottomEmoteSlot;
+                        this.selectedEmote = 2;
                         slotName = "bottom";
                     } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
-                        this.selectedEmote = InputActions.LeftEmoteSlot;
+                        this.selectedEmote = 3;
                         slotName = "left";
                     }
                     $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
@@ -200,12 +239,11 @@ export class InputManager {
             if (!game.gameOver && game.activePlayer) {
                 const globalPos = Vec.create(e.clientX, e.clientY);
                 const pixiPos = game.camera.container.toLocal(globalPos);
-                const gamePos = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-                this.distanceToMouse = Geometry.distance(game.activePlayer.position, gamePos);
+                this.gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+                this.distanceToMouse = Geometry.distance(game.activePlayer.position, this.gameMousePosition);
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
-                    game.map.indicator.rotation = this.rotation;
                 }
             }
 
@@ -243,7 +281,6 @@ export class InputManager {
                     this.turning = true;
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
-                        game.map.indicator.rotation = this.rotation;
                     }
                 }
             });
@@ -456,6 +493,7 @@ export class InputManager {
         toggle_minimap: "Toggle Minimap",
         toggle_hud: "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
+        "+map_ping_wheel": "Map Ping Wheel",
         toggle_console: "Toggle Console"
     };
 
@@ -490,22 +528,26 @@ export class InputManager {
 
     cycleThrowable(offset: number): void {
         const throwable = this.game.uiManager.inventory.weapons
-            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)?.definition as ThrowableDefinition;
+            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)
+            ?.definition as ThrowableDefinition;
 
         if (!throwable) return;
 
-        const throwableIndex = Throwables.definitions.indexOf(throwable);
+        const definitions = Throwables.definitions;
+        const throwableIndex = definitions.indexOf(throwable);
         let throwableTarget = throwable;
+
+        const items = this.game.uiManager.inventory.items;
 
         let searchIndex = throwableIndex;
         let iterationCount = 0;
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
-            searchIndex = Numeric.absMod(searchIndex + offset, Throwables.definitions.length);
+            searchIndex = Numeric.absMod(searchIndex + offset, definitions.length);
 
-            const throwableCandidate = Throwables.definitions[searchIndex];
+            const throwableCandidate = definitions[searchIndex];
 
-            if (this.game.uiManager.inventory.items[throwableCandidate.idString]) {
+            if (items[throwableCandidate.idString]) {
                 throwableTarget = throwableCandidate;
                 break;
             }

@@ -14,7 +14,7 @@ import { Vec } from "../../../../../common/src/utils/vector";
 import { Config } from "../../config";
 import { type Game } from "../../game";
 import { COLORS } from "../constants";
-import { type InputManager } from "../inputManager";
+import { type InputManager } from "../../managers/inputManager";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
@@ -435,7 +435,7 @@ export function setUpCommands(game: Game): void {
         "drop",
         function(): undefined {
             this.inputManager.addAction({
-                type: InputActions.DropItem,
+                type: InputActions.DropWeapon,
                 slot: this.uiManager.inventory.activeWeaponIndex
             });
         },
@@ -487,7 +487,6 @@ export function setUpCommands(game: Game): void {
             if (this.activePlayer?.activeItem.itemType === ItemType.Throwable) {
                 const step = Casters.toInt(offset ?? "NaN");
 
-                //                        _______________|> decimal check
                 if ("err" in step) {
                     return {
                         err: `Attempted to cycle throwables by an invalid offset of '${offset}'`
@@ -678,6 +677,10 @@ export function setUpCommands(game: Game): void {
 
             const scale = this.console.getBuiltInCVar("cv_ui_scale");
 
+            if (!this.inputManager.pingWheelMinimap) {
+                this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
+            }
+
             $("#emote-wheel")
                 .css("left", `${mouseX / scale}px`)
                 .css("top", `${mouseY / scale}px`)
@@ -689,9 +692,25 @@ export function setUpCommands(game: Game): void {
         function(): undefined {
             if (this.inputManager.emoteWheelActive) {
                 this.inputManager.emoteWheelActive = false;
+                this.inputManager.pingWheelMinimap = false;
+
                 $("#emote-wheel").hide();
-                const emote = this.inputManager.selectedEmote;
-                if (emote) this.inputManager.addAction(emote);
+
+                if (this.inputManager.selectedEmote === undefined) return;
+
+                const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
+                if (emote && !this.inputManager.pingWheelActive) {
+                    this.inputManager.addAction({
+                        type: InputActions.Emote,
+                        emote
+                    });
+                } else if (this.inputManager.pingWheelActive) {
+                    this.inputManager.addAction({
+                        type: InputActions.MapPing,
+                        ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
+                        position: this.inputManager.pingWheelPosition
+                    });
+                }
                 this.inputManager.selectedEmote = undefined;
             }
         },
@@ -704,6 +723,29 @@ export function setUpCommands(game: Game): void {
         {
             short: "Closes the emote wheel, using the designated emote, if any",
             long: "When invoked, the emote wheel will be closed, and if an emote has been selected, it will be displayed",
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
+    Command.createInvertiblePair(
+        "map_ping_wheel",
+        function(): undefined {
+            this.inputManager.pingWheelActive = true;
+            this.uiManager.updateEmoteWheel();
+        },
+        function(): undefined {
+            this.inputManager.pingWheelActive = false;
+            this.uiManager.updateEmoteWheel();
+        },
+        game,
+        {
+            short: "Enables the emote wheel to ping mode",
+            long: "When invoked, the emote wheel will switch from triggering emotes to trigger map pings",
+            signatures: [{ args: [], noexcept: true }]
+        },
+        {
+            short: "Disables the emote wheel's ping mode",
+            long: "When invoked, the emote wheel will revert back to trigger emotes",
             signatures: [{ args: [], noexcept: true }]
         }
     );
