@@ -999,47 +999,20 @@
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
     </div>
     <div id="create-team-container">
-      <div id="create-team-players">
-        <div class="create-team-player-container">
-          <i class="fa-solid fa-crown"></i>
-          <div class="skin">
-            <div class="skin-base" style="background-image: url('./img/game/skins/hasanger_base.svg')"></div>
-            <div class="skin-left-fist" style="background-image: url('./img/game/skins/hasanger_fist.svg')"></div>
-            <div class="skin-right-fist" style="background-image: url('./img/game/skins/hasanger_fist.svg')"></div>
-          </div>
-          <div class="create-team-player-name-container">
-            <span class="create-team-player-name" style="color: red;">hasanger</span>
-            <img class="create-team-player-badge" src="./img/game/badges/ownr.svg" />
-          </div>
-        </div>
-        <div class="create-team-player-container">
-          <div class="skin">
-            <div class="skin-base" style="background-image: url('./img/game/skins/katie_base.svg')"></div>
-            <div class="skin-left-fist" style="background-image: url('./img/game/skins/katie_fist.svg')"></div>
-            <div class="skin-right-fist" style="background-image: url('./img/game/skins/katie_fist.svg')"></div>
-          </div>
-          <div class="create-team-player-name-container">
-            <span class="create-team-player-name" style="color: #7784f0;">Amyklae</span>
-            <img class="create-team-player-badge" src="./img/game/badges/contributr+.svg" />
-          </div>
-        </div>
-        <div class="create-team-player-container"></div>
-        <div class="create-team-player-container"></div>
+      <div id="create-team-players"></div>
+      <div id="create-team-url">
+        <input
+          type="text"
+          readonly
+          id="create-team-url-field"
+        />
+        <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
+          <i class="fa-solid fa-clipboard"></i>
+          Copy
+        </button>
       </div>
       <div id="create-team-options">
-        <div class="create-team-url-container">
-          <input
-            type="text"
-            readonly
-            value="https://suroi.io/#74ae"
-            id="create-team-url-field"
-          />
-          <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
-            <i class="fa-solid fa-clipboard"></i>
-            Copy
-          </button>
-        </div>
-        <div class="create-team-toggles">
+        <div id="create-team-toggles">
           <label>
             <span class="setting-title">Auto Fill</span>
             <input type="checkbox" id="create-team-toggle-auto-fill">

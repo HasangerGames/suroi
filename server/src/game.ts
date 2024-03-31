@@ -34,7 +34,7 @@ import { Player } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { endGame, newGame, type PlayerContainer } from "./server";
-import { hasBadWords } from "./utils/badWordFilter";
+import { cleanUsername } from "./utils/usernameFilter";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
@@ -72,6 +72,8 @@ export class Game {
 
     private _nextTeamID = -1;
     get nextTeamID(): number { return ++this._nextTeamID; }
+
+    readonly customTeams: globalThis.Map<string, Team> = new globalThis.Map<string, Team>();
 
     readonly explosions: Explosion[] = [];
     readonly emotes: Emote[] = [];
@@ -313,7 +315,7 @@ export class Game {
             !this.over &&
             (
                 teamMode
-                    ? this.aliveCount <= Config.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size === 1
+                    ? this.aliveCount <= Config.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount === 1
             )
         ) {
@@ -395,11 +397,22 @@ export class Game {
 
         let team: Team | undefined;
         if (teamMode) {
-            const vacantTeams = this.teams.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
-            if (!vacantTeams.length) {
-                this.teams.push(team = new Team(this.nextTeamID));
+            const { teamID, autoFill } = socket.getUserData();
+
+            if (teamID) {
+                if (this.customTeams.has(teamID)) {
+                    team = this.customTeams.get(teamID);
+                } else {
+                    this.teams.push(team = new Team(this.nextTeamID, autoFill));
+                    this.customTeams.set(teamID, team);
+                }
             } else {
-                team = pickRandomInArray(vacantTeams);
+                const vacantTeams = this.teams.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
+                if (!vacantTeams.length) {
+                    this.teams.push(team = new Team(this.nextTeamID));
+                } else {
+                    team = pickRandomInArray(vacantTeams);
+                }
             }
         }
 
@@ -456,14 +469,7 @@ export class Game {
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
-        let name = packet.name;
-        if (
-            !name.length ||
-            (Config.censorUsernames && hasBadWords(name)) ||
-            // eslint-disable-next-line no-control-regex
-            /[^\x20-\x7E]/g.test(name) // extended ASCII chars
-        ) name = GameConstants.player.defaultName;
-        player.name = name;
+        player.name = cleanUsername(packet.name);
 
         player.isMobile = packet.isMobile;
         const skin = packet.skin;

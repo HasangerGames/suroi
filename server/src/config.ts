@@ -35,17 +35,17 @@ export const Config = {
     censorUsernames: true,
 
     roles: {
-        developr: { password: "developr" },
-        designr: { password: "designr", noPrivileges: true },
-        composr: { password: "composr", noPrivileges: true },
-        youtubr: { password: "youtubr", noPrivileges: true },
-        hasanger: { password: "hasanger" },
-        leia: { password: "leia" },
-        katie: { password: "katie" },
-        eipi: { password: "eipi" },
-        radians: { password: "radians" },
-        limenade: { password: "limenade" },
-        "123op": { password: "123op", noPrivileges: true }
+        developr: { password: "developr", isDev: true },
+        designr: { password: "designr" },
+        composr: { password: "composr" },
+        youtubr: { password: "youtubr" },
+        hasanger: { password: "hasanger", isDev: true },
+        leia: { password: "leia", isDev: true },
+        katie: { password: "katie", isDev: true },
+        eipi: { password: "eipi", isDev: true },
+        radians: { password: "radians", isDev: true },
+        limenade: { password: "limenade", isDev: true },
+        "123op": { password: "123op" }
     }
 } satisfies ConfigType as ConfigType;
 
@@ -176,13 +176,13 @@ export interface ConfigType {
 
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
-     * If noPrivileges is set to true for a role, cheats will be disabled for that role.
+     * If isDev is set to true for a role, cheats will be enabled for that role.
      * To use roles, add `?password=PASSWORD&role=ROLE` to the URL, for example: `http://127.0.0.1:3000/?password=dev&role=dev`
      * Dev cheats can be enabled using the `lobbyClearing` option: `http://127.0.0.1:3000/?password=dev&role=dev&lobbyClearing=true`
      */
     readonly roles: Record<string, {
         readonly password: string
-        readonly noPrivileges?: boolean
+        readonly isDev?: boolean
     }>
 
     /**

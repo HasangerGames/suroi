@@ -35,7 +35,7 @@ import { CountableInventoryItem, type InventoryItem } from "../inventory/invento
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
-import { Team, teamMode } from "../team";
+import { type Team, teamMode } from "../team";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";

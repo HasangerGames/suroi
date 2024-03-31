@@ -14,7 +14,7 @@ import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type LootTables } from "./lootTables";
 
-interface MapDefinition {
+export interface MapDefinition {
     readonly width: number
     readonly height: number
     readonly oceanSize: number

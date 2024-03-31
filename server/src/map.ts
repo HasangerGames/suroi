@@ -13,7 +13,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { Maps } from "./data/maps";
+import { type MapDefinition, Maps } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
@@ -48,7 +48,7 @@ export class Map {
     constructor(game: Game, mapName: string) {
         this.game = game;
 
-        const mapDefinition = Maps[mapName];
+        const mapDefinition = (Maps as Record<string, MapDefinition>)[mapName];
 
         const packet = this.packet = new MapPacket();
 

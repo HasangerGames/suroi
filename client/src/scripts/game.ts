@@ -40,7 +40,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI } from "./ui";
+import { resetPlayButtons, setUpUI, teamSocket } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -438,6 +438,7 @@ export class Game {
 
             this.camera.zoom = Scopes.definitions[0].zoomLevel;
             resetPlayButtons();
+            if (teamSocket) $("#create-team-menu").fadeIn(250);
         });
     }
 

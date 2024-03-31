@@ -2,6 +2,7 @@ import { isMobile } from "pixi.js";
 import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
 import { type Stringable } from "./gameConsole";
 import { Casters, type CVarChangeListener, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
+import { GameConstants } from "../../../../../common/src/constants";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
@@ -90,7 +91,7 @@ type SimpleCVarMapping = {
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
 
-    cv_loadout_skin: "hazel_jumpsuit",
+    cv_loadout_skin: GameConstants.player.defaultSkin,
     cv_loadout_badge: "",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",

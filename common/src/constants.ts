@@ -146,6 +146,7 @@ export const GameConstants = freezeDeep({
         radius: 2.25,
         nameMaxLength: 16,
         defaultName: "Player",
+        defaultSkin: "hazel_jumpsuit",
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,

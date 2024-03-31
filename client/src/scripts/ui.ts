@@ -20,6 +20,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
 
 interface RegionInfo {
     name: string
@@ -33,6 +34,11 @@ interface RegionInfo {
 let selectedRegion: RegionInfo;
 
 const regionInfo: Record<string, RegionInfo> = Config.regions;
+
+export let teamSocket: WebSocket | undefined;
+let teamID: string | undefined | null;
+let joinedTeam = false;
+let autoFill = false;
 
 export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
@@ -94,7 +100,6 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const regionMap = Object.entries(regionInfo);
     const serverList = $("#server-list");
-    const createTeamServerList = $("#create-team-server-list");
 
     // Load server list
     for (const [regionID, region] of regionMap) {
@@ -112,23 +117,6 @@ export async function setUpUI(game: Game): Promise<void> {
           <span class="server-ping">-</span>
         </span> */
         serverList.append(listItem);
-    }
-
-    for (const [regionID, region] of regionMap) {
-        const listItem = $(`
-                <li class="create-team-server-list-item" data-region="create-team-${regionID}">
-                    <span class="create-team-server-name">${region.name}</span>
-                    <span style="margin-left: auto">
-                      <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
-                      <span class="create-team-server-player-count">-</span>
-                    </span>
-                </li>
-            `);
-        /* <span style="margin-left: 5px">
-          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-          <span class="server-ping">-</span>
-        </span> */
-        createTeamServerList.append(listItem);
     }
 
     // Get player counts + find server w/ best ping
@@ -198,23 +186,36 @@ export async function setUpUI(game: Game): Promise<void> {
         updateServerSelectors();
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    createTeamServerList.children("li.create-team-server-list-item").on("click", async function(this: HTMLLIElement) {
-        const region = this.getAttribute("data-region");
+    const joinGame = (gameID: number): void => {
+        let address = `ws${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/play?gameID=${gameID}`;
 
-        if (region === null) return;
+        if (teamID) address += `&teamID=${teamID}`;
+        if (autoFill) address += `&autoFill=${autoFill}`;
 
-        const info = regionInfo[region];
-        if (info === undefined) return;
+        const devPass = game.console.getBuiltInCVar("dv_password");
+        const role = game.console.getBuiltInCVar("dv_role");
+        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
 
-        resetPlayButtons();
+        if (devPass) address += `&password=${devPass}`;
+        if (role) address += `&role=${role}`;
+        if (lobbyClearing) address += "&lobbyClearing=true";
+        if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
 
-        selectedRegion = info;
+        const nameColor = game.console.getBuiltInCVar("dv_name_color");
+        if (nameColor) {
+            try {
+                const finalColor = new Color(nameColor).toNumber();
+                address += `&nameColor=${finalColor}`;
+            } catch (e) {
+                game.console.setBuiltInCVar("dv_name_color", "");
+                console.error(e);
+            }
+        }
 
-        game.console.setBuiltInCVar("cv_region", region);
-
-        updateServerSelectors();
-    });
+        game.connect(address);
+        $("#splash-server-message").hide();
+    };
 
     let lastPlayButtonClickTime = 0;
 
@@ -224,34 +225,9 @@ export async function setUpUI(game: Game): Promise<void> {
         if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
         lastPlayButtonClickTime = now;
         $("#splash-options").addClass("loading");
-        const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
-        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
+        void $.get(`http${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
             if (data.success) {
-                let address = `ws${urlPart}/play?gameID=${data.gameID}`;
-
-                const devPass = game.console.getBuiltInCVar("dv_password");
-                const role = game.console.getBuiltInCVar("dv_role");
-                const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-                const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
-
-                if (devPass) address += `&password=${devPass}`;
-                if (role) address += `&role=${role}`;
-                if (lobbyClearing) address += "&lobbyClearing=true";
-                if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
-
-                const nameColor = game.console.getBuiltInCVar("dv_name_color");
-                if (nameColor) {
-                    try {
-                        const finalColor = new Color(nameColor).toNumber();
-                        address += `&nameColor=${finalColor}`;
-                    } catch (e) {
-                        game.console.setBuiltInCVar("dv_name_color", "");
-                        console.error(e);
-                    }
-                }
-
-                game.connect(address);
-                $("#splash-server-message").hide();
+                joinGame(data.gameID);
             } else {
                 let showWarningModal = false;
                 let title: string | undefined;
@@ -297,6 +273,187 @@ export async function setUpUI(game: Game): Promise<void> {
             $("#splash-server-message").show();
             resetPlayButtons();
         });
+    });
+
+    const createTeamMenu = $("#create-team-menu");
+    $("#btn-create-team, #btn-join-team").on("click", function() {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500 || teamSocket) return;
+        lastPlayButtonClickTime = now;
+        $("#splash-options").addClass("loading");
+
+        const params = new URLSearchParams();
+
+        const joiningTeam = $(this).attr("id") === "btn-join-team";
+        if (joiningTeam) {
+            $("#btn-start-game").addClass("btn-disabled").text("Waiting...");
+            $("#create-team-toggles").addClass("disabled");
+
+            let gotTeamID = !!teamID;
+            while (!gotTeamID) {
+                teamID = prompt("Enter a team code:");
+                if (!teamID) {
+                    resetPlayButtons();
+                    return;
+                }
+                if (teamID.includes("#")) {
+                    teamID = teamID.split("#")[1];
+                }
+                if (/^[a-zA-Z0-9]{4}$/.test(teamID)) {
+                    gotTeamID = true;
+                    break;
+                } else {
+                    alert("Invalid team code.");
+                }
+            }
+            params.set("teamID", teamID!);
+        } else {
+            $("#btn-start-game").removeClass("btn-disabled").text("Start Game");
+            $("#create-team-toggles").removeClass("disabled");
+        }
+
+        params.set("name", game.console.getBuiltInCVar("cv_player_name"));
+        params.set("skin", game.console.getBuiltInCVar("cv_loadout_skin"));
+
+        const badge = game.console.getBuiltInCVar("cv_loadout_badge");
+        if (badge) params.set("badge", badge);
+
+        const devPass = game.console.getBuiltInCVar("dv_password");
+        if (devPass) params.set("password", devPass);
+
+        const role = game.console.getBuiltInCVar("dv_role");
+        if (role) params.set("role", role);
+
+        const nameColor = game.console.getBuiltInCVar("dv_name_color");
+        if (nameColor) {
+            try {
+                params.set("nameColor", new Color(nameColor).toNumber().toString());
+            } catch (e) {
+                game.console.setBuiltInCVar("dv_name_color", "");
+                console.error(e);
+            }
+        }
+
+        teamSocket = new WebSocket(`ws${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/team?${params.toString()}`);
+
+        const getPlayerHTML = (p: CustomTeamPlayerInterface): string =>
+            `
+            <div class="create-team-player-container" data-id="${p.id}">
+              ${p.isLeader ? '<i class="fa-solid fa-crown"></i>' : ""}
+              <div class="skin">
+                <div class="skin-base" style="background-image: url('./img/game/skins/${p.skin}_base.svg')"></div>
+                <div class="skin-left-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
+                <div class="skin-right-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
+              </div>
+              <div class="create-team-player-name-container">
+                <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
+                ${p.badge ? `<img class="create-team-player-badge" src="./img/game/badges/${p.badge}.svg" />` : ""}
+              </div>
+            </div>
+            `;
+
+        teamSocket.onmessage = (message: MessageEvent<string>): void => {
+            const data = JSON.parse(message.data) as CustomTeamMessage;
+            switch (data.type) {
+                case CustomTeamMessageType.Join: {
+                    joinedTeam = true;
+                    teamID = data.teamID;
+                    window.location.hash = `#${teamID}`;
+                    $("#create-team-url-field").val(`https://suroi.io/#${teamID}`);
+                    $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
+                    $("#create-team-toggle-lock").prop("checked", data.locked);
+                    $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
+                    break;
+                }
+                case CustomTeamMessageType.PlayerJoin: {
+                    $("#create-team-players").append(getPlayerHTML(data));
+                    break;
+                }
+                case CustomTeamMessageType.PlayerLeave: {
+                    $("#create-team-players").find(`[data-id="${data.id}"]`).remove();
+                    break;
+                }
+                case CustomTeamMessageType.Settings: {
+                    $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
+                    $("#create-team-toggle-lock").prop("checked", data.locked);
+                    break;
+                }
+                case CustomTeamMessageType.Started: {
+                    createTeamMenu.hide();
+                    joinGame(data.gameID);
+                    break;
+                }
+            }
+        };
+
+        teamSocket.onerror = (): void => {
+            $("#splash-server-message-text").html("Error joining team.<br>Make sure you're on the same server as your teammate(s).");
+            $("#splash-server-message").show();
+            resetPlayButtons();
+            createTeamMenu.fadeOut(250);
+        };
+
+        teamSocket.onclose = (): void => {
+            // The socket is set to undefined in the close button listener
+            // If it's not undefined, the socket was closed by other means, so show an error message
+            if (teamSocket) {
+                $("#splash-server-message-text").html(
+                    joinedTeam
+                        ? "Lost connection to team."
+                        : "Error joining team.<br>Make sure you're on the same server as your teammate(s)."
+                );
+                $("#splash-server-message").show();
+            }
+            resetPlayButtons();
+            teamSocket = undefined;
+            teamID = undefined;
+            joinedTeam = false;
+            window.location.hash = "";
+            createTeamMenu.fadeOut(250);
+        };
+
+        createTeamMenu.fadeIn(250);
+    });
+
+    $("#close-create-team").on("click", () => {
+        const socket = teamSocket;
+        teamSocket = undefined;
+        socket?.close();
+    });
+
+    $("#btn-copy-team-url").on("click", () => {
+        const url = $("#create-team-url-field").val();
+        if (!url) {
+            alert("Unable to copy link to clipboard.");
+            return;
+        }
+        void navigator.clipboard
+            .writeText(url as string)
+            .then(() => {
+                alert("Link copied to clipboard.");
+            })
+            .catch(() => {
+                alert("Unable to copy link to clipboard.");
+            });
+    });
+
+    $("#create-team-toggle-auto-fill").on("click", function() {
+        autoFill = $(this).prop("checked");
+        teamSocket?.send(JSON.stringify({
+            type: CustomTeamMessageType.Settings,
+            autoFill
+        }));
+    });
+
+    $("#create-team-toggle-lock").on("click", function() {
+        teamSocket?.send(JSON.stringify({
+            type: CustomTeamMessageType.Settings,
+            locked: $(this).prop("checked")
+        }));
+    });
+
+    $("#btn-start-game").on("click", () => {
+        teamSocket?.send(JSON.stringify({ type: CustomTeamMessageType.Start }));
     });
 
     const params = new URLSearchParams(window.location.search);
@@ -367,7 +524,6 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@g0dak"
         }
     ];
-
     const youtuber = pickRandomInArray(youtubers);
     $("#youtube-featured-name").text(youtuber.name);
     $("#youtube-featured-content").attr("href", youtuber.link);
@@ -378,7 +534,6 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.twitch.tv/ikou_yt"
         }
     ];
-
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
     $("#twitch-featured-content").attr("href", streamer.link);
@@ -511,10 +666,6 @@ Video evidence is required.`)) {
         customizeMenu.fadeToggle(250);
     });
     $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
-
-    const createTeamMenu = $("#create-team-menu");
-    $("#btn-create-team").on("click", () => { $(".dialog").hide(); createTeamMenu.fadeToggle(250); });
-    $("#close-create-team").on("click", () => createTeamMenu.fadeOut(250));
 
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
@@ -1349,4 +1500,9 @@ Video evidence is required.`)) {
         $("#warning-modal").hide();
         $("#btn-play-solo").trigger("click");
     });
+
+    if (window.location.hash) {
+        teamID = window.location.hash.slice(1);
+        $("#btn-join-team").trigger("click");
+    }
 }
