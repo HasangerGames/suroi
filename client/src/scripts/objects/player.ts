@@ -689,6 +689,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.rightFist.setPos(38, -32);
             this.images.helmet.setPos(10, 0);
             return;
+        } else {
+            this.images.helmet.setPos(-8, 0)
         }
 
         const reference = this._getItemReference();
