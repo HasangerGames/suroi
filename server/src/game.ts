@@ -469,7 +469,6 @@ export class Game {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
                             getPosition: teamMode && teamPosition
-                                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
                             collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius

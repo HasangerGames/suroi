@@ -168,6 +168,22 @@
     top: 50%;
     transform: translateY(-50%);
 
+    @media screen and (max-width: $screen_large) {
+        flex-direction: row;
+        top: unset;
+        left: 25%;
+        bottom: 10px;
+        transform: scale(75%) translateX(-75%);
+        transform-origin: 0% 100%;
+    }
+
+    @media screen and (max-width: $screen_small) {
+        flex-direction: column;
+        left: calc(50% - 135px);
+        bottom: 5px;
+        transform: scale(50%) translateX(-50%);
+    }
+
     .teammate-container {
         display: flex;
         justify-content: flex-start;
@@ -176,6 +192,10 @@
         padding: 6px 10px 6px 7px;
         border-radius: 8px;
         position: relative;
+
+        @media screen and (max-width: $screen_large) {
+            padding: 7px;
+        }
 
         &.downed {
             animation: downed 1s linear infinite;
@@ -228,6 +248,12 @@
         .teammate-badge {
             margin-left: 5px;
             width: 30px;
+        }
+
+        @media screen and (max-width: $screen_large) {
+            .teammate-name, .teammate-badge {
+                display: none;
+            }
         }
     }
 }
