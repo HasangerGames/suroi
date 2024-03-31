@@ -282,20 +282,20 @@ export class UIManager {
                 <h1 id="game-over-player-name" class="modal-item">${this.getRawPlayerName(teammate.playerID)}</h1>
                 <div class="modal-item" id="game-over-stats">
                   <div class="stat">
-                    <span class="stat-name">Kills: ${teammate.kills}</span>
-                    <span class="stat-value" id="game-over-kills"></span>
+                    <span class="stat-name">Kills: </span>
+                    <span class="stat-value" id="game-over-kills">${teammate.kills}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name">Damage done: ${teammate.damageDone}</span>
-                    <span class="stat-value" id="game-over-damage-done"></span>
+                    <span class="stat-name">Damage done: }</span>
+                    <span class="stat-value" id="game-over-damage-done">${teammate.damageDone}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name">Damage taken: ${teammate.damageTaken}</span>
-                    <span class="stat-value" id="game-over-damage-taken"></span>
+                    <span class="stat-name">Damage taken: </span>
+                    <span class="stat-value" id="game-over-damage-taken">${teammate.damageTaken}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name">Time alive: ${formatDate(teammate.timeAlive)}</span>
-                    <span class="stat-value" id="game-over-time"></span>
+                    <span class="stat-name">Time alive:</span>
+                    <span class="stat-value" id="game-over-time">${formatDate(teammate.timeAlive)}</span>
                   </div>
                 </div>
               </div>`;
