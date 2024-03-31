@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { DropShadowFilter } from "pixi-filters";
-import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type Color, type ColorSource, type Texture } from "pixi.js";
+import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";

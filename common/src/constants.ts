@@ -169,6 +169,7 @@ export enum ZIndexes {
     UnderWaterObstacles,
     UnderWaterLoot,
     UnderwaterGroundedThrowables,
+    UnderwaterDownedPlayers,
     UnderwaterPlayers,
     BuildingsFloor,
     Decals,
@@ -182,6 +183,7 @@ export enum ZIndexes {
     GroundedThrowables,
     ObstaclesLayer2,
     Bullets,
+    DownedPlayers,
     Players,
     /**
      * bushes, tables etc

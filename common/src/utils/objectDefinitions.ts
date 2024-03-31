@@ -154,7 +154,7 @@ type GetPartialDeclFn<
  * @template Def The type of definition
  * @template TemplateDecl The template declaration from which to extract the default template
  */
-type StageZeroDefinition<
+export type StageZeroDefinition<
     Def extends ObjectDefinition,
     DefaultTemplate extends ((...args: readonly unknown[]) => unknown) | undefined
 > = DefaultTemplate extends (...args: readonly unknown[]) => unknown
@@ -185,9 +185,7 @@ export type RawDefinition<Def extends ObjectDefinition> = Def | (
         /**
          * A collection of `idString`s pointing to the definitions which should be
          * inherited from. If an array is provided, the definitions are applied from
-         * first to last, with fields in later parents overriding those from earlier on
-         *
-         *es
+         * first to last, with fields in later parents overriding those from earlier ones
          */
         readonly [_inheritFromSymbol]: ReferenceTo<Def> | Array<ReferenceTo<Def>>
     }
@@ -792,37 +790,11 @@ export interface InventoryItemDefinition extends ItemDefinition {
             /**
              * These attributes are applied whenever the player gets a kill
              */
-            readonly kill?: Array<{
-                /**
-                 * The upper limit after which this effect is no longer reapplied
-                 */
-                readonly limit?: number
-                /**
-                 * A fixed amount of HP restored
-                 */
-                readonly healthRestored?: number
-                /**
-                 * A fixed amount of adrenaline restored
-                 */
-                readonly adrenalineRestored?: number
-            } & WearerAttributes>
+            readonly kill?: readonly ExtendedWearerAttributes[]
             /**
              * These attributs are applied whenever the player deals damage
              */
-            readonly damageDealt?: Array<{
-                /**
-                 * The upper limit after which this effect is no longer reapplied
-                 */
-                readonly limit?: number
-                /**
-                 * A fixed amount of HP restored
-                 */
-                readonly healthRestored?: number
-                /**
-                 * A fixed amount of adrenaline restored
-                 */
-                readonly adrenalineRestored?: number
-            } & WearerAttributes>
+            readonly damageDealt?: readonly ExtendedWearerAttributes[]
         }
     }
 }

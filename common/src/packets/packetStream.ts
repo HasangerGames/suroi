@@ -35,8 +35,7 @@ GameOverPacket |
 PickupPacket |
 PingPacket |
 SpectatePacket |
-ReportPacket |
-MapPacket;
+ReportPacket;
 
 export class PacketStream {
     stream: SuroiBitStream;

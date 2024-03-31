@@ -45,11 +45,10 @@ export class Map {
 
     private readonly _beachPadding;
 
-    constructor(game: Game, mapName: string) {
+    constructor(game: Game, mapName: keyof typeof Maps) {
         this.game = game;
 
         const mapDefinition = Maps[mapName];
-
         const packet = this.packet = new MapPacket();
 
         this.seed = packet.seed = random(0, 2 ** 31);

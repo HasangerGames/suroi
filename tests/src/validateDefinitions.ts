@@ -2408,10 +2408,6 @@ logger.indent("Validating configurations", () => {
                 // nothing to do
                 break;
             }
-            case SpawnMode.Random: {
-                // nothing to do
-                break;
-            }
             case SpawnMode.Center: {
                 // nothing to do
                 break;

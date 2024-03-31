@@ -164,16 +164,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.aimTrail.alpha = 0;
         if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
-        this.emote = {
+        let emote: this["emote"];
+        this.emote = emote = {
             background: new SuroiSprite("emote_background").setPos(0, 0),
             image: new SuroiSprite().setPos(0, 0),
             container: new Container()
         };
 
-        this.game.camera.addObject(this.emote.container);
-        this.emote.container.addChild(this.emote.background, this.emote.image);
-        this.emote.container.zIndex = ZIndexes.Emotes;
-        this.emote.container.visible = false;
+        this.game.camera.addObject(emote.container);
+        emote.container.addChild(emote.background, emote.image);
+        emote.container.zIndex = ZIndexes.Emotes;
+        emote.container.visible = false;
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -337,7 +338,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const floorType = this.game.map.terrain.getFloor(this.position);
 
         const doOverlay = FloorTypes[floorType].overlay;
-        this.container.zIndex = doOverlay ? ZIndexes.UnderwaterPlayers : ZIndexes.Players;
+        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
 
         if (floorType !== this.floorType) {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
@@ -476,6 +477,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
             if (this.downed !== full.downed) {
+                updateContainerZIndex = true;
                 this.downed = full.downed;
                 this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
@@ -487,7 +489,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
             }
 
-            this.beingRevived = full.beingRevived;
+            if (this.beingRevived !== full.beingRevived) {
+                this.beingRevived = full.beingRevived;
+
+                if (this.isActivePlayer) {
+                    // somewhat an abuse of that system, but dedicating an
+                    // entire "action" to this would be wasteful
+                    if (this.beingRevived) {
+                        this.game.uiManager.animateAction("Being revived...", GameConstants.player.reviveTime, true);
+                    } else {
+                        this.game.uiManager.cancelAction();
+                    }
+                }
+            }
 
             if (this.downed && !this.beingRevived && !this.bleedEffectInterval) {
                 const bleed = (): void => this.hitEffect(this.position, randomRotation(), "bleed");
@@ -554,6 +568,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
             }
+        }
+
+        if (updateContainerZIndex) {
+            // i love ternary spam
+            this.container.zIndex = doOverlay
+                ? this.downed
+                    ? ZIndexes.UnderwaterDownedPlayers
+                    : ZIndexes.UnderwaterPlayers
+                : this.downed
+                    ? ZIndexes.DownedPlayers
+                    : ZIndexes.Players;
         }
 
         if (data.action !== undefined) {
@@ -630,6 +655,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx);
 
+            if (this.downed) {
+                drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx);
+                // revival range
+            }
+
             switch (this.activeItem.itemType) {
                 case ItemType.Gun: {
                     ctx.setStrokeStyle({
@@ -687,10 +717,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.downed) {
             this.images.leftFist.setPos(38, 32);
             this.images.rightFist.setPos(38, -32);
-            this.images.helmet.setPos(10, 0);
             return;
-        } else {
-            this.images.helmet.setPos(-8, 0)
         }
 
         const reference = this._getItemReference();
@@ -819,6 +846,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             (type !== "backpack" || !this.downed)
         ) {
             image.setFrame(`${def.idString}_world`).setVisible(true);
+
+            if (type === "helmet") {
+                image.setPos(
+                    this.downed ? 10 : -8,
+                    0
+                );
+            }
         } else {
             image.setVisible(false);
         }
@@ -881,6 +915,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     canInteract(player: Player): boolean {
         return this.game.teamMode &&
+            !player.downed &&
             this.downed &&
             !this.beingRevived &&
             this !== player &&

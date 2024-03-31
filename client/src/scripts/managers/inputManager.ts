@@ -3,15 +3,15 @@ import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 import { GameConstants, InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
+import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings } from "../utils/console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
-import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 
 export class InputManager {
     readonly game: Game;
@@ -57,7 +57,36 @@ export class InputManager {
         }
 
         if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
-            this.game.soundManager.play("pickup");
+            const uiManager = this.game.uiManager;
+            const item: ItemDefinition | undefined = (
+                action as typeof action & { type: InputActions.DropItem }
+            ).item ?? this.game.activePlayer?.activeItem;
+
+            if (item !== undefined) {
+                let playSound = !item.noDrop;
+
+                if (playSound) {
+                    switch (item.itemType) {
+                        case ItemType.Ammo:
+                        case ItemType.Healing:
+                        case ItemType.Scope:
+                            playSound = uiManager.inventory.items[item.idString] > 0;
+                            break;
+                        case ItemType.Throwable:
+                        case ItemType.Armor:
+                        case ItemType.Gun:
+                        case ItemType.Melee:
+                        case ItemType.Skin:
+                            playSound = true; // probably fine…?
+                            break;
+                        case ItemType.Backpack:
+                            playSound = false; // womp womp
+                            break;
+                    }
+                }
+
+                playSound && this.game.soundManager.play("pickup");
+            }
         }
 
         this.actions.push(action);
