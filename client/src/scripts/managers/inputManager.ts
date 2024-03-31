@@ -528,22 +528,26 @@ export class InputManager {
 
     cycleThrowable(offset: number): void {
         const throwable = this.game.uiManager.inventory.weapons
-            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)?.definition as ThrowableDefinition;
+            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)
+            ?.definition as ThrowableDefinition;
 
         if (!throwable) return;
 
-        const throwableIndex = Throwables.definitions.indexOf(throwable);
+        const definitions = Throwables.definitions;
+        const throwableIndex = definitions.indexOf(throwable);
         let throwableTarget = throwable;
+
+        const items = this.game.uiManager.inventory.items;
 
         let searchIndex = throwableIndex;
         let iterationCount = 0;
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
-            searchIndex = Numeric.absMod(searchIndex + offset, Throwables.definitions.length);
+            searchIndex = Numeric.absMod(searchIndex + offset, definitions.length);
 
-            const throwableCandidate = Throwables.definitions[searchIndex];
+            const throwableCandidate = definitions[searchIndex];
 
-            if (this.game.uiManager.inventory.items[throwableCandidate.idString]) {
+            if (items[throwableCandidate.idString]) {
                 throwableTarget = throwableCandidate;
                 break;
             }

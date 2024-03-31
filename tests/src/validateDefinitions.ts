@@ -2557,7 +2557,7 @@ logger.indent("Validating configurations", () => {
 
                     tester.assertNoPointlessValue({
                         obj: role,
-                        field: "noPrivileges",
+                        field: "isDev",
                         defaultValue: false,
                         baseErrorPath: errorPath2
                     });
