@@ -37,7 +37,7 @@ export class LootDefinitions extends ObjectDefinitions<LootDefinition> {
     };
 
     constructor(definitions: ReadonlyArray<RawDefinition<LootDefinition>>) {
-        super({}, definitions);
+        super(undefined, definitions);
 
         this._byTypeMapping = {};
         for (const def of this.definitions) {

@@ -487,7 +487,6 @@ export function setUpCommands(game: Game): void {
             if (this.activePlayer?.activeItem.itemType === ItemType.Throwable) {
                 const step = Casters.toInt(offset ?? "NaN");
 
-                //                        _______________|> decimal check
                 if ("err" in step) {
                     return {
                         err: `Attempted to cycle throwables by an invalid offset of '${offset}'`

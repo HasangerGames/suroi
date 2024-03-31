@@ -351,7 +351,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     static create<Def extends ObjectDefinition = ObjectDefinition>(definitions?: ReadonlyArray<RawDefinition<Def>>) {
         if (Array.isArray(definitions)) {
-            return new ObjectDefinitions({}, definitions);
+            return new ObjectDefinitions(undefined, definitions);
         }
 
         /**
@@ -522,29 +522,31 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 
     protected constructor(
-        defaultTemplate: DeepPartial<Omit<Def, "idString">>,
-        definitions: ReadonlyArray<StageZeroDefinition<Def, () => typeof defaultTemplate>>
+        defaultTemplate: DeepPartial<Omit<Def, "idString">> | undefined,
+        definitions: ReadonlyArray<StageZeroDefinition<Def, () => typeof defaultTemplate & object>>
     ) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
 
         this.definitions = definitions.map(
             def => (
-                function withTrace(def: StageZeroDefinition<Def, () => typeof defaultTemplate>, ...trace: readonly string[]): Def {
+                function withTrace(def: StageZeroDefinition<Def, () => typeof defaultTemplate & object>, ...trace: readonly string[]): Def {
                     if (_noDefaultInheritSymbol in def) {
                         console.warn("noDefaultInherit does nothing right now, and will probably be removed eventually. so don't use it");
                     }
 
                     if (!(_inheritFromSymbol in def)) {
-                        return mergeDeep<Def>(
-                            {} as Def,
-                            defaultTemplate as DeepPartial<Def>,
-                            def
-                        );
+                        return defaultTemplate !== undefined
+                            ? mergeDeep<Def>(
+                                {} as Def,
+                                defaultTemplate as DeepPartial<Def>,
+                                def
+                            )
+                            : def as Def;
                     }
 
                     return mergeDeep<Def>(
                         {} as Def,
-                        defaultTemplate as DeepPartial<Def>,
+                        (defaultTemplate ?? {}) as DeepPartial<Def>,
                         ...([def[_inheritFromSymbol]].flat() as ReadonlyArray<ReferenceTo<Def>>)
                             .map(targetName => {
                                 const target = definitions.find(def => def.idString === targetName);
