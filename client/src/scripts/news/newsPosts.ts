@@ -36,6 +36,7 @@ There's so much to check out in this update, like new buildings, retextures, and
   <li>Redesigned red house.</li>
   <li>Doubled gas damage.</li>
   <li>New melee weapon textures.</li>
+  <li>New radio texture.</li>
   <li>Added ground loot to buildings.</li>
   <li>New melee crate texture.</li>
   <li>Ammo crates now drop 10 12.7mm ammo instead of 1.</li>
