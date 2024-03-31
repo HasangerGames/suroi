@@ -364,7 +364,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.teamID = team.id;
 
             team.addPlayer(this);
-            team.spawnPoint ??= position;
             team.setDirty();
         }
 

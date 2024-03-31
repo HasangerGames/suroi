@@ -457,6 +457,7 @@ export class Game {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
+                const teamPosition = teamMode ? pickRandomInArray(team!.players)?.position : undefined;
 
                 let foundPosition = false;
                 let tries = 0;
@@ -467,9 +468,9 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: teamMode && team?.spawnPoint
+                            getPosition: teamMode && teamPosition
                                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                                ? () => randomPointInsideCircle(team!.spawnPoint!, 12, 8)
+                                ? () => randomPointInsideCircle(teamPosition, 12, 8)
                                 : undefined,
                             collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius
                         }

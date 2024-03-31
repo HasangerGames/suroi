@@ -18,8 +18,6 @@ export class Team {
 
     readonly _indexMapping = new Map<Player, number>();
 
-    spawnPoint?: Vector;
-
     kills = 0;
 
     readonly autoFill: boolean;
