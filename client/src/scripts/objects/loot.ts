@@ -151,6 +151,8 @@ export class Loot extends GameObject {
     }
 
     canInteract(player: Player): boolean {
+        if (player.dead || player.downed) return false;
+
         const inventory = this.game.uiManager.inventory;
         const definition = this.definition;
 

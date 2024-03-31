@@ -1,6 +1,6 @@
 import { FireMode, ZIndexes, defaultBulletTemplate } from "../constants";
 import { mergeDeep } from "../utils/misc";
-import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo, type StageZeroDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
@@ -124,33 +124,35 @@ type RawGunDefinition = BaseGunDefinition & {
     }
 };
 
+const defaultGun = {
+    itemType: ItemType.Gun,
+    noDrop: false,
+    ammoSpawnAmount: 0,
+    singleReload: false,
+    infiniteAmmo: false,
+    jitterRadius: 0,
+    consistentPatterning: false,
+    noQuickswitch: false,
+    bulletCount: 1,
+    killstreak: false,
+    shootOnRelease: false,
+    summonAirdrop: false,
+    fists: {
+        leftZIndex: 1,
+        rightZIndex: 1
+    },
+    casingParticles: [] as RawGunDefinition["casingParticles"],
+    image: {
+        angle: 0
+    },
+    isDual: false,
+    noMuzzleFlash: false,
+    ballistics: defaultBulletTemplate
+} as const;
+
 export const Guns = ObjectDefinitions.create<GunDefinition>()(
     defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            itemType: ItemType.Gun,
-            noDrop: false,
-            ammoSpawnAmount: 0,
-            singleReload: false,
-            infiniteAmmo: false,
-            jitterRadius: 0,
-            consistentPatterning: false,
-            noQuickswitch: false,
-            bulletCount: 1,
-            killstreak: false,
-            shootOnRelease: false,
-            summonAirdrop: false,
-            fists: {
-                leftZIndex: 1,
-                rightZIndex: 1
-            },
-            casingParticles: [],
-            image: {
-                angle: 0
-            },
-            isDual: false,
-            noMuzzleFlash: false,
-            ballistics: defaultBulletTemplate
-        })
+        [defaultTemplate]: () => defaultGun
     })
 )((apply, { inheritFrom }) => (
     [
@@ -950,7 +952,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 animationDuration: 100
             },
             casingParticles: [{
-                position: Vec.create(3.5, 0.6)
+                position: Vec.create(3.5, 0.4)
             }],
             image: { position: Vec.create(80, 0) },
             ballistics: {
@@ -1162,7 +1164,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             image: { position: Vec.create(90, 0) },
             casingParticles: [
                 {
-                    position: Vec.create(4, 0.6),
+                    position: Vec.create(4, -0.6),
                     velocity: {
                         y: {
                             min: -15,
@@ -1171,7 +1173,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 },
                 {
-                    position: Vec.create(4.2, 0.6),
+                    position: Vec.create(4.2, -0.6),
                     frame: "m13_link",
                     velocity: {
                         x: {
@@ -1219,6 +1221,31 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 animationDuration: 100
             },
             image: { position: Vec.create(90, 0) },
+            casingParticles: [
+                {
+                    position: Vec.create(4, 0.6),
+                    velocity: {
+                        y: {
+                            min: 10,
+                            max: 15
+                        }
+                    }
+                },
+                {
+                    position: Vec.create(4.2, 0.6),
+                    frame: "m13_link",
+                    velocity: {
+                        x: {
+                            min: -6,
+                            max: 8
+                        },
+                        y: {
+                            min: 10,
+                            max: 25
+                        }
+                    }
+                }
+            ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
             ballistics: {
                 damage: 16.5,
                 obstacleMultiplier: 2,
@@ -1247,7 +1274,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             moveSpread: 8,
             length: 8.1,
             fists: {
-                left: Vec.create(121, -16),
+                left: Vec.create(121, -18),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
@@ -1255,17 +1282,16 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             image: { position: Vec.create(90, -2) },
             casingParticles: [
                 {
-                    position: Vec.create(4, 0.6),
-                    frame: "casing_762x51mm",
+                    position: Vec.create(4.2, 0.6),
                     velocity: {
                         y: {
-                            min: -15,
-                            max: -10
+                            min: 10,
+                            max: 15
                         }
                     }
                 },
                 {
-                    position: Vec.create(4.2, 0.6),
+                    position: Vec.create(4.4, 0.6),
                     frame: "m13_link",
                     velocity: {
                         x: {
@@ -1273,8 +1299,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                             max: 8
                         },
                         y: {
-                            min: -25,
-                            max: -10
+                            min: 10,
+                            max: 25
                         }
                     }
                 }
@@ -1313,6 +1339,11 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 animationDuration: 100
             },
             image: { position: Vec.create(67, 0) },
+            casingParticles: [
+                {
+                    position: Vec.create(4, 0.6)
+                }
+            ],
             ballistics: {
                 damage: 11,
                 obstacleMultiplier: 2,
@@ -1678,6 +1709,10 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             killstreak: true,
             consistentPatterning: true,
             jitterRadius: 0,
+            image: { position: Vec.create(75, 0) },
+            fists: {
+                left: Vec.create(112, -3)
+            },
             wearerAttributes: {
                 passive: {
                     maxHealth: 0.51,
@@ -1706,7 +1741,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 }
             }
         }
-    ] as ReadonlyArray<RawDefinition<RawGunDefinition>>)
+    ] as ReadonlyArray<StageZeroDefinition<RawGunDefinition, () => typeof defaultGun>>)
     .map(e => {
         if (e.dual === undefined) {
             return [e];

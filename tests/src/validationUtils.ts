@@ -495,7 +495,7 @@ export const tester = (() => {
         assertIntAndInBounds,
         assertNoPointlessValue,
         assertValidOrNPV,
-        runTestOnArray<T>(array: T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
+        runTestOnArray<T>(array: readonly T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
             let i = 0;
             for (const element of array) {
                 logger.indent(`Validating entry ${i}`, () => {

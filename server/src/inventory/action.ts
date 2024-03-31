@@ -33,7 +33,7 @@ export abstract class Action {
 
 export class ReviveAction extends Action {
     private readonly _type = PlayerActions.Revive;
-    get type(): PlayerActions.Revive { return this._type; }
+    override get type(): PlayerActions.Revive { return this._type; }
 
     readonly target: Player;
 
@@ -55,7 +55,7 @@ export class ReviveAction extends Action {
     override cancel(): void {
         super.cancel();
 
-        this.target.beingRevived = false;
+        this.target.beingRevivedBy = undefined;
         this.target.setDirty();
 
         this.player.animation = AnimationType.None;
@@ -65,7 +65,7 @@ export class ReviveAction extends Action {
 
 export class ReloadAction extends Action {
     private readonly _type = PlayerActions.Reload;
-    get type(): PlayerActions.Reload { return this._type; }
+    override get type(): PlayerActions.Reload { return this._type; }
     readonly item: GunItem;
 
     constructor(player: Player, item: GunItem) {
@@ -99,7 +99,7 @@ export class ReloadAction extends Action {
 
 export class HealingAction extends Action {
     private readonly _type = PlayerActions.UseItem;
-    get type(): PlayerActions.UseItem { return this._type; }
+    override get type(): PlayerActions.UseItem { return this._type; }
 
     readonly item: HealingItemDefinition;
     override readonly speedMultiplier = 0.5;

@@ -12,6 +12,8 @@ import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitS
 import { type Vector } from "../utils/vector";
 import { AbstractPacket } from "./packet";
 
+/* eslint-disable @typescript-eslint/indent */
+
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 export type InputAction = {
@@ -28,13 +30,16 @@ export type InputAction = {
     readonly ping: MapPingDefinition
     readonly position: Vector
 } | {
-    readonly type: Exclude<InputActions,
-    InputActions.EquipItem |
-    InputActions.DropWeapon |
-    InputActions.DropItem |
-    InputActions.UseItem |
-    InputActions.Emote |
-    InputActions.MapPing>
+    readonly type: Exclude<
+        InputActions,
+
+        InputActions.EquipItem |
+        InputActions.DropWeapon |
+        InputActions.DropItem |
+        InputActions.UseItem |
+        InputActions.Emote |
+        InputActions.MapPing
+    >
 };
 
 export class InputPacket extends AbstractPacket {

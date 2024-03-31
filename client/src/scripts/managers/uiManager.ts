@@ -7,7 +7,7 @@ import { type EmoteDefinition } from "../../../../common/src/definitions/emotes"
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings } from "../../../../common/src/definitions/mapPings";
-import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
+import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedMessage, type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
@@ -41,12 +41,17 @@ export class UIManager {
     minAdrenaline = 0;
     adrenaline = 0;
 
-    readonly inventory = {
-        activeWeaponIndex: 0,
-        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"] & object,
-        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
-        scope: Loots.fromString<ScopeDefinition>("1x_scope")
-    };
+    readonly inventory: {
+        activeWeaponIndex: number
+        weapons: PlayerData["inventory"]["weapons"] & object
+        items: typeof DEFAULT_INVENTORY
+        scope: ScopeDefinition
+    } = {
+            activeWeaponIndex: 0,
+            weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
+            items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
+            scope: DEFAULT_SCOPE
+        };
 
     emotes: Array<EmoteDefinition | undefined> = [];
 
@@ -158,16 +163,27 @@ export class UIManager {
             .map(selector => $(`#emote-wheel > ${selector}`))
     };
 
-    action = {
+    readonly action = {
         active: false,
+        /*
+            whether this timer corresponds to an actual action being carried
+            out by this player (like reloading), or if it corresponds to some
+            other timed event that just so happens to piggyback off this timer
+            system (getting revived). pretty much only exists for the
+            aforementioned case of being revived, and prevents the "cancel" popup
+            from appearing
+        */
+        fake: false,
         start: -1,
         time: 0
     };
 
-    animateAction(name: string, time: number): void {
+    animateAction(name: string, time: number, fake = false): void {
+        this.action.fake = fake;
         if (time > 0) {
             this.action.start = Date.now();
-            $("#action-timer-anim").stop()
+            $("#action-timer-anim")
+                .stop()
                 .css({ "stroke-dashoffset": "226" })
                 .animate(
                     { "stroke-dashoffset": "0" },
@@ -176,12 +192,15 @@ export class UIManager {
                     () => {
                         $("#action-container").hide();
                         this.action.active = false;
-                    });
+                    }
+                );
         }
+
         if (name) {
             $("#action-name").text(name);
             $("#action-container").show();
         }
+
         this.action.active = true;
         this.action.time = time;
     }
@@ -192,7 +211,9 @@ export class UIManager {
     }
 
     cancelAction(): void {
-        $("#action-container").hide().stop();
+        $("#action-container")
+            .hide()
+            .stop();
         this.action.active = false;
     }
 
@@ -265,7 +286,14 @@ export class UIManager {
         }
     }
 
-    private readonly _teammateDataCache: Record<number, PlayerHealthUI> = {};
+    private readonly _teammateDataCache = new Map<number, PlayerHealthUI>();
+    clearTeammateCache(): void {
+        for (const [, entry] of this._teammateDataCache) {
+            entry.destroy();
+        }
+
+        this._teammateDataCache.clear();
+    }
 
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
@@ -282,6 +310,9 @@ export class UIManager {
         if (data.dirty.teammates) {
             this.teammates = data.teammates;
 
+            const _teammateDataCache = this._teammateDataCache;
+            const notVisited = new Set(_teammateDataCache.keys());
+
             [
                 {
                     id: this.game.activePlayerID,
@@ -293,8 +324,10 @@ export class UIManager {
                 ...data.teammates
             ].forEach((player, index) => {
                 const { id } = player;
-                if (id in this._teammateDataCache) {
-                    this._teammateDataCache[id].update({
+                notVisited.delete(id);
+
+                if (_teammateDataCache.has(id)) {
+                    _teammateDataCache.get(id)!.update({
                         ...player,
                         colorIndex: index
                     });
@@ -302,7 +335,7 @@ export class UIManager {
                 }
 
                 const nameData = this.game.playerNames.get(id);
-                const ele = this._teammateDataCache[id] = new PlayerHealthUI(
+                const ele = new PlayerHealthUI(
                     this.game,
                     {
                         id,
@@ -316,9 +349,15 @@ export class UIManager {
                         badge: nameData?.badge ?? null
                     }
                 );
+                _teammateDataCache.set(id, ele);
 
                 this.ui.teamContainer.append(ele.container);
             });
+
+            for (const outdated of notVisited) {
+                _teammateDataCache.get(outdated)!.destroy();
+                _teammateDataCache.delete(outdated);
+            }
         }
 
         if (data.zoom) this.game.camera.zoom = data.zoom;
@@ -536,13 +575,50 @@ export class UIManager {
 
     private _killMessageTimeoutID?: number;
 
-    private _addKillMessage(kills: number, name: string, weaponUsed: string, streak?: number): void {
-        const killText = `Kills: ${kills}`;
-        $("#ui-kills").text(kills);
+    private readonly _killMessageUICache: {
+        header?: JQuery<HTMLDivElement>
+        killCounter?: JQuery<HTMLDivElement>
+        severity?: JQuery<HTMLSpanElement>
+        streak?: JQuery<HTMLSpanElement>
+        victimName?: JQuery<HTMLSpanElement>
+        weaponUsed?: JQuery<HTMLSpanElement>
+    } = {};
 
-        $("#kill-msg-kills").text(killText);
-        $("#kill-msg-player-name").html(name);
-        $("#kill-msg-weapon-used").text(` with ${weaponUsed}${streak ? ` (streak: ${streak})` : ""}`);
+    private _addKillMessage(
+        message: (
+            {
+                readonly severity: KillfeedEventSeverity.Down
+            } | {
+                readonly severity: KillfeedEventSeverity.Kill
+                readonly kills: number
+                readonly streak?: number
+            }
+        ) & {
+            readonly type: KillfeedEventType
+            readonly victimName: string
+            readonly weaponUsed?: string
+        }
+    ): void {
+        const { severity, victimName, weaponUsed, type } = message;
+
+        let streakText = "";
+        if (severity === KillfeedEventSeverity.Kill) {
+            const { streak, kills } = message;
+            (this._killMessageUICache.header ??= $("#kill-msg-kills")).text(`Kills: ${kills}`);
+            (this._killMessageUICache.killCounter ??= $("#ui-kills")).text(kills);
+            streakText = streak ? ` (streak: ${streak})` : "";
+        }
+
+        const eventText = `You ${UIManager._eventDescriptionMap[type][severity]} `;
+        // some of these yield nonsensical sentences, but those that do are occur if
+        // `type` takes on bogus values like "Gas" or "Airdrop"
+
+        (this._killMessageUICache.severity ??= $("#kill-msg-severity")).text(eventText);
+
+        (this._killMessageUICache.victimName ??= $("#kill-msg-player-name")).html(victimName);
+        (this._killMessageUICache.weaponUsed ??= $("#kill-msg-weapon-used")).text(
+            ` ${weaponUsed !== undefined ? `with ${weaponUsed}` : ""}${streakText}`
+        );
 
         this.ui.killModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
@@ -563,8 +639,12 @@ export class UIManager {
 
         this.ui.killFeed.prepend(killFeedItem);
         if (!UI_DEBUG_MODE) {
-            while (this.ui.killFeed.children().length > 5) {
-                this.ui.killFeed.children().last().remove();
+            const children = this.ui.killFeed.children();
+
+            while (children.length > 5) {
+                children
+                    .last()
+                    .remove();
             }
         }
 
@@ -823,7 +903,31 @@ export class UIManager {
                     }
                     case playerIsOnThisTeam(attackerId): {
                         classes.push("kill-feed-item-killer");
-                        this._addKillMessage(attackerKills!, `${victimName}${victimBadgeText}`, weaponUsed?.name ?? "", killstreak);
+
+                        if (attackerId === this.game.activePlayerID) {
+                            const base = {
+                                victimName: victimText,
+                                weaponUsed: weaponUsed?.name ?? "",
+                                type: eventType
+                            };
+
+                            this._addKillMessage(
+                                severity === KillfeedEventSeverity.Kill
+                                    ? {
+                                        severity,
+                                        ...base,
+                                        weaponUsed: eventType !== KillfeedEventType.FinallyKilled
+                                            ? base.weaponUsed
+                                            : undefined,
+                                        kills: attackerKills!,
+                                        streak: killstreak
+                                    }
+                                    : {
+                                        severity,
+                                        ...base
+                                    }
+                            );
+                        }
                         break;
                     }
                 }
@@ -954,7 +1058,7 @@ class PlayerHealthUI {
         this.container = $<HTMLDivElement>('<div class="teammate-container"></div>');
         this.svgContainer = $<SVGElement>('<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>');
 
-        //hack wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
+        //HACK wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
         this.healthDisplay = $<SVGCircleElement>('<svg><circle r="21" cy="24" cx="24" stroke-width="6" stroke-dasharray="132" fill="none" style="transition: stroke-dashoffset ease-in-out 50ms;" /></svg>').find("circle");
         this.indicatorContainer = $<HTMLDivElement>('<div class="teammate-indicator-container"></div>');
         this.teammateIndicator = $<HTMLImageElement>('<img class="teammate-indicator" />');
@@ -1022,9 +1126,12 @@ class PlayerHealthUI {
 
         let indicator: SuroiSprite | undefined;
 
-        if (this._id.value !== this.game.activePlayerID) {
+        if (this._id.value === this.game.activePlayerID) {
+            indicator = this.game.map.indicator;
+        } else {
             const { teammateIndicators } = this.game.map;
             const id = this._id.value;
+
             if (this._position.dirty && this._position.value) {
                 if (!teammateIndicators.has(id)) {
                     teammateIndicators.set(
@@ -1085,5 +1192,13 @@ class PlayerHealthUI {
                     .css({ display: "none", visibility: "none" });
             }
         }
+    }
+
+    destroy(): void {
+        this.container.remove();
+        const id = this._id.value;
+        const teammateIndicators = this.game.map.teammateIndicators;
+        teammateIndicators.get(id)?.destroy();
+        teammateIndicators.delete(id);
     }
 }

@@ -144,8 +144,9 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     canInteract(player: Player): boolean {
         if (this.dead || player.downed) return false;
         const inventory = player.inventory;
+        const definition = this.definition;
 
-        switch (this.definition.itemType) {
+        switch (definition.itemType) {
             case ItemType.Gun: {
                 for (const slot of inventory.weapons) {
                     const weapon = slot;
@@ -154,7 +155,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                         weapon instanceof GunItem &&
                         !weapon.definition.isDual &&
                         weapon.definition.dualVariant &&
-                        weapon.definition === this.definition
+                        weapon.definition === definition
                     ) {
                         return true;
                     }
@@ -162,21 +163,21 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
-                    (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition);
+                    (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition);
             }
             case ItemType.Healing:
             case ItemType.Ammo:
             case ItemType.Throwable: {
-                const idString = this.definition.idString;
+                const idString = definition.idString;
 
                 return inventory.items.getItem(idString) + 1 <= (inventory.backpack?.maxCapacity[idString] ?? 0);
             }
             case ItemType.Melee: {
-                return this.definition !== inventory.getWeapon(2)?.definition;
+                return definition !== inventory.getWeapon(2)?.definition;
             }
             case ItemType.Armor: {
                 let threshold = -Infinity;
-                switch (this.definition.armorType) {
+                switch (definition.armorType) {
                     case ArmorType.Helmet: {
                         threshold = inventory.helmet?.level ?? 0;
                         break;
@@ -187,13 +188,13 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                     }
                 }
 
-                return this.definition.level > threshold;
+                return definition.level > threshold;
             }
             case ItemType.Backpack: {
-                return this.definition.level > (inventory.backpack?.level ?? 0);
+                return definition.level > (inventory.backpack?.level ?? 0);
             }
             case ItemType.Scope: {
-                return !inventory.items.hasItem(this.definition.idString);
+                return !inventory.items.hasItem(definition.idString);
             }
             case ItemType.Skin: {
                 return true;

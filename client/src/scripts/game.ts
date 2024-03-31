@@ -106,7 +106,7 @@ export class Game {
     spectating = false;
     error = false;
 
-    uiManager = new UIManager(this);
+    readonly uiManager = new UIManager(this);
 
     lastPingDate = 0;
 
@@ -427,12 +427,16 @@ export class Game {
             this.planes.clear();
             this.camera.container.removeChildren();
             this.particleManager.clear();
-            this.map.gasGraphics.clear();
-            this.map.pingGraphics.clear();
-            this.map.pings.clear();
-            this.map.pingsContainer.removeChildren();
-            this.map.teammateIndicators.clear();
-            this.map.teammateIndicatorContainer.removeChildren();
+            this.uiManager.clearTeammateCache();
+
+            const map = this.map;
+            map.gasGraphics.clear();
+            map.pingGraphics.clear();
+            map.pings.clear();
+            map.pingsContainer.removeChildren();
+            map.teammateIndicators.clear();
+            map.teammateIndicatorContainer.removeChildren();
+
             this.playerNames.clear();
             this._timeouts.clear();
 
@@ -665,6 +669,7 @@ export class Game {
             }
 
             const isAction = this.uiManager.action.active;
+            const showCancel = isAction && !this.uiManager.action.fake;
             let canInteract = true;
 
             if (isAction) {
@@ -736,7 +741,7 @@ export class Game {
                 const type = object instanceof Loot ? object.definition.itemType : undefined;
 
                 // Update interact message
-                if (object !== undefined || isAction) {
+                if (object !== undefined || (isAction && showCancel)) {
                     // If the loot object hasn't changed, we don't need to redo the text
                     if (differences.object || differences.offset || differences.isAction) {
                         let interactText;
@@ -782,9 +787,13 @@ export class Game {
                     }
 
                     if (canInteract || (object === undefined && isAction)) {
-                        interactKey.addClass("active").show();
+                        interactKey
+                            .addClass("active")
+                            .show();
                     } else {
-                        interactKey.removeClass("active").hide();
+                        interactKey
+                            .removeClass("active")
+                            .hide();
                     }
 
                     interactMsg.show();

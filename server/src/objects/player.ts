@@ -20,7 +20,7 @@ import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../co
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -31,7 +31,7 @@ import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
-import { CountableInventoryItem, type InventoryItem } from "../inventory/inventoryItem";
+import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
@@ -143,7 +143,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     get modifiers() { return this._modifiers; }
 
     killedBy?: Player;
-    downedBy?: Player;
+    downedBy?: {
+        readonly player: Player
+        readonly item?: InventoryItem
+    };
 
     damageDone = 0;
     damageTaken = 0;
@@ -260,7 +263,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private _scope!: ScopeDefinition;
     get effectiveScope(): ScopeDefinition { return this._scope; }
-    set effectiveScope(target: ScopeDefinition | ReferenceTo<ScopeDefinition>) {
+    set effectiveScope(target: ReifiableDef<ScopeDefinition>) {
         const scope = Scopes.reify(target);
         if (this._scope === scope) return;
 
@@ -333,7 +336,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
     downed = false;
-    beingRevived = false;
+    beingRevivedBy?: Player;
 
     get position(): Vector {
         return this.hitbox.position;
@@ -360,7 +363,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.team = team;
             this.teamID = team.id;
 
-            team.players.push(this);
+            team.addPlayer(this);
             team.spawnPoint ??= position;
             team.setDirty();
         }
@@ -577,7 +580,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             (this.downed ? 0.5 : 1) *                       // Knocked out speed multiplier
-            (this.beingRevived ? 0.5 : 1) *                 // Being revived speed multiplier
+            (this.beingRevivedBy ? 0.5 : 1) *                 // Being revived speed multiplier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
@@ -587,6 +590,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.position,
             Vec.scale(movementVector, dt)
         );
+
+        if (this.action instanceof ReviveAction) {
+            if (
+                Vec.squaredLength(
+                    Vec.sub(
+                        this.position,
+                        this.action.target.position
+                    )
+                ) >= 7 ** 2
+            ) {
+                this.action.cancel();
+            }
+        }
 
         /* Object placing code start //
         const position = Vec.add(
@@ -674,7 +690,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Knocked out damage
-        if (this.downed && !this.beingRevived) {
+        if (this.downed && !this.beingRevivedBy) {
             this.piercingDamage(GameConstants.bleedOutDPMs * dt, KillfeedEventType.BleedOut);
         }
 
@@ -704,6 +720,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 : this.inventory.scope;
         }
         this.isInsideBuilding = isInsideBuilding;
+
+        if (this.downed) {
+            this.effectiveScope = DEFAULT_SCOPE;
+        }
 
         let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
         depleters.forEach(def => {
@@ -1062,12 +1082,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
-        const applyPlayerFX = (modifiers: ExtendedWearerAttributes): void => {
-            if (source instanceof Player) {
+        const sourceIsPlayer = source instanceof Player;
+        const applyPlayerFX = sourceIsPlayer
+            ? (modifiers: ExtendedWearerAttributes): void => {
                 source.health += modifiers.healthRestored ?? 0;
                 source.adrenaline += modifiers.adrenalineRestored ?? 0;
             }
-        };
+            : () => {};
 
         // Decrease health; update damage done and damage taken
         this.health -= amount;
@@ -1077,14 +1098,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             if (canTrackStats && !this.dead) {
                 const damageDealt = weaponUsed.stats.damage += amount;
 
-                for (const entry of attributes?.damageDealt ?? []) {
-                    if (damageDealt < (entry.limit ?? Infinity)) {
+                if (sourceIsPlayer) {
+                    for (const entry of attributes?.damageDealt ?? []) {
+                        if (damageDealt >= (entry.limit ?? Infinity)) continue;
+
                         applyPlayerFX(entry);
                     }
                 }
             }
 
-            if (source instanceof Player) {
+            if (sourceIsPlayer) {
                 if (source !== this) {
                     source.damageDone += amount;
                 }
@@ -1098,8 +1121,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 if (canTrackStats) {
                     const kills = ++weaponUsed.stats.kills;
 
-                    for (const entry of attributes?.kill ?? []) {
-                        if (kills < (entry.limit ?? Infinity)) {
+                    if (sourceIsPlayer) {
+                        for (const entry of attributes?.kill ?? []) {
+                            if (kills >= (entry.limit ?? Infinity)) continue;
+
                             applyPlayerFX(entry);
                         }
                     }
@@ -1150,6 +1175,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.canDespawn = false;
         this.team?.setDirty();
 
+        let action: Action | undefined;
+        if ((action = this.beingRevivedBy?.action) instanceof ReviveAction) {
+            action.cancel();
+        }
+
         const sourceIsPlayer = source instanceof Player;
         // Send kill packets
         if (sourceIsPlayer) {
@@ -1194,15 +1224,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 weaponUsed: weaponUsed?.definition
             };
 
-            const attributeToPlayer = (player: Player): void => {
+            const attributeToPlayer = (player: Player, item = player.activeItem): void => {
                 killFeedMessage.attackerId = player.id;
                 killFeedMessage.attackerKills = player.kills;
                 if (player.loadout.badge) {
                     killFeedMessage.attackBadge = player.loadout.badge;
                 }
 
-                if (player.activeItem.definition.killstreak) {
-                    killFeedMessage.killstreak = player.activeItem.stats.kills;
+                if (item.definition.killstreak) {
+                    killFeedMessage.killstreak = item.stats.kills;
                 }
             };
 
@@ -1211,8 +1241,27 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                 const antecedent = this.downedBy;
                 if (antecedent) {
-                    ++antecedent.kills;
-                    attributeToPlayer(antecedent);
+                    const { player, item } = antecedent;
+
+                    ++player.kills;
+                    if (
+                        (item instanceof GunItem || item instanceof MeleeItem) &&
+                        player.inventory.weapons.includes(item)
+                    ) {
+                        const kills = ++item.stats.kills;
+
+                        for (
+                            const entry of item.definition.wearerAttributes?.on?.kill ?? []
+                        ) {
+                            if (kills >= (entry.limit ?? Infinity)) continue;
+
+                            player.health += entry.healthRestored ?? 0;
+                            player.adrenaline += entry.adrenalineRestored ?? 0;
+                        }
+                    }
+
+                    killFeedMessage.weaponUsed = item?.definition;
+                    attributeToPlayer(player, item);
                 }
             } else if (sourceIsPlayer) {
                 if (source !== this) {
@@ -1254,14 +1303,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // team wipe
-        let players: Player[] | undefined;
-        if ((players = this._team?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
+        let team: Team | undefined;
+        let players: readonly Player[] | undefined;
+        if ((players = (team = this._team)?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
             for (const player of players) {
                 if (player === this) continue;
 
                 player.health = 0;
                 player.die(KillfeedEventType.FinallyKilled);
             }
+
+            this.game.teams.delete(team!);
         }
 
         //
@@ -1346,7 +1398,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             };
 
             if (sourceIsPlayer) {
-                this.downedBy = source;
+                this.downedBy = {
+                    player: source,
+                    item: weaponUsed instanceof InventoryItem ? weaponUsed : undefined
+                };
 
                 if (source !== this) {
                     killFeedMessage.eventType = KillfeedEventType.NormalTwoParty;
@@ -1372,7 +1427,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     revive(): void {
         this.downed = false;
-        this.beingRevived = false;
+        this.beingRevivedBy = undefined;
         this.downedBy = undefined;
         this.health = 30;
         this.setDirty();
@@ -1380,11 +1435,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     canInteract(player: Player): boolean {
-        return this.downed && !this.beingRevived && this !== player && this.teamID === player.teamID;
+        return !player.downed &&
+            this.downed &&
+            !this.beingRevivedBy &&
+            this !== player &&
+            this.teamID === player.teamID;
     }
 
     interact(reviver: Player): void {
-        this.beingRevived = true;
+        this.beingRevivedBy = reviver;
         this.setDirty();
         reviver.animation = AnimationType.Revive;
         reviver.executeAction(new ReviveAction(reviver, this));
@@ -1580,7 +1639,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             full: {
                 dead: this.dead,
                 downed: this.downed,
-                beingRevived: this.beingRevived,
+                beingRevived: !!this.beingRevivedBy,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
                 helmet: this.inventory.helmet,

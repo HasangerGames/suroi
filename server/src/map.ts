@@ -13,7 +13,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { type MapDefinition, Maps } from "./data/maps";
+import { Maps } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
@@ -45,11 +45,10 @@ export class Map {
 
     private readonly _beachPadding;
 
-    constructor(game: Game, mapName: string) {
+    constructor(game: Game, mapName: keyof typeof Maps) {
         this.game = game;
 
-        const mapDefinition = (Maps as Record<string, MapDefinition>)[mapName];
-
+        const mapDefinition = Maps[mapName];
         const packet = this.packet = new MapPacket();
 
         this.seed = packet.seed = random(0, 2 ** 31);

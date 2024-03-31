@@ -68,7 +68,43 @@ export class Game {
     */
     readonly deletedPlayers: number[] = [];
 
-    readonly teams: Team[] = [];
+    readonly teams = new (class <T> extends Set<T> {
+        private _valueCache?: T[];
+        get valueArray(): T[] {
+            /*
+                this rule is stupid and a skill issue filter
+                "It's also possible that the intent was to use a comparison operator such as == and that this code is an error."
+
+                anyone who confuses "??=" for "==" should consult an eye doctor
+            */
+            // eslint-disable-next-line no-return-assign
+            return this._valueCache ??= [...super.values()];
+        }
+
+        add(value: T): this {
+            super.add(value);
+            this._valueCache = undefined;
+            return this;
+        }
+
+        delete(value: T): boolean {
+            const ret = super.delete(value);
+            this._valueCache = undefined;
+            return ret;
+        }
+
+        clear(): void {
+            super.clear();
+            this._valueCache = undefined;
+        }
+
+        values(): IterableIterator<T> {
+            const iterator = this.values();
+            this._valueCache ??= [...iterator];
+
+            return iterator;
+        }
+    })<Team>();
 
     private _nextTeamID = -1;
     get nextTeamID(): number { return ++this._nextTeamID; }
@@ -315,7 +351,7 @@ export class Game {
             !this.over &&
             (
                 teamMode
-                    ? this.aliveCount <= Config.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= Config.maxTeamSize && this.teams.size <= 1
                     : this.aliveCount === 1
             )
         ) {
@@ -403,15 +439,15 @@ export class Game {
                 if (this.customTeams.has(teamID)) {
                     team = this.customTeams.get(teamID);
                 } else {
-                    this.teams.push(team = new Team(this.nextTeamID, autoFill));
+                    this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
                 }
             } else {
-                const vacantTeams = this.teams.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
-                if (!vacantTeams.length) {
-                    this.teams.push(team = new Team(this.nextTeamID));
-                } else {
+                const vacantTeams = this.teams.valueArray.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
+                if (vacantTeams.length) {
                     team = pickRandomInArray(vacantTeams);
+                } else {
+                    this.teams.add(team = new Team(this.nextTeamID));
                 }
             }
         }
@@ -431,7 +467,8 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: teamMode && team!.spawnPoint
+                            getPosition: teamMode && team?.spawnPoint
+                                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                                 ? () => randomPointInsideCircle(team!.spawnPoint!, 12, 8)
                                 : undefined,
                             collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius
@@ -510,7 +547,7 @@ export class Game {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (teamMode ? this.teams.length : this.aliveCount) > 1 &&
+            (teamMode ? this.teams.size : this.aliveCount) > 1 &&
             !this._started &&
             this.startTimeout === undefined
         ) {
@@ -540,6 +577,10 @@ export class Game {
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
+
+            if (teamMode && !this._started) {
+                player.team?.removePlayer(player);
+            }
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
