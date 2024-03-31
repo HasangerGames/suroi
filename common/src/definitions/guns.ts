@@ -1226,8 +1226,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     position: Vec.create(4, 0.6),
                     velocity: {
                         y: {
-                            min: 15,
-                            max: 10
+                            min: 10,
+                            max: 15
                         }
                     }
                 },
@@ -1240,8 +1240,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                             max: 8
                         },
                         y: {
-                            min: 25,
-                            max: 10
+                            min: 10,
+                            max: 25
                         }
                     }
                 }
@@ -1285,8 +1285,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     position: Vec.create(4.2, 0.6),
                     velocity: {
                         y: {
-                            min: 15,
-                            max: 10
+                            min: 10,
+                            max: 15
                         }
                     }
                 },
@@ -1299,8 +1299,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                             max: 8
                         },
                         y: {
-                            min: 25,
-                            max: 10
+                            min: 10,
+                            max: 25
                         }
                     }
                 }

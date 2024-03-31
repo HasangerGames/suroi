@@ -73,7 +73,7 @@ export class Game {
         get valueArray(): T[] {
             /*
                 this rule is stupid and a skill issue filter
-                "It’s also possible that the intent was to use a comparison operator such as == and that this code is an error."
+                "It's also possible that the intent was to use a comparison operator such as == and that this code is an error."
 
                 anyone who confuses "??=" for "==" should consult an eye doctor
             */
