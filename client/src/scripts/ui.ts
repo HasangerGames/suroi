@@ -21,6 +21,8 @@ import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
+import type { MapPingDefinition } from "../../../common/src/definitions/mapPings";
+import { Vec } from "../../../common/src/utils/vector";
 
 interface RegionInfo {
     name: string
@@ -1412,20 +1414,28 @@ Video evidence is required.`)) {
         $("#emote-wheel")
             .css("top", "50%")
             .css("left", "50%");
-        $("#btn-emotes").show().on("click", () => {
-            $("#emote-wheel").show();
-        });
 
         const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 $("#emote-wheel").hide();
 
-                const emote = game.uiManager.emotes[emoteSlot];
-                if (emote) {
-                    game.inputManager.addAction({
-                        type: InputActions.Emote,
-                        emote
-                    });
+                if (game.inputManager.pingWheelActive) {
+                    const ping = game.uiManager.mapPings[emoteSlot];
+                    if (ping) {
+                        game.inputManager.addAction({
+                            type: InputActions.MapPing,
+                            ping,
+                            position: game.activePlayer?.position ?? Vec.create(0, 0)
+                        });
+                    }
+                } else {
+                    const emote = game.uiManager.emotes[emoteSlot];
+                    if (emote) {
+                        game.inputManager.addAction({
+                            type: InputActions.Emote,
+                            emote
+                        });
+                    }
                 }
             });
         };
@@ -1434,11 +1444,27 @@ Video evidence is required.`)) {
         createEmoteWheelListener("bottom", 2);
         createEmoteWheelListener("left", 3);
 
-        // Game menu
         $("#btn-game-menu")
             .show()
             .on("click", () => {
                 $("#game-menu").toggle();
+            });
+
+        $("#btn-emotes")
+            .show()
+            .on("click", () => {
+                $("#emote-wheel").show();
+            });
+
+        $("#btn-toggle-ping")
+            .show()
+            .on("click", function() {
+                game.inputManager.pingWheelActive = !game.inputManager.pingWheelActive;
+                const { pingWheelActive } = game.inputManager;
+                $(this)
+                    .removeClass(pingWheelActive ? "btn-primary" : "btn-danger")
+                    .addClass(pingWheelActive ? "btn-danger" : "btn-primary");
+                game.uiManager.updateEmoteWheel();
             });
     }
 

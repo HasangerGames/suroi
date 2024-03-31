@@ -78,6 +78,10 @@
     @media screen and (max-width: $screen_large) {
         top: 5px;
         left: 5px;
+
+        .btn-lg {
+            height: unset;
+        }
     }
 }
 
@@ -170,18 +174,10 @@
 
     @media screen and (max-width: $screen_large) {
         flex-direction: row;
-        top: unset;
-        left: 25%;
-        bottom: 10px;
-        transform: scale(75%) translateX(-75%);
-        transform-origin: 0% 100%;
-    }
-
-    @media screen and (max-width: $screen_small) {
-        flex-direction: column;
-        left: calc(50% - 135px);
-        bottom: 5px;
-        transform: scale(50%) translateX(-50%);
+        left: 75px;
+        top: 148px;
+        transform: scale(60%);
+        transform-origin: 0% 0%;
     }
 
     .teammate-container {
@@ -192,6 +188,7 @@
         padding: 6px 10px 6px 7px;
         border-radius: 8px;
         position: relative;
+        width: max-content;
 
         @media screen and (max-width: $screen_large) {
             padding: 7px;
