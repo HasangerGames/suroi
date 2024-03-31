@@ -1,6 +1,5 @@
 import { TeamSize } from "../../common/src/constants";
 import { random } from "../../common/src/utils/random";
-import { type Vector } from "../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Player } from "./objects/player";
 import { type WebSocket } from "uWebSockets.js";

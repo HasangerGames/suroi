@@ -21,7 +21,6 @@ import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
-import type { MapPingDefinition } from "../../../common/src/definitions/mapPings";
 import { Vec } from "../../../common/src/utils/vector";
 
 interface RegionInfo {

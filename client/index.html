@@ -568,11 +568,11 @@
             <img id="chicken-dinner" src="./img/game/emotes/chicken_dinner.svg" />
             <h1 id="game-over-text" class="modal-item">You died.</h1>
             <div id="game-over-rank-container">
-              <span>Rank</span>
               <span id="game-over-rank" class="modal-item"></span>
             </div>
           </div>
-          <div id="game-over-screen">
+          <div id="game-over-player-stats">
+          <div class="game-over-screen">
             <h1 id="game-over-player-name" class="modal-item">Player</h1>
             <div class="modal-item" id="game-over-stats">
               <div class="stat">
@@ -592,27 +592,29 @@
                 <span class="stat-value" id="game-over-time"></span>
               </div>
             </div>
-            <div class="modal-item">
+          </div>
+        </div>
+          <div id="game-over-options">
+            <button
+              class="btn btn-lg btn-darken btn-primary"
+              id="btn-play-again"
+              style="margin: 5px;"
+            >
+              Play Again
+            </button>
+            <div id="game-over-other-options">
               <button
                 class="btn btn-lg btn-darken btn-primary"
-                id="btn-play-again"
+                id="btn-spectate"
               >
-                Play Again
+                Spectate
               </button>
-              <div style="display: flex; gap: 8px">
-                <button
-                  class="btn btn-lg btn-darken btn-primary"
-                  id="btn-spectate"
-                >
-                  Spectate
-                </button>
-                <button
-                  class="btn btn-lg btn-darken btn-secondary"
-                  id="btn-menu"
-                >
-                  Menu
-                </button>
-              </div>
+              <button
+                class="btn btn-lg btn-darken btn-secondary"
+                id="btn-menu"
+              >
+                Menu
+              </button>
             </div>
           </div>
         </div>

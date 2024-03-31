@@ -36,7 +36,7 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type PlayerContainer } from "../server";
 import { type Team, teamMode } from "../team";
-import { removeFrom } from "../utils/misc";
+import { Logger, removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -1457,6 +1457,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.damageTaken = this.damageTaken;
         packet.timeAlive = (this.game.now - this.joinTime) / 1000;
         packet.rank = this.game.aliveCount + 1;
+        packet.team = teamMode;
+
+        if (teamMode && this.team) {
+            packet.teamRank = this.game.teams.size + 1;
+            packet.teammates = this.team.players.filter(p => p.id !== this.id).map(player => {
+                return {
+                    playerID: player.id,
+                    kills: player.kills,
+                    damageDone: player.damageDone,
+                    damageTaken: player.damageTaken,
+                    timeAlive: (this.game.now - player.joinTime) / 1000
+                };
+            });
+            Logger.log(`${packet.teammates.length}`);
+        }
         this.sendPacket(packet);
 
         for (const spectator of this.spectators) {

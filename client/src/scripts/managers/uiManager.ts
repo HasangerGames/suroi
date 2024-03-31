@@ -269,7 +269,39 @@ export class UIManager {
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
         // Player rank
-        $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
+        $("#game-over-rank").text(
+            packet.team
+                ? `Team Rank: #${packet.teamRank}`
+                : `Rank: #${packet.rank}`
+        ).toggleClass("won", packet.won);
+
+        if (packet.teammates) {
+            for (let i = 0; i < packet.teammates.length; i++) {
+                const teammate = packet.teammates[i];
+                const teammateStats = `<div class="game-over-screen">
+                <h1 id="game-over-player-name" class="modal-item">${this.getRawPlayerName(teammate.playerID)}</h1>
+                <div class="modal-item" id="game-over-stats">
+                  <div class="stat">
+                    <span class="stat-name">Kills: ${teammate.kills}</span>
+                    <span class="stat-value" id="game-over-kills"></span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-name">Damage done: ${teammate.damageDone}</span>
+                    <span class="stat-value" id="game-over-damage-done"></span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-name">Damage taken: ${teammate.damageTaken}</span>
+                    <span class="stat-value" id="game-over-damage-taken"></span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-name">Time alive: ${formatDate(teammate.timeAlive)}</span>
+                    <span class="stat-value" id="game-over-time"></span>
+                  </div>
+                </div>
+              </div>`;
+                $("#game-over-player-stats").append(teammateStats);
+            }
+        }
     }
 
     readonly mapPings = ["warning_ping", "arrow_ping", "gift_ping", "heal_ping"].map(ping => MapPings.fromString(ping));

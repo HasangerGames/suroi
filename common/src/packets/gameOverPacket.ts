@@ -14,6 +14,16 @@ export class GameOverPacket extends AbstractPacket {
     timeAlive!: number;
     rank!: number;
 
+    team!: boolean;
+    teamRank!: number;
+    teammates!: Array<{
+        playerID: number
+        kills: number
+        damageDone: number
+        damageTaken: number
+        timeAlive: number
+    }>;
+
     override serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.won);
         stream.writeObjectID(this.playerID);
@@ -22,6 +32,18 @@ export class GameOverPacket extends AbstractPacket {
         stream.writeUint16(this.damageTaken);
         stream.writeUint16(this.timeAlive);
         if (!this.won) stream.writeBits(this.rank, 7);
+
+        stream.writeBoolean(this.team);
+        if (this.team) {
+            if (!this.won) stream.writeBits(this.rank, 7);
+            stream.writeArray(this.teammates, 2, player => {
+                stream.writeObjectID(player.playerID);
+                stream.writeUint8(player.kills);
+                stream.writeUint16(player.damageDone);
+                stream.writeUint16(player.damageTaken);
+                stream.writeUint16(player.timeAlive);
+            });
+        }
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -32,5 +54,20 @@ export class GameOverPacket extends AbstractPacket {
         this.damageTaken = stream.readUint16();
         this.timeAlive = stream.readUint16();
         this.rank = this.won ? 1 : stream.readBits(7);
+
+        this.team = stream.readBoolean();
+        if (this.team) {
+            this.teamRank = this.won ? 1 : stream.readBits(7);
+            this.teammates = [];
+            stream.readArray(this.teammates, 2, () => {
+                return {
+                    playerID: stream.readObjectID(),
+                    kills: stream.readUint8(),
+                    damageDone: stream.readUint16(),
+                    damageTaken: stream.readUint16(),
+                    timeAlive: stream.readUint16()
+                };
+            });
+        }
     }
 }
