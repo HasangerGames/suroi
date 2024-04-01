@@ -1120,6 +1120,7 @@
             bottom: 10px;
         }
     }
+
 }
 .items-container#ammo {
     flex-direction: row-reverse;
@@ -1356,6 +1357,9 @@
                 width: 25px;
                 height: 25px;
             }
+
+            transition-property: width height;
+            transition-duration: 0.25s;
         }
 
         .item-tooltip {
@@ -1587,5 +1591,21 @@
         height: 100%;
         width: 50%;
         display: flex;
+    }
+}
+
+.pickup-pulse {
+    animation: pickup-pulse 0.25s ease-in-out;
+}
+
+@keyframes pickup-pulse {
+    0% {
+        scale: 100%;
+    }
+    50% {
+        scale: 110%;
+    }
+    100% {
+        scale: 100%;
     }
 }
