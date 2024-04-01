@@ -80,6 +80,18 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     }
 
+    const params = new URLSearchParams(window.location.search);
+
+    // Switch regions with the ?region="name" Search Parameter
+    if (params.has("region")) {
+        (() => {
+            const region = params.get("region");
+            if (region === null) return;
+            if (!Object.hasOwn(Config.regions, region)) return;
+            game.console.setBuiltInCVar("cv_region", region);
+        })();
+    }
+
     // Load news
     let newsText = "";
     for (const newsPost of news.slice(0, 5)) {
@@ -362,7 +374,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
-                    $("#create-team-url-field").val(`${window.location.origin}/#${teamID}`);
+                    $("#create-team-url-field").val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
                     $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
                     $("#create-team-toggle-lock").prop("checked", data.locked);
                     $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
@@ -465,8 +477,6 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#btn-start-game").on("click", () => {
         teamSocket?.send(JSON.stringify({ type: CustomTeamMessageType.Start }));
     });
-
-    const params = new URLSearchParams(window.location.search);
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
