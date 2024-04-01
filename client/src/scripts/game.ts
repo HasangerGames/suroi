@@ -697,7 +697,7 @@ export class Game {
                     object.hitbox.collidesWith(detectionHitbox)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object instanceof Obstacle || object instanceof Player || object.canInteract(player)) && dist < interactable.minDist) {
+                    if ((object.canInteract(player) || object instanceof Obstacle || object instanceof Player) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;
                     } else if (object instanceof Loot && dist < uninteractable.minDist) {
@@ -802,33 +802,30 @@ export class Game {
                 }
 
                 // Mobile stuff
-                if (
-                    this.inputManager.isMobile &&
-                    canInteract &&
-                    (
+                if (this.inputManager.isMobile && canInteract) {
+                    if ( // Auto pickup
+                        this.console.getBuiltInCVar("cv_auto_pickup") &&
                         (
-                            this.console.getBuiltInCVar("cv_auto_pickup") && (
-                                // Auto pickup
-                                object instanceof Loot &&
+                            object instanceof Loot &&
 
-                                // Only pick up melees if no melee is equipped
-                                (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+                            // Only pick up melees if no melee is equipped
+                            (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
 
-                                // Only pick up guns if there's a free slot
-                                (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+                            // Only pick up guns if there's a free slot
+                            (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
 
-                                // Don't pick up skins
-                                type !== ItemType.Skin
-                            )
-                        ) ||
-                        ( // Auto open doors
-                            object instanceof Obstacle &&
-                            object.canInteract(player) &&
-                            object.definition.role === ObstacleSpecialRoles.Door
+                            // Don't pick up skins
+                            type !== ItemType.Skin
                         )
-                    )
-                ) {
-                    this.inputManager.addAction(InputActions.Interact);
+                    ) {
+                        this.inputManager.addAction(InputActions.Loot);
+                    } else if ( // Auto open doors
+                        object instanceof Obstacle &&
+                        object.canInteract(player) &&
+                        object.definition.role === ObstacleSpecialRoles.Door
+                    ) {
+                        this.inputManager.addAction(InputActions.Interact);
+                    }
                 }
             }
         };

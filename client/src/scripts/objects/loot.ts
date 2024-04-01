@@ -183,9 +183,9 @@ export class Loot extends GameObject {
             case ItemType.Healing:
             case ItemType.Ammo:
             case ItemType.Throwable: {
-                const idString = definition.idString;
+                const { idString } = definition;
 
-                return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString]);
+                return inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString];
             }
             case ItemType.Armor: {
                 switch (true) {

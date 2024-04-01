@@ -22,7 +22,7 @@ There's so much to check out in this update, like new buildings, retextures, and
   <li><strong>Duos!</strong> You can now play Suroi in teams of two.</li>
   <ul>
     <li>Duos only for the next week; starting in the next update, the game will switch between and solos and duos every 24 hours.</li>
-    <li>Ammo, healing items, equipment, and scopes are now droppable, but only in duos.</li>
+    <li>Ammo, healing items, equipment, and scopes are now droppable, but only in duos. Items aren't droppable on mobile yet.</li>
     <li>To request an item from your teammate, hold the keybind for the team ping wheel (default C), and click on the item you want.</li>
   </ul>
   <li><strong>3 new guns!</strong> Added 3 LMGs: the MG5, Negev, and MG36.</li>
