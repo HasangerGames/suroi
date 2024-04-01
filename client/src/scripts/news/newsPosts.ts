@@ -7,7 +7,7 @@ export const news: NewsPost[] = [
         author: "HAZEL",
         title: "Just the Two of Us",
         bannerImage: "../img/news/v0.17.0.png",
-        content: `Much requested. Long awaited. Duos mode is here! Grab a friend and battle towards that tasty chicken dinner! Either queue with a random or send a custom link to someone. If you'd like to voice chat, join the (Discord server). You could even use one of 3 new LMGs we've added to help you out…<br><br>
+        content: `Much requested. Long awaited. Duos mode is here! Grab a friend and battle towards that tasty chicken dinner! Either queue with a random or send a custom link to someone. If you'd like to voice chat, join the <a href="https://discord.suroi.io" target="_blank">Discord server</a>. You could even use one of 3 new LMGs we've added to help you out…<br><br>
 
 The MG36 is for those who like assault rifles like the AK-47 but find themselves needing that little extra “oomph”. The lightness of an AR combined with the hard hitting obstacle multiplier of a LMG. Give it a try!<br><br>
 
