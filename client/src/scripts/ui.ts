@@ -44,9 +44,9 @@ let autoFill = false;
 
 export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
-    const info = selectedRegion ?? regionInfo[Config.defaultRegion];
-    $("#btn-play-solo").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Solo);
-    $("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Duo);
+    //const info = selectedRegion ?? regionInfo[Config.defaultRegion];
+    //$("#btn-play-solo").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Solo);
+    //$("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Duo);
 }
 
 export async function setUpUI(game: Game): Promise<void> {
