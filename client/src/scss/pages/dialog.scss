@@ -57,12 +57,14 @@
         display: flex;
         flex-direction: column;
 
-        width: fit-content;
+        width: inherit;
         padding: 10px;
 
         #create-team-players {
             display: flex;
             gap: 8px;
+            margin-left: auto;
+            margin-right: auto;
 
             .create-team-player-container {
                 min-width: 150px;
@@ -110,18 +112,23 @@
 
             #create-team-url-field {
                 color: black;
+                user-select: all;
                 font-size: 18px;
-                width: 220px;
+                width: 350px;
                 padding: 4px 8px;
                 outline: none;
                 border: none;
-                border-top-left-radius: 8px;
-                border-bottom-left-radius: 8px;
             }
 
             #btn-copy-team-url {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+            }
+
+            #btn-hide-team-url {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                width: 4rem;
             }
         }
 
@@ -154,6 +161,9 @@
                         font-family: monospace;
                     }
                 }
+            }
+            #btn-start-game {
+                margin-left: auto;
             }
         }
     }

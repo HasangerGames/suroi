@@ -86,6 +86,7 @@ export async function setUpUI(game: Game): Promise<void> {
     if (params.has("region")) {
         (() => {
             const region = params.get("region");
+            params.delete("region");
             if (region === null) return;
             if (!Object.hasOwn(Config.regions, region)) return;
             game.console.setBuiltInCVar("cv_region", region);
@@ -409,7 +410,7 @@ export async function setUpUI(game: Game): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            $("#splash-server-message-text").html("Error joining team.<br>Make sure you're on the same server as your teammate(s).");
+            $("#splash-server-message-text").html("Error joining team.<br>It may not exist or it is full.");
             $("#splash-server-message").show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
@@ -422,7 +423,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 $("#splash-server-message-text").html(
                     joinedTeam
                         ? "Lost connection to team."
-                        : "Error joining team.<br>Make sure you're on the same server as your teammate(s)."
+                        : "Error joining team.<br>It may not exist or it is full."
                 );
                 $("#splash-server-message").show();
             }
@@ -457,6 +458,22 @@ export async function setUpUI(game: Game): Promise<void> {
             .catch(() => {
                 alert("Unable to copy link to clipboard.");
             });
+    });
+
+    $("#btn-hide-team-url").on("click", () => {
+        const icon = $("#btn-hide-team-url i");
+        const urlField = $("#create-team-url-field");
+        if (urlField.hasClass("hidden")) {
+            icon.removeClass("fa-eye")
+                .addClass("fa-eye-slash");
+            urlField.removeClass("hidden")
+                .css("color", "");
+            return;
+        }
+        icon.removeClass("fa-eye-slash")
+            .addClass("fa-eye");
+        urlField.addClass("hidden")
+            .css("color", "#FFFFFF00");
     });
 
     $("#create-team-toggle-auto-fill").on("click", function() {
