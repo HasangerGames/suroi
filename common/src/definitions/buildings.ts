@@ -1902,7 +1902,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             puzzle: {
                 triggerInteractOn: "vault_door",
                 interactDelay: 1500,
-                order: ["y", "o", "j", "l"],
+                order: ["o", "l", "j", "y"],
                 solvedSound: true,
                 setSolvedImmediately: true
             },
