@@ -1174,9 +1174,10 @@ Video evidence is required.`)) {
         "#toggle-hide-minimap",
         "cv_minimap_minimized",
         value => {
-            //hack minimap code is hacky and it scares me too much
-            //hack for me to add a "setVisible" method or smth
-            while (game.map.visible === value) {
+            //HACK minimap code is hacky and it scares me too much
+            //HACK for me to add a "setVisible" method or smth
+            let iterationCount = 0;
+            while (game.map.visible === value && ++iterationCount < 100) {
                 game.map.toggleMinimap();
             }
         }

@@ -639,10 +639,13 @@ export class UIManager {
 
         this.ui.killFeed.prepend(killFeedItem);
         if (!UI_DEBUG_MODE) {
-            const children = this.ui.killFeed.children();
+            let iterationCount = 0;
+            while (this.ui.killFeed.children().length > 5) {
+                if (++iterationCount === 1e3) {
+                    console.warn("1000 iterations of removing killfeed entries; possible infinite loop");
+                }
 
-            while (children.length > 5) {
-                children
+                this.ui.killFeed.children()
                     .last()
                     .remove();
             }

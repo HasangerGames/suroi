@@ -284,7 +284,11 @@ export class Game {
         // Handle incoming messages
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
             const stream = new PacketStream(new SuroiBitStream(message.data));
+            let iterationCount = 0;
             while (true) {
+                if (++iterationCount === 1e3) {
+                    console.warn("1000 iterations of packet reading; possible infinite loop");
+                }
                 const packet = stream.readPacket();
                 if (packet === undefined) break;
                 this.onPacket(packet);

@@ -257,7 +257,7 @@ app.ws("/play", {
         // Bot, cheater & VPN protection
         //
         const ip = getIP(res, req);
-        const ipv4 = convertToIPv4(ip); // Shouldnt REALLY need to do this but idk if people will have an ipv6 its happened before :shrug:
+        const ipv4 = convertToIPv4(ip); // Shouldn't REALLY need to do this but idk if people will have an ipv6 its happened before :shrug:
         if (
             VPN_IPV4.includes(ipv4)
         ) {

@@ -1383,8 +1383,12 @@ export class GameConsole {
             */
             pushGroupAnchorIfPresent();
 
+            let iterationCount = 0;
             // eslint-disable-next-line no-unmodified-loop-condition -- cfa fix when™
             while (currentNode !== undefined) {
+                if (++iterationCount === 1e3) {
+                    console.warn("1000 iterations of query parsing; possible infinite loop");
+                }
                 error = false;
                 const entity = currentNode.cmd;
 
