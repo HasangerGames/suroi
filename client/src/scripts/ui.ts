@@ -162,8 +162,7 @@ export async function setUpUI(game: Game): Promise<void> {
             game.console.setBuiltInCVar("cv_region", "");
         }
         $("#server-name").text(selectedRegion.name);
-        $("#create-team-server-name").text(selectedRegion.name);
-        $("#create-team-server-player-count").text(selectedRegion.playerCount ?? "-");
+        $("#server-player-count").text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
 
