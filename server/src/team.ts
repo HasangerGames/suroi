@@ -1,6 +1,5 @@
 import { TeamSize } from "../../common/src/constants";
 import { random } from "../../common/src/utils/random";
-import { type Vector } from "../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Player } from "./objects/player";
 import { type WebSocket } from "uWebSockets.js";
@@ -127,6 +126,7 @@ export class CustomTeam {
     addPlayer(player: CustomTeamPlayer): void {
         player.sendMessage({
             type: CustomTeamMessageType.Join,
+            id: player.id,
             teamID: this.id,
             isLeader: player.isLeader,
             autoFill: this.autoFill,
@@ -160,7 +160,12 @@ export class CustomTeam {
             return;
         }
 
-        const newLeaderID = player.isLeader ? this.players[0].id : undefined;
+        let newLeaderID: number | undefined;
+        if (player.isLeader) {
+            const newLeader = this.players[0];
+            newLeader.isLeader = true;
+            newLeaderID = newLeader.id;
+        }
 
         this._publishMessage({
             type: CustomTeamMessageType.PlayerLeave,

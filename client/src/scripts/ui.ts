@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -9,8 +9,10 @@ import { HealType, HealingItems } from "../../../common/src/definitions/healingI
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
+import { Vec } from "../../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Game } from "./game";
 import type { UIManager } from "./managers/uiManager";
@@ -20,9 +22,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
-import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
-import type { MapPingDefinition } from "../../../common/src/definitions/mapPings";
-import { Vec } from "../../../common/src/utils/vector";
 
 interface RegionInfo {
     name: string
@@ -340,7 +339,7 @@ export async function setUpUI(game: Game): Promise<void> {
         const getPlayerHTML = (p: CustomTeamPlayerInterface): string =>
             `
             <div class="create-team-player-container" data-id="${p.id}">
-              ${p.isLeader ? '<i class="fa-solid fa-crown"></i>' : ""}
+              <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
               <div class="skin">
                 <div class="skin-base" style="background-image: url('./img/game/skins/${p.skin}_base.svg')"></div>
                 <div class="skin-left-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
@@ -353,11 +352,14 @@ export async function setUpUI(game: Game): Promise<void> {
             </div>
             `;
 
+        let playerID: number;
+
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
                 case CustomTeamMessageType.Join: {
                     joinedTeam = true;
+                    playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
                     $("#create-team-url-field").val(`${window.location.origin}/#${teamID}`);
@@ -372,6 +374,13 @@ export async function setUpUI(game: Game): Promise<void> {
                 }
                 case CustomTeamMessageType.PlayerLeave: {
                     $("#create-team-players").find(`[data-id="${data.id}"]`).remove();
+                    if (data.newLeaderID !== undefined) {
+                        $("#create-team-players").find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
+                        if (data.newLeaderID === playerID) {
+                            $("#btn-start-game").removeClass("btn-disabled").text("Start Game");
+                            $("#create-team-toggles").removeClass("disabled");
+                        }
+                    }
                     break;
                 }
                 case CustomTeamMessageType.Settings: {

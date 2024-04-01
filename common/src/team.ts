@@ -19,6 +19,7 @@ export interface CustomTeamPlayerInterface {
 export type CustomTeamMessage =
     {
         type: CustomTeamMessageType.Join
+        id: number
         teamID: string
         isLeader: boolean
         autoFill: boolean
