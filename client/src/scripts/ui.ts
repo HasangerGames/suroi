@@ -1395,7 +1395,12 @@ Video evidence is required.`)) {
     if (game.inputManager.isMobile) {
         // Interact message
         $("#interact-message").on("click", () => {
-            game.console.handleQuery(game.uiManager.action.active ? "cancel_action" : "interact");
+            if (game.uiManager.action.active) {
+                game.inputManager.addAction(InputActions.Cancel);
+            } else {
+                game.inputManager.addAction(InputActions.Interact);
+                game.inputManager.addAction(InputActions.Loot);
+            }
         });
         // noinspection HtmlUnknownTarget
         $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');

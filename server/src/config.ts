@@ -18,9 +18,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "arena",
+    mapName: "main",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Duo,
 

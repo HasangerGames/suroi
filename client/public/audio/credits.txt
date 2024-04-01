@@ -41,7 +41,7 @@ Guns:
   Negev fire - "Machine Gun Automatic Fire A" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/automatic-gunfire-rifle-299 -> https://www.fesliyanstudios.com/play-mp3/7423
 
   MG36 fire - KuraiWolf: https://opengameart.org/content/light-machine-gun
-  MG36 reload - Vishwa Sivamurugan & hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
+  MG36 reload - Siberian Black League & hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
   MG36 switch - hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
 
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures

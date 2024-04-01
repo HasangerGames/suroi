@@ -286,7 +286,7 @@ export class UIManager {
                     <span class="stat-value" id="game-over-kills">${teammate.kills}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name">Damage done: }</span>
+                    <span class="stat-name">Damage done: </span>
                     <span class="stat-value" id="game-over-damage-done">${teammate.damageDone}</span>
                   </div>
                   <div class="stat">
