@@ -80,6 +80,19 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     }
 
+    const params = new URLSearchParams(window.location.search);
+
+    // Switch regions with the ?region="name" Search Parameter
+    if (params.has("region")) {
+        (() => {
+            const region = params.get("region");
+            params.delete("region");
+            if (region === null) return;
+            if (!Object.hasOwn(Config.regions, region)) return;
+            game.console.setBuiltInCVar("cv_region", region);
+        })();
+    }
+
     // Load news
     let newsText = "";
     for (const newsPost of news.slice(0, 5)) {
@@ -362,7 +375,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
-                    $("#create-team-url-field").val(`${window.location.origin}/#${teamID}`);
+                    $("#create-team-url-field").val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
                     $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
                     $("#create-team-toggle-lock").prop("checked", data.locked);
                     $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
@@ -397,7 +410,7 @@ export async function setUpUI(game: Game): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            $("#splash-server-message-text").html("Error joining team.<br>Make sure you're on the same server as your teammate(s).");
+            $("#splash-server-message-text").html("Error joining team.<br>It may not exist or it is full.");
             $("#splash-server-message").show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
@@ -410,7 +423,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 $("#splash-server-message-text").html(
                     joinedTeam
                         ? "Lost connection to team."
-                        : "Error joining team.<br>Make sure you're on the same server as your teammate(s)."
+                        : "Error joining team.<br>It may not exist or it is full."
                 );
                 $("#splash-server-message").show();
             }
@@ -447,6 +460,22 @@ export async function setUpUI(game: Game): Promise<void> {
             });
     });
 
+    $("#btn-hide-team-url").on("click", () => {
+        const icon = $("#btn-hide-team-url i");
+        const urlField = $("#create-team-url-field");
+        if (urlField.hasClass("hidden")) {
+            icon.removeClass("fa-eye")
+                .addClass("fa-eye-slash");
+            urlField.removeClass("hidden")
+                .css("color", "");
+            return;
+        }
+        icon.removeClass("fa-eye-slash")
+            .addClass("fa-eye");
+        urlField.addClass("hidden")
+            .css("color", "#FFFFFF00");
+    });
+
     $("#create-team-toggle-auto-fill").on("click", function() {
         autoFill = $(this).prop("checked");
         teamSocket?.send(JSON.stringify({
@@ -465,8 +494,6 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#btn-start-game").on("click", () => {
         teamSocket?.send(JSON.stringify({ type: CustomTeamMessageType.Start }));
     });
-
-    const params = new URLSearchParams(window.location.search);
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
