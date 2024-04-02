@@ -152,6 +152,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     damageTaken = 0;
     readonly joinTime: number;
 
+    lastLootTime = Date.now();
     lastInteractionTime = Date.now();
 
     readonly recoil = {
@@ -1519,6 +1520,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 }
                 case InputActions.Loot: {
+                    if (this.game.now - this.lastLootTime < 120) return;
+                    this.lastLootTime = this.game.now;
+
                     interface CloseObject {
                         object: Loot | undefined
                         minDist: number
