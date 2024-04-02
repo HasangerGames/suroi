@@ -65,6 +65,7 @@ const maps = {
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
+            tugboat_white: 5,
             armory: 1,
             refinery: 1,
             warehouse: 5,
