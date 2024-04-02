@@ -123,8 +123,8 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 useRight: Vec.create(75, -20)
             },
             image: {
-                position: Vec.create(45, 20),
-                usePosition: Vec.create(85, -25),
+                position: Vec.create(40, 20),
+                usePosition: Vec.create(80, -25),
                 angle: 135,
                 useAngle: 65,
                 lootScale: 0.6
