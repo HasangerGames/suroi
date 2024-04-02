@@ -772,8 +772,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.updateObjects = false;
 
             this.screenHitbox = RectangleHitbox.fromRect(
-                this.zoom * 2 + 8,
-                this.zoom * 2 + 8,
+                player.zoom * 2 + 8,
+                player.zoom * 2 + 8,
                 player.position
             );
 
