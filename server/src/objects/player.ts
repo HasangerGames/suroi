@@ -817,17 +817,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            teammates: teamMode
-                ? this.team!.players.filter(p => p.id !== this.id).map(player => {
-                    return {
-                        id: player.id,
-                        position: player.position,
-                        normalizedHealth: player.normalizedHealth,
-                        downed: player.downed,
-                        disconnected: player.disconnected
-                    };
-                })
-                : [],
+            teammates: teamMode ? this.team!.players.filter(p => p.id !== this.id) : [],
             spectating: this.spectating !== undefined,
             dirty: player.dirty,
             inventory: {
