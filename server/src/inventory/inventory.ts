@@ -496,8 +496,8 @@ export class Inventory {
                 break;
             }
             case ItemType.Armor: {
-                this._dropItem(definition, { pushForce });
-                switch (definition.armorType) {
+                return; // TODO Fix armor dupe glitch
+                /*switch (definition.armorType) {
                     case ArmorType.Helmet: {
                         this.helmet = undefined;
                         break;
@@ -507,7 +507,8 @@ export class Inventory {
                         break;
                     }
                 }
-                break;
+                this._dropItem(definition, { pushForce });
+                break;*/
             }
             case ItemType.Backpack: {
                 return;
