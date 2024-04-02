@@ -1221,25 +1221,27 @@ Video evidence is required.`)) {
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
-    let splashUi: JQuery<HTMLInputElement> | undefined;
+    const splashUi = $<HTMLInputElement>("#splash-ui");
     // Blur splash screen
     addCheckboxListener(
         "#toggle-blur-splash",
         "cv_blur_splash",
         value => {
-            (splashUi ??= $("#splash-ui")).toggleClass("blur", value);
+            splashUi.toggleClass("blur", value);
         }
     );
+    splashUi.toggleClass("blur", game.console.getBuiltInCVar("cv_blur_splash"));
 
-    let button: JQuery<HTMLButtonElement> | undefined;
+    const button = $<HTMLButtonElement>("#btn-rules, #rules-close-btn");
     // Hide rules button
     addCheckboxListener(
         "#toggle-hide-rules",
         "cv_hide_rules_button",
         value => {
-            (button ??= $("#btn-rules, #rules-close-btn")).toggle(!value);
+            button.toggle(!value);
         }
     );
+    button.toggle(!game.console.getBuiltInCVar("cv_hide_rules_button"));
 
     // Hide option to hide rules if rules haven't been acknowledged
     $(".checkbox-setting").has("#toggle-hide-rules").toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
