@@ -20,6 +20,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
+    readonly bulletOffset?: number
     readonly moveSpread: number
     readonly jitterRadius: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning: boolean
@@ -777,6 +778,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Single,
             shotSpread: 7,
             moveSpread: 14,
+            bulletOffset: 1.5,
             length: 4.7,
             fists: {
                 left: Vec.create(38, -35),
