@@ -107,7 +107,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const offset = definition.isDual
             // eslint-disable-next-line no-cond-assign
             ? ((this._altFire = !this._altFire) ? 1 : -1) * definition.leftRightOffset
-            : (definition.bulletOffset !== undefined ? definition.bulletOffset : 0);
+            : (definition.bulletOffset ?? 0);
 
         const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
 

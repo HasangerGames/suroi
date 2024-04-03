@@ -639,8 +639,12 @@ export class Minimap {
                 }
             }
         }
-
         this.pings.add(ping);
+        if (ping.definition.ignoreExpiration === undefined) {
+            this.game.addTimeout(() => {
+                ping.destroy();
+            }, 10000);
+        }
     }
 }
 
