@@ -29,13 +29,15 @@ export const rules: RulesPost[] = [
 <p>Aim - Mouse</p>
 <p>Attack - Left-Click</p>
 <p>Change Weapons - 1 through 3 or Scroll Wheel</p>
-<p>Pickup/Loot/Interact - F</p>
+<p>Pickup/Loot/Interact/Revive - F</p>
 <p>Reload - R</p>
 <p>Use Healing Item - Left-Click on item or 7 through 0</p>
 <p>Cancel Action - X</p>
 <p>Toggle Fullscreen Map - G or M</p>
 <p>Toggle Minimap - N</p>
 <p>Use Emote Wheel - Hold Right-Click, drag, and release</p>
+<p>Team Ping - Hold Right-Click and C, drag, and release</p>
+<p>Request Item - Hold C and click on item</p>
 <p>Drop Item - Right-Click on item</p>
 <p>Equip Last Item - Q</p>
 <p>Swap Gun Slots - T</p>
