@@ -12,7 +12,6 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
-import { VPN_IPV4 } from "./utils/VPN_IPV4";
 import { Logger } from "./utils/misc";
 import { cleanUsername } from "./utils/usernameFilter";
 
@@ -114,6 +113,8 @@ let connectionAttempts: Record<string, number> = {};
 
 export interface Punishment { readonly type: "rateLimit" | "warning" | "tempBan" | "permaBan", readonly expires?: number }
 export let punishments: Record<string, Punishment> = {};
+
+let ipBlocklist: string[] | undefined;
 
 function removePunishment(ip: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -233,16 +234,6 @@ export interface PlayerContainer {
     readonly weaponPreset: string
 }
 
-function convertToIPv4(ip: string): string {
-    if (ip.includes(":")) {
-        const parts = ip.split(":");
-        const ipv4Parts = parts.slice(-4);
-        return ipv4Parts.join(".");
-    } else {
-        return ip;
-    }
-}
-
 app.ws("/play", {
     idleTimeout: 30,
 
@@ -253,18 +244,11 @@ app.ws("/play", {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => { });
 
-        //
-        // Bot, cheater & VPN protection
-        //
         const ip = getIP(res, req);
-        const ipv4 = convertToIPv4(ip); // Shouldn't REALLY need to do this but idk if people will have an ipv6 its happened before :shrug:
-        if (
-            VPN_IPV4.includes(ipv4)
-        ) {
-            Logger.log(`VPN detected: ${ipv4}`);
-            forbidden(res);
-            return;
-        }
+
+        //
+        // Cheater protection
+        //
         if (Config.protection) {
             const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections ?? Infinity;
             const maxJoinAttempts = Config.protection.maxJoinAttempts;
@@ -274,7 +258,8 @@ app.ws("/play", {
 
             if (
                 punishments[ip] ||
-                exceededRateLimits
+                exceededRateLimits ||
+                ipBlocklist?.includes(ip)
             ) {
                 if (exceededRateLimits && !punishments[ip]) punishments[ip] = { type: "rateLimit" };
                 forbidden(res);
@@ -544,7 +529,7 @@ app.listen(Config.host, Config.port, (): void => {
 
     newGame(0);
 
-    const protection = Config.protection;
+    const { protection } = Config;
     if (protection) {
         if (protection.maxJoinAttempts) {
             setInterval((): void => {
@@ -591,6 +576,17 @@ app.listen(Config.host, Config.port, (): void => {
 
             Logger.log("Reloaded punishment list");
         }, protection.refreshDuration);
+
+        if (protection.ipBlocklistURL) {
+            void (async() => {
+                try {
+                    const response = await fetch(protection.ipBlocklistURL!);
+                    ipBlocklist = (await response.text()).split("\n").map(line => line.split("/")[0]);
+                } catch (e) {
+                    console.error("Error: Unable to load IP blocklist. Details:", e);
+                }
+            })();
+        }
     }
 });
 

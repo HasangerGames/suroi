@@ -165,6 +165,12 @@ export interface ConfigType {
          * Every `refreshDuration` milliseconds, rate limited IPs are cleared, and the list of punishments is reloaded if enabled.
          */
         readonly refreshDuration: number
+
+        /**
+         * If `true`, a list of blocked IPs will be downloaded from the given URL on server startup. The IPs must be separated by newlines.
+         * The list is only reloaded on server startup.
+         */
+        readonly ipBlocklistURL?: string
     }
 
     /**
