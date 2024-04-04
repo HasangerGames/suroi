@@ -152,12 +152,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     damageTaken = 0;
     readonly joinTime: number;
 
-    cooldowns = {
-        dropItem: 0,
-        loot: 0,
-        interact: 0
-    };
-
     readonly recoil = {
         active: false,
         time: 0,
@@ -1504,8 +1498,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (this.game.now - this.cooldowns.dropItem < 120) return;
-                    this.cooldowns.dropItem = this.game.now;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
@@ -1515,9 +1507,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 }
                 case InputActions.Loot: {
-                    if (this.game.now - this.cooldowns.loot < 120) return;
-                    this.cooldowns.loot = this.game.now;
-
                     interface CloseObject {
                         object: Loot | undefined
                         minDist: number
@@ -1555,9 +1544,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 }
                 case InputActions.Interact: {
-                    if (this.game.now - this.cooldowns.interact < 120) return;
-                    this.cooldowns.interact = this.game.now;
-
                     interface CloseObject {
                         object: Obstacle | Player | undefined
                         minDist: number
