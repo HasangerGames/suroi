@@ -7,6 +7,9 @@ node_modules/
 server/reports
 punishments.json
 
+# Vite
+vite.config.ts.timestamp-*
+
 # IDE garbage
 .idea
 .DS_Store
