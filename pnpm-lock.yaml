@@ -30,7 +30,7 @@ importers:
         specifier: ^6.1.1
         version: 6.1.1(eslint@8.57.0)
       typescript:
-        specifier: ^5.4.3
+        specifier: ^5.4.4
         version: 5.4.4
 
   client:
