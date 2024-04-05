@@ -826,7 +826,8 @@ export class Game {
                     } else if ( // Auto open doors
                         object instanceof Obstacle &&
                         object.canInteract(player) &&
-                        object.definition.role === ObstacleSpecialRoles.Door
+                        object.definition.role === ObstacleSpecialRoles.Door &&
+                        object.door?.offset === 0
                     ) {
                         this.inputManager.addAction(InputActions.Interact);
                     }
