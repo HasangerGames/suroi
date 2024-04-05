@@ -577,7 +577,7 @@ export async function setUpUI(game: Game): Promise<void> {
         {
             name: "PatchesSC",
             link: "https://www.twitch.tv/patchessc"
-        },
+        }
     ];
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
