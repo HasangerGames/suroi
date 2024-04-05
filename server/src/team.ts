@@ -1,11 +1,11 @@
+import { type WebSocket } from "uWebSockets.js";
 import { TeamSize } from "../../common/src/constants";
+import { CustomTeamMessageType, type CustomTeamMessage } from "../../common/src/team";
 import { random } from "../../common/src/utils/random";
 import { Config } from "./config";
+import { customTeams, findGame } from "./gameManager";
 import { type Player } from "./objects/player";
-import { type WebSocket } from "uWebSockets.js";
 import { removeFrom } from "./utils/misc";
-import { type CustomTeamMessage, CustomTeamMessageType } from "../../common/src/team";
-import { customTeams, findGame } from "./server";
 
 export const teamMode = Config.maxTeamSize > TeamSize.Solo;
 

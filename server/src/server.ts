@@ -9,7 +9,7 @@ import { Numeric } from "../../common/src/utils/math";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { Game } from "./game";
+import { canJoin, customTeams, findGame, games, newGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import { Logger } from "./utils/misc";
@@ -37,69 +37,6 @@ const app = Config.ssl
         cert_file_name: Config.ssl.certFile
     })
     : App();
-
-const games: Array<Game | undefined> = [];
-
-export function newGame(id?: number): number {
-    if (id !== undefined) {
-        if (!games[id] || games[id]?.stopped) {
-            Logger.log(`Game ${id} | Creating...`);
-            games[id] = new Game(id);
-            return id;
-        }
-    } else {
-        const maxGames = Config.maxGames;
-        for (let i = 0; i < maxGames; i++) {
-            if (!games[i] || games[i]?.stopped) return newGame(i);
-        }
-    }
-    return -1;
-}
-
-export function endGame(id: number, createNewGame: boolean): void {
-    const game = games[id];
-    if (game === undefined) return;
-    game.allowJoin = false;
-    game.stopped = true;
-    for (const player of game.connectedPlayers) {
-        player.socket.close();
-    }
-    Logger.log(`Game ${id} | Ended`);
-    if (createNewGame) {
-        Logger.log(`Game ${id} | Creating...`);
-        games[id] = new Game(id);
-    } else {
-        games[id] = undefined;
-    }
-}
-
-function canJoin(game?: Game): boolean {
-    return game !== undefined && game.aliveCount < Config.maxPlayersPerGame && !game.over;
-}
-
-export function findGame(): { success: true, gameID: number } | { success: false } {
-    for (let gameID = 0; gameID < Config.maxGames; gameID++) {
-        const game = games[gameID];
-        if (canJoin(game) && game?.allowJoin) {
-            return { success: true, gameID };
-        }
-    }
-
-    // Create a game if there's a free slot
-    const gameID = newGame();
-    if (gameID !== -1) {
-        return { success: true, gameID };
-    } else {
-        // Join the game that most recently started
-        const game = games
-            .filter((g => g && !g.over) as (g?: Game) => g is Game)
-            .reduce((a, b) => a.startedTime > b.startedTime ? a : b);
-
-        return game
-            ? { success: true, gameID: game.id }
-            : { success: false };
-    }
-}
 
 const decoder = new TextDecoder();
 function getIP(res: HttpResponse, req: HttpRequest): string {
@@ -386,8 +323,6 @@ app.ws("/play", {
         game.removePlayer(player);
     }
 });
-
-export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
 app.ws("/team", {
     idleTimeout: 30,

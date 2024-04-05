@@ -1225,13 +1225,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             image: { position: Vec.create(90, 0) },
             casingParticles: [
                 {
-                    position: Vec.create(4, 0.6),
-                    velocity: {
-                        y: {
-                            min: 10,
-                            max: 15
-                        }
-                    }
+                    position: Vec.create(4, 0.6)
                 },
                 {
                     position: Vec.create(4.2, 0.6),
@@ -1284,13 +1278,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             image: { position: Vec.create(90, -2) },
             casingParticles: [
                 {
-                    position: Vec.create(4.2, 0.6),
-                    velocity: {
-                        y: {
-                            min: 10,
-                            max: 15
-                        }
-                    }
+                    position: Vec.create(4.2, 0.6)
                 },
                 {
                     position: Vec.create(4.4, 0.6),

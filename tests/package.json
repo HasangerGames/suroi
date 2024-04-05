@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "nanotimer": "^0.3.15"
   }
 }
