@@ -569,7 +569,15 @@ export async function setUpUI(game: Game): Promise<void> {
         {
             name: "ikou",
             link: "https://www.twitch.tv/ikou_yt"
-        }
+        },
+        {
+            name: "seth_mayo",
+            link: "https://www.twitch.tv/seth_mayo"
+        },
+        {
+            name: "PatchesSC",
+            link: "https://www.twitch.tv/patchessc"
+        },
     ];
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
