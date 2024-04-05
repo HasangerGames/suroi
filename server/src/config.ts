@@ -25,7 +25,7 @@ export const Config = {
     maxTeamSize: TeamSize.Duo,
 
     maxPlayersPerGame: 80,
-    maxGames: 3,
+    maxGames: 4,
     preventJoinAfter: 60000,
 
     gas: { mode: GasMode.Normal },
