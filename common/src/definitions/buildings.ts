@@ -2457,7 +2457,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "construction_site",
             name: "Construction Site",
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-            scopeHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [{
                 key: "construction_site_floor",
