@@ -160,7 +160,7 @@ export class Map {
                 continue;
             }
 
-            for (const river of this.terrain.rivers.filter(river => river.width <= bridgeSpawnOptions.maxRiverWidth)) {
+            for (const river of this.terrain.rivers.filter(river => (river.width <= bridgeSpawnOptions.maxRiverWidth && river.width >= bridgeSpawnOptions.minRiverWidth))) {
                 const generateBridge = (start: number, end: number): void => {
                     let shortestDistance = Number.MAX_VALUE;
                     let bestPosition = 0.5;

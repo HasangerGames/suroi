@@ -2364,6 +2364,27 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "humvee",
+            name: "Humvee",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(17, 35.25, Vec.create(0, -0.4)), // Body
+                RectangleHitbox.fromRect(18, 7, Vec.create(0, -12.3)), // Back wheels
+                RectangleHitbox.fromRect(18, 7, Vec.create(0, 13.6)), // Front wheels
+                RectangleHitbox.fromRect(2.5, 0.5, Vec.create(6.1, -18.25)), // Back exhaust
+                RectangleHitbox.fromRect(15.25, 0.5, Vec.create(0, 17.5)), // Front bumper
+                RectangleHitbox.fromRect(21, 1, Vec.create(0, 7.5)) // Front of hood
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
             idString: "cabinet",
             name: "Cabinet",
             material: "appliance",
@@ -2717,6 +2738,32 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 }).flat()
             ),
             spawnHitbox: RectangleHitbox.fromRect(21.02, 69.69, Vec.create(0, 0))
+        },
+        {
+            idString: "large_bridge",
+            name: "Large Bridge",
+            material: "stone",
+            health: 150,
+            indestructible: true,
+            invisible: true,
+            noBulletCollision: false,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "rock_particle"
+            },
+            hitbox: new HitboxGroup(
+                // Main Bridge Sides
+                RectangleHitbox.fromRect(4, 136, Vec.create(21.5, -1.5)),
+                RectangleHitbox.fromRect(4, 136, Vec.create(-21.5, -1.5)),
+
+                // Cinder Blocks on Edge of Bridge
+                RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, -72)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(21.5, -72)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, 69)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69)),
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(60, 230, Vec.create(0, 0))
         },
         {
             idString: "viking_chest",

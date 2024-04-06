@@ -44,6 +44,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
+        readonly minRiverWidth: number;
         readonly maxRiverWidth: number
         readonly landCheckDist: number
     }
@@ -2369,6 +2370,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Small Bridge",
             spawnHitbox: RectangleHitbox.fromRect(20, 62),
             bridgeSpawnOptions: {
+                minRiverWidth: 0,
                 maxRiverWidth: 20,
                 landCheckDist: 30
             },
@@ -2384,6 +2386,71 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(0, 0) }
+            ]
+        },
+        {
+            idString: "large_bridge",
+            name: "Large Bridge",
+            spawnHitbox: RectangleHitbox.fromRect(60, 230),
+            bridgeSpawnOptions: {
+                minRiverWidth: 20,
+                maxRiverWidth: 100,
+                landCheckDist: 30
+            },
+            floorImages: [{
+                key: "large_bridge",
+                position: Vec.create(0, 0)
+            }],
+            floors: [
+                { type: "stone", hitbox: RectangleHitbox.fromRect(45, 210, Vec.create(0, 0)) }
+            ],
+            obstacles: [
+                { idString: "large_bridge", position: Vec.create(0, 0), rotation: 0 },
+
+                // North End of Bridge
+                { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
+
+                { idString: "sandbags", position: Vec.create(25, -80), rotation: 0 },
+                { idString: "sandbags", position: Vec.create(36, -82.5), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(36, -96.5), rotation: 1 },
+
+                { idString: "grenade_crate", position: Vec.create(27.5, -88.5), rotation: 1 },
+
+                // North-Center of the Bridge
+                { idString: "regular_crate", position: Vec.create(13.5, -55), rotation: 1 },
+                { idString: "barrel", position: Vec.create(4, -51), rotation: 1 },
+                { idString: "gun_case", position: Vec.create(13.5, -47), rotation: 2 },
+                { idString: "sandbags", position: Vec.create(12.5, -40), rotation: 2 },
+                { idString: "aegis_crate", position: Vec.create(14.5, -30.5), rotation: 2 },
+
+                // Center of the Bridge
+                { idString: "humvee", position: Vec.create(-10, -4), rotation: 0 },
+                { idString: "regular_crate", position: Vec.create(5, -20), rotation: 0 },
+                { idString: "gun_case", position: Vec.create(14, 10), rotation: 0 },
+
+                // South-Center of the Bridge
+                { idString: "gun_case", position: Vec.create(6, 26), rotation: 3 },
+                { idString: "ammo_crate", position: Vec.create(14, 26) },
+                { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2},
+                { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2},
+                { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1 },
+
+                //South End of the Bridge
+                { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
+
+                { idString: "sandbags", position: Vec.create(-25, 80), rotation: 0 },
+                { idString: "sandbags", position: Vec.create(-36, 82.5), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(-36, 96.5), rotation: 1 },
+
+                { idString: "grenade_crate", position: Vec.create(-27.5, 88.5), rotation: 1 },
+            ],
+            lootSpawners: [
+       
+            ],
+            subBuildings: [
+                // North West Shed
+                { idString: "port_shed", position: Vec.create(-36, -95), orientation: 0 },
+                { idString: "port_shed", position: Vec.create(-36, -95), orientation: 2 },
             ]
         }
     ]);

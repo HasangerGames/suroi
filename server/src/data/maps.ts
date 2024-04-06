@@ -59,7 +59,8 @@ const maps = {
             maxWideWidth: 30
         },
         bridges: [
-            "small_bridge"
+            "small_bridge",
+            "large_bridge"
         ],
         buildings: {
             port_complex: 1,
@@ -346,7 +347,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("tugboat_white", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -355,7 +356,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("potted_plant", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("humvee", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
