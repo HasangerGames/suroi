@@ -353,11 +353,11 @@ export class InputManager {
         if (event instanceof KeyboardEvent) {
             // This statement cross references and updates focus checks for key presses.
             if (down) {
-                if (!this.focusController.includes(event.key)) {
-                    this.focusController.push(event.key);
+                if (!this.focusController.includes(event.code.replace('Key', ''))) {
+                    this.focusController.push(event.code.replace('Key', ''));
                 }
             } else {
-                this.focusController = this.focusController.filter(item => item !== event.key);
+                this.focusController = this.focusController.filter(item => item !== event.code.replace('Key', ''));
             }
 
             let modifierCount = 0;
@@ -372,7 +372,7 @@ export class InputManager {
             if (
                 (
                     modifierCount > 1 ||
-                    (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
+                    (modifierCount === 1 && !["Control", "Meta"].includes(event.code.replace('Key', '')))
                 ) && down
                 // …but it only invalidates pressing a key, not releasing it
             ) return;
@@ -432,7 +432,7 @@ export class InputManager {
     private getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
         let key = "";
         if (event instanceof KeyboardEvent) {
-            key = event.key.length > 1 ? event.key : event.key.toUpperCase();
+            key = event.code.replace('Key', '').length > 1 ? event.code.replace('Key', '') : event.code.replace('Key', '').toUpperCase();
             if (key === " ") {
                 key = "Space";
             }
