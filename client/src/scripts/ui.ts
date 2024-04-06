@@ -22,6 +22,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { Guns } from "../../../common/src/definitions/guns";
 
 interface RegionInfo {
     name: string
@@ -885,6 +886,31 @@ Video evidence is required.`)) {
     });
 
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+
+    // Load special tab
+    if (game.console.getBuiltInCVar("dv_role") !== "") {
+        $("#tab-special").show();
+        $<HTMLInputElement>("#role-name")
+            .val(game.console.getBuiltInCVar("dv_role"))
+            .on("input", (e) => {
+                game.console.setBuiltInCVar("dv_role", e.target.value);
+            });
+        $<HTMLInputElement>("#role-password").on("input", (e) => {
+            game.console.setBuiltInCVar("dv_password", e.target.value);
+        });
+        addCheckboxListener("#toggle-lobbyclearing", "dv_lobby_clearing");
+        if (game.console.getBuiltInCVar("dv_name_color") === "") game.console.setBuiltInCVar("dv_name_color", "#FFFFFF");
+        $<HTMLInputElement>("#namecolor-color-picker")
+            .val(game.console.getBuiltInCVar("dv_name_color"))
+            .on("input", (e) => {
+                game.console.setBuiltInCVar("dv_name_color", e.target.value);
+            });
+        $<HTMLInputElement>("#weapon-preset")
+            .val(game.console.getBuiltInCVar("dv_weapon_preset"))
+            .on("input", (e) => {
+                game.console.setBuiltInCVar("dv_weapon_preset", e.target.value);
+            });
+    }
 
     // Load badges
     const allowedBadges = Badges.definitions.filter(badge => badge.roles.length === 0 || badge.roles.includes(role));
