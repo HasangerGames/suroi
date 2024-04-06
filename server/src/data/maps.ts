@@ -73,6 +73,7 @@ const maps = {
             red_house: 6,
             green_house: 2,
             mobile_home: 9,
+            construction_site: 2,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,
@@ -347,7 +348,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("construction_site", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -356,7 +357,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("humvee", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("bunker_entrance_door", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

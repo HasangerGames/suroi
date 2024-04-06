@@ -2452,5 +2452,48 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "port_shed", position: Vec.create(-36, -95), orientation: 0 },
                 { idString: "port_shed", position: Vec.create(-36, -95), orientation: 2 },
             ]
-        }
+        },
+        {
+            idString: "construction_site",
+            name: "Construction Site",
+            spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
+            scopeHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
+            spawnMode: MapObjectSpawnMode.Grass,
+            floorImages: [{
+                key: "construction_site_floor",
+                position: Vec.create(0, 0)
+            }],
+            floors: [
+                { type: "sand", hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) },
+            ],
+            obstacles: [
+                { idString: "bunker_entrance", position: Vec.create(-10, -15), rotation: 0 },
+                { idString: "bunker_entrance_door", position: Vec.create(-25, -15), rotation: 0 },
+
+                { idString: "forklift", position: Vec.create(-17.5, 12.5), rotation: 0 },
+
+                { idString: "roadblock", position: Vec.create(-26, 0), rotation: 0 },
+                { idString: "roadblock", position: Vec.create(-27, 15), rotation: 0 },
+
+                { idString: "roadblock", position: Vec.create(-12.5, 27.5), rotation: 1 },
+                { idString: "roadblock", position: Vec.create(2.5, 27.5), rotation: 1 },
+                { idString: "roadblock", position: Vec.create(17.5, 27.5), rotation: 1 },
+                { idString: "roadblock", position: Vec.create(25, 15), rotation: 0 },
+
+                { idString: "sandbags", position: Vec.create(25, 0), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(25, -15), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(25, -26), rotation: 0 },
+                { idString: "sandbags", position: Vec.create(10, -26), rotation: 0 },
+                { idString: "flint_crate", position: Vec.create(15, -17), rotation: 1 },
+                { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1 },
+                { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1 },
+
+                { idString: "regular_crate", position: Vec.create(17, 12.5), rotation: 0 },
+                { idString: "box", position: Vec.create(18, 20), rotation: 0 },
+                { idString: "box", position: Vec.create(12.5, 22.5), rotation: 0 },
+            ],
+            lootSpawners: [
+                
+            ]
+        },
     ]);
