@@ -22,7 +22,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
-import { Guns } from "../../../common/src/definitions/guns";
 
 interface RegionInfo {
     name: string
