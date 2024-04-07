@@ -315,6 +315,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Never
         },
         {
+            idString: "oil_tank",
+            name: "Oil Tank",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(16.8, 13.6),
+                RectangleHitbox.fromRect(26, 2),
+                new CircleHitbox(5, Vec.create(-8, 1.8)),
+                new CircleHitbox(5, Vec.create(-8, -1.8)),
+                new CircleHitbox(5, Vec.create(8, 1.8)),
+                new CircleHitbox(5, Vec.create(8, -1.8))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(28, 18),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            },
+            reflectBullets: true
+        },
+        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",
@@ -600,29 +623,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "super_barrel_explosion",
-            reflectBullets: true
-        },
-        {
-            idString: "oil_tank",
-            name: "Oil Tank",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(16.8, 13.6),
-                RectangleHitbox.fromRect(26, 2),
-                new CircleHitbox(5, Vec.create(-8, 1.8)),
-                new CircleHitbox(5, Vec.create(-8, -1.8)),
-                new CircleHitbox(5, Vec.create(8, 1.8)),
-                new CircleHitbox(5, Vec.create(8, -1.8))
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(28, 18),
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
-            noResidue: true,
-            frames: {
-                particle: "metal_particle"
-            },
             reflectBullets: true
         },
         {
