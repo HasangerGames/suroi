@@ -432,10 +432,24 @@ export class InputManager {
     private getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
         let key = "";
         if (event instanceof KeyboardEvent) {
-            key = event.key.length > 1 ? event.key : event.key.toUpperCase();
+
+            // --------------------------------------------------------------------------------------------------------------------
+            // Bug fix: Event.key not working if of user's language is
+            // not set to English (ENG).
+            // --------------------------------------------------------------------------------------------------------------------
+            let keyPressed = String.fromCharCode(event.keyCode);
+
+            if (!'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.includes(keyPressed)) { // if it's not a key that's affected by languages
+                keyPressed = event.key;
+            }
+
+            key = keyPressed;
+
             if (key === " ") {
                 key = "Space";
             }
+            // --------------------------------------------------------------------------------------------------------------------
+
         }
 
         if (event instanceof WheelEvent) {
