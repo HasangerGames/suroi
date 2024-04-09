@@ -772,6 +772,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.6, 2) }, 7),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(10.7, 2) }, 8),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(17.7, 2) }, 9),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(4, 2) }, 10),
+
         {
             idString: "fridge",
             name: "Fridge",
@@ -1558,8 +1560,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         ),
         {
-            idString: "red_house_exterior",
-            name: "Small House Exterior",
+            idString: "red_house_1_exterior",
+            name: "Small House Exterior Type 1",
             material: "stone",
             health: 1000,
             indestructible: true,
@@ -1582,6 +1584,38 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
 
                 RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)), // Bottom Left Wall
                 RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9)) // Bottom Right Wall
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
+        {
+            idString: "red_house_2_exterior",
+            name: "Small House Exterior Type 2",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                // Right walls
+                RectangleHitbox.fromRect(2, 60.5, Vec.create(-31, 0.35)),
+
+                // Top walls
+                RectangleHitbox.fromRect(43.3, 2, Vec.create(10.3, 29.5)),
+                RectangleHitbox.fromRect(8.2, 2, Vec.create(-26.00, 29.5)),
+
+                // Left Wall
+                RectangleHitbox.fromRect(2, 45.5, Vec.create(30.9, 6.7)),
+                RectangleHitbox.fromRect(2, 3, Vec.create(30.9, -27.4)),
+
+                // Bottom
+                RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)),
+                RectangleHitbox.fromRect(3.8, 2, Vec.create(7.2, -28.9)),
+                RectangleHitbox.fromRect(26, 2, Vec.create(-17.3, -28.9))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
