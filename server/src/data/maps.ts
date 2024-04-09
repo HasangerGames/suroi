@@ -65,11 +65,11 @@ const maps = {
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
-            tugboat_white: 5,
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            red_house: 6,
+            red_house_1: 3,
+            red_house_2: 3,
             green_house: 2,
             mobile_home: 9,
             porta_potty: 12,
@@ -115,6 +115,52 @@ const maps = {
             { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
             { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
+    city: {
+        width: 1632,
+        height: 1632,
+        oceanSize: 128,
+        beachSize: 32,
+        buildings: {
+            port_complex: 1,
+            red_house_1: 30,
+            red_house_2: 30,
+            green_house: 10
+        },
+        rivers: {
+            minAmount: 1,
+            maxAmount: 3,
+            wideChance: 0.2,
+            minWidth: 10,
+            maxWidth: 16,
+            minWideWidth: 25,
+            maxWideWidth: 30
+        },
+        obstacles: {
+            oak_tree: 250,
+            birch_tree: 25,
+            pine_tree: 15,
+            regular_crate: 160,
+            flint_crate: 5,
+            aegis_crate: 5,
+            grenade_crate: 35,
+            rock: 150,
+            river_rock: 45,
+            bush: 110,
+            lily_pad: 20,
+            blueberry_bush: 30,
+            barrel: 40,
+            viking_chest: 1,
+            super_barrel: 15,
+            melee_crate: 1,
+            gold_rock: 1,
+            flint_stone: 1
+        },
+        loots: {
+            ground_loot: 60
+        },
+        places:[
         ]
     },
     debug: {
@@ -346,7 +392,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("tugboat_white", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
