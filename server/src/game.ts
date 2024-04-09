@@ -179,6 +179,9 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    joinStopCurrentDelay: number=0;
+    readonly _playerEntryRemove: number=Math.floor((Config.preventJoinAfter*.2)/(Config.maxPlayersPerGame/14));
+
     constructor(id: number) {
         this._id = id;
 
@@ -551,20 +554,30 @@ export class Game {
             !this._started &&
             this.startTimeout === undefined
         ) {
+
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;
                 this.gas.advanceGasStage();
-
-                this.addTimeout(() => {
-                    newGame();
-                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
-                    this.allowJoin = false;
-                }, Config.preventJoinAfter);
+                this.joinStopCurrentDelay=Config.preventJoinAfter;
+                setTimeout(()=>{this.joinTimeTick()},50);
+                Logger.log(`Game ${this.id} Started | Player Join Remove ${this._playerEntryRemove}`)
             }, 3000);
+        } else if (this._started){
+            this.joinStopCurrentDelay-=this._playerEntryRemove;
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
+    }
+    joinTimeTick(){
+        if(this.joinStopCurrentDelay>0){
+            this.joinStopCurrentDelay-=50;
+            setTimeout(()=>{this.joinTimeTick()},50);
+        }else{
+            newGame();
+            Logger.log(`Game ${this.id} | Preventing new players from joining`);
+            this.allowJoin = false;
+        }
     }
 
     removePlayer(player: Player): void {
