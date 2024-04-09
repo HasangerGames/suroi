@@ -13,7 +13,6 @@ import { type SyncedParticleDefinition } from "../../../common/src/definitions/s
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
-import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
@@ -44,6 +43,8 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { type Packet } from "../../../common/src/packets/packet";
+import { PacketStream } from "../../../common/src/packets/packetStream";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -943,7 +944,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.packetStream.stream.index = 0;
         for (const packet of this.packets) {
-            this.packetStream.serializePacket(packet);
+            this.packetStream.serializeServerPacket(packet);
         }
         this.packets.length = 0;
         this.sendData(this.packetStream.getBuffer());

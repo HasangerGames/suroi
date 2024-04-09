@@ -1,68 +1,106 @@
-import { PacketType } from "../constants";
 import { SuroiBitStream } from "../utils/suroiBitStream";
 import { GameOverPacket } from "./gameOverPacket";
 import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { MapPacket } from "./mapPacket";
-import { type AbstractPacket } from "./packet";
+import { type Packet } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { PingPacket } from "./pingPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
 import { UpdatePacket } from "./updatePacket";
 
-const PacketTypeToConstructor = {
-    [PacketType.Join]: JoinPacket,
-    [PacketType.Joined]: JoinedPacket,
-    [PacketType.Map]: MapPacket,
-    [PacketType.Update]: UpdatePacket,
-    [PacketType.Input]: InputPacket,
-    [PacketType.GameOver]: GameOverPacket,
-    [PacketType.Pickup]: PickupPacket,
-    [PacketType.Ping]: PingPacket,
-    [PacketType.Spectate]: SpectatePacket,
-    [PacketType.Report]: ReportPacket,
-    [PacketType.MapPing]: MapPacket
-};
+class PacketRegister {
+    private _nextTypeId = 1;
+    readonly typeToId: Record<string, number> = {};
+    readonly idToCtor: Array<new () => Packet> = [];
+    readonly bits: number;
 
-export type Packet =
-    | JoinPacket
-    | JoinedPacket
-    | MapPacket
-    | UpdatePacket
-    | InputPacket
-    | GameOverPacket
-    | PickupPacket
-    | PingPacket
-    | SpectatePacket
-    | ReportPacket;
+    constructor(...packets: Array<new () => Packet>) {
+        for (const packet of packets) {
+            this._register(packet);
+        }
+        this.bits = Math.ceil(Math.log2(this._nextTypeId));
+    }
+
+    private _register(packet: typeof Packet & (new () => Packet)): void {
+        if (this.typeToId[packet.name] !== undefined) {
+            console.warn(`Packet ${packet.name} registered multiple times`);
+            return;
+        }
+        const id = this._nextTypeId++;
+        this.typeToId[packet.name] = id;
+        this.idToCtor[id] = packet;
+    }
+}
+
+export const ClientToServerPackets = new PacketRegister(
+    InputPacket,
+    PingPacket,
+    JoinPacket,
+    SpectatePacket
+);
+
+export const ServerToClientPackets = new PacketRegister(
+    UpdatePacket,
+    PickupPacket,
+    PingPacket,
+    JoinedPacket,
+    MapPacket,
+    GameOverPacket,
+    ReportPacket
+);
 
 export class PacketStream {
     stream: SuroiBitStream;
 
-    constructor(source: ArrayBuffer | SuroiBitStream) {
-        this.stream = source instanceof ArrayBuffer ? new SuroiBitStream(source) : source;
+    constructor(source: SuroiBitStream | ArrayBuffer) {
+        if (source instanceof ArrayBuffer) {
+            this.stream = new SuroiBitStream(source);
+        } else {
+            this.stream = source;
+        }
     }
 
-    serializePacket(packet: AbstractPacket): void {
-        this.stream.writePacketType(packet.type);
+    serializeServerPacket(packet: Packet): void {
+        this._serializePacket(packet, ServerToClientPackets);
+    }
+
+    deserializeServerPacket(): Packet | undefined {
+        return this._deserliazePacket(ServerToClientPackets);
+    }
+
+    serializeClientPacket(packet: Packet): void {
+        this._serializePacket(packet, ClientToServerPackets);
+    }
+
+    deserializeClientPacket(): Packet | undefined {
+        return this._deserliazePacket(ClientToServerPackets);
+    }
+
+    private _deserliazePacket(register: PacketRegister): Packet | undefined {
+        if (this.stream.length - this.stream.byteIndex * 8 >= 1) {
+            const id = this.stream.readBits(register.bits);
+            const packet = new register.idToCtor[id]();
+            packet.deserialize(this.stream);
+            this.stream.readAlignToNextByte();
+            return packet;
+        }
+        return undefined;
+    }
+
+    private _serializePacket(packet: Packet, register: PacketRegister): void {
+        const type = register.typeToId[packet.constructor.name];
+        if (type === undefined) {
+            throw new Error(`Unknown packet type: ${packet.constructor.name}, did you forget to register it?`);
+        }
+        this.stream.writeBits(type, register.bits);
         packet.serialize(this.stream);
         this.stream.writeAlignToNextByte();
     }
 
-    readPacket(): Packet | undefined {
-        const packetType = this.stream.readPacketType();
-        if (packetType === undefined) return undefined;
-
-        const packet = new PacketTypeToConstructor[packetType]();
-        packet.deserialize(this.stream);
-
-        this.stream.readAlignToNextByte();
-        return packet as Packet;
-    }
-
     getBuffer(): ArrayBuffer {
-        return this.stream.buffer.slice(0, Math.ceil(this.stream.index / 8));
+        return this.stream.buffer.slice(0, this.stream.byteIndex);
     }
 }

@@ -24,20 +24,6 @@ export enum ObjectCategory {
     SyncedParticle
 }
 
-export enum PacketType {
-    Join,
-    Joined,
-    Map,
-    Update,
-    Input,
-    GameOver,
-    Pickup,
-    Ping,
-    Spectate,
-    Report,
-    MapPing
-}
-
 export enum AnimationType {
     None,
     Melee,

@@ -2,24 +2,22 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, ObjectCategory, PacketType, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import type { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { JoinPacket } from "../../../common/src/packets/joinPacket";
-import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
-import type { UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { InputManager } from "./managers/inputManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -47,6 +45,12 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { type Packet } from "../../../common/src/packets/packet";
+import { MapPacket } from "../../../common/src/packets/mapPacket";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
+import { PacketStream } from "../../../common/src/packets/packetStream";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -283,13 +287,13 @@ export class Game {
 
         // Handle incoming messages
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
-            const stream = new PacketStream(new SuroiBitStream(message.data));
+            const stream = new PacketStream(message.data);
             let iterationCount = 0;
             while (true) {
                 if (++iterationCount === 1e3) {
                     console.warn("1000 iterations of packet reading; possible infinite loop");
                 }
-                const packet = stream.readPacket();
+                const packet = stream.deserializeServerPacket();
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
@@ -317,24 +321,20 @@ export class Game {
     }
 
     onPacket(packet: Packet): void {
-        switch (packet.type) {
-            case PacketType.Joined: {
+        switch (true) {
+            case packet instanceof JoinedPacket:
                 this.startGame(packet);
                 break;
-            }
-            case PacketType.Map: {
+            case packet instanceof MapPacket:
                 this.map.updateFromPacket(packet);
                 break;
-            }
-            case PacketType.Update: {
+            case packet instanceof UpdatePacket:
                 this.processUpdate(packet);
                 break;
-            }
-            case PacketType.GameOver: {
+            case packet instanceof GameOverPacket:
                 this.uiManager.showGameOverScreen(packet);
                 break;
-            }
-            case PacketType.Ping: {
+            case packet instanceof PingPacket: {
                 const ping = Date.now() - this.lastPingDate;
                 this.uiManager.debugReadouts.ping.text(`${ping} ms`);
                 setTimeout((): void => {
@@ -343,13 +343,13 @@ export class Game {
                 }, 5000);
                 break;
             }
-            case PacketType.Report: {
+            case packet instanceof ReportPacket: {
                 $("#reporting-name").text(packet.playerName);
                 $("#report-id").text(packet.reportID);
                 $("#report-modal").fadeIn(250);
                 break;
             }
-            case PacketType.Pickup: {
+            case packet instanceof PickupPacket: {
                 let soundID: string;
                 switch (packet.item.itemType) {
                     case ItemType.Ammo:
@@ -455,10 +455,11 @@ export class Game {
         });
     }
 
+    packetStream = new PacketStream(new ArrayBuffer(1024));
     sendPacket(packet: Packet): void {
-        const stream = new PacketStream(SuroiBitStream.alloc(packet.allocBytes));
-        stream.serializePacket(packet);
-        this.sendData(stream.getBuffer());
+        this.packetStream.stream.index = 0;
+        this.packetStream.serializeClientPacket(packet);
+        this.sendData(this.packetStream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {

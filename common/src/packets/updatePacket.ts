@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, PacketType, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
@@ -9,9 +9,8 @@ import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { calculateEnumPacketBits, OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
-
 import { MapPings, type MapPingDefinition } from "../definitions/mapPings";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
 interface ObjectFullData {
     readonly id: number
@@ -387,10 +386,7 @@ const UpdateFlags = Object.freeze({
 
 const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
-export class UpdatePacket extends AbstractPacket {
-    override readonly allocBytes = 1 << 16;
-    override readonly type = PacketType.Update;
-
+export class UpdatePacket extends Packet {
     playerData!: PlayerData;
 
     deletedObjects: number[] = [];

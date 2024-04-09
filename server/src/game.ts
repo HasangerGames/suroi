@@ -1,15 +1,15 @@
 import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
-import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, PacketType, TeamSize } from "../../common/src/constants";
+import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { MapPings, type MapPingDefinition } from "../../common/src/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { type JoinPacket } from "../../common/src/packets/joinPacket";
+import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
-import { PacketStream, type Packet } from "../../common/src/packets/packetStream";
+import { PacketStream } from "../../common/src/packets/packetStream";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
@@ -43,6 +43,9 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { InputPacket } from "../../common/src/packets/inputPacket";
+import { SpectatePacket } from "../../common/src/packets/spectatePacket";
+import { Packet } from "../../common/src/packets/packet";
 
 export class Game {
     readonly _id: number;
@@ -372,33 +375,30 @@ export class Game {
     onMessage(stream: SuroiBitStream, player: Player): void {
         const packetStream = new PacketStream(stream);
         while (true) {
-            const packet = packetStream.readPacket();
+            const packet = packetStream.deserializeClientPacket();
             if (packet === undefined) break;
             this.onPacket(packet, player);
         }
     }
 
     onPacket(packet: Packet, player: Player): void {
-        switch (packet.type) {
-            case PacketType.Join: {
+        switch (true) {
+            case packet instanceof JoinPacket:
                 this.activatePlayer(player, packet);
                 break;
-            }
-            case PacketType.Input: {
+            case packet instanceof InputPacket:
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
                 player.processInputs(packet);
                 break;
-            }
-            case PacketType.Spectate: {
+            case packet instanceof SpectatePacket:
                 player.spectate(packet);
                 break;
-            }
-            case PacketType.Ping: {
+            case packet instanceof PingPacket: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
-                const stream = new PacketStream(SuroiBitStream.alloc(8));
-                stream.serializePacket(new PingPacket());
+                const stream = new PacketStream(new ArrayBuffer(8));
+                stream.serializeServerPacket(new PingPacket());
                 player.sendData(stream.getBuffer());
                 break;
             }

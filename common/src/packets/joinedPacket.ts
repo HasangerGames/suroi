@@ -1,12 +1,9 @@
-import { GameConstants, PacketType, TeamSize } from "../constants";
+import { GameConstants, TeamSize } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
-export class JoinedPacket extends AbstractPacket {
-    override readonly allocBytes = 34;
-    override readonly type = PacketType.Joined;
-
+export class JoinedPacket extends Packet {
     protocolVersion!: number;
 
     maxTeamSize!: number;

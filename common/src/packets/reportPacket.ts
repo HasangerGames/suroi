@@ -1,11 +1,7 @@
-import { PacketType } from "../constants";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
-export class ReportPacket extends AbstractPacket {
-    override readonly allocBytes = 25;
-    readonly type = PacketType.Report;
-
+export class ReportPacket extends Packet {
     playerName!: string; // TODO refactor to use player ID
     reportID!: string;
 

@@ -1,11 +1,7 @@
-import { PacketType } from "../constants";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
-export class GameOverPacket extends AbstractPacket {
-    override readonly allocBytes = 1 << 6;
-    override readonly type = PacketType.GameOver;
-
+export class GameOverPacket extends Packet {
     won!: boolean;
     playerID!: number;
     kills!: number;

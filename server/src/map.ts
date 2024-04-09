@@ -9,7 +9,6 @@ import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../c
 import { Angle, Collision, Geometry, Numeric } from "../../common/src/utils/math";
 import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -232,8 +231,8 @@ export class Map {
             }
         }
 
-        const stream = new PacketStream(SuroiBitStream.alloc(packet.allocBytes));
-        stream.serializePacket(packet);
+        const stream = new PacketStream(new ArrayBuffer(1 << 16));
+        stream.serializeServerPacket(packet);
         this.buffer = stream.getBuffer();
     }
 
