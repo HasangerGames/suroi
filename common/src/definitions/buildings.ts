@@ -44,7 +44,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
-        readonly minRiverWidth: number;
+        readonly minRiverWidth: number
         readonly maxRiverWidth: number
         readonly landCheckDist: number
     }
@@ -875,7 +875,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: "trailer",
                     position: Vec.create(169, 17),
                     rotation: 3
-                },
+                }
             ] as BuildingObstacle[],
             subBuildings: [
                 {
@@ -2439,8 +2439,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // South-Center of the Bridge
                 { idString: "gun_case", position: Vec.create(6, 26), rotation: 3 },
                 { idString: "ammo_crate", position: Vec.create(14, 26) },
-                { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2},
-                { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2},
+                { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2 },
+                { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2 },
                 { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1 },
 
                 //South End of the Bridge
@@ -2450,15 +2450,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "sandbags", position: Vec.create(-36, 82.5), rotation: 1 },
                 { idString: "sandbags", position: Vec.create(-36, 96.5), rotation: 1 },
 
-                { idString: "grenade_crate", position: Vec.create(-27.5, 88.5), rotation: 1 },
+                { idString: "grenade_crate", position: Vec.create(-27.5, 88.5), rotation: 1 }
             ],
             lootSpawners: [
-       
+
             ],
             subBuildings: [
                 // North West Shed
                 { idString: "port_shed", position: Vec.create(-36, -95), orientation: 0 },
-                { idString: "port_shed", position: Vec.create(-36, -95), orientation: 2 },
+                { idString: "port_shed", position: Vec.create(-36, -95), orientation: 2 }
             ]
         },
         {
@@ -2471,7 +2471,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(0, 0)
             }],
             floors: [
-                { type: "sand", hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) },
+                { type: "sand", hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) }
             ],
             obstacles: [
                 { idString: "bunker_entrance", position: Vec.create(-10, -15), rotation: 0 },
@@ -2497,10 +2497,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 { idString: "regular_crate", position: Vec.create(17, 12.5), rotation: 0 },
                 { idString: "box", position: Vec.create(18, 20), rotation: 0 },
-                { idString: "box", position: Vec.create(12.5, 22.5), rotation: 0 },
+                { idString: "box", position: Vec.create(12.5, 22.5), rotation: 0 }
             ],
             lootSpawners: [
-                
+
             ]
-        },
+        }
     ]);
