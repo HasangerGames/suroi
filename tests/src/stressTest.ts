@@ -1,5 +1,5 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { InputActions, PacketType } from "../../common/src/constants";
+import { InputActions } from "../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { Skins } from "../../common/src/definitions/skins";
@@ -7,8 +7,10 @@ import { InputPacket, type InputAction } from "../../common/src/packets/inputPac
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
 import { type GetGameResponse } from "../../common/src/typings";
+import { PacketStream } from "../../common/src/packets/packetStream";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
+import { type Packet } from "../../common/src/packets/packet";
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
@@ -79,9 +81,9 @@ class Bot {
         this.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
 
         this.ws.onmessage = (message: MessageEvent): void => {
-            const stream = new PacketStream(new SuroiBitStream(message.data as ArrayBuffer));
+            const stream = new PacketStream(message.data as ArrayBuffer);
             while (true) {
-                const packet = stream.readPacket();
+                const packet = stream.deserializeServerPacket();
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
@@ -89,8 +91,8 @@ class Bot {
     }
 
     onPacket(packet: Packet): void {
-        switch (packet.type) {
-            case PacketType.GameOver: {
+        switch (true) {
+            case packet instanceof GameOverPacket: {
                 console.log(`Bot ${this.id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
                 this.disconnect = true;
                 this.connected = false;
@@ -99,6 +101,8 @@ class Bot {
             }
         }
     }
+
+    stream = new PacketStream(new ArrayBuffer(1024));
 
     join(): void {
         this.connected = true;
@@ -110,11 +114,14 @@ class Bot {
 
         joinPacket.skin = Loots.reify(pickRandomInArray(skins));
         joinPacket.emotes = this.emotes;
+        this.sendPacket(joinPacket);
+    }
 
-        const stream = new PacketStream(SuroiBitStream.alloc(joinPacket.allocBytes));
-        stream.serializePacket(joinPacket);
+    sendPacket(packet: Packet): void {
+        this.stream.stream.index = 0;
+        this.stream.serializeClientPacket(packet);
 
-        this.ws.send(stream.getBuffer());
+        this.ws.send(this.stream.getBuffer());
     }
 
     sendInputs(): void {
@@ -148,9 +155,7 @@ class Bot {
         if (action) inputPacket.actions = [action];
 
         if (!this.lastInputPacket || inputPacket.didChange(this.lastInputPacket)) {
-            const stream = new PacketStream(SuroiBitStream.alloc(inputPacket.allocBytes));
-            stream.serializePacket(inputPacket);
-            this.ws.send(stream.getBuffer());
+            this.sendPacket(inputPacket);
             this.lastInputPacket = inputPacket;
         }
     }
