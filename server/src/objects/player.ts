@@ -1406,7 +1406,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.downed = true;
         this.action?.cancel();
-        this.health = 100;
+        this.maxHealth=GameConstants.player.defaultHealth*2;
+        this.health = this.maxHealth;
         this.adrenaline = this.minAdrenaline;
         this.setDirty();
         this._team?.setDirty();
@@ -1417,6 +1418,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.beingRevivedBy = undefined;
         this.downedBy = undefined;
         this.health = 30;
+        this.maxHealth=GameConstants.player.defaultHealth;
         this.setDirty();
         this._team?.setDirty();
     }
