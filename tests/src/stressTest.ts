@@ -6,7 +6,6 @@ import { Skins } from "../../common/src/definitions/skins";
 import { InputPacket, type InputAction } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GetGameResponse } from "../../common/src/typings";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { GameOverPacket } from "../../common/src/packets/gameOverPacket";

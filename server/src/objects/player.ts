@@ -15,7 +15,7 @@ import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { UpdatePacket, type KillFeedMessage, type PlayerData } from "../../../common/src/packets/updatePacket";
+import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
@@ -45,6 +45,7 @@ import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -922,16 +923,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.aliveCountDirty = game.aliveCountDirty || this._firstPacket;
 
         // killfeed messages
-        packet.killFeedMessages = game.killFeedMessages;
         const killLeader = game.killLeader;
 
         if (this._firstPacket && killLeader) {
-            packet.killFeedMessages.push({
+            this.packets.push(KillFeedPacket.create({
                 messageType: KillfeedMessageType.KillLeaderAssigned,
                 victimId: killLeader.id,
                 attackerKills: killLeader.kills,
                 hideFromKillfeed: true
-            });
+            }));
         }
 
         packet.planes = game.planes;
@@ -946,6 +946,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const packet of this.packets) {
             this.packetStream.serializeServerPacket(packet);
         }
+
+        for (const packet of this.game.packets) {
+            this.packetStream.serializeServerPacket(packet);
+        }
+
         this.packets.length = 0;
         this.sendData(this.packetStream.getBuffer());
     }
@@ -1238,27 +1243,23 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             // @ts-expect-error see above (shove it es-cope)
             || source in KillfeedEventType
         ) {
-            const killFeedMessage: KillFeedMessage = {
+            const killFeedPacket = KillFeedPacket.create({
                 messageType: KillfeedMessageType.DeathOrDown,
                 victimId: this.id,
-                victimBadge: this.loadout.badge,
                 weaponUsed: weaponUsed?.definition
-            };
+            });
 
             const attributeToPlayer = (player: Player, item = player.activeItem): void => {
-                killFeedMessage.attackerId = player.id;
-                killFeedMessage.attackerKills = player.kills;
-                if (player.loadout.badge) {
-                    killFeedMessage.attackBadge = player.loadout.badge;
-                }
+                killFeedPacket.attackerId = player.id;
+                killFeedPacket.attackerKills = player.kills;
 
                 if (item.definition.killstreak) {
-                    killFeedMessage.killstreak = item.stats.kills;
+                    killFeedPacket.killstreak = item.stats.kills;
                 }
             };
 
             if (source === KillfeedEventType.FinallyKilled) {
-                killFeedMessage.eventType = source;
+                killFeedPacket.eventType = source;
 
                 const antecedent = this.downedBy;
                 if (antecedent) {
@@ -1281,12 +1282,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         }
                     }
 
-                    killFeedMessage.weaponUsed = item?.definition;
+                    killFeedPacket.weaponUsed = item?.definition;
                     attributeToPlayer(player, item);
                 }
             } else if (sourceIsPlayer) {
                 if (source !== this) {
-                    killFeedMessage.eventType = wasDowned
+                    killFeedPacket.eventType = wasDowned
                         ? KillfeedEventType.FinishedOff
                         : KillfeedEventType.NormalTwoParty;
 
@@ -1295,10 +1296,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             } else if (source instanceof BaseGameObject) {
                 console.warn(`Unexpected source of death for player '${this.name}' (id: ${this.id}); source is of category ${ObjectCategory[source.type]}`);
             } else {
-                killFeedMessage.eventType = source;
+                killFeedPacket.eventType = source;
             }
 
-            this.game.killFeedMessages.push(killFeedMessage);
+            this.game.packets.push(killFeedPacket);
         }
 
         // Reset movement and attacking variables
@@ -1413,13 +1414,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const sourceIsPlayer = source instanceof Player;
 
         if (sourceIsPlayer || source === KillfeedEventType.Gas || source === KillfeedEventType.Airdrop) {
-            const killFeedMessage: KillFeedMessage = {
+            const killFeedMessage = KillFeedPacket.create({
                 messageType: KillfeedMessageType.DeathOrDown,
                 severity: KillfeedEventSeverity.Down,
                 victimId: this.id,
-                victimBadge: this.loadout.badge,
                 weaponUsed: weaponUsed?.definition
-            };
+            });
 
             if (sourceIsPlayer) {
                 this.downedBy = {
@@ -1430,15 +1430,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 if (source !== this) {
                     killFeedMessage.eventType = KillfeedEventType.NormalTwoParty;
                     killFeedMessage.attackerId = source.id;
-                    if (source.loadout.badge) {
-                        killFeedMessage.attackBadge = source.loadout.badge;
-                    }
                 }
             } else {
                 killFeedMessage.eventType = source;
             }
 
-            this.game.killFeedMessages.push(killFeedMessage);
+            this.game.packets.push(killFeedMessage);
         }
 
         this.downed = true;

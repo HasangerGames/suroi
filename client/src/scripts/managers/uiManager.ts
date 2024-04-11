@@ -9,7 +9,7 @@ import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings } from "../../../../common/src/definitions/mapPings";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedMessage, type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
+import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -20,6 +20,7 @@ import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import type { KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -702,7 +703,7 @@ export class UIManager {
         }
     });
 
-    processKillFeedMessage(message: KillFeedMessage): void {
+    processKillFeedPacket(message: KillFeedPacket): void {
         const {
             messageType,
             victimId,

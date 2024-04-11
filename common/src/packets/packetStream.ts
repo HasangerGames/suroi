@@ -3,6 +3,7 @@ import { GameOverPacket } from "./gameOverPacket";
 import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
+import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
 import { type Packet } from "./packet";
 import { PickupPacket } from "./pickupPacket";
@@ -44,6 +45,7 @@ export const ClientToServerPackets = new PacketRegister(
 
 export const ServerToClientPackets = new PacketRegister(
     UpdatePacket,
+    KillFeedPacket,
     PickupPacket,
     PingPacket,
     JoinedPacket,

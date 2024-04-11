@@ -51,6 +51,7 @@ import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PacketStream } from "../../../common/src/packets/packetStream";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -334,6 +335,9 @@ export class Game {
             case packet instanceof GameOverPacket:
                 this.uiManager.showGameOverScreen(packet);
                 break;
+            case packet instanceof KillFeedPacket:
+                this.uiManager.processKillFeedPacket(packet);
+                break;
             case packet instanceof PingPacket: {
                 const ping = Date.now() - this.lastPingDate;
                 this.uiManager.debugReadouts.ping.text(`${ping} ms`);
@@ -608,10 +612,6 @@ export class Game {
         if (updateData.aliveCount !== undefined) {
             $("#ui-players-alive").text(updateData.aliveCount);
             $("#btn-spectate").toggle(updateData.aliveCount > 1);
-        }
-
-        for (const message of updateData.killFeedMessages) {
-            this.uiManager.processKillFeedMessage(message);
         }
 
         for (const plane of updateData.planes) {

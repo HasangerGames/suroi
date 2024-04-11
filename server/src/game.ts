@@ -7,11 +7,14 @@ import { MapPings, type MapPingDefinition } from "../../common/src/definitions/m
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
+import { Packet } from "../../common/src/packets/packet";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { PacketStream } from "../../common/src/packets/packetStream";
+import { InputPacket } from "../../common/src/packets/inputPacket";
+import { SpectatePacket } from "../../common/src/packets/spectatePacket";
+import { KillFeedPacket } from "../../common/src/packets/killFeedPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
-import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
@@ -43,9 +46,6 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
-import { Packet } from "../../common/src/packets/packet";
 
 export class Game {
     readonly _id: number;
@@ -79,6 +79,10 @@ export class Game {
     * Players deleted this tick
     */
     readonly deletedPlayers: number[] = [];
+    /**
+     * Packets created this tick that will be sent to all players
+     */
+    readonly packets: Packet[] = [];
 
     readonly maxTeamSize: number;
 
@@ -138,11 +142,6 @@ export class Game {
      * All bullets created this tick
      */
     readonly newBullets: Bullet[] = [];
-
-    /**
-     * All kill feed messages this tick
-     */
-    readonly killFeedMessages: KillFeedMessage[] = [];
 
     /**
      * All airdrops
@@ -502,7 +501,7 @@ export class Game {
         this.emotes.length = 0;
         this.newPlayers.length = 0;
         this.deletedPlayers.length = 0;
-        this.killFeedMessages.length = 0;
+        this.packets.length = 0;
         this.planes.length = 0;
         this.mapPings.length = 0;
         this.aliveCountDirty = false;
@@ -576,15 +575,15 @@ export class Game {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
-                this._sendKillFeedMessage(KillfeedMessageType.KillLeaderAssigned);
+                this._sendKillFeedPacket(KillfeedMessageType.KillLeaderAssigned);
             }
         } else if (player === oldKillLeader) {
-            this._sendKillFeedMessage(KillfeedMessageType.KillLeaderUpdated);
+            this._sendKillFeedPacket(KillfeedMessageType.KillLeaderUpdated);
         }
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillFeedMessage(KillfeedMessageType.KillLeaderDead, { eventType: KillfeedEventType.NormalTwoParty, attackerId: killer?.id });
+        this._sendKillFeedPacket(KillfeedMessageType.KillLeaderDead, { eventType: KillfeedEventType.NormalTwoParty, attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -592,17 +591,17 @@ export class Game {
             }
         }
         this._killLeader = newKillLeader;
-        this._sendKillFeedMessage(KillfeedMessageType.KillLeaderAssigned);
+        this._sendKillFeedPacket(KillfeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillfeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
+    private _sendKillFeedPacket(messageType: KillfeedMessageType, options?: Partial<Omit<KillFeedPacket, "messageType" | "playerID" | "kills">>): void {
         if (this._killLeader === undefined) return;
-        this.killFeedMessages.push({
+        this.packets.push(KillFeedPacket.create({
             messageType,
             victimId: this._killLeader.id,
             attackerKills: this._killLeader.kills,
             ...options
-        });
+        }));
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
