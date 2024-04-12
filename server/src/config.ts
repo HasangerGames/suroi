@@ -24,7 +24,7 @@ export const Config = {
 
     maxTeamSize: TeamSize.Duo,
 
-    maxPlayersPerGame: 80,
+    maxPlayersPerGame: 60,
     maxGames: 3,
     preventJoinAfter: 60000,
 
