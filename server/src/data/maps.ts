@@ -69,7 +69,8 @@ const maps = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            red_house: 6,
+            red_house_1: 3,
+            red_house_2: 3,
             green_house: 2,
             mobile_home: 9,
             porta_potty: 12,
@@ -116,6 +117,57 @@ const maps = {
             { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
+    },
+    city:{
+        width: 1632,
+        height: 1632,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: {
+            minAmount: 3,
+            maxAmount: 3,
+            wideChance: 0.35,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30
+        },
+        bridges: [
+            "small_bridge"
+        ],
+        buildings: {
+            port_complex: 1,
+            tugboat_red: 1,
+            tugboat_white: 5,
+            red_house_1: 25,
+            red_house_2: 25,
+            green_house: 10,
+        },
+        obstacles: {
+            oil_tank: 3,
+            oak_tree: 250,
+            birch_tree: 10,
+            pine_tree: 10,
+            regular_crate: 140,
+            flint_crate: 5,
+            aegis_crate: 5,
+            grenade_crate: 30,
+            rock: 100,
+            river_chest: 1,
+            river_rock: 45,
+            bush: 110,
+            lily_pad: 20,
+            blueberry_bush: 30,
+            barrel: 80,
+            viking_chest: 1,
+            super_barrel: 30,
+            melee_crate: 1,
+            gold_rock: 1,
+            flint_stone: 1
+        },
+        loots: {
+            ground_loot: 60
+        },
     },
     debug: {
         width: 1620,
@@ -193,7 +245,7 @@ const maps = {
         buildings: {
             refinery: 1,
             warehouse: 4,
-            red_house: 5,
+            red_house_1: 5,
             porta_potty: 10,
             container_3: 1,
             container_4: 1,

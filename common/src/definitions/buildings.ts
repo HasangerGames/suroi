@@ -874,12 +874,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "red_house",
-            name: "Red House",
+            idString: "red_house_1",
+            name: "Red House 1",
             spawnHitbox: RectangleHitbox.fromRect(80, 80),
             scopeHitbox: RectangleHitbox.fromRect(60, 56),
             floorImages: [{
-                key: "red_house_floor",
+                key: "red_house_floor_1",
                 position: Vec.create(0, 0)
             }],
             ceilingImages: [{
@@ -1024,7 +1024,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: 2
                 },
                 {
-                    idString: "red_house_exterior",
+                    idString: "red_house_1_exterior",
                     position: Vec.create(0, 0),
                     rotation: 2
                 }
@@ -1032,6 +1032,92 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(16.44, -15.64) },
                 { table: "ground_loot", position: Vec.create(-15.42, 17.44) }
+            ]
+        },
+        {
+            idString: "red_house_2",
+            name: "Red House 2",
+            spawnHitbox: RectangleHitbox.fromRect(80, 80),
+            scopeHitbox: RectangleHitbox.fromRect(60, 56),
+            floorImages: [{
+                key: "red_house_floor_2",
+                position: Vec.create(0, 0)
+            }],
+            ceilingImages: [{
+                key: "red_house_ceiling",
+                position: Vec.create(0, -0.25)
+            }],
+            floors: [
+                {
+                    type: "wood",
+                    hitbox: RectangleHitbox.fromRect(62, 58.50, Vec.create(0, -0.25))
+                },
+                {
+                    type: "stone",
+                    hitbox: RectangleHitbox.fromRect(-10.10, 4.70, Vec.create(16.55, -31.75))
+
+                },
+                {
+                    type: "stone",
+                    hitbox: RectangleHitbox.fromRect(10.10, -4.70, Vec.create(-14.45, 31.75))
+                }
+            ],
+            obstacles: [
+
+                // Bedroom_1
+                { idString: "door", position: Vec.create(-6.5, -7), rotation: 0 },
+                { idString: "house_column", position: Vec.create(8.75, -7), rotation: 0 },
+                { idString: "house_wall_2", position: Vec.create(8.75, -18.5), rotation: 1, scale:.958 },
+                { idString: "house_wall_1", position: Vec.create(2.73, -7), rotation: 0 },
+                { idString: "house_wall_10", position: Vec.create(-13.6, -7), rotation: 0 },
+                { idString: "house_column", position: Vec.create(-17, -7), rotation: 0 },
+                { idString: "mobile_home_bed", position: Vec.create(4, -20.5), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-5.9, -26.5), rotation: 0 },
+
+                // Bedroom_1 Bathroom
+                { idString: "house_wall_3", position: Vec.create(-24.1, -7), rotation: 0,scale:1.04 },
+                { idString: "door", position: Vec.create(-17, -23), rotation: 3 },
+                { idString: "house_wall_1", position: Vec.create(-17, -13.4), rotation: 1,scale:1.12 },
+                {
+                    idString: { toilet: 2, used_toilet: 1 },
+                    position: Vec.create(-24, -12),
+                    rotation: 2
+                },
+
+
+                // Bedroom_2
+                { idString: "house_column", position: Vec.create(9.5, 6), rotation: 0 },
+                { idString: "house_wall_1", position: Vec.create(25.5, 6), rotation: 0 , scale:1.02},
+                { idString: "house_wall_2", position: Vec.create(9.5, 17.7), rotation: 1, scale:.98},
+                { idString: "door", position: Vec.create(15.4, 6), rotation: 2 },
+                { idString: "mobile_home_bed", position: Vec.create(26.5, 20), rotation: 2 },
+                { idString: "small_drawer", position: Vec.create(14.1, 24.7), rotation: 1 },
+
+                // LivingRoom
+                { idString: "tv", position: Vec.create(-21, -5.2), rotation: 1},
+                { idString: "green_house_large_table", position: Vec.create(-20, 8), rotation: 1},
+                { idString: "chair", position: Vec.create(-25, 14), rotation: 0},
+                { idString: "chair", position: Vec.create(-15, 14), rotation: 0},
+
+                // Kitchen
+                { idString: "small_drawer", position: Vec.create(26, -25), rotation: 3 },
+                { idString: "fridge", position: Vec.create(26.5, -17), rotation: 3 },
+                { idString: "stove", position: Vec.create(26.5, -7.6), rotation: 3 },
+                { idString: "potted_plant", position: Vec.create(26, 1), rotation: 3 },
+
+                // Outside
+                {idString: "door", position: Vec.create(-14.85, 29), rotation: 2},
+                {idString: "door", position: Vec.create(16.2, -29.5), rotation: 2},
+                {idString: "window",position: Vec.create(-.7, 29),rotation: 1},
+                {idString: "window",position: Vec.create(-31, 21),rotation: 2},
+
+                // Exterior
+                { idString: "red_house_2_exterior", position: Vec.create(0, 0), rotation: 2 }
+            ],
+            lootSpawners: [
+                { table: "ground_loot", position: Vec.create(16.2, -16.5) },
+                { table: "ground_loot", position: Vec.create(-1, 15) },
+                { table: "ground_loot", position: Vec.create(1, 5) }
             ]
         },
         {
