@@ -739,8 +739,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         });
 
-        if (scopeTarget !== undefined) {
-            this.effectiveScope = scopeTarget;
+        if (scopeTarget !== undefined || this.isInsideBuilding || this.downed) {
+            this.effectiveScope = scopeTarget ?? DEFAULT_SCOPE;
         }
 
         this.turning = false;
