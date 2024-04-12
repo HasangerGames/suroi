@@ -183,7 +183,6 @@ export interface ConfigType {
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
      * If isDev is set to true for a role, cheats will be enabled for that role.
-     * To use roles, add `?password=PASSWORD&role=ROLE` to the URL, for example: `http://127.0.0.1:3000/?password=dev&role=dev`
      * Dev cheats can be enabled using the `lobbyClearing` option: `http://127.0.0.1:3000/?password=dev&role=dev&lobbyClearing=true`
      */
     readonly roles: Record<string, {
