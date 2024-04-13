@@ -131,6 +131,35 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "steelfang",
+            name: "Steelfang",
+            damage: 40,
+            obstacleMultiplier: 1,
+            piercingMultiplier: 1,
+            radius: 2.7,
+            offset: Vec.create(3.1, 0.9),
+            cooldown: 200,
+            fists: {
+                animationDuration: 150,
+                left: Vec.create(38, -35),
+                right: Vec.create(30, 40),
+                useLeft: Vec.create(35, -40),
+                useRight: Vec.create(75, -20)
+            },
+            image: {
+                position: Vec.create(55, 55),
+                usePosition: Vec.create(80, -25),
+                angle: -120,
+                useAngle: -800,
+                lootScale: 0.9
+            },
+            wearerAttributes: {
+                passive: {
+                    speedBoost: 1.5
+                }
+            }
+        },
+        {
             idString: "gas_can",
             name: "Gas Can",
             damage: 22,
