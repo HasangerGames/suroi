@@ -2050,10 +2050,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "port_fence",
-            name: "Port Fence",
+            idString: "chain_fence",
+            name: "Chain Fence",
             material: "fence",
-            health: 40,
+            health: 70,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -2067,10 +2067,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "port_fence_side",
-            name: "Port Fence Side",
+            idString: "chain_fence_side",
+            name: "Chain Fence Side",
             material: "fence",
-            health: 40,
+            health: 70,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
