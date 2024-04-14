@@ -69,6 +69,54 @@ export class Gas {
         }
     }
 
+    // Get current quadrant of provided coordinates
+    getQuadrant(x: number, y: number, width: number, height: number): number {
+        if (x < width / 2 && y < height / 2) {
+            return 1;
+        } else if (x >= width / 2 && y < height / 2) {
+            return 2;
+        } else if (x < width / 2 && y >= height / 2) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    // Generate random coordinate within quadrant
+    genQuadCoord(x: number, y: number, width: number, height: number): { x: number, y: number } {
+        // Get the current int quadrant.
+        const quad = this.getQuadrant(x, y, width, height);
+        // Define initial offsets by dividing width and height into 4ths and multiplying it by a random number between 0 and 1
+        let xOffset = Math.ceil(width / 4 * Math.random());
+        let yOffset = Math.ceil(height / 4 * Math.random());
+        // Randomly toggle weighting
+        const isWeighted = Math.random() < 0.5;
+        // Apply weighting to the outer corners
+        if (isWeighted) {
+            xOffset = Math.random() < 0.5 ? Math.ceil(xOffset * 0.2) : xOffset;
+            yOffset = Math.random() < 0.5 ? Math.ceil(yOffset * 0.2) : yOffset;
+        }
+        // Case switch to depending on the quadrant generate the random offset for said quadrant with a random weight towards outer or inner map.
+        switch (quad) {
+            case 1:
+                return { x: Math.ceil(width / 4 + xOffset), y: Math.ceil(height / 4 + yOffset) };
+            case 2:
+                return { x: Math.ceil(3 * width / 4 - xOffset), y: Math.ceil(height / 4 + yOffset) };
+            case 3:
+                return { x: Math.ceil(width / 4 + xOffset), y: Math.ceil(3 * height / 4 - yOffset) };
+            case 4:
+            default:
+                return { x, y };
+        }
+    }
+
+    // Calc the delta from 2 coordinates
+    checkGDelta(x: number, y: number, _x: number, _y: number): number {
+        const _dx = x - _x;
+        const _dy = y - _y;
+        return Math.ceil(Math.sqrt(_dx * _dx + _dy * _dy));
+    }
+
     advanceGasStage(): void {
         if (Config.gas.mode === GasMode.Disabled) return;
         const currentStage = GasStages[this.stage + 1];
@@ -91,9 +139,17 @@ export class Gas {
                     this.newPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
                 } else {
                     this.newPosition = randomPointInsideCircle(this.oldPosition, currentStage.newRadius * this.mapSize);
-                    const radius = currentStage.newRadius * this.mapSize;
-                    this.newPosition.x = Numeric.clamp(this.newPosition.x, radius, this.game.map.width - radius);
-                    this.newPosition.y = Numeric.clamp(this.newPosition.y, radius, this.game.map.height - radius);
+                    //const radius = currentStage.newRadius * this.mapSize;
+                    // Get the coordinate in quadrant
+                    let _quadCoord = this.genQuadCoord(this.newPosition.x, this.newPosition.y, this.game.map.width, this.game.map.height);
+                    // While the current stage is greater then 2 (ignore the 2 largest stages) and if the deviation/delta of the old circle center to new circle center is greater then the old circle radius * 1.2, then regenerate a new coordinate until its within range.
+                    while (this.stage > 2 && this.checkGDelta(this.oldPosition.x, this.oldPosition.y, _quadCoord.x, _quadCoord.y) > (this.oldRadius) * 1.2) {
+                        console.log("Gas gen exceded max deviation distance, regenerating...");
+                        _quadCoord = this.genQuadCoord(this.newPosition.x, this.newPosition.y, this.game.map.width, this.game.map.height);
+                    }
+
+                    this.newPosition.x = _quadCoord.x;
+                    this.newPosition.y = _quadCoord.y;
                 }
             } else {
                 this.newPosition = Vec.clone(this.oldPosition);
