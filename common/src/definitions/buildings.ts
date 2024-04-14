@@ -1236,21 +1236,21 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "port_shed",
-        name: "Port Shed",
+        idString: "shed",
+        name: "Shed",
         spawnHitbox: RectangleHitbox.fromRect(27, 37, Vec.create(-0.8, 0)),
         scopeHitbox: RectangleHitbox.fromRect(20, 27.5, Vec.create(-0.8, -1.5)),
         floorImages: [{
-            key: "port_shed_floor",
+            key: "shed_floor",
             position: Vec.create(0, 0)
         }],
         ceilingImages: [{
-            key: "port_shed_ceiling",
+            key: "shed_ceiling",
             position: Vec.create(-0.8, -1.7)
         }],
         obstacles: [
             {
-                idString: "port_shed_exterior",
+                idString: "shed_exterior",
                 position: Vec.create(-0.8, 0),
                 rotation: 0
             },
