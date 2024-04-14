@@ -34,7 +34,6 @@ import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
-import { type PlayerContainer } from "../server";
 import { type Team, teamMode } from "../team";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
@@ -45,6 +44,19 @@ import { BaseGameObject, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+
+export interface PlayerContainer {
+    readonly teamID?: string
+    readonly autoFill: boolean
+    player?: Player
+    readonly ip: string | undefined
+    readonly role?: string
+
+    readonly isDev: boolean
+    readonly nameColor?: number
+    readonly lobbyClearing: boolean
+    readonly weaponPreset: string
+}
 
 export class Player extends BaseGameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;

@@ -1,57 +1,26 @@
 import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
-import { App, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
+import { type WebSocket } from "uWebSockets.js";
 import { GameConstants } from "../../common/src/constants";
 import { Badges } from "../../common/src/definitions/badges";
 import { Skins } from "../../common/src/definitions/skins";
 import { Numeric } from "../../common/src/utils/math";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { canJoin, customTeams, findGame, games, newGame } from "./gameManager";
-import { type Player } from "./objects/player";
+import { findGame, games, newGame } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import { Logger } from "./utils/misc";
+import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 
-/**
- * Apply CORS headers to a response.
- * @param res The response sent by the server.
- */
-function cors(res: HttpResponse): void {
-    res.writeHeader("Access-Control-Allow-Origin", "*")
-        .writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        .writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with")
-        .writeHeader("Access-Control-Max-Age", "3600");
-}
-
-function forbidden(res: HttpResponse): void {
-    res.writeStatus("403 Forbidden").end("403 Forbidden");
-}
-
 // Initialize the server
-const app = Config.ssl
-    ? SSLApp({
-        key_file_name: Config.ssl.keyFile,
-        cert_file_name: Config.ssl.certFile
-    })
-    : App();
+const app = createServer();
 
-const decoder = new TextDecoder();
-function getIP(res: HttpResponse, req: HttpRequest): string {
-    return Config.ipHeader
-        ? req.getHeader(Config.ipHeader) ?? decoder.decode(res.getRemoteAddressAsText())
-        : decoder.decode(res.getRemoteAddressAsText());
-}
-
-const simultaneousConnections: Record<string, number> = {};
-let connectionAttempts: Record<string, number> = {};
-
-export interface Punishment { readonly type: "rateLimit" | "warning" | "tempBan" | "permaBan", readonly expires?: number }
+export interface Punishment { readonly type: "warning" | "tempBan" | "permaBan", readonly expires?: number }
 export let punishments: Record<string, Punishment> = {};
 
-let ipBlocklist: string[] | undefined;
+export let ipBlocklist: string[] | undefined;
 
 function removePunishment(ip: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -73,9 +42,7 @@ app.get("/api/serverInfo", (res) => {
     res
         .writeHeader("Content-Type", "application/json")
         .end(JSON.stringify({
-            playerCount: games.reduce((a, b) => {
-                return a + (b ? b.connectedPlayers.size : 0);
-            }, 0),
+            playerCount: games.reduce((a, b) => (a + (b?.data.aliveCount ?? 0)), 0),
             maxTeamSize: Config.maxTeamSize,
             protocolVersion: GameConstants.protocolVersion
         }));
@@ -86,27 +53,32 @@ app.get("/api/getGame", async(res, req) => {
     res.onAborted(() => { aborted = true; });
     cors(res);
 
-    let response: {
+    const ip = getIP(res, req);
+
+    const response: {
         success: boolean
         gameID?: number
-        message?: "rateLimit" | "warning" | "tempBan" | "permaBan"
-    };
-
-    const ip = getIP(res, req);
-    const punishment = punishments[ip];
-    if (punishment) {
-        response = { success: false, message: punishment.type };
-        if (punishment.type === "warning") {
-            const protection = Config.protection;
-            if (protection?.punishments?.url) {
-                fetch(`${protection.punishments.url}/api/removePunishment?ip=${ip}`, { headers: { Password: protection.punishments.password } })
-                    .catch(e => console.error("Error acknowledging warning. Details: ", e));
+        message?: "warning" | "tempBan" | "permaBan"
+    } = (() => {
+        const punishment = punishments[ip];
+        if (punishment) {
+            if (punishment.type === "warning") {
+                const protection = Config.protection;
+                if (protection?.punishments?.url) {
+                    fetch(`${protection.punishments.url}/api/removePunishment?ip=${ip}`, { headers: { Password: protection.punishments.password } })
+                        .catch(e => console.error("Error acknowledging warning. Details: ", e));
+                }
+                removePunishment(ip);
             }
-            removePunishment(ip);
+            return { success: false, message: punishment.type };
         }
-    } else {
-        response = findGame();
-    }
+
+        if (ipBlocklist?.includes(ip)) {
+            return { success: false, message: "permaBan" };
+        }
+
+        return findGame();
+    })();
 
     if (!aborted) {
         res.cork(() => {
@@ -133,7 +105,7 @@ app.post("/api/addPunishment", (res, req) => {
     const password = req.getHeader("password");
     res.onData((data) => {
         if (password === Config.protection?.punishments?.password) {
-            const body = decoder.decode(data);
+            const body = textDecoder.decode(data);
             punishments = {
                 ...punishments,
                 ...JSON.parse(body)
@@ -157,172 +129,7 @@ app.get("/api/removePunishment", (res, req) => {
     }
 });
 
-export interface PlayerContainer {
-    readonly gameID: number
-    readonly teamID?: string
-    readonly autoFill: boolean
-    player?: Player
-    readonly ip: string | undefined
-    readonly role?: string
-
-    readonly isDev: boolean
-    readonly nameColor?: number
-    readonly lobbyClearing: boolean
-    readonly weaponPreset: string
-}
-
-app.ws("/play", {
-    idleTimeout: 30,
-
-    /**
-     * Upgrade the connection to WebSocket.
-     */
-    upgrade(res, req, context) {
-        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted((): void => { });
-
-        const ip = getIP(res, req);
-
-        //
-        // Cheater protection
-        //
-        if (Config.protection) {
-            const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections ?? Infinity;
-            const maxJoinAttempts = Config.protection.maxJoinAttempts;
-            const exceededRateLimits =
-                (simultaneousConnections[ip] >= maxSimultaneousConnections) ||
-                (connectionAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity));
-
-            if (
-                punishments[ip] ||
-                exceededRateLimits ||
-                ipBlocklist?.includes(ip)
-            ) {
-                if (exceededRateLimits && !punishments[ip]) punishments[ip] = { type: "rateLimit" };
-                forbidden(res);
-                Logger.log(`Connection blocked: ${ip}`);
-                return;
-            } else {
-                if (maxSimultaneousConnections) {
-                    simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                    Logger.log(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
-                }
-
-                if (maxJoinAttempts) {
-                    connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
-                    Logger.log(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
-                }
-            }
-        }
-
-        const searchParams = new URLSearchParams(req.getQuery());
-
-        //
-        // Validate game ID
-        //
-        let gameID = Number(searchParams.get("gameID"));
-        if (gameID < 0 || gameID > Config.maxGames - 1) gameID = 0;
-        if (!canJoin(games[gameID])) {
-            forbidden(res);
-            return;
-        }
-
-        const teamID = searchParams.get("teamID") ?? undefined;
-
-        const autoFill = Boolean(searchParams.get("autoFill"));
-
-        //
-        // Role
-        //
-        const password = searchParams.get("password");
-        const givenRole = searchParams.get("role");
-        let role: string | undefined;
-        let isDev = false;
-
-        let nameColor: number | undefined;
-        if (
-            password !== null &&
-            givenRole !== null &&
-            givenRole in Config.roles &&
-            Config.roles[givenRole].password === password
-        ) {
-            role = givenRole;
-            isDev = Config.roles[givenRole].isDev ?? false;
-
-            if (isDev) {
-                try {
-                    const colorString = searchParams.get("nameColor");
-                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                } catch {}
-            }
-        }
-
-        //
-        // Upgrade the connection
-        //
-        const userData: PlayerContainer = {
-            gameID,
-            teamID,
-            autoFill,
-            player: undefined,
-            ip,
-            role,
-            isDev,
-            nameColor,
-            lobbyClearing: searchParams.get("lobbyClearing") === "true",
-            weaponPreset: searchParams.get("weaponPreset") ?? ""
-        };
-        res.upgrade(
-            userData,
-            req.getHeader("sec-websocket-key"),
-            req.getHeader("sec-websocket-protocol"),
-            req.getHeader("sec-websocket-extensions"),
-            context
-        );
-    },
-
-    /**
-     * Handle opening of the socket.
-     * @param socket The socket being opened.
-     */
-    open(socket: WebSocket<PlayerContainer>) {
-        const data = socket.getUserData();
-        const game = games[data.gameID];
-        if (game === undefined) return;
-        data.player = game.addPlayer(socket);
-        // data.player.sendGameOverPacket(false); // uncomment to test game over screen
-    },
-
-    /**
-     * Handle messages coming from the socket.
-     * @param socket The socket in question.
-     * @param message The message to handle.
-     */
-    message(socket: WebSocket<PlayerContainer>, message) {
-        const stream = new SuroiBitStream(message);
-        try {
-            const player = socket.getUserData().player;
-            if (player === undefined) return;
-            player.game.onMessage(stream, player);
-        } catch (e) {
-            console.warn("Error parsing message:", e);
-        }
-    },
-
-    /**
-     * Handle closing of the socket.
-     * @param socket The socket being closed.
-     */
-    close(socket: WebSocket<PlayerContainer>) {
-        const data = socket.getUserData();
-        if (Config.protection) simultaneousConnections[data.ip!]--;
-        const game = games[data.gameID];
-        const player = data.player;
-        if (game === undefined || player === undefined) return;
-        Logger.log(`Game ${data.gameID} | "${player.name}" left`);
-        game.removePlayer(player);
-    }
-});
+export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
 app.ws("/team", {
     idleTimeout: 30,
@@ -433,7 +240,7 @@ app.ws("/team", {
      */
     message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
         const player = socket.getUserData().player;
-        player.team.onMessage(player, JSON.parse(decoder.decode(message)));
+        player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
     },
 
     /**
@@ -466,12 +273,6 @@ app.listen(Config.host, Config.port, (): void => {
 
     const { protection } = Config;
     if (protection) {
-        if (protection.maxJoinAttempts) {
-            setInterval((): void => {
-                connectionAttempts = {};
-            }, protection.maxJoinAttempts.duration);
-        }
-
         setInterval(() => {
             if (protection.punishments?.url) {
                 void (async() => {
@@ -489,7 +290,7 @@ app.listen(Config.host, Config.port, (): void => {
                 readFile("punishments.json", "utf8", (error, data) => {
                     if (!error) {
                         try {
-                            punishments = data === "" ? {} : JSON.parse(data);
+                            punishments = data.trim() === "" ? {} : JSON.parse(data);
                         } catch (e) {
                             console.error("Error: Unable to parse punishment list. Details:", e);
                         }
@@ -501,12 +302,8 @@ app.listen(Config.host, Config.port, (): void => {
 
             const now = Date.now();
             for (const [ip, punishment] of Object.entries(punishments)) {
-                if (
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    (punishment.expires && punishment.expires < now) ||
-                    punishment.type === "rateLimit"
-                    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-                ) delete punishments[ip];
+                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                if (punishment.expires && punishment.expires < now) delete punishments[ip];
             }
 
             Logger.log("Reloaded punishment list");

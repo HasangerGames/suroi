@@ -238,7 +238,7 @@ export async function setUpUI(game: Game): Promise<void> {
         if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
         lastPlayButtonClickTime = now;
         $("#splash-options").addClass("loading");
-        void $.get(`http${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
+        void $.get(`http${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/api/getGame`, (data: { success: boolean, message?: "warning" | "tempBan" | "permaBan", gameID: number }) => {
             if (data.success) {
                 joinGame(data.gameID);
             } else {
@@ -246,9 +246,6 @@ export async function setUpUI(game: Game): Promise<void> {
                 let title: string | undefined;
                 let message: string;
                 switch (data.message) {
-                    case "rateLimit":
-                        message = "Error joining game.<br>Please try again in a few minutes.";
-                        break;
                     case "warning":
                         showWarningModal = true;
                         title = "Teaming is against the rules!";
@@ -265,7 +262,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
                         break;
                     default:
-                        message = "Error joining game.<br>Please try again in 30 seconds.";
+                        message = "Error joining game.<br>Please try again.";
                         break;
                 }
                 if (showWarningModal) {

@@ -1,13 +1,50 @@
+import { randomBytes } from "node:crypto";
 import { Config } from "./config";
-import { Game } from "./game";
-import type { CustomTeam } from "./team";
 import { Logger } from "./utils/misc";
+import { Worker, getEnvironmentData } from "node:worker_threads";
+
+export class GameContainer {
+    id: number;
+    worker: Worker;
+
+    constructor(id: number) {
+        this.id = id;
+        this.worker = new Worker("./src/game.ts", { workerData: id });
+        this.worker.on("message", (data): void => {
+            console.log(data);
+        });
+    }
+
+    get data(): GameData {
+        return getEnvironmentData(this.id) as GameData;
+    }
+
+    addToken(): string {
+        const token = randomBytes(4).toString("hex");
+        this.worker.postMessage({
+            type: WorkerMessages.RegisterToken,
+            token
+        });
+        return token;
+    }
+}
+
+export enum WorkerMessages {
+    RegisterToken
+}
+
+export interface GameData {
+    aliveCount: number
+    allowJoin: boolean
+    over: boolean
+    stopped: boolean
+    startedTime: number
+}
 
 export function findGame(): { readonly success: true, readonly gameID: number } | { readonly success: false } {
-    const maxGames = Config.maxGames;
-    for (let gameID = 0; gameID < maxGames; gameID++) {
+    for (let gameID = 0; gameID < Config.maxGames; gameID++) {
         const game = games[gameID];
-        if (canJoin(game) && game?.allowJoin) {
+        if (canJoin(game) && game?.data.allowJoin) {
             return { success: true, gameID };
         }
     }
@@ -19,8 +56,8 @@ export function findGame(): { readonly success: true, readonly gameID: number } 
     } else {
         // Join the game that most recently started
         const game = games
-            .filter((g => g && !g.over) as (g?: Game) => g is Game)
-            .reduce((a, b) => a.startedTime > b.startedTime ? a : b);
+            .filter((g => g && !g.data.over) as (g?: GameContainer) => g is GameContainer)
+            .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
 
         return game
             ? { success: true, gameID: game.id }
@@ -28,43 +65,32 @@ export function findGame(): { readonly success: true, readonly gameID: number } 
     }
 }
 
-export const games: Array<Game | undefined> = [];
+export const games: Array<GameContainer | undefined> = [];
 
 export function newGame(id?: number): number {
     if (id !== undefined) {
-        if (!games[id] || games[id]?.stopped) {
-            Logger.log(`Game ${id} | Creating...`);
-            games[id] = new Game(id);
+        if (!games[id] || games[id]?.data.stopped) {
+            Logger.log("Creating new game...");
+            games[id] = new GameContainer(id);
             return id;
         }
     } else {
-        const maxGames = Config.maxGames;
-        for (let i = 0; i < maxGames; i++) {
-            if (!games[i] || games[i]?.stopped) return newGame(i);
+        for (let i = 0; i < Config.maxGames; i++) {
+            if (!games[i] || games[i]?.data.stopped) return newGame(i);
         }
     }
     return -1;
 }
 
 export function endGame(id: number, createNewGame: boolean): void {
-    const game = games[id];
-    if (game === undefined) return;
-    game.allowJoin = false;
-    game.stopped = true;
-    for (const player of game.connectedPlayers) {
-        player.socket.close();
-    }
-    Logger.log(`Game ${id} | Ended`);
     if (createNewGame) {
         Logger.log(`Game ${id} | Creating...`);
-        games[id] = new Game(id);
+        games[id] = new GameContainer(id);
     } else {
         games[id] = undefined;
     }
 }
 
-export function canJoin(game?: Game): boolean {
-    return game !== undefined && game.aliveCount < Config.maxPlayersPerGame && !game.over;
+export function canJoin(game?: GameContainer): boolean {
+    return game !== undefined && game.data !== undefined && game.data.aliveCount < Config.maxPlayersPerGame && !game.data.over;
 }
-
-export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
