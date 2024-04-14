@@ -485,7 +485,14 @@ export class Inventory {
                 for (let i = Scopes.definitions.length - 1; i >= 0; i--) {
                     const scope = Scopes.definitions[i];
                     if (this.items.hasItem(scope.idString)) {
-                        this.scope = this.owner.effectiveScope = scope;
+
+                        // --------------------------------------------------------------------------------------------
+                        // BUG FIX: The scope "hack" in buildings. We do not need to set "effectiveScope" if the
+                        // player is inside a bulding, because it's already set to the 1x by the building in player.ts
+                        // --------------------------------------------------------------------------------------------
+                        this.scope = this.owner.isInsideBuilding ? scope : this.owner.effectiveScope = scope;
+                        // --------------------------------------------------------------------------------------------
+
                         break;
                     }
                 }
