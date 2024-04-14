@@ -2027,8 +2027,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "port_shed_exterior",
-            name: "Port Shed Exterior",
+            idString: "shed_exterior",
+            name: "Shed Exterior",
             material: "stone",
             health: 1000,
             indestructible: true,
