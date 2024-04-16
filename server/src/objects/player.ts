@@ -403,9 +403,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
         if (specialFunnies) {
-            const [weaponA, weaponB, melee] = userData.weaponPreset;
+            const [weaponA, weaponB, melee] = userData.weaponPreset.split(" ");
 
-            const determinePreset = (slot: 0 | 1 | 2, char: string): void => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const oldDeterminePreset = (slot: 0 | 1 | 2, char: string): void => {
                 switch (slot) {
                     case 0:
                     case 1: {
@@ -439,6 +440,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                 (this.inventory.getWeapon(slot) as GunItem).ammo = 100;
                                 break;
                             }
+                            case "usas12": {
+                                this.inventory.addOrReplaceWeapon(slot, "usas12");
+                                (this.inventory.getWeapon(slot) as GunItem).ammo = 100;
+                                break;
+                            }
                         }
                         break;
                     }
@@ -457,7 +463,18 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     }
                 }
             };
-
+            const determinePreset = (slot: 0 | 1 | 2, weaponName: string): void => {
+                try {
+                    this.inventory.addOrReplaceWeapon(slot, weaponName);
+                    const weapon = this.inventory.getWeapon(slot) as GunItem;
+                    weapon.ammo = 10000;
+                    weapon._modifiers.maxAdrenaline = 2;
+                    weapon._modifiers.maxHealth = 2;
+                } catch (err) {
+                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                    console.error(`Error in determinePreset: ${err}`);
+                }
+            };
             determinePreset(0, weaponA);
             determinePreset(1, weaponB);
             determinePreset(2, melee);
@@ -466,7 +483,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.inventory.items.setItem("4x_scope", 1);
             this.inventory.items.setItem("8x_scope", 1);
             this.inventory.items.setItem("15x_scope", 1);
-            this.inventory.scope = "4x_scope";
+            this.inventory.scope = "8x_scope";
+            this.inventory.backpack = Loots.fromString("tactical_pack");
+            this.inventory.vest = Loots.fromString("tactical_vest");
+            this.inventory.helmet = Loots.fromString("tactical_helmet");
         }
 
         this.updateAndApplyModifiers();
