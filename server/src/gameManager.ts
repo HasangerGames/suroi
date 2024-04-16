@@ -1,37 +1,81 @@
-import { randomBytes } from "node:crypto";
 import { Config } from "./config";
 import { Logger } from "./utils/misc";
-import { Worker, getEnvironmentData } from "node:worker_threads";
+import { Worker } from "node:worker_threads";
+import path from "node:path";
+import { type GetGameResponse } from "../../common/src/typings";
+import { maxTeamSize } from "./server";
 
 export class GameContainer {
     id: number;
     worker: Worker;
 
+    data: GameData = {
+        aliveCount: 0,
+        allowJoin: false,
+        over: false,
+        stopped: false,
+        startedTime: -1
+    };
+
+    ipPromiseMap = new Map<string, (ip: string) => void>();
+
     constructor(id: number) {
         this.id = id;
-        this.worker = new Worker("./src/game.ts", { workerData: id });
-        this.worker.on("message", (data): void => {
-            console.log(data);
+        // @ts-expect-error no typings for this
+        const isTSNode = process[Symbol.for("ts-node.register.instance")];
+        this.worker = new Worker(`./src/game.${isTSNode ? "ts" : "js"}`, { workerData: { id, maxTeamSize } });
+        this.worker.on("message", (message: WorkerMessage): void => {
+            switch (message.type) {
+                case WorkerMessages.UpdateGameData: {
+                    this.data = { ...this.data, ...message.data };
+                    if (message.data.stopped === true) {
+                        // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
+                        const shouldCreateNewGame = this.data.allowJoin;
+                        endGame(this.id, shouldCreateNewGame);
+                    }
+                    break;
+                }
+                case WorkerMessages.CreateNewGame: {
+                    newGame();
+                    break;
+                }
+                case WorkerMessages.IPAllowed: {
+                    this.ipPromiseMap.get(message.ip)?.(message.ip);
+                    this.ipPromiseMap.delete(message.ip);
+                    break;
+                }
+            }
         });
     }
 
-    get data(): GameData {
-        return getEnvironmentData(this.id) as GameData;
-    }
-
-    addToken(): string {
-        const token = randomBytes(4).toString("hex");
+    async allowIP(ip: string): Promise<string> {
         this.worker.postMessage({
-            type: WorkerMessages.RegisterToken,
-            token
+            type: WorkerMessages.AllowIP,
+            ip
         });
-        return token;
+        return await new Promise<string>(resolve => this.ipPromiseMap.set(ip, resolve));
     }
 }
 
 export enum WorkerMessages {
-    RegisterToken
+    AllowIP,
+    IPAllowed,
+    UpdateGameData,
+    CreateNewGame
 }
+
+export type WorkerMessage =
+    {
+        type: WorkerMessages.AllowIP | WorkerMessages.IPAllowed
+        ip: string
+    } |
+    {
+        type: WorkerMessages.UpdateGameData
+        data: Partial<GameData>
+    } |
+    {
+        type: WorkerMessages.CreateNewGame
+    };
 
 export interface GameData {
     aliveCount: number
@@ -41,10 +85,11 @@ export interface GameData {
     startedTime: number
 }
 
-export function findGame(): { readonly success: true, readonly gameID: number } | { readonly success: false } {
+export async function findGame(ip: string): Promise<GetGameResponse> {
     for (let gameID = 0; gameID < Config.maxGames; gameID++) {
         const game = games[gameID];
         if (canJoin(game) && game?.data.allowJoin) {
+            await game.allowIP(ip);
             return { success: true, gameID };
         }
     }
@@ -52,6 +97,7 @@ export function findGame(): { readonly success: true, readonly gameID: number } 
     // Create a game if there's a free slot
     const gameID = newGame();
     if (gameID !== -1) {
+        await games[gameID]?.allowIP(ip);
         return { success: true, gameID };
     } else {
         // Join the game that most recently started
@@ -59,9 +105,12 @@ export function findGame(): { readonly success: true, readonly gameID: number } 
             .filter((g => g && !g.data.over) as (g?: GameContainer) => g is GameContainer)
             .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
 
-        return game
-            ? { success: true, gameID: game.id }
-            : { success: false };
+        if (game) {
+            await game.allowIP(ip);
+            return { success: true, gameID: game.id };
+        } else {
+            return { success: false };
+        }
     }
 }
 
@@ -70,19 +119,21 @@ export const games: Array<GameContainer | undefined> = [];
 export function newGame(id?: number): number {
     if (id !== undefined) {
         if (!games[id] || games[id]?.data.stopped) {
-            Logger.log("Creating new game...");
+            Logger.log(`Game ${id} | Creating...`);
             games[id] = new GameContainer(id);
             return id;
         }
     } else {
         for (let i = 0; i < Config.maxGames; i++) {
-            if (!games[i] || games[i]?.data.stopped) return newGame(i);
+            const game = games[i];
+            if (!game || game?.data?.stopped) return newGame(i);
         }
     }
     return -1;
 }
 
 export function endGame(id: number, createNewGame: boolean): void {
+    games[id]?.worker.terminate();
     if (createNewGame) {
         Logger.log(`Game ${id} | Creating...`);
         games[id] = new GameContainer(id);
@@ -92,5 +143,5 @@ export function endGame(id: number, createNewGame: boolean): void {
 }
 
 export function canJoin(game?: GameContainer): boolean {
-    return game !== undefined && game.data !== undefined && game.data.aliveCount < Config.maxPlayersPerGame && !game.data.over;
+    return game?.data !== undefined && game.data.aliveCount < Config.maxPlayersPerGame && !game.data.over;
 }

@@ -2,7 +2,7 @@ import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { type WebSocket } from "uWebSockets.js";
-import { GameConstants } from "../../common/src/constants";
+import { GameConstants, TeamSize } from "../../common/src/constants";
 import { Badges } from "../../common/src/definitions/badges";
 import { Skins } from "../../common/src/definitions/skins";
 import { Numeric } from "../../common/src/utils/math";
@@ -13,14 +13,18 @@ import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./
 import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { isMainThread } from "worker_threads";
+import { GetGameResponse } from "../../common/src/typings";
+import { Cron } from "croner";
 
-// Initialize the server
-const app = createServer();
+export interface Punishment {
+    readonly type: "warning" | "tempBan" | "permaBan"
+    readonly expires?: number
+}
 
-export interface Punishment { readonly type: "warning" | "tempBan" | "permaBan", readonly expires?: number }
-export let punishments: Record<string, Punishment> = {};
+let punishments: Record<string, Punishment> = {};
 
-export let ipBlocklist: string[] | undefined;
+let ipBlocklist: string[] | undefined;
 
 function removePunishment(ip: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -35,31 +39,33 @@ function removePunishment(ip: string): void {
             }
         );
     }
-}
+};
 
-app.get("/api/serverInfo", (res) => {
-    cors(res);
-    res
-        .writeHeader("Content-Type", "application/json")
-        .end(JSON.stringify({
-            playerCount: games.reduce((a, b) => (a + (b?.data.aliveCount ?? 0)), 0),
-            maxTeamSize: Config.maxTeamSize,
-            protocolVersion: GameConstants.protocolVersion
-        }));
-});
+export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
-app.get("/api/getGame", async(res, req) => {
-    let aborted = false;
-    res.onAborted(() => { aborted = true; });
-    cors(res);
+export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
+let teamSizeRotationIndex = 0;
 
-    const ip = getIP(res, req);
+if (isMainThread) {
+    // Initialize the server
+    createServer().get("/api/serverInfo", (res) => {
+        cors(res);
+        res
+            .writeHeader("Content-Type", "application/json")
+            .end(JSON.stringify({
+                playerCount: games.reduce((a, b) => (a + (b?.data?.aliveCount ?? 0)), 0),
+                maxTeamSize,
+                protocolVersion: GameConstants.protocolVersion
+            }));
+    }).get("/api/getGame", async(res, req) => {
+        let aborted = false;
+        res.onAborted(() => { aborted = true; });
+        cors(res);
 
-    const response: {
-        success: boolean
-        gameID?: number
-        message?: "warning" | "tempBan" | "permaBan"
-    } = (() => {
+        const ip = getIP(res, req);
+
+        let response: GetGameResponse;
+
         const punishment = punishments[ip];
         if (punishment) {
             if (punishment.type === "warning") {
@@ -70,268 +76,266 @@ app.get("/api/getGame", async(res, req) => {
                 }
                 removePunishment(ip);
             }
-            return { success: false, message: punishment.type };
+            response = { success: false, message: punishment.type };
+        } else if (ipBlocklist?.includes(ip)) {
+            response = { success: false, message: "permaBan" };
+        } else {
+            response = await findGame(ip);
         }
 
-        if (ipBlocklist?.includes(ip)) {
-            return { success: false, message: "permaBan" };
+        if (!aborted) {
+            res.cork(() => {
+                res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
+            });
         }
+    }).get("/api/punishments", (res, req) => {
+        cors(res);
 
-        return findGame();
-    })();
+        if (req.getHeader("password") === Config.protection?.punishments?.password) {
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify(punishments));
+        } else {
+            forbidden(res);
+        }
+    }).post("/api/addPunishment", (res, req) => {
+        cors(res);
 
-    if (!aborted) {
-        res.cork(() => {
-            res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
+        res.onAborted(() => {});
+
+        const password = req.getHeader("password");
+        res.onData((data) => {
+            if (password === Config.protection?.punishments?.password) {
+                const body = textDecoder.decode(data);
+                punishments = {
+                    ...punishments,
+                    ...JSON.parse(body)
+                };
+                res.writeStatus("204 No Content").endWithoutBody(0);
+            } else {
+                forbidden(res);
+            }
         });
-    }
-});
+    }).get("/api/removePunishment", (res, req) => {
+        cors(res);
 
-app.get("/api/punishments", (res, req) => {
-    cors(res);
-
-    if (req.getHeader("password") === Config.protection?.punishments?.password) {
-        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(punishments));
-    } else {
-        forbidden(res);
-    }
-});
-
-app.post("/api/addPunishment", (res, req) => {
-    cors(res);
-
-    res.onAborted(() => {});
-
-    const password = req.getHeader("password");
-    res.onData((data) => {
-        if (password === Config.protection?.punishments?.password) {
-            const body = textDecoder.decode(data);
-            punishments = {
-                ...punishments,
-                ...JSON.parse(body)
-            };
+        if (req.getHeader("password") === Config.protection?.punishments?.password) {
+            const ip = new URLSearchParams(req.getQuery()).get("ip");
+            if (ip) removePunishment(ip);
             res.writeStatus("204 No Content").endWithoutBody(0);
         } else {
             forbidden(res);
         }
-    });
-});
+    }).ws("/team", {
+        idleTimeout: 30,
 
-app.get("/api/removePunishment", (res, req) => {
-    cors(res);
+        /**
+         * Upgrade the connection to WebSocket.
+         */
+        upgrade(res, req, context) {
+            /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+            res.onAborted((): void => { });
 
-    if (req.getHeader("password") === Config.protection?.punishments?.password) {
-        const ip = new URLSearchParams(req.getQuery()).get("ip");
-        if (ip) removePunishment(ip);
-        res.writeStatus("204 No Content").endWithoutBody(0);
-    } else {
-        forbidden(res);
-    }
-});
+            const searchParams = new URLSearchParams(req.getQuery());
 
-export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
+            const teamID = searchParams.get("teamID");
 
-app.ws("/team", {
-    idleTimeout: 30,
-
-    /**
-     * Upgrade the connection to WebSocket.
-     */
-    upgrade(res, req, context) {
-        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted((): void => { });
-
-        const searchParams = new URLSearchParams(req.getQuery());
-
-        const teamID = searchParams.get("teamID");
-
-        if (teamID && !customTeams.has(teamID)) {
-            forbidden(res);
-            return;
-        }
-
-        let team: CustomTeam;
-        let isLeader: boolean;
-        if (!teamID) {
-            isLeader = true;
-            team = new CustomTeam();
-            customTeams.set(team.id, team);
-        } else {
-            isLeader = false;
-            team = customTeams.get(teamID)!;
-            if (team.locked || team.players.length >= Config.maxTeamSize) {
-                forbidden(res); // TODO "Team is locked" and "Team is full" messages
+            if (teamID && !customTeams.has(teamID)) {
+                forbidden(res);
                 return;
             }
-        }
 
-        const name = cleanUsername(searchParams.get("name"));
-        let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
-        let badge = searchParams.get("badge") ?? undefined;
-
-        //
-        // Role
-        //
-        const password = searchParams.get("password");
-        const givenRole = searchParams.get("role");
-        let role = "";
-        let nameColor: number | undefined;
-
-        if (
-            password !== null &&
-            givenRole !== null &&
-            givenRole in Config.roles &&
-            Config.roles[givenRole].password === password
-        ) {
-            role = givenRole;
-
-            if (Config.roles[givenRole].isDev) {
-                try {
-                    const colorString = searchParams.get("nameColor");
-                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                } catch {}
+            let team: CustomTeam;
+            let isLeader: boolean;
+            if (!teamID) {
+                isLeader = true;
+                team = new CustomTeam();
+                customTeams.set(team.id, team);
+            } else {
+                isLeader = false;
+                team = customTeams.get(teamID)!;
+                if (team.locked || team.players.length >= maxTeamSize) {
+                    forbidden(res); // TODO "Team is locked" and "Team is full" messages
+                    return;
+                }
             }
+
+            const name = cleanUsername(searchParams.get("name"));
+            let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
+            let badge = searchParams.get("badge") ?? undefined;
+
+            //
+            // Role
+            //
+            const password = searchParams.get("password");
+            const givenRole = searchParams.get("role");
+            let role = "";
+            let nameColor: number | undefined;
+
+            if (
+                password !== null &&
+                givenRole !== null &&
+                givenRole in Config.roles &&
+                Config.roles[givenRole].password === password
+            ) {
+                role = givenRole;
+
+                if (Config.roles[givenRole].isDev) {
+                    try {
+                        const colorString = searchParams.get("nameColor");
+                        if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+                    } catch {}
+                }
+            }
+
+            // Validate skin
+            const roleRequired = Skins.fromStringSafe(skin)?.roleRequired;
+            if (roleRequired && roleRequired !== role) {
+                skin = GameConstants.player.defaultSkin;
+            }
+
+            // Validate badge
+            const roles = badge ? Badges.fromStringSafe(badge)?.roles : undefined;
+            if (roles?.length && !roles.includes(role)) {
+                badge = undefined;
+            }
+
+            res.upgrade(
+                {
+                    player: new CustomTeamPlayer(
+                        team,
+                        isLeader,
+                        name,
+                        skin,
+                        badge,
+                        nameColor
+                    )
+                },
+                req.getHeader("sec-websocket-key"),
+                req.getHeader("sec-websocket-protocol"),
+                req.getHeader("sec-websocket-extensions"),
+                context
+            );
+        },
+
+        /**
+         * Handle opening of the socket.
+         * @param socket The socket being opened.
+         */
+        open(socket: WebSocket<CustomTeamPlayerContainer>) {
+            const player = socket.getUserData().player;
+            player.socket = socket;
+            player.team.addPlayer(player);
+        },
+
+        /**
+         * Handle messages coming from the socket.
+         * @param socket The socket in question.
+         * @param message The message to handle.
+         */
+        message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
+            const player = socket.getUserData().player;
+            player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
+        },
+
+        /**
+         * Handle closing of the socket.
+         * @param socket The socket being closed.
+         */
+        close(socket: WebSocket<CustomTeamPlayerContainer>) {
+            const player = socket.getUserData().player;
+            player.team.removePlayer(player);
         }
-
-        // Validate skin
-        const roleRequired = Skins.fromStringSafe(skin)?.roleRequired;
-        if (roleRequired && roleRequired !== role) {
-            skin = GameConstants.player.defaultSkin;
-        }
-
-        // Validate badge
-        const roles = badge ? Badges.fromStringSafe(badge)?.roles : undefined;
-        if (roles?.length && !roles.includes(role)) {
-            badge = undefined;
-        }
-
-        res.upgrade(
-            {
-                player: new CustomTeamPlayer(
-                    team,
-                    isLeader,
-                    name,
-                    skin,
-                    badge,
-                    nameColor
-                )
-            },
-            req.getHeader("sec-websocket-key"),
-            req.getHeader("sec-websocket-protocol"),
-            req.getHeader("sec-websocket-extensions"),
-            context
-        );
-    },
-
-    /**
-     * Handle opening of the socket.
-     * @param socket The socket being opened.
-     */
-    open(socket: WebSocket<CustomTeamPlayerContainer>) {
-        const player = socket.getUserData().player;
-        player.socket = socket;
-        player.team.addPlayer(player);
-    },
-
-    /**
-     * Handle messages coming from the socket.
-     * @param socket The socket in question.
-     * @param message The message to handle.
-     */
-    message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
-        const player = socket.getUserData().player;
-        player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
-    },
-
-    /**
-     * Handle closing of the socket.
-     * @param socket The socket being closed.
-     */
-    close(socket: WebSocket<CustomTeamPlayerContainer>) {
-        const player = socket.getUserData().player;
-        player.team.removePlayer(player);
-    }
-});
-
-// Start the server
-app.listen(Config.host, Config.port, (): void => {
-    console.log(
-        `
+    }).listen(Config.host, Config.port, (): void => {
+        console.log(
+            `
  _____ _   _______ _____ _____
 /  ___| | | | ___ \\  _  |_   _|
 \\ \`--.| | | | |_/ / | | | | |
  \`--. \\ | | |    /| | | | | |
 /\\__/ / |_| | |\\ \\\\ \\_/ /_| |_
 \\____/ \\___/\\_| \\_|\\___/ \\___/
-        `);
+            `);
 
-    Logger.log(`Suroi Server v${version}`);
-    Logger.log(`Listening on ${Config.host}:${Config.port}`);
-    Logger.log("Press Ctrl+C to exit.");
+        Logger.log(`Suroi Server v${version}`);
+        Logger.log(`Listening on ${Config.host}:${Config.port}`);
+        Logger.log("Press Ctrl+C to exit.");
 
-    newGame(0);
+        newGame(0);
 
-    const { protection } = Config;
-    if (protection) {
         setInterval(() => {
-            if (protection.punishments?.url) {
+            const memoryUsage = process.memoryUsage().rss;
+
+            let perfString = `Server | Memory usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+
+            // windows L
+            if (os.platform() !== "win32") {
+                const load = os.loadavg().join("%, ");
+                perfString += ` | Load (1m, 5m, 15m): ${load}%`;
+            }
+
+            Logger.log(perfString);
+        }, 60000);
+
+        if (typeof Config.maxTeamSize === "object") {
+            Cron(Config.maxTeamSize.switchSchedule, () => {
+                teamSizeRotationIndex++;
+                // @ts-expect-error maxTeamSize must be an object here
+                teamSizeRotationIndex %= Config.maxTeamSize.rotation.length;
+                // @ts-expect-error maxTeamSize must be an object here
+                maxTeamSize = Config.maxTeamSize.rotation[teamSizeRotationIndex];
+
+                const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
+                Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
+            });
+        }
+
+        const { protection } = Config;
+        if (protection) {
+            setInterval(() => {
+                if (protection.punishments?.url) {
+                    void (async() => {
+                        try {
+                            if (!protection.punishments?.url) return;
+                            const response = await fetch(`${protection.punishments.url}/api/punishments`, { headers: { Password: protection.punishments.password } });
+                            if (response.ok) punishments = await response.json();
+                            else console.error("Error: Unable to fetch punishment list.");
+                        } catch (e) {
+                            console.error("Error: Unable to fetch punishment list. Details:", e);
+                        }
+                    })();
+                } else {
+                    if (!existsSync("punishments.json")) writeFileSync("punishments.json", "{}");
+                    readFile("punishments.json", "utf8", (error, data) => {
+                        if (!error) {
+                            try {
+                                punishments = data.trim() === "" ? {} : JSON.parse(data);
+                            } catch (e) {
+                                console.error("Error: Unable to parse punishment list. Details:", e);
+                            }
+                        } else {
+                            console.error("Error: Unable to load punishment list. Details:", error);
+                        }
+                    });
+                }
+
+                const now = Date.now();
+                for (const [ip, punishment] of Object.entries(punishments)) {
+                    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                    if (punishment.expires && punishment.expires < now) delete punishments[ip];
+                }
+
+                Logger.log("Reloaded punishment list");
+            }, protection.refreshDuration);
+
+            if (protection.ipBlocklistURL) {
                 void (async() => {
                     try {
-                        if (!protection.punishments?.url) return;
-                        const response = await fetch(`${protection.punishments.url}/api/punishments`, { headers: { Password: protection.punishments.password } });
-                        if (response.ok) punishments = await response.json();
-                        else console.error("Error: Unable to fetch punishment list.");
+                        const response = await fetch(protection.ipBlocklistURL!);
+                        ipBlocklist = (await response.text()).split("\n").map(line => line.split("/")[0]);
                     } catch (e) {
-                        console.error("Error: Unable to fetch punishment list. Details:", e);
+                        console.error("Error: Unable to load IP blocklist. Details:", e);
                     }
                 })();
-            } else {
-                if (!existsSync("punishments.json")) writeFileSync("punishments.json", "{}");
-                readFile("punishments.json", "utf8", (error, data) => {
-                    if (!error) {
-                        try {
-                            punishments = data.trim() === "" ? {} : JSON.parse(data);
-                        } catch (e) {
-                            console.error("Error: Unable to parse punishment list. Details:", e);
-                        }
-                    } else {
-                        console.error("Error: Unable to load punishment list. Details:", error);
-                    }
-                });
             }
-
-            const now = Date.now();
-            for (const [ip, punishment] of Object.entries(punishments)) {
-                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-                if (punishment.expires && punishment.expires < now) delete punishments[ip];
-            }
-
-            Logger.log("Reloaded punishment list");
-        }, protection.refreshDuration);
-
-        if (protection.ipBlocklistURL) {
-            void (async() => {
-                try {
-                    const response = await fetch(protection.ipBlocklistURL!);
-                    ipBlocklist = (await response.text()).split("\n").map(line => line.split("/")[0]);
-                } catch (e) {
-                    console.error("Error: Unable to load IP blocklist. Details:", e);
-                }
-            })();
         }
-    }
-});
-
-setInterval(() => {
-    const memoryUsage = process.memoryUsage().rss;
-
-    let perfString = `Server | Memory usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
-
-    // windows L
-    if (os.platform() !== "win32") {
-        const load = os.loadavg().join("%, ");
-        perfString += ` | Load (1m, 5m, 15m): ${load}%`;
-    }
-
-    Logger.log(perfString);
-}, 60000);
+    });
+}

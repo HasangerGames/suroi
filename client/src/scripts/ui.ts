@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
+import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -9,7 +9,7 @@ import { HealType, HealingItems } from "../../../common/src/definitions/healingI
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec } from "../../../common/src/utils/vector";
@@ -25,8 +25,8 @@ import { requestFullscreen } from "./utils/misc";
 
 interface RegionInfo {
     name: string
-    address: string
-    https: boolean
+    mainAddress: string
+    gameAddress: string
     playerCount?: number
     maxTeamSize?: number
     ping?: number
@@ -43,9 +43,10 @@ let autoFill = false;
 
 export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
-    //const info = selectedRegion ?? regionInfo[Config.defaultRegion];
-    //$("#btn-play-solo").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Solo);
-    //$("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Duo);
+    const info = selectedRegion ?? regionInfo[Config.defaultRegion];
+    const bothDisabled = info.maxTeamSize !== TeamSize.Solo && info.maxTeamSize !== TeamSize.Duo;
+    $("#btn-play-solo").toggleClass("btn-disabled", !bothDisabled && info.maxTeamSize !== TeamSize.Solo);
+    $("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", !bothDisabled && info.maxTeamSize !== TeamSize.Duo);
 }
 
 export async function setUpUI(game: Game): Promise<void> {
@@ -138,10 +139,9 @@ export async function setUpUI(game: Game): Promise<void> {
     let bestRegion: string | undefined;
     for (const [regionID, region] of regionMap) {
         const listItem = $(`.server-list-item[data-region=${regionID}]`);
-        const createTeamlistItem = $(`.create-team-server-list-item[data-region=create-team-${regionID}]`);
         try {
             const pingStartTime = Date.now();
-            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
+            const serverInfo = await (await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
             const ping = Date.now() - pingStartTime;
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
@@ -156,7 +156,6 @@ export async function setUpUI(game: Game): Promise<void> {
             };
 
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
-            createTeamlistItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
@@ -200,33 +199,34 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     const joinGame = (gameID: number): void => {
-        let address = `ws${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/play?gameID=${gameID}`;
+        const params = new URLSearchParams();
 
-        if (teamID) address += `&teamID=${teamID}`;
-        if (autoFill) address += `&autoFill=${autoFill}`;
+        if (teamID) params.set("teamID", teamID);
+        if (autoFill) params.set("autoFill", String(autoFill));
 
         const devPass = game.console.getBuiltInCVar("dv_password");
-        const role = game.console.getBuiltInCVar("dv_role");
-        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+        if (devPass) params.set("password", devPass);
 
-        if (devPass) address += `&password=${devPass}`;
-        if (role) address += `&role=${role}`;
-        if (lobbyClearing) address += "&lobbyClearing=true";
-        if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
+        const role = game.console.getBuiltInCVar("dv_role");
+        if (role) params.set("role", role);
+
+        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+        if (lobbyClearing) params.set("lobbyClearing", "true");
+
+        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+        if (weaponPreset) params.set("weaponPreset", weaponPreset);
 
         const nameColor = game.console.getBuiltInCVar("dv_name_color");
         if (nameColor) {
             try {
-                const finalColor = new Color(nameColor).toNumber();
-                address += `&nameColor=${finalColor}`;
+                params.set("nameColor", new Color(nameColor).toNumber().toString());
             } catch (e) {
                 game.console.setBuiltInCVar("dv_name_color", "");
                 console.error(e);
             }
         }
 
-        game.connect(address);
+        game.connect(`${selectedRegion.gameAddress.replace("<ID>", (++gameID).toString())}/play?${params.toString()}`);
         $("#splash-server-message").hide();
     };
 
@@ -238,7 +238,7 @@ export async function setUpUI(game: Game): Promise<void> {
         if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
         lastPlayButtonClickTime = now;
         $("#splash-options").addClass("loading");
-        void $.get(`http${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/api/getGame`, (data: { success: boolean, message?: "warning" | "tempBan" | "permaBan", gameID: number }) => {
+        void $.get(`${selectedRegion.mainAddress}/api/getGame`, (data: GetGameResponse) => {
             if (data.success) {
                 joinGame(data.gameID);
             } else {
@@ -344,9 +344,9 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
 
-        teamSocket = new WebSocket(`ws${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/team?${params.toString()}`);
+        teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
-        const getPlayerHTML = (p: CustomTeamPlayerInterface): string =>
+        const getPlayerHTML = (p: CustomTeamPlayerInfo): string =>
             `
             <div class="create-team-player-container" data-id="${p.id}">
               <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
@@ -367,7 +367,7 @@ export async function setUpUI(game: Game): Promise<void> {
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
-                case CustomTeamMessageType.Join: {
+                case CustomTeamMessages.Join: {
                     joinedTeam = true;
                     playerID = data.id;
                     teamID = data.teamID;
@@ -378,11 +378,11 @@ export async function setUpUI(game: Game): Promise<void> {
                     $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
                     break;
                 }
-                case CustomTeamMessageType.PlayerJoin: {
+                case CustomTeamMessages.PlayerJoin: {
                     $("#create-team-players").append(getPlayerHTML(data));
                     break;
                 }
-                case CustomTeamMessageType.PlayerLeave: {
+                case CustomTeamMessages.PlayerLeave: {
                     $("#create-team-players").find(`[data-id="${data.id}"]`).remove();
                     if (data.newLeaderID !== undefined) {
                         $("#create-team-players").find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
@@ -393,12 +393,12 @@ export async function setUpUI(game: Game): Promise<void> {
                     }
                     break;
                 }
-                case CustomTeamMessageType.Settings: {
+                case CustomTeamMessages.Settings: {
                     $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
                     $("#create-team-toggle-lock").prop("checked", data.locked);
                     break;
                 }
-                case CustomTeamMessageType.Started: {
+                case CustomTeamMessages.Started: {
                     createTeamMenu.hide();
                     joinGame(data.gameID);
                     break;
@@ -476,20 +476,20 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#create-team-toggle-auto-fill").on("click", function() {
         autoFill = $(this).prop("checked");
         teamSocket?.send(JSON.stringify({
-            type: CustomTeamMessageType.Settings,
+            type: CustomTeamMessages.Settings,
             autoFill
         }));
     });
 
     $("#create-team-toggle-lock").on("click", function() {
         teamSocket?.send(JSON.stringify({
-            type: CustomTeamMessageType.Settings,
+            type: CustomTeamMessages.Settings,
             locked: $(this).prop("checked")
         }));
     });
 
     $("#btn-start-game").on("click", () => {
-        teamSocket?.send(JSON.stringify({ type: CustomTeamMessageType.Start }));
+        teamSocket?.send(JSON.stringify({ type: CustomTeamMessages.Start }));
     });
 
     const nameColor = params.get("nameColor");

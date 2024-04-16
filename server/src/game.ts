@@ -1,6 +1,6 @@
-import NanoTimer from "nanotimer";
 import { type WebSocket } from "uWebSockets.js";
-import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, PacketType } from "../../common/src/constants";
+import { isMainThread, parentPort, workerData } from "worker_threads";
+import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, PacketType, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { MapPings, type MapPingDefinition } from "../../common/src/definitions/mapPings";
@@ -21,6 +21,7 @@ import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitS
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
+import { type WorkerMessage, WorkerMessages, GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
@@ -36,19 +37,19 @@ import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
-import { Team, teamMode } from "./team";
+import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import { cleanUsername } from "./utils/usernameFilter";
-import { setEnvironmentData, workerData } from "worker_threads";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
+import { cleanUsername } from "./utils/usernameFilter";
 
 export class Game {
     readonly _id: number;
     get id(): number { return this._id; }
 
-    readonly tokens: Record<string, { expireTime: number, ip: string }> = {};
+    // string = ip, number = expire time
+    readonly allowedIPs: globalThis.Map<string, number> = new globalThis.Map();
 
     readonly simultaneousConnections: Record<string, number> = {};
     joinAttempts: Record<string, number> = {};
@@ -73,6 +74,10 @@ export class Game {
     * Players deleted this tick
     */
     readonly deletedPlayers: number[] = [];
+
+    readonly maxTeamSize: number;
+
+    readonly teamMode: boolean;
 
     readonly teams = new (class <T> extends Set<T> {
         private _valueCache?: T[];
@@ -181,21 +186,32 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
-    timer = new NanoTimer();
-
     tickTimes: number[] = [];
 
     constructor() {
-        this._id = workerData as number;
+        this._id = workerData.id;
+        this.maxTeamSize = workerData.maxTeamSize;
+        this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
         const start = Date.now();
 
-        const app = createServer();
+        parentPort?.on("message", (message: WorkerMessage) => {
+            switch (message.type) {
+                case WorkerMessages.AllowIP: {
+                    this.allowedIPs.set(message.ip, this.now + 10000);
+                    parentPort?.postMessage({
+                        type: WorkerMessages.IPAllowed,
+                        ip: message.ip
+                    });
+                    break;
+                }
+            }
+        });
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const This = this;
 
-        app.ws("/play", {
+        createServer().ws("/play", {
             idleTimeout: 30,
 
             /**
@@ -236,18 +252,13 @@ export class Game {
                 const searchParams = new URLSearchParams(req.getQuery());
 
                 //
-                // Validate token
+                // Ensure IP is allowed
                 //
-                const tokenParam = searchParams.get("token");
-                if (!tokenParam) {
+                if (!This.allowedIPs.has(ip) || This.allowedIPs.get(ip)! < This.now) {
                     forbidden(res);
                     return;
                 }
-                const token = This.tokens[tokenParam];
-                if (!token || token.ip !== ip || token.expireTime > Date.now()) {
-                    forbidden(res);
-                    return;
-                }
+                This.allowedIPs.delete(ip);
 
                 //
                 // Validate and parse role and name color
@@ -335,6 +346,8 @@ export class Game {
                 Logger.log(`Game ${This.id} | "${player.name}" left`);
                 This.removePlayer(player);
             }
+        }).listen(Config.host, Config.port + this.id + 1, (): void => {
+            Logger.log(`Game ${this.id} | Listening on ${Config.host}:${Config.port + this.id + 1}`);
         });
 
         if (Config.protection?.maxJoinAttempts) {
@@ -343,31 +356,18 @@ export class Game {
             }, Config.protection.maxJoinAttempts.duration);
         }
 
-        app.listen(Config.host, Config.port, (): void => {
-            Logger.log(`Game ${this.id} | Listening on ${Config.host}:${Config.port}`);
-        });
-
-        console.log(this.id);
-        setEnvironmentData(this.id, {
-            aliveCount: 0,
-            allowJoin: true,
-            over: false,
-            stopped: false,
-            startedTime: this.startedTime
-        });
-
         const map = Maps[Config.mapName];
         this.grid = new Grid(this, map.width, map.height);
         this.map = new Map(this, Config.mapName);
 
         this.gas = new Gas(this);
 
-        this.allowJoin = true;
+        this.setGameData({ allowJoin: true });
 
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
-        this.timer.setInterval(() => this.tick(), "", `${GameConstants.msPerTick}m`);
+        this.tick();
     }
 
     onMessage(stream: SuroiBitStream, player: Player): void {
@@ -408,11 +408,6 @@ export class Game {
 
     tick(): void {
         this._now = Date.now();
-
-        if (this.stopped) {
-            this.timer.clearInterval();
-            return;
-        }
 
         // execute timeouts
         for (const timeout of this._timeouts) {
@@ -521,8 +516,8 @@ export class Game {
             this._started &&
             !this.over &&
             (
-                teamMode
-                    ? this.aliveCount <= Config.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                this.teamMode
+                    ? this.aliveCount <= this.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount === 1
             )
         ) {
@@ -538,17 +533,15 @@ export class Game {
             }
 
             // End the game in 1 second
-            // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
-            //const shouldCreateNewGame = this.allowJoin;
-            this.allowJoin = false;
-            this.over = true;
+            this.setGameData({ allowJoin: false, over: true });
 
             this.addTimeout(() => {
-                this.allowJoin = false;
-                this.stopped = true;
+                this.setGameData({ stopped: true });
+
                 for (const player of this.connectedPlayers) {
                     player.socket.close();
                 }
+
                 Logger.log(`Game ${this.id} | Ended`);
             }, 1000);
         }
@@ -561,10 +554,22 @@ export class Game {
 
         if (this.tickTimes.length >= 200) {
             const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-
             Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
             this.tickTimes = [];
         }
+
+        if (!this.stopped) {
+            setTimeout(this.tick.bind(this), GameConstants.msPerTick - tickTime);
+        }
+    }
+
+    setGameData(data: Partial<GameData>): void {
+        for (const [key, value] of Object.entries(data) as [keyof this, this[keyof this]][]) this[key] = value;
+        this.updateGameData(data);
+    }
+
+    updateGameData(data: Partial<GameData>): void {
+        parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
     }
 
     private _killLeader: Player | undefined;
@@ -610,7 +615,7 @@ export class Game {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
 
         let team: Team | undefined;
-        if (teamMode) {
+        if (this.teamMode) {
             const { teamID, autoFill } = socket.getUserData();
 
             if (teamID) {
@@ -621,7 +626,7 @@ export class Game {
                     this.customTeams.set(teamID, team);
                 }
             } else {
-                const vacantTeams = this.teams.valueArray.filter(team => team.autoFill && team.players.length < Config.maxTeamSize);
+                const vacantTeams = this.teams.valueArray.filter(team => team.autoFill && team.players.length < this.maxTeamSize);
                 if (vacantTeams.length) {
                     team = pickRandomInArray(vacantTeams);
                 } else {
@@ -635,7 +640,7 @@ export class Game {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
-                const teamPosition = teamMode ? pickRandomInArray(team!.players)?.position : undefined;
+                const teamPosition = this.teamMode ? pickRandomInArray(team!.players)?.position : undefined;
 
                 let foundPosition = false;
                 let tries = 0;
@@ -646,7 +651,7 @@ export class Game {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: teamMode && teamPosition
+                            getPosition: this.teamMode && teamPosition
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
                             collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius
@@ -656,7 +661,7 @@ export class Game {
                     // Ensure the position is at least 50 units from other players
                     const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player && (!teamMode || !team!.players.includes(object))) {
+                        if (object instanceof Player && (!this.teamMode || !team!.players.includes(object))) {
                             foundPosition = false;
                         }
                     }
@@ -710,12 +715,13 @@ export class Game {
         player.setDirty();
         this.aliveCountDirty = true;
         this.updateObjects = true;
+        this.updateGameData({ aliveCount: this.aliveCount });
 
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
         joinedPacket.protocolVersion = GameConstants.protocolVersion;
-        joinedPacket.maxTeamSize = Config.maxTeamSize;
+        joinedPacket.maxTeamSize = this.maxTeamSize;
         joinedPacket.teamID = player.teamID ?? 0;
         joinedPacket.emotes = player.loadout.emotes;
         player.sendPacket(joinedPacket);
@@ -725,19 +731,19 @@ export class Game {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (teamMode ? this.teams.size : this.aliveCount) > 1 &&
+            (this.teamMode ? this.teams.size : this.aliveCount) > 1 &&
             !this._started &&
             this.startTimeout === undefined
         ) {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
-                this.startedTime = this.now;
+                this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
 
                 this.addTimeout(() => {
-                    //newGame();
+                    parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
                     Logger.log(`Game ${this.id} | Preventing new players from joining`);
-                    this.allowJoin = false;
+                    this.setGameData({ allowJoin: false });
                 }, Config.preventJoinAfter);
             }, 3000);
         }
@@ -755,8 +761,9 @@ export class Game {
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
+            this.updateGameData({ aliveCount: this.aliveCount });
 
-            if (teamMode && !this._started) {
+            if (this.teamMode && !this._started) {
                 player.team?.removePlayer(player);
             }
         } else {
@@ -1004,10 +1011,9 @@ export class Game {
     }
 }
 
-// eslint-disable-next-line no-new
-new Game();
-
 export interface Airdrop {
     readonly position: Vector
     readonly type: ObstacleDefinition
 }
+
+if (!isMainThread) new Game();

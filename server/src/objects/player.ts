@@ -34,7 +34,7 @@ import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
-import { type Team, teamMode } from "../team";
+import { type Team } from "../team";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
@@ -823,7 +823,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            teammates: teamMode ? this.team!.players.filter(p => p.id !== this.id) : [],
+            teammates: this.game.teamMode ? this.team!.players.filter(p => p.id !== this.id) : [],
             spectating: this.spectating !== undefined,
             dirty: player.dirty,
             inventory: {
@@ -1114,7 +1114,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         if (this.health <= 0 && !this.dead) {
-            if (teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this) && !this.downed) {
+            if (this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this) && !this.downed) {
                 this.down(source, weaponUsed);
             } else {
                 if (canTrackStats) {
@@ -1183,7 +1183,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Send kill packets
         if (sourceIsPlayer) {
             this.killedBy = source;
-            if (source !== this && (!teamMode || source.teamID !== this.teamID)) source.kills++;
+            if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
 
             /*
             // Weapon swap event
@@ -1294,6 +1294,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.sendEmote(this.loadout.emotes[5]);
 
         this.game.livingPlayers.delete(this);
+        this.game.updateGameData({ aliveCount: this.game.aliveCount });
         this.game.fullDirtyObjects.add(this);
         removeFrom(this.game.spectatablePlayers, this);
 
