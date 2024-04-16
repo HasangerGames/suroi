@@ -3,7 +3,7 @@ import { Config } from "../config";
 
 /* eslint-disable no-multi-spaces */
 const badWordRegexes: RegExp[] = [
-    /n[i1l!|\|\/]+[g693]+[e3]*[ra@]*/i,                             // N word
+    /n[i1l!|\\/(){}[\]]+[g693]+[e3]*[ra@]*/i,                       // N word
     /f[a@4]+[g9]+[s$5z2]+[ao0]+[t+]*/i,                             // F slur
     /n[a@4]+z[i1]+[s$5z2]*/i,                                       // Nazi references
     /a[d]+[o0]+[l1]+[f]+(\s|\W|_)*h[i1]+[t]+[l1]+[e3]+[r]*/i,       // Hitler
