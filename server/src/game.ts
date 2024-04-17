@@ -538,7 +538,6 @@ export class Game {
 
             // End the game in 1 second
             this.addTimeout(() => {
-                Logger.log(`Game ${this.id} | Ended`);
                 this.server.close();
                 this.setGameData({ stopped: true });
             }, 1000);

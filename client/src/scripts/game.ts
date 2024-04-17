@@ -400,6 +400,8 @@ export class Game {
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
         $("#btn-spectate-kill-leader").hide();
+
+        this.uiManager.ui.teamContainer.toggle(this.teamMode);
     }
 
     endGame(): void {
