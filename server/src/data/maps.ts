@@ -31,6 +31,7 @@ export interface MapDefinition {
 
     readonly bridges?: Array<ReferenceTo<BuildingDefinition>>
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
+    readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly loots?: Record<keyof typeof LootTables, number>
 
@@ -83,6 +84,14 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2
+        },
+        quadBuildingLimit: {
+            red_house: 2,
+            warehouse: 2,
+            green_house: 2,
+            port_complex: 1,
+            armory: 1,
+            refinery: 1
         },
         obstacles: {
             oil_tank: 12,

@@ -34,6 +34,8 @@ export const Config = {
 
     censorUsernames: true,
 
+    majorBuildings: ["armory", "port_complex", "refinery"],
+
     roles: {
         developr: { password: "developr", isDev: true },
         designr: { password: "designr" },
@@ -87,6 +89,11 @@ export interface ConfigType {
     } | {
         readonly mode: SpawnMode.Center
     }
+
+    /**
+     * List of major building sites
+     */
+    readonly majorBuildings: string[]
 
     /**
      * The maximum number of players allowed to join a team.

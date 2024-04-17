@@ -865,17 +865,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "concrete_wall_segment_long", position: Vec.create(76, 83), rotation: 0 },
                 { idString: "concrete_wall_segment_long", position: Vec.create(47, 83), rotation: 0 },
                 { idString: "concrete_wall_segment", position: Vec.create(30, 83), rotation: 0 },
-                { idString: "concrete_wall_end", position: Vec.create(22, 83), rotation: 2 },
-                {
-                    idString: "truck",
-                    position: Vec.create(140, 17),
-                    rotation: 3
-                },
-                {
-                    idString: "trailer",
-                    position: Vec.create(169, 17),
-                    rotation: 3
-                }
+                { idString: "concrete_wall_end", position: Vec.create(22, 83), rotation: 2 }
             ] as BuildingObstacle[],
             subBuildings: [
                 {
@@ -1111,6 +1101,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ]
         },
+        // @ts-expect-error FUCK YOU TYPESCRIPT - error
         simple("container", 1, ContainerTints.White, 1, "closed"),
         simple("container", 2, ContainerTints.Red, 1, "closed"),
         simple("container", 3, ContainerTints.Green, 2, "open1"),
@@ -2116,7 +2107,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "grenade_crate", position: Vec.create(69.81, -34.24), rotation: 0 },
                 { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0 },
                 { idString: "barrier", position: Vec.create(13.91, 70.32), rotation: 1 },
-                { idString: "humvee", position: Vec.create(13.91, 100), rotation: 2 },
 
                 { idString: "port_fence_side", position: Vec.create(72.29, 80.72), rotation: 0 },
                 { idString: "port_fence_side", position: Vec.create(72.32, -80.71), rotation: 1 },
