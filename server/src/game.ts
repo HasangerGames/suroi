@@ -1,4 +1,4 @@
-import { type WebSocket } from "uWebSockets.js";
+import { TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
 import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, PacketType, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
@@ -47,6 +47,8 @@ import { cleanUsername } from "./utils/usernameFilter";
 export class Game {
     readonly _id: number;
     get id(): number { return this._id; }
+
+    server: TemplatedApp;
 
     // string = ip, number = expire time
     readonly allowedIPs: globalThis.Map<string, number> = new globalThis.Map();
@@ -211,7 +213,7 @@ export class Game {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const This = this;
 
-        createServer().ws("/play", {
+        this.server = createServer().ws("/play", {
             idleTimeout: 30,
 
             /**
@@ -532,17 +534,13 @@ export class Game {
                 player.sendGameOverPacket(true);
             }
 
-            // End the game in 1 second
             this.setGameData({ allowJoin: false, over: true });
 
+            // End the game in 1 second
             this.addTimeout(() => {
-                this.setGameData({ stopped: true });
-
-                for (const player of this.connectedPlayers) {
-                    player.socket.close();
-                }
-
                 Logger.log(`Game ${this.id} | Ended`);
+                this.server.close();
+                this.setGameData({ stopped: true });
             }, 1000);
         }
 
