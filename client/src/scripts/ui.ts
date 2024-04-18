@@ -198,49 +198,39 @@ export async function setUpUI(game: Game): Promise<void> {
         updateServerSelectors();
     });
 
-    const joinGame = (gameID: number): void => {
-        const params = new URLSearchParams();
-
-        if (teamID) params.set("teamID", teamID);
-        if (autoFill) params.set("autoFill", String(autoFill));
-
-        const devPass = game.console.getBuiltInCVar("dv_password");
-        if (devPass) params.set("password", devPass);
-
-        const role = game.console.getBuiltInCVar("dv_role");
-        if (role) params.set("role", role);
-
-        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-        if (lobbyClearing) params.set("lobbyClearing", "true");
-
-        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
-        if (weaponPreset) params.set("weaponPreset", weaponPreset);
-
-        const nameColor = game.console.getBuiltInCVar("dv_name_color");
-        if (nameColor) {
-            try {
-                params.set("nameColor", new Color(nameColor).toNumber().toString());
-            } catch (e) {
-                game.console.setBuiltInCVar("dv_name_color", "");
-                console.error(e);
-            }
-        }
-
-        game.connect(`${selectedRegion.gameAddress.replace("<ID>", (++gameID).toString())}/play?${params.toString()}`);
-        $("#splash-server-message").hide();
-    };
-
-    let lastPlayButtonClickTime = 0;
-
-    // Join server when play buttons are clicked
-    $("#btn-play-solo, #btn-play-duo").on("click", () => {
-        const now = Date.now();
-        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
-        lastPlayButtonClickTime = now;
+    const joinGame = (): void => {
         $("#splash-options").addClass("loading");
-        void $.get(`${selectedRegion.mainAddress}/api/getGame`, (data: GetGameResponse) => {
+        void $.get(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`, (data: GetGameResponse) => {
             if (data.success) {
-                joinGame(data.gameID);
+                const params = new URLSearchParams();
+
+                if (teamID) params.set("teamID", teamID);
+                if (autoFill) params.set("autoFill", String(autoFill));
+
+                const devPass = game.console.getBuiltInCVar("dv_password");
+                if (devPass) params.set("password", devPass);
+
+                const role = game.console.getBuiltInCVar("dv_role");
+                if (role) params.set("role", role);
+
+                const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+                if (lobbyClearing) params.set("lobbyClearing", "true");
+
+                const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+                if (weaponPreset) params.set("weaponPreset", weaponPreset);
+
+                const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                if (nameColor) {
+                    try {
+                        params.set("nameColor", new Color(nameColor).toNumber().toString());
+                    } catch (e) {
+                        game.console.setBuiltInCVar("dv_name_color", "");
+                        console.error(e);
+                    }
+                }
+
+                game.connect(`${selectedRegion.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
+                $("#splash-server-message").hide();
             } else {
                 let showWarningModal = false;
                 let title: string | undefined;
@@ -283,6 +273,16 @@ export async function setUpUI(game: Game): Promise<void> {
             $("#splash-server-message").show();
             resetPlayButtons();
         });
+    };
+
+    let lastPlayButtonClickTime = 0;
+
+    // Join server when play buttons are clicked
+    $("#btn-play-solo, #btn-play-duo").on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
+        joinGame();
     });
 
     const createTeamMenu = $("#create-team-menu");
@@ -290,6 +290,7 @@ export async function setUpUI(game: Game): Promise<void> {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500 || teamSocket) return;
         lastPlayButtonClickTime = now;
+
         $("#splash-options").addClass("loading");
 
         const params = new URLSearchParams();
@@ -400,7 +401,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 }
                 case CustomTeamMessages.Started: {
                     createTeamMenu.hide();
-                    joinGame(data.gameID);
+                    joinGame();
                     break;
                 }
             }

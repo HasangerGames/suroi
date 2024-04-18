@@ -200,7 +200,7 @@ export class Game {
         parentPort?.on("message", (message: WorkerMessage) => {
             switch (message.type) {
                 case WorkerMessages.AllowIP: {
-                    this.allowedIPs.set(message.ip, this.now + 10000);
+                    this.allowedIPs.set(message.ip, this.now + 5000);
                     parentPort?.postMessage({
                         type: WorkerMessages.IPAllowed,
                         ip: message.ip
@@ -260,7 +260,6 @@ export class Game {
                     forbidden(res);
                     return;
                 }
-                This.allowedIPs.delete(ip);
 
                 //
                 // Validate and parse role and name color

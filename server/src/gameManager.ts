@@ -85,11 +85,10 @@ export interface GameData {
     startedTime: number
 }
 
-export async function findGame(ip: string): Promise<GetGameResponse> {
+export async function findGame(): Promise<GetGameResponse> {
     for (let gameID = 0; gameID < Config.maxGames; gameID++) {
         const game = games[gameID];
         if (canJoin(game) && game?.data.allowJoin) {
-            await game.allowIP(ip);
             return { success: true, gameID };
         }
     }
@@ -97,7 +96,6 @@ export async function findGame(ip: string): Promise<GetGameResponse> {
     // Create a game if there's a free slot
     const gameID = newGame();
     if (gameID !== -1) {
-        await games[gameID]?.allowIP(ip);
         return { success: true, gameID };
     } else {
         // Join the game that most recently started
@@ -106,7 +104,6 @@ export async function findGame(ip: string): Promise<GetGameResponse> {
             .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
 
         if (game) {
-            await game.allowIP(ip);
             return { success: true, gameID: game.id };
         } else {
             return { success: false };

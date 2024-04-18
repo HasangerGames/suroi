@@ -111,12 +111,14 @@ export class CustomTeam {
     private static readonly _idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
 
-    id: string;
+    readonly id: string;
 
-    players: CustomTeamPlayer[] = [];
+    readonly players: CustomTeamPlayer[] = [];
 
     autoFill = false;
     locked = false;
+
+    gameID?: number;
 
     constructor() {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
@@ -189,12 +191,10 @@ export class CustomTeam {
                 break;
             }
             case CustomTeamMessages.Start: {
-                const result = await findGame(""); // TODO
+                const result = await findGame();
                 if (result.success) {
-                    this._publishMessage({
-                        type: CustomTeamMessages.Started,
-                        gameID: result.gameID
-                    });
+                    this.gameID = result.gameID;
+                    this._publishMessage({ type: CustomTeamMessages.Started });
                 }
                 break;
             }
@@ -207,8 +207,6 @@ export class CustomTeam {
         }
     }
 }
-
-export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }
 
 export class CustomTeamPlayer {
     socket!: WebSocket<CustomTeamPlayerContainer>;
@@ -242,3 +240,5 @@ export class CustomTeamPlayer {
         this.socket.send(JSON.stringify(message));
     }
 }
+
+export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }

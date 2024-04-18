@@ -55,9 +55,5 @@ export type CustomTeamMessage =
         locked?: boolean
     } |
     {
-        type: CustomTeamMessages.Start
-    } |
-    {
-        type: CustomTeamMessages.Started
-        gameID: number
+        type: CustomTeamMessages.Start | CustomTeamMessages.Started
     };

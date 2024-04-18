@@ -22,10 +22,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: {
-        switchSchedule: "0 * * * * *",
-        rotation: [TeamSize.Solo, TeamSize.Duo]
-    },
+    maxTeamSize: TeamSize.Duo,
 
     maxPlayersPerGame: 80,
     maxGames: 4,

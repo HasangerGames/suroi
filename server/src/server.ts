@@ -80,7 +80,23 @@ if (isMainThread) {
         } else if (ipBlocklist?.includes(ip)) {
             response = { success: false, message: "permaBan" };
         } else {
-            response = await findGame(ip);
+            const teamID = new URLSearchParams(req.getQuery()).get("teamID");
+            if (teamID) {
+                const team = customTeams.get(teamID);
+                if (team?.gameID !== undefined) {
+                    response = games[team.gameID]
+                        ? { success: true, gameID: team.gameID }
+                        : { success: false };
+                } else {
+                    response = { success: false };
+                }
+            } else {
+                response = await findGame();
+            }
+
+            if (response.success) {
+                await games[response.gameID]?.allowIP(ip);
+            }
         }
 
         if (!aborted) {
@@ -138,7 +154,7 @@ if (isMainThread) {
 
             const teamID = searchParams.get("teamID");
 
-            if (teamID && !customTeams.has(teamID)) {
+            if (maxTeamSize === TeamSize.Solo || (teamID && !customTeams.has(teamID))) {
                 forbidden(res);
                 return;
             }
