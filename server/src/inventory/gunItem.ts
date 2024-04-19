@@ -229,7 +229,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
             !this.owner.inventory.items.hasItem(this.definition.ammoType) ||
             this.owner.action !== undefined ||
             this.owner.activeItem !== this ||
-            (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay)
+            (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay) ||
+            this.owner.downed
         ) return;
 
         this.owner.executeAction(new ReloadAction(this.owner, this));
