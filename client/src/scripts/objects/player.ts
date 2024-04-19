@@ -440,9 +440,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     text: new Text({
                         text: this.game.uiManager.getRawPlayerName(this.id),
                         style: {
-                            fill: name?.hasColor ? name?.nameColor : "#ffffff",
+                            fill: name?.hasColor ? name?.nameColor : "#00ffff",
                             fontSize: 36,
                             fontFamily: "Inter",
+                            fontWeight: "600",
                             dropShadow: {
                                 alpha: 0.8,
                                 color: "black",
