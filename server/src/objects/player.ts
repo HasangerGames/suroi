@@ -952,11 +952,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         let toSpectate: Player | undefined;
 
-        const spectatablePlayers = game.spectatablePlayers;
+        const { spectatablePlayers } = game;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
-                if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
-                else if (spectatablePlayers.length > 1) toSpectate = pickRandomInArray(spectatablePlayers);
+                if (this.game.teamMode && this.team?.hasLivingPlayers()) {
+                    // Find closest teammate
+                    toSpectate = this.team.players
+                        .filter(player => !player.dead && !player.disconnected)
+                        .reduce((a, b) => Geometry.distanceSquared(a.position, this.position) < Geometry.distanceSquared(b.position, this.position) ? a : b);
+                } else if (this.killedBy !== undefined && !this.killedBy.dead) {
+                    toSpectate = this.killedBy;
+                } else if (spectatablePlayers.length > 1) {
+                    toSpectate = pickRandomInArray(spectatablePlayers);
+                }
                 break;
             }
             case SpectateActions.SpectatePrevious:

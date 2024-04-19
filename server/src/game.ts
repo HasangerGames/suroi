@@ -626,7 +626,7 @@ export class Game {
                     team =>
                         team.autoFill &&
                         team.players.length < this.maxTeamSize &&
-                        (!team.players.length || team.players.some(player => !player.dead && !player.disconnected)) // Prevent joining games with only dead/disconnected players
+                        team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
                     team = pickRandomInArray(vacantTeams);

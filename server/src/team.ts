@@ -103,6 +103,10 @@ export class Team {
             player.dirty.teammates = true;
         }
     }
+
+    hasLivingPlayers(): boolean {
+        return this.players.some(player => !player.dead && !player.disconnected);
+    }
 }
 
 export class CustomTeam {
