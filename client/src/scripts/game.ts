@@ -165,7 +165,8 @@ export class Game {
 
             await loadTextures(
                 this.pixi.renderer,
-                this.console.getBuiltInCVar("cv_high_res_textures")
+                this.console.getBuiltInCVar("cv_high_res_textures") &&
+                    (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
             );
 
             // @HACK: the game ui covers the canvas
