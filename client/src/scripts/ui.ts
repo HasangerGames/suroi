@@ -1071,33 +1071,18 @@ Video evidence is required.`)) {
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 
-    let debugReadouts: UIManager["debugReadouts"] | undefined;
-    // FPS toggle
-    addCheckboxListener(
-        "#toggle-fps",
-        "pf_show_fps",
-        value => {
-            (debugReadouts ??= game.uiManager.debugReadouts).fps.toggle(value);
-        }
-    );
+    // FPS, ping, and coordinates toggles
+    for (const prop of ["fps", "ping", "pos"] as const) {
+        const debugReadout = game.uiManager.debugReadouts[prop];
 
-    // Ping toggle
-    addCheckboxListener(
-        "#toggle-ping",
-        "pf_show_ping",
-        value => {
-            (debugReadouts ??= game.uiManager.debugReadouts).ping.toggle(value);
-        }
-    );
+        debugReadout.toggle(game.console.getBuiltInCVar(`pf_show_${prop}`));
 
-    // Coordinates toggle
-    addCheckboxListener(
-        "#toggle-coordinates",
-        "pf_show_pos",
-        value => {
-            (debugReadouts ??= game.uiManager.debugReadouts).pos.toggle(value);
-        }
-    );
+        addCheckboxListener(
+            `#toggle-${prop}`,
+            `pf_show_${prop}`,
+            value => debugReadout.toggle(value)
+        );
+    }
 
     // lmao one day, we'll have dropdown menus
 
