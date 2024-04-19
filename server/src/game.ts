@@ -762,6 +762,10 @@ export class Game {
             if (this.teamMode && !this._started) {
                 player.team?.removePlayer(player);
             }
+
+            if (player.beingRevivedBy) {
+                player.beingRevivedBy.action?.cancel();
+            }
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
