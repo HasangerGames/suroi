@@ -970,20 +970,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             case SpectateActions.SpectatePrevious:
                 if (this.spectating !== undefined) {
                     toSpectate = spectatablePlayers[
-                        Math.max(
-                            0,
-                            spectatablePlayers.indexOf(this.spectating) - 1
-                        )
+                        Numeric.absMod(spectatablePlayers.indexOf(this.spectating) - 1, spectatablePlayers.length)
                     ];
                 }
                 break;
             case SpectateActions.SpectateNext:
                 if (this.spectating !== undefined) {
                     toSpectate = spectatablePlayers[
-                        Math.min(
-                            spectatablePlayers.length,
-                            spectatablePlayers.indexOf(this.spectating) + 1
-                        )
+                        Numeric.absMod(spectatablePlayers.indexOf(this.spectating) + 1, spectatablePlayers.length)
                     ];
                 }
                 break;
