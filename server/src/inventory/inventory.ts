@@ -133,9 +133,6 @@ export class Inventory {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set active index to invalid slot '${slot}'`);
         if (!this.hasWeapon(slot) || slot === this._activeWeaponIndex) return false;
 
-        // todo switch penalties, other stuff that should happen when switching items
-        // (started)
-
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
@@ -631,7 +628,7 @@ export class Inventory {
         const definition = Loots.reify(itemString);
         const idString = definition.idString;
 
-        if (!this.items.hasItem(idString) || this.owner.downed) return;
+        if (!this.items.hasItem(idString)) return;
 
         switch (definition.itemType) {
             case ItemType.Healing: {
