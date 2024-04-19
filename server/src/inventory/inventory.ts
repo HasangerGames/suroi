@@ -5,7 +5,7 @@ import { type BackpackDefinition } from "../../../common/src/definitions/backpac
 import { type DualGunNarrowing, type GunDefinition } from "../../../common/src/definitions/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { Numeric } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
@@ -482,7 +482,10 @@ export class Inventory {
                 for (let i = Scopes.definitions.length - 1; i >= 0; i--) {
                     const scope = Scopes.definitions[i];
                     if (this.items.hasItem(scope.idString)) {
-                        this.scope = this.owner.effectiveScope = scope;
+                        this.scope = scope;
+                        this.owner.effectiveScope = this.owner.isInsideBuilding
+                            ? DEFAULT_SCOPE
+                            : this.scope;
                         break;
                     }
                 }
