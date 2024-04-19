@@ -759,7 +759,7 @@ export class Game {
             removeFrom(this.spectatablePlayers, player);
             this.updateGameData({ aliveCount: this.aliveCount });
 
-            if (this.teamMode && !this._started) {
+            if (this.teamMode) {
                 player.team?.removePlayer(player);
             }
 
@@ -771,6 +771,10 @@ export class Game {
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
             player.attacking = false;
             player.setPartialDirty();
+
+            if (this.teamMode && this.now - player.joinTime < 10000) {
+                player.team?.removePlayer(player);
+            }
         }
 
         if (player.spectating !== undefined) {
