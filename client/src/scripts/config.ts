@@ -30,7 +30,6 @@ export const Config = {
     mode: "normal"
 } satisfies ConfigType as ConfigType;
 
-
 export interface ConfigType {
     readonly regions: Record<string, Region>
     readonly defaultRegion: string

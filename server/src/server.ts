@@ -14,7 +14,7 @@ import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 import { isMainThread } from "worker_threads";
-import { GetGameResponse } from "../../common/src/typings";
+import { type GetGameResponse } from "../../common/src/typings";
 import { Cron } from "croner";
 
 export interface Punishment {
@@ -39,7 +39,7 @@ function removePunishment(ip: string): void {
             }
         );
     }
-};
+}
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
@@ -249,7 +249,7 @@ if (isMainThread) {
          */
         message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
             const player = socket.getUserData().player;
-            player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
+            void player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
         },
 
         /**

@@ -1,8 +1,6 @@
 import { type WebSocket } from "uWebSockets.js";
-import { TeamSize } from "../../common/src/constants";
 import { CustomTeamMessages, type CustomTeamMessage } from "../../common/src/typings";
 import { random } from "../../common/src/utils/random";
-import { Config } from "./config";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { removeFrom } from "./utils/misc";

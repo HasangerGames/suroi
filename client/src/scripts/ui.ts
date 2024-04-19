@@ -15,7 +15,6 @@ import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec } from "../../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Game } from "./game";
-import type { UIManager } from "./managers/uiManager";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";

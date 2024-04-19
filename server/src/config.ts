@@ -104,17 +104,17 @@ export interface ConfigType {
      * The maximum number of players allowed to join a team.
      */
     readonly maxTeamSize:
-        TeamSize | // Fixed team size
-        { // Rotating team size
-            /**
-             * The duration between switches. Must be a cron pattern.
-             */
-            switchSchedule: string
-            /**
-             * The team sizes to switch between.
-             */
-            rotation: TeamSize[]
-        }
+    TeamSize | // Fixed team size
+    { // Rotating team size
+        /**
+         * The duration between switches. Must be a cron pattern.
+         */
+        switchSchedule: string
+        /**
+         * The team sizes to switch between.
+         */
+        rotation: TeamSize[]
+    }
 
     /**
      * The maximum number of players allowed to join a game.
@@ -138,17 +138,17 @@ export interface ConfigType {
      * GasMode.Disabled: Gas is disabled.
      */
     readonly gas:
-        {
-            readonly mode: GasMode.Disabled
-        } |
-        {
-            readonly mode: GasMode.Normal
-        } |
-        {
-            readonly mode: GasMode.Debug
-            readonly overridePosition?: boolean
-            readonly overrideDuration?: number
-        }
+    {
+        readonly mode: GasMode.Disabled
+    } |
+    {
+        readonly mode: GasMode.Normal
+    } |
+    {
+        readonly mode: GasMode.Debug
+        readonly overridePosition?: boolean
+        readonly overrideDuration?: number
+    }
 
     readonly movementSpeed: number
 

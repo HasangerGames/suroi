@@ -1,7 +1,6 @@
 import { Config } from "./config";
 import { Logger } from "./utils/misc";
 import { Worker } from "node:worker_threads";
-import path from "node:path";
 import { type GetGameResponse } from "../../common/src/typings";
 import { maxTeamSize } from "./server";
 
@@ -130,7 +129,7 @@ export function newGame(id?: number): number {
 }
 
 export function endGame(id: number, createNewGame: boolean): void {
-    games[id]?.worker.terminate();
+    void games[id]?.worker.terminate();
     Logger.log(`Game ${id} | Ended`);
     if (createNewGame) {
         Logger.log(`Game ${id} | Creating...`);

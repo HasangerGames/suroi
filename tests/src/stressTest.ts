@@ -8,7 +8,7 @@ import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
-import { GetGameResponse } from "../../common/src/typings";
+import { type GetGameResponse } from "../../common/src/typings";
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
@@ -202,6 +202,7 @@ class Bot {
 
 void (async() => {
     for (let i = 1; i <= config.botCount; i++) {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setTimeout(async() => {
             const gameData: GetGameResponse = await (await fetch(`${config.mainAddress}/api/getGame`)).json();
 

@@ -1,4 +1,4 @@
-import { TemplatedApp, type WebSocket } from "uWebSockets.js";
+import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
 import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, PacketType, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
@@ -21,7 +21,7 @@ import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitS
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
-import { type WorkerMessage, WorkerMessages, GameData } from "./gameManager";
+import { type WorkerMessage, WorkerMessages, type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
@@ -560,7 +560,7 @@ export class Game {
     }
 
     setGameData(data: Partial<GameData>): void {
-        for (const [key, value] of Object.entries(data) as [keyof this, this[keyof this]][]) this[key] = value;
+        for (const [key, value] of Object.entries(data) as Array<[keyof this, this[keyof this]]>) this[key] = value;
         this.updateGameData(data);
     }
 
@@ -1012,4 +1012,5 @@ export interface Airdrop {
     readonly type: ObstacleDefinition
 }
 
+// eslint-disable-next-line no-new
 if (!isMainThread) new Game();
