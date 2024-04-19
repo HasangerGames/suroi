@@ -1070,6 +1070,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (
             this.invulnerable ||
             (
+                this.game.teamMode &&
                 source instanceof Player &&
                 source.teamID === this.teamID &&
                 source.id !== this.id &&
