@@ -14,7 +14,10 @@ export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
         super(player.game, player.position);
         this.player = player;
 
-        this.game.addTimeout(() => { this.isNew = false; }, 100);
+        this.game.addTimeout(() => {
+            this.isNew = false;
+            this.setPartialDirty();
+        }, 100);
     }
 
     override get data(): FullData<ObjectCategory.DeathMarker> {
