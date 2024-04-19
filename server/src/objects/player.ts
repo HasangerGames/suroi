@@ -1362,11 +1362,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        if (this.loadout.skin.hideFromLoadout && this.loadout.skin.noDrop) {
-            this.game.addLoot(
-                this.loadout.skin,
-                this.position
-            );
+        const { skin } = this.loadout;
+        if (skin.hideFromLoadout && !skin.noDrop) {
+            this.game.addLoot(skin, this.position);
         }
 
         this.inventory.helmet = this.inventory.vest = undefined;
