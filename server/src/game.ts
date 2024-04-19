@@ -622,7 +622,12 @@ export class Game {
                     this.customTeams.set(teamID, team);
                 }
             } else {
-                const vacantTeams = this.teams.valueArray.filter(team => team.autoFill && team.players.length < this.maxTeamSize);
+                const vacantTeams = this.teams.valueArray.filter(
+                    team =>
+                        team.autoFill &&
+                        team.players.length < this.maxTeamSize &&
+                        (!team.players.length || team.players.some(player => !player.dead && !player.disconnected)) // Prevent joining games with only dead/disconnected players
+                );
                 if (vacantTeams.length) {
                     team = pickRandomInArray(vacantTeams);
                 } else {
