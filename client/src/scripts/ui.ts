@@ -1138,6 +1138,7 @@ Video evidence is required.`)) {
     renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
 
     // High resolution toggle
+    $("#toggle-high-res").parent().parent().toggle(!game.inputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
 
     // Anti-aliasing toggle
