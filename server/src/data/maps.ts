@@ -59,8 +59,7 @@ const maps = {
             maxWideWidth: 30
         },
         bridges: [
-            "small_bridge",
-            "large_bridge"
+            "small_bridge"
         ],
         buildings: {
             port_complex: 1,
@@ -73,7 +72,6 @@ const maps = {
             red_house: 6,
             green_house: 2,
             mobile_home: 9,
-            construction_site: 2,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,

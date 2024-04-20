@@ -1101,7 +1101,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ]
         },
-        // @ts-expect-error FUCK YOU TYPESCRIPT - error
         simple("container", 1, ContainerTints.White, 1, "closed"),
         simple("container", 2, ContainerTints.Red, 1, "closed"),
         simple("container", 3, ContainerTints.Green, 2, "open1"),
