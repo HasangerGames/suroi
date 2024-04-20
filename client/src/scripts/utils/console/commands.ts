@@ -814,7 +814,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "disconnect",
         function(): undefined {
-            this.endGame();
+            void this.endGame();
         },
         game,
         {

@@ -46,6 +46,8 @@ export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>(
 export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
 let teamSizeRotationIndex = 0;
 
+let maxTeamSizeSwitchCron: Cron | undefined;
+
 if (isMainThread) {
     // Initialize the server
     createServer().get("/api/serverInfo", (res) => {
@@ -55,6 +57,8 @@ if (isMainThread) {
             .end(JSON.stringify({
                 playerCount: games.reduce((a, b) => (a + (b?.data?.aliveCount ?? 0)), 0),
                 maxTeamSize,
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
             }));
     }).get("/api/getGame", async(res, req) => {
@@ -292,7 +296,7 @@ if (isMainThread) {
         }, 60000);
 
         if (typeof Config.maxTeamSize === "object") {
-            Cron(Config.maxTeamSize.switchSchedule, () => {
+            maxTeamSizeSwitchCron = Cron(Config.maxTeamSize.switchSchedule, () => {
                 teamSizeRotationIndex++;
                 // @ts-expect-error maxTeamSize must be an object here
                 teamSizeRotationIndex %= Config.maxTeamSize.rotation.length;

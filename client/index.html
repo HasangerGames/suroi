@@ -172,14 +172,25 @@
               </div>
 
               <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
-              <div style="display: flex; gap: 5px">
+              <div class="team-btns-container">
                 <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button>
                 <!--<button class="btn btn-lg btn-darken btn-primary btn-disabled" id="btn-play-squad">Play Squad</button>-->
               </div>
-              <div style="display: flex; gap: 5px">
+              <div class="team-btns-container">
                 <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team">Join Team</button>
                 <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button>
               </div>
+
+              <span id="locked-msg" style="display: none">
+                <i class="fa-solid fa-lock"></i>
+                <span id="locked-time">--:--:--</span>
+                <button id="locked-info">
+                  <i class="fa-solid fa-info-circle"></i>
+                </button>
+                <div id="locked-tooltip" style="display: none">
+                  The game switches between solos and duos every 24 hours, as there aren't enough players for both.
+                </div>
+              </span>
 
               <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none">
                 <i class="fa-solid fa-xmark"></i>

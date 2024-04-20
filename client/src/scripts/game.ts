@@ -312,7 +312,7 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) void this.endGame();
             }
         };
     }

@@ -28,6 +28,7 @@ interface RegionInfo {
     gameAddress: string
     playerCount?: number
     maxTeamSize?: number
+    nextSwitchTime?: number
     ping?: number
 }
 
@@ -42,10 +43,14 @@ let autoFill = false;
 
 export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
+
     const info = selectedRegion ?? regionInfo[Config.defaultRegion];
-    const bothDisabled = info.maxTeamSize !== TeamSize.Solo && info.maxTeamSize !== TeamSize.Duo;
-    $("#btn-play-solo").toggleClass("btn-disabled", !bothDisabled && info.maxTeamSize !== TeamSize.Solo);
-    $("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", !bothDisabled && info.maxTeamSize !== TeamSize.Duo);
+    const isSolo = info.maxTeamSize === TeamSize.Solo;
+    const isDuo = info.maxTeamSize === TeamSize.Duo;
+
+    $("#btn-play-solo").toggleClass("locked", isDuo);
+    $(".team-btns-container").toggleClass("locked", isSolo);
+    $("#locked-msg").css("top", isSolo ? "227px" : isDuo ? "153px" : "").toggle(isSolo || isDuo);
 }
 
 export async function setUpUI(game: Game): Promise<void> {
@@ -112,6 +117,26 @@ export async function setUpUI(game: Game): Promise<void> {
 
     // createDropdown("#splash-more");
 
+    $("#locked-info").on("click", () => $("#locked-tooltip").fadeToggle(250));
+
+    const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
+    const updateSwitchTime = (): void => {
+        if (!selectedRegion?.nextSwitchTime) {
+            $("#locked-time").text("--:--:--");
+            return;
+        }
+        const millis = selectedRegion.nextSwitchTime - Date.now();
+        if (millis < 0) {
+            location.reload();
+            return;
+        }
+        const hours = Math.floor(millis / 3600000) % 24;
+        const minutes = Math.floor(millis / 60000) % 60;
+        const seconds = Math.floor(millis / 1000) % 60;
+        $("#locked-time").text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+    };
+    setInterval(updateSwitchTime, 1000);
+
     const regionMap = Object.entries(regionInfo);
     const serverList = $("#server-list");
 
@@ -174,6 +199,8 @@ export async function setUpUI(game: Game): Promise<void> {
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
+        updateSwitchTime();
+        resetPlayButtons();
     };
 
     selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
