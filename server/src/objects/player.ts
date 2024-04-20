@@ -1281,7 +1281,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.game.killFeedMessages.push(killFeedMessage);
         }
 
-        // Destroy physics body; reset movement and attacking variables
+        // Reset movement and attacking variables
         this.movement.up = false;
         this.movement.down = false;
         this.movement.left = false;
@@ -1361,12 +1361,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
+        this.inventory.helmet = this.inventory.vest = undefined;
+
+        // Drop skin
         const { skin } = this.loadout;
         if (skin.hideFromLoadout && !skin.noDrop) {
             this.game.addLoot(skin, this.position);
         }
-
-        this.inventory.helmet = this.inventory.vest = undefined;
 
         // Create death marker
         this.game.grid.addObject(new DeathMarker(this));
@@ -1378,7 +1379,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Remove player from kill leader
         if (this === this.game.killLeader) {
-            this.game.killLeaderDead(source instanceof Player ? source : undefined);
+            this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
         }
     }
 
