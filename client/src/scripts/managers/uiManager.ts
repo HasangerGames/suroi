@@ -395,7 +395,9 @@ export class UIManager {
                 .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
                 .toggleClass("flashing", percentage <= 25);
 
-            this.ui.healthAnim.width(`${realPercentage}%`);
+            this.ui.healthAnim
+                .stop()
+                .animate({ width: `${realPercentage}%` }, 550);
 
             this.ui.healthBarAmount
                 .text(safeRound(this.health))
