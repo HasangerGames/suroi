@@ -307,7 +307,7 @@ export class UIManager {
             $("#spectating-container").toggle(data.spectating);
         }
 
-        if (data.dirty.teammates) {
+        if (data.dirty.teammates && this.game.teamMode) {
             this.teammates = data.teammates;
 
             const _teammateDataCache = this._teammateDataCache;

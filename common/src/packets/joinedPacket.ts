@@ -19,7 +19,7 @@ export class JoinedPacket extends AbstractPacket {
 
         stream.writeBits(this.maxTeamSize, 2);
         if (this.maxTeamSize > TeamSize.Solo) {
-            stream.writeBits(this.teamID, 6);
+            stream.writeUint8(this.teamID);
         }
 
         for (const emote of this.emotes) {
@@ -32,7 +32,7 @@ export class JoinedPacket extends AbstractPacket {
 
         this.maxTeamSize = stream.readBits(2);
         if (this.maxTeamSize > TeamSize.Solo) {
-            this.teamID = stream.readBits(6);
+            this.teamID = stream.readUint8();
         }
 
         this.emotes = Array.from({ length: 6 }, () => Emotes.readOptional(stream));

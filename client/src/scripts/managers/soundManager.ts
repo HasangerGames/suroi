@@ -186,7 +186,6 @@ export class SoundManager {
             airdrop_plane: "audio/sfx/airdrop/airdrop_plane",
             airdrop_fall: "audio/sfx/airdrop/airdrop_fall",
             airdrop_unlock: "audio/sfx/airdrop/airdrop_unlock",
-            airdrop_crate_open: "audio/sfx/airdrop/airdrop_crate_open",
             airdrop_land: "audio/sfx/airdrop/airdrop_land",
             airdrop_land_water: "audio/sfx/airdrop/airdrop_land_water",
 

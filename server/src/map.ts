@@ -12,6 +12,7 @@ import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, r
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
+import { Config } from "./config";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -23,9 +24,12 @@ import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from
 export class Map {
     readonly game: Game;
 
+    private readonly occupiedQuadrants: string[] = [];
+
+    private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
+
     readonly width: number;
     readonly height: number;
-
     readonly oceanSize: number;
     readonly beachSize: number;
 
@@ -59,6 +63,8 @@ export class Map {
         this.height = packet.height = mapDefinition.height;
         this.oceanSize = packet.oceanSize = mapDefinition.oceanSize;
         this.beachSize = packet.beachSize = mapDefinition.beachSize;
+
+        this.quadBuildingLimit = mapDefinition.quadBuildingLimit ?? {};
 
         // + 8 to account for the jagged points
         const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
@@ -289,6 +295,31 @@ export class Map {
         rivers.push(new River(width, riverPoints, rivers, mapBounds));
     }
 
+    getQuadrant(x: number, y: number, width: number, height: number): number {
+        if (x < width / 2 && y < height / 2) {
+            return 1;
+        } else if (x >= width / 2 && y < height / 2) {
+            return 2;
+        } else if (x < width / 2 && y >= height / 2) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    genRpos(definition: any, orientation: Orientation): { x: number, y: number } {
+        const rpos = this.getRandomPosition(definition.spawnHitbox, {
+            orientation,
+            spawnMode: definition.spawnMode,
+            getOrientation: (newOrientation: Orientation) => {
+                orientation = newOrientation;
+            },
+            maxAttempts: 400
+        });
+        return { x: rpos?.x ?? 0, y: rpos?.y ?? 0 };
+    }
+
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
         const rotationMode = definition.rotationMode;
@@ -308,7 +339,17 @@ export class Map {
                 Logger.warn(`Failed to find valid position for building ${definition.idString}`);
                 continue;
             }
-            this.generateBuilding(definition, position, orientation);
+            if (Config.majorBuildings.includes(definition.idString)) {
+                const quad = this.getQuadrant(position.x, position.y, this.width, this.height).toString();
+                if (this.occupiedQuadrants.includes(quad)) {
+                    i--;
+                    continue;
+                }
+                this.occupiedQuadrants.push(quad);
+                this.generateBuilding(definition, position, orientation);
+            } else {
+                this.generateBuilding(definition, position, orientation);
+            }
         }
     }
 
