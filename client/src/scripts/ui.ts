@@ -53,14 +53,6 @@ export function resetPlayButtons(): void {
     $("#locked-msg").css("top", isSolo ? "227px" : isDuo ? "153px" : "").toggle(isSolo || isDuo);
 }
 
-export function renderSkin(idString: string): string {
-    return `<svg viewBox="-59 -59 118 118">
-      <image href="./img/game/skins/${idString}_base.svg" style="transform-origin: 'center'; rotate: 90deg" width="90" height="90" x="-45" y="-45" />
-      <image href="./img/game/skins/${idString}_fist.svg" style="transform-origin: 'center'; rotate: 90deg" width="34" height="34" x="${38 - (34 / 2)}" y="${35 - (34 / 2)}"/>
-      <image href="./img/game/skins/${idString}_fist.svg" style="transform-origin: 'center'; rotate: 90deg" width="34" height="34" x="${38 - (34 / 2)}" y="${-35 - (34 / 2)}"/>
-    </svg>`;
-}
-
 export async function setUpUI(game: Game): Promise<void> {
     if (UI_DEBUG_MODE) {
         // Kill message
@@ -384,8 +376,12 @@ export async function setUpUI(game: Game): Promise<void> {
         const getPlayerHTML = (p: CustomTeamPlayerInfo): string =>
             `
             <div class="create-team-player-container" data-id="${p.id}">
-              ${p.isLeader ? '<i class="fa-solid fa-crown"></i>' : ""}
-              ${renderSkin(p.skin)}
+              <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
+              <div class="skin">
+                <div class="skin-base" style="background-image: url('./img/game/skins/${p.skin}_base.svg')"></div>
+                <div class="skin-left-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
+                <div class="skin-right-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
+              </div>
               <div class="create-team-player-name-container">
                 <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
                 ${p.badge ? `<img class="create-team-player-badge" src="./img/game/badges/${p.badge}.svg" />` : ""}
@@ -754,7 +750,14 @@ Video evidence is required.`)) {
     }
 
     const updateSplashCustomize = (skinID: string): void => {
-         $("#skin-container").html(renderSkin(skinID))
+        $("#skin-base").css(
+            "background-image",
+            `url("./img/game/skins/${skinID}_base.svg")`
+        );
+        $("#skin-left-fist, #skin-right-fist").css(
+            "background-image",
+            `url("./img/game/skins/${skinID}_fist.svg")`
+        );
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
@@ -765,7 +768,11 @@ Video evidence is required.`)) {
         // noinspection CssUnknownTarget
         const skinItem =
             $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
-  ${renderSkin(skin.idString)}
+  <div class="skin">
+    <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
+    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
+  </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
         skinItem.on("click", function() {
