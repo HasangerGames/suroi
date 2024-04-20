@@ -182,10 +182,10 @@ export class CustomTeam {
     }
 
     async onMessage(player: CustomTeamPlayer, message: CustomTeamMessage): Promise<void> {
+        if (!player.isLeader) return; // Only leader can change settings or start game
+
         switch (message.type) {
             case CustomTeamMessages.Settings: {
-                if (!player.isLeader) break; // Only leader can change settings
-
                 if (message.autoFill !== undefined) this.autoFill = message.autoFill;
                 if (message.locked !== undefined) this.locked = message.locked;
 

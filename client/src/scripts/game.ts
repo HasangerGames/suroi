@@ -405,51 +405,54 @@ export class Game {
         this.uiManager.ui.teamContainer.toggle(this.teamMode);
     }
 
-    endGame(): void {
-        clearTimeout(this._tickTimeoutID);
+    async endGame(): Promise<void> {
+        return await new Promise(resolve => {
+            clearTimeout(this._tickTimeoutID);
 
-        $("#splash-options").addClass("loading");
+            $("#splash-options").addClass("loading");
 
-        this.soundManager.stopAll();
+            this.soundManager.stopAll();
 
-        void this.music.play();
+            void this.music.play();
 
-        $("#splash-ui").fadeIn(400, () => {
-            $("#team-container").html("");
-            $("#action-container").hide();
-            $("#game-menu").hide();
-            $("#game-over-overlay").hide();
-            $("canvas").removeClass("active");
-            $("#kill-leader-leader").text("Waiting for leader");
-            $("#kill-leader-kills-counter").text("0");
+            $("#splash-ui").fadeIn(400, () => {
+                $("#team-container").html("");
+                $("#action-container").hide();
+                $("#game-menu").hide();
+                $("#game-over-overlay").hide();
+                $("canvas").removeClass("active");
+                $("#kill-leader-leader").text("Waiting for leader");
+                $("#kill-leader-kills-counter").text("0");
 
-            this.gameStarted = false;
-            this._socket?.close();
+                this.gameStarted = false;
+                this._socket?.close();
 
-            // reset stuff
-            for (const object of this.objects) object.destroy();
-            for (const plane of this.planes) plane.destroy();
-            this.objects.clear();
-            this.bullets.clear();
-            this.planes.clear();
-            this.camera.container.removeChildren();
-            this.particleManager.clear();
-            this.uiManager.clearTeammateCache();
+                // reset stuff
+                for (const object of this.objects) object.destroy();
+                for (const plane of this.planes) plane.destroy();
+                this.objects.clear();
+                this.bullets.clear();
+                this.planes.clear();
+                this.camera.container.removeChildren();
+                this.particleManager.clear();
+                this.uiManager.clearTeammateCache();
 
-            const map = this.map;
-            map.gasGraphics.clear();
-            map.pingGraphics.clear();
-            map.pings.clear();
-            map.pingsContainer.removeChildren();
-            map.teammateIndicators.clear();
-            map.teammateIndicatorContainer.removeChildren();
+                const map = this.map;
+                map.gasGraphics.clear();
+                map.pingGraphics.clear();
+                map.pings.clear();
+                map.pingsContainer.removeChildren();
+                map.teammateIndicators.clear();
+                map.teammateIndicatorContainer.removeChildren();
 
-            this.playerNames.clear();
-            this._timeouts.clear();
+                this.playerNames.clear();
+                this._timeouts.clear();
 
-            this.camera.zoom = Scopes.definitions[0].zoomLevel;
-            resetPlayButtons();
-            if (teamSocket) $("#create-team-menu").fadeIn(250);
+                this.camera.zoom = Scopes.definitions[0].zoomLevel;
+                resetPlayButtons();
+                if (teamSocket) $("#create-team-menu").fadeIn(250, resolve);
+                else resolve();
+            });
         });
     }
 

@@ -633,11 +633,15 @@ export async function setUpUI(game: Game): Promise<void> {
         location.href = "./rules/";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-spectate-menu").on("click", () => { game.endGame(); });
-    $("#btn-menu").on("click", () => { game.endGame(); });
-    $("#btn-spectate-replay").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
-    $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
+    $("#btn-quit-game, #btn-spectate-menu, #btn-menu").on("click", () => {
+        void game.endGame();
+    });
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
+        await game.endGame();
+        if (teamSocket) teamSocket.send(JSON.stringify({ type: CustomTeamMessages.Start })); // TODO Check if player is team leader
+        else joinGame();
+    });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         const packet = new SpectatePacket();
