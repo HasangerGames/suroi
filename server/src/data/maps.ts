@@ -30,6 +30,7 @@ export interface MapDefinition {
 
     readonly bridges?: Array<ReferenceTo<BuildingDefinition>>
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
+    readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly loots?: Record<keyof typeof LootTables, number>
 
@@ -58,7 +59,8 @@ const maps = {
             maxWideWidth: 30
         },
         bridges: [
-            "small_bridge"
+            "small_bridge",
+            "large_bridge"
         ],
         buildings: {
             port_complex: 1,
@@ -71,6 +73,7 @@ const maps = {
             red_house: 6,
             green_house: 2,
             mobile_home: 9,
+            construction_site: 2,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,
@@ -80,6 +83,14 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2
+        },
+        quadBuildingLimit: {
+            red_house: 2,
+            warehouse: 2,
+            green_house: 2,
+            port_complex: 1,
+            armory: 1,
+            refinery: 1
         },
         obstacles: {
             oil_tank: 12,
@@ -345,7 +356,9 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("tugboat_white", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
+            map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
         }
     },
     singleObstacle: {
@@ -354,7 +367,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("potted_plant", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("bunker_entrance_door", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

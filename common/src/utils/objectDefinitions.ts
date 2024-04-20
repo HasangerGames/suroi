@@ -446,7 +446,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                     }
 
                     if (!(inheritTargetName in templatesDecl)) {
-                        throw new DefinitionFactoryInitError(`Template '${String(key)}' tried to extend non-existant template '${inheritTargetName}'`);
+                        throw new DefinitionFactoryInitError(`Template '${String(key)}' tried to extend non-existent template '${inheritTargetName}'`);
                     }
 
                     if (trace.includes(inheritTargetName)) {
@@ -552,7 +552,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                                 const target = definitions.find(def => def.idString === targetName);
                                 if (!target) {
                                     throw new DefinitionInheritanceInitError(
-                                        `Definition '${def.idString}' was configured to inherit from inexistant definition '${targetName}'`
+                                        `Definition '${def.idString}' was configured to inherit from inexistent definition '${targetName}'`
                                     );
                                 }
 

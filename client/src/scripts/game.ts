@@ -816,7 +816,7 @@ export class Game {
                     if ( // Auto pickup
                         this.console.getBuiltInCVar("cv_auto_pickup") &&
                         (
-                            object instanceof Loot &&
+                            (object instanceof Loot &&
 
                             // Only pick up melees if no melee is equipped
                             (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
@@ -825,7 +825,10 @@ export class Game {
                             (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
 
                             // Don't pick up skins
-                            type !== ItemType.Skin
+                            type !== ItemType.Skin) ||
+
+                            // Auto-pickup dual gun
+                            (type === ItemType.Gun && this.uiManager.inventory.weapons?.some(weapon => weapon?.definition.itemType === ItemType.Gun && weapon.definition.isDual))
                         )
                     ) {
                         this.inputManager.addAction(InputActions.Loot);

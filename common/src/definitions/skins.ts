@@ -41,6 +41,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         simple("with_role", ["limenade"], ["LimeNade"]),
         simple("with_role", ["katie"], ["Katie"]),
         simple("with_role", ["eipi"], ["eipi"]),
+        simple("with_role", ["error"], ["error"]),
         simple("with_role", ["123op"], ["123OP"]),
         simple("with_role", ["radians"], ["Radians"]),
         simple("with_role", ["developr"], ["Developr Swag"]),
