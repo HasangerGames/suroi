@@ -615,9 +615,8 @@ export class Game {
             const { teamID, autoFill } = socket.getUserData();
 
             if (teamID) {
-                if (this.customTeams.has(teamID)) {
-                    team = this.customTeams.get(teamID);
-                } else {
+                team = this.customTeams.get(teamID);
+                if (!team || team.players.length >= this.maxTeamSize) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
                 }
