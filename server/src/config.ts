@@ -22,8 +22,6 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: TeamSize.Solo,
-
     maxPlayersPerGame: 80,
     maxGames: 4,
     preventJoinAfter: 60000,
@@ -34,7 +32,7 @@ export const Config = {
 
     censorUsernames: true,
 
-    majorBuildings: ["armory", "port_complex", "refinery"],
+    maxTeamSize: TeamSize.Solo,
 
     roles: {
         developr: { password: "developr", isDev: true },
@@ -102,11 +100,6 @@ export interface ConfigType {
     {
         readonly mode: SpawnMode.Center
     }
-
-    /**
-     * List of major building sites
-     */
-    readonly majorBuildings: string[]
 
     /**
      * The maximum number of players allowed to join a team.

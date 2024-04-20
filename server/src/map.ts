@@ -12,7 +12,6 @@ import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, r
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { Config } from "./config";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -24,9 +23,11 @@ import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from
 export class Map {
     readonly game: Game;
 
-    private readonly occupiedQuadrants: string[] = [];
-
     private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
+    private readonly quadBuildingCounts: Array<Record<string, number>> = [];
+
+    private readonly majorBuildings: string[];
+    private readonly occupiedQuadrants: number[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -65,6 +66,7 @@ export class Map {
         this.beachSize = packet.beachSize = mapDefinition.beachSize;
 
         this.quadBuildingLimit = mapDefinition.quadBuildingLimit ?? {};
+        this.majorBuildings = mapDefinition.majorBuildings ?? [];
 
         // + 8 to account for the jagged points
         const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
@@ -295,6 +297,7 @@ export class Map {
         rivers.push(new River(width, riverPoints, rivers, mapBounds));
     }
 
+    // TODO Move this to a utility class and use it in gas.ts as well
     getQuadrant(x: number, y: number, width: number, height: number): number {
         if (x < width / 2 && y < height / 2) {
             return 1;
@@ -307,23 +310,11 @@ export class Map {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    genRpos(definition: any, orientation: Orientation): { x: number, y: number } {
-        const rpos = this.getRandomPosition(definition.spawnHitbox, {
-            orientation,
-            spawnMode: definition.spawnMode,
-            getOrientation: (newOrientation: Orientation) => {
-                orientation = newOrientation;
-            },
-            maxAttempts: 400
-        });
-        return { x: rpos?.x ?? 0, y: rpos?.y ?? 0 };
-    }
-
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
         const rotationMode = definition.rotationMode;
 
+        let attempts = 0;
         for (let i = 0; i < count; i++) {
             let orientation = Map.getRandomBuildingOrientation(rotationMode);
 
@@ -339,17 +330,36 @@ export class Map {
                 Logger.warn(`Failed to find valid position for building ${definition.idString}`);
                 continue;
             }
-            if (Config.majorBuildings.includes(definition.idString)) {
-                const quad = this.getQuadrant(position.x, position.y, this.width, this.height).toString();
-                if (this.occupiedQuadrants.includes(quad)) {
+
+            const { idString } = definition;
+            const quad = this.getQuadrant(position.x, position.y, this.width, this.height);
+
+            if (this.majorBuildings.includes(idString)) {
+                if (this.occupiedQuadrants.includes(quad) && attempts < 100) {
                     i--;
+                    attempts++;
                     continue;
                 }
                 this.occupiedQuadrants.push(quad);
-                this.generateBuilding(definition, position, orientation);
-            } else {
-                this.generateBuilding(definition, position, orientation);
             }
+
+            if (idString in this.quadBuildingLimit) {
+                this.quadBuildingCounts[quad] ??= {};
+                const quadCounts = this.quadBuildingCounts[quad];
+                if (
+                    quadCounts[idString] !== undefined &&
+                    quadCounts[idString] >= this.quadBuildingLimit[idString] &&
+                    attempts < 100
+                ) {
+                    i--;
+                    attempts++;
+                    continue;
+                }
+                quadCounts[idString] = (quadCounts[idString] ?? 0) + 1;
+            }
+
+            attempts = 0;
+            this.generateBuilding(definition, position, orientation);
         }
     }
 

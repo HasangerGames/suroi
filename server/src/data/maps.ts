@@ -2,11 +2,10 @@ import { type WebSocket } from "uWebSockets.js";
 import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { Skins } from "../../../common/src/definitions/skins";
 import { type Variation } from "../../../common/src/typings";
 import { Collision } from "../../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { pickRandomInArray, random } from "../../../common/src/utils/random";
+import { random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type GunItem } from "../inventory/gunItem";
 import { type Map } from "../map";
@@ -29,6 +28,7 @@ export interface MapDefinition {
     }
 
     readonly bridges?: Array<ReferenceTo<BuildingDefinition>>
+    readonly majorBuildings?: Array<ReferenceTo<BuildingDefinition>>
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
@@ -58,9 +58,8 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        bridges: [
-            "small_bridge"
-        ],
+        bridges: ["small_bridge"],
+        majorBuildings: ["armory", "port_complex", "refinery"],
         buildings: {
             port_complex: 1,
             sea_traffic_control: 1,
@@ -85,10 +84,9 @@ const maps = {
         quadBuildingLimit: {
             red_house: 2,
             warehouse: 2,
-            green_house: 2,
-            port_complex: 1,
-            armory: 1,
-            refinery: 1
+            green_house: 1,
+            mobile_home: 3,
+            porta_potty: 3
         },
         obstacles: {
             oil_tank: 12,
@@ -428,10 +426,10 @@ const maps = {
         genCallback(map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
-                    const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
+                    /*const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
                     player.disableInvulnerability();
                     player.loadout.skin = pickRandomInArray(Skins.definitions);
-                    map.game.grid.addObject(player);
+                    map.game.grid.addObject(player);*/
                     if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
                 }
             }
