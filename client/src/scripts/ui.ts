@@ -1341,7 +1341,7 @@ Video evidence is required.`)) {
                     type: InputActions.UseItem,
                     item: scope
                 });
-            } else if (button === 2) {
+            } else if (button === 2 && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item: scope
@@ -1379,7 +1379,7 @@ Video evidence is required.`)) {
                         item
                     });
                 }
-            } else if (button === 2) {
+            } else if (button === 2 && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item
@@ -1403,7 +1403,7 @@ Video evidence is required.`)) {
                     type: InputActions.Emote,
                     emote: Emotes.fromString(ammo.idString)
                 });
-            } else if (button === 2) {
+            } else if (button === 2 && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item: ammo
@@ -1414,7 +1414,7 @@ Video evidence is required.`)) {
 
     for (const armor of ["helmet", "vest"] as const) {
         slotListener(armor, (button: number): void => {
-            if (button === 2 && game.activePlayer) {
+            if (button === 2 && game.activePlayer && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item: game.activePlayer.getEquipment(armor)

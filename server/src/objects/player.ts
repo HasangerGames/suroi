@@ -1516,6 +1516,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 }
                 case InputActions.DropItem: {
+                    if (!this.game.teamMode) break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
