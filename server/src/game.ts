@@ -616,7 +616,12 @@ export class Game {
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
-                if (!team || team.players.length >= this.maxTeamSize) {
+                /* eslint-disable no-multi-spaces */
+                if (
+                    !team ||                                             // team doesn't exist
+                    (team.players.length && !team.hasLivingPlayers()) || // team isn't empty but has no living players
+                    team.players.length >= this.maxTeamSize              // team is full
+                ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
                 }
