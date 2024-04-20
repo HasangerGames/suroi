@@ -295,6 +295,9 @@ export class UIManager {
         this._teammateDataCache.clear();
     }
 
+    lastHealthBarAnimTime = 0;
+    oldHealth = 0;
+
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
 
@@ -395,9 +398,18 @@ export class UIManager {
                 .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
                 .toggleClass("flashing", percentage <= 25);
 
-            this.ui.healthAnim
-                .stop()
-                .animate({ width: `${realPercentage}%` }, 550);
+            if (realPercentage === 0) {
+                this.ui.healthAnim
+                    .stop()
+                    .width(0);
+            } else if (Date.now() - this.lastHealthBarAnimTime > 500) {
+                this.ui.healthAnim
+                    .stop()
+                    .width(`${this.oldHealth}%`)
+                    .animate({ width: `${realPercentage}%` }, 500);
+                this.oldHealth = realPercentage;
+                this.lastHealthBarAnimTime = Date.now();
+            }
 
             this.ui.healthBarAmount
                 .text(safeRound(this.health))
