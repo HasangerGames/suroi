@@ -957,8 +957,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             case SpectateActions.BeginSpectating: {
                 if (this.game.teamMode && this.team?.hasLivingPlayers()) {
                     // Find closest teammate
-                    toSpectate = this.team.players
-                        .filter(player => !player.dead && !player.disconnected)
+                    toSpectate = this.team.getLivingPlayers()
                         .reduce((a, b) => Geometry.distanceSquared(a.position, this.position) < Geometry.distanceSquared(b.position, this.position) ? a : b);
                 } else if (this.killedBy !== undefined && !this.killedBy.dead) {
                     toSpectate = this.killedBy;

@@ -107,6 +107,10 @@ export class Team {
     hasLivingPlayers(): boolean {
         return this.players.some(player => !player.dead && !player.disconnected);
     }
+
+    getLivingPlayers(): Player[] {
+        return this.players.filter(player => !player.dead && !player.disconnected);
+    }
 }
 
 export class CustomTeam {
