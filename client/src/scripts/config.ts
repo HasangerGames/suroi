@@ -8,22 +8,22 @@ export const Config = {
         na: {
             name: "North America",
             mainAddress: "https://na.suroi.io",
-            gameAddress: "wss://na<ID>.suroi.io"
+            gameAddress: "wss://<ID>.na.suroi.io"
         },
         eu: {
             name: "Europe",
             mainAddress: "https://eu.suroi.io",
-            gameAddress: "wss://eu<ID>.suroi.io"
+            gameAddress: "wss://<ID>.eu.suroi.io"
         },
         sa: {
             name: "South America",
             mainAddress: "https://sa.suroi.io",
-            gameAddress: "wss://sa<ID>.suroi.io"
+            gameAddress: "wss://<ID>.sa.suroi.io"
         },
         as: {
             name: "Asia",
             mainAddress: "https://as.suroi.io",
-            gameAddress: "wss://as<ID>.suroi.io"
+            gameAddress: "wss://<ID>.as.suroi.io"
         }
     },
     defaultRegion: "na",
