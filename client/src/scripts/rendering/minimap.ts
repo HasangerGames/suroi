@@ -632,8 +632,10 @@ export class Minimap {
         // delete previous pings from the same player
         if (ping.definition.isPlayerPing) {
             for (const otherPing of this.pings) {
-                if (otherPing.definition.idString === ping.definition.idString &&
-                    otherPing.player === ping.player) {
+                if (
+                    otherPing.definition.idString === ping.definition.idString &&
+                    otherPing.player?.id === playerId
+                ) {
                     otherPing.destroy();
                     this.pings.delete(otherPing);
                 }

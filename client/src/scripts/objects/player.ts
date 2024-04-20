@@ -440,9 +440,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     text: new Text({
                         text: this.game.uiManager.getRawPlayerName(this.id),
                         style: {
-                            fill: name?.hasColor ? name?.nameColor : "#ffffff",
+                            fill: name?.hasColor ? name?.nameColor : "#00ffff",
                             fontSize: 36,
                             fontFamily: "Inter",
+                            fontWeight: "600",
                             dropShadow: {
                                 alpha: 0.8,
                                 color: "black",
@@ -477,16 +478,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.alpha = full.invulnerable ? 0.5 : 1;
 
             if (this.downed !== full.downed) {
-                updateContainerZIndex = true;
                 this.downed = full.downed;
-                this.updateFistsPosition(false);
-                this.updateWeapon(isNew);
+                updateContainerZIndex = true;
                 this.updateEquipment();
-
-                if (!this.dead) {
-                    this.updateFistsPosition(false);
-                    this.updateWeapon(isNew);
-                }
             }
 
             if (this.beingRevived !== full.beingRevived) {
@@ -554,13 +548,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.vestLevel = (this.equipment.vest = full.vest)?.level ?? 0;
             this.backpackLevel = (this.equipment.backpack = full.backpack).level;
 
-            const equipmentDirty =
+            if (
                 hideEquipment !== this.hideEquipment ||
                 helmetLevel !== this.helmetLevel ||
                 vestLevel !== this.vestLevel ||
-                backpackLevel !== this.backpackLevel;
-
-            if (equipmentDirty) {
+                backpackLevel !== this.backpackLevel
+            ) {
                 this.updateEquipment();
             }
 
@@ -568,6 +561,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
             }
+        }
+
+        // fixme hack to prevent visual glitches when downed
+        // The ThrowableCook animation seems to be causing the issues
+        if (this.downed) {
+            this.updateFistsPosition(false);
+            this.updateWeapon(isNew);
         }
 
         if (updateContainerZIndex) {
@@ -877,7 +877,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             "pointerdown",
             (e: PointerEvent): void => {
                 e.stopImmediatePropagation();
-                if (e.button === 2 && def) {
+                if (e.button === 2 && def && this.game.teamMode) {
                     this.game.inputManager.addAction({
                         type: InputActions.DropItem,
                         item: def

@@ -26,16 +26,17 @@ const PacketTypeToConstructor = {
     [PacketType.MapPing]: MapPacket
 };
 
-export type Packet = JoinPacket |
-JoinedPacket |
-MapPacket |
-UpdatePacket |
-InputPacket |
-GameOverPacket |
-PickupPacket |
-PingPacket |
-SpectatePacket |
-ReportPacket;
+export type Packet =
+    | JoinPacket
+    | JoinedPacket
+    | MapPacket
+    | UpdatePacket
+    | InputPacket
+    | GameOverPacket
+    | PickupPacket
+    | PingPacket
+    | SpectatePacket
+    | ReportPacket;
 
 export class PacketStream {
     stream: SuroiBitStream;

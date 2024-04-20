@@ -445,6 +445,62 @@
     #btn-play-solo, #btn-play-duo {
         margin-bottom: 5px;
     }
+
+    .team-btns-container {
+        display: flex;
+        gap: 5px;
+    }
+
+    .locked {
+        filter: brightness(70%) blur(2px);
+        pointer-events: none;
+
+        & .btn, &.btn {
+            text-shadow: none;
+        }
+
+        & .btn-primary, &.btn-primary {
+            color: #008aff;
+        }
+
+        & .btn-purple {
+            color: #6666ff;
+        }
+    }
+
+    #locked-msg {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        @include text-shadow;
+        pointer-events: none;
+
+        & .fa-solid {
+            font-size: 20px;
+            @include text-shadow;
+        }
+    }
+
+    #locked-info {
+        background: none;
+        border: none;
+        cursor: pointer;
+        pointer-events: all;
+    }
+
+    #locked-tooltip {
+        position: absolute;
+        top: calc(50% + 60px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        @include text-shadow;
+
+        background-color: $bg;
+        padding: 8px;
+        border-radius: 16px;
+        width: 330px;
+        font-size: 16px;
+    }
 }
 
 #btn-create-team-server-select {

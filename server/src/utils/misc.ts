@@ -4,13 +4,6 @@ import { type ObjectDefinition, type ReferenceTo } from "../../../common/src/uti
 import { weightedRandom } from "../../../common/src/utils/random";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 
-export class LootItem {
-    constructor(
-        public readonly idString: ReferenceTo<LootDefinition>,
-        public readonly count: number
-    ) {}
-}
-
 export const Logger = {
     log(...message: string[]): void {
         internalLog(message.join(" "));
@@ -27,6 +20,13 @@ function internalLog(...message: string[]): void {
         styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.green.bright),
         message.join(" ")
     );
+}
+
+export class LootItem {
+    constructor(
+        public readonly idString: ReferenceTo<LootDefinition>,
+        public readonly count: number
+    ) {}
 }
 
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {

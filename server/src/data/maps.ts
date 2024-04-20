@@ -10,8 +10,7 @@ import { pickRandomInArray, random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type GunItem } from "../inventory/gunItem";
 import { type Map } from "../map";
-import { Player } from "../objects/player";
-import { type PlayerContainer } from "../server";
+import { Player, type PlayerContainer } from "../objects/player";
 import { type LootTables } from "./lootTables";
 
 export interface MapDefinition {
