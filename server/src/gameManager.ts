@@ -3,6 +3,7 @@ import { Logger } from "./utils/misc";
 import { Worker } from "node:worker_threads";
 import { type GetGameResponse } from "../../common/src/typings";
 import { maxTeamSize } from "./server";
+import path from "node:path";
 
 export class GameContainer {
     id: number;
@@ -22,7 +23,7 @@ export class GameContainer {
         this.id = id;
         // @ts-expect-error no typings for this
         const isTSNode = process[Symbol.for("ts-node.register.instance")];
-        this.worker = new Worker(`./src/game.${isTSNode ? "ts" : "js"}`, { workerData: { id, maxTeamSize } });
+        this.worker = new Worker(path.resolve(__dirname, `game.${isTSNode ? "ts" : "js"}`), { workerData: { id, maxTeamSize } });
         this.worker.on("message", (message: WorkerMessage): void => {
             switch (message.type) {
                 case WorkerMessages.UpdateGameData: {
