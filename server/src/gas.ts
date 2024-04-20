@@ -2,7 +2,7 @@ import { GasState } from "../../common/src/constants";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { Geometry, Numeric } from "../../common/src/utils/math";
 import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
-import { randomPointInsideCircle } from "../../common/src/utils/random";
+import { randomBoolean, randomPointInsideCircle } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
@@ -69,6 +69,31 @@ export class Gas {
         }
     }
 
+    // Generate random coordinate within quadrant
+    private static _genQuadCoord(v: Vector, width: number, height: number): Vector {
+        // Define initial offsets by dividing width and height into 4ths and multiplying it by a random number between 0 and 1
+        let xOffset = Math.ceil(width / 4 * Math.random());
+        let yOffset = Math.ceil(height / 4 * Math.random());
+
+        // Apply weighting to the outer corners
+        if (randomBoolean()) {
+            xOffset = randomBoolean() ? Math.ceil(xOffset * 0.2) : xOffset;
+            yOffset = randomBoolean() ? Math.ceil(yOffset * 0.2) : yOffset;
+        }
+
+        // Case switch to depending on the quadrant generate the random offset for said quadrant with a random weight towards outer or inner map
+        const { x, y } = v;
+        if (x < width / 2 && y < height / 2) {
+            return Vec.create(Math.ceil(width / 4 + xOffset), Math.ceil(height / 4 + yOffset));
+        } else if (x >= width / 2 && y < height / 2) {
+            return Vec.create(Math.ceil(3 * width / 4 - xOffset), Math.ceil(height / 4 + yOffset));
+        } else if (x < width / 2 && y >= height / 2) {
+            return Vec.create(Math.ceil(width / 4 + xOffset), Math.ceil(3 * height / 4 - yOffset));
+        } else {
+            return Vec.create(x, y);
+        }
+    }
+
     advanceGasStage(): void {
         if (Config.gas.mode === GasMode.Disabled) return;
         const currentStage = GasStages[this.stage + 1];
@@ -87,13 +112,26 @@ export class Gas {
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {
+                const { width, height } = this.game.map;
                 if (Config.gas.mode === GasMode.Debug && Config.gas.overridePosition) {
-                    this.newPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+                    this.newPosition = Vec.create(width / 2, height / 2);
                 } else {
-                    this.newPosition = randomPointInsideCircle(this.oldPosition, currentStage.newRadius * this.mapSize);
-                    const radius = currentStage.newRadius * this.mapSize;
-                    this.newPosition.x = Numeric.clamp(this.newPosition.x, radius, this.game.map.width - radius);
-                    this.newPosition.y = Numeric.clamp(this.newPosition.y, radius, this.game.map.height - radius);
+                    const maxDistance = (currentStage.oldRadius - currentStage.newRadius) * this.mapSize;
+                    const maxDistanceSquared = maxDistance ** 2;
+
+                    this.newPosition = randomPointInsideCircle(this.oldPosition, maxDistance);
+
+                    let quadCoord = Gas._genQuadCoord(this.newPosition, width, height);
+                    let foundPosition = false;
+                    for (let attempts = 0; attempts < 100; attempts++) {
+                        quadCoord = Gas._genQuadCoord(this.newPosition, width, height);
+                        if (Geometry.distanceSquared(quadCoord, this.oldPosition) <= maxDistanceSquared) {
+                            foundPosition = true;
+                            break;
+                        }
+                    }
+
+                    if (foundPosition) this.newPosition = quadCoord;
                 }
             } else {
                 this.newPosition = Vec.clone(this.oldPosition);

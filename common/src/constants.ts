@@ -8,6 +8,7 @@ import { ItemType } from "./utils/objectDefinitions";
 export enum TeamSize {
     Solo = 1,
     Duo = 2,
+    Trio = 3,
     Squad = 4
 }
 

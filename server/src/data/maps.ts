@@ -10,8 +10,7 @@ import { pickRandomInArray, random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type GunItem } from "../inventory/gunItem";
 import { type Map } from "../map";
-import { Player } from "../objects/player";
-import { type PlayerContainer } from "../server";
+import { Player, type PlayerContainer } from "../objects/player";
 import { type LootTables } from "./lootTables";
 
 export interface MapDefinition {
@@ -60,8 +59,7 @@ const maps = {
             maxWideWidth: 30
         },
         bridges: [
-            "small_bridge",
-            "large_bridge"
+            "small_bridge"
         ],
         buildings: {
             port_complex: 1,
@@ -74,7 +72,6 @@ const maps = {
             red_house: 6,
             green_house: 2,
             mobile_home: 9,
-            construction_site: 2,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,
