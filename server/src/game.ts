@@ -774,11 +774,9 @@ export class Game {
             this.updateGameData({ aliveCount: this.aliveCount });
 
             if (this.teamMode) {
+                player.teamWipe();
                 player.team?.removePlayer(player);
-            }
-
-            if (player.beingRevivedBy) {
-                player.beingRevivedBy.action?.cancel();
+                player.beingRevivedBy?.action?.cancel();
             }
         } else {
             player.rotation = 0;

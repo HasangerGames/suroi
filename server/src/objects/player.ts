@@ -1304,19 +1304,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.activeItem.stopUse();
         }
 
-        // team wipe
-        let team: Team | undefined;
-        let players: readonly Player[] | undefined;
-        if ((players = (team = this._team)?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
-            for (const player of players) {
-                if (player === this) continue;
-
-                player.health = 0;
-                player.die(KillfeedEventType.FinallyKilled);
-            }
-
-            this.game.teams.delete(team!);
-        }
+        this.teamWipe();
 
         //
         // Drop loot
@@ -1380,6 +1368,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Remove player from kill leader
         if (this === this.game.killLeader) {
             this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
+        }
+    }
+
+    teamWipe(): void {
+        let team: Team | undefined;
+        let players: readonly Player[] | undefined;
+        if ((players = (team = this._team)?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
+            for (const player of players) {
+                if (player === this) continue;
+
+                player.health = 0;
+                player.die(KillfeedEventType.FinallyKilled);
+            }
+
+            this.game.teams.delete(team!);
         }
     }
 
