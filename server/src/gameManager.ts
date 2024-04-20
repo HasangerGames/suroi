@@ -16,7 +16,7 @@ export class GameContainer {
         startedTime: -1
     };
 
-    ipPromiseMap = new Map<string, Array<(ip: string) => void>>();
+    ipPromiseMap = new Map<string, Array<() => void>>();
 
     constructor(id: number) {
         this.id = id;
@@ -41,7 +41,7 @@ export class GameContainer {
                 case WorkerMessages.IPAllowed: {
                     const promises = this.ipPromiseMap.get(message.ip);
                     if (!promises) break;
-                    for (const resolve of promises) resolve(message.ip);
+                    for (const resolve of promises) resolve();
                     this.ipPromiseMap.delete(message.ip);
                     break;
                 }
@@ -49,16 +49,13 @@ export class GameContainer {
         });
     }
 
-    async allowIP(ip: string): Promise<string> {
-        return await new Promise<string>(resolve => {
+    async allowIP(ip: string): Promise<void> {
+        return await new Promise(resolve => {
             const promises = this.ipPromiseMap.get(ip);
             if (promises) {
                 promises.push(resolve);
             } else {
-                this.worker.postMessage({
-                    type: WorkerMessages.AllowIP,
-                    ip
-                });
+                this.worker.postMessage({ type: WorkerMessages.AllowIP, ip });
 
                 this.ipPromiseMap.set(ip, [resolve]);
             }
