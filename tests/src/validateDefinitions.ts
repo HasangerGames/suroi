@@ -28,7 +28,7 @@ import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, LootTiers } from "../../server/src/data/lootTables";
 import { Maps } from "../../server/src/data/maps";
-import { findDupes, logger, tester, validators } from "./validationUtils";
+import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
 const testStart = Date.now();
 
@@ -79,25 +79,15 @@ logger.indent("Validating loot table references", () => {
                 const errorPath = tester.createPath("loot table references", "loot tables", `table '${name}'`);
 
                 logger.indent("Validating min/max", () => {
-                    tester.assertIntAndInBounds({
-                        obj: lootData,
-                        field: "min",
-                        min: 0,
-                        max: lootData.max,
-                        includeMin: true,
-                        includeMax: true,
-                        baseErrorPath: errorPath
-                    });
-
-                    tester.assertIntAndInBounds({
-                        obj: lootData,
-                        field: "max",
-                        min: lootData.min,
-                        max: Infinity,
-                        includeMin: true,
-                        includeMax: true,
-                        baseErrorPath: errorPath
-                    });
+                    validators.numericInterval(
+                        errorPath,
+                        lootData,
+                        {
+                            globalMin: { value: 0, include: true },
+                            globalMax: { value: Infinity, include: true },
+                            allowDegenerateIntervals: true
+                        }
+                    );
                 });
 
                 logger.indent("Validating drop declaration", () => {
@@ -472,7 +462,7 @@ logger.indent("Validating building definitions", () => {
             logger.indent("Validating custom obstacles", () => {
                 const errorPath2 = tester.createPath(errorPath, "custom obstacles");
 
-                tester.runTestOnArray(
+                tester.runTestOnIdStringArray(
                     buildingObstacles,
                     (obstacle, errorPath) => {
                         const obstacles = typeof obstacle.idString === "string"
@@ -509,11 +499,12 @@ logger.indent("Validating building definitions", () => {
 
                                 validators.vector(tester.createPath(errorPath2, "position"), obstacle.position);
 
-                                if (obstacle.rotation) {
+                                if (obstacle.rotation !== undefined) {
                                     const reference = Obstacles.fromString(idString);
 
                                     if (reference) {
                                         const rotationMode = typeof obstacle.idString === "string" ? reference.rotationMode : RotationMode.Full;
+                                        const errorPath2 = tester.createPath(errorPath, "field rotation");
 
                                         switch (rotationMode) {
                                             case RotationMode.Full: {
@@ -525,38 +516,44 @@ logger.indent("Validating building definitions", () => {
                                                 break;
                                             }
                                             case RotationMode.Limited: {
-                                                tester.assertIntAndInBounds({
-                                                    obj: obstacle,
-                                                    field: "rotation",
-                                                    baseErrorPath: errorPath,
-                                                    min: 0,
-                                                    max: 3,
-                                                    includeMin: true,
-                                                    includeMax: true
-                                                });
+                                                const value = obstacle.rotation;
+
+                                                if (value !== undefined) {
+                                                    tester.assert(
+                                                        // math takes precedence over whatever idiocy this rule is
+                                                        // eslint-disable-next-line yoda
+                                                        value % 1 === 0 && (0 <= value && value < 4),
+                                                        `RotationMode.Limited only allows integers in the range [0, 3] (received ${safeString(value)})`,
+                                                        errorPath2
+                                                    );
+                                                }
                                                 break;
                                             }
                                             case RotationMode.Binary: {
-                                                tester.assertIntAndInBounds({
-                                                    obj: obstacle,
-                                                    field: "rotation",
-                                                    baseErrorPath: errorPath,
-                                                    min: 0,
-                                                    max: 1,
-                                                    includeMin: true,
-                                                    includeMax: true
-                                                });
+                                                const value = obstacle.rotation;
+
+                                                if (value !== undefined) {
+                                                    tester.assert(
+                                                        value === 0 || value === 1,
+                                                        `RotationMode.Binary only allows a value of 0 or 1 (received ${safeString(value)})`,
+                                                        errorPath2
+                                                    );
+                                                }
                                                 break;
                                             }
                                             case RotationMode.None: {
-                                                tester.assertInBounds({
+                                                tester.assertValidOrNPV({
                                                     obj: obstacle,
                                                     field: "rotation",
                                                     baseErrorPath: errorPath,
-                                                    min: 0,
-                                                    max: 0,
-                                                    includeMin: true,
-                                                    includeMax: true
+                                                    defaultValue: 0,
+                                                    validatorIfPresent: (value, errorPath) => {
+                                                        tester.assert(
+                                                            value === 0,
+                                                            `RotationMode.None only allows a value of 0 (received ${safeString(value)})`,
+                                                            errorPath
+                                                        );
+                                                    }
                                                 });
                                                 break;
                                             }
@@ -643,7 +640,7 @@ logger.indent("Validating building definitions", () => {
             logger.indent("Validating sub-buildings", () => {
                 const errorPath2 = tester.createPath(errorPath, "sub-buildings");
 
-                tester.runTestOnArray(
+                tester.runTestOnIdStringArray(
                     buildingSubBuildings,
                     (subBuilding, errorPath) => {
                         const subBuildings = typeof subBuilding.idString === "string"
@@ -695,7 +692,7 @@ logger.indent("Validating building definitions", () => {
             logger.indent("Validating decals", () => {
                 const errorPath2 = tester.createPath(errorPath, "decals");
 
-                tester.runTestOnArray(
+                tester.runTestOnIdStringArray(
                     buildingDecals,
                     (decal, errorPath) => {
                         tester.assertReferenceExists({
@@ -735,7 +732,7 @@ logger.indent("Validating building definitions", () => {
             switch (building.puzzle) {
                 case undefined: {
                     logger.indent("Validating no-puzzle conformance", () => {
-                        tester.runTestOnArray(
+                        tester.runTestOnIdStringArray(
                             building.obstacles ?? [],
                             (obstacle, errorPath) => {
                                 tester.assert(
@@ -1068,24 +1065,13 @@ logger.indent("Validating explosions", () => {
             logger.indent("Validating radii", () => {
                 const errorPath2 = tester.createPath(errorPath, "radii");
 
-                tester.assertInBounds({
-                    obj: explosion.radius,
-                    field: "min",
-                    min: 0,
-                    max: explosion.radius.max,
-                    includeMin: true,
-                    includeMax: true,
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertInBounds({
-                    obj: explosion.radius,
-                    field: "max",
-                    min: explosion.radius.min,
-                    max: Infinity,
-                    includeMin: true,
-                    baseErrorPath: errorPath2
-                });
+                validators.numericInterval(
+                    errorPath2,
+                    explosion.radius,
+                    {
+                        globalMin: { value: 0, include: true }
+                    }
+                );
             });
 
             logger.indent("Validating camera shake", () => {
@@ -1361,23 +1347,15 @@ logger.indent("Validating guns", () => {
                                             },
                                             equalityFunction: (a, b) => a.min === b.min && a.max === b.max,
                                             validatorIfPresent: x => {
-                                                tester.assertInBounds({
-                                                    obj: x,
-                                                    field: "min",
-                                                    min: -Infinity,
-                                                    max: x.max,
-                                                    includeMin: false,
-                                                    baseErrorPath: errorPathX
-                                                });
-
-                                                tester.assertInBounds({
-                                                    obj: x,
-                                                    field: "max",
-                                                    min: x.min,
-                                                    max: Infinity,
-                                                    includeMax: false,
-                                                    baseErrorPath: errorPathX
-                                                });
+                                                validators.numericInterval(
+                                                    errorPathX,
+                                                    x,
+                                                    {
+                                                        globalMin: { value: -Infinity, include: false },
+                                                        globalMax: { value: Infinity, include: false },
+                                                        allowDegenerateIntervals: false
+                                                    }
+                                                );
 
                                                 tester.assertNoPointlessValue({
                                                     obj: x,
@@ -1398,23 +1376,15 @@ logger.indent("Validating guns", () => {
                                             },
                                             equalityFunction: (a, b) => a.min === b.min && a.max === b.max,
                                             validatorIfPresent: y => {
-                                                tester.assertInBounds({
-                                                    obj: y,
-                                                    field: "min",
-                                                    min: -Infinity,
-                                                    max: y.max,
-                                                    includeMin: false,
-                                                    baseErrorPath: errorPathY
-                                                });
-
-                                                tester.assertInBounds({
-                                                    obj: y,
-                                                    field: "max",
-                                                    min: y.min,
-                                                    max: Infinity,
-                                                    includeMax: false,
-                                                    baseErrorPath: errorPathY
-                                                });
+                                                validators.numericInterval(
+                                                    errorPathY,
+                                                    y,
+                                                    {
+                                                        globalMin: { value: -Infinity, include: false },
+                                                        globalMax: { value: Infinity, include: false },
+                                                        allowDegenerateIntervals: false
+                                                    }
+                                                );
 
                                                 tester.assertNoPointlessValue({
                                                     obj: y,
@@ -1732,23 +1702,15 @@ logger.indent("Validating obstacles", () => {
                 logger.indent("Validating scaling", () => {
                     const errorPath2 = tester.createPath(errorPath, "scaling");
 
-                    tester.assertInBounds({
-                        obj: scale,
-                        field: "spawnMin",
-                        min: -Infinity,
-                        max: scale.spawnMax,
-                        includeMax: true,
-                        baseErrorPath: errorPath2
-                    });
-
-                    tester.assertInBounds({
-                        obj: scale,
-                        field: "spawnMax",
-                        min: scale.spawnMin,
-                        max: Infinity,
-                        includeMin: true,
-                        baseErrorPath: errorPath2
-                    });
+                    validators.numericInterval(
+                        errorPath2,
+                        { min: scale.spawnMin, max: scale.spawnMax },
+                        {
+                            globalMin: { value: -Infinity, include: false },
+                            globalMax: { value: Infinity, include: false },
+                            allowDegenerateIntervals: true
+                        }
+                    );
 
                     tester.assertIsFiniteRealNumber({
                         obj: scale,
