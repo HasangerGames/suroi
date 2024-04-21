@@ -480,6 +480,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (this.downed !== full.downed) {
                 this.downed = full.downed;
                 updateContainerZIndex = true;
+                this.updateFistsPosition(false);
+                this.updateWeapon(isNew);
                 this.updateEquipment();
             }
 
