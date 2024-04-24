@@ -632,15 +632,17 @@ export class Minimap {
         // delete previous pings from the same player
         if (ping.definition.isPlayerPing) {
             for (const otherPing of this.pings) {
-                if (otherPing.definition.idString === ping.definition.idString &&
-                    otherPing.player === ping.player) {
+                if (
+                    otherPing.definition.idString === ping.definition.idString &&
+                    otherPing.player?.id === playerId
+                ) {
                     otherPing.destroy();
                     this.pings.delete(otherPing);
                 }
             }
         }
         this.pings.add(ping);
-        if (ping.definition.ignoreExpiration === undefined) {
+        if (ping.definition.ignoreExpiration !== true) {
             this.game.addTimeout(() => {
                 ping.destroy();
             }, 10000);

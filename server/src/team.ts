@@ -1,13 +1,10 @@
-import { TeamSize } from "../../common/src/constants";
-import { random } from "../../common/src/utils/random";
-import { Config } from "./config";
-import { type Player } from "./objects/player";
 import { type WebSocket } from "uWebSockets.js";
+import { CustomTeamMessages, type CustomTeamMessage } from "../../common/src/typings";
+import { random } from "../../common/src/utils/random";
+import { findGame } from "./gameManager";
+import { type Player } from "./objects/player";
 import { removeFrom } from "./utils/misc";
-import { type CustomTeamMessage, CustomTeamMessageType } from "../../common/src/team";
-import { customTeams, findGame } from "./server";
-
-export const teamMode = Config.maxTeamSize > TeamSize.Solo;
+import { customTeams } from "./server";
 
 export class Team {
     readonly id: number;
@@ -106,18 +103,28 @@ export class Team {
             player.dirty.teammates = true;
         }
     }
+
+    hasLivingPlayers(): boolean {
+        return this.players.some(player => !player.dead && !player.disconnected);
+    }
+
+    getLivingPlayers(): Player[] {
+        return this.players.filter(player => !player.dead && !player.disconnected);
+    }
 }
 
 export class CustomTeam {
     private static readonly _idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
 
-    id: string;
+    readonly id: string;
 
-    players: CustomTeamPlayer[] = [];
+    readonly players: CustomTeamPlayer[] = [];
 
     autoFill = false;
     locked = false;
+
+    gameID?: number;
 
     constructor() {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
@@ -125,7 +132,7 @@ export class CustomTeam {
 
     addPlayer(player: CustomTeamPlayer): void {
         player.sendMessage({
-            type: CustomTeamMessageType.Join,
+            type: CustomTeamMessages.Join,
             id: player.id,
             teamID: this.id,
             isLeader: player.isLeader,
@@ -142,7 +149,7 @@ export class CustomTeam {
         });
 
         this._publishMessage({
-            type: CustomTeamMessageType.PlayerJoin,
+            type: CustomTeamMessages.PlayerJoin,
             id: player.id,
             isLeader: player.isLeader,
             name: player.name,
@@ -168,48 +175,44 @@ export class CustomTeam {
         }
 
         this._publishMessage({
-            type: CustomTeamMessageType.PlayerLeave,
+            type: CustomTeamMessages.PlayerLeave,
             id: player.id,
             newLeaderID
         });
     }
 
-    onMessage(player: CustomTeamPlayer, message: CustomTeamMessage): void {
-        switch (message.type) {
-            case CustomTeamMessageType.Settings: {
-                if (!player.isLeader) break; // Only leader can change settings
+    async onMessage(player: CustomTeamPlayer, message: CustomTeamMessage): Promise<void> {
+        if (!player.isLeader) return; // Only leader can change settings or start game
 
+        switch (message.type) {
+            case CustomTeamMessages.Settings: {
                 if (message.autoFill !== undefined) this.autoFill = message.autoFill;
                 if (message.locked !== undefined) this.locked = message.locked;
 
                 this._publishMessage({
-                    type: CustomTeamMessageType.Settings,
+                    type: CustomTeamMessages.Settings,
                     autoFill: this.autoFill,
                     locked: this.locked
                 });
                 break;
             }
-            case CustomTeamMessageType.Start: {
-                const result = findGame();
+            case CustomTeamMessages.Start: {
+                const result = await findGame();
                 if (result.success) {
-                    this._publishMessage({
-                        type: CustomTeamMessageType.Started,
-                        gameID: result.gameID
-                    });
+                    this.gameID = result.gameID;
+                    this._publishMessage({ type: CustomTeamMessages.Started });
                 }
                 break;
             }
         }
     }
 
-    private _publishMessage(message: CustomTeamMessage, players?: CustomTeamPlayer[]): void {
-        for (const player of players ?? this.players) {
+    private _publishMessage(message: CustomTeamMessage, players: CustomTeamPlayer[] = this.players): void {
+        for (const player of players) {
             player.sendMessage(message);
         }
     }
 }
-
-export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }
 
 export class CustomTeamPlayer {
     socket!: WebSocket<CustomTeamPlayerContainer>;
@@ -243,3 +246,5 @@ export class CustomTeamPlayer {
         this.socket.send(JSON.stringify(message));
     }
 }
+
+export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }

@@ -22,10 +22,8 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: TeamSize.Duo,
-
     maxPlayersPerGame: 80,
-    maxGames: 3,
+    maxGames: 4,
     preventJoinAfter: 60000,
 
     gas: { mode: GasMode.Normal },
@@ -33,6 +31,8 @@ export const Config = {
     movementSpeed: 0.02655,
 
     censorUsernames: true,
+
+    maxTeamSize: TeamSize.Solo,
 
     roles: {
         developr: { password: "developr", isDev: true },
@@ -43,6 +43,7 @@ export const Config = {
         leia: { password: "leia", isDev: true },
         katie: { password: "katie", isDev: true },
         eipi: { password: "eipi", isDev: true },
+        error: { password: "error", isDev: true },
         radians: { password: "radians", isDev: true },
         limenade: { password: "limenade", isDev: true },
         "123op": { password: "123op" }
@@ -50,7 +51,16 @@ export const Config = {
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
+    /**
+     * The hostname to host the server on.
+     */
     readonly host: string
+
+    /**
+     * The port to host the server on.
+     * The main server is hosted on the specified port, while game servers are hosted on the ports following it.
+     * For example, if it's 8000, the main server is hosted on port 8000, the first game server is on 8001, the second is on 8002, and so on.
+     */
     readonly port: number
 
     /**
@@ -74,23 +84,38 @@ export interface ConfigType {
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
-    readonly spawn: {
+    readonly spawn:
+    {
         readonly mode: SpawnMode.Normal
-    } | {
+    } |
+    {
         readonly mode: SpawnMode.Radius
         readonly position: Vector
         readonly radius: number
-    } | {
+    } |
+    {
         readonly mode: SpawnMode.Fixed
         readonly position: Vector
-    } | {
+    } |
+    {
         readonly mode: SpawnMode.Center
     }
 
     /**
      * The maximum number of players allowed to join a team.
      */
-    readonly maxTeamSize: number
+    readonly maxTeamSize:
+    TeamSize | // Fixed team size
+    { // Rotating team size
+        /**
+         * The duration between switches. Must be a cron pattern.
+         */
+        switchSchedule: string
+        /**
+         * The team sizes to switch between.
+         */
+        rotation: TeamSize[]
+    }
 
     /**
      * The maximum number of players allowed to join a game.
@@ -113,11 +138,14 @@ export interface ConfigType {
      * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
      * GasMode.Disabled: Gas is disabled.
      */
-    readonly gas: {
+    readonly gas:
+    {
         readonly mode: GasMode.Disabled
-    } | {
+    } |
+    {
         readonly mode: GasMode.Normal
-    } | {
+    } |
+    {
         readonly mode: GasMode.Debug
         readonly overridePosition?: boolean
         readonly overrideDuration?: number
@@ -136,13 +164,11 @@ export interface ConfigType {
     readonly protection?: {
         /**
          * Limits the number of simultaneous connections from each IP address.
-         * If the limit is exceeded, the IP is temporarily banned.
          */
         readonly maxSimultaneousConnections?: number
 
         /**
          * Limits the number of join attempts (`count`) within the given duration (`duration`, in milliseconds) from each IP address.
-         * If the limit is exceeded, the IP is temporarily banned.
          */
         readonly maxJoinAttempts?: {
             readonly count: number

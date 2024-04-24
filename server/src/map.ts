@@ -23,9 +23,14 @@ import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from
 export class Map {
     readonly game: Game;
 
+    private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
+    private readonly quadBuildingCounts: Array<Record<string, number>> = [];
+
+    private readonly majorBuildings: string[];
+    private readonly occupiedQuadrants: number[] = [];
+
     readonly width: number;
     readonly height: number;
-
     readonly oceanSize: number;
     readonly beachSize: number;
 
@@ -59,6 +64,9 @@ export class Map {
         this.height = packet.height = mapDefinition.height;
         this.oceanSize = packet.oceanSize = mapDefinition.oceanSize;
         this.beachSize = packet.beachSize = mapDefinition.beachSize;
+
+        this.quadBuildingLimit = mapDefinition.quadBuildingLimit ?? {};
+        this.majorBuildings = mapDefinition.majorBuildings ?? [];
 
         // + 8 to account for the jagged points
         const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
@@ -160,7 +168,7 @@ export class Map {
                 continue;
             }
 
-            for (const river of this.terrain.rivers.filter(river => river.width <= bridgeSpawnOptions.maxRiverWidth)) {
+            for (const river of this.terrain.rivers.filter(river => (river.width <= bridgeSpawnOptions.maxRiverWidth && river.width >= bridgeSpawnOptions.minRiverWidth))) {
                 const generateBridge = (start: number, end: number): void => {
                     let shortestDistance = Number.MAX_VALUE;
                     let bestPosition = 0.5;
@@ -289,10 +297,24 @@ export class Map {
         rivers.push(new River(width, riverPoints, rivers, mapBounds));
     }
 
+    // TODO Move this to a utility class and use it in gas.ts as well
+    getQuadrant(x: number, y: number, width: number, height: number): number {
+        if (x < width / 2 && y < height / 2) {
+            return 1;
+        } else if (x >= width / 2 && y < height / 2) {
+            return 2;
+        } else if (x < width / 2 && y >= height / 2) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
         const rotationMode = definition.rotationMode;
 
+        let attempts = 0;
         for (let i = 0; i < count; i++) {
             let orientation = Map.getRandomBuildingOrientation(rotationMode);
 
@@ -308,6 +330,35 @@ export class Map {
                 Logger.warn(`Failed to find valid position for building ${definition.idString}`);
                 continue;
             }
+
+            const { idString } = definition;
+            const quad = this.getQuadrant(position.x, position.y, this.width, this.height);
+
+            if (this.majorBuildings.includes(idString)) {
+                if (this.occupiedQuadrants.includes(quad) && attempts < 100) {
+                    i--;
+                    attempts++;
+                    continue;
+                }
+                this.occupiedQuadrants.push(quad);
+            }
+
+            if (idString in this.quadBuildingLimit) {
+                this.quadBuildingCounts[quad] ??= {};
+                const quadCounts = this.quadBuildingCounts[quad];
+                if (
+                    quadCounts[idString] !== undefined &&
+                    quadCounts[idString] >= this.quadBuildingLimit[idString] &&
+                    attempts < 100
+                ) {
+                    i--;
+                    attempts++;
+                    continue;
+                }
+                quadCounts[idString] = (quadCounts[idString] ?? 0) + 1;
+            }
+
+            attempts = 0;
             this.generateBuilding(definition, position, orientation);
         }
     }

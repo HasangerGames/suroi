@@ -8,10 +8,11 @@ import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
+import { type GetGameResponse } from "../../common/src/typings";
 
 const config = {
-    address: "127.0.0.1:8000",
-    https: false,
+    mainAddress: "http://127.0.0.1:8000",
+    gameAddress: "ws://127.0.0.1:800<ID>",
     botCount: 79,
     joinDelay: 100
 };
@@ -25,8 +26,6 @@ for (const skin of Skins) {
 const bots = new Set<Bot>();
 
 let allBotsJoined = false;
-
-let gameData: { success: boolean, address: string, gameID: number };
 
 class Bot {
     moving = {
@@ -59,9 +58,10 @@ class Bot {
 
     lastInputPacket?: InputPacket;
 
-    constructor(id: number) {
+    constructor(id: number, gameID: number) {
         this.id = id;
-        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}`);
+
+        this.ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
 
         this.ws.addEventListener("error", console.error);
 
@@ -201,16 +201,17 @@ class Bot {
 }
 
 void (async() => {
-    gameData = await (await fetch(`http${config.https ? "s" : ""}://${config.address}/api/getGame`)).json();
-
-    if (!gameData.success) {
-        console.error("Failed to fetch game");
-        process.exit();
-    }
-
     for (let i = 1; i <= config.botCount; i++) {
-        setTimeout(() => {
-            bots.add(new Bot(i));
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setTimeout(async() => {
+            const gameData: GetGameResponse = await (await fetch(`${config.mainAddress}/api/getGame`)).json();
+
+            if (!gameData.success) {
+                console.error("Failed to fetch game");
+                return;
+            }
+
+            bots.add(new Bot(i, gameData.gameID));
             if (i === config.botCount) allBotsJoined = true;
         }, i * config.joinDelay);
     }

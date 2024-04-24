@@ -8,22 +8,21 @@
     "start": "node dist/server/src/server.js",
     "moderation": "node dist/server/src/moderation.js",
     "validateDefinitions": "node dist/server/src/validateDefinitions.js",
-    "dev": "ts-node-dev --respawn --rs --transpile-only src/server.ts",
+    "dev": "node -r ts-node/register --watch --watch-path=./src --watch-path=../common src/server.ts",
     "dev:test": "tsc && node --enable-source-maps dist/server/src/stressTest.js"
   },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/nanotimer": "^0.3.2",
     "@types/node": "^20.12.3",
     "@types/sanitize-html": "^2.11.0",
     "@types/ws": "^8.5.10",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.4"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
-    "nanotimer": "^0.3.15",
+    "croner": "^8.0.2",
+    "ts-node": "^10.9.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.41.0",
     "ws": "^8.16.0"
   }

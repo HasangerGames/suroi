@@ -165,7 +165,8 @@ export class Game {
 
             await loadTextures(
                 this.pixi.renderer,
-                this.console.getBuiltInCVar("cv_high_res_textures")
+                this.console.getBuiltInCVar("cv_high_res_textures") &&
+                    (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
             );
 
             // @HACK: the game ui covers the canvas
@@ -311,7 +312,7 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) void this.endGame();
             }
         };
     }
@@ -400,53 +401,58 @@ export class Game {
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
         $("#btn-spectate-kill-leader").hide();
+
+        this.uiManager.ui.teamContainer.toggle(this.teamMode);
     }
 
-    endGame(): void {
-        clearTimeout(this._tickTimeoutID);
+    async endGame(): Promise<void> {
+        return await new Promise(resolve => {
+            clearTimeout(this._tickTimeoutID);
 
-        $("#splash-options").addClass("loading");
+            $("#splash-options").addClass("loading");
 
-        this.soundManager.stopAll();
+            this.soundManager.stopAll();
 
-        void this.music.play();
+            void this.music.play();
 
-        $("#splash-ui").fadeIn(400, () => {
-            $("#team-container").html("");
-            $("#action-container").hide();
-            $("#game-menu").hide();
-            $("#game-over-overlay").hide();
-            $("canvas").removeClass("active");
-            $("#kill-leader-leader").text("Waiting for leader");
-            $("#kill-leader-kills-counter").text("0");
+            $("#splash-ui").fadeIn(400, () => {
+                $("#team-container").html("");
+                $("#action-container").hide();
+                $("#game-menu").hide();
+                $("#game-over-overlay").hide();
+                $("canvas").removeClass("active");
+                $("#kill-leader-leader").text("Waiting for leader");
+                $("#kill-leader-kills-counter").text("0");
 
-            this.gameStarted = false;
-            this._socket?.close();
+                this.gameStarted = false;
+                this._socket?.close();
 
-            // reset stuff
-            for (const object of this.objects) object.destroy();
-            for (const plane of this.planes) plane.destroy();
-            this.objects.clear();
-            this.bullets.clear();
-            this.planes.clear();
-            this.camera.container.removeChildren();
-            this.particleManager.clear();
-            this.uiManager.clearTeammateCache();
+                // reset stuff
+                for (const object of this.objects) object.destroy();
+                for (const plane of this.planes) plane.destroy();
+                this.objects.clear();
+                this.bullets.clear();
+                this.planes.clear();
+                this.camera.container.removeChildren();
+                this.particleManager.clear();
+                this.uiManager.clearTeammateCache();
 
-            const map = this.map;
-            map.gasGraphics.clear();
-            map.pingGraphics.clear();
-            map.pings.clear();
-            map.pingsContainer.removeChildren();
-            map.teammateIndicators.clear();
-            map.teammateIndicatorContainer.removeChildren();
+                const map = this.map;
+                map.gasGraphics.clear();
+                map.pingGraphics.clear();
+                map.pings.clear();
+                map.pingsContainer.removeChildren();
+                map.teammateIndicators.clear();
+                map.teammateIndicatorContainer.removeChildren();
 
-            this.playerNames.clear();
-            this._timeouts.clear();
+                this.playerNames.clear();
+                this._timeouts.clear();
 
-            this.camera.zoom = Scopes.definitions[0].zoomLevel;
-            resetPlayButtons();
-            if (teamSocket) $("#create-team-menu").fadeIn(250);
+                this.camera.zoom = Scopes.definitions[0].zoomLevel;
+                resetPlayButtons();
+                if (teamSocket) $("#create-team-menu").fadeIn(250, resolve);
+                else resolve();
+            });
         });
     }
 
@@ -810,7 +816,7 @@ export class Game {
                     if ( // Auto pickup
                         this.console.getBuiltInCVar("cv_auto_pickup") &&
                         (
-                            object instanceof Loot &&
+                            (object instanceof Loot &&
 
                             // Only pick up melees if no melee is equipped
                             (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
@@ -819,14 +825,18 @@ export class Game {
                             (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
 
                             // Don't pick up skins
-                            type !== ItemType.Skin
+                            type !== ItemType.Skin) ||
+
+                            // Auto-pickup dual gun
+                            (type === ItemType.Gun && this.uiManager.inventory.weapons?.some(weapon => weapon?.definition.itemType === ItemType.Gun && weapon.definition.isDual))
                         )
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
                         object instanceof Obstacle &&
                         object.canInteract(player) &&
-                        object.definition.role === ObstacleSpecialRoles.Door
+                        object.definition.role === ObstacleSpecialRoles.Door &&
+                        object.door?.offset === 0
                     ) {
                         this.inputManager.addAction(InputActions.Interact);
                     }
