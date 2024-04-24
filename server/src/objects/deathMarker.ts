@@ -28,6 +28,5 @@ export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     override damage(): void { }
 }

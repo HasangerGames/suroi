@@ -60,7 +60,6 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
@@ -165,13 +164,13 @@ export class Game {
 
             await loadTextures(
                 this.pixi.renderer,
-                this.console.getBuiltInCVar("cv_high_res_textures") &&
-                    (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
+                this.console.getBuiltInCVar("cv_high_res_textures")
+                && (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
             );
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            $("#game-ui")[0].addEventListener("pointerdown", (e) => {
+            $("#game-ui")[0].addEventListener("pointerdown", e => {
                 this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
@@ -258,7 +257,7 @@ export class Game {
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
 
             // why are you enforcing this here and not in the giant file filled from top-to-bottom with snake case
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+
             let cv_loadout_skin: typeof defaultClientCVars["cv_loadout_skin"];
             joinPacket.skin = Loots.fromStringSafe(
                 this.console.getBuiltInCVar("cv_loadout_skin")
@@ -703,8 +702,8 @@ export class Game {
 
             for (const object of this.objects) {
                 if (
-                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player))) &&
-                    object.hitbox.collidesWith(detectionHitbox)
+                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player)))
+                    && object.hitbox.collidesWith(detectionHitbox)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
                     if ((object.canInteract(player) || object instanceof Obstacle || object instanceof Player) && dist < interactable.minDist) {
@@ -734,11 +733,11 @@ export class Game {
             if (differences.bind) bindChangeAcknowledged = false;
 
             if (
-                differences.object ||
-                differences.offset ||
-                differences.isAction ||
-                differences.bind ||
-                differences.canInteract
+                differences.object
+                || differences.offset
+                || differences.isAction
+                || differences.bind
+                || differences.canInteract
             ) {
                 // Cache miss, rerender
                 cache.object = object;
@@ -814,29 +813,29 @@ export class Game {
                 // Mobile stuff
                 if (this.inputManager.isMobile && canInteract) {
                     if ( // Auto pickup
-                        this.console.getBuiltInCVar("cv_auto_pickup") &&
-                        (
-                            (object instanceof Loot &&
+                        this.console.getBuiltInCVar("cv_auto_pickup")
+                        && (
+                            (object instanceof Loot
 
                             // Only pick up melees if no melee is equipped
-                            (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+                            && (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists")
 
                             // Only pick up guns if there's a free slot
-                            (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+                            && (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1]))
 
                             // Don't pick up skins
-                            type !== ItemType.Skin) ||
+                            && type !== ItemType.Skin)
 
                             // Auto-pickup dual gun
-                            (type === ItemType.Gun && this.uiManager.inventory.weapons?.some(weapon => weapon?.definition.itemType === ItemType.Gun && weapon.definition.isDual))
+                            || (type === ItemType.Gun && this.uiManager.inventory.weapons?.some(weapon => weapon?.definition.itemType === ItemType.Gun && weapon.definition.isDual))
                         )
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
-                        object instanceof Obstacle &&
-                        object.canInteract(player) &&
-                        object.definition.role === ObstacleSpecialRoles.Door &&
-                        object.door?.offset === 0
+                        object instanceof Obstacle
+                        && object.canInteract(player)
+                        && object.definition.role === ObstacleSpecialRoles.Door
+                        && object.door?.offset === 0
                     ) {
                         this.inputManager.addAction(InputActions.Interact);
                     }

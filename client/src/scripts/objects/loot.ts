@@ -159,12 +159,12 @@ export class Loot extends GameObject {
             case ItemType.Gun: {
                 for (const weapon of inventory.weapons) {
                     if (
-                        weapon?.definition.itemType === ItemType.Gun &&
-                        (
-                            definition.idString === weapon.definition.dualVariant ||
-                            (
-                                definition === weapon.definition &&
-                                weapon.definition.dualVariant
+                        weapon?.definition.itemType === ItemType.Gun
+                        && (
+                            definition.idString === weapon.definition.dualVariant
+                            || (
+                                definition === weapon.definition
+                                && weapon.definition.dualVariant
                             )
                         )
                     ) {
@@ -172,9 +172,9 @@ export class Loot extends GameObject {
                     }
                 }
 
-                return !inventory.weapons[0] ||
-                    !inventory.weapons[1] ||
-                    (inventory.activeWeaponIndex < 2 && definition !== inventory.weapons[inventory.activeWeaponIndex]?.definition);
+                return !inventory.weapons[0]
+                    || !inventory.weapons[1]
+                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.weapons[inventory.activeWeaponIndex]?.definition);
             }
             case ItemType.Melee: {
                 return definition !== inventory.weapons[2]?.definition;

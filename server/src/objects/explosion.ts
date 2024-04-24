@@ -42,9 +42,9 @@ export class Explosion {
 
             for (const object of objects) {
                 if (
-                    object.dead ||
-                    !object.hitbox ||
-                    ![
+                    object.dead
+                    || !object.hitbox
+                    || ![
                         Obstacle,
                         Player,
                         Loot,
@@ -76,9 +76,9 @@ export class Explosion {
 
                     if (object instanceof Player || object instanceof Obstacle) {
                         object.damage(
-                            this.definition.damage *
-                            (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1) *
-                            ((dist > min) ? (max - dist) / (max - min) : 1),
+                            this.definition.damage
+                            * (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1)
+                            * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             this.source,
                             this

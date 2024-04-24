@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/triple-slash-reference, quotes */
 /// <reference types="vite/client" />
 
 // Vite virtual modules.

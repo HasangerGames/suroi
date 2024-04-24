@@ -77,17 +77,17 @@ export enum WorkerMessages {
 }
 
 export type WorkerMessage =
-{
-    type: WorkerMessages.AllowIP | WorkerMessages.IPAllowed
-    ip: string
-} |
-{
-    type: WorkerMessages.UpdateGameData
-    data: Partial<GameData>
-} |
-{
-    type: WorkerMessages.CreateNewGame
-};
+    {
+        type: WorkerMessages.AllowIP | WorkerMessages.IPAllowed
+        ip: string
+    } |
+    {
+        type: WorkerMessages.UpdateGameData
+        data: Partial<GameData>
+    } |
+    {
+        type: WorkerMessages.CreateNewGame
+    };
 
 export interface GameData {
     aliveCount: number

@@ -150,10 +150,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             const isPlayer = object instanceof Player;
 
             if (
-                object.dead ||
-                (
-                    (!isObstacle || !object.collidable) &&
-                    (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
+                object.dead
+                || (
+                    (!isObstacle || !object.collidable)
+                    && (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
                 )
             ) continue;
 

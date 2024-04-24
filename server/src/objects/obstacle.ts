@@ -153,10 +153,10 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
         const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
         if (
-            definition.impenetrable &&
-            !(
-                (weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined) ||
-                source instanceof Obstacle
+            definition.impenetrable
+            && !(
+                (weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined)
+                || source instanceof Obstacle
             )
         ) {
             return;
@@ -205,8 +205,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
                     if (
-                        object instanceof Obstacle &&
-                        object.definition.role === ObstacleSpecialRoles.Door
+                        object instanceof Obstacle
+                        && object.definition.role === ObstacleSpecialRoles.Door
                     ) {
                         const definition = object.definition;
                         switch (definition.operationStyle) {
@@ -239,11 +239,11 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     canInteract(player?: Player): boolean {
         return !this.dead && (
-            (this.isDoor && (!this.door?.locked || player === undefined)) ||
-            (
-                this.definition.role === ObstacleSpecialRoles.Activatable &&
-                (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem) &&
-                !this.activated
+            (this.isDoor && (!this.door?.locked || player === undefined))
+            || (
+                this.definition.role === ObstacleSpecialRoles.Activatable
+                && (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem)
+                && !this.activated
             )
         );
     }
@@ -263,7 +263,6 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 if (this.parentBuilding && this.puzzlePiece) {
                     this.parentBuilding.togglePuzzlePiece(this);
                 }

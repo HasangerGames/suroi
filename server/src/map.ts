@@ -347,9 +347,9 @@ export class Map {
                 this.quadBuildingCounts[quad] ??= {};
                 const quadCounts = this.quadBuildingCounts[quad];
                 if (
-                    quadCounts[idString] !== undefined &&
-                    quadCounts[idString] >= this.quadBuildingLimit[idString] &&
-                    attempts < 100
+                    quadCounts[idString] !== undefined
+                    && quadCounts[idString] >= this.quadBuildingLimit[idString]
+                    && attempts < 100
                 ) {
                     i--;
                     attempts++;
@@ -396,8 +396,8 @@ export class Map {
                 obstacleData.puzzlePiece
             );
 
-            if (obstacleDef.role === ObstacleSpecialRoles.Activatable ||
-                obstacleDef.role === ObstacleSpecialRoles.Door) {
+            if (obstacleDef.role === ObstacleSpecialRoles.Activatable
+                || obstacleDef.role === ObstacleSpecialRoles.Door) {
                 building.interactableObstacles.add(obstacle);
             }
         }
@@ -672,10 +672,10 @@ export class Map {
                 case MapObjectSpawnMode.Beach: {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
                         if (
-                            spawnMode !== MapObjectSpawnMode.GrassAndSand &&
-                            (
-                                river.bankHitbox.isPointInside(position) ||
-                                hitbox.collidesWith(river.bankHitbox)
+                            spawnMode !== MapObjectSpawnMode.GrassAndSand
+                            && (
+                                river.bankHitbox.isPointInside(position)
+                                || hitbox.collidesWith(river.bankHitbox)
                             )
                         ) {
                             collided = true;
@@ -683,10 +683,10 @@ export class Map {
                         }
 
                         if (
-                            spawnMode === MapObjectSpawnMode.GrassAndSand &&
-                            (
-                                river.waterHitbox.isPointInside(position) ||
-                                hitbox.collidesWith(river.waterHitbox)
+                            spawnMode === MapObjectSpawnMode.GrassAndSand
+                            && (
+                                river.waterHitbox.isPointInside(position)
+                                || hitbox.collidesWith(river.waterHitbox)
                             )
                         ) {
                             collided = true;
@@ -721,8 +721,8 @@ export class Map {
                 case MapObjectSpawnMode.RiverBank: {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
                         if (
-                            river.waterHitbox.isPointInside(position) ||
-                            hitbox.collidesWith(river.waterHitbox)
+                            river.waterHitbox.isPointInside(position)
+                            || hitbox.collidesWith(river.waterHitbox)
                         ) {
                             collided = true;
                             break;

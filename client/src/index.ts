@@ -6,6 +6,5 @@ import "../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Game } from "./scripts/game";
 
 void (async() => {
-    // eslint-disable-next-line no-new
     new Game();
 })();

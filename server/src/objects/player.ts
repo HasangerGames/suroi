@@ -151,7 +151,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Additive
         minAdrenaline: 0
     };
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
+
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     get modifiers() { return this._modifiers; }
 
     killedBy?: Player;
@@ -300,11 +301,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         action.dirty = true;
 
         if (
-            !wasReload &&
-            value === undefined &&
-            this.activeItem instanceof GunItem &&
-            this.activeItem.ammo <= 0 &&
-            this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
+            !wasReload
+            && value === undefined
+            && this.activeItem instanceof GunItem
+            && this.activeItem.ammo <= 0
+            && this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
         ) {
             // The action slot is now free, meaning our player isn't doing anything
             // Let's try reloading our empty gun then, unless we just cancelled a reload
@@ -417,7 +418,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (specialFunnies) {
             const [weaponA, weaponB, melee] = userData.weaponPreset.split(" ");
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const oldDeterminePreset = (slot: 0 | 1 | 2, char: string): void => {
                 switch (slot) {
                     case 0:
@@ -601,16 +601,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *                // Base speed
-            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
-            recoilMultiplier *                              // Recoil from items
-            (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
-            (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
-            this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
-            (this.downed ? 0.5 : 1) *                       // Knocked out speed multiplier
-            (this.beingRevivedBy ? 0.5 : 1) *                 // Being revived speed multiplier
-            this.modifiers.baseSpeed;                       // Current on-wearer modifier
+        const speed = Config.movementSpeed // Base speed
+            * (FloorTypes[this.floor].speedMultiplier ?? 1) // Speed multiplier from floor player is standing in
+            * recoilMultiplier // Recoil from items
+            * (this.action?.speedMultiplier ?? 1) // Speed modifier from performing actions
+            * (1 + (this.adrenaline / 1000)) // Linear speed boost from adrenaline
+            * this.activeItemDefinition.speedMultiplier // Active item speed modifier
+            * (this.downed ? 0.5 : 1) // Knocked out speed multiplier
+            * (this.beingRevivedBy ? 0.5 : 1) // Being revived speed multiplier
+            * this.modifiers.baseSpeed; // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
@@ -660,9 +659,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             let collided = false;
             for (const potential of this.nearObjects) {
                 if (
-                    potential.type === ObjectCategory.Obstacle &&
-                    potential.collidable &&
-                    this.hitbox.collidesWith(potential.hitbox)
+                    potential.type === ObjectCategory.Obstacle
+                    && potential.collidable
+                    && this.hitbox.collidesWith(potential.hitbox)
                 ) {
                     collided = true;
                     this.hitbox.resolveCollision(potential.hitbox);
@@ -727,17 +726,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const depleters = new Set<SyncedParticleDefinition>();
         for (const object of this.nearObjects) {
             if (
-                !isInsideBuilding &&
-                object instanceof Building &&
-                !object.dead &&
-                object.scopeHitbox?.collidesWith(this.hitbox)
+                !isInsideBuilding
+                && object instanceof Building
+                && !object.dead
+                && object.scopeHitbox?.collidesWith(this.hitbox)
             ) {
                 isInsideBuilding = true;
             }
 
             if (
-                object instanceof SyncedParticle &&
-                object.hitbox?.collidesWith(this.hitbox)
+                object instanceof SyncedParticle
+                && object.hitbox?.collidesWith(this.hitbox)
             ) {
                 depleters.add(object.definition);
             }
@@ -886,8 +885,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Cull explosions
         for (const explosion of game.explosions) {
-            if (this.screenHitbox.isPointInside(explosion.position) ||
-                Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
+            if (this.screenHitbox.isPointInside(explosion.position)
+                || Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
                 packet.explosions.push(explosion);
             }
         }
@@ -1089,13 +1088,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
     ): void {
         if (
-            this.invulnerable ||
-            (
-                this.game.teamMode &&
-                source instanceof Player &&
-                source.teamID === this.teamID &&
-                source.id !== this.id &&
-                !this.disconnected
+            this.invulnerable
+            || (
+                this.game.teamMode
+                && source instanceof Player
+                && source.teamID === this.teamID
+                && source.id !== this.id
+                && !this.disconnected
             )
         ) return;
 
@@ -1231,12 +1230,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         if (
-            sourceIsPlayer ||
+            sourceIsPlayer
             // firstly, 'GameObject in KillfeedEventType' returns false;
             // secondly, so does 'undefined in KillfeedEventType';
             // thirdly, enum double-indexing means that 'KillfeedEventType.<whatever> in KillfeedEventType' returns true
             // @ts-expect-error see above (shove it es-cope)
-            source in KillfeedEventType
+            || source in KillfeedEventType
         ) {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillfeedMessageType.DeathOrDown,
@@ -1266,8 +1265,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     ++player.kills;
                     if (
-                        (item instanceof GunItem || item instanceof MeleeItem) &&
-                        player.inventory.weapons.includes(item)
+                        (item instanceof GunItem || item instanceof MeleeItem)
+                        && player.inventory.weapons.includes(item)
                     ) {
                         const kills = ++item.stats.kills;
 
@@ -1340,8 +1339,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (count > 0) {
                 if (
-                    def.noDrop ||
-                    ("ephemeral" in def && def.ephemeral)
+                    def.noDrop
+                    || ("ephemeral" in def && def.ephemeral)
                 ) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
@@ -1460,11 +1459,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     canInteract(player: Player): boolean {
-        return !player.downed &&
-            this.downed &&
-            !this.beingRevivedBy &&
-            this !== player &&
-            this.teamID === player.teamID;
+        return !player.downed
+            && this.downed
+            && !this.beingRevivedBy
+            && this !== player
+            && this.teamID === player.teamID;
     }
 
     interact(reviver: Player): void {
@@ -1560,14 +1559,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Loot) &&
-                            object.hitbox.collidesWith(detectionHitbox)
+                            (object instanceof Loot)
+                            && object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (
-                                object instanceof Loot &&
-                                dist < uninteractable.minDist &&
-                                object.canInteract(this)
+                                object instanceof Loot
+                                && dist < uninteractable.minDist
+                                && object.canInteract(this)
                             ) {
                                 uninteractable.minDist = dist;
                                 uninteractable.object = object;
@@ -1597,8 +1596,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && object.canInteract(this)) &&
-                            object.hitbox.collidesWith(detectionHitbox)
+                            ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && object.canInteract(this))
+                            && object.hitbox.collidesWith(detectionHitbox)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && dist < interactable.minDist) {
@@ -1615,11 +1614,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
-                                    object.type === ObjectCategory.Obstacle &&
-                                    object.isDoor &&
-                                    !object.door?.locked &&
-                                    object !== interactable.object &&
-                                    object.hitbox.collidesWith(detectionHitbox)
+                                    object.type === ObjectCategory.Obstacle
+                                    && object.isDoor
+                                    && !object.door?.locked
+                                    && object !== interactable.object
+                                    && object.hitbox.collidesWith(detectionHitbox)
                                 ) {
                                     object.interact(this);
                                 }

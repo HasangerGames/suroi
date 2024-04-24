@@ -34,7 +34,7 @@ function removePunishment(ip: string): void {
             "punishments.json",
             JSON.stringify(punishments, null, 4),
             "utf8",
-            (err) => {
+            err => {
                 if (err) console.error(err);
             }
         );
@@ -50,14 +50,14 @@ let maxTeamSizeSwitchCron: Cron | undefined;
 
 if (isMainThread) {
     // Initialize the server
-    createServer().get("/api/serverInfo", (res) => {
+    createServer().get("/api/serverInfo", res => {
         cors(res);
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
                 playerCount: games.reduce((a, b) => (a + (b?.data?.aliveCount ?? 0)), 0),
                 maxTeamSize,
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
             }));
@@ -122,7 +122,7 @@ if (isMainThread) {
         res.onAborted(() => {});
 
         const password = req.getHeader("password");
-        res.onData((data) => {
+        res.onData(data => {
             if (password === Config.protection?.punishments?.password) {
                 const body = textDecoder.decode(data);
                 punishments = {
@@ -151,7 +151,6 @@ if (isMainThread) {
          * Upgrade the connection to WebSocket.
          */
         upgrade(res, req, context) {
-            /* eslint-disable-next-line @typescript-eslint/no-empty-function */
             res.onAborted((): void => { });
 
             const searchParams = new URLSearchParams(req.getQuery());
@@ -191,10 +190,10 @@ if (isMainThread) {
             let nameColor: number | undefined;
 
             if (
-                password !== null &&
-                givenRole !== null &&
-                givenRole in Config.roles &&
-                Config.roles[givenRole].password === password
+                password !== null
+                && givenRole !== null
+                && givenRole in Config.roles
+                && Config.roles[givenRole].password === password
             ) {
                 role = givenRole;
 

@@ -430,10 +430,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.teamID = data.full.teamID;
             if (
-                !this.isActivePlayer &&
-                !this.teammateName &&
-                !this.dead &&
-                this.teamID === this.game.teamID
+                !this.isActivePlayer
+                && !this.teammateName
+                && !this.dead
+                && this.teamID === this.game.teamID
             ) {
                 const name = this.game.playerNames.get(this.id);
                 this.teammateName = {
@@ -551,10 +551,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.backpackLevel = (this.equipment.backpack = full.backpack).level;
 
             if (
-                hideEquipment !== this.hideEquipment ||
-                helmetLevel !== this.helmetLevel ||
-                vestLevel !== this.vestLevel ||
-                backpackLevel !== this.backpackLevel
+                hideEquipment !== this.hideEquipment
+                || helmetLevel !== this.helmetLevel
+                || vestLevel !== this.vestLevel
+                || backpackLevel !== this.backpackLevel
             ) {
                 this.updateEquipment();
             }
@@ -842,10 +842,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
         const image = this.images[type];
         if (
-            def &&
-            def.level > 0 &&
-            !this.hideEquipment &&
-            (type !== "backpack" || !this.downed)
+            def
+            && def.level > 0
+            && !this.hideEquipment
+            && (type !== "backpack" || !this.downed)
         ) {
             image.setFrame(`${def.idString}_world`).setVisible(true);
 
@@ -916,12 +916,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     canInteract(player: Player): boolean {
-        return this.game.teamMode &&
-            !player.downed &&
-            this.downed &&
-            !this.beingRevived &&
-            this !== player &&
-            this.teamID === player.teamID;
+        return this.game.teamMode
+            && !player.downed
+            && this.downed
+            && !this.beingRevived
+            && this !== player
+            && this.teamID === player.teamID;
     }
 
     sendEmote(type: EmoteDefinition): void {
@@ -935,7 +935,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 maxRange: 128
             }
         );
-        this.emote.image.setFrame(`${type.idString}`);
+        this.emote.image.setFrame(type.idString);
 
         this.emote.container.visible = true;
         this.emote.container.scale.set(0);
@@ -1044,10 +1044,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     for (const object of this.game.objects) {
                         if (
-                            !object.dead &&
-                            object !== this &&
-                            object.damageable &&
-                            (object instanceof Obstacle || object instanceof Player)
+                            !object.dead
+                            && object !== this
+                            && object.damageable
+                            && (object instanceof Obstacle || object instanceof Player)
                         ) {
                             if (object.hitbox?.collidesWith(hitbox)) {
                                 damagedObjects.push(object);

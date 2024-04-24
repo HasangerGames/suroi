@@ -521,7 +521,7 @@ logger.indent("Validating building definitions", () => {
                                                 if (value !== undefined) {
                                                     tester.assert(
                                                         // math takes precedence over whatever idiocy this rule is
-                                                        // eslint-disable-next-line yoda
+
                                                         value % 1 === 0 && (0 <= value && value < 4),
                                                         `RotationMode.Limited only allows integers in the range [0, 3] (received ${safeString(value)})`,
                                                         errorPath2
@@ -759,7 +759,7 @@ logger.indent("Validating building definitions", () => {
                     });
 
                     const hasObstacles = !!building.obstacles?.length;
-                    // eslint-disable-next-line array-callback-return
+
                     const puzzleTargetAlwaysExists = hasObstacles && building.obstacles.some(o => {
                         switch (typeof o.idString) {
                             case "string": {
@@ -928,8 +928,8 @@ logger.indent("Validating building definitions", () => {
             const definiteMatches = building.obstacles?.filter(
                 o => {
                     return Obstacles.definitions.find(
-                        ob => (typeof o.idString === "string" && o.idString === ob.idString) ||
-                            (Object.keys(o.idString).length === 1 && ob.idString in (o.idString as object))
+                        ob => (typeof o.idString === "string" && o.idString === ob.idString)
+                        || (Object.keys(o.idString).length === 1 && ob.idString in (o.idString as object))
                     )?.role === ObstacleSpecialRoles.Wall;
                 }
             ).length ?? Infinity;
@@ -2572,9 +2572,9 @@ const [
 ];
 
 const exitCode = +(
-    fatalErrors.length > 0 ||
-    errors.length > 0 ||
-    (warningsAsErrors && warnings.length > 0)
+    fatalErrors.length > 0
+    || errors.length > 0
+    || (warningsAsErrors && warnings.length > 0)
 );
 
 const wErrorText = warningsAsErrors ? ` ${styleText("(treated as errors)", ColorStyles.foreground.red.bright)}` : "";

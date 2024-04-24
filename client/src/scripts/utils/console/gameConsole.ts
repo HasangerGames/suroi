@@ -8,15 +8,6 @@ import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./va
 import { sanitizeHTML } from "../misc";
 
 /*
-    eslint-disable
-
-    no-lone-blocks,
-    @typescript-eslint/no-this-alias,
-    no-return-assign,
-    no-inner-declarations
-*/
-
-/*
   `no-lone-blocks`                    Used for organization
   `@typescript-eslint/no-this-alias`  Use some object literals, then talk to me about "not managing scope well"
   `no-return-assign`                  skill issue filter
@@ -315,7 +306,7 @@ export class GameConsole {
             return retVal;
         };
 
-        map.delete = (key) => {
+        map.delete = key => {
             const retVal = nativeDelete.call(map, key);
 
             if (retVal) {
@@ -347,7 +338,7 @@ export class GameConsole {
             return retVal;
         };
 
-        map.delete = (key) => {
+        map.delete = key => {
             const retVal = nativeDelete.call(map, key);
 
             if (retVal) {
@@ -784,10 +775,10 @@ export class GameConsole {
         };
 
         if (
-            historyCandidates.length ||
-            commandCandidates.length ||
-            aliasCandidates.length ||
-            variableCandidates.length
+            historyCandidates.length
+            || commandCandidates.length
+            || aliasCandidates.length
+            || variableCandidates.length
         ) {
             autocomplete.show();
             container
@@ -1384,7 +1375,7 @@ export class GameConsole {
             pushGroupAnchorIfPresent();
 
             let iterationCount = 0;
-            // eslint-disable-next-line no-unmodified-loop-condition -- cfa fix when™
+
             while (currentNode !== undefined) {
                 if (++iterationCount === 1e3) {
                     console.warn("1000 iterations of query parsing; possible infinite loop");

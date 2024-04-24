@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
@@ -225,7 +223,6 @@ export class Queue<T> {
 
         const value = this._head.value;
 
-        // eslint-disable-next-line no-cond-assign
         (this._head = this._head.next) ?? delete this._tail;
 
         return value;

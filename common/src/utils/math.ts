@@ -477,8 +477,8 @@ export const Collision = Object.freeze({
     },
     rectCircleIntersection(min: Vector, max: Vector, pos: Vector, radius: number): CollisionResponse {
         if (
-            min.x <= pos.x && pos.x <= max.x &&
-            min.y <= pos.y && pos.y <= max.y
+            min.x <= pos.x && pos.x <= max.x
+            && min.y <= pos.y && pos.y <= max.y
         ) {
             // circle center inside rectangle
 
@@ -622,7 +622,7 @@ export type CollisionResponse = {
 
 export function calculateDoorHitboxes<
     // tf are you talking about
-    // eslint-disable-next-line space-before-function-paren
+
     U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
 >(
     definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },
@@ -651,7 +651,6 @@ export function calculateDoorHitboxes<
                 rotation
             );
 
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             return {
                 openHitbox: new RectangleHitbox(openHitbox.min, openHitbox.max)
             } as Return;
@@ -673,7 +672,6 @@ export function calculateDoorHitboxes<
                 Numeric.absMod(rotation - 1, 4) as Orientation
             );
 
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             return {
                 openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
                 openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max)
@@ -687,7 +685,6 @@ type NameGenerator<T extends string> = `${T}In` | `${T}Out` | `${T}InOut`;
 function generatePolynomialEasingTriplet<T extends string>(degree: number, type: T): { readonly [K in NameGenerator<T>]: (t: number) => number } {
     const coeffCache = 2 ** (degree - 1);
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return Object.freeze({
         [`${type}In`]: (t: number) => t ** degree,
         [`${type}Out`]: (t: number) => 1 - (1 - t) ** degree,

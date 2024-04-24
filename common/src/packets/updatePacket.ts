@@ -155,7 +155,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 }
 
 function deserializePlayerData(stream: SuroiBitStream): PlayerData {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions, no-cond-assign */
+    /* eslint-disable no-cond-assign */
     const dirty = {} as PlayerData["dirty"];
     const inventory = {} as PlayerData["inventory"];
     const data = { dirty, inventory } as PlayerData;
@@ -265,9 +265,9 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
             if (weaponWasUsed) {
                 damageSourcesDefinitions.writeToStream(stream, message.weaponUsed!);
                 if (
-                    message.weaponUsed !== undefined &&
-                    "killstreak" in message.weaponUsed &&
-                    message.weaponUsed.killstreak
+                    message.weaponUsed !== undefined
+                    && "killstreak" in message.weaponUsed
+                    && message.weaponUsed.killstreak
                 ) {
                     stream.writeUint8(message.killstreak!);
                 }
@@ -324,8 +324,8 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
                     KillfeedEventType.NormalTwoParty,
                     KillfeedEventType.FinishedOff,
                     KillfeedEventType.FinallyKilled
-                ].includes(type) &&
-                stream.readBoolean() // attacker present
+                ].includes(type)
+                && stream.readBoolean() // attacker present
             ) {
                 message.attackerId = stream.readObjectID();
                 message.attackerKills = stream.readUint8();
@@ -336,9 +336,9 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
                 message.weaponUsed = damageSourcesDefinitions.readFromStream(stream);
 
                 if (
-                    message.weaponUsed !== undefined &&
-                    "killstreak" in message.weaponUsed &&
-                    message.weaponUsed.killstreak
+                    message.weaponUsed !== undefined
+                    && "killstreak" in message.weaponUsed
+                    && message.weaponUsed.killstreak
                 ) {
                     message.killstreak = stream.readUint8();
                 }
@@ -462,22 +462,22 @@ export class UpdatePacket extends AbstractPacket {
     override serialize(stream: SuroiBitStream): void {
         const playerDataDirty = Object.values(this.playerData.dirty).some(v => v);
 
-        const flags =
-            (+!!playerDataDirty && UpdateFlags.PlayerData) |
-            (+!!this.deletedObjects.length && UpdateFlags.DeletedObjects) |
-            (+!!this.fullObjectsCache.length && UpdateFlags.FullObjects) |
-            (+!!this.partialObjectsCache.length && UpdateFlags.PartialObjects) |
-            (+!!this.bullets.length && UpdateFlags.Bullets) |
-            (+!!this.explosions.length && UpdateFlags.Explosions) |
-            (+!!this.emotes.length && UpdateFlags.Emotes) |
-            (+!!this.gas?.dirty && UpdateFlags.Gas) |
-            (+!!this.gasProgress?.dirty && UpdateFlags.GasPercentage) |
-            (+!!this.newPlayers.length && UpdateFlags.NewPlayers) |
-            (+!!this.deletedPlayers.length && UpdateFlags.DeletedPlayers) |
-            (+!!this.aliveCountDirty && UpdateFlags.AliveCount) |
-            (+!!this.killFeedMessages.length && UpdateFlags.KillFeedMessages) |
-            (+!!this.planes.length && UpdateFlags.Planes) |
-            (+!!this.mapPings.length && UpdateFlags.MapPings);
+        const flags
+            = (+!!playerDataDirty && UpdateFlags.PlayerData)
+            | (+!!this.deletedObjects.length && UpdateFlags.DeletedObjects)
+            | (+!!this.fullObjectsCache.length && UpdateFlags.FullObjects)
+            | (+!!this.partialObjectsCache.length && UpdateFlags.PartialObjects)
+            | (+!!this.bullets.length && UpdateFlags.Bullets)
+            | (+!!this.explosions.length && UpdateFlags.Explosions)
+            | (+!!this.emotes.length && UpdateFlags.Emotes)
+            | (+!!this.gas?.dirty && UpdateFlags.Gas)
+            | (+!!this.gasProgress?.dirty && UpdateFlags.GasPercentage)
+            | (+!!this.newPlayers.length && UpdateFlags.NewPlayers)
+            | (+!!this.deletedPlayers.length && UpdateFlags.DeletedPlayers)
+            | (+!!this.aliveCountDirty && UpdateFlags.AliveCount)
+            | (+!!this.killFeedMessages.length && UpdateFlags.KillFeedMessages)
+            | (+!!this.planes.length && UpdateFlags.Planes)
+            | (+!!this.mapPings.length && UpdateFlags.MapPings);
 
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
@@ -486,14 +486,14 @@ export class UpdatePacket extends AbstractPacket {
         }
 
         if (flags & UpdateFlags.DeletedObjects) {
-            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, (id) => {
+            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, id => {
                 stream.writeObjectID(id);
             });
         }
 
         if (flags & UpdateFlags.FullObjects) {
             stream.writeAlignToNextByte();
-            stream.writeArray(this.fullObjectsCache, 16, (object) => {
+            stream.writeArray(this.fullObjectsCache, 16, object => {
                 stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
                 stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
             });
@@ -501,7 +501,7 @@ export class UpdatePacket extends AbstractPacket {
 
         if (flags & UpdateFlags.PartialObjects) {
             stream.writeAlignToNextByte();
-            stream.writeArray(this.partialObjectsCache, 16, (object) => {
+            stream.writeArray(this.partialObjectsCache, 16, object => {
                 stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
             });
         }
@@ -513,14 +513,14 @@ export class UpdatePacket extends AbstractPacket {
         }
 
         if (flags & UpdateFlags.Explosions) {
-            stream.writeArray(this.explosions, 8, (explosion) => {
+            stream.writeArray(this.explosions, 8, explosion => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             });
         }
 
         if (flags & UpdateFlags.Emotes) {
-            stream.writeArray(this.emotes, 8, (emote) => {
+            stream.writeArray(this.emotes, 8, emote => {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerID);
             });
@@ -541,7 +541,7 @@ export class UpdatePacket extends AbstractPacket {
         }
 
         if (flags & UpdateFlags.NewPlayers) {
-            stream.writeArray(this.newPlayers, 8, (player) => {
+            stream.writeArray(this.newPlayers, 8, player => {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
@@ -552,7 +552,7 @@ export class UpdatePacket extends AbstractPacket {
         }
 
         if (flags & UpdateFlags.DeletedPlayers) {
-            stream.writeArray(this.deletedPlayers, 8, (id) => {
+            stream.writeArray(this.deletedPlayers, 8, id => {
                 stream.writeObjectID(id);
             });
         }
@@ -562,13 +562,13 @@ export class UpdatePacket extends AbstractPacket {
         }
 
         if (flags & UpdateFlags.KillFeedMessages) {
-            stream.writeArray(this.killFeedMessages, 8, (message) => {
+            stream.writeArray(this.killFeedMessages, 8, message => {
                 serializeKillFeedMessage(stream, message);
             });
         }
 
         if (flags & UpdateFlags.Planes) {
-            stream.writeArray(this.planes, 4, (plane) => {
+            stream.writeArray(this.planes, 4, plane => {
                 stream.writeVector(
                     plane.position,
                     -GameConstants.maxPosition,
@@ -581,7 +581,7 @@ export class UpdatePacket extends AbstractPacket {
         }
 
         if (flags & UpdateFlags.MapPings) {
-            stream.writeArray(this.mapPings, 4, (ping) => {
+            stream.writeArray(this.mapPings, 4, ping => {
                 MapPings.writeToStream(stream, ping.definition);
                 stream.writePosition(ping.position);
                 if (ping.definition.isPlayerPing) {

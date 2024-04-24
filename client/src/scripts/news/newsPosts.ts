@@ -1,4 +1,3 @@
-/* eslint-disable quotes,@typescript-eslint/quotes */
 import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
@@ -392,7 +391,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1689622834000,
         author: "HAZEL",
         title: "Untrodden Lands",
-        content: `H.A.Z.E.L. has made various improvements to weapons systems to refine them further, and a small shipment of antiquated arms has been received from Flint Industries. Scouts have explored more of the island. We've mapped out the gas release points, allowing us to predict the gas's movement accurately. Additionally, new AR software updates have been pushed out to ensure battle readiness.`,
+        content: "H.A.Z.E.L. has made various improvements to weapons systems to refine them further, and a small shipment of antiquated arms has been received from Flint Industries. Scouts have explored more of the island. We've mapped out the gas release points, allowing us to predict the gas's movement accurately. Additionally, new AR software updates have been pushed out to ensure battle readiness.",
         longContent: `<h2>Suroi v0.8.0</h2>
 
 <h3>New features & changes</h3>
@@ -412,7 +411,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1688950260000,
         author: "HAZEL",
         title: "Geared Up",
-        content: `A long-awaited shipment, containing helmets, vests, backpacks, and scopes, has finally arrived on the island! Pack in extra ammo with backpacks, protect yourself with helmets and vests, and get the jump on your enemy with scopes. Unfortunately, due to supply shortages, guns have become more scarce.`,
+        content: "A long-awaited shipment, containing helmets, vests, backpacks, and scopes, has finally arrived on the island! Pack in extra ammo with backpacks, protect yourself with helmets and vests, and get the jump on your enemy with scopes. Unfortunately, due to supply shortages, guns have become more scarce.",
         longContent: `<h2>Suroi v0.7.0</h2>
 
 <h3>New features & changes</h3>
@@ -426,7 +425,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1688328459000,
         author: "HAZEL",
         title: "Tablets & Tweaks",
-        content: `A new adrenaline item, tablets, can now be found! Tablets, along with all other healing items, can now be picked up and carried—but they no longer work instantly. Check out the Featured YouTubr and Streamr on the redesigned title screen! The kill feed and settings menu have also been redesigned. A golden object may drop a very powerful weapon...`,
+        content: "A new adrenaline item, tablets, can now be found! Tablets, along with all other healing items, can now be picked up and carried—but they no longer work instantly. Check out the Featured YouTubr and Streamr on the redesigned title screen! The kill feed and settings menu have also been redesigned. A golden object may drop a very powerful weapon...",
         longContent: `<h2>Suroi v0.6.0</h2>
 
 <h3>New features & changes</h3>
@@ -459,7 +458,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         author: "HAZEL",
         title: "Locked & Loaded",
         bannerImage: "../img/news/v0.5.0.png",
-        content: `The newest supply shipment to the island has arrived, along with a slew of new weapons! Blast enemies all day long with the 47 round pan on the Lewis gun, or test your marksmanship with the Tango 51. Prefer hand-to-hand combat? The K-bar or the baseball bat may be for you. A glint of gold may yield a fruitful surprise...`,
+        content: "The newest supply shipment to the island has arrived, along with a slew of new weapons! Blast enemies all day long with the 47 round pan on the Lewis gun, or test your marksmanship with the Tango 51. Prefer hand-to-hand combat? The K-bar or the baseball bat may be for you. A glint of gold may yield a fruitful surprise...",
         longContent: `<h2>Suroi v0.5.0</h2>
 
 <h3>New features</h3>
@@ -477,7 +476,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         author: "Dr. Felix Sterling",
         title: "Supplies received",
         bannerImage: "../img/news/v0.4.0.png",
-        content: `We have received the new arms and supply shipment from Mr. Flint. In the crates were all four weapons promised: the Mosin-Nagant, Ithaca Model 37, SAF-200, and Glock 19. These should help us dramatically, as we were in great need of additional and varied firepower. Additionally, the new medical items, gauze, colas, and medikits, will allow better treatment of injuries. However, they were not of the portable variety we requested, and we hope to resolve this soon.`,
+        content: "We have received the new arms and supply shipment from Mr. Flint. In the crates were all four weapons promised: the Mosin-Nagant, Ithaca Model 37, SAF-200, and Glock 19. These should help us dramatically, as we were in great need of additional and varied firepower. Additionally, the new medical items, gauze, colas, and medikits, will allow better treatment of injuries. However, they were not of the portable variety we requested, and we hope to resolve this soon.",
         longContent: `<h2>Suroi v0.4.0</h2>
 
 <h3>New features & changes</h3>
@@ -504,7 +503,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         author: "Dr. Petrova",
         title: "Doublet State",
         bannerImage: "../img/news/v0.3.0.png",
-        content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -9.3°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
+        content: "A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -9.3°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!",
         longContent: `<h2>Suroi v0.3.0</h2>
 <h3>New features</h3>
 <ul>
@@ -527,7 +526,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         author: "hasanger",
         title: "Fun guns",
         bannerImage: "../img/news/v0.2.0.png",
-        content: `This week's update introduces guns, health crates, and keybinds! There are only 2 guns for now: the AK-47 and the M3K. More will be added soon.<br>If you're having issues with textures, try <a href="https://its.uiowa.edu/support/article/719">clearing your cache.</a>`,
+        content: "This week's update introduces guns, health crates, and keybinds! There are only 2 guns for now: the AK-47 and the M3K. More will be added soon.<br>If you're having issues with textures, try <a href=\"https://its.uiowa.edu/support/article/719\">clearing your cache.</a>",
         longContent: `<h2>Suroi v0.2.0</h2>
 <h3>New features</h3>
 <ul>

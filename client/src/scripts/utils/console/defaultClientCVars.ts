@@ -9,7 +9,7 @@ export interface JSONCVar<Value extends Stringable> {
     readonly flags: Partial<CVarFlags>
 }
 
-//! don't use "uv_" as a prefix, cause that's reserved for custom cvars
+// ! don't use "uv_" as a prefix, cause that's reserved for custom cvars
 
 export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
@@ -165,38 +165,37 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     dv_weapon_preset: ""
 } satisfies SimpleCVarMapping);
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export const defaultBinds = Object.freeze({
     "+up": ["W", "ArrowUp"],
     "+down": ["S", "ArrowDown"],
     "+left": ["A", "ArrowLeft"],
     "+right": ["D", "ArrowRight"],
-    interact: ["F"],
-    loot: [],
+    "interact": ["F"],
+    "loot": [],
     "slot 0": ["1"],
     "slot 1": ["2"],
     "slot 2": ["3", "E"],
     "equip_or_cycle_throwables 1": ["4"],
-    last_item: ["Q"],
-    other_weapon: ["Space"],
-    swap_gun_slots: ["T"],
+    "last_item": ["Q"],
+    "other_weapon": ["Space"],
+    "swap_gun_slots": ["T"],
     "cycle_items -1": ["MWheelUp"],
     "cycle_items 1": ["MWheelDown"],
     "+attack": ["Mouse0"],
-    drop: [],
-    reload: ["R"],
+    "drop": [],
+    "reload": ["R"],
     "cycle_scopes -1": [],
     "cycle_scopes 1": [],
     "use_consumable gauze": ["7"],
     "use_consumable medikit": ["8"],
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
-    cancel_action: ["X"],
+    "cancel_action": ["X"],
     "+view_map": [],
-    toggle_map: ["G", "M"],
-    toggle_minimap: ["N"],
-    toggle_hud: [],
+    "toggle_map": ["G", "M"],
+    "toggle_minimap": ["N"],
+    "toggle_hud": [],
     "+emote_wheel": ["Mouse2"],
     "+map_ping_wheel": ["C"],
-    toggle_console: []
+    "toggle_console": []
 } as Record<string, string[]>);

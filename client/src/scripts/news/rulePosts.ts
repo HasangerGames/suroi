@@ -1,4 +1,3 @@
-/* eslint-disable quotes,@typescript-eslint/quotes */
 export interface RulesPost {
     date: number
     author: string
@@ -12,7 +11,7 @@ export const rules: RulesPost[] = [
         date: 1690908230000,
         author: "Katloo",
         title: "Rules",
-        content: `By playing Suroi, you agree to abide by the following rules. Breaking the rules may result in a ban.`,
+        content: "By playing Suroi, you agree to abide by the following rules. Breaking the rules may result in a ban.",
         longContent: `<ul>
   <li><strong>No teaming in solo.</strong> Allying with other solo players for extended periods of time is not allowed.</li>
   <li><strong>No hacking.</strong> The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.</li>
@@ -23,7 +22,7 @@ export const rules: RulesPost[] = [
         date: 1690908230000,
         author: "Katloo",
         title: "Tutorial",
-        content: `If you're a new player, check out this tutorial to learn how to play!`,
+        content: "If you're a new player, check out this tutorial to learn how to play!",
         longContent: `<h2>Controls</h2>
 <p>Movement - WASD or Arrow Keys</p>
 <p>Aim - Mouse</p>

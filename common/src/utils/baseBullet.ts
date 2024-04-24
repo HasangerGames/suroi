@@ -112,9 +112,9 @@ export class BaseBullet {
             if (object.type === ObjectCategory.Obstacle && object.definition.noBulletCollision) continue;
 
             if (
-                object.damageable && !object.dead &&
-                !(!this.canHitShooter && object.id === this.sourceID) &&
-                !this.damagedIDs.has(object.id)
+                object.damageable && !object.dead
+                && !(!this.canHitShooter && object.id === this.sourceID)
+                && !this.damagedIDs.has(object.id)
             ) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 
@@ -130,8 +130,8 @@ export class BaseBullet {
         // Sort by closest to initial position
         collisions.sort(
             (a, b) =>
-                Geometry.distanceSquared(a.intersection?.point, this.initialPosition) -
-                Geometry.distanceSquared(b.intersection?.point, this.initialPosition)
+                Geometry.distanceSquared(a.intersection?.point, this.initialPosition)
+                - Geometry.distanceSquared(b.intersection?.point, this.initialPosition)
         );
 
         return collisions;
