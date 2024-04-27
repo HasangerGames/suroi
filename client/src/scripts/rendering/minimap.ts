@@ -427,6 +427,7 @@ export class Minimap {
         }
 
         this.renderMap();
+        this.resize();
     }
 
     update(): void {
