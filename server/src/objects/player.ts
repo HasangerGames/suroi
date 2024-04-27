@@ -46,6 +46,7 @@ import { SyncedParticle } from "./syncedParticle";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { GameEvent } from "../pluginManager";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -539,7 +540,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (!this.loadout.emotes.includes(emote) && !emote?.isTeamEmote) return;
 
         if (emote) {
-            this.game.pluginManager.emit("playerEmote", {
+            this.game.pluginManager.emit(GameEvent.PlayerEmote, {
                 player: this,
                 emote
             });
@@ -568,7 +569,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             position,
             playerId: this.id
         });
-        this.game.pluginManager.emit("playerMapPing", {
+        this.game.pluginManager.emit(GameEvent.PlayerMapPing, {
             player: this,
             ping,
             position
@@ -688,14 +689,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
-            this.game.pluginManager.emit("playerStartAttacking", this);
+            this.game.pluginManager.emit(GameEvent.PlayerStartAttacking, this);
             this.startedAttacking = false;
             this.disableInvulnerability();
             this.activeItem.useItem();
         }
 
         if (this.stoppedAttacking) {
-            this.game.pluginManager.emit("playerStopAttacking", this);
+            this.game.pluginManager.emit(GameEvent.PlayerStopAttacking, this);
             this.stoppedAttacking = false;
             this.activeItem.stopUse();
         }
@@ -765,7 +766,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.turning = false;
 
-        this.game.pluginManager.emit("playerUpdate", this);
+        this.game.pluginManager.emit(GameEvent.PlayerUpdate, this);
     }
 
     private _firstPacket = true;
@@ -1071,6 +1072,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         amount = this._clampDamageAmount(amount);
 
+        this.game.pluginManager.emit(GameEvent.PlayerDamage, {
+            amount,
+            player: this,
+            source,
+            weaponUsed
+        });
+
         this.piercingDamage(amount, source, weaponUsed);
     }
 
@@ -1094,6 +1102,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         ) return;
 
         amount = this._clampDamageAmount(amount);
+
+        this.game.pluginManager.emit(GameEvent.PlayerPiercingDamage, {
+            player: this,
+            amount,
+            source,
+            weaponUsed
+        });
 
         const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
@@ -1200,29 +1215,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (sourceIsPlayer) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
-
-            /*
-            // Weapon swap event
-            const inventory = source.inventory;
-            const index = source.activeItemIndex;
-            inventory.removeWeapon(index);
-            inventory.setActiveWeaponIndex(index);
-            switch (index) {
-                case 0:
-                case 1: {
-                    const gun = pickRandomInArray(Guns.filter(g => !g.killstreak));
-                    inventory.addOrReplaceWeapon(index, gun);
-                    const { ammoType } = gun;
-                    if (gun.ammoSpawnAmount) inventory.items[ammoType] = Math.min(inventory.backpack.maxCapacity[ammoType], inventory.items[ammoType] + gun.ammoSpawnAmount);
-                    break;
-                }
-                case 2: {
-                    inventory.addOrReplaceWeapon(index, pickRandomInArray(Melees.filter(m => !m.killstreak)));
-                    break;
-                }
-            }
-            */
         }
+
+        this.game.pluginManager.emit(GameEvent.PlayerKill, {
+            player: this,
+            source,
+            weaponUsed
+        });
 
         if (
             sourceIsPlayer

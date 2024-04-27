@@ -46,7 +46,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { PluginManager } from "./pluginManager";
+import { GameEvent, PluginManager } from "./pluginManager";
 
 export class Game {
     readonly _id: number;
@@ -368,7 +368,7 @@ export class Game {
 
         this.setGameData({ allowJoin: true });
 
-        this.pluginManager.emit("gameCreated", this);
+        this.pluginManager.emit(GameEvent.GameCreated, this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -490,6 +490,8 @@ export class Game {
             player.secondUpdate();
         }
 
+        this.pluginManager.emit(GameEvent.GameTick, this);
+
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
             if (!player.joined) continue;
@@ -532,7 +534,10 @@ export class Game {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
+                this.pluginManager.emit(GameEvent.PlayerWin, player);
             }
+
+            this.pluginManager.emit(GameEvent.GameEnd, this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -696,7 +701,7 @@ export class Game {
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, team);
-        this.pluginManager.emit("playerConnected", player);
+        this.pluginManager.emit(GameEvent.PlayerConnect, player);
         return player;
     }
 
@@ -762,7 +767,7 @@ export class Game {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
-        this.pluginManager.emit("playerJoined", player);
+        this.pluginManager.emit(GameEvent.PlayerJoin, player);
     }
 
     removePlayer(player: Player): void {
@@ -805,7 +810,7 @@ export class Game {
         try {
             player.socket.close();
         } catch (e) { }
-        this.pluginManager.emit("playerDisconnect", player);
+        this.pluginManager.emit(GameEvent.PlayerDisconnect, player);
     }
 
     /**

@@ -5,58 +5,97 @@ import { Config } from "./config";
 import { Logger } from "./utils/misc";
 import { EmoteDefinition } from "../../common/src/definitions/emotes";
 import { MapPingDefinition } from "../../common/src/definitions/mapPings";
+import { GameObject } from "./objects/gameObject";
+import { Explosion } from "./objects/explosion";
+import { ThrowableItem } from "./inventory/throwableItem";
+import { MeleeItem } from "./inventory/meleeItem";
+import { GunItem } from "./inventory/gunItem";
+import { KillfeedEventType } from "../../common/src/constants";
 
 // TODO: add more events
-export const GameEvents = [
-    "playerConnected",
-    "playerJoined",
-    "playerDisconnect",
-    "playerUpdate",
-    "playerStartAttacking",
-    "playerStopAttacking",
-    "playerEmote",
-    "playerMapPing",
-    "gameCreated"
-] as const;
-
-type GameEventType = typeof GameEvents[number];
+export enum GameEvent {
+    // Player events
+    PlayerConnect,
+    PlayerJoin,
+    PlayerDisconnect,
+    PlayerUpdate,
+    PlayerStartAttacking,
+    PlayerStopAttacking,
+    PlayerEmote,
+    PlayerMapPing,
+    PlayerWin,
+    PlayerDamage,
+    PlayerPiercingDamage,
+    PlayerKill,
+    // Game Events
+    GameCreated,
+    GameTick,
+    GameEnd
+}
 
 interface EventData {
-    playerConnected: Player
-    playerJoined: Player
-    playerDisconnect: Player
-    playerUpdate: Player
-    playerStartAttacking: Player
-    playerStopAttacking: Player
-    playerEmote: {
+    [GameEvent.PlayerConnect]: Player
+    [GameEvent.PlayerJoin]: Player
+    [GameEvent.PlayerDisconnect]: Player
+    [GameEvent.PlayerUpdate]: Player
+    [GameEvent.PlayerStartAttacking]: Player
+    [GameEvent.PlayerStopAttacking]: Player
+    [GameEvent.PlayerEmote]: {
         player: Player
         emote: EmoteDefinition
     }
-    playerMapPing: {
+    [GameEvent.PlayerMapPing]: {
         player: Player
         ping: MapPingDefinition
         position: Vector
     }
-    gameCreated: Game
+    [GameEvent.PlayerDamage]: {
+        player: Player
+        amount: number
+        source?: GameObject
+        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+    }
+    [GameEvent.PlayerPiercingDamage]: {
+        player: Player
+        amount: number
+        source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut
+        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+    }
+    [GameEvent.PlayerKill]: {
+        player: Player
+        source?: GameObject | (typeof KillfeedEventType)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"]
+        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+    }
+    [GameEvent.PlayerWin]: Player
+    [GameEvent.GameCreated]: Game
+    [GameEvent.GameTick]: Game
+    [GameEvent.GameEnd]: Game
 }
 
-type Events = Record<GameEventType, Set<(data: EventData[GameEventType]) => void>>;
+const eventKeys = Object.keys(GameEvent).filter(e => !Number.isNaN(+e)) as unknown as GameEvent[];
+
+type Events = Array<Set<(data: EventData[GameEvent]) => void>>;
 
 export abstract class GamePlugin {
-    readonly events = {} as Events;
+    readonly events: Events = [];
 
-    constructor(public game: Game) {
-        for (const event of GameEvents) {
+    constructor(public readonly game: Game) {
+        for (const event of eventKeys) {
             this.events[event] = new Set();
         }
+        this.initListeners();
     }
 
-    on<E extends GameEventType>(eventType: E, cb: (data: EventData[E]) => void): void {
-        this.game.pluginManager.on(eventType, cb, this);
+    protected abstract initListeners(): void;
+
+    on<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+        this.game.pluginManager.on(eventType, cb);
+        (this.events[eventType] as Set<typeof cb>).add(cb);
     }
 
-    off<E extends GameEventType>(eventType: E, cb: (data: EventData[E]) => void): void {
-        this.game.pluginManager.off(eventType, cb, this);
+    off<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+        this.game.pluginManager.off(eventType, cb);
+        (this.events[eventType] as Set<typeof cb>).delete(cb);
     }
 }
 
@@ -65,35 +104,39 @@ export abstract class GamePlugin {
  */
 export class PluginManager {
     readonly game: Game;
-    private readonly _events = {} as Events;
+    private readonly _events: Events = [];
 
     private readonly _plugins = new Set<GamePlugin>();
 
     constructor(game: Game) {
         this.game = game;
 
-        for (const event of GameEvents) {
+        for (const event of eventKeys) {
             this._events[event] = new Set();
         }
     }
 
-    on<E extends GameEventType>(eventType: E, cb: (data: EventData[E]) => void, plugin: GamePlugin): void {
+    on<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
         (this._events[eventType] as Set<typeof cb>).add(cb);
-        (plugin.events[eventType] as Set<typeof cb>).add(cb);
     }
 
-    off<E extends GameEventType>(eventType: E, cb: (data: EventData[E]) => void, plugin: GamePlugin): void {
+    off<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
         (this._events[eventType] as Set<typeof cb>).delete(cb);
-        (plugin.events[eventType] as Set<typeof cb>).delete(cb);
     }
 
-    emit<E extends GameEventType>(eventType: E, data: EventData[E]): void {
+    emit<E extends GameEvent>(eventType: E, data: EventData[E]): void {
         for (const event of this._events[eventType]) {
             event(data);
         }
     }
 
     loadPlugin(pluginClass: new (game: Game) => GamePlugin): void {
+        for (const plugin of this._plugins) {
+            if (plugin instanceof pluginClass) {
+                console.warn(`Plugin ${pluginClass.name} already loaded`);
+                return;
+            }
+        }
         try {
             const plugin = new pluginClass(this.game);
             this._plugins.add(plugin);
@@ -106,9 +149,9 @@ export class PluginManager {
     unloadPlugin(plugin: GamePlugin): void {
         this._plugins.delete(plugin);
 
-        for (const eventType in plugin.events) {
-            for (const event of plugin.events[eventType as GameEventType]) {
-                this.off(eventType as GameEventType, event, plugin);
+        for (const eventType of eventKeys) {
+            for (const event of plugin.events[eventType]) {
+                plugin.off(eventType, event);
             }
         }
     }
