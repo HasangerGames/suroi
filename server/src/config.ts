@@ -1,6 +1,8 @@
 import { TeamSize } from "../../common/src/constants";
 import { type Vector } from "../../common/src/utils/vector";
 import { type Maps } from "./data/maps";
+import { type Game } from "./game";
+import { type GamePlugin } from "./pluginManager";
 
 export enum SpawnMode {
     Normal,
@@ -19,6 +21,8 @@ export const Config = {
     port: 8000,
 
     mapName: "main",
+
+    plugins: [],
 
     spawn: { mode: SpawnMode.Normal },
 
@@ -76,6 +80,11 @@ export interface ConfigType {
      * Example: `"main"` for the main map or `"debug"` for the debug map
      */
     readonly mapName: keyof typeof Maps
+
+    /**
+     * List of plugin classes to load
+     */
+    readonly plugins: Array<new (game: Game) => GamePlugin>
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

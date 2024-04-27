@@ -360,14 +360,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.team?.setDirty();
     }
 
+    baseSpeed = Config.movementSpeed;
+
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
     spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
 
     mapPings: Game["mapPings"] = [];
-
-    // objectToPlace: GameObject & { position: Vector, definition: ObjectDefinition };
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
@@ -388,11 +388,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
-
-        /* Object placing code start //
-        this.objectToPlace = new Obstacle(game, "window2", position);
-        game.grid.addObject(this.objectToPlace);
-        // Object placing code end */
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -544,6 +539,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (!this.loadout.emotes.includes(emote) && !emote?.isTeamEmote) return;
 
         if (emote) {
+            this.game.pluginManager.emit("playerEmote", {
+                player: this,
+                emote
+            });
             this.game.emotes.push(new Emote(emote, this));
         }
     }
@@ -568,6 +567,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             definition: ping,
             position,
             playerId: this.id
+        });
+        this.game.pluginManager.emit("playerMapPing", {
+            player: this,
+            ping,
+            position
         });
     }
 
@@ -603,7 +607,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        const speed = Config.movementSpeed // Base speed
+        const speed = this.baseSpeed // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1) // Speed multiplier from floor player is standing in
             * recoilMultiplier // Recoil from items
             * (this.action?.speedMultiplier ?? 1) // Speed modifier from performing actions
@@ -616,9 +620,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
         this._movementVector = movementVector;
+
         this.position = Vec.add(
             this.position,
-            Vec.scale(movementVector, dt)
+            Vec.scale(this.movementVector, dt)
         );
 
         if (this.action instanceof ReviveAction) {
@@ -633,26 +638,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.action.cancel();
             }
         }
-
-        /* Object placing code start //
-        const position = Vec.add(
-            this.position,
-            Vec.create(Math.cos(this.rotation) * this.distanceToMouse, Math.sin(this.rotation) * this.distanceToMouse)
-        );
-        const obj = this.objectToPlace;
-        obj.position = position;
-        if (this.game.emotes.length > 0) {
-            obj.rotation += 1;
-            obj.rotation %= 4;
-        }
-        this.objectToPlace.setDirty();
-        if (this.startedAttacking) {
-            const map = this.game.map;
-            const round = (n: number): number => Math.round(n * 100) / 100;
-            console.log(`{ idString: "${obj.definition.idString}", position: Vec.create(${round(obj.position.x - map.width / 2)}, ${round(obj.position.y - map.height / 2)}), rotation: ${obj.rotation} },`);
-            //console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
-        }
-        // Object placing code end */
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
@@ -703,12 +688,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
+            this.game.pluginManager.emit("playerStartAttacking", this);
             this.startedAttacking = false;
             this.disableInvulnerability();
             this.activeItem.useItem();
         }
 
         if (this.stoppedAttacking) {
+            this.game.pluginManager.emit("playerStopAttacking", this);
             this.stoppedAttacking = false;
             this.activeItem.stopUse();
         }
@@ -777,6 +764,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         this.turning = false;
+
+        this.game.pluginManager.emit("playerUpdate", this);
     }
 
     private _firstPacket = true;

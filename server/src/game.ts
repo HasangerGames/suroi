@@ -46,6 +46,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { PluginManager } from "./pluginManager";
 
 export class Game {
     readonly _id: number;
@@ -62,6 +63,7 @@ export class Game {
     readonly map: Map;
     readonly gas: Gas;
     readonly grid: Grid;
+    readonly pluginManager = new PluginManager(this);
 
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
@@ -198,6 +200,7 @@ export class Game {
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
         const start = Date.now();
+        this.pluginManager.loadPlugins();
 
         parentPort?.on("message", (message: WorkerMessage) => {
             switch (message.type) {
@@ -365,6 +368,7 @@ export class Game {
 
         this.setGameData({ allowJoin: true });
 
+        this.pluginManager.emit("gameCreated", this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -691,7 +695,9 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, socket, spawnPosition, team);
+        const player = new Player(this, socket, spawnPosition, team);
+        this.pluginManager.emit("playerConnected", player);
+        return player;
     }
 
     // Called when a JoinPacket is sent by the client
@@ -756,6 +762,7 @@ export class Game {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
+        this.pluginManager.emit("playerJoined", player);
     }
 
     removePlayer(player: Player): void {
@@ -798,6 +805,7 @@ export class Game {
         try {
             player.socket.close();
         } catch (e) { }
+        this.pluginManager.emit("playerDisconnect", player);
     }
 
     /**
