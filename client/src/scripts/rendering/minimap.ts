@@ -5,7 +5,7 @@ import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../c
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
-import {  HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -195,7 +195,7 @@ export class Minimap {
                         }
                         case HitboxType.Circle:
                             ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
-                            break
+                            break;
                         case HitboxType.Polygon:
                             ctx.poly(hitbox.points.map(v => Vec.scale(v, scale)));
                             break;
@@ -350,7 +350,7 @@ export class Minimap {
         }
     }
 
-    renderMapDebug() {
+    renderMapDebug(): void {
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
         debugGraphics.zIndex = 99;
