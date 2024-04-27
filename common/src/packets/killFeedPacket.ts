@@ -114,8 +114,8 @@ export class KillFeedPacket extends Packet implements KillFeedMessageOptions {
                         KillfeedEventType.NormalTwoParty,
                         KillfeedEventType.FinishedOff,
                         KillfeedEventType.FinallyKilled
-                    ].includes(type) &&
-                    stream.readBoolean() // attacker present
+                    ].includes(type)
+                    && stream.readBoolean() // attacker present
                 ) {
                     this.attackerId = stream.readObjectID();
                     this.attackerKills = stream.readUint8();

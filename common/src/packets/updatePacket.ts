@@ -326,7 +326,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.deletedObjects.length) {
-            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, (id) => {
+            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, id => {
                 stream.writeObjectID(id);
             });
             flags |= UpdateFlags.DeletedObjects;
@@ -357,7 +357,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.explosions.length) {
-            stream.writeArray(this.explosions, 8, (explosion) => {
+            stream.writeArray(this.explosions, 8, explosion => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             });
@@ -365,7 +365,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.emotes.length) {
-            stream.writeArray(this.emotes, 8, (emote) => {
+            stream.writeArray(this.emotes, 8, emote => {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerID);
             });
@@ -389,7 +389,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.newPlayers.length) {
-            stream.writeArray(this.newPlayers, 8, (player) => {
+            stream.writeArray(this.newPlayers, 8, player => {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
@@ -401,7 +401,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.deletedPlayers.length) {
-            stream.writeArray(this.deletedPlayers, 8, (id) => {
+            stream.writeArray(this.deletedPlayers, 8, id => {
                 stream.writeObjectID(id);
             });
             flags |= UpdateFlags.DeletedPlayers;
@@ -413,7 +413,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.planes.length) {
-            stream.writeArray(this.planes, 4, (plane) => {
+            stream.writeArray(this.planes, 4, plane => {
                 stream.writeVector(
                     plane.position,
                     -GameConstants.maxPosition,
@@ -427,7 +427,7 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.mapPings.length) {
-            stream.writeArray(this.mapPings, 4, (ping) => {
+            stream.writeArray(this.mapPings, 4, ping => {
                 MapPings.writeToStream(stream, ping.definition);
                 stream.writePosition(ping.position);
                 if (ping.definition.isPlayerPing) {
