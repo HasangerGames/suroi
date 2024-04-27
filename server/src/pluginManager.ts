@@ -1,5 +1,5 @@
 import { Vector } from "../../common/src/utils/vector";
-import { Game } from "./game";
+import { Airdrop, Game } from "./game";
 import { Player } from "./objects/player";
 import { Config } from "./config";
 import { Logger } from "./utils/misc";
@@ -11,8 +11,10 @@ import { ThrowableItem } from "./inventory/throwableItem";
 import { MeleeItem } from "./inventory/meleeItem";
 import { GunItem } from "./inventory/gunItem";
 import { KillfeedEventType } from "../../common/src/constants";
+import { Obstacle } from "./objects/obstacle";
+import { Building } from "./objects/building";
+import { Loot } from "./objects/loot";
 
-// TODO: add more events
 export enum GameEvent {
     // Player events
     PlayerConnect,
@@ -27,6 +29,21 @@ export enum GameEvent {
     PlayerDamage,
     PlayerPiercingDamage,
     PlayerKill,
+    // Obstacle events
+    ObstacleGenerated,
+    ObstacleDamage,
+    ObstacleDestroy,
+    ObstacleInteract,
+    // loot events
+    LootGenerated,
+    LootInteract,
+    // building events
+    BuildingGenerated,
+    BuildingCeilingDamage,
+    BuildingCeilingDestroy,
+    // air drop events
+    AirdropSummoned,
+    AirdropLanded,
     // Game Events
     GameCreated,
     GameTick,
@@ -34,6 +51,7 @@ export enum GameEvent {
 }
 
 interface EventData {
+    // player events
     [GameEvent.PlayerConnect]: Player
     [GameEvent.PlayerJoin]: Player
     [GameEvent.PlayerDisconnect]: Player
@@ -67,6 +85,43 @@ interface EventData {
         weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
     }
     [GameEvent.PlayerWin]: Player
+    // obstacle events
+    [GameEvent.ObstacleGenerated]: Obstacle
+    [GameEvent.ObstacleDamage]: {
+        obstacle: Obstacle
+        amount: number
+        source: GameObject
+        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+        position?: Vector
+    }
+    [GameEvent.ObstacleDestroy]: {
+        obstacle: Obstacle
+        amount: number
+        source: GameObject
+        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+        position?: Vector
+    }
+    [GameEvent.ObstacleInteract]: {
+        obstacle: Obstacle
+        player?: Player
+    }
+    // loot events
+    [GameEvent.LootGenerated]: Loot
+    [GameEvent.LootInteract]: {
+        loot: Loot
+        player: Player
+    }
+    // building events
+    [GameEvent.BuildingGenerated]: Building
+    [GameEvent.BuildingCeilingDamage]: {
+        building: Building
+        damage: number
+    }
+    [GameEvent.BuildingCeilingDestroy]: Building
+    // air drop events
+    [GameEvent.AirdropSummoned]: Airdrop
+    [GameEvent.AirdropLanded]: Airdrop
+    // game events
     [GameEvent.GameCreated]: Game
     [GameEvent.GameTick]: Game
     [GameEvent.GameEnd]: Game

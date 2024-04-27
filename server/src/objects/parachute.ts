@@ -4,6 +4,7 @@ import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
+import { GameEvent } from "../pluginManager";
 import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
 import { Loot } from "./loot";
@@ -36,6 +37,8 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
             this.game.airdrops.splice(this.game.airdrops.indexOf(this._airdrop), 1);
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
+
+            this.game.pluginManager.emit(GameEvent.AirdropLanded, this._airdrop);
 
             // Spawn smoke
             this.game.addSyncedParticles({

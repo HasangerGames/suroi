@@ -286,7 +286,7 @@ export class Game {
                         try {
                             const colorString = searchParams.get("nameColor");
                             if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                        } catch {}
+                        } catch { }
                     }
                 }
 
@@ -830,6 +830,7 @@ export class Game {
         );
 
         this.grid.addObject(loot);
+        this.pluginManager.emit(GameEvent.LootGenerated, loot);
         return loot;
     }
 
@@ -1011,6 +1012,8 @@ export class Game {
         );
 
         const airdrop = { position, type: crateDef };
+
+        this.pluginManager.emit(GameEvent.AirdropSummoned, airdrop);
 
         this.airdrops.push(airdrop);
 

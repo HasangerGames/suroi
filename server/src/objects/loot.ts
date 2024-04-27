@@ -10,6 +10,7 @@ import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
+import { GameEvent } from "../pluginManager";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -388,6 +389,11 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         const packet = new PickupPacket();
         packet.item = this.definition;
         player.sendPacket(packet);
+
+        this.game.pluginManager.emit(GameEvent.LootInteract, {
+            loot: this,
+            player
+        });
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (this._count > 0) createNewItem();

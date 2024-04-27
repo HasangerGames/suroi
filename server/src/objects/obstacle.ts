@@ -13,6 +13,7 @@ import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
 import { type ThrowableItem } from "../inventory/throwableItem";
+import { GameEvent } from "../pluginManager";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
@@ -162,12 +163,26 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             return;
         }
 
+        this.game.pluginManager.emit(GameEvent.ObstacleDamage, {
+            obstacle: this,
+            source,
+            weaponUsed,
+            amount
+        });
+
         this.health -= amount;
         this.setPartialDirty();
 
         if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;
+
+            this.game.pluginManager.emit(GameEvent.ObstacleDestroy, {
+                obstacle: this,
+                source,
+                weaponUsed,
+                amount
+            });
 
             if (!(this.definition.role === ObstacleSpecialRoles.Window && !this.definition.noCollisionAfterDestroyed)) this.collidable = false;
 
@@ -250,6 +265,11 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     interact(player?: Player): void {
         if (!this.canInteract(player)) return;
+
+        this.game.pluginManager.emit(GameEvent.ObstacleInteract, {
+            obstacle: this,
+            player
+        });
 
         const definition = this.definition;
 
