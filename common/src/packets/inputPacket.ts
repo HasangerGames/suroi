@@ -12,8 +12,6 @@ import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitS
 import { type Vector } from "../utils/vector";
 import { AbstractPacket } from "./packet";
 
-/* eslint-disable @typescript-eslint/indent */
-
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 export type InputAction = {
@@ -89,7 +87,7 @@ export class InputPacket extends AbstractPacket {
             }
         }
 
-        stream.writeArray(this.actions, 3, (action) => {
+        stream.writeArray(this.actions, 3, action => {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);
 
             switch (action.type) {

@@ -29,12 +29,12 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
         const owner = this.owner;
 
         if (
-            (!skipAttackCheck && !owner.attacking) ||
-            owner.dead ||
-            owner.downed ||
-            owner.disconnected ||
-            this !== this.owner.activeItem ||
-            this._activeHandler
+            (!skipAttackCheck && !owner.attacking)
+            || owner.dead
+            || owner.downed
+            || owner.disconnected
+            || this !== this.owner.activeItem
+            || this._activeHandler
         ) {
             return;
         }

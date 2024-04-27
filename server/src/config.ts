@@ -35,17 +35,17 @@ export const Config = {
     maxTeamSize: TeamSize.Solo,
 
     roles: {
-        developr: { password: "developr", isDev: true },
-        designr: { password: "designr" },
-        composr: { password: "composr" },
-        youtubr: { password: "youtubr" },
-        hasanger: { password: "hasanger", isDev: true },
-        leia: { password: "leia", isDev: true },
-        katie: { password: "katie", isDev: true },
-        eipi: { password: "eipi", isDev: true },
-        error: { password: "error", isDev: true },
-        radians: { password: "radians", isDev: true },
-        limenade: { password: "limenade", isDev: true },
+        "developr": { password: "developr", isDev: true },
+        "designr": { password: "designr" },
+        "composr": { password: "composr" },
+        "youtubr": { password: "youtubr" },
+        "hasanger": { password: "hasanger", isDev: true },
+        "leia": { password: "leia", isDev: true },
+        "katie": { password: "katie", isDev: true },
+        "eipi": { password: "eipi", isDev: true },
+        "error": { password: "error", isDev: true },
+        "radians": { password: "radians", isDev: true },
+        "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" }
     }
 } satisfies ConfigType as ConfigType;
@@ -85,37 +85,37 @@ export interface ConfigType {
      * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
     readonly spawn:
-    {
-        readonly mode: SpawnMode.Normal
-    } |
-    {
-        readonly mode: SpawnMode.Radius
-        readonly position: Vector
-        readonly radius: number
-    } |
-    {
-        readonly mode: SpawnMode.Fixed
-        readonly position: Vector
-    } |
-    {
-        readonly mode: SpawnMode.Center
-    }
+        {
+            readonly mode: SpawnMode.Normal
+        } |
+        {
+            readonly mode: SpawnMode.Radius
+            readonly position: Vector
+            readonly radius: number
+        } |
+        {
+            readonly mode: SpawnMode.Fixed
+            readonly position: Vector
+        } |
+        {
+            readonly mode: SpawnMode.Center
+        }
 
     /**
      * The maximum number of players allowed to join a team.
      */
     readonly maxTeamSize:
-    TeamSize | // Fixed team size
-    { // Rotating team size
+        TeamSize | // Fixed team size
+        { // Rotating team size
         /**
          * The duration between switches. Must be a cron pattern.
          */
-        switchSchedule: string
-        /**
+            switchSchedule: string
+            /**
          * The team sizes to switch between.
          */
-        rotation: TeamSize[]
-    }
+            rotation: TeamSize[]
+        }
 
     /**
      * The maximum number of players allowed to join a game.
@@ -139,17 +139,17 @@ export interface ConfigType {
      * GasMode.Disabled: Gas is disabled.
      */
     readonly gas:
-    {
-        readonly mode: GasMode.Disabled
-    } |
-    {
-        readonly mode: GasMode.Normal
-    } |
-    {
-        readonly mode: GasMode.Debug
-        readonly overridePosition?: boolean
-        readonly overrideDuration?: number
-    }
+        {
+            readonly mode: GasMode.Disabled
+        } |
+        {
+            readonly mode: GasMode.Normal
+        } |
+        {
+            readonly mode: GasMode.Debug
+            readonly overridePosition?: boolean
+            readonly overrideDuration?: number
+        }
 
     readonly movementSpeed: number
 

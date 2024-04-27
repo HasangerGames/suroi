@@ -5,12 +5,6 @@ import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./default
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 
 /*
-    eslint-disable
-
-    @typescript-eslint/indent
-*/
-
-/*
     `@typescript-eslint/indent`   How hard is it to have sensible indenting rules for generics
 */
 
@@ -34,10 +28,10 @@ export interface CVarFlags {
 }
 
 export function flagInterfaceToBitfield(flags: CVarFlags): number {
-    return (+flags.archive & CVarFlagsEnum.archive) |
-        (+flags.readonly & CVarFlagsEnum.readonly) |
-        (+flags.cheat & CVarFlagsEnum.cheat) |
-        (+flags.replicated & CVarFlagsEnum.replicated);
+    return (+flags.archive & CVarFlagsEnum.archive)
+        | (+flags.readonly & CVarFlagsEnum.readonly)
+        | (+flags.cheat & CVarFlagsEnum.cheat)
+        | (+flags.replicated & CVarFlagsEnum.replicated);
 }
 
 export function flagBitfieldToInterface(flags: number): CVarFlags {
@@ -286,7 +280,7 @@ export class ConsoleVariables {
 
     readonly has = (() => {
         // There's a way to do overloading while using function properties, but it's fugly
-        /* eslint-disable @typescript-eslint/method-signature-style */
+
         type HasChecker = (<K extends string>(key: K) => boolean) & {
             builtIn(key: keyof CVarTypeMapping): true
             builtIn(key: string): boolean
@@ -401,10 +395,10 @@ export class ConsoleVariables {
         return [...Object.entries(this._builtInCVars), ...this._userCVars.entries()]
             .map(([key, cvar]) =>
                 `<li><code>${key}</code> ${[
-                    `${cvar.flags.archive ? "<span class=\"cvar-detail-archived\" title=\"Archived CVar\">A</span>" : ""}`,
-                    `${cvar.flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : ""}`,
-                    `${cvar.flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : ""}`,
-                    `${cvar.flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""}`
+                    cvar.flags.archive ? "<span class=\"cvar-detail-archived\" title=\"Archived CVar\">A</span>" : "",
+                    cvar.flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : "",
+                    cvar.flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : "",
+                    cvar.flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""
                 ].join(" ")} &rightarrow;&nbsp;<code class="cvar-value-${cvar.value === null ? "null" : typeof cvar.value}">${stringify(cvar.value)}</code></li>`
             ).join("");
     }

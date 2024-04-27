@@ -540,7 +540,7 @@ export class PolygonHitbox extends BaseHitbox {
         return new PolygonHitbox(this.points);
     }
 
-    override transform(position: Vector, scale: number = 1, orientation: Orientation = 0): PolygonHitbox {
+    override transform(position: Vector, scale = 1, orientation: Orientation = 0): PolygonHitbox {
         return new PolygonHitbox(
             this.points.map(point => Vec.scale(Vec.addAdjust(position, point, orientation), scale))
         );

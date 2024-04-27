@@ -90,7 +90,7 @@ export class Game {
 
                 anyone who confuses "??=" for "==" should consult an eye doctor
             */
-            // eslint-disable-next-line no-return-assign
+
             return this._valueCache ??= [...super.values()];
         }
 
@@ -210,7 +210,6 @@ export class Game {
             }
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const This = this;
 
         this.server = createServer().ws("/play", {
@@ -220,7 +219,6 @@ export class Game {
              * Upgrade the connection to WebSocket.
              */
             upgrade(res, req, context) {
-                /* eslint-disable-next-line @typescript-eslint/no-empty-function */
                 res.onAborted((): void => { });
 
                 const ip = getIP(res, req);
@@ -233,8 +231,8 @@ export class Game {
                     const { simultaneousConnections, joinAttempts } = This;
 
                     if (
-                        (simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity)) ||
-                        (joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity))
+                        (simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity))
+                        || (joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity))
                     ) {
                         Logger.log(`Game ${This.id} | Rate limited: ${ip}`);
                         forbidden(res);
@@ -271,10 +269,10 @@ export class Game {
 
                 let nameColor: number | undefined;
                 if (
-                    password !== null &&
-                    givenRole !== null &&
-                    givenRole in Config.roles &&
-                    Config.roles[givenRole].password === password
+                    password !== null
+                    && givenRole !== null
+                    && givenRole in Config.roles
+                    && Config.roles[givenRole].password === password
                 ) {
                     role = givenRole;
                     isDev = Config.roles[givenRole].isDev ?? false;
@@ -514,9 +512,9 @@ export class Game {
 
         // Winning logic
         if (
-            this._started &&
-            !this.over &&
-            (
+            this._started
+            && !this.over
+            && (
                 this.teamMode
                     ? this.aliveCount <= this.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
@@ -616,11 +614,11 @@ export class Game {
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
-                /* eslint-disable no-multi-spaces */
+
                 if (
-                    !team ||                                             // team doesn't exist
-                    (team.players.length && !team.hasLivingPlayers()) || // team isn't empty but has no living players
-                    team.players.length >= this.maxTeamSize              // team is full
+                    !team // team doesn't exist
+                    || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
+                    || team.players.length >= this.maxTeamSize // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -628,9 +626,9 @@ export class Game {
             } else {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
-                        team.autoFill &&
-                        team.players.length < this.maxTeamSize &&
-                        team.hasLivingPlayers()
+                        team.autoFill
+                        && team.players.length < this.maxTeamSize
+                        && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
                     team = pickRandomInArray(vacantTeams);
@@ -657,7 +655,7 @@ export class Game {
                             getPosition: this.teamMode && teamPosition
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
-                            collides: (position) => Geometry.distanceSquared(position, gasPosition) >= gasRadius
+                            collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius
                         }
                     );
 
@@ -704,9 +702,9 @@ export class Game {
         player.isMobile = packet.isMobile;
         const skin = packet.skin;
         if (
-            skin.itemType === ItemType.Skin &&
-            !skin.hideFromLoadout &&
-            ((skin.roleRequired ?? player.role) === player.role)
+            skin.itemType === ItemType.Skin
+            && !skin.hideFromLoadout
+            && ((skin.roleRequired ?? player.role) === player.role)
         ) {
             player.loadout.skin = skin;
         }
@@ -741,9 +739,9 @@ export class Game {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.teamMode ? this.teams.size : this.aliveCount) > 1 &&
-            !this._started &&
-            this.startTimeout === undefined
+            (this.teamMode ? this.teams.size : this.aliveCount) > 1
+            && !this._started
+            && this.startTimeout === undefined
         ) {
             this.startTimeout = this.addTimeout(() => {
                 this._started = true;
@@ -959,10 +957,10 @@ export class Game {
 
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
                 if (
-                    object instanceof Obstacle &&
-                    !object.dead &&
-                    object.definition.indestructible &&
-                    object.spawnHitbox.collidesWith(thisHitbox)
+                    object instanceof Obstacle
+                    && !object.dead
+                    && object.definition.indestructible
+                    && object.spawnHitbox.collidesWith(thisHitbox)
                 ) {
                     collided = true;
                     thisHitbox.resolveCollision(object.spawnHitbox);
@@ -973,9 +971,9 @@ export class Game {
             // second loop, buildings
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
                 if (
-                    object instanceof Building &&
-                    object.scopeHitbox &&
-                    object.definition.wallsToDestroy === Infinity
+                    object instanceof Building
+                    && object.scopeHitbox
+                    && object.definition.wallsToDestroy === Infinity
                 ) {
                     const hitbox = object.scopeHitbox.clone();
                     hitbox.scale(1.5);
@@ -1032,5 +1030,4 @@ export interface Airdrop {
     readonly type: ObstacleDefinition
 }
 
-// eslint-disable-next-line no-new
 if (!isMainThread) new Game();

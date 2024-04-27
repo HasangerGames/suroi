@@ -61,12 +61,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const definition = this.definition;
 
         if (
-            (!skipAttackCheck && !owner.attacking) ||
-            owner.dead ||
-            owner.downed ||
-            owner.disconnected ||
-            this !== this.owner.activeItem ||
-            (definition.summonAirdrop && owner.isInsideBuilding)
+            (!skipAttackCheck && !owner.attacking)
+            || owner.dead
+            || owner.downed
+            || owner.disconnected
+            || this !== this.owner.activeItem
+            || (definition.summonAirdrop && owner.isInsideBuilding)
         ) {
             this._shots = 0;
             return;
@@ -121,10 +121,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
             this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))
         ) {
             if (
-                object.dead ||
-                object.hitbox === undefined ||
-                !(object instanceof Obstacle) ||
-                object.definition.noCollisions
+                object.dead
+                || object.hitbox === undefined
+                || !(object instanceof Obstacle)
+                || object.definition.noCollisions
             ) continue;
 
             for (
@@ -132,10 +132,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
             ) {
                 if (
-                    object.dead ||
-                    object.hitbox === undefined ||
-                    !(object instanceof Obstacle) ||
-                    object.definition.noCollisions
+                    object.dead
+                    || object.hitbox === undefined
+                    || !(object instanceof Obstacle)
+                    || object.definition.noCollisions
                 ) continue;
 
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
@@ -158,12 +158,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     position: jitter
                         ? randomPointInsideCircle(position, jitter)
                         : position,
-                    rotation: owner.rotation + Math.PI / 2 +
-                        (
-                            definition.consistentPatterning
-                                ? 8 * (i / (projCount - 1) - 0.5) ** 3
-                                : randomFloat(-1, 1)
-                        ) * spread,
+                    rotation: owner.rotation + Math.PI / 2
+                    + (
+                        definition.consistentPatterning
+                            ? 8 * (i / (projCount - 1) - 0.5) ** 3
+                            : randomFloat(-1, 1)
+                    ) * spread,
                     rangeOverride
                 }
             );
@@ -200,8 +200,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (
-            (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
-            this.owner.activeItem === this
+            (definition.fireMode !== FireMode.Single || this.owner.isMobile)
+            && this.owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeout);
             this._autoFireTimeout = setTimeout(
@@ -224,13 +224,13 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
     reload(skipFireDelayCheck = false): void {
         if (
-            this.definition.infiniteAmmo ||
-            this.ammo >= this.definition.capacity ||
-            !this.owner.inventory.items.hasItem(this.definition.ammoType) ||
-            this.owner.action !== undefined ||
-            this.owner.activeItem !== this ||
-            (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay) ||
-            this.owner.downed
+            this.definition.infiniteAmmo
+            || this.ammo >= this.definition.capacity
+            || !this.owner.inventory.items.hasItem(this.definition.ammoType)
+            || this.owner.action !== undefined
+            || this.owner.activeItem !== this
+            || (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay)
+            || this.owner.downed
         ) return;
 
         this.owner.executeAction(new ReloadAction(this.owner, this));

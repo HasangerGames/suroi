@@ -627,7 +627,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 .replace(/[\u2018\u2019\u201b]/g, "'")
                 .replace(/[\u2013\u2014]/g, "-")
                 // Strip out non-ASCII chars
-                // eslint-disable-next-line no-control-regex
+
                 .replace(/[^\x20-\x7E]/g, "")
         );
 
@@ -642,9 +642,9 @@ export async function setUpUI(game: Game): Promise<void> {
     serverSelect.on("change", () => {
         // const value = serverSelect.val() as string | undefined;
 
-        /*if (value !== undefined) {
+        /* if (value !== undefined) {
             game.console.setBuiltInCVar("cv_region", value);
-        }*/
+        } */
     });
 
     const rulesBtn = $("#btn-rules");
@@ -761,13 +761,11 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         if (skin.hideFromLoadout || (skin.roleRequired ?? role) !== role) continue;
 
-        /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
-        const skinItem =
-            $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
+        const skinItem
+            = $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
   <div class="skin">
     <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
     <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
@@ -795,8 +793,8 @@ Video evidence is required.`)) {
             if (emote.isTeamEmote) continue;
 
             // noinspection CssUnknownTarget
-            const emoteItem =
-                $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+            const emoteItem
+                = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
     ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
@@ -892,7 +890,7 @@ Video evidence is required.`)) {
     </div>`);
 
         crosshairItem.find(".crosshairs-list-item").css({
-            backgroundImage: `url("${getCrosshair(
+            "backgroundImage": `url("${getCrosshair(
                 crosshairIndex,
                 "#fff",
                 game.console.getBuiltInCVar("cv_crosshair_size"),
@@ -919,22 +917,22 @@ Video evidence is required.`)) {
         $("#tab-special").show();
         $<HTMLInputElement>("#role-name")
             .val(game.console.getBuiltInCVar("dv_role"))
-            .on("input", (e) => {
+            .on("input", e => {
                 game.console.setBuiltInCVar("dv_role", e.target.value);
             });
-        $<HTMLInputElement>("#role-password").on("input", (e) => {
+        $<HTMLInputElement>("#role-password").on("input", e => {
             game.console.setBuiltInCVar("dv_password", e.target.value);
         });
         addCheckboxListener("#toggle-lobbyclearing", "dv_lobby_clearing");
         if (game.console.getBuiltInCVar("dv_name_color") === "") game.console.setBuiltInCVar("dv_name_color", "#FFFFFF");
         $<HTMLInputElement>("#namecolor-color-picker")
             .val(game.console.getBuiltInCVar("dv_name_color"))
-            .on("input", (e) => {
+            .on("input", e => {
                 game.console.setBuiltInCVar("dv_name_color", e.target.value);
             });
         $<HTMLInputElement>("#weapon-preset")
             .val(game.console.getBuiltInCVar("dv_weapon_preset"))
-            .on("input", (e) => {
+            .on("input", e => {
                 game.console.setBuiltInCVar("dv_weapon_preset", e.target.value);
             });
     }
@@ -946,12 +944,12 @@ Video evidence is required.`)) {
         $("#tab-badges").show();
 
         // ???
-        /* eslint-disable @typescript-eslint/quotes, quotes */
+
         const noBadgeItem = $(
-            `<div id="badge-" class="badges-list-item-container">\
-            <div class="badges-list-item"> </div>\
-            <span class="badge-name">None</span>\
-            </div>`
+            "<div id=\"badge-\" class=\"badges-list-item-container\">\
+            <div class=\"badges-list-item\"> </div>\
+            <span class=\"badge-name\">None</span>\
+            </div>"
         );
 
         noBadgeItem.on("click", function() {
@@ -1257,8 +1255,8 @@ Video evidence is required.`)) {
         "#toggle-hide-minimap",
         "cv_minimap_minimized",
         value => {
-            //HACK minimap code is hacky and it scares me too much
-            //HACK for me to add a "setVisible" method or smth
+            // HACK minimap code is hacky and it scares me too much
+            // HACK for me to add a "setVisible" method or smth
             let iterationCount = 0;
             while (game.map.visible === value && ++iterationCount < 100) {
                 game.map.toggleMinimap();
@@ -1593,7 +1591,7 @@ Video evidence is required.`)) {
             updateRangeInput(element);
         });
 
-    $(".tab").on("click", (ev) => {
+    $(".tab").on("click", ev => {
         const tab = $(ev.target);
 
         tab.siblings().removeClass("active");

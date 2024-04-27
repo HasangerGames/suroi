@@ -15,9 +15,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -26,12 +26,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
 
-      - name: Install Packages (Common)
-        working-directory: ./common
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Packages (Client)
-        working-directory: ./client
+      - name: Install Packages
         run: pnpm install --frozen-lockfile
 
       - name: Build
@@ -48,9 +43,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -59,12 +54,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
 
-      - name: Install Packages (Common)
-        working-directory: ./common
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Packages (Server)
-        working-directory: ./server
+      - name: Install Packages
         run: pnpm install --frozen-lockfile
 
       - name: Build
@@ -81,9 +71,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -93,14 +83,13 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install Packages
-        working-directory: ./tests
         run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./tests
         run: pnpm build
 
-      - name: Validate object definitions
+      - name: Run Tests
         working-directory: ./tests
         run: pnpm validateDefinitions
   lint:
@@ -115,7 +104,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -129,4 +118,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint:ci
+        run: pnpm test

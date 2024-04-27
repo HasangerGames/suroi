@@ -7,13 +7,6 @@ import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
 /*
-    eslint-disable
-
-    @typescript-eslint/consistent-type-definitions,
-    @typescript-eslint/indent
-*/
-
-/*
     `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
     `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
 */
@@ -68,7 +61,7 @@ export const tester = (() => {
                 readonly errorPath: string
             } & OtherParams
         ): void
-};
+    };
 
     type ValidationResult = {
         readonly warnings?: string[]
@@ -86,20 +79,20 @@ export const tester = (() => {
             baseErrorPath: string
         ) => ValidationResult
     ): {
-        <Target extends object>(
-            params: {
-                readonly obj: Target
-                readonly field: keyof Target
-                readonly baseErrorPath: string
-            } & OtherParams
-        ): void
-        (
-            params: {
-                readonly value: PlainValue
-                readonly errorPath: string
-            } & OtherParams
-        ): void
-    } {
+            <Target extends object>(
+                params: {
+                    readonly obj: Target
+                    readonly field: keyof Target
+                    readonly baseErrorPath: string
+                } & OtherParams
+            ): void
+            (
+                params: {
+                    readonly value: PlainValue
+                    readonly errorPath: string
+                } & OtherParams
+            ): void
+        } {
         return <Target extends object>(
             params: (
                 {
@@ -929,7 +922,7 @@ export const validators = Object.freeze({
         switch (typeof color) {
             case "number": {
                 tester.assert(
-                    // eslint-disable-next-line yoda
+
                     !(color % 1) && 0 <= color && color <= 0xffffff,
                     `Color '${color}' is not a valid hexadecimal color`,
                     baseErrorPath
@@ -1189,7 +1182,6 @@ export const logger = (() => {
             try {
                 cb();
             } catch (e) {
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 tester.fatalErrors.push([
                     "unknown",
                     e instanceof Error

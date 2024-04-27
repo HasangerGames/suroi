@@ -42,14 +42,14 @@ export class MapPacket extends AbstractPacket {
         stream.writeUint16(this.oceanSize);
         stream.writeUint16(this.beachSize);
 
-        stream.writeArray(this.rivers, 4, (river) => {
+        stream.writeArray(this.rivers, 4, river => {
             stream.writeUint8(river.width);
-            stream.writeArray(river.points, 8, (point) => {
+            stream.writeArray(river.points, 8, point => {
                 stream.writePosition(point);
             });
         });
 
-        stream.writeArray(this.objects, 16, (object) => {
+        stream.writeArray(this.objects, 16, object => {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
@@ -69,7 +69,7 @@ export class MapPacket extends AbstractPacket {
             }
         });
 
-        stream.writeArray(this.places, 4, (place) => {
+        stream.writeArray(this.places, 4, place => {
             stream.writeASCIIString(place.name);
             stream.writePosition(place.position);
         });

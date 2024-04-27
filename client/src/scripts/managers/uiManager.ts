@@ -23,7 +23,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
-    // eslint-disable-next-line yoda
+
     if (0 < value && value <= 1) return 1;
     return Math.round(value);
 }
@@ -377,8 +377,8 @@ export class UIManager {
             }
 
             if (
-                this.maxAdrenaline === GameConstants.player.maxAdrenaline &&
-                this.minAdrenaline === 0
+                this.maxAdrenaline === GameConstants.player.maxAdrenaline
+                && this.minAdrenaline === 0
             ) {
                 this.ui.minMaxAdren.text("").hide();
             } else {
@@ -440,7 +440,7 @@ export class UIManager {
             this.updateItems();
         }
         // idiot
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
         if (inventory.weapons || inventory.items) {
             this.updateWeapons();
         }
@@ -521,12 +521,12 @@ export class UIManager {
                         ? {
                             "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
                             "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
-                            color: `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                            "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
                         }
                         : {
                             "outline-color": "",
                             "background-color": "",
-                            color: ""
+                            "color": ""
                         })
                     .children(".item-name")
                     .text(weapon.definition.name);
@@ -763,7 +763,7 @@ export class UIManager {
 
                         const description = UIManager._eventDescriptionMap[eventType][severity];
                         // sod off
-                        // eslint-disable-next-line no-labels
+
                         outer:
                         switch (eventType) {
                             case KillfeedEventType.FinallyKilled:
@@ -773,7 +773,6 @@ export class UIManager {
                                         // if their team is then wiped, then no one "finally" killed them, they just… finally died
                                         killMessage = `${victimText} finally died`;
 
-                                        // eslint-disable-next-line no-labels
                                         break outer;
                                     case victimId:
                                         /*
@@ -784,7 +783,6 @@ export class UIManager {
                                         */
                                         killMessage = `${victimText} finally ended themselves`;
 
-                                        // eslint-disable-next-line no-labels
                                         break outer;
                                 }
                                 // fallthrough
@@ -906,10 +904,10 @@ export class UIManager {
                     let target: GameObject | undefined;
 
                     return id === this.game.activePlayerID || (
-                        id !== undefined &&
-                        (target = this.game.objects.get(id)) &&
-                        target instanceof Player &&
-                        target.teamID === this.game.teamID
+                        id !== undefined
+                        && (target = this.game.objects.get(id))
+                        && target instanceof Player
+                        && target.teamID === this.game.teamID
                     );
                 };
 
@@ -975,9 +973,9 @@ export class UIManager {
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
                 messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
-                    ? `${attackerId !== victimId
+                    ? attackerId !== victimId
                         ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
-                        : "The Kill Leader is dead!"}`
+                        : "The Kill Leader is dead!"
                     : "The Kill Leader killed themselves!"
                 }`;
                 if (attackerId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
@@ -1033,7 +1031,7 @@ interface UpdateDataType {
 class PlayerHealthUI {
     readonly game: Game;
 
-    readonly container: JQuery<HTMLElement>;
+    readonly container: JQuery;
 
     readonly svgContainer: JQuery<SVGElement>;
     readonly healthDisplay: JQuery<SVGCircleElement>;
@@ -1075,7 +1073,7 @@ class PlayerHealthUI {
         this.container = $<HTMLDivElement>('<div class="teammate-container"></div>');
         this.svgContainer = $<SVGElement>('<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>');
 
-        //HACK wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
+        // HACK wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
         this.healthDisplay = $<SVGCircleElement>('<svg><circle r="21" cy="24" cx="24" stroke-width="6" stroke-dasharray="132" fill="none" style="transition: stroke-dashoffset ease-in-out 50ms;" /></svg>').find("circle");
         this.indicatorContainer = $<HTMLDivElement>('<div class="teammate-indicator-container"></div>');
         this.teammateIndicator = $<HTMLImageElement>('<img class="teammate-indicator" />');
@@ -1185,9 +1183,9 @@ class PlayerHealthUI {
         }
 
         if (
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing --- ????????
-            (this._hasColor.dirty && this._nameColor.value) ||
-            (this._nameColor.dirty && this._hasColor.value)
+
+            (this._hasColor.dirty && this._nameColor.value)
+            || (this._nameColor.dirty && this._hasColor.value)
         ) {
             this.nameLabel.css(
                 "color",

@@ -104,6 +104,5 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     override damage(): void { }
 }

@@ -98,29 +98,28 @@ export type GunDefinition = BaseGunDefinition & {
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
 
-/* eslint-disable @typescript-eslint/indent */
 type RawGunDefinition = BaseGunDefinition & {
     readonly isDual?: never
     readonly dual?: {
         readonly leftRightOffset: number
     } & {
         [
-            K in Extract<
-                keyof DualGunNarrowing,
-                "wearerAttributes" |
-                "ammoSpawnAmount" |
-                "capacity" |
-                "reloadTime" |
-                "fireDelay" |
-                "switchDelay" |
-                "speedMultiplier" |
-                "recoilMultiplier" |
-                "recoilDuration" |
-                "shotSpread" |
-                "moveSpread" |
-                "burstProperties" |
-                "leftRightOffset"
-            >
+        K in Extract<
+            keyof DualGunNarrowing,
+            "wearerAttributes" |
+            "ammoSpawnAmount" |
+            "capacity" |
+            "reloadTime" |
+            "fireDelay" |
+            "switchDelay" |
+            "speedMultiplier" |
+            "recoilMultiplier" |
+            "recoilDuration" |
+            "shotSpread" |
+            "moveSpread" |
+            "burstProperties" |
+            "leftRightOffset"
+        >
         ]?: DualGunNarrowing[K]
     }
 };

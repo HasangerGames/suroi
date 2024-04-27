@@ -47,11 +47,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
         this.owner.game.addTimeout((): void => {
             if (
-                this.owner.activeItem === this &&
-                (owner.attacking || skipAttackCheck) &&
-                !owner.dead &&
-                !owner.downed &&
-                !owner.disconnected
+                this.owner.activeItem === this
+                && (owner.attacking || skipAttackCheck)
+                && !owner.dead
+                && !owner.downed
+                && !owner.disconnected
             ) {
                 const rotated = Vec.rotate(definition.offset, owner.rotation);
                 const position = Vec.add(owner.position, rotated);

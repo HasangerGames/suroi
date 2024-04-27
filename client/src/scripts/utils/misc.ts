@@ -31,7 +31,7 @@ export function stringify(val: unknown): string {
         case "number":
         case "undefined":
         case "object":
-        case "boolean": return `${String(val)}`;
+        case "boolean": return String(val);
         case "bigint": return `${val}n`;
         case "symbol": return val.toString();
         case "function": return `function ${val.name}(${Array.from({ length: val.length }, (_, i) => `arg${i}`).join(", ")}) -> any`;

@@ -128,7 +128,7 @@ const maps = {
         height: 1620,
         oceanSize: 128,
         beachSize: 32,
-        genCallback: (map) => {
+        genCallback: map => {
             // Generate all buildings
 
             const buildingPos = Vec.create(200, map.height - 600);
@@ -244,7 +244,7 @@ const maps = {
         height: 512,
         beachSize: 16,
         oceanSize: 40,
-        genCallback: (map) => {
+        genCallback: map => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
                 const width = 70;
@@ -267,18 +267,18 @@ const maps = {
 
                 for (const item of Loots.definitions) {
                     if (
-                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop) ||
-                        ("ephemeral" in item && item.ephemeral) ||
-                        (item.itemType === ItemType.Backpack && item.level === 0) ||
-                        item.itemType === ItemType.Skin
+                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
+                        || ("ephemeral" in item && item.ephemeral)
+                        || (item.itemType === ItemType.Backpack && item.level === 0)
+                        || item.itemType === ItemType.Skin
                     ) continue;
 
                     map.game.addLoot(item, itemPos, countMap[item.itemType] ?? 1).velocity = Vec.create(0, 0);
 
                     itemPos.x += xOff;
                     if (
-                        (xOff > 0 && itemPos.x > startPos.x + width) ||
-                        (xOff < 0 && itemPos.x < startPos.x - width)
+                        (xOff > 0 && itemPos.x > startPos.x + width)
+                        || (xOff < 0 && itemPos.x < startPos.x - width)
                     ) {
                         itemPos.x = startPos.x;
                         itemPos.y -= yOff;
@@ -426,10 +426,10 @@ const maps = {
         genCallback(map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
-                    /*const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
+                    /* const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
                     player.disableInvulnerability();
                     player.loadout.skin = pickRandomInArray(Skins.definitions);
-                    map.game.grid.addObject(player);*/
+                    map.game.grid.addObject(player); */
                     if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
                 }
             }

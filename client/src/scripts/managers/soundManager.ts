@@ -90,12 +90,12 @@ export class GameSound {
         if (this.instance && this.position) {
             const diff = Vec.sub(this.manager.position, this.position);
 
-            this.instance.volume = (1 -
-                Numeric.clamp(
-                    Math.abs(Vec.length(diff) / this.maxRange),
-                    0,
-                    1
-                )) ** (1 + this.fallOff * 2) * this.manager.volume;
+            this.instance.volume = (1
+            - Numeric.clamp(
+                Math.abs(Vec.length(diff) / this.maxRange),
+                0,
+                1
+            )) ** (1 + this.fallOff * 2) * this.manager.volume;
 
             this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
         }

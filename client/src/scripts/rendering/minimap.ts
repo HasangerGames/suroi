@@ -443,11 +443,11 @@ export class Minimap {
         // only re-render gas line and circle if something changed
         if (
             this.game.gas.state === GasState.Inactive || (
-                this.position.x === this.lastPosition.x &&
-                this.position.y === this.lastPosition.y &&
-                this.game.gas.newRadius === this.gasRadius &&
-                this.game.gas.newPosition.x === this.gasPos.x &&
-                this.game.gas.newPosition.y === this.gasPos.y
+                this.position.x === this.lastPosition.x
+                && this.position.y === this.lastPosition.y
+                && this.game.gas.newRadius === this.gasRadius
+                && this.game.gas.newPosition.x === this.gasPos.x
+                && this.game.gas.newPosition.y === this.gasPos.y
             )
         ) return;
 
@@ -633,8 +633,8 @@ export class Minimap {
         if (ping.definition.isPlayerPing) {
             for (const otherPing of this.pings) {
                 if (
-                    otherPing.definition.idString === ping.definition.idString &&
-                    otherPing.player?.id === playerId
+                    otherPing.definition.idString === ping.definition.idString
+                    && otherPing.player?.id === playerId
                 ) {
                     otherPing.destroy();
                     this.pings.delete(otherPing);
