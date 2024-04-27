@@ -35,6 +35,7 @@ import { Parachute } from "./objects/parachute";
 import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
+import { PlayerActions } from "../../../common/src/constants/PlayerActions"
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
@@ -812,7 +813,10 @@ export class Game {
                 }
 
                 // Mobile stuff
-                if (this.inputManager.isMobile && canInteract) {
+                if (this.inputManager.isMobile && canInteract && !(this.activePlayer.action !== PlayerActions.reload)) {
+		    if !(this.uiManager.inventory.weapons? == 2) {
+			    break;
+		    }
                     if ( // Auto pickup
                         this.console.getBuiltInCVar("cv_auto_pickup") &&
                         (
