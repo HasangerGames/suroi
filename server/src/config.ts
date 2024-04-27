@@ -44,6 +44,7 @@ export const Config = {
         "katie": { password: "katie", isDev: true },
         "eipi": { password: "eipi", isDev: true },
         "error": { password: "error", isDev: true },
+        "kenos": { password: "kenos", isDev: true },
         "radians": { password: "radians", isDev: true },
         "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" }
