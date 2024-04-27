@@ -1,4 +1,3 @@
-import { GameConstants } from "../../../common/src/constants";
 import { GunDefinition, Guns } from "../../../common/src/definitions/guns";
 import { MeleeDefinition, Melees } from "../../../common/src/definitions/melees";
 import { ThrowableDefinition, Throwables } from "../../../common/src/definitions/throwables";

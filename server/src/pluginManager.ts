@@ -74,15 +74,12 @@ interface EventData {
 
 const eventKeys = Object.keys(GameEvent).filter(e => !Number.isNaN(+e)) as unknown as GameEvent[];
 
-type Events = Array<Set<(data: EventData[GameEvent]) => void>>;
+type Events = Array<Set<(data: EventData[GameEvent]) => void> | undefined>;
 
 export abstract class GamePlugin {
     readonly events: Events = [];
 
     constructor(public readonly game: Game) {
-        for (const event of eventKeys) {
-            this.events[event] = new Set();
-        }
         this.initListeners();
     }
 
@@ -90,7 +87,7 @@ export abstract class GamePlugin {
 
     on<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
         this.game.pluginManager.on(eventType, cb);
-        (this.events[eventType] as Set<typeof cb>).add(cb);
+        ((this.events[eventType] as Set<typeof cb>) ??= new Set()).add(cb);
     }
 
     off<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
@@ -110,22 +107,21 @@ export class PluginManager {
 
     constructor(game: Game) {
         this.game = game;
-
-        for (const event of eventKeys) {
-            this._events[event] = new Set();
-        }
     }
 
     on<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
-        (this._events[eventType] as Set<typeof cb>).add(cb);
+        ((this._events[eventType] as Set<typeof cb>) ??= new Set()).add(cb);
     }
 
     off<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+        if (!this._events[eventType]) return;
         (this._events[eventType] as Set<typeof cb>).delete(cb);
     }
 
     emit<E extends GameEvent>(eventType: E, data: EventData[E]): void {
-        for (const event of this._events[eventType]) {
+        const events = this._events[eventType];
+        if (events === undefined) return;
+        for (const event of events) {
             event(data);
         }
     }
@@ -150,7 +146,9 @@ export class PluginManager {
         this._plugins.delete(plugin);
 
         for (const eventType of eventKeys) {
-            for (const event of plugin.events[eventType]) {
+            const events = plugin.events[eventType];
+            if (events === undefined) continue;
+            for (const event of events) {
                 plugin.off(eventType, event);
             }
         }
