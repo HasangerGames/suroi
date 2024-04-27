@@ -381,8 +381,6 @@ export class Inventory {
         } else {
             this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
         }
-
-        this.owner.dirty.throwable = true;
     }
 
     /**

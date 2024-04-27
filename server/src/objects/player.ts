@@ -226,7 +226,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         adrenaline: true,
         weapons: true,
         items: true,
-        throwable: true,
         zoom: true
     };
 
