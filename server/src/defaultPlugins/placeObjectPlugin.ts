@@ -2,7 +2,7 @@ import { Orientation } from "../../../common/src/typings";
 import { Vec } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
 import { Player } from "../objects/player";
-import { GameEvent, GamePlugin } from "../pluginManager";
+import { GamePlugin } from "../pluginManager";
 
 /**
  * Plugin to help place objects when developing buildings
@@ -12,25 +12,25 @@ export class PlaceObjectPlugin extends GamePlugin {
     playerToObstacle = new Map<Player, Obstacle>();
 
     protected override initListeners(): void {
-        this.on(GameEvent.PlayerJoin, player => {
+        this.on("playerJoin", player => {
             const obstacle = new Obstacle(player.game, this.obstacleToPlace, player.position);
             this.playerToObstacle.set(player, obstacle);
             this.game.grid.addObject(obstacle);
         });
 
-        this.on(GameEvent.PlayerDisconnect, player => {
+        this.on("playerDisconnect", player => {
             this.game.grid.removeObject(this.playerToObstacle.get(player)!);
             this.playerToObstacle.delete(player);
         });
 
-        this.on(GameEvent.PlayerEmote, event => {
+        this.on("playerEmote", event => {
             const obstacle = this.playerToObstacle.get(event.player)!;
             obstacle.rotation += 1;
             obstacle.rotation %= 4;
             this.updateObstacle(obstacle);
         });
 
-        this.on(GameEvent.PlayerUpdate, player => {
+        this.on("playerUpdate", player => {
             const position = Vec.add(
                 player.position,
                 Vec.create(Math.cos(player.rotation) * player.distanceToMouse, Math.sin(player.rotation) * player.distanceToMouse)
@@ -41,7 +41,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             player.game.grid.updateObject(obstacle);
         });
 
-        this.on(GameEvent.PlayerStartAttacking, player => {
+        this.on("playerStartAttacking", player => {
             const obstacle = this.playerToObstacle.get(player)!;
             const map = this.game.map;
             const round = (n: number): number => Math.round(n * 100) / 100;

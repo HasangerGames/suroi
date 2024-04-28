@@ -39,14 +39,13 @@ import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
-import { BaseGameObject, type GameObject } from "./gameObject";
+import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
-import { GameEvent } from "../pluginManager";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -539,7 +538,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (!this.loadout.emotes.includes(emote) && !emote?.isTeamEmote) return;
 
         if (emote) {
-            this.game.pluginManager.emit(GameEvent.PlayerEmote, {
+            this.game.pluginManager.emit("playerEmote", {
                 player: this,
                 emote
             });
@@ -568,7 +567,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             position,
             playerId: this.id
         });
-        this.game.pluginManager.emit(GameEvent.PlayerMapPing, {
+        this.game.pluginManager.emit("playerMapPing", {
             player: this,
             ping,
             position
@@ -688,14 +687,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
-            this.game.pluginManager.emit(GameEvent.PlayerStartAttacking, this);
+            this.game.pluginManager.emit("playerStartAttacking", this);
             this.startedAttacking = false;
             this.disableInvulnerability();
             this.activeItem.useItem();
         }
 
         if (this.stoppedAttacking) {
-            this.game.pluginManager.emit(GameEvent.PlayerStopAttacking, this);
+            this.game.pluginManager.emit("playerStopAttacking", this);
             this.stoppedAttacking = false;
             this.activeItem.stopUse();
         }
@@ -703,12 +702,18 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const gas = this.game.gas;
         // Gas damage
         if (gas.doDamage && gas.isInGas(this.position)) {
-            this.piercingDamage(gas.dps, KillfeedEventType.Gas);
+            this.piercingDamage({
+                amount: gas.dps,
+                source: KillfeedEventType.Gas
+            });
         }
 
         // Knocked out damage
         if (this.downed && !this.beingRevivedBy) {
-            this.piercingDamage(GameConstants.bleedOutDPMs * dt, KillfeedEventType.BleedOut);
+            this.piercingDamage({
+                amount: GameConstants.bleedOutDPMs * dt,
+                source: KillfeedEventType.BleedOut
+            });
         }
 
         let isInsideBuilding = false;
@@ -750,8 +755,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             scopeTarget ??= (def as SyncedParticleDefinition & { readonly hitbox: Hitbox }).snapScopeTo;
 
             if (depletion.health) {
-                this.piercingDamage(depletion.health * dt, KillfeedEventType.Gas);
-                //                                         ^^^^^^^^^^^^ dubious
+                this.piercingDamage({
+                    amount: depletion.health * dt,
+                    source: KillfeedEventType.Gas
+                });
+                //          ^^^^^^^^^^^^ dubious
             }
 
             if (depletion.adrenaline) {
@@ -765,7 +773,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.turning = false;
 
-        this.game.pluginManager.emit(GameEvent.PlayerUpdate, this);
+        this.game.pluginManager.emit("playerUpdate", this);
     }
 
     private _firstPacket = true;
@@ -1061,8 +1069,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion): void {
+    override damage(params: DamageParams): void {
         if (this.invulnerable) return;
+
+        const { source, weaponUsed } = params;
+        let { amount } = params;
 
         // Reductions are merged additively
         amount *= 1 - (
@@ -1071,24 +1082,26 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         amount = this._clampDamageAmount(amount);
 
-        this.game.pluginManager.emit(GameEvent.PlayerDamage, {
+        this.game.pluginManager.emit("playerDamage", {
             amount,
             player: this,
             source,
             weaponUsed
         });
 
-        this.piercingDamage(amount, source, weaponUsed);
+        this.piercingDamage({
+            amount,
+            source,
+            weaponUsed
+        });
     }
 
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(
-        amount: number,
-        source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut,
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-    ): void {
+    piercingDamage(params: DamageParams): void {
+        const { source, weaponUsed } = params;
+        let { amount } = params;
         if (
             this.invulnerable
             || (
@@ -1102,7 +1115,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         amount = this._clampDamageAmount(amount);
 
-        this.game.pluginManager.emit(GameEvent.PlayerPiercingDamage, {
+        this.game.pluginManager.emit("playerPiercingDamage", {
             player: this,
             amount,
             source,
@@ -1159,7 +1172,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     }
                 }
 
-                this.die(source, weaponUsed);
+                this.die(params);
             }
         }
     }
@@ -1191,11 +1204,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     // dies of death
-    die(
-        source?: GameObject | (typeof KillfeedEventType)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"],
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-    ): void {
+    die(params: Omit<DamageParams, "amount">): void {
         if (this.health > 0 || this.dead) return;
+        const { source, weaponUsed } = params;
 
         this.health = 0;
         this.dead = true;
@@ -1216,10 +1227,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
         }
 
-        this.game.pluginManager.emit(GameEvent.PlayerKill, {
+        this.game.pluginManager.emit("playerKill", {
             player: this,
-            source,
-            weaponUsed
+            ...params
         });
 
         if (
@@ -1387,7 +1397,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 if (player === this) continue;
 
                 player.health = 0;
-                player.die(KillfeedEventType.FinallyKilled);
+                player.die({
+                    source: KillfeedEventType.FinallyKilled
+                });
             }
 
             this.game.teams.delete(team!);

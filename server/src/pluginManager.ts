@@ -5,134 +5,76 @@ import { Config } from "./config";
 import { Logger } from "./utils/misc";
 import { EmoteDefinition } from "../../common/src/definitions/emotes";
 import { MapPingDefinition } from "../../common/src/definitions/mapPings";
-import { GameObject } from "./objects/gameObject";
-import { Explosion } from "./objects/explosion";
-import { ThrowableItem } from "./inventory/throwableItem";
-import { MeleeItem } from "./inventory/meleeItem";
-import { GunItem } from "./inventory/gunItem";
-import { KillfeedEventType } from "../../common/src/constants";
+import { DamageParams } from "./objects/gameObject";
 import { Obstacle } from "./objects/obstacle";
 import { Building } from "./objects/building";
 import { Loot } from "./objects/loot";
 
-export enum GameEvent {
-    // Player events
-    PlayerConnect,
-    PlayerJoin,
-    PlayerDisconnect,
-    PlayerUpdate,
-    PlayerStartAttacking,
-    PlayerStopAttacking,
-    PlayerEmote,
-    PlayerMapPing,
-    PlayerWin,
-    PlayerDamage,
-    PlayerPiercingDamage,
-    PlayerKill,
-    // Obstacle events
-    ObstacleGenerated,
-    ObstacleDamage,
-    ObstacleDestroy,
-    ObstacleInteract,
-    // loot events
-    LootGenerated,
-    LootInteract,
-    // building events
-    BuildingGenerated,
-    BuildingCeilingDamage,
-    BuildingCeilingDestroy,
-    // air drop events
-    AirdropSummoned,
-    AirdropLanded,
-    // Game Events
-    GameCreated,
-    GameTick,
-    GameEnd
+interface PlayerDamageEvent extends DamageParams {
+    player: Player
+}
+interface ObstacleDamageEvent extends DamageParams {
+    obstacle: Obstacle
+    position?: Vector
 }
 
-interface EventData {
+interface GameEvents {
     // player events
-    [GameEvent.PlayerConnect]: Player
-    [GameEvent.PlayerJoin]: Player
-    [GameEvent.PlayerDisconnect]: Player
-    [GameEvent.PlayerUpdate]: Player
-    [GameEvent.PlayerStartAttacking]: Player
-    [GameEvent.PlayerStopAttacking]: Player
-    [GameEvent.PlayerEmote]: {
+    playerConnect: Player
+    playerJoin: Player
+    playerDisconnect: Player
+    playerUpdate: Player
+    playerStartAttacking: Player
+    playerStopAttacking: Player
+    playerEmote: {
         player: Player
         emote: EmoteDefinition
     }
-    [GameEvent.PlayerMapPing]: {
+    playerMapPing: {
         player: Player
         ping: MapPingDefinition
         position: Vector
     }
-    [GameEvent.PlayerDamage]: {
-        player: Player
-        amount: number
-        source?: GameObject
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-    }
-    [GameEvent.PlayerPiercingDamage]: {
-        player: Player
-        amount: number
-        source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-    }
-    [GameEvent.PlayerKill]: {
-        player: Player
-        source?: GameObject | (typeof KillfeedEventType)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"]
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-    }
-    [GameEvent.PlayerWin]: Player
+    playerDamage: PlayerDamageEvent
+    playerPiercingDamage: PlayerDamageEvent
+    playerKill: Omit<PlayerDamageEvent, "amount">
+    playerWin: Player
     // obstacle events
-    [GameEvent.ObstacleGenerated]: Obstacle
-    [GameEvent.ObstacleDamage]: {
-        obstacle: Obstacle
-        amount: number
-        source: GameObject
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-        position?: Vector
-    }
-    [GameEvent.ObstacleDestroy]: {
-        obstacle: Obstacle
-        amount: number
-        source: GameObject
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
-        position?: Vector
-    }
-    [GameEvent.ObstacleInteract]: {
+    obstacleGenerated: Obstacle
+    obstacleDamage: ObstacleDamageEvent
+    obstacleDestroy: ObstacleDamageEvent
+    obstacleInteract: {
         obstacle: Obstacle
         player?: Player
     }
     // loot events
-    [GameEvent.LootGenerated]: Loot
-    [GameEvent.LootInteract]: {
+    lootGenerated: Loot
+    lootInteract: {
         loot: Loot
         player: Player
     }
     // building events
-    [GameEvent.BuildingGenerated]: Building
-    [GameEvent.BuildingCeilingDamage]: {
+    buildingGenerated: Building
+    buildingCeilingDamage: {
         building: Building
         damage: number
     }
-    [GameEvent.BuildingCeilingDestroy]: Building
+    buildingCeilingDestroy: Building
     // air drop events
-    [GameEvent.AirdropSummoned]: Airdrop
-    [GameEvent.AirdropLanded]: Airdrop
+    airdropSummoned: Airdrop
+    airdropLanded: Airdrop
     // game events
-    [GameEvent.GameCreated]: Game
-    [GameEvent.GameTick]: Game
-    [GameEvent.GameEnd]: Game
+    gameCreated: Game
+    gameTick: Game
+    gameEnd: Game
 }
 
-const eventKeys = Object.keys(GameEvent).filter(e => !Number.isNaN(+e)) as unknown as GameEvent[];
+export type GameEvent = keyof GameEvents;
 
-type Events = Array<Set<(data: EventData[GameEvent]) => void> | undefined>;
+type Events = Partial<Record<GameEvent, Set<(data: GameEvents[GameEvent]) => void> | undefined>>;
 
 export abstract class GamePlugin {
-    readonly events: Events = [];
+    readonly events: Events = {};
 
     constructor(public readonly game: Game) {
         this.initListeners();
@@ -140,12 +82,12 @@ export abstract class GamePlugin {
 
     protected abstract initListeners(): void;
 
-    on<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+    on<E extends GameEvent>(eventType: E, cb: (data: GameEvents[E]) => void): void {
         this.game.pluginManager.on(eventType, cb);
         ((this.events[eventType] as Set<typeof cb>) ??= new Set()).add(cb);
     }
 
-    off<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+    off<E extends GameEvent>(eventType: E, cb: (data: GameEvents[E]) => void): void {
         this.game.pluginManager.off(eventType, cb);
         (this.events[eventType] as Set<typeof cb>).delete(cb);
     }
@@ -156,7 +98,7 @@ export abstract class GamePlugin {
  */
 export class PluginManager {
     readonly game: Game;
-    private readonly _events: Events = [];
+    private readonly _events: Events = {};
 
     private readonly _plugins = new Set<GamePlugin>();
 
@@ -164,16 +106,16 @@ export class PluginManager {
         this.game = game;
     }
 
-    on<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+    on<E extends GameEvent>(eventType: E, cb: (data: GameEvents[E]) => void): void {
         ((this._events[eventType] as Set<typeof cb>) ??= new Set()).add(cb);
     }
 
-    off<E extends GameEvent>(eventType: E, cb: (data: EventData[E]) => void): void {
+    off<E extends GameEvent>(eventType: E, cb: (data: GameEvents[E]) => void): void {
         if (!this._events[eventType]) return;
         (this._events[eventType] as Set<typeof cb>).delete(cb);
     }
 
-    emit<E extends GameEvent>(eventType: E, data: EventData[E]): void {
+    emit<E extends GameEvent>(eventType: E, data: GameEvents[E]): void {
         const events = this._events[eventType];
         if (events === undefined) return;
         for (const event of events) {
@@ -200,11 +142,11 @@ export class PluginManager {
     unloadPlugin(plugin: GamePlugin): void {
         this._plugins.delete(plugin);
 
-        for (const eventType of eventKeys) {
-            const events = plugin.events[eventType];
+        for (const eventType in plugin.events) {
+            const events = plugin.events[eventType as GameEvent];
             if (events === undefined) continue;
             for (const event of events) {
-                plugin.off(eventType, event);
+                plugin.off(eventType as GameEvent, event);
             }
         }
     }

@@ -87,7 +87,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             : definition.obstacleMultiplier;
                     }
 
-                    closestObject.damage(definition.damage * multiplier, owner, this);
+                    closestObject.damage({
+                        amount: definition.damage * multiplier,
+                        source: owner,
+                        weaponUsed: this
+                    });
 
                     if (closestObject instanceof Obstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);

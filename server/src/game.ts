@@ -18,7 +18,7 @@ import { PingPacket } from "../../common/src/packets/pingPacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
@@ -46,7 +46,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { GameEvent, PluginManager } from "./pluginManager";
+import { PluginManager } from "./pluginManager";
 
 export class Game {
     readonly _id: number;
@@ -368,7 +368,7 @@ export class Game {
 
         this.setGameData({ allowJoin: true });
 
-        this.pluginManager.emit(GameEvent.GameCreated, this);
+        this.pluginManager.emit("gameCreated", this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -458,7 +458,12 @@ export class Game {
         // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
         // while on the server, without this, some bullets won't because the first bullets will kill the crate
         for (const { object, damage, source, weapon, position } of records) {
-            object.damage(damage, source, weapon, position);
+            object.damage({
+                amount: damage,
+                source,
+                weaponUsed: weapon,
+                position: position
+            });
         }
 
         // Handle explosions
@@ -490,7 +495,7 @@ export class Game {
             player.secondUpdate();
         }
 
-        this.pluginManager.emit(GameEvent.GameTick, this);
+        this.pluginManager.emit("gameTick", this);
 
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
@@ -534,10 +539,10 @@ export class Game {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
-                this.pluginManager.emit(GameEvent.PlayerWin, player);
+                this.pluginManager.emit("playerWin", player);
             }
 
-            this.pluginManager.emit(GameEvent.GameEnd, this);
+            this.pluginManager.emit("gameEnd", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -701,7 +706,7 @@ export class Game {
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, team);
-        this.pluginManager.emit(GameEvent.PlayerConnect, player);
+        this.pluginManager.emit("playerConnect", player);
         return player;
     }
 
@@ -767,7 +772,7 @@ export class Game {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
-        this.pluginManager.emit(GameEvent.PlayerJoin, player);
+        this.pluginManager.emit("playerJoin", player);
     }
 
     removePlayer(player: Player): void {
@@ -810,7 +815,7 @@ export class Game {
         try {
             player.socket.close();
         } catch (e) { }
-        this.pluginManager.emit(GameEvent.PlayerDisconnect, player);
+        this.pluginManager.emit("playerDisconnect", player);
     }
 
     /**
@@ -830,7 +835,7 @@ export class Game {
         );
 
         this.grid.addObject(loot);
-        this.pluginManager.emit(GameEvent.LootGenerated, loot);
+        this.pluginManager.emit("lootGenerated", loot);
         return loot;
     }
 
@@ -853,7 +858,7 @@ export class Game {
         return bullet;
     }
 
-    addExplosion(type: ReferenceTo<ExplosionDefinition> | ExplosionDefinition, position: Vector, source: GameObject): Explosion {
+    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
         const explosion = new Explosion(this, type, position, source);
         this.explosions.push(explosion);
         return explosion;
@@ -1013,7 +1018,7 @@ export class Game {
 
         const airdrop = { position, type: crateDef };
 
-        this.pluginManager.emit(GameEvent.AirdropSummoned, airdrop);
+        this.pluginManager.emit("airdropSummoned", airdrop);
 
         this.airdrops.push(airdrop);
 

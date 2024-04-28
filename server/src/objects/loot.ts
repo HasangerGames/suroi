@@ -10,7 +10,6 @@ import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { GameEvent } from "../pluginManager";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -390,7 +389,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         packet.item = this.definition;
         player.sendPacket(packet);
 
-        this.game.pluginManager.emit(GameEvent.LootInteract, {
+        this.game.pluginManager.emit("lootInteract", {
             loot: this,
             player
         });

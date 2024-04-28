@@ -17,7 +17,6 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
-import { GameEvent } from "./pluginManager";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
 export class Map {
@@ -439,7 +438,7 @@ export class Map {
 
         if (!definition.hideOnMap) this.packet.objects.push(building);
         this.game.grid.addObject(building);
-        this.game.pluginManager.emit(GameEvent.BuildingGenerated, building);
+        this.game.pluginManager.emit("buildingGenerated", building);
         return building;
     }
 
@@ -508,7 +507,7 @@ export class Map {
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
-        this.game.pluginManager.emit(GameEvent.ObstacleGenerated, obstacle);
+        this.game.pluginManager.emit("obstacleGenerated", obstacle);
         return obstacle;
     }
 
