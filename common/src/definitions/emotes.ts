@@ -87,7 +87,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Frustrated Face",
             "Chicken Dinner",
             "oof",
-            "real"
+            "real",
+            "Colon Three"
         ].map(name => simple("emote_factory", name)),
         ...[
             "9mm",
