@@ -4,7 +4,7 @@ import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
@@ -789,8 +789,19 @@ Video evidence is required.`)) {
 
         emoteList.empty();
 
-        for (const emote of [{ idString: "", name: "None" }, ...Emotes.definitions]) {
+        const emotes = [...Emotes.definitions].sort((a, b) => {
+            return a.category - b.category;
+        });
+
+        let lastCategory = -1;
+        for (const emote of emotes) {
             if (emote.isTeamEmote) continue;
+
+            if (emote.category !== lastCategory) {
+                const categoryHeader = $(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                emoteList.append(categoryHeader);
+                lastCategory = emote.category;
+            }
 
             // noinspection CssUnknownTarget
             const emoteItem
@@ -807,7 +818,7 @@ Video evidence is required.`)) {
 
                 $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
                     "background-image",
-                    emote.idString !== "" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
+                    `url("./img/game/emotes/${emote.idString}.svg")`
                 );
             });
 
@@ -816,6 +827,7 @@ Video evidence is required.`)) {
     }
 
     updateEmotesList();
+
     for (const slot of emoteSlots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
@@ -847,8 +859,14 @@ Video evidence is required.`)) {
                 $(".emotes-list-item-container")
                     .removeClass("selected")
                     .css("cursor", "pointer");
+
                 $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) || "none"}`).addClass("selected");
             });
+
+        $(`#emote-wheel-bottom .emote-${slot} .remove-emote-btn`).on("click", () => {
+            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
+            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
+        });
     }
 
     // Load crosshairs
