@@ -1657,6 +1657,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
             }
         }
+
+        this.game.pluginManager.emit("playerInput", {
+            player: this,
+            packet
+        });
     }
 
     executeAction(action: Action): void {

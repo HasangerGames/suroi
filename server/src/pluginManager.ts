@@ -9,6 +9,7 @@ import { DamageParams } from "./objects/gameObject";
 import { Obstacle } from "./objects/obstacle";
 import { Building } from "./objects/building";
 import { Loot } from "./objects/loot";
+import { InputPacket } from "../../common/src/packets/inputPacket";
 
 interface PlayerDamageEvent extends DamageParams {
     player: Player
@@ -26,6 +27,10 @@ interface GameEvents {
     playerUpdate: Player
     playerStartAttacking: Player
     playerStopAttacking: Player
+    playerInput: {
+        player: Player
+        packet: InputPacket
+    }
     playerEmote: {
         player: Player
         emote: EmoteDefinition
