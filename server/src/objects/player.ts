@@ -772,9 +772,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.effectiveScope = scopeTarget ?? DEFAULT_SCOPE;
         }
 
-        this.turning = false;
-
         this.game.pluginManager.emit("playerUpdate", this);
+        this.turning = false;
     }
 
     private _firstPacket = true;
