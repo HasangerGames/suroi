@@ -646,6 +646,9 @@ export class Inventory {
                     )
                 ) return;
 
+                // Can't have downed players using consumables
+                if (this.owner.downed) return;
+
                 this.owner.executeAction(new HealingAction(this.owner, idString));
                 break;
             }
@@ -658,8 +661,10 @@ export class Inventory {
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
-                // Let's hope there's only one throwable slot…
 
+                if (this.owner.downed) return;
+                
+                // Let's hope there's only one throwable slot…
                 if (slot !== undefined) {
                     const old = this.weapons[slot];
                     if (old) {
