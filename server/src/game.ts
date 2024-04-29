@@ -712,6 +712,11 @@ export class Game {
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
+        if (packet.protocolVersion !== GameConstants.protocolVersion) {
+            player.disconnect("Invalid game version");
+            return;
+        }
+
         player.name = cleanUsername(packet.name);
 
         player.isMobile = packet.isMobile;
@@ -743,7 +748,6 @@ export class Game {
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
-        joinedPacket.protocolVersion = GameConstants.protocolVersion;
         joinedPacket.maxTeamSize = this.maxTeamSize;
         joinedPacket.teamID = player.teamID ?? 0;
         joinedPacket.emotes = player.loadout.emotes;

@@ -52,6 +52,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -115,6 +116,8 @@ export class Game {
     lastPingDate = 0;
 
     private _tickTimeoutID: number | undefined;
+
+    disconnectReason = "";
 
     readonly pixi = new Application();
     readonly soundManager: SoundManager;
@@ -243,6 +246,7 @@ export class Game {
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
+            this.disconnectReason = "";
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(this.uiManager.gameOverScreenTimeout);
@@ -309,14 +313,23 @@ export class Game {
 
         this._socket.onclose = (): void => {
             resetPlayButtons();
+
+            const reason = this.disconnectReason || "Connection lost";
+
             if (!this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn(400);
-                    $("#splash-server-message-text").html("Connection lost.");
+                    $("#splash-server-message-text").html(this.disconnectReason || "Connection lost.");
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
                 if (!this.error) void this.endGame();
+            }
+
+            if (reason === "Invalid game version") {
+                alert(reason);
+                // reload the page with a time stamp to try clearing cache
+                location.search = `t=${Date.now()}`;
             }
         };
     }
@@ -383,15 +396,13 @@ export class Game {
                 this.soundManager.play(soundID);
                 break;
             }
+            case packet instanceof DisconnectPacket:
+                this.disconnectReason = packet.reason;
+                break;
         }
     }
 
     startGame(packet: JoinedPacket): void {
-        if (packet.protocolVersion !== GameConstants.protocolVersion) {
-            alert("Invalid game version.");
-            // reload the page with a time stamp to try clearing cache
-            location.search = `t=${Date.now()}`;
-        }
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 

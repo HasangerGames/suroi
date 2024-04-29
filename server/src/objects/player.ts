@@ -46,6 +46,7 @@ import { SyncedParticle } from "./syncedParticle";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -1045,6 +1046,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     sendPacket(packet: Packet): void {
         this.packets.push(packet);
+    }
+
+    disconnect(reason: string): void {
+        const disconnectPacket = new DisconnectPacket();
+        disconnectPacket.reason = reason;
+        const stream = new PacketStream(new ArrayBuffer(128));
+        stream.serializeServerPacket(disconnectPacket);
+        this.sendData(stream.getBuffer());
+        this.disconnected = true;
+        // timeout to make sure disconnect packet is sent
+        setTimeout(() => {
+            this.game.removePlayer(this);
+        }, 10);
     }
 
     sendData(buffer: ArrayBuffer): void {

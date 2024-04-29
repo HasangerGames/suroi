@@ -1,4 +1,5 @@
 import { SuroiBitStream } from "../utils/suroiBitStream";
+import { DisconnectPacket } from "./disconnectPacket";
 import { GameOverPacket } from "./gameOverPacket";
 import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
@@ -51,7 +52,8 @@ export const ServerToClientPackets = new PacketRegister(
     JoinedPacket,
     MapPacket,
     GameOverPacket,
-    ReportPacket
+    ReportPacket,
+    DisconnectPacket
 );
 
 export class PacketStream {
