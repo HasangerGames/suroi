@@ -36,6 +36,7 @@ export const Config = {
 
     roles: {
         "developr": { password: "developr", isDev: true },
+        "moderatr": { password: "moderatr", isDev: true },
         "designr": { password: "designr" },
         "composr": { password: "composr" },
         "youtubr": { password: "youtubr" },
