@@ -1564,7 +1564,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             if (
                                 object instanceof Loot
                                 && dist < uninteractable.minDist
-                                && object.canInteract(this)
                             ) {
                                 uninteractable.minDist = dist;
                                 uninteractable.object = object;
@@ -1572,7 +1571,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         }
                     }
                     if (uninteractable.object) {
-                        uninteractable.object?.interact(this, false);
+                        uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
                     }
 
                     this.canDespawn = false;
