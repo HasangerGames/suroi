@@ -738,8 +738,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Enables the emote wheel to ping mode",
-            long: "When invoked, the emote wheel will switch from triggering emotes to trigger map pings",
+            short: "Enables the emote wheel's ping mode",
+            long: "When invoked, the emote wheel will switch from triggering emotes to triggering map pings",
             signatures: [{ args: [], noexcept: true }]
         },
         {
@@ -1608,4 +1608,12 @@ export function setUpCommands(game: Game): void {
             ]
         }
     );
+
+    /*
+        few reasons for this:
+        a) expanding out these console commands and making a proper implementation of `map_ping` leads to duplicated code
+        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper command with help text if you want tho)
+        c) the whole "hold key to switch to ping mode" thing is annoying
+    */
+    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"+map_ping_wheel; +emote_wheel\"");
 }
