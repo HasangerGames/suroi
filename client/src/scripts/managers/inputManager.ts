@@ -201,9 +201,14 @@ export class InputManager {
         gameContainer.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
         gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true));
 
+        $("#emote-wheel > .button-center").on("click", () => {
+            this.emoteWheelActive = false;
+            this.selectedEmote = undefined;
+            this.pingWheelMinimap = false;
+            $("#emote-wheel").hide();
+        });
         gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
-
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
 
@@ -212,7 +217,6 @@ export class InputManager {
                 if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
                     const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
-
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
                         this.selectedEmote = 0;
                         slotName = "top";
@@ -229,7 +233,7 @@ export class InputManager {
                     $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
                 } else {
                     this.selectedEmote = undefined;
-                    $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
+                    $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_center.svg"), url("./img/misc/emote_wheel.svg")`);
                 }
             }
 

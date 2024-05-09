@@ -18,9 +18,15 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
 )(
     ({ simple }) => [
         simple("badge_factory", "Developr", ["developr"]),
-        simple("badge_factory", "Designr", ["designr"]),
+        simple("badge_factory", "Lead Designr", ["lead_designr"]),
+        simple("badge_factory", "VIP Designr", ["vip_designr"]),
         simple("badge_factory", "Composr", ["composr"]),
-        simple("badge_factory", "Youtubr", ["youtubr", "123op"]),
+        simple("badge_factory", "Lead Composr", ["lead_composr"]),
+        simple("badge_factory", "Moderatr", ["moderatr"]),
+        simple("badge_factory", "Trial Moderatr", ["trial_moderatr"]),
+        simple("badge_factory", "Studio Managr", ["studio_managr"]),
+        simple("badge_factory", "Boostr", ["boostr"]),
+        simple("badge_factory", "Designr", ["designr"]),
         simple("badge_factory", "Ownr", ["hasanger"]),
         simple("badge_factory", "Contributr+", ["katie", "leia"]),
         simple("badge_factory", "Bleh"),

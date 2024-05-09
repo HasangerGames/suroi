@@ -783,37 +783,56 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
+    function handleEmote(slot: "win" | "death"): void { // eipi can you improve this so that it uses `emoteSlots` items with index >3
+        const emoteSelector = `#emote-wheel-bottom .emote-${slot} .fa-xmark`;
+        $(emoteSelector).on("click", function() {
+            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
+            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
+            $(this).hide();
+        });
+    
+        if (game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) === "") $(emoteSelector).hide();
+    }
+    
+    handleEmote("win");
+    handleEmote("death");
+    
     let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
     function updateEmotesList(): void {
         const emoteList = $("#emotes-list");
-
+    
         emoteList.empty();
-
-        for (const emote of [{ idString: "", name: "None" }, ...Emotes.definitions]) {
+    
+        for (const emote of Emotes.definitions) {
             if (emote.isTeamEmote) continue;
-
-            // noinspection CssUnknownTarget
-            const emoteItem
-                = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
-    <span class="emote-name">${emote.name}</span>
-    </div>`);
-
+    
+            const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+                <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
+                <span class="emote-name">${emote.name}</span>
+                </div>`);
+    
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
-                game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
-
+    
+                const cvarName = selectedEmoteSlot;
+                const emoteSelector = `#emote-wheel-bottom .emote-${cvarName} .fa-xmark`;
+    
+                $(emoteSelector).show();
+    
+                game.console.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
+    
                 $(this).addClass("selected").siblings().removeClass("selected");
-
-                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
+    
+                $(`#emote-wheel-container .emote-${cvarName}`).css(
                     "background-image",
-                    emote.idString !== "" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
+                    `url("./img/game/emotes/${emote.idString}.svg")`
                 );
             });
-
+    
             emoteList.append(emoteItem);
         }
     }
+    
 
     updateEmotesList();
     for (const slot of emoteSlots) {
@@ -1079,9 +1098,19 @@ Video evidence is required.`)) {
 
     // Toggle auto pickup
     addCheckboxListener(
-        "#toggle-auto-pickup",
-        "cv_auto_pickup"
+        "#toggle-autopickup",
+        "cv_autopickup"
     );
+    $("#toggle-autopickup").parent().parent().toggle(game.inputManager.isMobile);
+
+
+    // Autopickup a dual gun
+    addCheckboxListener(
+        "#toggle-autopickup-dual-guns",
+        "cv_autopickup_dual_guns"
+    );
+    $("#toggle-autopickup-dual-guns").parent().parent().toggle(game.inputManager.isMobile);
+
 
     // Anonymous player names toggle
     addCheckboxListener(
