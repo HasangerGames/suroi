@@ -46,6 +46,7 @@ import { SyncedParticle } from "./syncedParticle";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import * as https from "https";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -1021,10 +1022,71 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     name: this.spectating?.name,
                     time: this.game.now
                 }));
+
                 const packet = new ReportPacket();
                 packet.playerName = this.spectating?.name ?? "";
                 packet.reportID = reportID;
                 this.sendPacket(packet);
+
+                const sendPostRequest = (url: string, data: unknown): Promise<string> => {
+                    return new Promise((resolve, reject) => {
+                        const payload = JSON.stringify(data);
+
+                        const options: https.RequestOptions = {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Content-Length": Buffer.byteLength(payload)
+                            }
+                        };
+
+                        const req = https.request(url, options, res => {
+                            let responseData = "";
+
+                            res.on("data", chunk => {
+                                responseData += String(chunk);
+                            });
+
+                            res.on("end", () => {
+                                resolve(responseData);
+                            });
+                        });
+
+                        req.on("error", (error: Error) => {
+                            reject(error);
+                        });
+
+                        req.write(payload);
+                        req.end();
+                    });
+                };
+
+                const reportURL = ""; // FIXME what?
+                const reportData = {
+                    embeds: [
+                        {
+                            title: "Report Received",
+                            description: `Report ID: \`${reportID}\``,
+                            color: 16711680,
+                            fields: [
+                                {
+                                    name: "Username",
+                                    value: `\`${this.spectating?.name}\``
+                                },
+                                {
+                                    name: "Time reported",
+                                    value: this.game.now
+                                }
+                            ]
+                        }
+                    ]
+                };
+
+                // FIXME ignored promise result?
+                sendPostRequest(reportURL, reportData)
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
             }
         }
 
