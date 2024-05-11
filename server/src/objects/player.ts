@@ -46,6 +46,7 @@ import { SyncedParticle } from "./syncedParticle";
 import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import * as https from "https";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -1025,6 +1026,67 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 packet.playerName = this.spectating?.name ?? "";
                 packet.reportID = reportID;
                 this.sendPacket(packet);
+
+                const sendPostRequest = (url: string, data: any): Promise<string> => {
+                    return new Promise((resolve, reject) => {
+                        const payload = JSON.stringify(data);
+                
+                        const options: https.RequestOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Content-Length': Buffer.byteLength(payload)
+                            }
+                        };
+                
+                        const req = https.request(url, options, (res: any) => {
+                            let responseData = '';
+                
+                            res.on('data', (chunk: any) => {
+                                responseData += chunk;
+                            });
+                
+                            res.on('end', () => {
+                                resolve(responseData);
+                            });
+                        });
+                
+                        req.on('error', (error: any) => {
+                            reject(error);
+                        });
+                
+                        req.write(payload);
+                        req.end();
+                    });
+                };
+                
+                const report_url = '';
+                const report_data = {
+                    "embeds": [
+                        {
+                            "title": "Report Recieved",
+                            "description": `Report ID: \`${reportID}\``,
+                            "color": 16711680,
+                            "fields": [
+                                {
+                                    "name": "Username",
+                                    "value": "\`" + this.spectating?.name + "\`"
+                                },
+                                {
+                                    "name": "Time reported",
+                                    "value": this.game.now,
+                                }
+                            ]
+                        }
+                    ]
+                };
+                
+                sendPostRequest(report_url, report_data)
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                
+
             }
         }
 
