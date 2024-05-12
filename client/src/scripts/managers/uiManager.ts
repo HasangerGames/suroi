@@ -533,17 +533,22 @@ export class UIManager {
                     .text(weapon.definition.name);
 
                 const isFists = weapon.definition.idString === "fists";
-                container
-                    .children(".item-image")
+                const itemImage = container.children(".item-image");
+                const oldSrc = itemImage.attr("src");
+                const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
+                if (oldSrc !== newSrc) {
+                    container.toggleClass("active");
+                    container[0].offsetWidth; // causes browser reflow
+                    container.toggleClass("active");
+                }
+                itemImage
                     .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
                     .toggleClass("is-fists", isFists)
-                    .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
+                    .attr("src", newSrc)
                     .show();
 
                 if (weapon.definition.idString === "ghillie_suit") {
-                    container
-                        .children(".item-image")
-                        .css("background-color", GHILLIE_TINT.toHex());
+                    itemImage.css("background-color", GHILLIE_TINT.toHex());
                 }
 
                 if (weapon.count !== undefined) {
