@@ -52,7 +52,6 @@ export class InputManager {
         if (this.actions.length > 7) return;
 
         if (typeof action === "number") {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             action = { type: action } as InputAction;
         }
 
@@ -149,9 +148,9 @@ export class InputManager {
         this._inputPacketTimer++;
 
         if (
-            !this._lastInputPacket ||
-            packet.didChange(this._lastInputPacket) ||
-            this._inputPacketTimer >= GameConstants.tickrate
+            !this._lastInputPacket
+            || packet.didChange(this._lastInputPacket)
+            || this._inputPacketTimer >= GameConstants.tickrate
         ) {
             this.game.sendPacket(packet);
             this._lastInputPacket = packet;
@@ -202,9 +201,14 @@ export class InputManager {
         gameContainer.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
         gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true));
 
+        $("#emote-wheel > .button-center").on("click", () => {
+            this.emoteWheelActive = false;
+            this.selectedEmote = undefined;
+            this.pingWheelMinimap = false;
+            $("#emote-wheel").hide();
+        });
         gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
-
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
 
@@ -213,7 +217,6 @@ export class InputManager {
                 if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
                     const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
-
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
                         this.selectedEmote = 0;
                         slotName = "top";
@@ -230,7 +233,7 @@ export class InputManager {
                     $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
                 } else {
                     this.selectedEmote = undefined;
-                    $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
+                    $("#emote-wheel").css("background-image", "url(\"./img/misc/emote_wheel_highlight_center.svg\"), url(\"./img/misc/emote_wheel.svg\")");
                 }
             }
 
@@ -371,8 +374,8 @@ export class InputManager {
             // As stated before, more than one modifier or a modifier alongside another key should invalidate an input
             if (
                 (
-                    modifierCount > 1 ||
-                    (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
+                    modifierCount > 1
+                    || (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
                 ) && down
                 // …but it only invalidates pressing a key, not releasing it
             ) return;
@@ -467,34 +470,34 @@ export class InputManager {
         "+down": "Move Down",
         "+left": "Move Left",
         "+right": "Move Right",
-        interact: "Interact",
-        loot: "Loot",
+        "interact": "Interact",
+        "loot": "Loot",
         "slot 0": "Equip Primary",
         "slot 1": "Equip Secondary",
         "slot 2": "Equip Melee",
         "equip_or_cycle_throwables 1": "Equip/Cycle Throwable",
-        last_item: "Equip Last Weapon",
-        other_weapon: "Equip Other Gun",
-        swap_gun_slots: "Swap Gun Slots",
+        "last_item": "Equip Last Weapon",
+        "other_weapon": "Equip Other Gun",
+        "swap_gun_slots": "Swap Gun Slots",
         "cycle_items -1": "Equip Previous Weapon",
         "cycle_items 1": "Equip Next Weapon",
         "+attack": "Use Weapon",
-        drop: "Drop Active Weapon",
-        reload: "Reload",
+        "drop": "Drop Active Weapon",
+        "reload": "Reload",
         "cycle_scopes -1": "Previous Scope",
         "cycle_scopes 1": "Next Scope",
         "use_consumable gauze": "Use Gauze",
         "use_consumable medikit": "Use Medikit",
         "use_consumable cola": "Use Cola",
         "use_consumable tablets": "Use Tablets",
-        cancel_action: "Cancel Action",
+        "cancel_action": "Cancel Action",
         "+view_map": "View Map",
-        toggle_map: "Toggle Fullscreen Map",
-        toggle_minimap: "Toggle Minimap",
-        toggle_hud: "Toggle HUD",
+        "toggle_map": "Toggle Fullscreen Map",
+        "toggle_minimap": "Toggle Minimap",
+        "toggle_hud": "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
         "+map_ping_wheel": "Map Ping Wheel",
-        toggle_console: "Toggle Console"
+        "toggle_console": "Toggle Console"
     };
 
     cycleScope(offset: number): void {
@@ -607,9 +610,9 @@ export class InputManager {
                     event.stopImmediatePropagation();
 
                     if (
-                        event instanceof MouseEvent &&
-                        event.type === "mousedown" &&
-                        !bindButton.classList.contains("active")
+                        event instanceof MouseEvent
+                        && event.type === "mousedown"
+                        && !bindButton.classList.contains("active")
                     ) {
                         activeButton?.classList.remove("active");
                         bindButton.classList.add("active");
@@ -705,14 +708,13 @@ class InputMapper {
     private readonly _inputToAction = new Map<string, Set<string>>();
     private readonly _actionToInput = new Map<string, Set<string>>();
 
-    /* eslint-disable @typescript-eslint/indent, indent, no-sequences */
-    private static readonly _generateGetAndSetIfAbsent =
-        <K, V>(map: Map<K, V>, defaultValue: V) =>
+    private static readonly _generateGetAndSetIfAbsent
+        = <K, V>(map: Map<K, V>, defaultValue: V) =>
             (key: K) =>
                 map.get(key) ?? (() => (map.set(key, defaultValue), defaultValue))();
 
-    private static readonly _generateAdder =
-        <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
+    private static readonly _generateAdder
+        = <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
             (key: K, ...values: V[]): T => {
                 const forwardSet = InputMapper._generateGetAndSetIfAbsent(forwardsMap, new Set())(key);
 
@@ -757,8 +759,8 @@ class InputMapper {
         return true;
     }
 
-    private static readonly _generateRemover =
-        <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
+    private static readonly _generateRemover
+        = <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
             (key: K) => {
                 forwardsMap.delete(key);
 
@@ -792,8 +794,8 @@ class InputMapper {
         return this;
     }
 
-    private static readonly _generateGetter =
-        <K, V>(map: Map<K, Set<V>>) =>
+    private static readonly _generateGetter
+        = <K, V>(map: Map<K, Set<V>>) =>
             (key: K) => [...(map.get(key)?.values?.() ?? [])];
 
     /**
@@ -809,8 +811,8 @@ class InputMapper {
      */
     readonly getActionsBoundToInput = InputMapper._generateGetter(this._inputToAction);
 
-    private static readonly _generateLister =
-        <K, V>(map: Map<K, V>) =>
+    private static readonly _generateLister
+        = <K, V>(map: Map<K, V>) =>
             () => [...map.keys()];
 
     /**

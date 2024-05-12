@@ -1,5 +1,4 @@
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
@@ -160,12 +159,12 @@ export class Loot extends GameObject {
             case ItemType.Gun: {
                 for (const weapon of inventory.weapons) {
                     if (
-                        weapon?.definition.itemType === ItemType.Gun &&
-                        (
-                            definition.idString === weapon.definition.dualVariant ||
-                            (
-                                definition === weapon.definition &&
-                                weapon.definition.dualVariant
+                        weapon?.definition.itemType === ItemType.Gun
+                        && (
+                            definition.idString === weapon.definition.dualVariant
+                            || (
+                                definition === weapon.definition
+                                && weapon.definition.dualVariant
                             )
                         )
                     ) {
@@ -173,9 +172,9 @@ export class Loot extends GameObject {
                     }
                 }
 
-                return !inventory.weapons[0] ||
-                    !inventory.weapons[1] ||
-                    (inventory.activeWeaponIndex < 2 && definition !== inventory.weapons[inventory.activeWeaponIndex]?.definition);
+                return !inventory.weapons[0]
+                    || !inventory.weapons[1]
+                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.weapons[inventory.activeWeaponIndex]?.definition);
             }
             case ItemType.Melee: {
                 return definition !== inventory.weapons[2]?.definition;
@@ -183,9 +182,9 @@ export class Loot extends GameObject {
             case ItemType.Healing:
             case ItemType.Ammo:
             case ItemType.Throwable: {
-                const idString = definition.idString;
+                const { idString } = definition;
 
-                return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString]);
+                return inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString];
             }
             case ItemType.Armor: {
                 switch (true) {

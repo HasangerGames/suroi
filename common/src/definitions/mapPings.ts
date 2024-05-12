@@ -21,6 +21,7 @@ export interface MapPingDefinition extends ObjectDefinition {
      * any previous pings from that player will be removed
      */
     readonly isPlayerPing: boolean
+    readonly ignoreExpiration?: boolean
     readonly sound?: string
 }
 
@@ -47,9 +48,9 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
     })
 )(
     apply => [
-        apply("gamePingFactory", {}, "airdrop_ping", 0x00ffff),
+        apply("gamePingFactory", { ignoreExpiration: true }, "airdrop_ping", 0x00ffff),
         apply("playerPingFactory", {}, "warning_ping"),
-        apply("playerPingFactory", {}, "arrow_ping"),
+        apply("playerPingFactory", { ignoreExpiration: true }, "arrow_ping"),
         apply("playerPingFactory", {}, "gift_ping"),
         apply("playerPingFactory", {}, "heal_ping")
     ]

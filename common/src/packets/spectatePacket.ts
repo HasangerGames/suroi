@@ -1,13 +1,10 @@
-import { PacketType, SpectateActions } from "../constants";
+import { SpectateActions } from "../constants";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
 const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 
-export class SpectatePacket extends AbstractPacket {
-    override readonly allocBytes = 3;
-    override readonly type = PacketType.Spectate;
-
+export class SpectatePacket extends Packet {
     spectateAction!: SpectateActions;
     playerID?: number;
 

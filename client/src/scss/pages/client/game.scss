@@ -423,6 +423,8 @@
     #action-timer {
         position: relative;
         top: -10%;
+        text-align: center;
+        justify-content: center;
         @include drop-shadow;
 
         #action-time {
@@ -612,7 +614,6 @@
     #health-bar-animation {
         opacity: 50%;
         background: #ff0000;
-        transition: width ease-in-out 800ms;
     }
 
     #health-bar-percentage {
@@ -1398,6 +1399,7 @@
     width: 286px;
     height: 286px;
     transform: translate(-50%, -50%);
+    z-index: 1;
     //noinspection CssUnknownTarget
     background-image: url("/img/misc/emote_wheel.svg");
 
@@ -1426,6 +1428,13 @@
     .emote-left {
         left: 14px;
         top: 101px;
+    }
+
+    .button-center {
+        width: 42px;
+        height: 42px;
+        left: calc(143px - calc(42px / 2));
+        top: calc(101px + calc(42px / 2));
     }
 }
 

@@ -7,10 +7,7 @@ import { type Vector } from "./vector";
 /*
     eslint-disable
 
-    @typescript-eslint/indent,
-    @typescript-eslint/consistent-type-definitions,
-    @typescript-eslint/prefer-reduce-type-parameter,
-    @typescript-eslint/consistent-type-assertions
+    @typescript-eslint/prefer-reduce-type-parameter
 */
 
 /*
@@ -46,7 +43,7 @@ const _noDefaultInheritSymbol: unique symbol = Symbol("no default inherit");
  * @template Def The definition that will partially be constructed by this function
  */
 // It's a function whose argument types are narrowed if needed, and `unknown` causes false errors
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 type TemplateFn<Def extends ObjectDefinition> = (...args: readonly any[]) => DeepPartial<Def>;
 
 /**
@@ -158,12 +155,13 @@ export type StageZeroDefinition<
     Def extends ObjectDefinition,
     DefaultTemplate extends ((...args: readonly unknown[]) => unknown) | undefined
 > = DefaultTemplate extends (...args: readonly unknown[]) => unknown
+    // eslint-disable-next-line @stylistic/indent-binary-ops
     ? Omit<Def, keyof ReturnType<DefaultTemplate>> & {
         readonly idString: string
     } & {
         readonly [K in Extract<keyof Def, keyof ReturnType<DefaultTemplate>>]?: DeepPartial<Def[K]>
         //                                                                      ^^^^^^^^^^^^^^^^^^^
-        //! unsafe, but makes the api easier to use + the dv will catch any mistakes
+        // ! unsafe, but makes the api easier to use + the dv will catch any mistakes
     }
     : Def;
 
@@ -422,7 +420,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
                     if (typeof value === "function") {
                         if (isDefaultTemplate && value.length !== 0) {
-                            //fixme change this?
+                            // fixme change this?
                             throw new DefinitionFactoryInitError("Default template must be a no-parameter factory");
                         }
 
@@ -446,7 +444,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                     }
 
                     if (!(inheritTargetName in templatesDecl)) {
-                        throw new DefinitionFactoryInitError(`Template '${String(key)}' tried to extend non-existant template '${inheritTargetName}'`);
+                        throw new DefinitionFactoryInitError(`Template '${String(key)}' tried to extend non-existent template '${inheritTargetName}'`);
                     }
 
                     if (trace.includes(inheritTargetName)) {
@@ -552,7 +550,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                                 const target = definitions.find(def => def.idString === targetName);
                                 if (!target) {
                                     throw new DefinitionInheritanceInitError(
-                                        `Definition '${def.idString}' was configured to inherit from inexistant definition '${targetName}'`
+                                        `Definition '${def.idString}' was configured to inherit from inexistent definition '${targetName}'`
                                     );
                                 }
 

@@ -53,13 +53,16 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
         this.push(randomRotation(), 0.003);
 
-        this.game.addTimeout(() => { this.isNew = false; }, 100);
+        this.game.addTimeout(() => {
+            this.isNew = false;
+            this.setDirty();
+        }, 100);
     }
 
     update(): void {
-        const moving = Math.abs(this.velocity.x) > 0.001 ||
-            Math.abs(this.velocity.y) > 0.001 ||
-            !Vec.equals(this._oldPosition, this.position);
+        const moving = Math.abs(this.velocity.x) > 0.001
+            || Math.abs(this.velocity.y) > 0.001
+            || !Vec.equals(this._oldPosition, this.position);
 
         if (!moving) return;
 
@@ -101,10 +104,10 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
             if (
-                moving &&
-                object instanceof Obstacle &&
-                object.collidable &&
-                object.hitbox.collidesWith(this.hitbox)
+                moving
+                && object instanceof Obstacle
+                && object.collidable
+                && object.hitbox.collidesWith(this.hitbox)
             ) {
                 this.hitbox.resolveCollision(object.hitbox);
             }
@@ -152,18 +155,18 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                     const weapon = slot;
 
                     if (
-                        weapon instanceof GunItem &&
-                        !weapon.definition.isDual &&
-                        weapon.definition.dualVariant &&
-                        weapon.definition === definition
+                        weapon instanceof GunItem
+                        && !weapon.definition.isDual
+                        && weapon.definition.dualVariant
+                        && weapon.definition === definition
                     ) {
                         return true;
                     }
                 }
 
-                return !inventory.hasWeapon(0) ||
-                    !inventory.hasWeapon(1) ||
-                    (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition);
+                return !inventory.hasWeapon(0)
+                    || !inventory.hasWeapon(1)
+                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition);
             }
             case ItemType.Healing:
             case ItemType.Ammo:
@@ -211,6 +214,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         };
 
         if (noPickup) {
+            // Do not play pickup & drop on melees and guns
+            if ([ItemType.Gun, ItemType.Melee].includes(this.definition.itemType)) return;
             this.game.removeLoot(this);
             createNewItem();
             return;
@@ -243,9 +248,9 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                     const weapon = inventory.weapons[i];
 
                     if (
-                        weapon instanceof GunItem &&
-                        weapon.definition.dualVariant &&
-                        weapon.definition === definition
+                        weapon instanceof GunItem
+                        && weapon.definition.dualVariant
+                        && weapon.definition === definition
                     ) {
                         player.dirty.weapons = true;
                         player.setDirty();
@@ -386,15 +391,20 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         packet.item = this.definition;
         player.sendPacket(packet);
 
+        this.game.pluginManager.emit("lootInteract", {
+            loot: this,
+            player
+        });
+
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (this._count > 0) createNewItem();
 
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;
         if (
-            activeWeapon instanceof GunItem &&
-            activeWeapon.ammo === 0 &&
-            idString === activeWeapon.definition.ammoType
+            activeWeapon instanceof GunItem
+            && activeWeapon.ammo === 0
+            && idString === activeWeapon.definition.ammoType
         ) {
             activeWeapon.reload();
         }
@@ -411,6 +421,5 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     override damage(): void { }
 }

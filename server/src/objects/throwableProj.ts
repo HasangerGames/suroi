@@ -150,10 +150,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             const isPlayer = object instanceof Player;
 
             if (
-                object.dead ||
-                (
-                    (!isObstacle || !object.collidable) &&
-                    (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
+                object.dead
+                || (
+                    (!isObstacle || !object.collidable)
+                    && (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
                 )
             ) continue;
 
@@ -181,11 +181,11 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             if (!collidingWithObject) continue;
 
             if (shouldDealImpactDamage && !this._damagedLastTick.has(object)) {
-                object.damage(
-                    impactDamage * ((isObstacle ? this.definition.obstacleMultiplier : undefined) ?? 1),
-                    this.source.owner,
-                    this.source
-                );
+                object.damage({
+                    amount: impactDamage * ((isObstacle ? this.definition.obstacleMultiplier : undefined) ?? 1),
+                    source: this.source.owner,
+                    weaponUsed: this.source
+                });
 
                 if (object.dead) {
                     continue;
@@ -263,7 +263,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.setPartialDirty();
     }
 
-    damage(_amount: number, _source?: GameObject): void { }
+    override damage(): void { }
 
     get data(): FullData<ObjectCategory.ThrowableProjectile> {
         return {

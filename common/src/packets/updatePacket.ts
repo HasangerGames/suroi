@@ -1,17 +1,15 @@
-import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, PacketType, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
-import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
+import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
-import { calculateEnumPacketBits, OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
-
 import { MapPings, type MapPingDefinition } from "../definitions/mapPings";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
 interface ObjectFullData {
     readonly id: number
@@ -35,7 +33,6 @@ export interface PlayerData {
         id: boolean
         teammates: boolean
         zoom: boolean
-        throwable: boolean
     }
 
     id: number
@@ -155,7 +152,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 }
 
 function deserializePlayerData(stream: SuroiBitStream): PlayerData {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions, no-cond-assign */
+    /* eslint-disable no-cond-assign */
     const dirty = {} as PlayerData["dirty"];
     const inventory = {} as PlayerData["inventory"];
     const data = { dirty, inventory } as PlayerData;
@@ -230,143 +227,6 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
     return data;
 }
 
-const KILLFEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillfeedMessageType);
-const KILLFEED_EVENT_TYPE_BITS = calculateEnumPacketBits(KillfeedEventType);
-const KILLFEED_EVENT_SEVERITY_BITS = calculateEnumPacketBits(KillfeedEventSeverity);
-
-const damageSourcesDefinitions = ObjectDefinitions.create<LootDefinition | ExplosionDefinition>([...Loots, ...Explosions]);
-
-function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessage): void {
-    stream.writeBits(message.messageType, KILLFEED_MESSAGE_TYPE_BITS);
-    switch (message.messageType) {
-        case KillfeedMessageType.DeathOrDown: {
-            stream.writeObjectID(message.victimId!);
-
-            const type = message.eventType ?? KillfeedEventType.Suicide;
-            stream.writeBits(type, KILLFEED_EVENT_TYPE_BITS);
-            if (
-                [
-                    KillfeedEventType.NormalTwoParty,
-                    KillfeedEventType.FinishedOff,
-                    KillfeedEventType.FinallyKilled
-                ].includes(type)
-            ) {
-                const hasAttacker = message.attackerId !== undefined;
-                stream.writeBoolean(hasAttacker);
-                if (hasAttacker) {
-                    stream.writeObjectID(message.attackerId!);
-                    stream.writeUint8(message.attackerKills!);
-                }
-            }
-            stream.writeBits(message.severity ?? KillfeedEventSeverity.Kill, KILLFEED_EVENT_SEVERITY_BITS);
-
-            const weaponWasUsed = message.weaponUsed !== undefined;
-            stream.writeBoolean(weaponWasUsed);
-            if (weaponWasUsed) {
-                damageSourcesDefinitions.writeToStream(stream, message.weaponUsed!);
-                if (
-                    message.weaponUsed !== undefined &&
-                    "killstreak" in message.weaponUsed &&
-                    message.weaponUsed.killstreak
-                ) {
-                    stream.writeUint8(message.killstreak!);
-                }
-            }
-            break;
-        }
-
-        case KillfeedMessageType.KillLeaderAssigned: {
-            stream.writeObjectID(message.victimId!);
-            stream.writeUint8(message.attackerKills!);
-            stream.writeBoolean(message.hideFromKillfeed ?? false);
-            break;
-        }
-
-        case KillfeedMessageType.KillLeaderUpdated: {
-            stream.writeUint8(message.attackerKills!);
-            break;
-        }
-
-        case KillfeedMessageType.KillLeaderDead: {
-            stream.writeObjectID(message.victimId!);
-            stream.writeObjectID(message.attackerId!);
-            break;
-        }
-    }
-}
-
-export interface KillFeedMessage {
-    messageType: KillfeedMessageType
-    victimId?: number
-    victimBadge?: BadgeDefinition
-    eventType?: KillfeedEventType
-    severity?: KillfeedEventSeverity
-    attackerId?: number
-    attackBadge?: BadgeDefinition
-    attackerKills?: number
-    killstreak?: number
-    hideFromKillfeed?: boolean
-    weaponUsed?: LootDefinition | ExplosionDefinition
-}
-
-function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
-    const message = {
-        messageType: stream.readBits(KILLFEED_MESSAGE_TYPE_BITS)
-    } as KillFeedMessage;
-
-    switch (message.messageType) {
-        case KillfeedMessageType.DeathOrDown: {
-            message.victimId = stream.readObjectID();
-
-            const type = message.eventType = stream.readBits(KILLFEED_EVENT_TYPE_BITS);
-            if (
-                [
-                    KillfeedEventType.NormalTwoParty,
-                    KillfeedEventType.FinishedOff,
-                    KillfeedEventType.FinallyKilled
-                ].includes(type) &&
-                stream.readBoolean() // attacker present
-            ) {
-                message.attackerId = stream.readObjectID();
-                message.attackerKills = stream.readUint8();
-            }
-            message.severity = stream.readBits(KILLFEED_EVENT_SEVERITY_BITS);
-
-            if (stream.readBoolean()) { // used a weapon
-                message.weaponUsed = damageSourcesDefinitions.readFromStream(stream);
-
-                if (
-                    message.weaponUsed !== undefined &&
-                    "killstreak" in message.weaponUsed &&
-                    message.weaponUsed.killstreak
-                ) {
-                    message.killstreak = stream.readUint8();
-                }
-            }
-            break;
-        }
-
-        case KillfeedMessageType.KillLeaderAssigned: {
-            message.victimId = stream.readObjectID();
-            message.attackerKills = stream.readUint8();
-            message.hideFromKillfeed = stream.readBoolean();
-            break;
-        }
-
-        case KillfeedMessageType.KillLeaderUpdated: {
-            message.attackerKills = stream.readUint8();
-            break;
-        }
-
-        case KillfeedMessageType.KillLeaderDead: {
-            message.victimId = stream.readObjectID();
-            message.attackerId = stream.readObjectID();
-            break;
-        }
-    }
-    return message;
-}
-
 const UpdateFlags = Object.freeze({
     PlayerData: 1 << 0,
     DeletedObjects: 1 << 1,
@@ -380,17 +240,13 @@ const UpdateFlags = Object.freeze({
     NewPlayers: 1 << 9,
     DeletedPlayers: 1 << 10,
     AliveCount: 1 << 11,
-    KillFeedMessages: 1 << 12,
-    Planes: 1 << 13,
-    MapPings: 1 << 14
+    Planes: 1 << 12,
+    MapPings: 1 << 13
 });
 
 const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
-export class UpdatePacket extends AbstractPacket {
-    override readonly allocBytes = 1 << 16;
-    override readonly type = PacketType.Update;
-
+export class UpdatePacket extends Packet {
     playerData!: PlayerData;
 
     deletedObjects: number[] = [];
@@ -446,8 +302,6 @@ export class UpdatePacket extends AbstractPacket {
     aliveCountDirty?: boolean;
     aliveCount?: number;
 
-    killFeedMessages: KillFeedMessage[] = [];
-
     planes: Array<{
         readonly position: Vector
         readonly direction: number
@@ -460,88 +314,81 @@ export class UpdatePacket extends AbstractPacket {
     }> = [];
 
     override serialize(stream: SuroiBitStream): void {
-        const playerDataDirty = Object.values(this.playerData.dirty).some(v => v);
-
-        const flags =
-            (+!!playerDataDirty && UpdateFlags.PlayerData) |
-            (+!!this.deletedObjects.length && UpdateFlags.DeletedObjects) |
-            (+!!this.fullObjectsCache.length && UpdateFlags.FullObjects) |
-            (+!!this.partialObjectsCache.length && UpdateFlags.PartialObjects) |
-            (+!!this.bullets.length && UpdateFlags.Bullets) |
-            (+!!this.explosions.length && UpdateFlags.Explosions) |
-            (+!!this.emotes.length && UpdateFlags.Emotes) |
-            (+!!this.gas?.dirty && UpdateFlags.Gas) |
-            (+!!this.gasProgress?.dirty && UpdateFlags.GasPercentage) |
-            (+!!this.newPlayers.length && UpdateFlags.NewPlayers) |
-            (+!!this.deletedPlayers.length && UpdateFlags.DeletedPlayers) |
-            (+!!this.aliveCountDirty && UpdateFlags.AliveCount) |
-            (+!!this.killFeedMessages.length && UpdateFlags.KillFeedMessages) |
-            (+!!this.planes.length && UpdateFlags.Planes) |
-            (+!!this.mapPings.length && UpdateFlags.MapPings);
-
+        let flags = 0;
+        // save the current index to write flags latter
+        const flagsIdx = stream.index;
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
-        if (flags & UpdateFlags.PlayerData) {
+        if (Object.values(this.playerData.dirty).includes(true)) {
             serializePlayerData(stream, this.playerData);
+            flags |= UpdateFlags.PlayerData;
         }
 
-        if (flags & UpdateFlags.DeletedObjects) {
-            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, (id) => {
+        if (this.deletedObjects.length) {
+            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, id => {
                 stream.writeObjectID(id);
             });
+            flags |= UpdateFlags.DeletedObjects;
         }
 
-        if (flags & UpdateFlags.FullObjects) {
+        if (this.fullObjectsCache.length) {
             stream.writeAlignToNextByte();
-            stream.writeArray(this.fullObjectsCache, 16, (object) => {
+            stream.writeArray(this.fullObjectsCache, 16, object => {
                 stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
                 stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
             });
+            flags |= UpdateFlags.FullObjects;
         }
 
-        if (flags & UpdateFlags.PartialObjects) {
+        if (this.partialObjectsCache.length) {
             stream.writeAlignToNextByte();
-            stream.writeArray(this.partialObjectsCache, 16, (object) => {
+            stream.writeArray(this.partialObjectsCache, 16, object => {
                 stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
             });
+            flags |= UpdateFlags.PartialObjects;
         }
 
-        if (flags & UpdateFlags.Bullets) {
+        if (this.bullets.length) {
             stream.writeArray(this.bullets, 8, bullet => {
                 bullet.serialize(stream);
             });
+            flags |= UpdateFlags.Bullets;
         }
 
-        if (flags & UpdateFlags.Explosions) {
-            stream.writeArray(this.explosions, 8, (explosion) => {
+        if (this.explosions.length) {
+            stream.writeArray(this.explosions, 8, explosion => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             });
+            flags |= UpdateFlags.Explosions;
         }
 
-        if (flags & UpdateFlags.Emotes) {
-            stream.writeArray(this.emotes, 8, (emote) => {
+        if (this.emotes.length) {
+            stream.writeArray(this.emotes, 8, emote => {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerID);
             });
+            flags |= UpdateFlags.Emotes;
         }
 
-        if (flags & UpdateFlags.Gas) {
-            const gas = this.gas!;
+        if (this.gas?.dirty) {
+            const gas = this.gas;
             stream.writeBits(gas.state, 2);
             stream.writeBits(gas.currentDuration, 7);
             stream.writePosition(gas.oldPosition);
             stream.writePosition(gas.newPosition);
             stream.writeFloat(gas.oldRadius, 0, 2048, 16);
             stream.writeFloat(gas.newRadius, 0, 2048, 16);
+            flags |= UpdateFlags.Gas;
         }
 
-        if (flags & UpdateFlags.GasPercentage) {
-            stream.writeFloat(this.gasProgress!.value, 0, 1, 16);
+        if (this.gasProgress?.dirty) {
+            stream.writeFloat(this.gasProgress.value, 0, 1, 16);
+            flags |= UpdateFlags.GasPercentage;
         }
 
-        if (flags & UpdateFlags.NewPlayers) {
-            stream.writeArray(this.newPlayers, 8, (player) => {
+        if (this.newPlayers.length) {
+            stream.writeArray(this.newPlayers, 8, player => {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
@@ -549,26 +396,23 @@ export class UpdatePacket extends AbstractPacket {
 
                 Badges.writeOptional(stream, player.loadout.badge);
             });
+            flags |= UpdateFlags.NewPlayers;
         }
 
-        if (flags & UpdateFlags.DeletedPlayers) {
-            stream.writeArray(this.deletedPlayers, 8, (id) => {
+        if (this.deletedPlayers.length) {
+            stream.writeArray(this.deletedPlayers, 8, id => {
                 stream.writeObjectID(id);
             });
+            flags |= UpdateFlags.DeletedPlayers;
         }
 
-        if (flags & UpdateFlags.AliveCount) {
+        if (this.aliveCountDirty) {
             stream.writeUint8(this.aliveCount!);
+            flags |= UpdateFlags.AliveCount;
         }
 
-        if (flags & UpdateFlags.KillFeedMessages) {
-            stream.writeArray(this.killFeedMessages, 8, (message) => {
-                serializeKillFeedMessage(stream, message);
-            });
-        }
-
-        if (flags & UpdateFlags.Planes) {
-            stream.writeArray(this.planes, 4, (plane) => {
+        if (this.planes.length) {
+            stream.writeArray(this.planes, 4, plane => {
                 stream.writeVector(
                     plane.position,
                     -GameConstants.maxPosition,
@@ -578,17 +422,25 @@ export class UpdatePacket extends AbstractPacket {
                     24);
                 stream.writeRotation(plane.direction, 16);
             });
+            flags |= UpdateFlags.Planes;
         }
 
-        if (flags & UpdateFlags.MapPings) {
-            stream.writeArray(this.mapPings, 4, (ping) => {
+        if (this.mapPings.length) {
+            stream.writeArray(this.mapPings, 4, ping => {
                 MapPings.writeToStream(stream, ping.definition);
                 stream.writePosition(ping.position);
                 if (ping.definition.isPlayerPing) {
                     stream.writeObjectID(ping.playerId!);
                 }
             });
+            flags |= UpdateFlags.MapPings;
         }
+
+        const idx = stream.index;
+        stream.index = flagsIdx;
+        stream.writeBits(flags, UPDATE_FLAGS_BITS);
+        // restore steam index
+        stream.index = idx;
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -708,12 +560,6 @@ export class UpdatePacket extends AbstractPacket {
         if (flags & UpdateFlags.AliveCount) {
             this.aliveCountDirty = true;
             this.aliveCount = stream.readUint8();
-        }
-
-        if (flags & UpdateFlags.KillFeedMessages) {
-            stream.readArray(this.killFeedMessages, 8, () => {
-                return deserializeKillFeedMessage(stream);
-            });
         }
 
         if (flags & UpdateFlags.Planes) {

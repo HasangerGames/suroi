@@ -37,10 +37,10 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     updateContainerPosition(): void {
         if (
-            this.destroyed ||
-            this._oldPosition === undefined ||
-            this._lastPositionChange === undefined ||
-            this.container.position === undefined
+            this.destroyed
+            || this._oldPosition === undefined
+            || this._lastPositionChange === undefined
+            || this.container.position === undefined
         ) return;
 
         this.container.position = toPixiCoords(
@@ -72,9 +72,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     updateContainerRotation(): void {
         if (
-            this._oldRotation === undefined ||
-            this._lastRotationChange === undefined ||
-            this.container.rotation === undefined
+            this._oldRotation === undefined
+            || this._lastRotationChange === undefined
+            || this.container.rotation === undefined
         ) return;
 
         this.container.rotation = Numeric.lerp(

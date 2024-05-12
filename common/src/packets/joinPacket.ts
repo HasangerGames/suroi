@@ -1,15 +1,13 @@
-import { PacketType } from "../constants";
+import { GameConstants } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Loots } from "../definitions/loots";
 import { type SkinDefinition } from "../definitions/skins";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
-export class JoinPacket extends AbstractPacket {
-    override readonly allocBytes = 25;
-    override readonly type = PacketType.Join;
-
+export class JoinPacket extends Packet {
+    protocolVersion = GameConstants.protocolVersion;
     name!: string;
     isMobile!: boolean;
 
@@ -19,6 +17,7 @@ export class JoinPacket extends AbstractPacket {
     emotes: Array<EmoteDefinition | undefined> = [];
 
     override serialize(stream: SuroiBitStream): void {
+        stream.writeUint16(this.protocolVersion);
         stream.writePlayerName(this.name);
         stream.writeBoolean(this.isMobile);
 
@@ -31,6 +30,7 @@ export class JoinPacket extends AbstractPacket {
     }
 
     override deserialize(stream: SuroiBitStream): void {
+        this.protocolVersion = stream.readUint16();
         this.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
         this.isMobile = stream.readBoolean();
 

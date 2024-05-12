@@ -1,10 +1,10 @@
-import { ObjectCategory, PacketType } from "../constants";
+import { ObjectCategory } from "../constants";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { type Variation } from "../typings";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { AbstractPacket } from "./packet";
+import { Packet } from "./packet";
 
 type MapObject = {
     readonly position: Vector
@@ -19,10 +19,7 @@ type MapObject = {
     readonly definition: BuildingDefinition
 });
 
-export class MapPacket extends AbstractPacket {
-    override readonly allocBytes = 1 << 16;
-    override readonly type = PacketType.Map;
-
+export class MapPacket extends Packet {
     seed!: number;
     width!: number;
     height!: number;
@@ -42,14 +39,14 @@ export class MapPacket extends AbstractPacket {
         stream.writeUint16(this.oceanSize);
         stream.writeUint16(this.beachSize);
 
-        stream.writeArray(this.rivers, 4, (river) => {
+        stream.writeArray(this.rivers, 4, river => {
             stream.writeUint8(river.width);
-            stream.writeArray(river.points, 8, (point) => {
+            stream.writeArray(river.points, 8, point => {
                 stream.writePosition(point);
             });
         });
 
-        stream.writeArray(this.objects, 16, (object) => {
+        stream.writeArray(this.objects, 16, object => {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
@@ -69,7 +66,7 @@ export class MapPacket extends AbstractPacket {
             }
         });
 
-        stream.writeArray(this.places, 4, (place) => {
+        stream.writeArray(this.places, 4, place => {
             stream.writeASCIIString(place.name);
             stream.writePosition(place.position);
         });

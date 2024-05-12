@@ -48,7 +48,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
 
             Object literals are a thing btw
         */
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+
         const T = this;
 
         return {
@@ -67,8 +67,9 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             }
         };
     })();
+
     // shut the up
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     get stats() { return this._stats; }
 
     protected _lastUse = 0;
@@ -170,8 +171,8 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         const timeToSwitch = owner.effectiveSwitchDelay - (now - this.switchDate);
 
         if (
-            timeToFire <= 0 &&
-            timeToSwitch <= 0
+            timeToFire <= 0
+            && timeToSwitch <= 0
         ) {
             internalCallback.call(this);
         } else {
@@ -184,8 +185,8 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             owner.bufferedAttack = owner.game.addTimeout(
                 () => {
                     if (
-                        owner.activeItem === this &&
-                        owner.attacking
+                        owner.activeItem === this
+                        && owner.attacking
                     ) {
                         owner.bufferedAttack?.kill();
                         this.useItem();

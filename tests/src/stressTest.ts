@@ -1,17 +1,19 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { InputActions, PacketType } from "../../common/src/constants";
+import { InputActions } from "../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { Skins } from "../../common/src/definitions/skins";
 import { InputPacket, type InputAction } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { type Packet, PacketStream } from "../../common/src/packets/packetStream";
+import { type GetGameResponse } from "../../common/src/typings";
+import { PacketStream } from "../../common/src/packets/packetStream";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
+import { type Packet } from "../../common/src/packets/packet";
 
 const config = {
-    address: "127.0.0.1:8000",
-    https: false,
+    mainAddress: "http://127.0.0.1:8000",
+    gameAddress: "ws://127.0.0.1:800<ID>",
     botCount: 79,
     joinDelay: 100
 };
@@ -25,8 +27,6 @@ for (const skin of Skins) {
 const bots = new Set<Bot>();
 
 let allBotsJoined = false;
-
-let gameData: { success: boolean, address: string, gameID: number };
 
 class Bot {
     moving = {
@@ -59,9 +59,10 @@ class Bot {
 
     lastInputPacket?: InputPacket;
 
-    constructor(id: number) {
+    constructor(id: number, gameID: number) {
         this.id = id;
-        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}`);
+
+        this.ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
 
         this.ws.addEventListener("error", console.error);
 
@@ -79,9 +80,9 @@ class Bot {
         this.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
 
         this.ws.onmessage = (message: MessageEvent): void => {
-            const stream = new PacketStream(new SuroiBitStream(message.data as ArrayBuffer));
+            const stream = new PacketStream(message.data as ArrayBuffer);
             while (true) {
-                const packet = stream.readPacket();
+                const packet = stream.deserializeServerPacket();
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
@@ -89,8 +90,8 @@ class Bot {
     }
 
     onPacket(packet: Packet): void {
-        switch (packet.type) {
-            case PacketType.GameOver: {
+        switch (true) {
+            case packet instanceof GameOverPacket: {
                 console.log(`Bot ${this.id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
                 this.disconnect = true;
                 this.connected = false;
@@ -99,6 +100,8 @@ class Bot {
             }
         }
     }
+
+    stream = new PacketStream(new ArrayBuffer(1024));
 
     join(): void {
         this.connected = true;
@@ -110,11 +113,14 @@ class Bot {
 
         joinPacket.skin = Loots.reify(pickRandomInArray(skins));
         joinPacket.emotes = this.emotes;
+        this.sendPacket(joinPacket);
+    }
 
-        const stream = new PacketStream(SuroiBitStream.alloc(joinPacket.allocBytes));
-        stream.serializePacket(joinPacket);
+    sendPacket(packet: Packet): void {
+        this.stream.stream.index = 0;
+        this.stream.serializeClientPacket(packet);
 
-        this.ws.send(stream.getBuffer());
+        this.ws.send(this.stream.getBuffer());
     }
 
     sendInputs(): void {
@@ -148,9 +154,7 @@ class Bot {
         if (action) inputPacket.actions = [action];
 
         if (!this.lastInputPacket || inputPacket.didChange(this.lastInputPacket)) {
-            const stream = new PacketStream(SuroiBitStream.alloc(inputPacket.allocBytes));
-            stream.serializePacket(inputPacket);
-            this.ws.send(stream.getBuffer());
+            this.sendPacket(inputPacket);
             this.lastInputPacket = inputPacket;
         }
     }
@@ -201,16 +205,17 @@ class Bot {
 }
 
 void (async() => {
-    gameData = await (await fetch(`http${config.https ? "s" : ""}://${config.address}/api/getGame`)).json();
-
-    if (!gameData.success) {
-        console.error("Failed to fetch game");
-        process.exit();
-    }
-
     for (let i = 1; i <= config.botCount; i++) {
-        setTimeout(() => {
-            bots.add(new Bot(i));
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setTimeout(async() => {
+            const gameData: GetGameResponse = await (await fetch(`${config.mainAddress}/api/getGame`)).json();
+
+            if (!gameData.success) {
+                console.error("Failed to fetch game");
+                return;
+            }
+
+            bots.add(new Bot(i, gameData.gameID));
             if (i === config.botCount) allBotsJoined = true;
         }, i * config.joinDelay);
     }

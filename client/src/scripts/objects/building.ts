@@ -122,10 +122,10 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         graphics?.endFill();
 
                         for (const obstacle of this.game.objects.getCategory(ObjectCategory.Obstacle)) {
-                            if (obstacle.damageable &&
-                                !obstacle.dead &&
-                                obstacle.definition.role !== ObstacleSpecialRoles.Window &&
-                                obstacle.hitbox?.intersectsLine(player.position, end)) {
+                            if (obstacle.damageable
+                                && !obstacle.dead
+                                && obstacle.definition.role !== ObstacleSpecialRoles.Window
+                                && obstacle.hitbox?.intersectsLine(player.position, end)) {
                                 collided = true;
                                 break;
                             }
@@ -203,18 +203,18 @@ export class Building extends GameObject<ObjectCategory.Building> {
             };
 
             if (
-                sounds.normal &&
-                !data.puzzle?.solved &&
-                this.sound?.name !== sounds.normal
+                sounds.normal
+                && !data.puzzle?.solved
+                && this.sound?.name !== sounds.normal
             ) {
                 this.sound?.stop();
                 this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
             }
 
             if (
-                sounds.solved &&
-                data.puzzle?.solved &&
-                this.sound?.name !== sounds.solved
+                sounds.solved
+                && data.puzzle?.solved
+                && this.sound?.name !== sounds.solved
             ) {
                 this.sound?.stop();
                 this.sound = this.game.soundManager.play(sounds.solved, soundOptions);

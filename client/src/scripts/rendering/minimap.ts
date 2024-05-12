@@ -5,7 +5,7 @@ import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../c
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -63,6 +63,9 @@ export class Minimap {
 
     readonly terrainGraphics = new Graphics();
 
+    objects: MapPacket["objects"] = [];
+    places: MapPacket["places"] = [];
+
     readonly debugGraphics = new Graphics();
 
     constructor(game: Game) {
@@ -105,154 +108,131 @@ export class Minimap {
         });
     }
 
-    updateFromPacket(mapPacket: MapPacket): void {
-        console.log(`Joining game with seed: ${mapPacket.seed}`);
+    drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {
+        ctx.zIndex = ZIndexes.Ground;
 
-        const width = this.width = mapPacket.width;
-        const height = this.height = mapPacket.height;
+        const radius = 20 * scale;
+        const beachPoints = this.terrain.beachHitbox.points;
+        const grassPoints = this.terrain.grassHitbox.points;
 
-        const mapBounds = new RectangleHitbox(
-            Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
-            Vec.create(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
-        );
+        const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
+        // The grass is a hole in the map shape, the background clear color is the grass color
+        ctx.roundShape(beach, radius);
+        ctx.cut();
 
-        const rivers: River[] = [];
-        for (const riverData of mapPacket.rivers) {
-            rivers.push(new River(riverData.width, riverData.points, rivers, mapBounds));
+        ctx.roundShape?.(beach, radius);
+        ctx.fill(COLORS.beach);
+
+        const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
+        ctx.roundShape(grass, radius);
+        ctx.cut();
+
+        // gets the river polygon with the middle 2 points not rounded
+        // so it joins nicely with other rivers
+        function getRiverPoly(points: Vector[]): Array<Vector & { radius: number }> {
+            const half = points.length / 2;
+            return points.map((point, index) => {
+                return {
+                    x: point.x * scale,
+                    y: point.y * scale,
+                    radius: (index === half || index === half - 1) ? 0 : radius
+                };
+            });
         }
 
-        const terrain = this.terrain = new Terrain(
-            width,
-            height,
-            mapPacket.oceanSize,
-            mapPacket.beachSize,
-            mapPacket.seed,
-            rivers
-        );
+        // river bank needs to be draw first
+        ctx.beginPath();
+        for (const river of this.terrain.rivers) {
+            ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
+        }
+        ctx.fill(COLORS.riverBank);
 
+        ctx.beginPath();
+        for (const river of this.terrain.rivers) {
+            ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+        }
+        ctx.fill(COLORS.water);
+
+        ctx.beginPath();
+        ctx.rect(0, 0, this.width * scale, this.height * scale);
+        ctx.fill(COLORS.water);
+        ctx.roundShape(beach, radius);
+        ctx.cut();
+
+        ctx.setStrokeStyle({
+            color: 0x000000,
+            alpha: 0.1,
+            width: gridLineWidth
+        });
+
+        const gridSize = GameConstants.gridSize * scale;
+        const gridWidth = this.width * scale;
+        const gridHeight = this.height * scale;
+        for (let x = 0; x <= gridWidth; x += gridSize) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, gridHeight);
+        }
+
+        for (let y = 0; y <= gridHeight; y += gridSize) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(gridWidth, y);
+        }
+
+        ctx.stroke();
+
+        for (const building of this.objects) {
+            if (building.type !== ObjectCategory.Building) continue;
+
+            const definition = building.definition;
+            if (definition.groundGraphics) {
+                const drawGroundGraphics = (hitbox: Hitbox): void => {
+                    switch (hitbox.type) {
+                        case HitboxType.Rect: {
+                            const width = hitbox.max.x - hitbox.min.x;
+                            const height = hitbox.max.y - hitbox.min.y;
+                            ctx.rect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
+                            break;
+                        }
+                        case HitboxType.Circle:
+                            ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
+                            break;
+                        case HitboxType.Polygon:
+                            ctx.poly(hitbox.points.map(v => Vec.scale(v, scale)));
+                            break;
+                        case HitboxType.Group:
+                            for (const hitBox of hitbox.hitboxes) {
+                                drawGroundGraphics(hitBox);
+                            }
+                            break;
+                    }
+                };
+                for (const ground of definition.groundGraphics) {
+                    ctx.beginPath();
+                    drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
+                    ctx.closePath();
+                    ctx.fill(ground.color);
+                }
+            }
+        }
+    }
+
+    renderMap(): void {
         // Draw the terrain graphics
         const terrainGraphics = this.terrainGraphics;
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
 
-        const beachPoints = terrain.beachHitbox.points;
-        const grassPoints = terrain.grassHitbox.points;
-
-        const drawTerrain = (ctx: Graphics, scale: number, gridLineWidth: number): void => {
-            ctx.zIndex = ZIndexes.Ground;
-
-            const radius = 20 * scale;
-
-            const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
-            // The grass is a hole in the map shape, the background clear color is the grass color
-            ctx.roundShape(beach, radius);
-            ctx.cut();
-
-            ctx.roundShape?.(beach, radius);
-            ctx.fill(COLORS.beach);
-
-            const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
-            ctx.roundShape(grass, radius);
-            ctx.cut();
-
-            // gets the river polygon with the middle 2 points not rounded
-            // so it joins nicely with other rivers
-            function getRiverPoly(points: Vector[]): Array<Vector & { radius: number }> {
-                const half = points.length / 2;
-                return points.map((point, index) => {
-                    return {
-                        x: point.x * scale,
-                        y: point.y * scale,
-                        radius: (index === half || index === half - 1) ? 0 : radius
-                    };
-                });
-            }
-
-            // river bank needs to be draw first
-            ctx.beginPath();
-            for (const river of rivers) {
-                ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
-            }
-            ctx.fill(COLORS.riverBank);
-
-            ctx.beginPath();
-            for (const river of rivers) {
-                ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
-            }
-            ctx.fill(COLORS.water);
-
-            ctx.beginPath();
-            ctx.rect(0, 0, width * scale, height * scale);
-            ctx.fill(COLORS.water);
-            ctx.roundShape(beach, radius);
-            ctx.cut();
-
-            ctx.setStrokeStyle({
-                color: 0x000000,
-                alpha: 0.1,
-                width: gridLineWidth
-            });
-
-            const gridSize = GameConstants.gridSize * scale;
-            const gridWidth = height * scale;
-            const gridHeight = height * scale;
-            for (let x = 0; x <= gridWidth; x += gridSize) {
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, gridHeight);
-            }
-
-            for (let y = 0; y <= gridHeight; y += gridSize) {
-                ctx.moveTo(0, y);
-                ctx.lineTo(gridWidth, y);
-            }
-
-            ctx.stroke();
-
-            for (const building of mapPacket.objects) {
-                if (building.type !== ObjectCategory.Building) continue;
-
-                const definition = building.definition;
-                if (definition.groundGraphics) {
-                    const drawGroundGraphics = (hitbox: Hitbox): void => {
-                        // TODO Make this code prettier
-                        if (hitbox instanceof RectangleHitbox) {
-                            const width = hitbox.max.x - hitbox.min.x;
-                            const height = hitbox.max.y - hitbox.min.y;
-                            ctx.rect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
-                        } else if (hitbox instanceof CircleHitbox) {
-                            ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
-                        } else if (hitbox instanceof PolygonHitbox) {
-                            ctx.poly(hitbox.points.map(v => {
-                                const vec = Vec.scale(v, scale);
-                                return [vec.x, vec.y];
-                            }).flat());
-                        } else if (hitbox instanceof HitboxGroup) {
-                            for (const hitBox of hitbox.hitboxes) {
-                                drawGroundGraphics(hitBox);
-                            }
-                        }
-                        if (!(hitbox instanceof HitboxGroup)) {
-                            ctx.closePath();
-                        }
-                    };
-                    for (const ground of definition.groundGraphics) {
-                        ctx.beginPath();
-                        drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
-                        ctx.closePath();
-                        ctx.fill(ground.color);
-                    }
-                }
-            }
-        };
-        drawTerrain(terrainGraphics, PIXI_SCALE, 6);
-        drawTerrain(mapGraphics, 1, 2);
+        this.drawTerrain(terrainGraphics, PIXI_SCALE, 6);
+        this.drawTerrain(mapGraphics, 1, 2);
 
         // drawn map borders
+        // since the pixi clear color is the grass color for performance reasons
+        // big rectangles need to be draw as the map border
         const margin = 5120;
         const doubleMargin = margin * 2;
 
-        const realWidth = width * PIXI_SCALE;
-        const realHeight = height * PIXI_SCALE;
+        const realWidth = this.width * PIXI_SCALE;
+        const realHeight = this.height * PIXI_SCALE;
 
         terrainGraphics.rect(-margin, -margin, realWidth + doubleMargin, margin);
         terrainGraphics.rect(-margin, realHeight, realWidth + doubleMargin, margin);
@@ -262,11 +242,11 @@ export class Minimap {
 
         this.game.camera.addObject(terrainGraphics);
 
-        // Draw the minimap obstacles
+        // Draw the minimap objects
         const mapRender = new Container();
         mapRender.addChild(mapGraphics);
 
-        for (const mapObject of mapPacket.objects) {
+        for (const mapObject of this.objects) {
             switch (mapObject.type) {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
@@ -311,11 +291,6 @@ export class Minimap {
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         mapRender.addChild(sprite);
                     }
-
-                    for (const floor of definition.floors) {
-                        const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
-                        this.terrain.addFloor(floor.type, hitbox);
-                    }
                     break;
                 }
             }
@@ -326,8 +301,8 @@ export class Minimap {
         // Render all obstacles and buildings to a texture
         this.texture?.destroy(true);
         this.texture = RenderTexture.create({
-            width,
-            height,
+            width: this.width,
+            height: this.height,
             resolution: isMobile.any ? 1 : 2
         });
 
@@ -341,7 +316,7 @@ export class Minimap {
 
         // Add the places
         this.placesContainer.removeChildren();
-        for (const place of mapPacket.places) {
+        for (const place of this.places) {
             const text = new Text(
                 {
                     text: place.name,
@@ -369,47 +344,90 @@ export class Minimap {
 
             this.placesContainer.addChild(text);
         }
-        this.resize();
 
         if (HITBOX_DEBUG_MODE) {
-            const debugGraphics = this.debugGraphics;
-            debugGraphics.clear();
-            debugGraphics.zIndex = 99;
-            for (const [hitbox, type] of this.terrain.floors) {
-                drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
-            }
-
-            drawHitbox(terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
-            drawHitbox(terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
-
-            for (const river of rivers) {
-                const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
-
-                drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
-                drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
-
-                debugGraphics.setStrokeStyle({
-                    width: 10,
-                    color: 0
-                });
-
-                debugGraphics.beginPath();
-                debugGraphics.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
-                    const point = points[i];
-                    debugGraphics.lineTo(point.x, point.y);
-                }
-                debugGraphics.stroke();
-
-                for (const point of points) {
-                    debugGraphics.beginPath();
-                    debugGraphics.arc(point.x, point.y, 20, 0, Math.PI * 2);
-                    debugGraphics.fill(0xff0000);
-                }
-            }
-
-            this.game.camera.addObject(debugGraphics);
+            this.renderMapDebug();
         }
+    }
+
+    renderMapDebug(): void {
+        const debugGraphics = this.debugGraphics;
+        debugGraphics.clear();
+        debugGraphics.zIndex = 99;
+        for (const [hitbox, type] of this.terrain.floors) {
+            drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
+        }
+
+        drawHitbox(this.terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
+        drawHitbox(this.terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
+
+        for (const river of this.terrain.rivers) {
+            const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
+
+            drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
+            drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
+
+            debugGraphics.setStrokeStyle({
+                width: 10,
+                color: 0
+            });
+
+            debugGraphics.beginPath();
+            debugGraphics.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                const point = points[i];
+                debugGraphics.lineTo(point.x, point.y);
+            }
+            debugGraphics.stroke();
+
+            for (const point of points) {
+                debugGraphics.beginPath();
+                debugGraphics.arc(point.x, point.y, 20, 0, Math.PI * 2);
+                debugGraphics.fill(0xff0000);
+            }
+        }
+
+        this.game.camera.addObject(debugGraphics);
+    }
+
+    updateFromPacket(mapPacket: MapPacket): void {
+        console.log(`Joining game with seed: ${mapPacket.seed}`);
+
+        const width = this.width = mapPacket.width;
+        const height = this.height = mapPacket.height;
+        this.objects = mapPacket.objects;
+        this.places = mapPacket.places;
+
+        const mapBounds = new RectangleHitbox(
+            Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
+            Vec.create(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
+        );
+
+        const rivers: River[] = [];
+        for (const riverData of mapPacket.rivers) {
+            rivers.push(new River(riverData.width, riverData.points, rivers, mapBounds));
+        }
+
+        this.terrain = new Terrain(
+            width,
+            height,
+            mapPacket.oceanSize,
+            mapPacket.beachSize,
+            mapPacket.seed,
+            rivers
+        );
+
+        for (const object of this.objects) {
+            if (object.type === ObjectCategory.Building) {
+                for (const floor of object.definition.floors) {
+                    const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
+                    this.terrain.addFloor(floor.type, hitbox);
+                }
+            }
+        }
+
+        this.renderMap();
+        this.resize();
     }
 
     update(): void {
@@ -443,11 +461,11 @@ export class Minimap {
         // only re-render gas line and circle if something changed
         if (
             this.game.gas.state === GasState.Inactive || (
-                this.position.x === this.lastPosition.x &&
-                this.position.y === this.lastPosition.y &&
-                this.game.gas.newRadius === this.gasRadius &&
-                this.game.gas.newPosition.x === this.gasPos.x &&
-                this.game.gas.newPosition.y === this.gasPos.y
+                this.position.x === this.lastPosition.x
+                && this.position.y === this.lastPosition.y
+                && this.game.gas.newRadius === this.gasRadius
+                && this.game.gas.newPosition.x === this.gasPos.x
+                && this.game.gas.newPosition.y === this.gasPos.y
             )
         ) return;
 
@@ -632,15 +650,21 @@ export class Minimap {
         // delete previous pings from the same player
         if (ping.definition.isPlayerPing) {
             for (const otherPing of this.pings) {
-                if (otherPing.definition.idString === ping.definition.idString &&
-                    otherPing.player === ping.player) {
+                if (
+                    otherPing.definition.idString === ping.definition.idString
+                    && otherPing.player?.id === playerId
+                ) {
                     otherPing.destroy();
                     this.pings.delete(otherPing);
                 }
             }
         }
-
         this.pings.add(ping);
+        if (ping.definition.ignoreExpiration !== true) {
+            this.game.addTimeout(() => {
+                ping.destroy();
+            }, 10000);
+        }
     }
 }
 

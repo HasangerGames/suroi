@@ -7,13 +7,6 @@ import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
 /*
-    eslint-disable
-
-    @typescript-eslint/consistent-type-definitions,
-    @typescript-eslint/indent
-*/
-
-/*
     `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
     `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
 */
@@ -39,7 +32,7 @@ export function findDupes(collection: string[]): { readonly foundDupes: boolean,
     };
 }
 
-function safeString(value: unknown): string {
+export function safeString(value: unknown): string {
     try {
         switch (true) {
             case Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
@@ -68,7 +61,7 @@ export const tester = (() => {
                 readonly errorPath: string
             } & OtherParams
         ): void
-};
+    };
 
     type ValidationResult = {
         readonly warnings?: string[]
@@ -86,20 +79,20 @@ export const tester = (() => {
             baseErrorPath: string
         ) => ValidationResult
     ): {
-        <Target extends object>(
-            params: {
-                readonly obj: Target
-                readonly field: keyof Target
-                readonly baseErrorPath: string
-            } & OtherParams
-        ): void
-        (
-            params: {
-                readonly value: PlainValue
-                readonly errorPath: string
-            } & OtherParams
-        ): void
-    } {
+            <Target extends object>(
+                params: {
+                    readonly obj: Target
+                    readonly field: keyof Target
+                    readonly baseErrorPath: string
+                } & OtherParams
+            ): void
+            (
+                params: {
+                    readonly value: PlainValue
+                    readonly errorPath: string
+                } & OtherParams
+            ): void
+        } {
         return <Target extends object>(
             params: (
                 {
@@ -181,8 +174,9 @@ export const tester = (() => {
         return components.join(" -> ");
     }
 
-    function assert(condition: boolean, errorMessage: string, errorPath: string): void {
+    function assert(condition: boolean, errorMessage: string, errorPath: string): boolean {
         if (!condition) errors.push([errorPath, errorMessage]);
+        return condition;
     }
 
     function assertWarn(warningCondition: boolean, warningMessage: string, errorPath: string): void {
@@ -279,11 +273,11 @@ export const tester = (() => {
 
         const errors: string[] = [];
 
-        if (!(value > min || (includeMin === true && value === min))) {
-            errors.push(`This field must be greater than ${includeMin ? "or equal to " : ""}${min} (received ${safeString(value)})`);
-        }
-        if (!(value < max || (includeMax === true && value === max))) {
-            errors.push(`This field must be less than ${includeMax ? "or equal to " : ""}${max} (received ${safeString(value)})`);
+        const belowMin = !(value > min || (includeMin === true && value === min));
+        const aboveMax = !(value < max || (includeMax === true && value === max));
+
+        if (belowMin || aboveMax) {
+            errors.push(`This field must be in range ${includeMin ? "[" : "]"}${min}, ${max}${includeMax ? "]" : "["} (received ${safeString(value)})`);
         }
 
         return {
@@ -495,13 +489,35 @@ export const tester = (() => {
         assertIntAndInBounds,
         assertNoPointlessValue,
         assertValidOrNPV,
-        runTestOnArray<T>(array: readonly T[], cb: (obj: T, errorPath: string) => void, baseErrorPath: string) {
+        runTestOnArray<T>(
+            array: readonly T[],
+            cb: (obj: T, errorPath: string) => void,
+            baseErrorPath: string
+        ) {
             let i = 0;
             for (const element of array) {
                 logger.indent(`Validating entry ${i}`, () => {
                     cb(element, this.createPath(baseErrorPath, `entry ${i}`));
                     i++;
                 });
+            }
+        },
+        // too lazy to extract common code out
+        runTestOnIdStringArray<T extends { readonly idString: string | Record<string, number> }>(
+            array: readonly T[],
+            cb: (obj: T, errorPath: string) => void,
+            baseErrorPath: string
+        ) {
+            let i = 0;
+            for (const element of array) {
+                const entryText = `entry ${i} ${typeof element.idString === "string" ? `(id '${element.idString}')` : ""}`;
+                logger.indent(
+                    `Validating ${entryText}`,
+                    () => {
+                        cb(element, this.createPath(baseErrorPath, entryText));
+                        i++;
+                    }
+                );
             }
         }
     });
@@ -906,7 +922,7 @@ export const validators = Object.freeze({
         switch (typeof color) {
             case "number": {
                 tester.assert(
-                    // eslint-disable-next-line yoda
+
                     !(color % 1) && 0 <= color && color <= 0xffffff,
                     `Color '${color}' is not a valid hexadecimal color`,
                     baseErrorPath
@@ -945,6 +961,58 @@ export const validators = Object.freeze({
                 baseErrorPath
             );
         }
+    },
+    numericInterval(
+        baseErrorPath: string,
+        interval: { readonly min: number, readonly max: number },
+        options?: {
+            readonly globalMin?: { readonly value: number, readonly include?: boolean }
+            readonly globalMax?: { readonly value: number, readonly include?: boolean }
+            readonly allowDegenerateIntervals?: boolean
+        }
+    ) {
+        const {
+            globalMin: { value: globalMin, include: includeGlobalMin },
+            globalMax: { value: globalMax, include: includeGlobalMax },
+            allowDegenerateIntervals
+        } = {
+            globalMin: { value: -Infinity, include: true },
+            globalMax: { value: Infinity, include: true },
+            allowDegenerateIntervals: true,
+            ...(options ?? {})
+        };
+
+        const { min, max } = interval;
+
+        if (
+            !tester.assert(
+                globalMin < min || (includeGlobalMin === true && globalMin === min),
+                `Interval's minimum must be larger than ${includeGlobalMin ? "or equal to " : ""}${globalMin} (received ${min})`,
+                baseErrorPath
+            )
+        ) return;
+
+        if (
+            !tester.assert(
+                min <= max,
+                `Interval described by min/max is invalid: [${min}, ${max}]`,
+                baseErrorPath
+            )
+        ) return;
+
+        if (
+            !tester.assert(
+                min !== max || (allowDegenerateIntervals && min === max),
+                `Degenerate interval not allowed: [${min}, ${max}]`,
+                baseErrorPath
+            )
+        ) return;
+
+        tester.assert(
+            max < globalMax || (includeGlobalMax === true && globalMax === max),
+            `Interval's maximum must be smaller than ${includeGlobalMax ? "or equal to " : ""}${globalMax} (received ${max})`,
+            baseErrorPath
+        );
     },
     valueSpecifier<T>(
         baseErrorPath: string,
@@ -1114,7 +1182,6 @@ export const logger = (() => {
             try {
                 cb();
             } catch (e) {
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 tester.fatalErrors.push([
                     "unknown",
                     e instanceof Error
@@ -1129,10 +1196,10 @@ export const logger = (() => {
             current.messages.push(message);
         },
         print() {
-            // ┬┆┐─└├
+            // ┬│┐─└├
 
             (function printInternal(base: LoggingLevel, dashes: boolean[] = []): void {
-                const prePrefix = dashes.map(v => `${v ? "┆" : " "} `).join("");
+                const prePrefix = dashes.map(v => `${v ? "│" : " "} `).join("");
 
                 for (let i = 0, l = base.messages.length; i < l; i++) {
                     const message = base.messages[i];

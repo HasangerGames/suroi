@@ -315,6 +315,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Never
         },
         {
+            idString: "oil_tank",
+            name: "Oil Tank",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(16.8, 13.6),
+                RectangleHitbox.fromRect(26, 2),
+                new CircleHitbox(5, Vec.create(-8, 1.8)),
+                new CircleHitbox(5, Vec.create(-8, -1.8)),
+                new CircleHitbox(5, Vec.create(8, 1.8)),
+                new CircleHitbox(5, Vec.create(8, -1.8))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(28, 18),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            },
+            reflectBullets: true
+        },
+        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",
@@ -600,29 +623,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "super_barrel_explosion",
-            reflectBullets: true
-        },
-        {
-            idString: "oil_tank",
-            name: "Oil Tank",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(16.8, 13.6),
-                RectangleHitbox.fromRect(26, 2),
-                new CircleHitbox(5, Vec.create(-8, 1.8)),
-                new CircleHitbox(5, Vec.create(-8, -1.8)),
-                new CircleHitbox(5, Vec.create(8, 1.8)),
-                new CircleHitbox(5, Vec.create(8, -1.8))
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(28, 18),
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
-            noResidue: true,
-            frames: {
-                particle: "metal_particle"
-            },
             reflectBullets: true
         },
         {
@@ -2329,6 +2329,15 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
+            idString: "roadblock",
+            name: "Road Block",
+            material: "fence",
+            health: 80,
+            indestructible: false,
+            hitbox: RectangleHitbox.fromRect(1, 10),
+            rotationMode: RotationMode.Limited
+        },
+        {
             idString: "gun_case",
             name: "Gun Case",
             material: "wood",
@@ -2356,6 +2365,27 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, 10.8)), // Front wheels
                 RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)), // Back of hood
                 RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "humvee",
+            name: "Humvee",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(17, 35.25, Vec.create(0, -0.4)), // Body
+                RectangleHitbox.fromRect(18, 7, Vec.create(0, -12.3)), // Back wheels
+                RectangleHitbox.fromRect(18, 7, Vec.create(0, 13.6)), // Front wheels
+                RectangleHitbox.fromRect(2.5, 0.5, Vec.create(6.1, -18.25)), // Back exhaust
+                RectangleHitbox.fromRect(15.25, 0.5, Vec.create(0, 17.5)), // Front bumper
+                RectangleHitbox.fromRect(21, 1, Vec.create(0, 7.5)) // Front of hood
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
@@ -2719,6 +2749,32 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(21.02, 69.69, Vec.create(0, 0))
         },
         {
+            idString: "large_bridge",
+            name: "Large Bridge",
+            material: "stone",
+            health: 150,
+            indestructible: true,
+            invisible: true,
+            noBulletCollision: false,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "rock_particle"
+            },
+            hitbox: new HitboxGroup(
+                // Main Bridge Sides
+                RectangleHitbox.fromRect(4, 136, Vec.create(21.5, -1.5)),
+                RectangleHitbox.fromRect(4, 136, Vec.create(-21.5, -1.5)),
+
+                // Cinder Blocks on Edge of Bridge
+                RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, -72)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(21.5, -72)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, 69)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(60, 230, Vec.create(0, 0))
+        },
+        {
             idString: "viking_chest",
             name: "Viking Chest",
             material: "wood",
@@ -2760,6 +2816,38 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             spawnMode: MapObjectSpawnMode.River,
             allowFlyover: FlyoverPref.Always
+        },
+        {
+            idString: "bunker_entrance",
+            name: "Bunker Entrance",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(19.5, 13.25, Vec.create(0, -3.25)),
+                RectangleHitbox.fromRect(1.75, 12.75, Vec.create(8.85, 3.8)),
+                RectangleHitbox.fromRect(1.75, 12.75, Vec.create(-8.85, 3.8))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "bunker_entrance_door",
+            name: "Bunker Entrance Door",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(4.5, 16, Vec.create(-0.75, 0)),
+                RectangleHitbox.fromRect(2, 3, Vec.create(2, 6.5)),
+                RectangleHitbox.fromRect(2, 3, Vec.create(2, -6.5))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
         }
     ]
 );

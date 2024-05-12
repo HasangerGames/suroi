@@ -1,4 +1,4 @@
-import { GameConstants, InputActions, PacketType } from "../constants";
+import { GameConstants, InputActions } from "../constants";
 import { type AmmoDefinition } from "../definitions/ammos";
 import { type ArmorDefinition } from "../definitions/armors";
 import { type BackpackDefinition } from "../definitions/backpacks";
@@ -10,9 +10,7 @@ import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { AbstractPacket } from "./packet";
-
-/* eslint-disable @typescript-eslint/indent */
+import { Packet } from "./packet";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
@@ -42,10 +40,7 @@ export type InputAction = {
     >
 };
 
-export class InputPacket extends AbstractPacket {
-    override readonly allocBytes = 24;
-    override readonly type = PacketType.Input;
-
+export class InputPacket extends Packet {
     movement!: {
         up: boolean
         down: boolean
@@ -89,7 +84,7 @@ export class InputPacket extends AbstractPacket {
             }
         }
 
-        stream.writeArray(this.actions, 3, (action) => {
+        stream.writeArray(this.actions, 3, action => {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);
 
             switch (action.type) {

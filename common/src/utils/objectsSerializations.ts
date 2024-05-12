@@ -191,7 +191,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBoolean(full.dead);
             stream.writeBoolean(full.downed);
             stream.writeBoolean(full.beingRevived);
-            stream.writeBits(full.teamID, 6);
+            stream.writeUint8(full.teamID);
             stream.writeBoolean(full.invulnerable);
             Loots.writeToStream(stream, full.activeItem);
             Skins.writeToStream(stream, full.skin);
@@ -233,7 +233,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 dead: stream.readBoolean(),
                 downed: stream.readBoolean(),
                 beingRevived: stream.readBoolean(),
-                teamID: stream.readBits(6),
+                teamID: stream.readUint8(),
                 invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 skin: Skins.readFromStream(stream),

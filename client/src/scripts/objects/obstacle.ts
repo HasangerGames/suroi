@@ -118,7 +118,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             speed: Vec.fromPolar(randomRotation(), randomFloat(minSpeed, maxSpeed))
                         });
 
-                        /* eslint-disable @typescript-eslint/consistent-type-assertions */
                         this.game.particleManager.spawnParticle({
                             frames: "airdrop_particle_1",
                             position: this.position,
@@ -152,9 +151,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const scaleFactor = (this.scale - destroyScale) / ((definition.scale?.spawnMax ?? 1) - destroyScale);
 
         if (this.smokeEmitter) {
-            this.smokeEmitter.active = !this.dead &&
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                (("emitParticles" in definition && this.activated) || (scaleFactor > 0 && scaleFactor < 0.5));
+            this.smokeEmitter.active = !this.dead
+
+            && (("emitParticles" in definition && this.activated) || (scaleFactor > 0 && scaleFactor < 0.5));
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = Numeric.lerp(150, 3000, scaleFactor);
@@ -231,7 +230,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             texture = !this.dead
                 ? this.activated && definition.frames.activated
                     ? definition.frames.activated
-                    : definition.frames.base ?? `${definition.idString}`
+                    : definition.frames.base ?? definition.idString
                 : definition.frames.residue ?? `${definition.idString}_residue`;
         }
 
@@ -356,11 +355,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     canInteract(player: Player): boolean {
         return !this.dead && (
-            (this.isDoor && !this.door?.locked) ||
-            (
-                this.definition.role === ObstacleSpecialRoles.Activatable &&
-                (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem) &&
-                !this.activated
+            (this.isDoor && !this.door?.locked)
+            || (
+                this.definition.role === ObstacleSpecialRoles.Activatable
+                && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem)
+                && !this.activated
             )
         );
     }

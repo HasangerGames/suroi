@@ -2,24 +2,22 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, ObjectCategory, PacketType, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import type { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { JoinPacket } from "../../../common/src/packets/joinPacket";
-import { PacketStream, type Packet } from "../../../common/src/packets/packetStream";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
-import type { UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { InputManager } from "./managers/inputManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -47,6 +45,15 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { type Packet } from "../../../common/src/packets/packet";
+import { MapPacket } from "../../../common/src/packets/mapPacket";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
+import { PacketStream } from "../../../common/src/packets/packetStream";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
+import type { DualGunNarrowing } from "../../../common/src/definitions/guns";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -60,7 +67,6 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
@@ -111,6 +117,8 @@ export class Game {
     lastPingDate = 0;
 
     private _tickTimeoutID: number | undefined;
+
+    disconnectReason = "";
 
     readonly pixi = new Application();
     readonly soundManager: SoundManager;
@@ -166,11 +174,12 @@ export class Game {
             await loadTextures(
                 this.pixi.renderer,
                 this.console.getBuiltInCVar("cv_high_res_textures")
+                && (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
             );
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            $("#game-ui")[0].addEventListener("pointerdown", (e) => {
+            $("#game-ui")[0].addEventListener("pointerdown", e => {
                 this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
@@ -238,6 +247,7 @@ export class Game {
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
+            this.disconnectReason = "";
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(this.uiManager.gameOverScreenTimeout);
@@ -257,7 +267,7 @@ export class Game {
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
 
             // why are you enforcing this here and not in the giant file filled from top-to-bottom with snake case
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+
             let cv_loadout_skin: typeof defaultClientCVars["cv_loadout_skin"];
             joinPacket.skin = Loots.fromStringSafe(
                 this.console.getBuiltInCVar("cv_loadout_skin")
@@ -283,9 +293,13 @@ export class Game {
 
         // Handle incoming messages
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
-            const stream = new PacketStream(new SuroiBitStream(message.data));
+            const stream = new PacketStream(message.data);
+            let iterationCount = 0;
             while (true) {
-                const packet = stream.readPacket();
+                if (++iterationCount === 1e3) {
+                    console.warn("1000 iterations of packet reading; possible infinite loop");
+                }
+                const packet = stream.deserializeServerPacket();
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
@@ -300,37 +314,45 @@ export class Game {
 
         this._socket.onclose = (): void => {
             resetPlayButtons();
+
+            const reason = this.disconnectReason || "Connection lost";
+
             if (!this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn(400);
-                    $("#splash-server-message-text").html("Connection lost.");
+                    $("#splash-server-message-text").html(this.disconnectReason || "Connection lost.");
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) void this.endGame();
+            }
+
+            if (reason === "Invalid game version") {
+                alert(reason);
+                // reload the page with a time stamp to try clearing cache
+                location.search = `t=${Date.now()}`;
             }
         };
     }
 
     onPacket(packet: Packet): void {
-        switch (packet.type) {
-            case PacketType.Joined: {
+        switch (true) {
+            case packet instanceof JoinedPacket:
                 this.startGame(packet);
                 break;
-            }
-            case PacketType.Map: {
+            case packet instanceof MapPacket:
                 this.map.updateFromPacket(packet);
                 break;
-            }
-            case PacketType.Update: {
+            case packet instanceof UpdatePacket:
                 this.processUpdate(packet);
                 break;
-            }
-            case PacketType.GameOver: {
+            case packet instanceof GameOverPacket:
                 this.uiManager.showGameOverScreen(packet);
                 break;
-            }
-            case PacketType.Ping: {
+            case packet instanceof KillFeedPacket:
+                this.uiManager.processKillFeedPacket(packet);
+                break;
+            case packet instanceof PingPacket: {
                 const ping = Date.now() - this.lastPingDate;
                 this.uiManager.debugReadouts.ping.text(`${ping} ms`);
                 setTimeout((): void => {
@@ -339,13 +361,13 @@ export class Game {
                 }, 5000);
                 break;
             }
-            case PacketType.Report: {
+            case packet instanceof ReportPacket: {
                 $("#reporting-name").text(packet.playerName);
                 $("#report-id").text(packet.reportID);
                 $("#report-modal").fadeIn(250);
                 break;
             }
-            case PacketType.Pickup: {
+            case packet instanceof PickupPacket: {
                 let soundID: string;
                 switch (packet.item.itemType) {
                     case ItemType.Ammo:
@@ -375,15 +397,13 @@ export class Game {
                 this.soundManager.play(soundID);
                 break;
             }
+            case packet instanceof DisconnectPacket:
+                this.disconnectReason = packet.reason;
+                break;
         }
     }
 
     startGame(packet: JoinedPacket): void {
-        if (packet.protocolVersion !== GameConstants.protocolVersion) {
-            alert("Invalid game version.");
-            // reload the page with a time stamp to try clearing cache
-            location.search = `t=${Date.now()}`;
-        }
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
@@ -396,60 +416,66 @@ export class Game {
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
         $("#btn-spectate-kill-leader").hide();
+
+        this.uiManager.ui.teamContainer.toggle(this.teamMode);
     }
 
-    endGame(): void {
-        clearTimeout(this._tickTimeoutID);
+    async endGame(): Promise<void> {
+        return await new Promise(resolve => {
+            clearTimeout(this._tickTimeoutID);
 
-        $("#splash-options").addClass("loading");
+            $("#splash-options").addClass("loading");
 
-        this.soundManager.stopAll();
+            this.soundManager.stopAll();
 
-        void this.music.play();
+            void this.music.play();
 
-        $("#splash-ui").fadeIn(400, () => {
-            $("#team-container").html("");
-            $("#action-container").hide();
-            $("#game-menu").hide();
-            $("#game-over-overlay").hide();
-            $("canvas").removeClass("active");
-            $("#kill-leader-leader").text("Waiting for leader");
-            $("#kill-leader-kills-counter").text("0");
+            $("#splash-ui").fadeIn(400, () => {
+                $("#team-container").html("");
+                $("#action-container").hide();
+                $("#game-menu").hide();
+                $("#game-over-overlay").hide();
+                $("canvas").removeClass("active");
+                $("#kill-leader-leader").text("Waiting for leader");
+                $("#kill-leader-kills-counter").text("0");
 
-            this.gameStarted = false;
-            this._socket?.close();
+                this.gameStarted = false;
+                this._socket?.close();
 
-            // reset stuff
-            for (const object of this.objects) object.destroy();
-            for (const plane of this.planes) plane.destroy();
-            this.objects.clear();
-            this.bullets.clear();
-            this.planes.clear();
-            this.camera.container.removeChildren();
-            this.particleManager.clear();
-            this.uiManager.clearTeammateCache();
+                // reset stuff
+                for (const object of this.objects) object.destroy();
+                for (const plane of this.planes) plane.destroy();
+                this.objects.clear();
+                this.bullets.clear();
+                this.planes.clear();
+                this.camera.container.removeChildren();
+                this.particleManager.clear();
+                this.uiManager.clearTeammateCache();
 
-            const map = this.map;
-            map.gasGraphics.clear();
-            map.pingGraphics.clear();
-            map.pings.clear();
-            map.pingsContainer.removeChildren();
-            map.teammateIndicators.clear();
-            map.teammateIndicatorContainer.removeChildren();
+                const map = this.map;
+                map.gasGraphics.clear();
+                map.pingGraphics.clear();
+                map.pings.clear();
+                map.pingsContainer.removeChildren();
+                map.teammateIndicators.clear();
+                map.teammateIndicatorContainer.removeChildren();
 
-            this.playerNames.clear();
-            this._timeouts.clear();
+                this.playerNames.clear();
+                this._timeouts.clear();
 
-            this.camera.zoom = Scopes.definitions[0].zoomLevel;
-            resetPlayButtons();
-            if (teamSocket) $("#create-team-menu").fadeIn(250);
+                this.camera.zoom = Scopes.definitions[0].zoomLevel;
+                resetPlayButtons();
+                if (teamSocket) $("#create-team-menu").fadeIn(250, resolve);
+                else resolve();
+            });
         });
     }
 
+    packetStream = new PacketStream(new ArrayBuffer(1024));
     sendPacket(packet: Packet): void {
-        const stream = new PacketStream(SuroiBitStream.alloc(packet.allocBytes));
-        stream.serializePacket(packet);
-        this.sendData(stream.getBuffer());
+        this.packetStream.stream.index = 0;
+        this.packetStream.serializeClientPacket(packet);
+        this.sendData(this.packetStream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
@@ -600,10 +626,6 @@ export class Game {
             $("#btn-spectate").toggle(updateData.aliveCount > 1);
         }
 
-        for (const message of updateData.killFeedMessages) {
-            this.uiManager.processKillFeedMessage(message);
-        }
-
         for (const plane of updateData.planes) {
             this.planes.add(new Plane(this, plane.position, plane.direction));
         }
@@ -693,11 +715,11 @@ export class Game {
 
             for (const object of this.objects) {
                 if (
-                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player))) &&
-                    object.hitbox.collidesWith(detectionHitbox)
+                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player)))
+                    && object.hitbox.collidesWith(detectionHitbox)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object instanceof Obstacle || object instanceof Player || object.canInteract(player)) && dist < interactable.minDist) {
+                    if ((object.canInteract(player) || object instanceof Obstacle || object instanceof Player) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;
                     } else if (object instanceof Loot && dist < uninteractable.minDist) {
@@ -724,11 +746,11 @@ export class Game {
             if (differences.bind) bindChangeAcknowledged = false;
 
             if (
-                differences.object ||
-                differences.offset ||
-                differences.isAction ||
-                differences.bind ||
-                differences.canInteract
+                differences.object
+                || differences.offset
+                || differences.isAction
+                || differences.bind
+                || differences.canInteract
             ) {
                 // Cache miss, rerender
                 cache.object = object;
@@ -802,33 +824,68 @@ export class Game {
                 }
 
                 // Mobile stuff
-                if (
-                    this.inputManager.isMobile &&
-                    canInteract &&
-                    (
-                        (
-                            this.console.getBuiltInCVar("cv_auto_pickup") && (
-                                // Auto pickup
-                                object instanceof Loot &&
+                if (this.inputManager.isMobile && canInteract) {
+                    const weapons = this.uiManager.inventory.weapons;
 
-                                // Only pick up melees if no melee is equipped
-                                (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+                    // Auto pickup (top 10 conditionals)
+                    if (
+                        this.console.getBuiltInCVar("cv_autopickup")
+                        && object instanceof Loot
+                        && (
+                            (
+                                (
+                                    // Auto-pickup dual gun
+                                    // Only pick up melees if no melee is equipped
+                                    (
+                                        type !== ItemType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
+                                    )
 
-                                // Only pick up guns if there's a free slot
-                                (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+                                    // Only pick up guns if there's a free slot
+                                    && (
+                                        type !== ItemType.Gun || (!weapons?.[0] || !weapons?.[1])
+                                    )
 
-                                // Don't pick up skins
-                                type !== ItemType.Skin
+                                    // Don't pick up skins
+                                    && type !== ItemType.Skin
+                                )
+
+                                // Don't autopickup if currently reloading gun
+                                && this.activePlayer.action?.type !== PlayerActions.Reload
+                            ) || (
+                                type === ItemType.Gun
+                                    && weapons?.some(
+                                        weapon => {
+                                            const definition = weapon?.definition;
+
+                                            return definition?.itemType === ItemType.Gun
+                                                && (
+                                                    (
+                                                        object?.definition === definition
+                                                        && !definition.isDual
+                                                    ) // Picking up a single pistol when inventory has single pistol
+                                                    || (
+                                                        (
+                                                            object.definition as DualGunNarrowing | undefined
+                                                        )?.singleVariant === definition.idString
+                                                    )
+                                                    // Picking up dual pistols when inventory has a pistol
+                                                    // TODO implement splitting of dual guns to not lost reload later
+                                                );
+                                        }
+                                    )
                             )
-                        ) ||
-                        ( // Auto open doors
-                            object instanceof Obstacle &&
-                            object.canInteract(player) &&
-                            object.definition.role === ObstacleSpecialRoles.Door
                         )
-                    )
-                ) {
-                    this.inputManager.addAction(InputActions.Interact);
+                    ) {
+                        this.inputManager.addAction(InputActions.Loot);
+                    } else if ( // Auto open doors
+                        this.console.getBuiltInCVar("cv_autopickup_dual_guns")
+                        && object instanceof Obstacle
+                        && object.canInteract(player)
+                        && object.definition.role === ObstacleSpecialRoles.Door
+                        && object.door?.offset === 0
+                    ) {
+                        this.inputManager.addAction(InputActions.Interact);
+                    }
                 }
             }
         };

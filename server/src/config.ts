@@ -1,6 +1,8 @@
 import { TeamSize } from "../../common/src/constants";
 import { type Vector } from "../../common/src/utils/vector";
 import { type Maps } from "./data/maps";
+import { type Game } from "./game";
+import { type GamePlugin } from "./pluginManager";
 
 export enum SpawnMode {
     Normal,
@@ -20,12 +22,12 @@ export const Config = {
 
     mapName: "main",
 
+    plugins: [],
+
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: TeamSize.Duo,
-
     maxPlayersPerGame: 80,
-    maxGames: 3,
+    maxGames: 4,
     preventJoinAfter: 60000,
 
     gas: { mode: GasMode.Normal },
@@ -34,23 +36,43 @@ export const Config = {
 
     censorUsernames: true,
 
+    maxTeamSize: TeamSize.Solo,
+
     roles: {
-        developr: { password: "developr", isDev: true },
-        designr: { password: "designr" },
-        composr: { password: "composr" },
-        youtubr: { password: "youtubr" },
-        hasanger: { password: "hasanger", isDev: true },
-        leia: { password: "leia", isDev: true },
-        katie: { password: "katie", isDev: true },
-        eipi: { password: "eipi", isDev: true },
-        radians: { password: "radians", isDev: true },
-        limenade: { password: "limenade", isDev: true },
+        "developr": { password: "developr", isDev: true },
+        "moderatr": { password: "moderatr", isDev: true },
+        // "trial_moderatr": { password: "trial_moderatr" },
+        "designr": { password: "designr" },
+        // "lead_designr": { password: "lead_designr" },
+        // "vip_designr": { password: "vip_designr" },
+        // "studio_managr": { password: "studio_managr" },
+        "composr": { password: "composr" },
+        // "lead_composr": { password: "lead_composr" },
+        "youtubr": { password: "youtubr" },
+        // "boostr": { password: "boostr" },
+        "hasanger": { password: "hasanger", isDev: true },
+        "leia": { password: "leia", isDev: true },
+        "katie": { password: "katie", isDev: true },
+        "eipi": { password: "eipi", isDev: true },
+        "error": { password: "error", isDev: true },
+        "kenos": { password: "kenos", isDev: true },
+        "radians": { password: "radians", isDev: true },
+        "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" }
     }
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
+    /**
+     * The hostname to host the server on.
+     */
     readonly host: string
+
+    /**
+     * The port to host the server on.
+     * The main server is hosted on the specified port, while game servers are hosted on the ports following it.
+     * For example, if it's 8000, the main server is hosted on port 8000, the first game server is on 8001, the second is on 8002, and so on.
+     */
     readonly port: number
 
     /**
@@ -68,29 +90,49 @@ export interface ConfigType {
     readonly mapName: keyof typeof Maps
 
     /**
+     * List of plugin classes to load
+     */
+    readonly plugins: Array<new (game: Game) => GamePlugin>
+
+    /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
      * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
-    readonly spawn: {
-        readonly mode: SpawnMode.Normal
-    } | {
-        readonly mode: SpawnMode.Radius
-        readonly position: Vector
-        readonly radius: number
-    } | {
-        readonly mode: SpawnMode.Fixed
-        readonly position: Vector
-    } | {
-        readonly mode: SpawnMode.Center
-    }
+    readonly spawn:
+        {
+            readonly mode: SpawnMode.Normal
+        } |
+        {
+            readonly mode: SpawnMode.Radius
+            readonly position: Vector
+            readonly radius: number
+        } |
+        {
+            readonly mode: SpawnMode.Fixed
+            readonly position: Vector
+        } |
+        {
+            readonly mode: SpawnMode.Center
+        }
 
     /**
      * The maximum number of players allowed to join a team.
      */
-    readonly maxTeamSize: number
+    readonly maxTeamSize:
+        TeamSize | // Fixed team size
+        { // Rotating team size
+        /**
+         * The duration between switches. Must be a cron pattern.
+         */
+            switchSchedule: string
+            /**
+         * The team sizes to switch between.
+         */
+            rotation: TeamSize[]
+        }
 
     /**
      * The maximum number of players allowed to join a game.
@@ -113,15 +155,18 @@ export interface ConfigType {
      * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
      * GasMode.Disabled: Gas is disabled.
      */
-    readonly gas: {
-        readonly mode: GasMode.Disabled
-    } | {
-        readonly mode: GasMode.Normal
-    } | {
-        readonly mode: GasMode.Debug
-        readonly overridePosition?: boolean
-        readonly overrideDuration?: number
-    }
+    readonly gas:
+        {
+            readonly mode: GasMode.Disabled
+        } |
+        {
+            readonly mode: GasMode.Normal
+        } |
+        {
+            readonly mode: GasMode.Debug
+            readonly overridePosition?: boolean
+            readonly overrideDuration?: number
+        }
 
     readonly movementSpeed: number
 
@@ -136,13 +181,11 @@ export interface ConfigType {
     readonly protection?: {
         /**
          * Limits the number of simultaneous connections from each IP address.
-         * If the limit is exceeded, the IP is temporarily banned.
          */
         readonly maxSimultaneousConnections?: number
 
         /**
          * Limits the number of join attempts (`count`) within the given duration (`duration`, in milliseconds) from each IP address.
-         * If the limit is exceeded, the IP is temporarily banned.
          */
         readonly maxJoinAttempts?: {
             readonly count: number
@@ -165,6 +208,12 @@ export interface ConfigType {
          * Every `refreshDuration` milliseconds, rate limited IPs are cleared, and the list of punishments is reloaded if enabled.
          */
         readonly refreshDuration: number
+
+        /**
+         * If `true`, a list of blocked IPs will be downloaded from the given URL on server startup. The IPs must be separated by newlines.
+         * The list is only reloaded on server startup.
+         */
+        readonly ipBlocklistURL?: string
     }
 
     /**

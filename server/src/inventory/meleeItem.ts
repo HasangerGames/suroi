@@ -47,11 +47,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
         this.owner.game.addTimeout((): void => {
             if (
-                this.owner.activeItem === this &&
-                (owner.attacking || skipAttackCheck) &&
-                !owner.dead &&
-                !owner.downed &&
-                !owner.disconnected
+                this.owner.activeItem === this
+                && (owner.attacking || skipAttackCheck)
+                && !owner.dead
+                && !owner.downed
+                && !owner.disconnected
             ) {
                 const rotated = Vec.rotate(definition.offset, owner.rotation);
                 const position = Vec.add(owner.position, rotated);
@@ -87,7 +87,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             : definition.obstacleMultiplier;
                     }
 
-                    closestObject.damage(definition.damage * multiplier, owner, this);
+                    closestObject.damage({
+                        amount: definition.damage * multiplier,
+                        source: owner,
+                        weaponUsed: this
+                    });
 
                     if (closestObject instanceof Obstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);

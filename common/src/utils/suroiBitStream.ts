@@ -1,5 +1,5 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { GameConstants, ObjectCategory, PacketType } from "../constants";
+import { GameConstants, ObjectCategory } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, Numeric } from "./math";
@@ -7,7 +7,6 @@ import { type Vector } from "./vector";
 
 export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
 
-export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 13;
 export const VARIATION_BITS = 3;
@@ -102,25 +101,6 @@ export class SuroiBitStream extends BitStream {
             x: this.readFloat(minX, maxX, bitCount),
             y: this.readFloat(minY, maxY, bitCount)
         };
-    }
-
-    /**
-     * Write a packet type to the stream
-     * @param value The packet type
-     */
-    writePacketType(value: PacketType): void {
-        this.writeBits(value, PACKET_TYPE_BITS);
-    }
-
-    /**
-     * Read a packet type from stream
-     * @return The packet type, undefined if at the end of the stream
-     */
-    readPacketType(): PacketType | undefined {
-        if (this.length - this.byteIndex * 8 >= 1) {
-            return this.readBits(PACKET_TYPE_BITS) as PacketType;
-        }
-        return undefined;
     }
 
     /**

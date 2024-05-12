@@ -34,9 +34,9 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
 
     updateContainerScale(): void {
         if (
-            this._oldScale === undefined ||
-            this._lastScaleChange === undefined ||
-            this.container.scale === undefined
+            this._oldScale === undefined
+            || this._lastScaleChange === undefined
+            || this.container.scale === undefined
         ) return;
 
         this.container.scale.set(Numeric.lerp(

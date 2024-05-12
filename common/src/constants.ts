@@ -8,6 +8,7 @@ import { ItemType } from "./utils/objectDefinitions";
 export enum TeamSize {
     Solo = 1,
     Duo = 2,
+    Trio = 3,
     Squad = 4
 }
 
@@ -21,20 +22,6 @@ export enum ObjectCategory {
     Parachute,
     ThrowableProjectile,
     SyncedParticle
-}
-
-export enum PacketType {
-    Join,
-    Joined,
-    Map,
-    Update,
-    Input,
-    GameOver,
-    Pickup,
-    Ping,
-    Spectate,
-    Report,
-    MapPing
 }
 
 export enum AnimationType {
@@ -134,7 +121,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 18,
+    protocolVersion: 21,
     gridSize: 32,
     tickrate,
     // this is fine cause the object is frozen anyways, so

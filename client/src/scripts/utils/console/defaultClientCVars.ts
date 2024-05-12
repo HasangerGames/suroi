@@ -9,7 +9,7 @@ export interface JSONCVar<Value extends Stringable> {
     readonly flags: Partial<CVarFlags>
 }
 
-//! don't use "uv_" as a prefix, cause that's reserved for custom cvars
+// ! don't use "uv_" as a prefix, cause that's reserved for custom cvars
 
 export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
@@ -58,7 +58,8 @@ export const CVarCasters = Object.freeze({
     cv_crosshair_size: Casters.toNumber,
     cv_crosshair_stroke_color: Casters.toString,
     cv_crosshair_stroke_size: Casters.toNumber,
-    cv_auto_pickup: Casters.toBoolean,
+    cv_autopickup: Casters.toBoolean,
+    cv_autopickup_dual_guns: Casters.toBoolean,
 
     pf_show_fps: Casters.toBoolean,
     pf_show_ping: Casters.toBoolean,
@@ -67,6 +68,7 @@ export const CVarCasters = Object.freeze({
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
     mb_joystick_transparency: Casters.toNumber,
+    mb_high_res_textures: Casters.toBoolean,
 
     dv_password: Casters.toString,
     dv_role: Casters.toString,
@@ -140,7 +142,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_crosshair_stroke_color: "#000000",
     cv_crosshair_stroke_size: 0,
 
-    cv_auto_pickup: true,
+    cv_autopickup: true,
+    cv_autopickup_dual_guns: true,
 
     // unused for now
     cv_draw_hud: true,
@@ -155,6 +158,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     mb_controls_enabled: true,
     mb_joystick_size: 150,
     mb_joystick_transparency: 0.8,
+    mb_high_res_textures: false,
 
     dv_password: "",
     dv_role: "",
@@ -163,38 +167,37 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     dv_weapon_preset: ""
 } satisfies SimpleCVarMapping);
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export const defaultBinds = Object.freeze({
     "+up": ["W", "ArrowUp"],
     "+down": ["S", "ArrowDown"],
     "+left": ["A", "ArrowLeft"],
     "+right": ["D", "ArrowRight"],
-    interact: ["F"],
-    loot: [],
+    "interact": ["F"],
+    "loot": [],
     "slot 0": ["1"],
     "slot 1": ["2"],
     "slot 2": ["3", "E"],
     "equip_or_cycle_throwables 1": ["4"],
-    last_item: ["Q"],
-    other_weapon: ["Space"],
-    swap_gun_slots: ["T"],
+    "last_item": ["Q"],
+    "other_weapon": ["Space"],
+    "swap_gun_slots": ["T"],
     "cycle_items -1": ["MWheelUp"],
     "cycle_items 1": ["MWheelDown"],
     "+attack": ["Mouse0"],
-    drop: [],
-    reload: ["R"],
+    "drop": [],
+    "reload": ["R"],
     "cycle_scopes -1": [],
     "cycle_scopes 1": [],
     "use_consumable gauze": ["7"],
     "use_consumable medikit": ["8"],
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
-    cancel_action: ["X"],
+    "cancel_action": ["X"],
     "+view_map": [],
-    toggle_map: ["G", "M"],
-    toggle_minimap: ["N"],
-    toggle_hud: [],
+    "toggle_map": ["G", "M"],
+    "toggle_minimap": ["N"],
+    "toggle_hud": [],
     "+emote_wheel": ["Mouse2"],
     "+map_ping_wheel": ["C"],
-    toggle_console: []
+    "toggle_console": []
 } as Record<string, string[]>);

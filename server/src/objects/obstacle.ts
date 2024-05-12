@@ -9,14 +9,10 @@ import { random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
-import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
-import { type MeleeItem } from "../inventory/meleeItem";
-import { type ThrowableItem } from "../inventory/throwableItem";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
-import { type Explosion } from "./explosion";
-import { BaseGameObject, type GameObject } from "./gameObject";
+import { BaseGameObject, DamageParams } from "./gameObject";
 import { type Player } from "./player";
 
 export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
@@ -146,21 +142,26 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         }
     }
 
-    damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion, position?: Vector): void {
+    damage(params: DamageParams & { position?: Vector }): void {
         const definition = this.definition;
-
+        const { amount, source, weaponUsed, position } = params;
         if (this.health === 0 || definition.indestructible) return;
 
         const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
         if (
-            definition.impenetrable &&
-            !(
-                (weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined) ||
-                source instanceof Obstacle
+            definition.impenetrable
+            && !(
+                (weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined)
+                || source instanceof Obstacle
             )
         ) {
             return;
         }
+
+        this.game.pluginManager.emit("obstacleDamage", {
+            obstacle: this,
+            ...params
+        });
 
         this.health -= amount;
         this.setPartialDirty();
@@ -169,11 +170,18 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             this.health = 0;
             this.dead = true;
 
+            this.game.pluginManager.emit("obstacleDestroy", {
+                obstacle: this,
+                source,
+                weaponUsed,
+                amount
+            });
+
             if (!(this.definition.role === ObstacleSpecialRoles.Window && !this.definition.noCollisionAfterDestroyed)) this.collidable = false;
 
             this.scale = definition.scale?.spawnMin ?? 1;
 
-            if (definition.explosion !== undefined) {
+            if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 this.game.addExplosion(definition.explosion, this.position, source);
             }
 
@@ -192,7 +200,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                     item.count
                 );
 
-                if (source.position === undefined && position === undefined) continue;
+                if (!(source instanceof BaseGameObject) || position === undefined) continue;
 
                 loot.push(
                     Angle.betweenPoints(this.position, position ?? source.position),
@@ -201,12 +209,12 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             }
 
             if (this.definition.role === ObstacleSpecialRoles.Wall) {
-                this.parentBuilding?.damage();
+                this.parentBuilding?.damageCeiling();
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
                     if (
-                        object instanceof Obstacle &&
-                        object.definition.role === ObstacleSpecialRoles.Door
+                        object instanceof Obstacle
+                        && object.definition.role === ObstacleSpecialRoles.Door
                     ) {
                         const definition = object.definition;
                         switch (definition.operationStyle) {
@@ -219,7 +227,11 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                                 const detectionHitbox = new CircleHitbox(1, Vec.addAdjust(object.position, definition.hingeOffset, object.rotation as Orientation));
 
                                 if (this.hitbox.collidesWith(detectionHitbox)) {
-                                    object.damage(Infinity, source, weaponUsed);
+                                    object.damage({
+                                        amount: Infinity,
+                                        source,
+                                        weaponUsed
+                                    });
                                 }
                                 break;
                             }
@@ -239,17 +251,22 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     canInteract(player?: Player): boolean {
         return !this.dead && (
-            (this.isDoor && (!this.door?.locked || player === undefined)) ||
-            (
-                this.definition.role === ObstacleSpecialRoles.Activatable &&
-                (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem) &&
-                !this.activated
+            (this.isDoor && (!this.door?.locked || player === undefined))
+            || (
+                this.definition.role === ObstacleSpecialRoles.Activatable
+                && (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem)
+                && !this.activated
             )
         );
     }
 
     interact(player?: Player): void {
         if (!this.canInteract(player)) return;
+
+        this.game.pluginManager.emit("obstacleInteract", {
+            obstacle: this,
+            player
+        });
 
         const definition = this.definition;
 
@@ -263,7 +280,6 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 if (this.parentBuilding && this.puzzlePiece) {
                     this.parentBuilding.togglePuzzlePiece(this);
                 }

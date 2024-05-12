@@ -8,15 +8,6 @@ import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./va
 import { sanitizeHTML } from "../misc";
 
 /*
-    eslint-disable
-
-    no-lone-blocks,
-    @typescript-eslint/no-this-alias,
-    no-return-assign,
-    no-inner-declarations
-*/
-
-/*
   `no-lone-blocks`                    Used for organization
   `@typescript-eslint/no-this-alias`  Use some object literals, then talk to me about "not managing scope well"
   `no-return-assign`                  skill issue filter
@@ -52,7 +43,9 @@ export interface GameSettings {
 /**
  * Error type indicating that a console query has invalid syntax
  */
-export class CommandSyntaxError extends SyntaxError { }
+export class CommandSyntaxError extends SyntaxError {
+    constructor(message: string, public readonly charIndex: number, public readonly length = 1) { super(message); }
+}
 
 // When opening the console with a key, the key will be typed to the console,
 // because the keypress event is triggered for the input field, but only on the main menu screen
@@ -304,19 +297,19 @@ export class GameConsole {
         const nativeDelete = map.delete.bind(map);
 
         map.set = (key, value) => {
-            const retVal = nativeSet.call(map, key, value);
+            const retVal = nativeSet(key, value);
             this._autocmpData.cache.invalidateCommands();
             return retVal;
         };
 
         map.clear = () => {
-            const retVal = nativeClear.call(map);
+            const retVal = nativeClear();
             this._autocmpData.cache.invalidateCommands();
             return retVal;
         };
 
-        map.delete = (key) => {
-            const retVal = nativeDelete.call(map, key);
+        map.delete = key => {
+            const retVal = nativeDelete(key);
 
             if (retVal) {
                 this._autocmpData.cache.invalidateCommands();
@@ -329,29 +322,47 @@ export class GameConsole {
     })();
 
     readonly aliases = (() => {
-        const map = new Map<string, string>();
+        const map: Map<string, string> & {
+            delete(key: string, removeInverse?: boolean): boolean
+        } = new Map();
 
         const nativeSet = map.set.bind(map);
         const nativeClear = map.clear.bind(map);
         const nativeDelete = map.delete.bind(map);
 
         map.set = (key, value) => {
-            const retVal = nativeSet.call(map, key, value);
+            const retVal = nativeSet(key, value);
             this._autocmpData.cache.invalidateAliases();
             return retVal;
         };
 
         map.clear = () => {
-            const retVal = nativeClear.call(map);
+            const retVal = nativeClear();
             this._autocmpData.cache.invalidateAliases();
             return retVal;
         };
 
-        map.delete = (key) => {
-            const retVal = nativeDelete.call(map, key);
+        map.delete = (key: string, removeInverse = false) => {
+            let baseName = key;
+
+            removeInverse &&= (
+                ["+", "-"].includes(key[0])
+                    ? (baseName = key.slice(1), true)
+                    : false
+            ) || map.has(`+${key}`);
+
+            const [fwName, bwName] = removeInverse
+                ? [`+${baseName}`, `-${baseName}`]
+                : [key, key];
+
+            const retVal = nativeDelete(fwName);
 
             if (retVal) {
                 this._autocmpData.cache.invalidateAliases();
+
+                if (removeInverse) {
+                    nativeDelete(bwName);
+                }
             }
 
             return retVal;
@@ -693,7 +704,7 @@ export class GameConsole {
     }
 
     private _updateAutocmp(): void {
-        // todo autocomplete for command invocations
+        // TODO autocomplete for command invocations
 
         const inputValue = this._ui.input.val() as string;
         const { autocomplete, input, container } = this._ui;
@@ -714,6 +725,7 @@ export class GameConsole {
                     ),
                     ""
                 );
+
                 if (replaced === name) {
                     return [];
                 }
@@ -727,6 +739,9 @@ export class GameConsole {
         const matches = (name: string): boolean => findMatches(name).length !== 0;
         const cache = this._autocmpData.cache;
 
+        let commands: string[];
+        let aliases: string[];
+        let variables: string[];
         const [
             historyCandidates,
             commandCandidates,
@@ -740,10 +755,20 @@ export class GameConsole {
                 []
             ]
             : [
-                this._history.filter(s => matches(s) && !cache.commands.some(c => c === s)),
-                cache.commands.filter(s => matches(s)),
-                cache.aliases.filter(s => matches(s)),
-                cache.variables.filter(s => matches(s))
+                this._history.filter(
+                    (() => {
+                        const allEntities = ([] as string[]).concat(
+                            commands ??= cache.commands,
+                            aliases ??= cache.aliases,
+                            variables ??= cache.variables
+                        );
+
+                        return (s: string) => matches(s) && !allEntities.includes(s);
+                    })()
+                ),
+                (commands ??= cache.commands).filter(s => matches(s)),
+                (aliases ??= cache.aliases).filter(s => matches(s)),
+                (variables ??= cache.variables).filter(s => matches(s))
             ];
 
         const generateAutocompleteNode = (text: string): JQuery<HTMLDivElement> => {
@@ -784,10 +809,10 @@ export class GameConsole {
         };
 
         if (
-            historyCandidates.length ||
-            commandCandidates.length ||
-            aliasCandidates.length ||
-            variableCandidates.length
+            historyCandidates.length
+            || commandCandidates.length
+            || aliasCandidates.length
+            || variableCandidates.length
         ) {
             autocomplete.show();
             container
@@ -907,8 +932,12 @@ export class GameConsole {
              */
             cmd: ParsedCommand
             /**
+             * The index of this node's first character in the original query
+             */
+            startIndex: number
+            /**
              * The chaining type relating this node to **the one that precedes it**.
-             * Set to "Always" and ignored for the first node of the list
+             * Set to "Always", and ignored for the first node of the list
              */
             chaining: ChainingTypes
             /**
@@ -929,9 +958,22 @@ export class GameConsole {
              */
             name: string
             /**
+             * The index of this command's first character in the original query
+             */
+            startIndex: number
+            /**
              * Arguments to invoke the command with
              */
-            args: string[]
+            args: Array<{
+                /**
+                 * The text content of the argument
+                 */
+                arg: string
+                /**
+                 * The index of this argument's first character in the original query
+                 */
+                startIndex: number
+            }>
             /**
              * A reference to the parser node following this command
              */
@@ -952,6 +994,7 @@ export class GameConsole {
              */
             let current: ParsedCommand = {
                 name: "",
+                startIndex: 0,
                 args: []
             };
             /**
@@ -960,6 +1003,7 @@ export class GameConsole {
              */
             let currentNode: ParserNode = {
                 cmd: current,
+                startIndex: 0,
                 chaining: 0 // No node precedes the first node, so this value is ignored anyways
             };
             /**
@@ -1016,15 +1060,18 @@ export class GameConsole {
              */
             let args = current.args;
 
+            let charIndex = 0;
+            const throwCSE = (msg: string, mod = 0, length = 1): void => { throw new CommandSyntaxError(msg, charIndex + mod, length); };
+
             /**
              * Simply adds the given character to the last argument of the current command
              * @param char The character to add
              */
             const addCharToLast = (char: string): void => {
                 if (!args.length) {
-                    current.args = args = [char];
+                    current.args = args = [{ arg: char, startIndex: charIndex }];
                 } else {
-                    args[args.length - 1] += char;
+                    args[args.length - 1].arg += char;
                 }
             };
 
@@ -1039,8 +1086,10 @@ export class GameConsole {
                 target.next = currentNode = {
                     cmd: current = {
                         name: "",
+                        startIndex: charIndex,
                         args: args = []
                     },
+                    startIndex: charIndex,
                     chaining: chainingChars[chaining]
                 };
             };
@@ -1081,7 +1130,7 @@ export class GameConsole {
                             break;
                         }
 
-                        args.push("");
+                        args.push({ arg: "", startIndex: charIndex });
                         break;
                     }
                     case ";":
@@ -1091,10 +1140,10 @@ export class GameConsole {
                         if (parserPhase === "cmd") {
                             if (!current.name) {
                                 if (commands === currentNode) {
-                                    throw new CommandSyntaxError("Unexpected chaining character encountered at start of query");
+                                    throwCSE("Unexpected chaining character encountered at start of query");
                                 }
 
-                                throw new CommandSyntaxError("Expected a query following a chaining character, but found another chaining character");
+                                throwCSE("Expected a query following a chaining character, but found another chaining character");
                             }
 
                             advance(
@@ -1120,7 +1169,7 @@ export class GameConsole {
                             break;
                         }
 
-                        if (args.at(-1)?.length === 0) {
+                        if (args.at(-1)?.arg.length === 0) {
                             args.length -= 1;
                         }
 
@@ -1132,7 +1181,7 @@ export class GameConsole {
                         if (parserPhase === "cmd") {
                             if (current.name) {
                                 // `ab(d` is complete nonsense
-                                throw new CommandSyntaxError("Unexpected opening parentheses character '(' found");
+                                throwCSE("Unexpected opening parentheses character '(' found");
                             }
 
                             // Starting a group => save this node as an anchor to
@@ -1146,8 +1195,10 @@ export class GameConsole {
                             break;
                         }
 
-                        throw new CommandSyntaxError("Unexpected grouping character '('");
+                        throwCSE("Unexpected grouping character '('");
                     }
+                    // you're stupid
+                    // eslint-disable-next-line no-fallthrough
                     case ")": {
                         if (parserPhase === "args") {
                             if (inString) {
@@ -1157,7 +1208,7 @@ export class GameConsole {
 
                             // Every `(` pushes onto the stack—therefore, no stack entries -> no group to close
                             if (!groupAnchors.has()) {
-                                throw new CommandSyntaxError("Unexpected grouping character ')'");
+                                throwCSE("Unexpected grouping character ')'");
                             }
 
                             parserPhase = "cmd";
@@ -1165,7 +1216,7 @@ export class GameConsole {
                         }
 
                         if (!groupAnchors.has()) {
-                            throw new CommandSyntaxError("Unexpected closing parentheses character ')' found");
+                            throwCSE("Unexpected closing parentheses character ')' found");
                         }
 
                         if (expectingEndOfGroup) {
@@ -1184,7 +1235,7 @@ export class GameConsole {
 
                         if (!current.name) {
                             // No name -> we got smth like `a & ()`
-                            throw new CommandSyntaxError("Unexpected empty group");
+                            throwCSE("Unexpected empty group", -1, 2);
                         }
 
                         expectingEndOfGroup++;
@@ -1200,11 +1251,11 @@ export class GameConsole {
                                 break;
                             }
 
-                            args.push("");
-                        } else if (args.at(-1)?.length) {
+                            args.push({ arg: "", startIndex: charIndex });
+                        } else if (args.at(-1)?.arg.length) {
                             // If we encounter a " in the middle of an argument
                             // such as `say hel"lo`
-                            throw new CommandSyntaxError("Unexpected double-quote (\") character found.");
+                            throwCSE("Unexpected double-quote (\") character found.");
                         }
 
                         inString = !inString;
@@ -1220,7 +1271,7 @@ export class GameConsole {
                         if (parserPhase === "cmd") {
                             if (expectingEndOfGroup) {
                                 // Prevent `a & (b; c) d`
-                                throw new CommandSyntaxError(`Expected a chaining character following the end of a group (found '${char}')`);
+                                throwCSE(`Expected a chaining character following the end of a group (found '${char}')`);
                             }
 
                             current.name += char;
@@ -1232,20 +1283,21 @@ export class GameConsole {
                         break;
                     }
                 }
+                ++charIndex;
             }
 
             // Self-explanatory error conditions after we reach end-of-input
 
             if (inString) {
-                throw new CommandSyntaxError("Unterminated string argument");
+                throwCSE("Unterminated string argument");
             }
 
             if (escaping) {
-                throw new CommandSyntaxError("Unresolved escape character");
+                throwCSE("Unresolved escape character");
             }
 
             if (groupAnchors.has() && !expectingEndOfGroup) {
-                throw new CommandSyntaxError("Unterminated command group");
+                throwCSE("Unterminated command group");
             }
 
             if (!current.next?.cmd.name.length) delete current.next;
@@ -1257,11 +1309,11 @@ export class GameConsole {
 
                     So instead of throwing an error, we'll just modify the parser output
                 */
-                // throw new CommandSyntaxError("Unexpected end-of-input following chaining character");
+                // throwCSE("Unexpected end-of-input following chaining character");
                 delete prevNode.cmd.next;
             } else {
                 const args = current.args;
-                if (args.at(-1)?.length === 0) {
+                if (args.at(-1)?.arg.length === 0) {
                     args.length -= 1;
                 }
             }
@@ -1383,14 +1435,18 @@ export class GameConsole {
             */
             pushGroupAnchorIfPresent();
 
-            // eslint-disable-next-line no-unmodified-loop-condition -- cfa fix when™
+            let iterationCount = 0;
+
             while (currentNode !== undefined) {
+                if (++iterationCount === 1e3) {
+                    console.warn("1000 iterations of query parsing; possible infinite loop");
+                }
                 error = false;
                 const entity = currentNode.cmd;
 
                 const cmd = this.commands.get(entity.name);
                 if (cmd) {
-                    const result = cmd.run(entity.args);
+                    const result = cmd.run(entity.args.map(e => e.arg));
 
                     if (typeof result === "object") {
                         error = true;
@@ -1401,7 +1457,7 @@ export class GameConsole {
                 }
 
                 const alias = this.aliases.get(entity.name);
-                if (alias) {
+                if (alias !== undefined) {
                     error = !this.handleQuery(alias);
                     stepForward();
                     continue;
@@ -1426,7 +1482,8 @@ export class GameConsole {
                     */
                     if (entity.args.length) {
                         error = true;
-                        throw new CommandSyntaxError(`Unexpected token '${entity.args[0]}'`);
+                        const [{ arg, startIndex }] = entity.args;
+                        throw new CommandSyntaxError(`Unexpected token '${arg}'`, startIndex, arg.length);
                     }
 
                     this.log(`${cvar.name} = ${cvar.value}`);
@@ -1440,7 +1497,20 @@ export class GameConsole {
             }
         } catch (e) {
             if (e instanceof CommandSyntaxError) {
-                this.error({ main: "Parsing error", detail: e.message });
+                const index = e.charIndex;
+                const padding = 15;
+                const nbsp = "\u00a0";
+
+                this.error.raw({
+                    main: "Parsing error",
+                    detail: `${e.message}<br><pre><code>`
+                    + `${
+                        sanitizeHTML(
+                            query.slice(Math.max(0, index - padding), index + padding),
+                            { strict: true, escapeSpaces: true }
+                        )
+                    }<br>${`${nbsp.repeat(Math.min(index, padding))}${"^".repeat(e.length)}`.padEnd(Math.min(query.length, padding), nbsp)}</code></pre>`
+                });
             } else {
                 // Forward the error
                 throw e;

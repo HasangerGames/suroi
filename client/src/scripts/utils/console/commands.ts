@@ -90,9 +90,9 @@ export class Command<
             true
         );
 
-        // @ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as mutable
         plus._inverse = minus;
-        // @ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as mutable
         minus._inverse = plus;
     }
 
@@ -102,7 +102,6 @@ export class Command<
         game: Game,
         info: CommandInfo
     ): void {
-        /* eslint-disable no-new */
         new Command(name, executor, game, info);
     }
 
@@ -155,7 +154,7 @@ export class Command<
                     }
                 }
 
-                if (new Set(args.map((arg) => arg.name)).size !== args.length) {
+                if (new Set(args.map(arg => arg.name)).size !== args.length) {
                     console.error(
                         `Found duplicate argument names in info string of command '${this._name}' (signature ${index})`
                     );
@@ -231,9 +230,9 @@ export function setUpCommands(game: Game): void {
     // shut
     /*
         Normally, arrow function would be preferred, but since
-        the callbacks have their this value bound, leaving them as
+        the callbacks have their `this` value bound, leaving them as
         function expressions instead of arrow functions allows us to
-        quickly switch to using this if needed, instead of having to
+        quickly switch to using `this` if needed, instead of having to
         change back from an arrow function
     */
     /* eslint-disable prefer-arrow-callback */
@@ -254,8 +253,8 @@ export function setUpCommands(game: Game): void {
         {
             short: "Attempts to switch to the item in a given slot. The slot number is 0-indexed",
             long:
-                "When invoked, an attempt to swap to the slot passed in argument will be made. The slot number " +
-                "is zero-indexed, meaning that 0 designates the first slot, 1 designates the second and 2 designates the third",
+                "When invoked, an attempt to swap to the slot passed in argument will be made. The slot number "
+                + "is zero-indexed, meaning that 0 designates the first slot, 1 designates the second and 2 designates the third",
             signatures: [
                 {
                     args: [
@@ -286,10 +285,10 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "other_weapon",
         function(): undefined {
-            let index =
-                this.uiManager.inventory.activeWeaponIndex === 0 || (
-                    this.uiManager.inventory.weapons[0] === undefined &&
-                    this.uiManager.inventory.activeWeaponIndex !== 1
+            let index
+                = this.uiManager.inventory.activeWeaponIndex === 0 || (
+                    this.uiManager.inventory.weapons[0] === undefined
+                    && this.uiManager.inventory.activeWeaponIndex !== 1
                 )
                     ? 1
                     : 0;
@@ -318,8 +317,8 @@ export function setUpCommands(game: Game): void {
         {
             short: "Exchanges the guns' slots in the player's inventory",
             long:
-                "When invoked, the item in slot 0 will be placed in slot 1 and vice versa. Empty slots are treated normally, meaning " +
-                "that invoking this command with only one gun in an inventory will send it to the other slot, leaving the original slot empty",
+                "When invoked, the item in slot 0 will be placed in slot 1 and vice versa. Empty slots are treated normally, meaning "
+                + "that invoking this command with only one gun in an inventory will send it to the other slot, leaving the original slot empty",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -363,9 +362,9 @@ export function setUpCommands(game: Game): void {
         {
             short: "Switches to the item <em>n</em> slots over, where <em>n</em> is some integer",
             long:
-                "When invoked with an integer argument <em>n</em>, the slot offset from the current one by <em>n</em> slots will be " +
-                "switched to. If the offset is beyond the slots' range (< 0 or > 2), wrap-around is performed. Empty slots are ignored " +
-                "and cannot be swapped to",
+                "When invoked with an integer argument <em>n</em>, the slot offset from the current one by <em>n</em> slots will be "
+                + "switched to. If the offset is beyond the slots' range (< 0 or > 2), wrap-around is performed. Empty slots are ignored "
+                + "and cannot be swapped to",
             signatures: [
                 {
                     args: [
@@ -463,9 +462,9 @@ export function setUpCommands(game: Game): void {
         {
             short: "Switches to the scope <em>n</em> slots over, where <em>n</em> is some integer",
             long:
-                "When invoked with an integer argument <em>n</em>, the scope offset from the current one by <em>n</em> slots will be " +
-                "switched to. If the offset is beyond the slots' range, wrap-around is performed if the user has " +
-                "<code>cl_loop_scope_selection</code> set to <code>true</code>",
+                "When invoked with an integer argument <em>n</em>, the scope offset from the current one by <em>n</em> slots will be "
+                + "switched to. If the offset is beyond the slots' range, wrap-around is performed if the user has "
+                + "<code>cl_loop_scope_selection</code> set to <code>true</code>",
             signatures: [
                 {
                     args: [
@@ -509,9 +508,9 @@ export function setUpCommands(game: Game): void {
         {
             short: "Selects the throwable slot, but if it already is, then switches to the throwable <em>n</em> slots over, where <em>n</em> is some integer",
             long:
-                "When invoked, this command will switch to the first throwable slot it finds if the active slot isn't a throwable slot—in this case, the " +
-                "'offset' argument is ignored. If a throwable slot is selected, then the throwable offset from the current one by <em>n</em> slots will be " +
-                "selected, with the indices wrapping around if need be",
+                "When invoked, this command will switch to the first throwable slot it finds if the active slot isn't a throwable slot—in this case, the "
+                + "'offset' argument is ignored. If a throwable slot is selected, then the throwable offset from the current one by <em>n</em> slots will be "
+                + "selected, with the indices wrapping around if need be",
             signatures: [
                 {
                     args: [
@@ -739,8 +738,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Enables the emote wheel to ping mode",
-            long: "When invoked, the emote wheel will switch from triggering emotes to trigger map pings",
+            short: "Enables the emote wheel's ping mode",
+            long: "When invoked, the emote wheel will switch from triggering emotes to triggering map pings",
             signatures: [{ args: [], noexcept: true }]
         },
         {
@@ -758,7 +757,7 @@ export function setUpCommands(game: Game): void {
             sprite.texture = game.map.sprite.texture;
             const canvas = game.pixi.renderer.extract.canvas(sprite);
             if (canvas.toBlob) {
-                canvas.toBlob((blob) => {
+                canvas.toBlob(blob => {
                     if (blob) window.open(URL.createObjectURL(blob));
                 });
             } else {
@@ -796,7 +795,7 @@ export function setUpCommands(game: Game): void {
             });
 
             if (canvas.toBlob) {
-                canvas.toBlob((blob) => {
+                canvas.toBlob(blob => {
                     if (blob) window.open(URL.createObjectURL(blob));
                 });
             } else {
@@ -814,7 +813,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "disconnect",
         function(): undefined {
-            this.endGame();
+            void this.endGame();
         },
         game,
         {
@@ -892,10 +891,10 @@ export function setUpCommands(game: Game): void {
         {
             short: "Binds an input to an action",
             long:
-                "Given the name of an input (such as a key or mouse button) and a console query, this command establishes a new link between the two.<br>" +
-                'For alphanumeric keys, simply giving the key as-is (e.g. "a", or "1") will do. However, keys with no textual representation, or that represent ' +
-                'punctuation will have to given by name, such as "Enter" or "Period".<br>' +
-                `For mouse buttons, the encodings are as follows:<br><table><tbody>${(
+                "Given the name of an input (such as a key or mouse button) and a console query, this command establishes a new link between the two.<br>"
+                + 'For alphanumeric keys, simply giving the key as-is (e.g. "a", or "1") will do. However, keys with no textual representation, or that represent '
+                + 'punctuation will have to given by name, such as "Enter" or "Period".<br>'
+                + `For mouse buttons, the encodings are as follows:<br><table><tbody>${(
                     [
                         ["Primary (usually left click)", "Mouse0"],
                         ["Auxillary (usually middle click)", "Mouse1"],
@@ -904,9 +903,9 @@ export function setUpCommands(game: Game): void {
                         ["Forwards (usually front-left side-button)", "Mouse4"]
                     ] as Array<[string, string]>
                 ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")
-                }</tbody></table>` +
-                "For the scroll wheel, the encoding is simply <code>MWheel</code>, followed by the capitalized direction (ex: <code>MWheelUp</code>)<br>" +
-                'Remember that if your query contains spaces, you must enclose the whole query in double quotes ("") so that it is properly parsed.',
+                }</tbody></table>`
+                + "For the scroll wheel, the encoding is simply <code>MWheel</code>, followed by the capitalized direction (ex: <code>MWheelUp</code>)<br>"
+                + 'Remember that if your query contains spaces, you must enclose the whole query in double quotes ("") so that it is properly parsed.',
             signatures: [
                 {
                     args: [
@@ -998,12 +997,12 @@ export function setUpCommands(game: Game): void {
         {
             short: "Creates a shorthand for a console query",
             long:
-                "This command's first argument is the alias' name, and its second is the query; an <em>alias</em> is created, which can be called like any " +
-                "other command. When the alias is called, the query said alias is bound to will be executed, as if it had been entered into the console manually.<br>" +
-                'If the query contains spaces, remember to wrap it in double quotes ("") so it can be parsed correctly. An alias\' name cannot match that ' +
-                "of a built-in command, nor can it start with two alphanumeric characters followed by an underscore (in other words, the name mustn't match " +
-                "<code>^\\w{2}_</code>, because those prefixes may be used for future CVars). However, if it matches an existing alias, said existing alias " +
-                "will be replaced by the new one",
+                "This command's first argument is the alias' name, and its second is the query; an <em>alias</em> is created, which can be called like any "
+                + "other command. When the alias is called, the query said alias is bound to will be executed, as if it had been entered into the console manually.<br>"
+                + 'If the query contains spaces, remember to wrap it in double quotes ("") so it can be parsed correctly. An alias\' name cannot match that '
+                + "of a built-in command, nor can it start with two alphanumeric characters followed by an underscore (in other words, the name mustn't match "
+                + "<code>^\\w{2}_</code>, because those prefixes may be used for future CVars). However, if it matches an existing alias, said existing alias "
+                + "will be replaced by the new one",
             signatures: [
                 {
                     args: [
@@ -1024,12 +1023,17 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand<string>(
         "remove_alias",
-        function(name) {
+        function(name, removeInverse) {
             if (name === undefined) {
                 return { err: "Expected a string argument, received nothing" };
             }
 
-            if (!gameConsole.aliases.delete(name)) {
+            if (
+                !gameConsole.aliases.delete(
+                    name,
+                    handleResult(Casters.toBoolean(removeInverse ?? "false"), () => false)
+                )
+            ) {
                 return { err: `No alias by the name of '${name}' exists` };
             }
 
@@ -1038,13 +1042,26 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Removes an alias from the list of aliases",
-            long: "When given the name of an alias, this command removes it from the list of alises if it exists",
+            long:
+                "When given the name of an alias, this command removes it from the list of alises if it exists. If <code>remove_inverse</code> "
+                + "is set to <code>true</code> and the alias pointed to by <code>alias_name</code> is <em>invertible</em> (in other words, has "
+                + "a <code>+</code> form and a <code>-</code> form, like <code>+command</code> and <code>-command</code>), then both aliases will "
+                + "be removed. In this case, <code>alias_name</code> may be either one of the two forms, or the \"base\" name with no +/- (for "
+                + "example, removing <code>+command</code> and <code>-command</code> could be done by calling <code>remove_alias command true</code>, "
+                + "<code>remove_alias +command true</code>, or <code>remove_alias -command true</code>.) If <code>remove_inverse</code> is set to <code>"
+                + "true</code> but the targeted alias is not invertible, the value of <code>remove_inverse</code> is ignored. <code>remove_inverse</code> "
+                + "defaults to <code>false</code>.",
             signatures: [
                 {
                     args: [
                         {
                             name: "alias_name",
                             type: ["string"]
+                        },
+                        {
+                            name: "remove_inverse",
+                            optional: true,
+                            type: ["boolean"]
                         }
                     ],
                     noexcept: false
@@ -1090,9 +1107,9 @@ export function setUpCommands(game: Game): void {
         {
             short: "Lists all the actions bound to a key, or all the keys and their respective actions",
             long:
-                "If this command is invoked without an argument, all keys which have an action to them will be printed, along with " +
-                "the actions bound to each respective key. If it is invoked with an input's name, then only the actions bound to that input " +
-                "will be shown, if any",
+                "If this command is invoked without an argument, all keys which have an action to them will be printed, along with "
+                + "the actions bound to each respective key. If it is invoked with an input's name, then only the actions bound to that input "
+                + "will be shown, if any",
             signatures: [
                 {
                     args: [],
@@ -1122,8 +1139,8 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Prints out the values of CVars",
-            long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:" +
-            `<ul>${(
+            long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:"
+            + `<ul>${(
                 [
                     [null, "null"],
                     [undefined, "undefined"],
@@ -1202,11 +1219,11 @@ export function setUpCommands(game: Game): void {
         {
             short: "Creates a new custom console variable, with a name and value",
             long:
-                "When invoked, this command attempts to create a new CVar with the given name and value. <b>Names must being with <code>uv_</code>, " +
-                "must be at least one character long (not counting the prefix) and can only contain letters, numbers and underscores.</b> Invalid names will " +
-                "result in an error.<br>" +
-                "CVars marked as <code>archive</code> will be saved when the game closes and reinitialized when the game boots up again. Readonly CVars cannot " +
-                "have their value changed after being created",
+                "When invoked, this command attempts to create a new CVar with the given name and value. <b>Names must being with <code>uv_</code>, "
+                + "must be at least one character long (not counting the prefix) and can only contain letters, numbers and underscores.</b> Invalid names will "
+                + "result in an error.<br>"
+                + "CVars marked as <code>archive</code> will be saved when the game closes and reinitialized when the game boots up again. Readonly CVars cannot "
+                + "have their value changed after being created",
             signatures: [
                 {
                     args: [
@@ -1317,11 +1334,11 @@ export function setUpCommands(game: Game): void {
         {
             short: "Cycles a CVar's value through a set of values",
             long:
-                "When invoked, this command retrieves the CVar designated by <code>name</code>. If its current value is not in " +
-                "<code>values</code>, or if the CVar doesn't exist, an error is thrown. Otherwise, the CVar is assigned to the " +
-                "element in the list following the one corresponding to the current CVar's value. Any errors from this assignment are " +
-                "rethrown by this command. Invoking this command with only a CVar's name is equivalent to passing in <code>true false</code>" +
-                "for <code>values</code>",
+                "When invoked, this command retrieves the CVar designated by <code>name</code>. If its current value is not in "
+                + "<code>values</code>, or if the CVar doesn't exist, an error is thrown. Otherwise, the CVar is assigned to the "
+                + "element in the list following the one corresponding to the current CVar's value. Any errors from this assignment are "
+                + "rethrown by this command. Invoking this command with only a CVar's name is equivalent to passing in <code>true false</code>"
+                + "for <code>values</code>",
             signatures: [
                 {
                     args: [
@@ -1361,8 +1378,8 @@ export function setUpCommands(game: Game): void {
         {
             short: "Removes a user CVar from the list of variables",
             long:
-                "When given the name of a user variable, this command removes it from the list of variables. " +
-                "Passing in the name of a built-in CVar causes an error",
+                "When given the name of a user variable, this command removes it from the list of variables. "
+                + "Passing in the name of a built-in CVar causes an error",
             signatures: [
                 {
                     args: [
@@ -1386,7 +1403,7 @@ export function setUpCommands(game: Game): void {
 
             const alias = gameConsole.aliases.get(name);
 
-            if (alias) {
+            if (alias !== undefined) {
                 gameConsole.log.raw(`Alias '${name}' is defined as <code>${sanitizeHTML(alias)}</code>`);
             } else {
                 return { err: `No alias named '${name}' exists` };
@@ -1436,7 +1453,7 @@ export function setUpCommands(game: Game): void {
                 main: info.short,
                 detail: [
                     info.long,
-                    ...info.signatures.map((signature) => {
+                    ...info.signatures.map(signature => {
                         const noexcept = "noexcept" in signature && signature.noexcept
                             ? '<span class="command-desc-noexcept">noexcept</span> '
                             : "";
@@ -1444,7 +1461,7 @@ export function setUpCommands(game: Game): void {
                         const args = signature.args.length
                             ? ` ${signature.args
                                 .map(
-                                    (arg) =>
+                                    arg =>
                                         `<em>${arg.rest ? ".." : ""}${arg.name}${arg.optional ? "?" : ""}: ${arg.type
                                             .map(type => `<span class="command-desc-arg-type">${type}</span>`)
                                             .join(" | ")
@@ -1462,24 +1479,24 @@ export function setUpCommands(game: Game): void {
         {
             short: "Displays help about a certain command, or a list of commands and aliases",
             long:
-                // eslint-disable-next-line prefer-template
-                "If given the name of a command, this command logs that command's help info, along with its signatures.<br>" +
-                "The signatures of a command are all the different possible ways in can be invoked. Each signature follows " +
-                "the following format: <code>noexcept-marker? command-name params</code>" +
-                `<ul>${(
+
+                "If given the name of a command, this command logs that command's help info, along with its signatures.<br>"
+                + "The signatures of a command are all the different possible ways in can be invoked. Each signature follows "
+                + "the following format: <code>noexcept-marker? command-name params</code>"
+                + `<ul>${(
                     [
                         ["noexcept-marker", "If included, it indicates that this signature never returns an error. Styled as blue, bold and in italics"],
                         ["command-name", "Simply the command's name. Styled as bold and yellow"],
                         [
                             "params",
-                            "A space-separated list of parameters, where each parameter follows the form <em><code>name: type</code></em>," +
-                            " where <code>name</code> is the parameter's name and <code>type</code> is its data type"
+                            "A space-separated list of parameters, where each parameter follows the form <em><code>name: type</code></em>,"
+                            + " where <code>name</code> is the parameter's name and <code>type</code> is its data type"
                         ]
                     ] as Array<[string, string]>
-                ).map(([name, desc]) => `<li><code>${name}</code>: ${desc}</li>`).join("")}</ul>` +
-                "If not given an argument, this command logs a list of all defined commands and aliases. " +
-                "Passing the name of an alias to this command results in an error. " +
-                "If you want to see the query bound to an alias, use <code>list_alias</code>",
+                ).map(([name, desc]) => `<li><code>${name}</code>: ${desc}</li>`).join("")}</ul>`
+                + "If not given an argument, this command logs a list of all defined commands and aliases. "
+                + "Passing the name of an alias to this command results in an error. "
+                + "If you want to see the query bound to an alias, use <code>list_alias</code>",
             signatures: [
                 {
                     args: [],
@@ -1555,26 +1572,28 @@ export function setUpCommands(game: Game): void {
                         .replace(/\n| /g, r => ({ "\n": "<br>", " ": "&nbsp;" }[r] ?? ""))
                 );
             } else {
-                const construct = (obj: Record<string, unknown>, namespace = ""): string => {
-                    let retVal = "<ul>";
-
-                    for (const [key, value] of Object.entries(obj)) {
-                        retVal += `<li><b>${key}</b>: ${typeof value === "object" && value !== null ? construct(value as Record<string, unknown>) : String(value)}</li>`;
-                    }
-
-                    return `${retVal}</ul>`;
-                };
-
                 game.console.log.raw(
-                    construct(data)
+                    (function construct(obj: Record<string, unknown>): string {
+                        let retVal = "<ul>";
+
+                        for (const [key, value] of Object.entries(obj)) {
+                            retVal += `<li><b>${key}</b>: ${
+                                typeof value === "object" && value !== null
+                                    ? construct(value as Record<string, unknown>)
+                                    : String(value)
+                            }</li>`;
+                        }
+
+                        return `${retVal}</ul>`;
+                    })(data)
                 );
             }
         },
         game,
         {
             short: "Gives info about the client",
-            long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, " +
-                "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
+            long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, "
+            + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
             signatures: [
                 {
                     args: [
@@ -1589,4 +1608,12 @@ export function setUpCommands(game: Game): void {
             ]
         }
     );
+
+    /*
+        few reasons for this:
+        a) expanding out these console commands and making a proper implementation of `map_ping` leads to duplicated code
+        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper command with help text if you want tho)
+        c) the whole "hold key to switch to ping mode" thing is annoying
+    */
+    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"+map_ping_wheel; +emote_wheel\"");
 }

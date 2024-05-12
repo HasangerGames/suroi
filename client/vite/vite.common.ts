@@ -31,7 +31,7 @@ const config: UserConfig = {
     ],
 
     define: {
-        APP_VERSION: JSON.stringify(`${pkg.version}`)
+        APP_VERSION: JSON.stringify(pkg.version)
     }
 };
 

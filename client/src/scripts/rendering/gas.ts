@@ -82,9 +82,9 @@ export class Gas {
             }
 
             if (
-                (isInactive || gas.currentDuration !== 0) &&
-                !UI_DEBUG_MODE &&
-                (!this.game.gameOver || this.game.spectating)
+                (isInactive || gas.currentDuration !== 0)
+                && !UI_DEBUG_MODE
+                && (!this.game.gameOver || this.game.spectating)
             ) {
                 this._ui.msgText.text(gasMessage);
                 this._ui.msgContainer.fadeIn();

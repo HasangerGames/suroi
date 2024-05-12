@@ -4,32 +4,31 @@ import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
+import { Vec } from "../../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Game } from "./game";
-import type { UIManager } from "./managers/uiManager";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
-import { CustomTeamMessageType, type CustomTeamMessage, type CustomTeamPlayerInterface } from "../../../common/src/team";
-import type { MapPingDefinition } from "../../../common/src/definitions/mapPings";
-import { Vec } from "../../../common/src/utils/vector";
 
 interface RegionInfo {
     name: string
-    address: string
-    https: boolean
+    mainAddress: string
+    gameAddress: string
     playerCount?: number
     maxTeamSize?: number
+    nextSwitchTime?: number
     ping?: number
 }
 
@@ -44,9 +43,14 @@ let autoFill = false;
 
 export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
+
     const info = selectedRegion ?? regionInfo[Config.defaultRegion];
-    $("#btn-play-solo").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Solo);
-    $("#btn-play-duo, #btn-create-team, #btn-join-team").toggleClass("btn-disabled", info.maxTeamSize !== TeamSize.Duo);
+    const isSolo = info.maxTeamSize === TeamSize.Solo;
+    const isDuo = info.maxTeamSize === TeamSize.Duo;
+
+    $("#btn-play-solo").toggleClass("locked", isDuo);
+    $(".team-btns-container").toggleClass("locked", isSolo);
+    $("#locked-msg").css("top", isSolo ? "227px" : isDuo ? "153px" : "").toggle(isSolo || isDuo);
 }
 
 export async function setUpUI(game: Game): Promise<void> {
@@ -81,6 +85,19 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     }
 
+    const params = new URLSearchParams(window.location.search);
+
+    // Switch regions with the ?region="name" Search Parameter
+    if (params.has("region")) {
+        (() => {
+            const region = params.get("region");
+            params.delete("region");
+            if (region === null) return;
+            if (!Object.hasOwn(Config.regions, region)) return;
+            game.console.setBuiltInCVar("cv_region", region);
+        })();
+    }
+
     // Load news
     let newsText = "";
     for (const newsPost of news.slice(0, 5)) {
@@ -99,6 +116,26 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#news-posts").html(newsText);
 
     // createDropdown("#splash-more");
+
+    $("#locked-info").on("click", () => $("#locked-tooltip").fadeToggle(250));
+
+    const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
+    const updateSwitchTime = (): void => {
+        if (!selectedRegion?.nextSwitchTime) {
+            $("#locked-time").text("--:--:--");
+            return;
+        }
+        const millis = selectedRegion.nextSwitchTime - Date.now();
+        if (millis < 0) {
+            location.reload();
+            return;
+        }
+        const hours = Math.floor(millis / 3600000) % 24;
+        const minutes = Math.floor(millis / 60000) % 60;
+        const seconds = Math.floor(millis / 1000) % 60;
+        $("#locked-time").text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+    };
+    setInterval(updateSwitchTime, 1000);
 
     const regionMap = Object.entries(regionInfo);
     const serverList = $("#server-list");
@@ -126,10 +163,9 @@ export async function setUpUI(game: Game): Promise<void> {
     let bestRegion: string | undefined;
     for (const [regionID, region] of regionMap) {
         const listItem = $(`.server-list-item[data-region=${regionID}]`);
-        const createTeamlistItem = $(`.create-team-server-list-item[data-region=create-team-${regionID}]`);
         try {
             const pingStartTime = Date.now();
-            const serverInfo = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
+            const serverInfo = await (await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(5000) }))?.json();
             const ping = Date.now() - pingStartTime;
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
@@ -144,7 +180,6 @@ export async function setUpUI(game: Game): Promise<void> {
             };
 
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
-            createTeamlistItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
@@ -162,9 +197,10 @@ export async function setUpUI(game: Game): Promise<void> {
             game.console.setBuiltInCVar("cv_region", "");
         }
         $("#server-name").text(selectedRegion.name);
-        $("#create-team-server-name").text(selectedRegion.name);
-        $("#create-team-server-player-count").text(selectedRegion.playerCount ?? "-");
+        $("#server-player-count").text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
+        updateSwitchTime();
+        resetPlayButtons();
     };
 
     selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
@@ -188,56 +224,44 @@ export async function setUpUI(game: Game): Promise<void> {
         updateServerSelectors();
     });
 
-    const joinGame = (gameID: number): void => {
-        let address = `ws${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/play?gameID=${gameID}`;
-
-        if (teamID) address += `&teamID=${teamID}`;
-        if (autoFill) address += `&autoFill=${autoFill}`;
-
-        const devPass = game.console.getBuiltInCVar("dv_password");
-        const role = game.console.getBuiltInCVar("dv_role");
-        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
-
-        if (devPass) address += `&password=${devPass}`;
-        if (role) address += `&role=${role}`;
-        if (lobbyClearing) address += "&lobbyClearing=true";
-        if (weaponPreset) address += `&weaponPreset=${weaponPreset}`;
-
-        const nameColor = game.console.getBuiltInCVar("dv_name_color");
-        if (nameColor) {
-            try {
-                const finalColor = new Color(nameColor).toNumber();
-                address += `&nameColor=${finalColor}`;
-            } catch (e) {
-                game.console.setBuiltInCVar("dv_name_color", "");
-                console.error(e);
-            }
-        }
-
-        game.connect(address);
-        $("#splash-server-message").hide();
-    };
-
-    let lastPlayButtonClickTime = 0;
-
-    // Join server when play buttons are clicked
-    $("#btn-play-solo, #btn-play-duo").on("click", () => {
-        const now = Date.now();
-        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
-        lastPlayButtonClickTime = now;
+    const joinGame = (): void => {
         $("#splash-options").addClass("loading");
-        void $.get(`http${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
+        void $.get(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`, (data: GetGameResponse) => {
             if (data.success) {
-                joinGame(data.gameID);
+                const params = new URLSearchParams();
+
+                if (teamID) params.set("teamID", teamID);
+                if (autoFill) params.set("autoFill", String(autoFill));
+
+                const devPass = game.console.getBuiltInCVar("dv_password");
+                if (devPass) params.set("password", devPass);
+
+                const role = game.console.getBuiltInCVar("dv_role");
+                if (role) params.set("role", role);
+
+                const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+                if (lobbyClearing) params.set("lobbyClearing", "true");
+
+                const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+                if (weaponPreset) params.set("weaponPreset", weaponPreset);
+
+                const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                if (nameColor) {
+                    try {
+                        params.set("nameColor", new Color(nameColor).toNumber().toString());
+                    } catch (e) {
+                        game.console.setBuiltInCVar("dv_name_color", "");
+                        console.error(e);
+                    }
+                }
+
+                game.connect(`${selectedRegion.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
+                $("#splash-server-message").hide();
             } else {
                 let showWarningModal = false;
                 let title: string | undefined;
                 let message: string;
                 switch (data.message) {
-                    case "rateLimit":
-                        message = "Error joining game.<br>Please try again in a few minutes.";
-                        break;
                     case "warning":
                         showWarningModal = true;
                         title = "Teaming is against the rules!";
@@ -254,7 +278,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
                         break;
                     default:
-                        message = "Error joining game.<br>Please try again in 30 seconds.";
+                        message = "Error joining game.<br>Please try again.";
                         break;
                 }
                 if (showWarningModal) {
@@ -275,6 +299,16 @@ export async function setUpUI(game: Game): Promise<void> {
             $("#splash-server-message").show();
             resetPlayButtons();
         });
+    };
+
+    let lastPlayButtonClickTime = 0;
+
+    // Join server when play buttons are clicked
+    $("#btn-play-solo, #btn-play-duo").on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
+        joinGame();
     });
 
     const createTeamMenu = $("#create-team-menu");
@@ -282,6 +316,7 @@ export async function setUpUI(game: Game): Promise<void> {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500 || teamSocket) return;
         lastPlayButtonClickTime = now;
+
         $("#splash-options").addClass("loading");
 
         const params = new URLSearchParams();
@@ -336,12 +371,12 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
 
-        teamSocket = new WebSocket(`ws${selectedRegion.https ? "s" : ""}://${selectedRegion.address}/team?${params.toString()}`);
+        teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
-        const getPlayerHTML = (p: CustomTeamPlayerInterface): string =>
+        const getPlayerHTML = (p: CustomTeamPlayerInfo): string =>
             `
             <div class="create-team-player-container" data-id="${p.id}">
-              ${p.isLeader ? '<i class="fa-solid fa-crown"></i>' : ""}
+              <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
               <div class="skin">
                 <div class="skin-base" style="background-image: url('./img/game/skins/${p.skin}_base.svg')"></div>
                 <div class="skin-left-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
@@ -354,42 +389,52 @@ export async function setUpUI(game: Game): Promise<void> {
             </div>
             `;
 
+        let playerID: number;
+
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
-                case CustomTeamMessageType.Join: {
+                case CustomTeamMessages.Join: {
                     joinedTeam = true;
+                    playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
-                    $("#create-team-url-field").val(`${window.location.origin}/#${teamID}`);
+                    $("#create-team-url-field").val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
                     $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
                     $("#create-team-toggle-lock").prop("checked", data.locked);
                     $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
                     break;
                 }
-                case CustomTeamMessageType.PlayerJoin: {
+                case CustomTeamMessages.PlayerJoin: {
                     $("#create-team-players").append(getPlayerHTML(data));
                     break;
                 }
-                case CustomTeamMessageType.PlayerLeave: {
+                case CustomTeamMessages.PlayerLeave: {
                     $("#create-team-players").find(`[data-id="${data.id}"]`).remove();
+                    if (data.newLeaderID !== undefined) {
+                        $("#create-team-players").find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
+                        if (data.newLeaderID === playerID) {
+                            $("#btn-start-game").removeClass("btn-disabled").text("Start Game");
+                            $("#create-team-toggles").removeClass("disabled");
+                        }
+                    }
                     break;
                 }
-                case CustomTeamMessageType.Settings: {
+                case CustomTeamMessages.Settings: {
                     $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
                     $("#create-team-toggle-lock").prop("checked", data.locked);
                     break;
                 }
-                case CustomTeamMessageType.Started: {
+                case CustomTeamMessages.Started: {
                     createTeamMenu.hide();
-                    joinGame(data.gameID);
+                    joinGame();
                     break;
                 }
             }
         };
 
         teamSocket.onerror = (): void => {
-            $("#splash-server-message-text").html("Error joining team.<br>Make sure you're on the same server as your teammate(s).");
+            $("#splash-server-message-text").html("Error joining team.<br>It may not exist or it is full.");
             $("#splash-server-message").show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
@@ -402,7 +447,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 $("#splash-server-message-text").html(
                     joinedTeam
                         ? "Lost connection to team."
-                        : "Error joining team.<br>Make sure you're on the same server as your teammate(s)."
+                        : "Error joining team.<br>It may not exist or it is full."
                 );
                 $("#splash-server-message").show();
             }
@@ -439,26 +484,40 @@ export async function setUpUI(game: Game): Promise<void> {
             });
     });
 
+    $("#btn-hide-team-url").on("click", () => {
+        const icon = $("#btn-hide-team-url i");
+        const urlField = $("#create-team-url-field");
+        if (urlField.hasClass("hidden")) {
+            icon.removeClass("fa-eye")
+                .addClass("fa-eye-slash");
+            urlField.removeClass("hidden")
+                .css("color", "");
+            return;
+        }
+        icon.removeClass("fa-eye-slash")
+            .addClass("fa-eye");
+        urlField.addClass("hidden")
+            .css("color", "#FFFFFF00");
+    });
+
     $("#create-team-toggle-auto-fill").on("click", function() {
         autoFill = $(this).prop("checked");
         teamSocket?.send(JSON.stringify({
-            type: CustomTeamMessageType.Settings,
+            type: CustomTeamMessages.Settings,
             autoFill
         }));
     });
 
     $("#create-team-toggle-lock").on("click", function() {
         teamSocket?.send(JSON.stringify({
-            type: CustomTeamMessageType.Settings,
+            type: CustomTeamMessages.Settings,
             locked: $(this).prop("checked")
         }));
     });
 
     $("#btn-start-game").on("click", () => {
-        teamSocket?.send(JSON.stringify({ type: CustomTeamMessageType.Start }));
+        teamSocket?.send(JSON.stringify({ type: CustomTeamMessages.Start }));
     });
-
-    const params = new URLSearchParams(window.location.search);
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
@@ -534,6 +593,14 @@ export async function setUpUI(game: Game): Promise<void> {
         {
             name: "ikou",
             link: "https://www.twitch.tv/ikou_yt"
+        },
+        {
+            name: "seth_mayo",
+            link: "https://www.twitch.tv/seth_mayo"
+        },
+        {
+            name: "PatchesSC",
+            link: "https://www.twitch.tv/patchessc"
         }
     ];
     const streamer = pickRandomInArray(streamers);
@@ -560,7 +627,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 .replace(/[\u2018\u2019\u201b]/g, "'")
                 .replace(/[\u2013\u2014]/g, "-")
                 // Strip out non-ASCII chars
-                // eslint-disable-next-line no-control-regex
+
                 .replace(/[^\x20-\x7E]/g, "")
         );
 
@@ -575,9 +642,9 @@ export async function setUpUI(game: Game): Promise<void> {
     serverSelect.on("change", () => {
         // const value = serverSelect.val() as string | undefined;
 
-        /*if (value !== undefined) {
+        /* if (value !== undefined) {
             game.console.setBuiltInCVar("cv_region", value);
-        }*/
+        } */
     });
 
     const rulesBtn = $("#btn-rules");
@@ -593,11 +660,15 @@ export async function setUpUI(game: Game): Promise<void> {
         location.href = "./rules/";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-spectate-menu").on("click", () => { game.endGame(); });
-    $("#btn-menu").on("click", () => { game.endGame(); });
-    $("#btn-spectate-replay").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
-    $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
+    $("#btn-quit-game, #btn-spectate-menu, #btn-menu").on("click", () => {
+        void game.endGame();
+    });
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
+        await game.endGame();
+        if (teamSocket) teamSocket.send(JSON.stringify({ type: CustomTeamMessages.Start })); // TODO Check if player is team leader
+        else joinGame();
+    });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         const packet = new SpectatePacket();
@@ -690,13 +761,11 @@ Video evidence is required.`)) {
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         if (skin.hideFromLoadout || (skin.roleRequired ?? role) !== role) continue;
 
-        /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
-        const skinItem =
-            $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
+        const skinItem
+            = $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
   <div class="skin">
     <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
     <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
@@ -714,31 +783,62 @@ Video evidence is required.`)) {
     $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
+    function handleEmote(slot: "win" | "death"): void { // eipi can you improve this so that it uses `emoteSlots` items with index >3
+        const emoteSelector = `#emote-wheel-bottom .emote-${slot} .fa-xmark`;
+        $(emoteSelector).on("click", function() {
+            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
+            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
+            $(this).hide();
+        });
+
+        if (game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) === "") $(emoteSelector).hide();
+    }
+
+    handleEmote("win");
+    handleEmote("death");
+
     let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
     function updateEmotesList(): void {
         const emoteList = $("#emotes-list");
 
         emoteList.empty();
 
-        for (const emote of [{ idString: "", name: "None" }, ...Emotes.definitions]) {
+        const emotes = [...Emotes.definitions].sort((a, b) => {
+            return a.category - b.category;
+        });
+
+        let lastCategory = -1;
+        for (const emote of emotes) {
             if (emote.isTeamEmote) continue;
 
+            if (emote.category !== lastCategory) {
+                const categoryHeader = $(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                emoteList.append(categoryHeader);
+                lastCategory = emote.category;
+            }
+
             // noinspection CssUnknownTarget
-            const emoteItem =
-                $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+            const emoteItem
+                = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
     ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
 
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
-                game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
+
+                const cvarName = selectedEmoteSlot;
+                const emoteSelector = `#emote-wheel-bottom .emote-${cvarName} .fa-xmark`;
+
+                $(emoteSelector).show();
+
+                game.console.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
 
                 $(this).addClass("selected").siblings().removeClass("selected");
 
-                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`).css(
+                $(`#emote-wheel-container .emote-${cvarName}`).css(
                     "background-image",
-                    emote.idString !== "" ? `url("./img/game/emotes/${emote.idString}.svg")` : "none"
+                    `url("./img/game/emotes/${emote.idString}.svg")`
                 );
             });
 
@@ -747,6 +847,7 @@ Video evidence is required.`)) {
     }
 
     updateEmotesList();
+
     for (const slot of emoteSlots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
@@ -778,8 +879,14 @@ Video evidence is required.`)) {
                 $(".emotes-list-item-container")
                     .removeClass("selected")
                     .css("cursor", "pointer");
+
                 $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) || "none"}`).addClass("selected");
             });
+
+        $(`#emote-wheel-bottom .emote-${slot} .remove-emote-btn`).on("click", () => {
+            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
+            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
+        });
     }
 
     // Load crosshairs
@@ -821,7 +928,7 @@ Video evidence is required.`)) {
     </div>`);
 
         crosshairItem.find(".crosshairs-list-item").css({
-            backgroundImage: `url("${getCrosshair(
+            "backgroundImage": `url("${getCrosshair(
                 crosshairIndex,
                 "#fff",
                 game.console.getBuiltInCVar("cv_crosshair_size"),
@@ -843,6 +950,31 @@ Video evidence is required.`)) {
 
     $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
+    // Load special tab
+    if (game.console.getBuiltInCVar("dv_role") !== "") {
+        $("#tab-special").show();
+        $<HTMLInputElement>("#role-name")
+            .val(game.console.getBuiltInCVar("dv_role"))
+            .on("input", e => {
+                game.console.setBuiltInCVar("dv_role", e.target.value);
+            });
+        $<HTMLInputElement>("#role-password").on("input", e => {
+            game.console.setBuiltInCVar("dv_password", e.target.value);
+        });
+        addCheckboxListener("#toggle-lobbyclearing", "dv_lobby_clearing");
+        if (game.console.getBuiltInCVar("dv_name_color") === "") game.console.setBuiltInCVar("dv_name_color", "#FFFFFF");
+        $<HTMLInputElement>("#namecolor-color-picker")
+            .val(game.console.getBuiltInCVar("dv_name_color"))
+            .on("input", e => {
+                game.console.setBuiltInCVar("dv_name_color", e.target.value);
+            });
+        $<HTMLInputElement>("#weapon-preset")
+            .val(game.console.getBuiltInCVar("dv_weapon_preset"))
+            .on("input", e => {
+                game.console.setBuiltInCVar("dv_weapon_preset", e.target.value);
+            });
+    }
+
     // Load badges
     const allowedBadges = Badges.definitions.filter(badge => badge.roles.length === 0 || badge.roles.includes(role));
 
@@ -850,12 +982,12 @@ Video evidence is required.`)) {
         $("#tab-badges").show();
 
         // ???
-        /* eslint-disable @typescript-eslint/quotes, quotes */
+
         const noBadgeItem = $(
-            `<div id="badge-" class="badges-list-item-container">\
-            <div class="badges-list-item"> </div>\
-            <span class="badge-name">None</span>\
-            </div>`
+            "<div id=\"badge-\" class=\"badges-list-item-container\">\
+            <div class=\"badges-list-item\"> </div>\
+            <span class=\"badge-name\">None</span>\
+            </div>"
         );
 
         noBadgeItem.on("click", function() {
@@ -985,9 +1117,17 @@ Video evidence is required.`)) {
 
     // Toggle auto pickup
     addCheckboxListener(
-        "#toggle-auto-pickup",
-        "cv_auto_pickup"
+        "#toggle-autopickup",
+        "cv_autopickup"
     );
+    $("#toggle-autopickup").parent().parent().toggle(game.inputManager.isMobile);
+
+    // Autopickup a dual gun
+    addCheckboxListener(
+        "#toggle-autopickup-dual-guns",
+        "cv_autopickup_dual_guns"
+    );
+    $("#toggle-autopickup-dual-guns").parent().parent().toggle(game.inputManager.isMobile);
 
     // Anonymous player names toggle
     addCheckboxListener(
@@ -1030,33 +1170,18 @@ Video evidence is required.`)) {
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 
-    let debugReadouts: UIManager["debugReadouts"] | undefined;
-    // FPS toggle
-    addCheckboxListener(
-        "#toggle-fps",
-        "pf_show_fps",
-        value => {
-            (debugReadouts ??= game.uiManager.debugReadouts).fps.toggle(value);
-        }
-    );
+    // FPS, ping, and coordinates toggles
+    for (const prop of ["fps", "ping", "pos"] as const) {
+        const debugReadout = game.uiManager.debugReadouts[prop];
 
-    // Ping toggle
-    addCheckboxListener(
-        "#toggle-ping",
-        "pf_show_ping",
-        value => {
-            (debugReadouts ??= game.uiManager.debugReadouts).ping.toggle(value);
-        }
-    );
+        debugReadout.toggle(game.console.getBuiltInCVar(`pf_show_${prop}`));
 
-    // Coordinates toggle
-    addCheckboxListener(
-        "#toggle-coordinates",
-        "pf_show_pos",
-        value => {
-            (debugReadouts ??= game.uiManager.debugReadouts).pos.toggle(value);
-        }
-    );
+        addCheckboxListener(
+            `#toggle-${prop}`,
+            `pf_show_${prop}`,
+            value => debugReadout.toggle(value)
+        );
+    }
 
     // lmao one day, we'll have dropdown menus
 
@@ -1113,6 +1238,7 @@ Video evidence is required.`)) {
     renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
 
     // High resolution toggle
+    $("#toggle-high-res").parent().parent().toggle(!game.inputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
 
     // Anti-aliasing toggle
@@ -1128,6 +1254,7 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
+    addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
 
     const gameUi = $("#game-ui");
     function updateUiScale(): void {
@@ -1174,9 +1301,10 @@ Video evidence is required.`)) {
         "#toggle-hide-minimap",
         "cv_minimap_minimized",
         value => {
-            //hack minimap code is hacky and it scares me too much
-            //hack for me to add a "setVisible" method or smth
-            while (game.map.visible === value) {
+            // HACK minimap code is hacky and it scares me too much
+            // HACK for me to add a "setVisible" method or smth
+            let iterationCount = 0;
+            while (game.map.visible === value && ++iterationCount < 100) {
                 game.map.toggleMinimap();
             }
         }
@@ -1185,25 +1313,27 @@ Video evidence is required.`)) {
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
-    let splashUi: JQuery<HTMLInputElement> | undefined;
+    const splashUi = $<HTMLInputElement>("#splash-ui");
     // Blur splash screen
     addCheckboxListener(
         "#toggle-blur-splash",
         "cv_blur_splash",
         value => {
-            (splashUi ??= $("#splash-ui")).toggleClass("blur", value);
+            splashUi.toggleClass("blur", value);
         }
     );
+    splashUi.toggleClass("blur", game.console.getBuiltInCVar("cv_blur_splash"));
 
-    let button: JQuery<HTMLButtonElement> | undefined;
+    const button = $<HTMLButtonElement>("#btn-rules, #rules-close-btn");
     // Hide rules button
     addCheckboxListener(
         "#toggle-hide-rules",
         "cv_hide_rules_button",
         value => {
-            (button ??= $("#btn-rules, #rules-close-btn")).toggle(!value);
+            button.toggle(!value);
         }
     );
+    button.toggle(!game.console.getBuiltInCVar("cv_hide_rules_button"));
 
     // Hide option to hide rules if rules haven't been acknowledged
     $(".checkbox-setting").has("#toggle-hide-rules").toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
@@ -1307,7 +1437,7 @@ Video evidence is required.`)) {
                     type: InputActions.UseItem,
                     item: scope
                 });
-            } else if (button === 2) {
+            } else if (button === 2 && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item: scope
@@ -1345,7 +1475,7 @@ Video evidence is required.`)) {
                         item
                     });
                 }
-            } else if (button === 2) {
+            } else if (button === 2 && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item
@@ -1369,7 +1499,7 @@ Video evidence is required.`)) {
                     type: InputActions.Emote,
                     emote: Emotes.fromString(ammo.idString)
                 });
-            } else if (button === 2) {
+            } else if (button === 2 && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item: ammo
@@ -1380,7 +1510,7 @@ Video evidence is required.`)) {
 
     for (const armor of ["helmet", "vest"] as const) {
         slotListener(armor, (button: number): void => {
-            if (button === 2 && game.activePlayer) {
+            if (button === 2 && game.activePlayer && game.teamMode) {
                 game.inputManager.addAction({
                     type: InputActions.DropItem,
                     item: game.activePlayer.getEquipment(armor)
@@ -1396,7 +1526,12 @@ Video evidence is required.`)) {
     if (game.inputManager.isMobile) {
         // Interact message
         $("#interact-message").on("click", () => {
-            game.console.handleQuery(game.uiManager.action.active ? "cancel_action" : "interact");
+            if (game.uiManager.action.active) {
+                game.inputManager.addAction(InputActions.Cancel);
+            } else {
+                game.inputManager.addAction(InputActions.Interact);
+                game.inputManager.addAction(InputActions.Loot);
+            }
         });
         // noinspection HtmlUnknownTarget
         $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
@@ -1502,7 +1637,7 @@ Video evidence is required.`)) {
             updateRangeInput(element);
         });
 
-    $(".tab").on("click", (ev) => {
+    $(".tab").on("click", ev => {
         const tab = $(ev.target);
 
         tab.siblings().removeClass("active");
@@ -1532,3 +1667,30 @@ Video evidence is required.`)) {
         $("#btn-join-team").trigger("click");
     }
 }
+
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣄⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⣶⣾⣿⣿⡿⠟⠛⠛⠛⠛⠛⠻⠿⣿⣿⣿⣿⣿⣷⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣿⣿⣿⣿⣿⣶⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣿⣿⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⣼⡿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⢻⣿⡟⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠘⢿⣼⡟⢻⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠳⠆⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⡟⠁⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⢈⣻⣷⣾⣿⡇⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⠀⠀⠀⢻⣿⣿⣿⡿⢋⡀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⣿⠉⠙⢿⣿⡇⠀⠀⠀⠈⢻⣿⣷⣶⣄⣠⠀⠀⠀⣀⣠⣾⣿⣿⡯⠉⠁⠀⠀⠀⢻⣿⣿⡿⠛⢿⡆⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⣟⠀⠘⢾⡿⠀⠀⠀⢀⣠⣤⣶⣿⣿⣿⠟⠀⠀⣿⣿⣿⣿⣿⣷⣦⣄⡀⠀⠀⠀⢸⣿⣯⠀⣶⡆⣿⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⣿⠈⠀⣼⠃⠀⠀⠘⠋⠁⣈⣹⣿⣿⠏⠀⠀⠀⣿⣿⣏⠀⣈⣁⣈⡝⠻⠿⡆⠀⠰⣿⣏⠈⣿⢷⡟⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠰⡇⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⢸⣽⣿⣆⠀⠀⠀⠀⠀⠀⠁⠀⢸⣿⣿⡆⣏⣿⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⢱⡀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢿⣿⡄⠀⠀⠀⠀⠀⠀⠀⢸⣿⡟⣿⣿⡇⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠙⣄⠀⠀⣸⡄⠀⠀⠀⠀⠀⢀⡞⠁⣤⣤⣀⣠⣤⣀⣄⣸⣿⣦⡀⠀⠀⠀⠀⠀⢸⣿⣄⠟⣼⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⠷⠶⠻⡇⠀⠀⠀⠀⠀⠟⠀⠀⠀⠀⠉⠙⠿⠿⣿⠉⢀⡿⣷⡀⢸⣇⢰⠀⠸⣿⣡⡾⠃⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡇⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠐⠛⠀⠀⠁⠀⠀⢰⡟⢷⢸⣿⢀⠀⠀⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⡇⠀⠀⠀⠀⣼⡿⠓⠶⠒⠛⠛⠉⠙⠛⠻⠻⠿⣿⡇⠀⢸⡟⠀⠀⣠⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⡇⠒⠀⠀⠀⠈⠀⠀⠀⠀⠀⣶⠶⠶⠶⠶⠀⢀⣿⠁⢠⡾⠁⠀⣰⣿⠉⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⡷⠶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠀⠿⠃⢀⣴⡟⢹⡄⠘⣧⠀⠀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⢁⡆⠀⠐⢢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠒⠀⠀⣠⣴⣿⡟⣰⡿⣡⡄⠈⢣⡀⠀⠀⠀⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⣀⣠⡤⠖⠒⠋⠁⠀⠘⣷⠀⠀⠀⠙⠦⣄⣀⣀⣀⣀⣀⣤⣶⣿⣦⣤⣴⣶⣿⡿⢋⣼⠟⢁⣿⠁⣠⣤⡉⠀⠀⠀⠀⠀⠀
+//  ⣠⠤⠔⠒⠚⠉⠁⠀⠀⠀⠀⠀⠀⠀⢹⡆⠀⠀⠀⠀⠉⠻⣿⣿⣿⣯⣥⣤⣤⣶⣿⣿⡿⠋⣠⡿⠁⠀⠀⠁⠲⢈⣿⣿⣷⣤⣄⠀⠀⠀
+//  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⡀⠤⡄⠀⠀⠀⠀⠉⡻⢿⣧⣿⣿⡟⢋⣤⡾⠋⠀⠀⠀⠀⠘⠛⢺⣿⣿⣿⣿⣿⣷⣤⣤
+//  ⡀⠀⣀⣀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⣈⣳⣦⣤⣤⣿⣿⣿⠟⢋⣡⣶⣿⠋⢀⠀⠀⠀⡀⠀⠀⢀⡌⠘⣿⣿⣿⣿⣿⣿⣿
+//

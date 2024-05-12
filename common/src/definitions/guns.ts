@@ -20,6 +20,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
+    readonly bulletOffset?: number
     readonly moveSpread: number
     readonly jitterRadius: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning: boolean
@@ -97,29 +98,28 @@ export type GunDefinition = BaseGunDefinition & {
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
 
-/* eslint-disable @typescript-eslint/indent */
 type RawGunDefinition = BaseGunDefinition & {
     readonly isDual?: never
     readonly dual?: {
         readonly leftRightOffset: number
     } & {
         [
-            K in Extract<
-                keyof DualGunNarrowing,
-                "wearerAttributes" |
-                "ammoSpawnAmount" |
-                "capacity" |
-                "reloadTime" |
-                "fireDelay" |
-                "switchDelay" |
-                "speedMultiplier" |
-                "recoilMultiplier" |
-                "recoilDuration" |
-                "shotSpread" |
-                "moveSpread" |
-                "burstProperties" |
-                "leftRightOffset"
-            >
+        K in Extract<
+            keyof DualGunNarrowing,
+            "wearerAttributes" |
+            "ammoSpawnAmount" |
+            "capacity" |
+            "reloadTime" |
+            "fireDelay" |
+            "switchDelay" |
+            "speedMultiplier" |
+            "recoilMultiplier" |
+            "recoilDuration" |
+            "shotSpread" |
+            "moveSpread" |
+            "burstProperties" |
+            "leftRightOffset"
+        >
         ]?: DualGunNarrowing[K]
     }
 };
@@ -777,6 +777,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Single,
             shotSpread: 7,
             moveSpread: 14,
+            bulletOffset: 1.5,
             length: 4.7,
             fists: {
                 left: Vec.create(38, -35),
@@ -1223,13 +1224,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             image: { position: Vec.create(90, 0) },
             casingParticles: [
                 {
-                    position: Vec.create(4, 0.6),
-                    velocity: {
-                        y: {
-                            min: 10,
-                            max: 15
-                        }
-                    }
+                    position: Vec.create(4, 0.6)
                 },
                 {
                     position: Vec.create(4.2, 0.6),
@@ -1282,13 +1277,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             image: { position: Vec.create(90, -2) },
             casingParticles: [
                 {
-                    position: Vec.create(4.2, 0.6),
-                    velocity: {
-                        y: {
-                            min: 10,
-                            max: 15
-                        }
-                    }
+                    position: Vec.create(4.2, 0.6)
                 },
                 {
                     position: Vec.create(4.4, 0.6),
@@ -1699,6 +1688,45 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 tracer: {
                     image: "power_cell_trail",
                     length: 10
+                }
+            }
+        },
+        {
+            idString: "arena_closer",
+            name: "Destroyer Of Worlds",
+            ammoType: "127mm",
+            ammoSpawnAmount: 20,
+            capacity: 500,
+            reloadTime: 0.4,
+            fireDelay: 10,
+            switchDelay: 100,
+            speedMultiplier: 1.5,
+            recoilMultiplier: 1,
+            recoilDuration: 100,
+            fireMode: FireMode.Auto,
+            shotSpread: 0.5,
+            moveSpread: 4,
+            length: 9.2,
+            shootOnRelease: true,
+            fists: {
+                left: Vec.create(115, -4),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            image: { position: Vec.create(90, 4) },
+            casingParticles: [{
+                position: Vec.create(2, 0.6),
+                ejectionDelay: 700
+            }],
+            ballistics: {
+                damage: 300,
+                obstacleMultiplier: 1,
+                speed: 0.45,
+                range: 300,
+                tracer: {
+                    width: 2.5,
+                    length: 4
                 }
             }
         },

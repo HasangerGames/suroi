@@ -25,7 +25,7 @@ export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
             result[key] = new Color(MODE.colors[key]);
             return result;
         },
-        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter, @typescript-eslint/consistent-type-assertions
+        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
         {} as Record<ColorKeys, Color>
     );
 

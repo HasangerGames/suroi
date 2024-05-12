@@ -1,19 +1,31 @@
 import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
+export enum EmoteCategory {
+    People,
+    Text,
+    Memes,
+    Icons,
+    Misc,
+    TeamEmote
+}
+
 export interface EmoteDefinition extends ObjectDefinition {
+    readonly category: EmoteCategory
     readonly isTeamEmote?: boolean
 }
 
 export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
     () => ({
-        emote_factory: (name: string) => ({
+        emote_factory: (name: string, category: EmoteCategory) => ({
             idString: name.toLowerCase().replace(/ /g, "_"),
-            name
+            name,
+            category
         }),
         team_emote: (idString: string) => ({
             idString,
             name: idString,
-            isTeamEmote: true
+            isTeamEmote: true,
+            category: EmoteCategory.TeamEmote
         })
     })
 )(
@@ -23,6 +35,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Sad Face",
             "Thumbs Up",
             "Thumbs Down",
+            "Wave",
             "Disappointed Face",
             "Sobbing Face",
             "Angry Face",
@@ -43,29 +56,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Greedy Face",
             "Creepy Clown",
             "Lying Face",
-            "Suroi Logo",
-            "AEGIS Logo",
-            "Flint Logo",
-            "Team = Ban",
-            "gg",
-            "ez",
-            "Duel",
-            "Question Mark",
             "Skull",
-            "Troll Face",
-            "Clueless",
-            "Pog",
-            "Froog",
-            "Bleh",
-            "Suroi General Chat",
-            "Fire",
-            "RIP",
-            "Monkey",
-            "Carrot",
-            "Tomato",
-            "Egg",
-            "Squid",
-            "Wave",
             "Melting Face",
             "Grimacing Face",
             "Vomiting Face",
@@ -84,11 +75,41 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Shushing Face",
             "Zipper Mouth Face",
             "Sighing Face",
-            "Frustrated Face",
-            "Chicken Dinner",
+            "Frustrated Face"
+        ].map(name => simple("emote_factory", name, EmoteCategory.People)),
+        ...[
+            "Suroi Logo",
+            "AEGIS Logo",
+            "Flint Logo",
+            "Duel",
+            "Chicken Dinner"
+        ].map(name => simple("emote_factory", name, EmoteCategory.Icons)),
+        ...[
+            "Troll Face",
+            "Clueless",
+            "Pog",
+            "Froog",
+            "Bleh",
+            "Suroi General Chat",
+            "Fire",
+            "RIP"
+        ].map(name => simple("emote_factory", name, EmoteCategory.Memes)),
+        ...[
+            "Question Mark",
+            "Team = Ban",
+            "gg",
+            "ez",
             "oof",
-            "real"
-        ].map(name => simple("emote_factory", name)),
+            "real",
+            "Colon Three"
+        ].map(name => simple("emote_factory", name, EmoteCategory.Text)),
+        ...[
+            "Monkey",
+            "Carrot",
+            "Tomato",
+            "Egg",
+            "Squid"
+        ].map(name => simple("emote_factory", name, EmoteCategory.Misc)),
         ...[
             "9mm",
             "12g",

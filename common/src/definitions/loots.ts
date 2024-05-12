@@ -53,7 +53,6 @@ export class LootDefinitions extends ObjectDefinitions<LootDefinition> {
      * @returns All definitions whose `itemType` property match the given one
      */
     byType<Type extends ItemType>(itemType: Type): ReadonlyArray<TypedLootDefinition<Type>> {
-        // eslint-disable-next-line no-return-assign -- skill issue filter (and this one is a compound assignment ffs)
         return this._byTypeMapping[itemType] ??= [];
     }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable quotes,@typescript-eslint/quotes */
 export interface RulesPost {
     date: number
     author: string
@@ -12,7 +11,7 @@ export const rules: RulesPost[] = [
         date: 1690908230000,
         author: "Katloo",
         title: "Rules",
-        content: `By playing Suroi, you agree to abide by the following rules. Breaking the rules may result in a ban.`,
+        content: "By playing Suroi, you agree to abide by the following rules. Breaking the rules may result in a ban.",
         longContent: `<ul>
   <li><strong>No teaming in solo.</strong> Allying with other solo players for extended periods of time is not allowed.</li>
   <li><strong>No hacking.</strong> The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.</li>
@@ -23,19 +22,21 @@ export const rules: RulesPost[] = [
         date: 1690908230000,
         author: "Katloo",
         title: "Tutorial",
-        content: `If you're a new player, check out this tutorial to learn how to play!`,
+        content: "If you're a new player, check out this tutorial to learn how to play!",
         longContent: `<h2>Controls</h2>
 <p>Movement - WASD or Arrow Keys</p>
 <p>Aim - Mouse</p>
 <p>Attack - Left-Click</p>
 <p>Change Weapons - 1 through 3 or Scroll Wheel</p>
-<p>Pickup/Loot/Interact - F</p>
+<p>Pickup/Loot/Interact/Revive - F</p>
 <p>Reload - R</p>
 <p>Use Healing Item - Left-Click on item or 7 through 0</p>
 <p>Cancel Action - X</p>
 <p>Toggle Fullscreen Map - G or M</p>
 <p>Toggle Minimap - N</p>
 <p>Use Emote Wheel - Hold Right-Click, drag, and release</p>
+<p>Team Ping - Hold Right-Click and C, drag, and release</p>
+<p>Request Item - Hold C and click on item</p>
 <p>Drop Item - Right-Click on item</p>
 <p>Equip Last Item - Q</p>
 <p>Swap Gun Slots - T</p>

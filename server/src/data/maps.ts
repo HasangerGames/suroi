@@ -2,16 +2,14 @@ import { type WebSocket } from "uWebSockets.js";
 import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { Skins } from "../../../common/src/definitions/skins";
 import { type Variation } from "../../../common/src/typings";
 import { Collision } from "../../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { pickRandomInArray, random } from "../../../common/src/utils/random";
+import { random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type GunItem } from "../inventory/gunItem";
 import { type Map } from "../map";
-import { Player } from "../objects/player";
-import { type PlayerContainer } from "../server";
+import { Player, type PlayerContainer } from "../objects/player";
 import { type LootTables } from "./lootTables";
 
 export interface MapDefinition {
@@ -30,7 +28,9 @@ export interface MapDefinition {
     }
 
     readonly bridges?: Array<ReferenceTo<BuildingDefinition>>
+    readonly majorBuildings?: Array<ReferenceTo<BuildingDefinition>>
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
+    readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly loots?: Record<keyof typeof LootTables, number>
 
@@ -58,13 +58,13 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        bridges: [
-            "small_bridge"
-        ],
+        bridges: ["small_bridge"],
+        majorBuildings: ["armory", "port_complex", "refinery"],
         buildings: {
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
+            tugboat_white: 5,
             armory: 1,
             refinery: 1,
             warehouse: 5,
@@ -80,6 +80,13 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2
+        },
+        quadBuildingLimit: {
+            red_house: 2,
+            warehouse: 2,
+            green_house: 1,
+            mobile_home: 3,
+            porta_potty: 3
         },
         obstacles: {
             oil_tank: 12,
@@ -121,7 +128,7 @@ const maps = {
         height: 1620,
         oceanSize: 128,
         beachSize: 32,
-        genCallback: (map) => {
+        genCallback: map => {
             // Generate all buildings
 
             const buildingPos = Vec.create(200, map.height - 600);
@@ -237,7 +244,7 @@ const maps = {
         height: 512,
         beachSize: 16,
         oceanSize: 40,
-        genCallback: (map) => {
+        genCallback: map => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
                 const width = 70;
@@ -260,18 +267,18 @@ const maps = {
 
                 for (const item of Loots.definitions) {
                     if (
-                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop) ||
-                        ("ephemeral" in item && item.ephemeral) ||
-                        (item.itemType === ItemType.Backpack && item.level === 0) ||
-                        item.itemType === ItemType.Skin
+                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
+                        || ("ephemeral" in item && item.ephemeral)
+                        || (item.itemType === ItemType.Backpack && item.level === 0)
+                        || item.itemType === ItemType.Skin
                     ) continue;
 
                     map.game.addLoot(item, itemPos, countMap[item.itemType] ?? 1).velocity = Vec.create(0, 0);
 
                     itemPos.x += xOff;
                     if (
-                        (xOff > 0 && itemPos.x > startPos.x + width) ||
-                        (xOff < 0 && itemPos.x < startPos.x - width)
+                        (xOff > 0 && itemPos.x > startPos.x + width)
+                        || (xOff < 0 && itemPos.x < startPos.x - width)
                     ) {
                         itemPos.x = startPos.x;
                         itemPos.y -= yOff;
@@ -345,7 +352,9 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("green_house", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
+            map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
         }
     },
     singleObstacle: {
@@ -354,7 +363,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("potted_plant", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("bunker_entrance_door", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {
@@ -417,10 +426,10 @@ const maps = {
         genCallback(map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
-                    const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
+                    /* const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
                     player.disableInvulnerability();
                     player.loadout.skin = pickRandomInArray(Skins.definitions);
-                    map.game.grid.addObject(player);
+                    map.game.grid.addObject(player); */
                     if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
                 }
             }

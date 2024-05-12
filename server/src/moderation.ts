@@ -10,9 +10,9 @@ const now = Date.now();
 for (const addr of Object.keys(punishments)) {
     const punishment = punishments[addr];
     if (
-        punishment.type === "tempBan" &&
-        punishment.expires &&
-        punishment.expires < now
+        punishment.type === "tempBan"
+        && punishment.expires
+        && punishment.expires < now
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     ) delete punishments[addr];
 }
