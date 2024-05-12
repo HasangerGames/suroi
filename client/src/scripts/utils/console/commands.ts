@@ -90,9 +90,9 @@ export class Command<
             true
         );
 
-        // @ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as mutable
         plus._inverse = minus;
-        // @ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as mutable
         minus._inverse = plus;
     }
 
@@ -230,9 +230,9 @@ export function setUpCommands(game: Game): void {
     // shut
     /*
         Normally, arrow function would be preferred, but since
-        the callbacks have their this value bound, leaving them as
+        the callbacks have their `this` value bound, leaving them as
         function expressions instead of arrow functions allows us to
-        quickly switch to using this if needed, instead of having to
+        quickly switch to using `this` if needed, instead of having to
         change back from an arrow function
     */
     /* eslint-disable prefer-arrow-callback */
@@ -738,8 +738,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Enables the emote wheel to ping mode",
-            long: "When invoked, the emote wheel will switch from triggering emotes to trigger map pings",
+            short: "Enables the emote wheel's ping mode",
+            long: "When invoked, the emote wheel will switch from triggering emotes to triggering map pings",
             signatures: [{ args: [], noexcept: true }]
         },
         {
@@ -1023,12 +1023,17 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand<string>(
         "remove_alias",
-        function(name) {
+        function(name, removeInverse) {
             if (name === undefined) {
                 return { err: "Expected a string argument, received nothing" };
             }
 
-            if (!gameConsole.aliases.delete(name)) {
+            if (
+                !gameConsole.aliases.delete(
+                    name,
+                    handleResult(Casters.toBoolean(removeInverse ?? "false"), () => false)
+                )
+            ) {
                 return { err: `No alias by the name of '${name}' exists` };
             }
 
@@ -1037,13 +1042,26 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Removes an alias from the list of aliases",
-            long: "When given the name of an alias, this command removes it from the list of alises if it exists",
+            long:
+                "When given the name of an alias, this command removes it from the list of alises if it exists. If <code>remove_inverse</code> "
+                + "is set to <code>true</code> and the alias pointed to by <code>alias_name</code> is <em>invertible</em> (in other words, has "
+                + "a <code>+</code> form and a <code>-</code> form, like <code>+command</code> and <code>-command</code>), then both aliases will "
+                + "be removed. In this case, <code>alias_name</code> may be either one of the two forms, or the \"base\" name with no +/- (for "
+                + "example, removing <code>+command</code> and <code>-command</code> could be done by calling <code>remove_alias command true</code>, "
+                + "<code>remove_alias +command true</code>, or <code>remove_alias -command true</code>.) If <code>remove_inverse</code> is set to <code>"
+                + "true</code> but the targeted alias is not invertible, the value of <code>remove_inverse</code> is ignored. <code>remove_inverse</code> "
+                + "defaults to <code>false</code>.",
             signatures: [
                 {
                     args: [
                         {
                             name: "alias_name",
                             type: ["string"]
+                        },
+                        {
+                            name: "remove_inverse",
+                            optional: true,
+                            type: ["boolean"]
                         }
                     ],
                     noexcept: false
@@ -1385,7 +1403,7 @@ export function setUpCommands(game: Game): void {
 
             const alias = gameConsole.aliases.get(name);
 
-            if (alias) {
+            if (alias !== undefined) {
                 gameConsole.log.raw(`Alias '${name}' is defined as <code>${sanitizeHTML(alias)}</code>`);
             } else {
                 return { err: `No alias named '${name}' exists` };
@@ -1554,18 +1572,20 @@ export function setUpCommands(game: Game): void {
                         .replace(/\n| /g, r => ({ "\n": "<br>", " ": "&nbsp;" }[r] ?? ""))
                 );
             } else {
-                const construct = (obj: Record<string, unknown>, namespace = ""): string => {
-                    let retVal = "<ul>";
-
-                    for (const [key, value] of Object.entries(obj)) {
-                        retVal += `<li><b>${key}</b>: ${typeof value === "object" && value !== null ? construct(value as Record<string, unknown>) : String(value)}</li>`;
-                    }
-
-                    return `${retVal}</ul>`;
-                };
-
                 game.console.log.raw(
-                    construct(data)
+                    (function construct(obj: Record<string, unknown>): string {
+                        let retVal = "<ul>";
+
+                        for (const [key, value] of Object.entries(obj)) {
+                            retVal += `<li><b>${key}</b>: ${
+                                typeof value === "object" && value !== null
+                                    ? construct(value as Record<string, unknown>)
+                                    : String(value)
+                            }</li>`;
+                        }
+
+                        return `${retVal}</ul>`;
+                    })(data)
                 );
             }
         },
@@ -1588,4 +1608,12 @@ export function setUpCommands(game: Game): void {
             ]
         }
     );
+
+    /*
+        few reasons for this:
+        a) expanding out these console commands and making a proper implementation of `map_ping` leads to duplicated code
+        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper command with help text if you want tho)
+        c) the whole "hold key to switch to ping mode" thing is annoying
+    */
+    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"+map_ping_wheel; +emote_wheel\"");
 }

@@ -2,7 +2,7 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -52,6 +52,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import type { DualGunNarrowing } from "../../../common/src/definitions/guns";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -813,27 +814,61 @@ export class Game {
 
                 // Mobile stuff
                 if (this.inputManager.isMobile && canInteract) {
-                    if ( // Auto pickup
-                        this.console.getBuiltInCVar("cv_auto_pickup")
+                    const weapons = this.uiManager.inventory.weapons;
+
+                    // Auto pickup (top 10 conditionals)
+                    if (
+                        this.console.getBuiltInCVar("cv_autopickup")
+                        && object instanceof Loot
                         && (
-                            (object instanceof Loot
+                            (
+                                (
+                                    // Auto-pickup dual gun
+                                    // Only pick up melees if no melee is equipped
+                                    (
+                                        type !== ItemType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
+                                    )
 
-                            // Only pick up melees if no melee is equipped
-                            && (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists")
+                                    // Only pick up guns if there's a free slot
+                                    && (
+                                        type !== ItemType.Gun || (!weapons?.[0] || !weapons?.[1])
+                                    )
 
-                            // Only pick up guns if there's a free slot
-                            && (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1]))
+                                    // Don't pick up skins
+                                    && type !== ItemType.Skin
+                                )
 
-                            // Don't pick up skins
-                            && type !== ItemType.Skin)
+                                // Don't autopickup if currently reloading gun
+                                && this.activePlayer.action?.type !== PlayerActions.Reload
+                            ) || (
+                                type === ItemType.Gun
+                                    && weapons?.some(
+                                        weapon => {
+                                            const definition = weapon?.definition;
 
-                            // Auto-pickup dual gun
-                            || (type === ItemType.Gun && this.uiManager.inventory.weapons?.some(weapon => weapon?.definition.itemType === ItemType.Gun && weapon.definition.isDual))
+                                            return definition?.itemType === ItemType.Gun
+                                                && (
+                                                    (
+                                                        object?.definition === definition
+                                                        && !definition.isDual
+                                                    ) // Picking up a single pistol when inventory has single pistol
+                                                    || (
+                                                        (
+                                                            object.definition as DualGunNarrowing | undefined
+                                                        )?.singleVariant === definition.idString
+                                                    )
+                                                    // Picking up dual pistols when inventory has a pistol
+                                                    // TODO implement splitting of dual guns to not lost reload later
+                                                );
+                                        }
+                                    )
+                            )
                         )
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
-                        object instanceof Obstacle
+                        this.console.getBuiltInCVar("cv_autopickup_dual_guns")
+                        && object instanceof Obstacle
                         && object.canInteract(player)
                         && object.definition.role === ObstacleSpecialRoles.Door
                         && object.door?.offset === 0
