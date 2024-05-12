@@ -58,7 +58,8 @@ export const CVarCasters = Object.freeze({
     cv_crosshair_size: Casters.toNumber,
     cv_crosshair_stroke_color: Casters.toString,
     cv_crosshair_stroke_size: Casters.toNumber,
-    cv_auto_pickup: Casters.toBoolean,
+    cv_autopickup: Casters.toBoolean,
+    cv_autopickup_dual_guns: Casters.toBoolean,
 
     pf_show_fps: Casters.toBoolean,
     pf_show_ping: Casters.toBoolean,
@@ -141,7 +142,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_crosshair_stroke_color: "#000000",
     cv_crosshair_stroke_size: 0,
 
-    cv_auto_pickup: true,
+    cv_autopickup: true,
+    cv_autopickup_dual_guns: true,
 
     // unused for now
     cv_draw_hud: true,

@@ -214,6 +214,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         };
 
         if (noPickup) {
+            // Do not play pickup & drop on melees and guns
+            if ([ItemType.Gun, ItemType.Melee].includes(this.definition.itemType)) return;
             this.game.removeLoot(this);
             createNewItem();
             return;

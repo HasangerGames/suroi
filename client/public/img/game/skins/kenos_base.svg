@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="23.8125mm"
+   height="23.8125mm"
+   viewBox="0 0 23.8125 23.8125"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1"><linearGradient
+       id="linearGradient7"><stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0.76915747"
+         id="stop8" /><stop
+         style="stop-color:#d8a6dd;stop-opacity:1;"
+         offset="0.86884314"
+         id="stop20" /><stop
+         style="stop-color:#ad64e1;stop-opacity:1;"
+         offset="0.93268961"
+         id="stop21" /><stop
+         style="stop-color:#5f4dbc;stop-opacity:1;"
+         offset="1"
+         id="stop9" /></linearGradient><radialGradient
+       xlink:href="#linearGradient7"
+       id="radialGradient9"
+       cx="11.90625"
+       cy="11.90625"
+       fx="11.90625"
+       fy="11.90625"
+       r="9.7087622"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.2263407,0,0,1.2263407,-2.6948687,-2.6948687)" /></defs><g
+     id="layer3"><circle
+       style="fill:url(#radialGradient9);stroke-width:8.29436;stroke-linecap:round;paint-order:fill markers stroke"
+       id="path2"
+       cx="11.90625"
+       cy="11.90625"
+       r="11.90625" /><circle
+       style="fill:#000000;stroke-width:5.87442;stroke-linecap:round;paint-order:fill markers stroke"
+       id="circle2"
+       cx="11.90625"
+       cy="11.90625"
+       r="8.432518" /></g></svg>

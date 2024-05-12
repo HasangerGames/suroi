@@ -40,14 +40,22 @@ export const Config = {
 
     roles: {
         "developr": { password: "developr", isDev: true },
+        "moderatr": { password: "moderatr", isDev: true },
+        // "trial_moderatr": { password: "trial_moderatr" },
         "designr": { password: "designr" },
+        // "lead_designr": { password: "lead_designr" },
+        // "vip_designr": { password: "vip_designr" },
+        // "studio_managr": { password: "studio_managr" },
         "composr": { password: "composr" },
+        // "lead_composr": { password: "lead_composr" },
         "youtubr": { password: "youtubr" },
+        // "boostr": { password: "boostr" },
         "hasanger": { password: "hasanger", isDev: true },
         "leia": { password: "leia", isDev: true },
         "katie": { password: "katie", isDev: true },
         "eipi": { password: "eipi", isDev: true },
         "error": { password: "error", isDev: true },
+        "kenos": { password: "kenos", isDev: true },
         "radians": { password: "radians", isDev: true },
         "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" }
