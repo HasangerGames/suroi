@@ -814,34 +814,55 @@ export class Game {
 
                 // Mobile stuff
                 if (this.inputManager.isMobile && canInteract) {
-                    // Auto pickup
+                    const weapons = this.uiManager.inventory.weapons;
+
+                    // Auto pickup (top 10 conditionals)
                     if (
                         this.console.getBuiltInCVar("cv_autopickup")
+                        && object instanceof Loot
                         && (
-                            (object instanceof Loot
-// Auto-pickup dual gun
-                            // Only pick up melees if no melee is equipped
-                            && (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists")
+                            (
+                                (
+                                    // Auto-pickup dual gun
+                                    // Only pick up melees if no melee is equipped
+                                    (
+                                        type !== ItemType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
+                                    )
 
-                            // Only pick up guns if there's a free slot
-                            && (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1]))
+                                    // Only pick up guns if there's a free slot
+                                    && (
+                                        type !== ItemType.Gun || (!weapons?.[0] || !weapons?.[1])
+                                    )
 
-                            // Don't pick up skins
-                            && type !== ItemType.Skin)
-                            
-                            // Don't autopickup if currently reloading gun
-                            && !(this.activePlayer.action?.type === PlayerActions.Reload)
-                        )
-                        || (
-                            object instanceof Loot
-                            && type === ItemType.Gun
-                            && this.uiManager.inventory.weapons?.some(
-                                weapon => weapon?.definition.itemType === ItemType.Gun
-                                && (
-                                    (object?.definition === weapon?.definition && !weapon.definition.isDual) // Picking up a single pistol when inventoru has single pistol
-                                    || ((object.definition as DualGunNarrowing | undefined)?.singleVariant === weapon?.definition.idString) // Picking up dual pistols when inventory has a pistol (implement splitting of dual guns to not lost reload later)
+                                    // Don't pick up skins
+                                    && type !== ItemType.Skin
                                 )
-                            )   
+
+                                // Don't autopickup if currently reloading gun
+                                && this.activePlayer.action?.type !== PlayerActions.Reload
+                            ) || (
+                                type === ItemType.Gun
+                                    && weapons?.some(
+                                        weapon => {
+                                            const definition = weapon?.definition;
+
+                                            return definition?.itemType === ItemType.Gun
+                                                && (
+                                                    (
+                                                        object?.definition === definition
+                                                        && !definition.isDual
+                                                    ) // Picking up a single pistol when inventory has single pistol
+                                                    || (
+                                                        (
+                                                            object.definition as DualGunNarrowing | undefined
+                                                        )?.singleVariant === definition.idString
+                                                    )
+                                                    // Picking up dual pistols when inventory has a pistol
+                                                    // TODO implement splitting of dual guns to not lost reload later
+                                                );
+                                        }
+                                    )
+                            )
                         )
                     ) {
                         this.inputManager.addAction(InputActions.Loot);

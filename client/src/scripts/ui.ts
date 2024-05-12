@@ -790,49 +790,48 @@ Video evidence is required.`)) {
             $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
             $(this).hide();
         });
-    
+
         if (game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) === "") $(emoteSelector).hide();
     }
-    
+
     handleEmote("win");
     handleEmote("death");
-    
+
     let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
     function updateEmotesList(): void {
         const emoteList = $("#emotes-list");
-    
+
         emoteList.empty();
-    
+
         for (const emote of Emotes.definitions) {
             if (emote.isTeamEmote) continue;
-    
+
             const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
                 <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
                 <span class="emote-name">${emote.name}</span>
                 </div>`);
-    
+
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
-    
+
                 const cvarName = selectedEmoteSlot;
                 const emoteSelector = `#emote-wheel-bottom .emote-${cvarName} .fa-xmark`;
-    
+
                 $(emoteSelector).show();
-    
+
                 game.console.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
-    
+
                 $(this).addClass("selected").siblings().removeClass("selected");
-    
+
                 $(`#emote-wheel-container .emote-${cvarName}`).css(
                     "background-image",
                     `url("./img/game/emotes/${emote.idString}.svg")`
                 );
             });
-    
+
             emoteList.append(emoteItem);
         }
     }
-    
 
     updateEmotesList();
     for (const slot of emoteSlots) {
@@ -1103,14 +1102,12 @@ Video evidence is required.`)) {
     );
     $("#toggle-autopickup").parent().parent().toggle(game.inputManager.isMobile);
 
-
     // Autopickup a dual gun
     addCheckboxListener(
         "#toggle-autopickup-dual-guns",
         "cv_autopickup_dual_guns"
     );
     $("#toggle-autopickup-dual-guns").parent().parent().toggle(game.inputManager.isMobile);
-
 
     // Anonymous player names toggle
     addCheckboxListener(
