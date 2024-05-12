@@ -4,7 +4,7 @@ import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
@@ -803,13 +803,26 @@ Video evidence is required.`)) {
 
         emoteList.empty();
 
-        for (const emote of Emotes.definitions) {
+        const emotes = [...Emotes.definitions].sort((a, b) => {
+            return a.category - b.category;
+        });
+
+        let lastCategory = -1;
+        for (const emote of emotes) {
             if (emote.isTeamEmote) continue;
 
-            const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-                <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
-                <span class="emote-name">${emote.name}</span>
-                </div>`);
+            if (emote.category !== lastCategory) {
+                const categoryHeader = $(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                emoteList.append(categoryHeader);
+                lastCategory = emote.category;
+            }
+
+            // noinspection CssUnknownTarget
+            const emoteItem
+                = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+    ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    <span class="emote-name">${emote.name}</span>
+    </div>`);
 
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
@@ -834,6 +847,7 @@ Video evidence is required.`)) {
     }
 
     updateEmotesList();
+
     for (const slot of emoteSlots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
@@ -865,8 +879,14 @@ Video evidence is required.`)) {
                 $(".emotes-list-item-container")
                     .removeClass("selected")
                     .css("cursor", "pointer");
+
                 $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) || "none"}`).addClass("selected");
             });
+
+        $(`#emote-wheel-bottom .emote-${slot} .remove-emote-btn`).on("click", () => {
+            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
+            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
+        });
     }
 
     // Load crosshairs
