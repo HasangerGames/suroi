@@ -391,6 +391,11 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         packet.item = this.definition;
         player.sendPacket(packet);
 
+        this.game.pluginManager.emit("lootInteract", {
+            loot: this,
+            player
+        });
+
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (this._count > 0) createNewItem();
 

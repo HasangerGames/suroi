@@ -37,6 +37,8 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
+            this.game.pluginManager.emit("airdropLanded", this._airdrop);
+
             // Spawn smoke
             this.game.addSyncedParticles({
                 type: "airdrop_smoke_particle",
@@ -56,15 +58,21 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
                     switch (true) {
                         case object instanceof Player: {
-                            object.piercingDamage(GameConstants.airdrop.damage, KillfeedEventType.Airdrop);
+                            object.piercingDamage({
+                                amount: GameConstants.airdrop.damage,
+                                source: KillfeedEventType.Airdrop
+                            });
                             break;
                         }
                         case object instanceof Obstacle: {
-                            object.damage(Infinity, crate);
+                            object.damage({
+                                amount: Infinity,
+                                source: crate
+                            });
                             break;
                         }
                         case object instanceof Building && object.scopeHitbox?.collidesWith(crate.hitbox): {
-                            object.damage(Infinity);
+                            object.damageCeiling(Infinity);
                             break;
                         }
                     }

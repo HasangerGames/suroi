@@ -64,16 +64,24 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         }
     }
 
-    override damage(damage = 1): void {
+    damageCeiling(damage = 1): void {
         if (this._wallsToDestroy === Infinity || this.dead) return;
+
+        this.game.pluginManager.emit("buildingCeilingDamage", {
+            building: this,
+            damage
+        });
 
         this._wallsToDestroy -= damage;
 
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
             this.setPartialDirty();
+            this.game.pluginManager.emit("buildingCeilingDestroy", this);
         }
     }
+
+    override damage(): void {}
 
     override get data(): FullData<ObjectCategory.Building> {
         return {
