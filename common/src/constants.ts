@@ -27,6 +27,7 @@ export enum ObjectCategory {
 export enum AnimationType {
     None,
     Melee,
+    Downed,
     ThrowableCook,
     ThrowableThrow,
     Gun,
