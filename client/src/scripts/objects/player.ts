@@ -45,6 +45,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: Loots.fromString("bag")
         };
 
+    distTraveled = 0;
+
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
     }
@@ -102,6 +104,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         leftFist?: Tween<SuroiSprite>
         rightFist?: Tween<SuroiSprite>
+        leftLeg?: Tween<SuroiSprite>
+        rightLeg?: Tween<SuroiSprite>
         weapon?: Tween<SuroiSprite>
         pin?: Tween<SuroiSprite>
         muzzleFlashFade?: Tween<SuroiSprite>
@@ -130,8 +134,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: game.teamMode ? new SuroiSprite().setPos(-38, 26).setZIndex(-1) : undefined,
-            rightLeg: game.teamMode ? new SuroiSprite().setPos(-38, -26).setZIndex(-1) : undefined,
+            leftLeg: game.teamMode ? new SuroiSprite().setPos(-30, 26).setZIndex(-1) : undefined,
+            rightLeg: game.teamMode ? new SuroiSprite().setPos(-30, -26).setZIndex(-1) : undefined,
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
@@ -363,6 +367,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (oldPosition !== undefined) {
             this.distSinceLastFootstep += Geometry.distance(oldPosition, this.position);
+            this.distTraveled += Geometry.distance(oldPosition, this.position);
+
+            if (this.distTraveled > 8 && this.downed) {
+                this.playAnimation(AnimationType.Downed);
+
+                this.distTraveled = 0;
+            }
 
             if (this.distSinceLastFootstep > 10) {
                 this.footstepSound = this.playSound(
@@ -372,6 +383,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         maxRange: 48
                     }
                 );
+
                 this.distSinceLastFootstep = 0;
 
                 if (FloorTypes[floorType].particles) {
@@ -480,7 +492,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (this.downed !== full.downed) {
                 this.downed = full.downed;
                 updateContainerZIndex = true;
-                this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
                 this.updateEquipment();
             }
@@ -568,7 +579,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // fixme hack to prevent visual glitches when downed
         // The ThrowableCook animation seems to be causing the issues
         if (this.downed) {
-            this.updateFistsPosition(false);
             this.updateWeapon(isNew);
         }
 
@@ -716,17 +726,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.leftLeg?.setVisible(this.downed);
         this.images.rightLeg?.setVisible(this.downed);
 
-        if (this.downed) {
-            this.images.leftFist.setPos(38, 32);
-            this.images.rightFist.setPos(38, -32);
-            return;
-        }
-
         const reference = this._getItemReference();
         const fists = reference.fists ?? {
             left: Vec.create(38, -35),
             right: Vec.create(38, 35)
         };
+
         const offset = this._getOffset();
 
         if (anim) {
@@ -752,6 +757,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y - offset);
             this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
+            this.images.leftLeg?.setPos(-30, 26);
+            this.images.rightLeg?.setPos(-30, -26);
         }
 
         if (reference.image) {
@@ -1066,6 +1073,60 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         .forEach(target => target.hitEffect(position, Angle.betweenPoints(this.position, position)));
                 }, 50);
 
+                break;
+            }
+            case AnimationType.Downed: {
+                this.updateFistsPosition(false);
+
+                if (this.images.rightLeg) {
+                    this.anims.rightLeg = this.game.addTween({
+                        target: this.images.rightLeg,
+                        to: { x: this.images.rightLeg.x - 10, y: this.images.rightLeg.y },
+                        duration: 200,
+                        ease: EaseFunctions.sineIn,
+                        yoyo: true,
+                        onComplete: () => {
+                            this.anims.rightLeg = undefined;
+                        }
+                    });
+
+                    this.anims.leftFist = this.game.addTween({
+                        target: this.images.leftFist,
+                        to: { x: this.images.leftFist.x - 10, y: this.images.leftFist.y - 5 },
+                        duration: 200,
+                        ease: EaseFunctions.sineIn,
+                        yoyo: true,
+                        onComplete: () => {
+                            this.anims.leftFist = undefined;
+                        }
+                    });
+                }
+
+                setTimeout(() => {
+                    if (this.images.leftLeg) {
+                        this.anims.leftLeg = this.game.addTween({
+                            target: this.images.leftLeg,
+                            to: { x: this.images.leftLeg.x - 10, y: this.images.leftLeg.y },
+                            duration: 200,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true,
+                            onComplete: () => {
+                                this.anims.leftLeg = undefined;
+                            }
+                        });
+
+                        this.anims.rightFist = this.game.addTween({
+                            target: this.images.rightFist,
+                            to: { x: this.images.rightFist.x - 10, y: this.images.rightFist.y + 5 },
+                            duration: 200,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true,
+                            onComplete: () => {
+                                this.anims.rightFist = undefined;
+                            }
+                        });
+                    }
+                }, 200);
                 break;
             }
             case AnimationType.Gun:
