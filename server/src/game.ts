@@ -192,6 +192,12 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
+    /**
+     * Game Tick delta time
+     */
+    private _dt = Config.tps / 1000;
+    get dt(): number { return this._dt; }
+
     tickTimes: number[] = [];
 
     constructor() {
@@ -409,7 +415,9 @@ export class Game {
     }
 
     tick(): void {
-        this._now = Date.now();
+        const now = Date.now();
+        this._dt = now - this._now;
+        this._now = now;
 
         // execute timeouts
         for (const timeout of this._timeouts) {
@@ -561,12 +569,12 @@ export class Game {
 
         if (this.tickTimes.length >= 200) {
             const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
+            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
             this.tickTimes = [];
         }
 
         if (!this.stopped) {
-            setTimeout(this.tick.bind(this), GameConstants.msPerTick - tickTime);
+            setTimeout(this.tick.bind(this), 1000 / Config.tps);
         }
     }
 

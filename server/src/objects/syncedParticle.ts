@@ -170,7 +170,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
 
         this.setPartialDirty();
 
-        const dt = GameConstants.msPerTick;
+        const dt = this.game.dt;
 
         this._rotation = Angle.normalize(this._rotation + this.angularVelocity * dt);
 

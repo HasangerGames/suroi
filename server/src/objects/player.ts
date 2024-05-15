@@ -577,7 +577,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     update(): void {
-        const dt = GameConstants.msPerTick;
+        const dt = this.game.dt;
 
         // This system allows opposite movement keys to cancel each other out.
         const movement = Vec.create(0, 0);

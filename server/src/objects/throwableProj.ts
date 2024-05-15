@@ -6,6 +6,7 @@ import { Angle, Collision, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { Config } from "../config";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
 import { BaseGameObject, type GameObject } from "./gameObject";
@@ -47,14 +48,14 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
      *
      * Precise results obviously depend on the tickrate
      */
-    private static readonly _dragConstant = Math.pow(1.6, -2.7 / GameConstants.tickrate);
+    private static readonly _dragConstant = Math.pow(1.6, -2.7 / Config.tps);
 
     /**
      * Used for creating extra drag on the projectile, in the same tickrate-independent manner
      *
      * This constant results in a 10% loss every 41.5ms (or a 50% loss every 273.1ms)
      */
-    private static readonly _harshDragConstant = Math.pow(1.6, -5.4 / GameConstants.tickrate);
+    private static readonly _harshDragConstant = Math.pow(1.6, -5.4 / Config.tps);
 
     override get position(): Vector { return this.hitbox.position; }
 
@@ -104,8 +105,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     }
 
     update(): void {
-        const deltaTime = GameConstants.msPerTick;
-        const halfDt = 0.5 * deltaTime;
+        const dt = this.game.dt;
+        const halfDt = 0.5 * dt;
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
@@ -113,7 +114,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
-        this.rotation = Angle.normalize(this.rotation + this.angularVelocity * deltaTime);
+        this.rotation = Angle.normalize(this.rotation + this.angularVelocity * dt);
 
         const impactDamage = this.definition.impactDamage;
         const currentSquaredVel = Vec.squaredLength(this.velocity);
