@@ -2,7 +2,7 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -115,8 +115,6 @@ export class Game {
     readonly uiManager = new UIManager(this);
 
     lastPingDate = 0;
-
-    private _tickTimeoutID: number | undefined;
 
     disconnectReason = "";
 
@@ -288,7 +286,6 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
-            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.msPerTick);
         };
 
         // Handle incoming messages
@@ -422,8 +419,6 @@ export class Game {
 
     async endGame(): Promise<void> {
         return await new Promise(resolve => {
-            clearTimeout(this._tickTimeoutID);
-
             $("#splash-options").addClass("loading");
 
             this.soundManager.stopAll();
@@ -547,7 +542,14 @@ export class Game {
         this.camera.update();
     }
 
+    lastUpdateTime = 0;
+    serverDt = 0;
+
     processUpdate(updateData: UpdatePacket): void {
+        const now = Date.now();
+        this.serverDt = now - this.lastUpdateTime;
+        this.lastUpdateTime = now;
+
         for (const newPlayer of updateData.newPlayers) {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
@@ -633,6 +635,8 @@ export class Game {
         for (const ping of updateData.mapPings) {
             this.map.addMapPing(ping.position, ping.definition, ping.playerId);
         }
+
+        this.tick();
     }
 
     addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {

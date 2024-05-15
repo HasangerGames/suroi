@@ -160,7 +160,7 @@ export class GasRender {
         let radius: number;
 
         if (gas.state === GasState.Advancing) {
-            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / GameConstants.msPerTick, 0, 1);
+            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / gas.game.serverDt, 0, 1);
             position = Vec.lerp(gas.lastPosition, gas.position, interpFactor);
             radius = Numeric.lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {

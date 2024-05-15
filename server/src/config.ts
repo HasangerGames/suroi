@@ -22,6 +22,8 @@ export const Config = {
 
     mapName: "main",
 
+    tps: 40,
+
     plugins: [],
 
     spawn: { mode: SpawnMode.Normal },
@@ -89,6 +91,11 @@ export interface ConfigType {
      * Example: `"main"` for the main map or `"debug"` for the debug map
      */
     readonly mapName: keyof typeof Maps
+
+    /**
+     * Server Ticks Per Second
+     */
+    readonly tps: number
 
     /**
      * List of plugin classes to load
