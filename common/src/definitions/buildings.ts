@@ -1035,6 +1035,40 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { table: "ground_loot", position: Vec.create(-15.42, 17.44) }
             ]
         },
+       
+        {
+            idString: "riverside_house",
+            name: "riverside_house",
+            spawnHitbox: RectangleHitbox.fromRect(72, 130),
+            scopeHitbox: RectangleHitbox.fromRect(58, 118),
+            floorImages: [
+                {
+                    key: "riverside_house_floor",
+                    position: Vec.create(0, 0)
+                },
+            ],
+            ceilingImages: [{
+                key: "riverside_house_ceiling",
+                position: Vec.create(-1.62, -2.5),
+            }],
+            obstacles: [
+                {
+                    idString: "slide_door",
+                    position: Vec.create(15.15, -15.4),
+                    rotation: 1
+                },
+                {
+                    idString: "slide_door",
+                    position: Vec.create(-12, 14.6),
+                    rotation: 2
+                },
+                {
+                    idString: "riverside_house_wall",
+                    position: Vec.create(-8.5, -8.9),
+                    rotation: 4
+                },
+            ]
+        },
         {
             idString: "crane",
             name: "Crane",

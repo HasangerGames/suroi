@@ -845,6 +845,27 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "slide_door",
+            name: "slide_Door",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 1
+            },
+            hitbox: RectangleHitbox.fromRect(10.15, 1.6, Vec.create(-0.44, 0)),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            role: ObstacleSpecialRoles.Door,
+            hingeOffset: Vec.create(-5.5, 0),
+            operationStyle: "slide",
+            zIndex: ZIndexes.ObstaclesLayer3,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
             idString: "vault_door",
             name: "Vault Door",
             material: "metal",
@@ -1194,6 +1215,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "porta_potty_toilet_particle",
                 residue: "porta_potty_toilet_residue"
+            }
+        },
+        {
+            idString: "riverside_house_wall",
+            name: "riverside_house_wall",
+            material: "wood",
+            health: 100,
+            noResidue: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(22.3, 2.1, Vec.create(12.9, 23.3)),
+            ),
+
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            role: ObstacleSpecialRoles.Wall,
+            frames: {
+                particle: "porta_potty_wall_particle"
             }
         },
         {
