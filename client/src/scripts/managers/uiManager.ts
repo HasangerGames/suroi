@@ -562,7 +562,7 @@ export class UIManager {
         }
     }
 
-    playSlotAnimation(slot: JQuery<HTMLElement>): void {
+    playSlotAnimation(slot: JQuery): void {
         slot.toggleClass("active");
         slot[0].offsetWidth; // causes browser reflow
         slot.toggleClass("active");
