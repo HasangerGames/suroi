@@ -1067,6 +1067,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(-8.5, -8.9),
                     rotation: 4
                 },
+                {
+                    idString: "window",
+                    position: Vec.create(-30.95, -9),
+                    rotation: 0
+                },
             ]
         },
         {

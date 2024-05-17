@@ -1221,7 +1221,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "riverside_house_wall",
             name: "riverside_house_wall",
             material: "wood",
-            health: 100,
+            indestructible: true,
+            reflectBullets: false,
+            health: 1000,
             noResidue: true,
             scale: {
                 spawnMin: 1,
@@ -1230,14 +1232,28 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             hideOnMap: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(22.3, 2.1, Vec.create(12.9, 23.3)),
+                RectangleHitbox.fromRect(22.3, 1.9, Vec.create(12.9, 23.3)),
+                RectangleHitbox.fromRect(1.9, 25, Vec.create(23.5, 11.5)),
+                RectangleHitbox.fromRect(1.9, 13.3, Vec.create(23.5, -17.8)),
+                RectangleHitbox.fromRect(14.9, 1.9, Vec.create(-15.3, 23.3)),
+                RectangleHitbox.fromRect(45.75, 1.9, Vec.create(0, -23.2)),
+                RectangleHitbox.fromRect(1.9, 18, Vec.create(-22, 13.8)),
+                RectangleHitbox.fromRect(1.9, 18, Vec.create(-22, -13.8)),
+                RectangleHitbox.fromRect(1.6, 8.5, Vec.create(-13.7, 28.5)),
+                RectangleHitbox.fromRect(2.3, 2.3, Vec.create(-13.7, 34)),
+                RectangleHitbox.fromRect(4.5, 1.3, Vec.create(-10.3, 34)),
+                RectangleHitbox.fromRect(4.5, 1.3, Vec.create(3.7, 34)),
+                RectangleHitbox.fromRect(2.3, 2.3, Vec.create(7.3, 34)),
+                RectangleHitbox.fromRect(24.78, 1.3, Vec.create(20.8, 34)),
+                RectangleHitbox.fromRect(2.3, 2.3, Vec.create(34.4, 34)),
+
             ),
 
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             role: ObstacleSpecialRoles.Wall,
             frames: {
-                particle: "porta_potty_wall_particle"
+                particle: "furniture_particle"
             }
         },
         {
