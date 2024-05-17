@@ -1452,7 +1452,7 @@ Video evidence is required.`)) {
 
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
-        <div class="inventory-slot item-slot" id="${item.idString}-slot">
+        <div class="inventory-slot item-slot active" id="${item.idString}-slot">
             <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
@@ -1488,7 +1488,7 @@ Video evidence is required.`)) {
         if (ammo.ephemeral) continue;
 
         $(`#${ammo.hideUnlessPresent ? "special-" : ""}ammo-container`).append(`
-        <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
+        <div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
             <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);

@@ -1393,6 +1393,28 @@
     }
 }
 
+#healing-items-container, #ammo-container {
+    & .inventory-slot.active {
+        outline-width: 0;
+
+        & .item-image {
+            animation: 0.25s ease-in-out scale-anim;
+        }
+    }
+
+    @keyframes scale-anim {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+}
+
 #emote-wheel,
 #emote-customize-wheel {
     position: absolute;
