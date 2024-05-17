@@ -261,7 +261,8 @@
         }
 
         @media screen and (max-width: $screen_large) {
-            .teammate-name, .teammate-badge {
+            .teammate-name,
+            .teammate-badge {
                 display: none;
             }
         }
@@ -310,7 +311,6 @@
             }
         }
     }
-
 }
 
 .ui-leaderboard {
@@ -369,7 +369,7 @@
         @media screen and (max-width: $screen_large) {
             margin-right: 80px;
         }
-        @media screen and (max-width: $screen_medium) and (max-height: 500px){
+        @media screen and (max-width: $screen_medium) and (max-height: 500px) {
             margin-top: -40px;
         }
         .kill-feed-item {
@@ -507,7 +507,7 @@
     @include text-shadow;
 }
 
-#interact-key.active+#interact-text {
+#interact-key.active + #interact-text {
     position: relative;
     top: 3px;
 }
@@ -653,7 +653,7 @@
     }
 
     .flashing {
-        animation: 0.5s ease-in-out 0.5s infinite flashing
+        animation: 0.5s ease-in-out 0.5s infinite flashing;
     }
 
     @keyframes flashing {
@@ -669,7 +669,6 @@
             background-color: #000000;
         }
     }
-
 }
 
 #adrenaline-bar-container {
@@ -801,7 +800,7 @@
     justify-content: center;
 
     @media screen and (max-width: $screen_large) {
-        &>button {
+        & > button {
             height: fit-content;
             padding: 8px 12px;
             font-size: 14px;
@@ -988,8 +987,8 @@
 
     .item-ammo {
         position: absolute;
-        bottom: 59px;
-        margin-left: -195px;
+        top: 5px;
+        left: 10px;
         float: left;
         z-index: 1;
         font-size: 18px;
@@ -1064,14 +1063,40 @@
             width: 110px;
         }
 
-        .slot-number, .item-name {
+        .slot-number,
+        .item-name {
             right: 8px !important;
         }
 
         &.has-item {
             opacity: 1;
             background: hsl(0, 0%, 77%);
-            background: linear-gradient(90deg, hsla(0, 0%, 77%, 0.45) 0%, hsla(0, 0%, 77%, 0.45) 25%, hsla(0, 0%, 9%, 0.5) 100%);
+            background: linear-gradient(
+                90deg,
+                hsla(0, 0%, 77%, 0.45) 0%,
+                hsla(0, 0%, 77%, 0.45) 25%,
+                hsla(0, 0%, 9%, 0.5) 100%
+            );
+        }
+
+        &.active {
+            animation: 0.25s ease-in-out active-pulse;
+        }
+
+        @keyframes active-pulse {
+            0% {
+                width: 100%;
+                outline-width: 0px;
+            }
+            50% {
+                width: calc(100% + 2rem);
+                transform: translateX(-2rem);
+                outline-width: 6px;
+            }
+            100% {
+                width: 100%;
+                outline-width: 3px;
+            }
         }
     }
 
@@ -1130,6 +1155,7 @@
             justify-content:last baseline;
         }
     }
+
 }
 
 .items-container#ammo {
@@ -1202,7 +1228,6 @@
         }
     }
 
-
     .item-count {
         float: right;
         margin-left: auto;
@@ -1253,7 +1278,6 @@
     transform: translateX(-75%);
     flex-direction: row;
 
-
     @media screen and (max-width: $screen_medium) {
         flex-direction: row;
         left: 5px;
@@ -1276,7 +1300,11 @@
         margin-left: 3px;
 
         &.has-item {
-            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+            background: radial-gradient(
+                circle,
+                $light_transparent_bg 0%,
+                $transparent_bg 100%
+            );
         }
 
         .item-name {
@@ -1365,6 +1393,9 @@
                 width: 25px;
                 height: 25px;
             }
+
+            transition-property: width height;
+            transition-duration: 0.25s;
         }
 
         .item-tooltip {
@@ -1397,6 +1428,28 @@
     }
 }
 
+#healing-items-container, #ammo-container {
+    & .inventory-slot.active {
+        outline-width: 0;
+
+        & .item-image {
+            animation: 0.25s ease-in-out scale-anim;
+        }
+    }
+
+    @keyframes scale-anim {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+}
+
 #emote-wheel,
 #emote-customize-wheel {
     position: absolute;
@@ -1407,7 +1460,7 @@
     //noinspection CssUnknownTarget
     background-image: url("/img/misc/emote_wheel.svg");
 
-    &>div {
+    & > div {
         width: 84px;
         height: 84px;
         background-size: 84px 84px;
@@ -1604,5 +1657,21 @@
         height: 100%;
         width: 50%;
         display: flex;
+    }
+}
+
+.pickup-pulse {
+    animation: pickup-pulse 0.25s ease-in-out;
+}
+
+@keyframes pickup-pulse {
+    0% {
+        scale: 100%;
+    }
+    50% {
+        scale: 110%;
+    }
+    100% {
+        scale: 100%;
     }
 }
