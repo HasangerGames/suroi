@@ -90,6 +90,7 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
         apply(
             "backpack_factory",
             {
+               level: 2,
               maxCapacity: {
                     gauze: 20,
                     medikit: 4,
