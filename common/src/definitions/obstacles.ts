@@ -981,6 +981,26 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
+            idString: "fireplace",
+            name: "fireplace",
+            material: "metal",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true, 
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(9.5, 13.5, Vec.create(0, -1)),
+                new CircleHitbox(3, Vec.create(0, 5.35)), 
+
+            ),
+            explosion: "barrel_explosion",
+            rotationMode: RotationMode.Limited
+            
+        },
+        {
             idString: "tv",
             name: "TV",
             material: "glass",
@@ -1016,6 +1036,49 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             zIndex: ZIndexes.ObstaclesLayer3,
             noCollisions: true
+        },
+        {
+            idString: "table2",
+            name: "Table2",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(9, 7.7),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle"
+            },
+            zIndex: ZIndexes.ObstaclesLayer3,
+            noCollisions: true
+        },
+        {
+            idString: "bathtub",
+            name: "bathtub",
+            material: "porcelain",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(5.8, 10, Vec.create(0, -1.5)),
+                new CircleHitbox(2.65, Vec.create(0, 3.7)), 
+
+            ),            
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            hasLoot: true,
+            frames: {
+                particle: "porta_potty_toilet_particle",
+                residue: "porta_potty_toilet_residue"
+            }
         },
         {
             idString: "green_house_large_table",
@@ -1145,6 +1208,66 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "riverside_house_wall",
+            name: "riverside_house_wall",
+            material: "wood",
+            health: 250,
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(2.3, 2.3),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            reflectBullets: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
+        {
+            idString: "riverside_house_wall_2",
+            name: "riverside_house_wall_2",
+            material: "wood",
+            health: 250,
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(1.65, 18.5),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            reflectBullets: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
+        {
+            idString: "riverside_house_wall_3",
+            name: "riverside_house_wall_3",
+            material: "wood",
+            health: 250,
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(1.65, 4.5),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            reflectBullets: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
+        {
+            idString: "bed2",
+            name: "Bed2",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(5.6, 16),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
             idString: "bunk_bed",
             name: "Bunk Bed",
             material: "metal",
@@ -1218,8 +1341,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "riverside_house_wall",
-            name: "riverside_house_wall",
+            idString: "riverside_house_wall_exterior",
+            name: "riverside_house_wall_exterior",
             material: "wood",
             indestructible: true,
             reflectBullets: false,

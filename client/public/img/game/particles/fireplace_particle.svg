@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="15.855804mm"
-   height="15.855803mm"
-   viewBox="0 0 15.855804 15.855802"
+   width="14.270663mm"
+   height="13.715453mm"
+   viewBox="0 0 14.270663 13.715453"
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   sodipodi:docname="riverside-house.svg"
+   sodipodi:docname="riverside-house (1).svg"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -33,11 +33,11 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      showguides="false"><sodipodi:guide
-       position="-1267.0181,-232.67983"
+       position="-1568.7684,-78.957638"
        orientation="0,-1"
        id="guide3"
        inkscape:locked="false" /><sodipodi:guide
-       position="-1058.3212,-347.33053"
+       position="-1360.0715,-193.60835"
        orientation="1,0"
        id="guide1"
        inkscape:locked="false" /></sodipodi:namedview><defs
@@ -72,23 +72,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-1476.0215,-88.050286)"><g
-       id="g94"><g
-         id="g156065-8-7-4-6"
-         transform="rotate(90,5675.8805,-2057.3985)"><rect
-           style="fill:#4a4134;fill-opacity:1;stroke:#3f3421;stroke-width:2.69006;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
-           id="rect156061-1-8-9-6"
-           width="13.165745"
-           height="13.165745"
-           x="7822.6743"
-           y="2127.9497"
-           rx="1.0798858"
-           ry="1.0798858" /><rect
-           style="fill:#a3917b;fill-opacity:1;stroke:none;stroke-width:2.25041;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
-           id="rect156063-9-6-2-5"
-           width="11.096908"
-           height="11.014225"
-           x="7823.6997"
-           y="2129.002"
-           rx="0.90341306"
-           ry="0.90341306" /></g></g></g></svg>
+     transform="translate(-1777.7718,-306.74895)"><g
+       id="g223"
+       transform="rotate(90,1032.0309,442.41086)"><path
+         id="path192"
+         style="fill:#2c2c2c;stroke:#141414;stroke-width:0.861999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-opacity:1;paint-order:fill markers stroke"
+         inkscape:transform-center-x="1.0773298"
+         inkscape:transform-center-y="-0.56617862"
+         d="m 905.35347,-306.50267 -1.557,2.74164 -4.2232,-0.76587 -1.0175,-4.35102 -1.7558,-3.4154 5.2671,-0.63103 3.7217,-4.2454 0.8692,4.54914 2.9955,4.31964 z"
+         sodipodi:nodetypes="cccccccccc" /></g></g></svg>

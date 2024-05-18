@@ -1039,8 +1039,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "riverside_house",
             name: "riverside_house",
-            spawnHitbox: RectangleHitbox.fromRect(72, 130),
-            scopeHitbox: RectangleHitbox.fromRect(58, 118),
+            spawnHitbox: RectangleHitbox.fromRect(72, 72),
+            scopeHitbox: RectangleHitbox.fromRect(50, 50,Vec.create(0, 0)),
             floorImages: [
                 {
                     key: "riverside_house_floor",
@@ -1063,7 +1063,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: 2
                 },
                 {
-                    idString: "riverside_house_wall",
+                    idString: "riverside_house_wall_exterior",
                     position: Vec.create(-8.5, -8.9),
                     rotation: 4
                 },
@@ -1071,6 +1071,71 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: "window",
                     position: Vec.create(-30.95, -9),
                     rotation: 0
+                },
+                {
+                    idString: "small_drawer",
+                    position: Vec.create(-26, -26.9),
+                    rotation: 0
+                },
+                {
+                    idString: "gun_mount_maul",
+                    position: Vec.create(-28, -19),
+                    rotation: 1
+                },
+                {
+                    idString: "large_drawer",
+                    position: Vec.create(-23, 9.7),
+                    rotation: 2
+                },
+                {
+                    idString: "table2",
+                    position: Vec.create(-24.5, 1),
+                    rotation: 1
+                },
+                {
+                    idString: "bookshelf",
+                    position: Vec.create(-5, 4),
+                    rotation: 1
+                },
+                {
+                    idString: { toilet: 2, used_toilet: 1 },
+                    position: Vec.create(10, 8.9),
+                    rotation: 2
+                },
+                {
+                    idString: "bathtub",
+                    position: Vec.create(3, 6.5),
+                    rotation: 2
+                },
+                {
+                    idString: "fireplace",
+                    position: Vec.create(-11.9, -25.9),
+                    rotation: 1
+                },
+                {
+                    idString: "bed2",
+                    position: Vec.create(5.2, -27.5),
+                    rotation: 3
+                },
+                {
+                    idString: "riverside_house_wall",
+                    position: Vec.create(-1.1, -6.5),
+                    rotation: 3
+                },
+                {
+                    idString: "riverside_house_wall_3",
+                    position: Vec.create(2.5, -6.5),
+                    rotation: 3
+                },
+                {
+                    idString: "riverside_house_wall_2",
+                    position: Vec.create(-1.1, 3.95),
+                    rotation: 2
+                },
+                {
+                    idString: "door",
+                    position: Vec.create(9.15, -6.5),
+                    rotation: 2
                 },
             ]
         },
