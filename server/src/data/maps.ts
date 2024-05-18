@@ -72,7 +72,7 @@ const maps = {
             green_house: 2,
             mobile_home: 9,
             porta_potty: 12,
-            riverside_house: 100,
+            riverside_house: 5,
             container_3: 2,
             container_4: 2,
             container_5: 2,
