@@ -1039,8 +1039,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "riverside_house",
             name: "riverside_house",
-            spawnHitbox: RectangleHitbox.fromRect(72, 72),
-            scopeHitbox: RectangleHitbox.fromRect(50, 50,Vec.create(0, 0)),
+            spawnHitbox: 
+            RectangleHitbox.fromRect(72, 72),
+            
+            scopeHitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(50, 50,Vec.create(2, 0)),
+                RectangleHitbox.fromRect(47, 47,Vec.create(-8.4, -8.8)),
+            ),
             floorImages: [
                 {
                     key: "riverside_house_floor",
