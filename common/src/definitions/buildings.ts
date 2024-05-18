@@ -1040,7 +1040,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "riverside_house",
             name: "riverside_house",
             spawnHitbox: 
-            RectangleHitbox.fromRect(72, 72),
+            RectangleHitbox.fromRect(60, 60),
             
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(50, 50,Vec.create(2, 0)),
@@ -1140,6 +1140,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     idString: "door",
                     position: Vec.create(9.15, -6.5),
+                    rotation: 2
+                },
+                {
+                    idString: "box",
+                    position: Vec.create(19, 13.5),
+                    rotation: 2
+                },
+                {
+                    idString: "box",
+                    position: Vec.create(22, 19),
                     rotation: 2
                 },
             ]
