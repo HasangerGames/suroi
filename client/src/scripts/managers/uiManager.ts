@@ -309,11 +309,13 @@ export class UIManager {
                 $("#spectating-msg-player").html(this.getPlayerName(data.id));
             }
             $("#spectating-container").toggle(data.spectating);
-            $("#btn-emotes").toggle(!data.spectating);
-            $("#btn-toggle-ping").toggle(!data.spectating);
             $("#spectating-msg").toggle(data.spectating);
-            $("#btn-toggle-ping").toggle(!data.spectating);
-            $("#btn-game-menu").toggle(!data.spectating);
+
+            if (this.game.inputManager.isMobile) {
+                $("#btn-emotes").toggle(!data.spectating);
+                $("#btn-toggle-ping").toggle(!data.spectating);
+                $("#btn-game-menu").toggle(!data.spectating);
+            }
         }
 
         if (data.dirty.teammates && this.game.teamMode) {
