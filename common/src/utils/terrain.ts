@@ -48,10 +48,12 @@ export class Terrain {
 
     readonly groundRect: RectangleHitbox;
 
-    private readonly _grid: Array<Array<{
-        rivers: River[]
-        floors: Array<{ readonly type: string, readonly hitbox: Hitbox }>
-    }>> = [];
+    private readonly _grid: Array<
+        Array<{
+            readonly rivers: River[]
+            readonly floors: Array<{ readonly type: string, readonly hitbox: Hitbox }>
+        }>
+    > = [];
 
     constructor(
         width: number,

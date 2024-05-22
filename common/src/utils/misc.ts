@@ -66,19 +66,116 @@ export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPar
     return mergeDeep(target, ...rest);
 }
 
+/**
+ * Symbol used to indicate an object's deep-clone method
+ * @see {@linkcode Cloneable}
+ * @see {@linkcode cloneDeep}
+*/
+export const cloneDeepSymbol: unique symbol = Symbol("clone deep");
+
+// what in the java
+/**
+ * Interface that any value wishing to provide a deep-cloning algorithm should implement
+ * @see {@linkcode cloneDeepSymbol}
+ * @see {@linkcode cloneDeep}
+ */
+export interface Cloneable<T> {
+    [cloneDeepSymbol](): T
+}
+
+/**
+ * Clones a given value recursively. Primitives are returned as-is (effectively cloned), while objects are deeply cloned.
+ *
+ * On a best-effort basis, properties and their descriptors are kept intact; this includes custom properties on `Array`s,
+ * `Map`s, and `Set`s. These three data structures also receive special handling to preserve their contents, and the subclass
+ * is preserved to the best of {@linkcode Object.setPrototypeOf}'s ability.
+ *
+ * For class instances, callers should look into making the class implement the {@linkcode Cloneable} interface, and define their
+ * own deep-cloning algorithm there; this method will honor any such method. Doing so ensures that the cloning process is faster,
+ * more secure, and probably more efficient
+ * @param object The value to clone
+ * @returns A deep-copy of `object`, to the best of this method's ability
+ * @see {@linkcode cloneDeepSymbol}
+ * @see {@linkcode Cloneable}
+ */
 export function cloneDeep<T>(object: T): T {
-    if (!isObject(object)) return object;
+    // For cyclical data structures, ensures that cyclical-ness is preserved in the clone
+    const clonedNodes = new Map<unknown, unknown>();
 
-    const clone = new (Object.getPrototypeOf(object).constructor)();
+    return (function internal<T>(target: T): T {
+        if (!isObject(target) && !Array.isArray(target)) return target;
+        if (clonedNodes.has(target)) return clonedNodes.get(target) as T;
 
-    for (const [key, desc] of Object.entries(Object.getOwnPropertyDescriptors(object))) {
-        const clonedProperty = object[key as keyof T];
+        if (cloneDeepSymbol in target) {
+            const clone = target[cloneDeepSymbol];
+            if (typeof clone === "function" && clone.length === 0) {
+                return clone.call(target);
+            } else {
+                console.warn(`Inappropriate use of ${cloneDeepSymbol.toString()}: it should be a no-arg function`);
+            }
+        }
 
-        desc.value = cloneDeep(clonedProperty);
-        Object.defineProperty(clone, key, desc);
-    }
+        const copyAllPropDescs = <T>(
+            to: T,
+            entryFilter: (entry: readonly [string, TypedPropertyDescriptor<any>]) => boolean = () => true
+        ): T => {
+            for (const [key, desc] of Object.entries(Object.getOwnPropertyDescriptors(target)).filter(entryFilter)) {
+                desc.value = internal(target[key as keyof typeof target]);
+                Object.defineProperty(to, key, desc);
+            }
 
-    return clone;
+            return to;
+        };
+
+        const prototype = Object.getPrototypeOf(target);
+
+        // special handling for certain builtins
+        switch (true) {
+            case target instanceof Array: {
+                // we can probably treat this as an array (unless someone is trolling us)
+                const root = Object.create(prototype);
+                clonedNodes.set(target, root);
+
+                for (let i = 0, l = target.length; i < l; i++) {
+                    root[i] = internal(target[i]);
+                }
+
+                return copyAllPropDescs(root, ([key]) => /* filter out numeric keys */ Number.isNaN(+key));
+            }
+            case target instanceof Map: {
+                const root = new Map<unknown, unknown>();
+                clonedNodes.set(target, root);
+
+                for (const [k, v] of (target as T & Map<unknown, unknown>).entries()) {
+                    root.set(internal(k), internal(v));
+                }
+
+                // Map.prototype methods reject targets which aren't direct instances of `Map`, so our hand is kinda forced here
+                Object.setPrototypeOf(root, prototype);
+                return copyAllPropDescs(root as T);
+            }
+            case target instanceof Set: {
+                const root = new Set<unknown>();
+                clonedNodes.set(target, root);
+
+                for (const v of target) root.add(internal(v));
+
+                // Set.prototype methods reject targets which aren't direct instances of `Set`, so our hand is kinda forced here
+                Object.setPrototypeOf(root, prototype);
+                return copyAllPropDescs(root as T);
+            }
+            default: {
+                /*
+                    we pray that if a constructor is present, that it doesn't incur side-effects…
+                    or at least, not necessary ones
+                */
+                const clone = Object.create(prototype) as T;
+                clonedNodes.set(target, clone);
+
+                return copyAllPropDescs(clone);
+            }
+        }
+    })(object);
 }
 
 export function freezeDeep<T>(object: T): DeepReadonly<T> {
@@ -133,7 +230,7 @@ export interface DoublyLinkedList<T> {
  * Implementation of a [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type))
  * @template T The type of the values stored in this collection
  */
-export class Stack<T> {
+export class Stack<T> implements Cloneable<Stack<T>> {
     /**
      * Internal backing linked list
      */
@@ -180,13 +277,33 @@ export class Stack<T> {
     has(): boolean {
         return !!this._head;
     }
+
+    /**
+     * Creates a deep clone of this {@link Stack}, cloning the elements inside it
+     */
+    [cloneDeepSymbol](): Stack<T> {
+        const clone = new Stack<T>();
+
+        let current: LinkedList<T> | undefined = this._head;
+        let currentClone: LinkedList<T> | undefined;
+        while (current !== undefined) {
+            const node = { value: cloneDeep(current.value) };
+
+            currentClone = currentClone
+                ? currentClone.next = node
+                : clone._head = node;
+            current = current.next;
+        }
+
+        return clone;
+    }
 }
 
 /**
  * Implementation of a [queue](https://en.wikipedia.org/wiki/Queue_(abstract_data_type))
  * @template T The type of the elements stored in this collection
  */
-export class Queue<T> {
+export class Queue<T> implements Cloneable<Queue<T>> {
     /**
      * A reference to the beginning of the internal linked list for this collection
      */
@@ -246,5 +363,26 @@ export class Queue<T> {
      */
     has(): boolean {
         return !!this._head;
+    }
+
+    /**
+     * Creates a deep clone of this queue, cloning the elements within it
+     */
+    [cloneDeepSymbol](): Queue<T> {
+        const clone = new Queue<T>();
+
+        let current: LinkedList<T> | undefined = this._head;
+        let currentClone: LinkedList<T> | undefined;
+        while (current !== undefined) {
+            const node = { value: cloneDeep(current.value) };
+
+            currentClone = currentClone
+                ? currentClone.next = node
+                : clone._head = node;
+
+            current = current.next ?? void (clone._tail = current);
+        }
+
+        return clone;
     }
 }
