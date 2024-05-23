@@ -25,6 +25,9 @@ export interface MapPingDefinition extends ObjectDefinition {
     readonly sound?: string
 }
 
+export type PlayerPing = MapPingDefinition & { readonly isPlayerPing: true };
+export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
+
 export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
     () => ({
         gamePingFactory: (idString: string, color: number) => ({

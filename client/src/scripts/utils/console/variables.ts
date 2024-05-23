@@ -4,10 +4,6 @@ import { stringify } from "../misc";
 import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 
-/*
-    `@typescript-eslint/indent`   How hard is it to have sensible indenting rules for generics
-*/
-
 // todo figure out what flags we're gonna actually use and how we're gonna use them kekw
 // todo expect breaking changes to this api (again)
 // Basically, use a bitfield when all flags are known,
@@ -316,6 +312,8 @@ export class ConsoleVariables {
          * none was present
          */
         getAndSetIfAbsent(key: K, fallback: V): V {
+            // pretty obvious why this is okay
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (this.has(key)) return this.get(key)!;
 
             this.set(key, fallback);

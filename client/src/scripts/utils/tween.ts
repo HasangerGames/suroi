@@ -63,7 +63,7 @@ export class Tween<T> {
             const startValue = this.startValues[key];
             const endValue = this.endValues[key];
 
-            (this.target[key as keyof T] as number) = Numeric.lerp(startValue, endValue, (this.ease ?? (t => t))(interpFactor));
+            (this.target[key as keyof T] as number) = Numeric.lerp(startValue, endValue, this.ease(interpFactor));
         }
         this.onUpdate?.();
 

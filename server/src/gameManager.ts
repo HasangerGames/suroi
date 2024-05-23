@@ -1,9 +1,14 @@
-import { Config } from "./config";
-import { Logger } from "./utils/misc";
+import path from "node:path";
 import { Worker } from "node:worker_threads";
 import { type GetGameResponse } from "../../common/src/typings";
+import { Config } from "./config";
 import { maxTeamSize } from "./server";
-import path from "node:path";
+import { Logger } from "./utils/misc";
+
+export interface WorkerInitData {
+    readonly id: number
+    readonly maxTeamSize: number
+}
 
 export class GameContainer {
     id: number;
@@ -22,6 +27,7 @@ export class GameContainer {
     constructor(id: number) {
         this.id = id;
         // @ts-expect-error no typings for this
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const isTSNode = process[Symbol.for("ts-node.register.instance")];
         this.worker = new Worker(path.resolve(__dirname, `game.${isTSNode ? "ts" : "js"}`), { workerData: { id, maxTeamSize } });
         this.worker.on("message", (message: WorkerMessage): void => {

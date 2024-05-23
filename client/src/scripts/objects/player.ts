@@ -150,7 +150,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...(game.teamMode ? [this.images.leftLeg!, this.images.rightLeg!] : []),
+            ...(game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -160,6 +160,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         );
 
         if (game.teamMode) {
+            // teamMode guarantees these images' prescence
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
 

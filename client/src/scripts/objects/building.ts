@@ -9,9 +9,9 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type GameSound } from "../managers/soundManager";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { type GameSound } from "../managers/soundManager";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
@@ -175,7 +175,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
-            this.ceilingContainer.zIndex = this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
+            this.ceilingContainer.zIndex = this.definition.ceilingZIndex;
 
             this.orientation = full.rotation;
             this.rotation = Angle.orientationToRotation(this.orientation);
@@ -192,10 +192,9 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
 
         if (definition.sounds) {
-            const sounds = this.definition.sounds!;
-
+            const { sounds } = definition;
             const soundOptions = {
-                position: Vec.add(Vec.rotate(sounds?.position ?? Vec.create(0, 0), this.rotation), this.position),
+                position: Vec.add(Vec.rotate(sounds.position ?? Vec.create(0, 0), this.rotation), this.position),
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,
                 dynamic: true,
@@ -269,7 +268,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
 
         this.ceilingContainer.removeChildren();
-        for (const image of definition.ceilingImages ?? []) {
+        for (const image of definition.ceilingImages) {
             let key = image.key;
             if (this.dead && image.residue) key = image.residue;
             const sprite = new SuroiSprite(key);
@@ -289,13 +288,11 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 );
             }
 
-            if (definition.spawnHitbox !== undefined) {
-                drawHitbox(
-                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.spawnHitbox,
-                    this.debugGraphics
-                );
-            }
+            drawHitbox(
+                definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics
+            );
 
             if (definition.scopeHitbox !== undefined) {
                 drawHitbox(

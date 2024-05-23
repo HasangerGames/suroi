@@ -2,9 +2,9 @@ import { GameConstants, ZIndexes } from "../../../../common/src/constants";
 import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type GameSound } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
-import { type GameSound } from "../managers/soundManager";
 
 export class Plane {
     readonly game: Game;

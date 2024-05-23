@@ -2,19 +2,20 @@ import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
 import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
-import { MapPings, type MapPingDefinition } from "../../common/src/definitions/mapPings";
+import { type LootDefinition } from "../../common/src/definitions/loots";
+import { MapPings } from "../../common/src/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { Packet } from "../../common/src/packets/packet";
+import { InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
-import { PacketStream } from "../../common/src/packets/packetStream";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { KillFeedPacket } from "../../common/src/packets/killFeedPacket";
+import { Packet } from "../../common/src/packets/packet";
+import { PacketStream } from "../../common/src/packets/packetStream";
 import { PingPacket } from "../../common/src/packets/pingPacket";
+import { SpectatePacket } from "../../common/src/packets/spectatePacket";
+import type { MapPingSerialization } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
@@ -24,7 +25,7 @@ import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitS
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
-import { type WorkerMessage, WorkerMessages, type GameData } from "./gameManager";
+import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
@@ -40,13 +41,13 @@ import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
+import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { PluginManager } from "./pluginManager";
 
 export class Game {
     readonly _id: number;
@@ -55,7 +56,7 @@ export class Game {
     server: TemplatedApp;
 
     // string = ip, number = expire time
-    readonly allowedIPs: globalThis.Map<string, number> = new globalThis.Map();
+    readonly allowedIPs = new globalThis.Map<string, number>();
 
     readonly simultaneousConnections: Record<string, number> = {};
     joinAttempts: Record<string, number> = {};
@@ -86,20 +87,13 @@ export class Game {
      */
     readonly packets: Packet[] = [];
 
-    readonly maxTeamSize: number;
+    readonly maxTeamSize: TeamSize;
 
     readonly teamMode: boolean;
 
     readonly teams = new (class <T> extends Set<T> {
         private _valueCache?: T[];
         get valueArray(): T[] {
-            /*
-                this rule is stupid and a skill issue filter
-                "It's also possible that the intent was to use a comparison operator such as == and that this code is an error."
-
-                anyone who confuses "??=" for "==" should consult an eye doctor
-            */
-
             return this._valueCache ??= [...super.values()];
         }
 
@@ -161,11 +155,7 @@ export class Game {
     /**
      * All map pings this tick
      */
-    readonly mapPings: Array<{
-        readonly definition: MapPingDefinition
-        readonly position: Vector
-        readonly playerId?: number
-    }> = [];
+    readonly mapPings: MapPingSerialization[] = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -201,8 +191,8 @@ export class Game {
     tickTimes: number[] = [];
 
     constructor() {
-        this._id = workerData.id;
-        this.maxTeamSize = workerData.maxTeamSize;
+        this._id = (workerData as WorkerInitData).id;
+        this.maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
         const start = Date.now();
@@ -230,7 +220,7 @@ export class Game {
              * Upgrade the connection to WebSocket.
              */
             upgrade(res, req, context) {
-                res.onAborted((): void => { });
+                res.onAborted((): void => { /* do nothing…? */ });
 
                 const ip = getIP(res, req);
 
@@ -265,7 +255,7 @@ export class Game {
                 //
                 // Ensure IP is allowed
                 //
-                if (!This.allowedIPs.has(ip) || This.allowedIPs.get(ip)! < This.now) {
+                if ((This.allowedIPs.get(ip) ?? Infinity) < This.now) {
                     forbidden(res);
                     return;
                 }
@@ -292,7 +282,7 @@ export class Game {
                         try {
                             const colorString = searchParams.get("nameColor");
                             if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                        } catch { }
+                        } catch { /* guess your color sucks lol */ }
                     }
                 }
 
@@ -350,9 +340,13 @@ export class Game {
              */
             close(socket: WebSocket<PlayerContainer>) {
                 const data = socket.getUserData();
+                // FIXME someone explain why this is safe
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 if (Config.protection) This.simultaneousConnections[data.ip!]--;
+
                 const { player } = data;
                 if (!player) return;
+
                 Logger.log(`Game ${This.id} | "${player.name}" left`);
                 This.removePlayer(player);
             }
@@ -462,10 +456,16 @@ export class Game {
             }
         }
 
-        // Do the damage after updating all bullets
-        // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
-        // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
-        // while on the server, without this, some bullets won't because the first bullets will kill the crate
+        /*
+            Do the damage after updating all bullets
+            This is to make sure bullets hitting the same object on the same tick will all die so
+            they don't de-sync with the client
+
+            Example: a shotgun insta-killing a crate—on the client all bullets will hit the crate,
+            while on the server, the usual approach of dealing damage on-update would cause some
+            bullets to pass through unhindered since the crate would have been destroyed by the
+            first pellets.
+        */
         for (const { object, damage, source, weapon, position } of records) {
             object.damage({
                 amount: damage,
@@ -535,16 +535,13 @@ export class Game {
             && !this.over
             && (
                 this.teamMode
-                    ? this.aliveCount <= this.maxTeamSize && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
         ) {
             for (const player of this.livingPlayers) {
                 const { movement } = player;
-                movement.up = false;
-                movement.down = false;
-                movement.left = false;
-                movement.right = false;
+                movement.up = movement.down = movement.left = movement.right = false;
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
@@ -640,7 +637,7 @@ export class Game {
                 if (
                     !team // team doesn't exist
                     || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= this.maxTeamSize // team is full
+                    || team.players.length >= (this.maxTeamSize as number) // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -649,7 +646,7 @@ export class Game {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
                         team.autoFill
-                        && team.players.length < this.maxTeamSize
+                        && team.players.length < (this.maxTeamSize as number)
                         && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
@@ -665,7 +662,11 @@ export class Game {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
-                const teamPosition = this.teamMode ? pickRandomInArray(team!.getLivingPlayers())?.position : undefined;
+                const teamPosition = this.teamMode
+                    // teamMode should guarantee the `team` object's existence
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    ? pickRandomInArray(team!.getLivingPlayers())?.position
+                    : undefined;
 
                 let foundPosition = false;
                 for (let tries = 0; !foundPosition && tries < 200; tries++) {
@@ -689,7 +690,12 @@ export class Game {
                     foundPosition = true;
                     const radiusHitbox = new CircleHitbox(60, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                        if (object instanceof Player && (!this.teamMode || !team!.players.includes(object))) {
+                        if (
+                            object instanceof Player
+                            // teamMode should guarantee the `team` object's existence
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            && (!this.teamMode || !team!.players.includes(object))
+                        ) {
                             foundPosition = false;
                         }
                     }
@@ -739,8 +745,8 @@ export class Game {
         }
 
         const badge = packet.badge;
-        if (badge && (!badge.roles || (player.role !== undefined && (Array.isArray(badge.roles) ? badge.roles?.includes(player.role) : badge.roles === player.role)))) {
-            player.loadout.badge = packet.badge;
+        if (player.role !== undefined && badge?.roles.includes(player.role)) {
+            player.loadout.badge = badge;
         }
         player.loadout.emotes = packet.emotes;
 
@@ -827,7 +833,7 @@ export class Game {
 
         try {
             player.socket.close();
-        } catch (e) { }
+        } catch (e) { /* not a really big deal if we can't close the socket */ }
         this.pluginManager.emit("playerDisconnect", player);
     }
 

@@ -42,13 +42,6 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         let kills = 0;
         let damage = 0;
 
-        /*
-            "Assigning a variable to this instead of properly using arrow lambdas
-            may be a symptom of pre-ES6 practices or not managing scope well."
-
-            Object literals are a thing btw
-        */
-
         const T = this;
 
         return {
@@ -113,7 +106,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      * between these two methods is thus quite important. As with the `useItem` method, subclasses' overrides are fully responsible
      * for taking care of any side-effects such as spawning objects and modifying state.
      */
-    stopUse(): void {}
+    stopUse(): void { /* see doc comment */ }
 
     refreshModifiers(): void {
         const definition = this.definition;

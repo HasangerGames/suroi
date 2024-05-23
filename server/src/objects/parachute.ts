@@ -112,5 +112,5 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         };
     }
 
-    override damage(): void { }
+    override damage(): void { /* "hold on bro, lemme shoot the 'chute" */ }
 }

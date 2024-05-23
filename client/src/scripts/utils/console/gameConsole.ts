@@ -2,17 +2,10 @@ import $ from "jquery";
 import { Numeric } from "../../../../../common/src/utils/math";
 import { Stack } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
+import { sanitizeHTML } from "../misc";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./variables";
-import { sanitizeHTML } from "../misc";
-
-/*
-  `no-lone-blocks`                    Used for organization
-  `@typescript-eslint/no-this-alias`  Use some object literals, then talk to me about "not managing scope well"
-  `no-return-assign`                  skill issue filter
-  `no-inner-declarations`             Is this rule's raison d'être fr "just in case es5 chokes and dies on it sometimes"
-*/
 
 enum MessageType {
     Log = "log",
@@ -463,7 +456,11 @@ export class GameConsole {
             if (err.filename) {
                 this.error(
                     {
+                        // lol ok
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         main: `Javascript ${err.error ? `'${Object.getPrototypeOf(err.error)?.constructor?.name}'` : err.type} occurred at ${err.filename.replace(location.origin + location.pathname, "./")}:${err.lineno}:${err.colno}`,
+                        // this is just peak ????? lol
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         detail: err.error ?? err.message
                     },
                     true

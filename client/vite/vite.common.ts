@@ -1,9 +1,9 @@
 import pkg from "../../package.json";
 
-import { splitVendorChunkPlugin, type UserConfig } from "vite";
-import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { resolve } from "path";
+import { splitVendorChunkPlugin, type UserConfig } from "vite";
+import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import { spritesheet } from "./vite-spritesheet-plugin/spritesheet-plugin";
 
 const config: UserConfig = {

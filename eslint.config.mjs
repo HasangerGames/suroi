@@ -1,10 +1,10 @@
 // @ts-check
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";
+import tseslint from "typescript-eslint";
 
 /**
- * @todo Add eslint-plugin-import-x, when it has support for Flat configuration.
+ * TODO Add eslint-plugin-import-x, when it has support for Flat configuration.
  */
 export default tseslint.config(
     eslint.configs.recommended,
@@ -43,11 +43,22 @@ export default tseslint.config(
             ["@stylistic/member-delimiter-style"]: ["warn", { singleline: { delimiter: "comma" }, multiline: { delimiter: "none" } }],
             ["@stylistic/quotes"]: ["warn", "double", { avoidEscape: true }],
             ["@stylistic/space-before-function-paren"]: ["warn", "never"],
+            // TODO revisit
             ["@stylistic/type-generic-spacing"]: "off",
+            ["@stylistic/no-multi-spaces"]: ["error", { ignoreEOLComments: true }],
 
             // @typescript-eslint
             ["@typescript-eslint/array-type"]: ["warn", { default: "array-simple" }],
-            ["@typescript-eslint/ban-ts-comment"]: "off",
+            ["@typescript-eslint/ban-ts-comment"]: ["error", {
+                "ts-expect-error": "allow-with-description",
+                "ts-ignore": true,
+                "ts-nocheck": true,
+                "ts-check": false,
+                "minimumDescriptionLength": 5
+            }],
+            /**
+             * This rule is just all-around annoying
+             */
             ["@typescript-eslint/consistent-type-definitions"]: "off",
             ["@typescript-eslint/explicit-function-return-type"]: ["warn", {
                 allowExpressions: true,
@@ -59,9 +70,21 @@ export default tseslint.config(
                 allowedNames: [],
                 allowIIFEs: false
             }],
+            // TODO revisit
             ["@typescript-eslint/no-confusing-void-expression"]: "off",
+            /**
+             * `this`-aliasing is useful to use a `this` context inside a construct which creates its own `this` binding.
+             * (and thus overrides the surrounding one)
+             *
+             * The most common example of this is using an object literal inside a class instance, or a
+             * `function` inside a class instance
+             */
             ["@typescript-eslint/no-this-alias"]: "off",
-            ["@typescript-eslint/prefer-literal-enum-member"]: "off",
+            ["@typescript-eslint/prefer-literal-enum-member"]: ["error", { allowBitwiseExpressions: true }],
+            /**
+             * ESLint also kinda mega sucks at detecting when this rule is actually appropriate, and sometimes
+             * we want to conflate `false` and `undefined`/`null`.
+             */
             ["@typescript-eslint/prefer-nullish-coalescing"]: "off",
             ["@typescript-eslint/restrict-template-expressions"]: ["error", {
                 allowAny: true,
@@ -70,25 +93,31 @@ export default tseslint.config(
                 allowNumber: true,
                 allowRegExp: true
             }],
+            // TODO revisit
             ["@typescript-eslint/use-unknown-in-catch-callback-variable"]: "off",
+            ["@typescript-eslint/prefer-readonly"]: "error",
+            ["@typescript-eslint/no-unused-vars"]: ["error", {
+                vars: "all",
+                args: "none"
+            }],
 
-            // Type-safety rules disabled as the codebase contains unsafe code.
-            ["@typescript-eslint/no-explicit-any"]: "off",
-            ["@typescript-eslint/no-non-null-assertion"]: "off",
-            ["@typescript-eslint/no-unsafe-argument"]: "off",
-            ["@typescript-eslint/no-unsafe-assignment"]: "off",
-            ["@typescript-eslint/no-unsafe-call"]: "off",
-            ["@typescript-eslint/no-unsafe-member-access"]: "off",
-            ["@typescript-eslint/no-unsafe-return"]: "off",
-
-            // Suroi developers specifically cannot write safe code.
-            ["@typescript-eslint/no-empty-function"]: "off",
-            ["@typescript-eslint/no-redundant-type-constituents"]: "off",
-            ["@typescript-eslint/no-unnecessary-condition"]: "off",
-            ["@typescript-eslint/no-unsafe-enum-comparison"]: "off",
-            ["@typescript-eslint/no-unused-vars"]: "off",
+            /**
+             * Misbehaves with things like `void (async() => {})()`
+             */
             ["@typescript-eslint/require-await"]: "off",
-            ["no-empty"]: "off"
+
+            /**
+             * Honestly screw this rule, doesn't work well with constructing object literals
+             */
+            ["@typescript-eslint/prefer-reduce-type-parameter"]: "off",
+
+            /**
+             *  ESLint kinda massively sucks at correctly identifying an actually unnecessary condition
+             *
+             *  Furthermore, seemingly unnecessary conditions are sometimes nevertheless written, either as
+             *  sanity checks, to provide a fallback, or to detect an abnormal and exceptional circumstance
+             */
+            ["@typescript-eslint/no-unnecessary-condition"]: "off"
         }
     },
     {

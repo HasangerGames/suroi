@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory } from "../../../../common/src/constants";
 import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";

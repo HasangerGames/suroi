@@ -1,12 +1,5 @@
-import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { MapPings } from "../../../../common/src/definitions/mapPings";
 import { Reskins } from "../../../../common/src/definitions/modes";
-import { Materials } from "../../../../common/src/definitions/obstacles";
-import { Throwables } from "../../../../common/src/definitions/throwables";
 import { Numeric } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "../utils/constants";

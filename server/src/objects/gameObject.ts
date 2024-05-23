@@ -38,6 +38,11 @@ export interface DamageParams {
     weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
 }
 
+export type CollidableGameObject<
+    Cat extends ObjectCategory = ObjectCategory,
+    HitboxType extends Hitbox = Hitbox
+> = BaseGameObject<Cat> & { readonly hitbox: HitboxType };
+
 export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
     abstract readonly type: Cat;
     abstract fullAllocBytes: number;
@@ -92,7 +97,9 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     /**
      * Sets this object as fully dirty
-     * This means all the serialization data will be sent to clients
+     *
+     * This means all the serialization data will be sent
+     * to clients on the next update
      */
     setDirty(): void {
         this.game.fullDirtyObjects.add(this);
@@ -100,7 +107,9 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     /**
      * Sets this object as partially dirty
+     *
      * This means the partial data will be sent to clients
+     * on the next update
      */
     setPartialDirty(): void {
         this.game.partialDirtyObjects.add(this);

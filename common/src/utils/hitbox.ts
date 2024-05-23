@@ -1,6 +1,6 @@
 import { type Orientation } from "../typings";
 import { Collision, Geometry, type CollisionRecord, type IntersectionResponse } from "./math";
-import { cloneDeepSymbol, type Cloneable } from "./misc";
+import { cloneDeepSymbol, cloneSymbol, type Cloneable, type DeepCloneable } from "./misc";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { Vec, type Vector } from "./vector";
 
@@ -44,7 +44,7 @@ export interface HitboxMapping {
 
 export type Hitbox = HitboxMapping[HitboxType];
 
-export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
+export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements DeepCloneable<HitboxMapping[T]>, Cloneable<HitboxMapping[T]> {
     abstract type: HitboxType;
 
     abstract toJSON(): HitboxJSONMapping[T];
@@ -89,7 +89,11 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
      * Clone this {@link Hitbox}.
      * @return a new {@link Hitbox} cloned from this one
      */
-    abstract clone(): Hitbox;
+    abstract clone(deep?: boolean): HitboxMapping[T];
+
+    [cloneSymbol](): HitboxMapping[T] { return this.clone(false); }
+
+    [cloneDeepSymbol](): HitboxMapping[T] { return this.clone(true); }
 
     /**
      * Transform this {@link Hitbox} and returns a new {@link Hitbox}.
@@ -135,7 +139,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
     }
 }
 
-export class CircleHitbox extends BaseHitbox<HitboxType.Circle> implements Cloneable<CircleHitbox> {
+export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     override readonly type = HitboxType.Circle;
     position: Vector;
     radius: number;
@@ -219,11 +223,9 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> implements Clone
         }
     }
 
-    override clone(): CircleHitbox {
-        return new CircleHitbox(this.radius, Vec.clone(this.position));
+    override clone(deep = true): CircleHitbox {
+        return new CircleHitbox(this.radius, deep ? Vec.clone(this.position) : this.position);
     }
-
-    [cloneDeepSymbol](): CircleHitbox { return this.clone(); }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
         return new CircleHitbox(this.radius * scale, Vec.addAdjust(position, this.position, orientation));
@@ -254,7 +256,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> implements Clone
     }
 }
 
-export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> implements Cloneable<RectangleHitbox> {
+export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override readonly type = HitboxType.Rect;
     min: Vector;
     max: Vector;
@@ -359,11 +361,12 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> implements Clon
         this.throwUnknownSubclassError(that);
     }
 
-    override clone(): RectangleHitbox {
-        return new RectangleHitbox(Vec.clone(this.min), Vec.clone(this.max));
+    override clone(deep = true): RectangleHitbox {
+        return new RectangleHitbox(
+            deep ? Vec.clone(this.min) : this.min,
+            deep ? Vec.clone(this.max) : this.max
+        );
     }
-
-    [cloneDeepSymbol](): RectangleHitbox { return this.clone(); }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
         const rect = Geometry.transformRectangle(position, this.min, this.max, scale, orientation);
@@ -406,7 +409,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> implements Clon
     }
 }
 
-export class HitboxGroup extends BaseHitbox<HitboxType.Group> implements Cloneable<HitboxGroup> {
+export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
     hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>;
@@ -456,7 +459,7 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> implements Cloneab
                             break;
                     }
                     break;
-                case HitboxType.Rect: {
+                case HitboxType.Rect:
                     switch (that.type) {
                         case HitboxType.Circle:
                             newRecord = Collision.distanceBetweenRectangleCircle(hitbox.min, hitbox.max, that.position, that.radius);
@@ -464,22 +467,29 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> implements Cloneab
                         case HitboxType.Rect:
                             newRecord = Collision.distanceBetweenRectangles(that.min, that.max, hitbox.min, hitbox.max);
                     }
-                }
+                    break;
             }
-            if (newRecord!.distance < distance) {
-                record = newRecord!;
-                distance = newRecord!.distance;
+
+            if (newRecord.distance < distance) {
+                record = newRecord;
+                distance = newRecord.distance;
             }
         }
 
+        // we pray that this nna is okay (if this.hitboxes is empty, it won't be okay)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return record!;
     }
 
-    override clone(): HitboxGroup {
-        return new HitboxGroup(...this.hitboxes.map(hitbox => hitbox.clone()));
+    override clone(deep = true): HitboxGroup {
+        return new HitboxGroup(
+            ...(
+                deep
+                    ? this.hitboxes.map(hitbox => hitbox.clone(true))
+                    : this.hitboxes
+            )
+        );
     }
-
-    [cloneDeepSymbol](): HitboxGroup { return this.clone(); }
 
     override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): HitboxGroup {
         this.position = position;
@@ -535,7 +545,7 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> implements Cloneab
     }
 }
 
-export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> implements Cloneable<PolygonHitbox> {
+export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     override readonly type = HitboxType.Polygon;
     points: Vector[];
     center: Vector;
@@ -590,11 +600,13 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> implements Clo
         this.throwUnknownSubclassError(that);
     }
 
-    override clone(): PolygonHitbox {
-        return new PolygonHitbox(this.points);
+    override clone(deep = true): PolygonHitbox {
+        return new PolygonHitbox(
+            deep
+                ? this.points.map(Vec.clone)
+                : this.points
+        );
     }
-
-    [cloneDeepSymbol](): PolygonHitbox { return this.clone(); }
 
     override transform(position: Vector, scale = 1, orientation: Orientation = 0): PolygonHitbox {
         return new PolygonHitbox(

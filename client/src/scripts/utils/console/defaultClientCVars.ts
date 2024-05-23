@@ -1,8 +1,8 @@
 import { isMobile } from "pixi.js";
+import { GameConstants } from "../../../../../common/src/constants";
 import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
 import { type Stringable } from "./gameConsole";
 import { Casters, type CVarChangeListener, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
-import { GameConstants } from "../../../../../common/src/constants";
 
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value

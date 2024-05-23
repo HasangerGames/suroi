@@ -3,13 +3,13 @@ import { InputActions } from "../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { Skins } from "../../common/src/definitions/skins";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 import { InputPacket, type InputAction } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { type GetGameResponse } from "../../common/src/typings";
-import { PacketStream } from "../../common/src/packets/packetStream";
-import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 import { type Packet } from "../../common/src/packets/packet";
+import { PacketStream } from "../../common/src/packets/packetStream";
+import { type GetGameResponse } from "../../common/src/typings";
+import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
@@ -208,7 +208,7 @@ void (async() => {
     for (let i = 1; i <= config.botCount; i++) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setTimeout(async() => {
-            const gameData: GetGameResponse = await (await fetch(`${config.mainAddress}/api/getGame`)).json();
+            const gameData = await (await fetch(`${config.mainAddress}/api/getGame`)).json() as GetGameResponse;
 
             if (!gameData.success) {
                 console.error("Failed to fetch game");

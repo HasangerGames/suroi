@@ -6,10 +6,10 @@ import { type BadgeDefinition } from "../../../../common/src/definitions/badges"
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
-import { MapPings } from "../../../../common/src/definitions/mapPings";
+import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import type { KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
+import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { freezeDeep } from "../../../../common/src/utils/misc";
@@ -23,8 +23,6 @@ import { formatDate } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 function safeRound(value: number): number {
-    // this looks more math-y and easier to read, so eslint can shove it
-
     if (0 < value && value <= 1) return 1;
     return Math.round(value);
 }
@@ -50,13 +48,13 @@ export class UIManager {
     } = {
             activeWeaponIndex: 0,
             weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
-            items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
+            items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
             scope: DEFAULT_SCOPE
         };
 
     emotes: Array<EmoteDefinition | undefined> = [];
 
-    teammates: UpdatePacket["playerData"]["teammates"] = [];
+    teammates: (UpdatePacket["playerData"] & object)["teammates"] = [];
 
     readonly debugReadouts = Object.freeze({
         fps: $("#fps-counter"),
@@ -96,7 +94,8 @@ export class UIManager {
 
         element.text(name);
 
-        return element.prop("outerHTML");
+        // what in the jquery is this
+        return element.prop("outerHTML") as string;
     }
 
     getPlayerBadge(id: number): BadgeDefinition | undefined {
@@ -273,12 +272,19 @@ export class UIManager {
         $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
     }
 
-    readonly mapPings = ["warning_ping", "arrow_ping", "gift_ping", "heal_ping"].map(ping => MapPings.fromString(ping));
+    // I'd rewrite this as MapPings.filter(…), but it's not really clear how
+    // > 4 player pings is _meant_ to be handled, so I'll begrudgingly leave this alone
+    readonly mapPings: readonly PlayerPing[] = [
+        "warning_ping",
+        "arrow_ping",
+        "gift_ping",
+        "heal_ping"
+    ].map(ping => MapPings.fromString<PlayerPing>(ping));
 
     updateEmoteWheel(): void {
         const { pingWheelActive } = this.game.inputManager;
         for (let i = 0; i < 4; i++) {
-            const definition = pingWheelActive ? this.mapPings[i] : this.emotes[i];
+            const definition = (pingWheelActive ? this.mapPings : this.emotes)[i];
 
             this.ui.emoteSelectors[i].css(
                 "background-image",
@@ -338,8 +344,9 @@ export class UIManager {
                 const { id } = player;
                 notVisited.delete(id);
 
-                if (_teammateDataCache.has(id)) {
-                    _teammateDataCache.get(id)!.update({
+                const cacheEntry = _teammateDataCache.get(id);
+                if (cacheEntry !== undefined) {
+                    cacheEntry.update({
                         ...player,
                         colorIndex: index
                     });
@@ -367,6 +374,8 @@ export class UIManager {
             });
 
             for (const outdated of notVisited) {
+                // the `notVisited` set is exclusively populated with keys from this map
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 _teammateDataCache.get(outdated)!.destroy();
                 _teammateDataCache.delete(outdated);
             }
@@ -775,7 +784,7 @@ export class UIManager {
             severity,
 
             attackerId,
-            attackerKills,
+            attackerKills = 0, // HACK this is mostly to get tooling to be quiet, the entire packet api's typings suck and need to be redone
             weaponUsed,
             killstreak,
 
@@ -819,6 +828,8 @@ export class UIManager {
 
         switch (messageType) {
             case KillfeedMessageType.DeathOrDown: {
+                // `undefined > 1` returns `false` anyways
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const hasKillstreak = killstreak! > 1;
 
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
@@ -826,7 +837,6 @@ export class UIManager {
                         let killMessage = "";
 
                         const description = UIManager._eventDescriptionMap[eventType][severity];
-                        // sod off
 
                         outer:
                         switch (eventType) {
@@ -998,7 +1008,7 @@ export class UIManager {
                                         weaponUsed: eventType !== KillfeedEventType.FinallyKilled
                                             ? base.weaponUsed
                                             : undefined,
-                                        kills: attackerKills!,
+                                        kills: attackerKills,
                                         streak: killstreak
                                     }
                                     : {
@@ -1017,7 +1027,7 @@ export class UIManager {
                 if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
 
                 $("#kill-leader-leader").html(`${victimName}${victimBadgeText}`);
-                $("#kill-leader-kills-counter").text(attackerKills!);
+                $("#kill-leader-kills-counter").text(attackerKills);
 
                 if (!hideFromKillfeed) {
                     messageText = `<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
@@ -1028,7 +1038,7 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(attackerKills!);
+                $("#kill-leader-kills-counter").text(attackerKills);
                 break;
             }
 
@@ -1212,7 +1222,7 @@ class PlayerHealthUI {
             const id = this._id.value;
 
             if (this._position.dirty && this._position.value) {
-                if (!teammateIndicators.has(id)) {
+                if ((indicator = teammateIndicators.get(id)) === undefined) {
                     teammateIndicators.set(
                         id,
                         indicator = new SuroiSprite("player_indicator")
@@ -1222,11 +1232,11 @@ class PlayerHealthUI {
                     );
                     this.game.map.teammateIndicatorContainer.addChild(indicator);
                 } else {
-                    (indicator = teammateIndicators.get(id)!).setVPos(this._position.value);
+                    indicator.setVPos(this._position.value);
                 }
             }
 
-            indicator ??= teammateIndicators.get(id)!;
+            indicator ??= teammateIndicators.get(id);
         }
 
         if (recalcIndicatorFrame) {
@@ -1253,7 +1263,7 @@ class PlayerHealthUI {
         ) {
             this.nameLabel.css(
                 "color",
-                this._hasColor && this._nameColor.value ? this._nameColor.value.toHex() : ""
+                this._hasColor.value && this._nameColor.value ? this._nameColor.value.toHex() : ""
             );
         }
 

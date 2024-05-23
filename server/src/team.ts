@@ -3,8 +3,8 @@ import { CustomTeamMessages, type CustomTeamMessage } from "../../common/src/typ
 import { random } from "../../common/src/utils/random";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
-import { removeFrom } from "./utils/misc";
 import { customTeams } from "./server";
+import { removeFrom } from "./utils/misc";
 
 export class Team {
     readonly id: number;

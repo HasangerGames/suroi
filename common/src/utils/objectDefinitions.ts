@@ -4,20 +4,6 @@ import { mergeDeep, type DeepPartial } from "./misc";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 
-/*
-    eslint-disable
-
-    @typescript-eslint/prefer-reduce-type-parameter
-*/
-
-/*
-    `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
-    `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
-    `@typescript-eslint/prefer-reduce-type-parameter` This rule doesn't even work correctly when the accumulator
-                                                      is being built up over the course of the reduction operation
-    `@typescript-eslint/consistent-type-assertions`   this rule is stupid and is meant for angle-bracket casting
-*/
-
 /**
  * A file-wide reference to the `symbol` used for inheritance.
  * Exported through {@linkcode ObjectDefinitions.inheritFromSymbol}
@@ -43,7 +29,7 @@ const _noDefaultInheritSymbol: unique symbol = Symbol("no default inherit");
  * @template Def The definition that will partially be constructed by this function
  */
 // It's a function whose argument types are narrowed if needed, and `unknown` causes false errors
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TemplateFn<Def extends ObjectDefinition> = (...args: readonly any[]) => DeepPartial<Def>;
 
 /**
@@ -503,7 +489,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 applier.apply = applier;
 
                 // @ts-expect-error init code
-                applier.simple = (name, ...args) => applier(name, {}, ...args);
+                applier.simple = (name, ...args: unknown[]) => applier(name, {}, ...args);
 
                 return new ObjectDefinitions<Def>(
                     defaultTemplate,
@@ -571,7 +557,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         for (let i = 0, defLength = this.definitions.length; i < defLength; i++) {
             const idString = this.definitions[i].idString;
 
-            if (this.idStringToNumber[idString] !== undefined) {
+            if (idString in this.idStringToNumber) {
                 throw new Error(`Duplicated idString: ${idString}`);
             }
 

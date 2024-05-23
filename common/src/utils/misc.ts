@@ -16,6 +16,10 @@ export type DeepReadonly<T> = {
     readonly [K in keyof T]: DeepReadonly<T[K]>;
 };
 
+export type Mutable<T> = {
+    -readonly [K in keyof T]: T[K];
+};
+
 /**
  * Represents a successful operation
  * @template Res The type of the successful operation's result
@@ -68,10 +72,15 @@ export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPar
 
 /**
  * Symbol used to indicate an object's deep-clone method
- * @see {@linkcode Cloneable}
+ * @see {@linkcode DeepCloneable}
  * @see {@linkcode cloneDeep}
 */
 export const cloneDeepSymbol: unique symbol = Symbol("clone deep");
+
+/**
+ * Symbol used to indicate an object's cloning method
+ */
+export const cloneSymbol: unique symbol = Symbol("clone");
 
 // what in the java
 /**
@@ -79,8 +88,16 @@ export const cloneDeepSymbol: unique symbol = Symbol("clone deep");
  * @see {@linkcode cloneDeepSymbol}
  * @see {@linkcode cloneDeep}
  */
-export interface Cloneable<T> {
+export interface DeepCloneable<T> {
     [cloneDeepSymbol](): T
+}
+
+/**
+ * Interface that any value wishing to provide a cloning algorithm should implement
+ * @see {@linkcode cloneSymbol}
+ */
+export interface Cloneable<T> {
+    [cloneSymbol](): T
 }
 
 /**
@@ -90,13 +107,13 @@ export interface Cloneable<T> {
  * `Map`s, and `Set`s. These three data structures also receive special handling to preserve their contents, and the subclass
  * is preserved to the best of {@linkcode Object.setPrototypeOf}'s ability.
  *
- * For class instances, callers should look into making the class implement the {@linkcode Cloneable} interface, and define their
+ * For class instances, callers should look into making the class implement the {@linkcode DeepCloneable} interface, and define their
  * own deep-cloning algorithm there; this method will honor any such method. Doing so ensures that the cloning process is faster,
  * more secure, and probably more efficient
  * @param object The value to clone
  * @returns A deep-copy of `object`, to the best of this method's ability
  * @see {@linkcode cloneDeepSymbol}
- * @see {@linkcode Cloneable}
+ * @see {@linkcode DeepCloneable}
  */
 export function cloneDeep<T>(object: T): T {
     // For cyclical data structures, ensures that cyclical-ness is preserved in the clone
@@ -109,6 +126,9 @@ export function cloneDeep<T>(object: T): T {
         if (cloneDeepSymbol in target) {
             const clone = target[cloneDeepSymbol];
             if (typeof clone === "function" && clone.length === 0) {
+                // basically we hope that the caller isn't a dumbass and hasn't
+                // passed in an object with a nonsensical cloning method
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return clone.call(target);
             } else {
                 console.warn(`Inappropriate use of ${cloneDeepSymbol.toString()}: it should be a no-arg function`);
@@ -117,7 +137,7 @@ export function cloneDeep<T>(object: T): T {
 
         const copyAllPropDescs = <T>(
             to: T,
-            entryFilter: (entry: readonly [string, TypedPropertyDescriptor<any>]) => boolean = () => true
+            entryFilter: (entry: readonly [string, TypedPropertyDescriptor<unknown>]) => boolean = () => true
         ): T => {
             for (const [key, desc] of Object.entries(Object.getOwnPropertyDescriptors(target)).filter(entryFilter)) {
                 desc.value = internal(target[key as keyof typeof target]);
@@ -127,13 +147,13 @@ export function cloneDeep<T>(object: T): T {
             return to;
         };
 
-        const prototype = Object.getPrototypeOf(target);
+        const prototype = Object.getPrototypeOf(target) as object | null;
 
         // special handling for certain builtins
         switch (true) {
             case target instanceof Array: {
                 // we can probably treat this as an array (unless someone is trolling us)
-                const root = Object.create(prototype);
+                const root = Object.create(prototype) as T & unknown[];
                 clonedNodes.set(target, root);
 
                 for (let i = 0, l = target.length; i < l; i++) {
@@ -230,7 +250,7 @@ export interface DoublyLinkedList<T> {
  * Implementation of a [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type))
  * @template T The type of the values stored in this collection
  */
-export class Stack<T> implements Cloneable<Stack<T>> {
+export class Stack<T> implements DeepCloneable<Stack<T>>, Cloneable<Stack<T>> {
     /**
      * Internal backing linked list
      */
@@ -279,15 +299,18 @@ export class Stack<T> implements Cloneable<Stack<T>> {
     }
 
     /**
-     * Creates a deep clone of this {@link Stack}, cloning the elements inside it
+     * Cloning implementation
+     * @param deep Whether to also deep-clone this stack's elements
      */
-    [cloneDeepSymbol](): Stack<T> {
+    private _clone(deep = false): Stack<T> {
         const clone = new Stack<T>();
 
         let current: LinkedList<T> | undefined = this._head;
         let currentClone: LinkedList<T> | undefined;
         while (current !== undefined) {
-            const node = { value: cloneDeep(current.value) };
+            const node = deep
+                ? { value: cloneDeep(current.value) }
+                : current;
 
             currentClone = currentClone
                 ? currentClone.next = node
@@ -297,13 +320,27 @@ export class Stack<T> implements Cloneable<Stack<T>> {
 
         return clone;
     }
+
+    /**
+     * Creates a clone of this {@link Stack}, without cloning the elements within
+     */
+    [cloneSymbol](): Stack<T> {
+        return this._clone(false);
+    }
+
+    /**
+     * Creates a deep clone of this {@link Stack}, cloning the elements inside it
+     */
+    [cloneDeepSymbol](): Stack<T> {
+        return this._clone(true);
+    }
 }
 
 /**
  * Implementation of a [queue](https://en.wikipedia.org/wiki/Queue_(abstract_data_type))
  * @template T The type of the elements stored in this collection
  */
-export class Queue<T> implements Cloneable<Queue<T>> {
+export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
     /**
      * A reference to the beginning of the internal linked list for this collection
      */
@@ -327,6 +364,8 @@ export class Queue<T> implements Cloneable<Queue<T>> {
             return;
         }
 
+        // _tail's nullability is the same as _head's
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._tail = this._tail!.next = node;
     }
 
@@ -366,9 +405,10 @@ export class Queue<T> implements Cloneable<Queue<T>> {
     }
 
     /**
-     * Creates a deep clone of this queue, cloning the elements within it
+     * Cloning implementation
+     * @param deep Whether to clone this queue's elements
      */
-    [cloneDeepSymbol](): Queue<T> {
+    private _clone(deep = false): Queue<T> {
         const clone = new Queue<T>();
 
         let current: LinkedList<T> | undefined = this._head;
@@ -384,5 +424,19 @@ export class Queue<T> implements Cloneable<Queue<T>> {
         }
 
         return clone;
+    }
+
+    /**
+     * Creates a clone of this {@link Queue}, without cloning the elements within
+     */
+    [cloneSymbol](): Queue<T> {
+        return this._clone(false);
+    }
+
+    /**
+     * Creates a deep clone of this {@link Queue}, cloning the elements inside it
+     */
+    [cloneDeepSymbol](): Queue<T> {
+        return this._clone(true);
     }
 }

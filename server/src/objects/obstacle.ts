@@ -130,8 +130,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 locked: definition.locked,
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
-                // @ts-expect-error undefined is okay here
-                openAltHitbox: hitboxes.openAltHitbox,
+                openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
                 offset: 0
             };
         }
@@ -182,6 +181,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             this.scale = definition.scale?.spawnMin ?? 1;
 
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
+                //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
                 this.game.addExplosion(definition.explosion, this.position, source);
             }
 
@@ -189,6 +190,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 this.game.addSyncedParticles(definition.particlesOnDestroy, this.position);
             }
 
+            const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
             for (const item of this.loot) {
                 const loot = this.game.addLoot(
                     item.idString,
@@ -200,10 +202,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                     item.count
                 );
 
-                if (!(source instanceof BaseGameObject) || position === undefined) continue;
-
                 loot.push(
-                    Angle.betweenPoints(this.position, position ?? source.position),
+                    Angle.betweenPoints(this.position, lootSpawnPosition),
                     0.02
                 );
             }
@@ -272,7 +272,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
         switch (definition.role) {
             case ObstacleSpecialRoles.Door: {
-                if (!(this.door!.isOpen && definition.openOnce)) {
+                // optional chaining not required but makes both eslint and tsc happy
+                if (!(this.door?.isOpen && definition.openOnce)) {
                     this.toggleDoor(player);
                 }
                 break;
@@ -333,6 +334,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
                         if (isOnOtherSide) {
                             this.door.offset = 3;
+                            // swivel door => alt hitbox
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             this.hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;

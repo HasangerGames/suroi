@@ -6,11 +6,13 @@ import { GamePlugin } from "../pluginManager";
  */
 export class SpeedTogglePlugin extends GamePlugin {
     protected override initListeners(): void {
-        this.on("playerEmote", event => {
-            if (event.player.baseSpeed === Config.movementSpeed) {
-                event.player.baseSpeed = 0.3;
+        this.on("playerEmote", ({ player }) => {
+            const { movementSpeed } = Config;
+
+            if (player.baseSpeed === movementSpeed) {
+                player.baseSpeed = 12 * movementSpeed;
             } else {
-                event.player.baseSpeed = Config.movementSpeed;
+                player.baseSpeed = movementSpeed;
             }
         });
     }

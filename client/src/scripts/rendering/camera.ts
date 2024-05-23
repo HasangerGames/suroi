@@ -1,11 +1,11 @@
 import { Container, type Application } from "pixi.js";
+import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
+import { EaseFunctions } from "../../../../common/src/utils/math";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type Tween } from "../utils/tween";
-import { EaseFunctions } from "../../../../common/src/utils/math";
 import { PIXI_SCALE } from "../utils/constants";
-import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
+import { type Tween } from "../utils/tween";
 
 export class Camera {
     pixi: Application;

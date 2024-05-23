@@ -4,7 +4,7 @@ import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
 
 export class JoinedPacket extends Packet {
-    maxTeamSize!: number;
+    maxTeamSize!: TeamSize;
     teamID!: number;
 
     emotes: Array<EmoteDefinition | undefined> = [];

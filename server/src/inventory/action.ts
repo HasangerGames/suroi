@@ -8,9 +8,12 @@ import { type GunItem } from "./gunItem";
 
 export abstract class Action {
     readonly player: Player;
+
     private readonly _timeout: Timeout;
+
     abstract get type(): PlayerActions;
-    readonly speedMultiplier = 1 as number;
+
+    readonly speedMultiplier: number = 1;
 
     protected constructor(player: Player, time: number) {
         this.player = player;
@@ -35,13 +38,10 @@ export class ReviveAction extends Action {
     private readonly _type = PlayerActions.Revive;
     override get type(): PlayerActions.Revive { return this._type; }
 
-    readonly target: Player;
-
     override readonly speedMultiplier = 0.5;
 
-    constructor(reviver: Player, target: Player) {
+    constructor(reviver: Player, readonly target: Player) {
         super(reviver, GameConstants.player.reviveTime);
-        this.target = target;
     }
 
     override execute(): void {
@@ -66,11 +66,9 @@ export class ReviveAction extends Action {
 export class ReloadAction extends Action {
     private readonly _type = PlayerActions.Reload;
     override get type(): PlayerActions.Reload { return this._type; }
-    readonly item: GunItem;
 
-    constructor(player: Player, item: GunItem) {
+    constructor(player: Player, readonly item: GunItem) {
         super(player, item.definition.reloadTime);
-        this.item = item;
     }
 
     override execute(): void {

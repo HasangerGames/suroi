@@ -36,6 +36,7 @@
     "@stylistic/eslint-plugin": "^1.8.1",
     "@types/node": "^20.12.12",
     "eslint": "^9.2.0",
+    "@types/eslint__js": "^8.42.3",
     "jest": "^29.7.0",
     "jest-runner-eslint": "^2.2.0",
     "typescript": "^5.4.5",

@@ -4,7 +4,7 @@ import { isMobile } from "pixi.js";
 import { GameConstants, InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
+import { InputPacket, type InputAction, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -48,7 +48,7 @@ export class InputManager {
 
     readonly actions: InputAction[] = [];
 
-    addAction(action: InputAction | InputActions): void {
+    addAction(action: InputAction | SimpleInputActions): void {
         if (this.actions.length > 7) return;
 
         if (typeof action === "number") {
@@ -57,9 +57,7 @@ export class InputManager {
 
         if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
             const uiManager = this.game.uiManager;
-            const item: ItemDefinition | undefined = (
-                action as typeof action & { type: InputActions.DropItem }
-            ).item ?? this.game.activePlayer?.activeItem;
+            const item: ItemDefinition | undefined = "item" in action ? action.item : this.game.activePlayer?.activeItem;
 
             if (item !== undefined) {
                 let playSound = !item.noDrop;
@@ -145,18 +143,17 @@ export class InputManager {
         }
         packet.actions = this.actions;
 
-        this._inputPacketTimer++;
+        this._inputPacketTimer += this.game.serverDt;
 
         if (
             !this._lastInputPacket
             || packet.didChange(this._lastInputPacket)
-            || this._inputPacketTimer >= GameConstants.tickrate
+            || this._inputPacketTimer >= 100
         ) {
             this.game.sendPacket(packet);
             this._lastInputPacket = packet;
+            this._inputPacketTimer = 0;
         }
-
-        this._inputPacketTimer %= GameConstants.tickrate;
 
         this.actions.length = 0;
     }
@@ -292,7 +289,7 @@ export class InputManager {
                 this.movement.moving = false;
             });
 
-            rightJoyStick.on("move", (_, data: JoystickOutputData) => {
+            rightJoyStick.on("move", (_, data) => {
                 rightJoyStickUsed = true;
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
@@ -755,6 +752,8 @@ class InputMapper {
         if (actions === undefined) return false;
 
         actions.delete(action);
+        // safe because the backward map has already been checked
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._actionToInput.get(action)!.delete(input);
         return true;
     }

@@ -40,7 +40,7 @@ interface CommandInfo {
 
 export class Command<
     Invertible extends boolean = false,
-    ErrorType extends Stringable | never = never
+    ErrorType extends Stringable = never
 > {
     private readonly _name: string;
     get name(): string {
@@ -67,7 +67,7 @@ export class Command<
         return this._info;
     }
 
-    static createInvertiblePair<ErrorType extends Stringable | never = never>(
+    static createInvertiblePair<ErrorType extends Stringable = never>(
         name: string,
         on: CommandExecutor<ErrorType>,
         off: CommandExecutor<ErrorType>,
@@ -96,7 +96,7 @@ export class Command<
         minus._inverse = plus;
     }
 
-    static createCommand<ErrorType extends Stringable | never = never>(
+    static createCommand<ErrorType extends Stringable = never>(
         name: string,
         executor: CommandExecutor<ErrorType>,
         game: Game,
@@ -146,7 +146,7 @@ export class Command<
                     i++, arg = args[i]
                 ) {
                     if (arg.rest) {
-                        // @ts-expect-error meh
+                        // @ts-expect-error not worth making the prop mutable just for this edge-case
                         arg.rest = false;
                         console.warn(
                             `Found illegal rest argument in info string of command '${this._name}' (signature ${index}, argument '${arg.name}', position ${i})`
@@ -852,7 +852,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "echo",
         function(...messages): undefined {
-            gameConsole.log.raw((messages ?? []).join(" "));
+            gameConsole.log.raw(messages.join(" "));
         },
         game,
         {
@@ -1149,7 +1149,7 @@ export function setUpCommands(game: Game): void {
                     [false, "boolean"],
                     [5678n, "bigint"],
                     [Symbol.for("efgh"), "symbol"],
-                    [function sin(x: number): void {}, "function"],
+                    [function sin(x: number): void { /* lol ok */ }, "function"],
                     [{}, "object"]
                 ] as Array<[unknown, string]>
             ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
@@ -1308,13 +1308,12 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            if (!gameConsole.variables.has(name)) {
+            let cvar: ConVar<Stringable> | undefined;
+            if ((cvar = gameConsole.variables.get(name)) === undefined) {
                 return {
                     err: `CVar '${name}' doesn't exist`
                 };
             }
-
-            const cvar = gameConsole.variables.get(name)!;
 
             if (values.length === 0) {
                 values = ["true", "false"];

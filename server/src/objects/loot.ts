@@ -105,8 +105,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
             if (
-                moving
-                && object instanceof Obstacle
+                object instanceof Obstacle
                 && object.collidable
                 && object.hitbox.collidesWith(this.hitbox)
             ) {
@@ -174,7 +173,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             case ItemType.Throwable: {
                 const idString = definition.idString;
 
-                return inventory.items.getItem(idString) + 1 <= (inventory.backpack?.maxCapacity[idString] ?? 0);
+                return inventory.items.getItem(idString) + 1 <= (inventory.backpack.maxCapacity[idString] ?? 0);
             }
             case ItemType.Melee: {
                 return definition !== inventory.getWeapon(2)?.definition;
@@ -195,7 +194,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 return definition.level > threshold;
             }
             case ItemType.Backpack: {
-                return definition.level > (inventory.backpack?.level ?? 0);
+                return definition.level > inventory.backpack.level;
             }
             case ItemType.Scope: {
                 return !inventory.items.hasItem(definition.idString);
@@ -256,10 +255,10 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                         player.dirty.weapons = true;
                         player.setDirty();
 
-                        const wasReloading = player.action?.type === PlayerActions.Reload;
-                        if (wasReloading) {
-                            player.action!.cancel();
-                        }
+                        const action = player.action;
+
+                        const wasReloading = action?.type === PlayerActions.Reload;
+                        if (wasReloading) action.cancel();
 
                         player.inventory.upgradeToDual(i);
 
@@ -308,7 +307,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             case ItemType.Ammo:
             case ItemType.Throwable: {
                 const currentCount = inventory.items.getItem(idString);
-                const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
+                const maxCapacity = inventory.backpack.maxCapacity[idString] ?? 0;
 
                 const modifyItemCollections = (): void => {
                     if (currentCount + 1 <= maxCapacity) {
@@ -335,6 +334,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                     modifyItemCollections();
 
                     inventory.useItem(idString);
+                    // hope that `throwableItemMap` is sync'd
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
                 } else {
                     modifyItemCollections();
@@ -356,7 +357,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 break;
             }
             case ItemType.Backpack: {
-                if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
+                if (player.inventory.backpack.level > 0) createNewItem(player.inventory.backpack);
                 player.inventory.backpack = definition;
 
                 player.setDirty();
@@ -422,5 +423,5 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         };
     }
 
-    override damage(): void { }
+    override damage(): void { /* can't damage a loot item */ }
 }

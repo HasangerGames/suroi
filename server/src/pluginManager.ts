@@ -1,15 +1,15 @@
-import { Vector } from "../../common/src/utils/vector";
-import { Airdrop, Game } from "./game";
-import { Player } from "./objects/player";
-import { Config } from "./config";
-import { Logger } from "./utils/misc";
 import { EmoteDefinition } from "../../common/src/definitions/emotes";
 import { MapPingDefinition } from "../../common/src/definitions/mapPings";
-import { DamageParams } from "./objects/gameObject";
-import { Obstacle } from "./objects/obstacle";
-import { Building } from "./objects/building";
-import { Loot } from "./objects/loot";
 import { InputPacket } from "../../common/src/packets/inputPacket";
+import { Vector } from "../../common/src/utils/vector";
+import { Config } from "./config";
+import { Airdrop, Game } from "./game";
+import { Building } from "./objects/building";
+import { DamageParams } from "./objects/gameObject";
+import { Loot } from "./objects/loot";
+import { Obstacle } from "./objects/obstacle";
+import { Player } from "./objects/player";
+import { Logger } from "./utils/misc";
 
 interface PlayerDamageEvent extends DamageParams {
     player: Player
@@ -85,6 +85,9 @@ export abstract class GamePlugin {
         this.initListeners();
     }
 
+    /**
+     * Method responsible for adding any listeners regulating this plugin's behavior
+     */
     protected abstract initListeners(): void;
 
     on<E extends GameEvent>(eventType: E, cb: (data: GameEvents[E]) => void): void {

@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Graphics } from "pixi.js";
-import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants";
+import { GasState, ZIndexes } from "../../../../common/src/constants";
 import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";

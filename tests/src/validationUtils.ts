@@ -7,12 +7,7 @@ import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDef
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
-/*
-    `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
-    `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
-*/
-
-export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
+export function findDupes(collection: readonly string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
     const dupes: Record<string, number> = {};
     const set = new Set<string>();
     let foundDupes = false;
@@ -369,10 +364,10 @@ export const tester = (() => {
             value: unknown,
             otherParams: {
                 defaultValue: typeof value
-                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
+                equalityFunction?: (a: Exclude<typeof value, undefined>, b: typeof value) => boolean
             }
         ) => {
-            if ((value !== undefined) && (otherParams.equalityFunction ?? ((a, b) => a === b))(value!, otherParams.defaultValue)) {
+            if (value !== undefined && (otherParams.equalityFunction ?? ((a, b) => a === b))(value, otherParams.defaultValue)) {
                 return {
                     warnings: [
                         `This field is optional and has a default value (${safeString(otherParams.defaultValue)}); specifying its default value serves no purpose`
@@ -408,8 +403,8 @@ export const tester = (() => {
             value: unknown,
             otherParams: {
                 defaultValue: typeof value
-                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
-                validatorIfPresent: (val: NonNullable<typeof value>, baseErrorPath: string) => void
+                equalityFunction?: (a: Exclude<typeof value, undefined>, b: typeof value) => boolean
+                validatorIfPresent: (val: Exclude<typeof value, undefined>, baseErrorPath: string) => void
             },
             forwardTo,
             baseErrorPath
@@ -423,7 +418,7 @@ export const tester = (() => {
                     }
                 ) && value !== undefined
             ) {
-                otherParams.validatorIfPresent(value!, baseErrorPath);
+                otherParams.validatorIfPresent(value, baseErrorPath);
             }
         }
     ) as {
@@ -843,10 +838,9 @@ export const validators = Object.freeze({
             }
         }
 
-        if (definition.wearerAttributes) {
+        const wearerAttributes = definition.wearerAttributes;
+        if (wearerAttributes) {
             logger.indent("Validating wearer attributes", () => {
-                const wearerAttributes = definition.wearerAttributes!;
-
                 tester.assertNoPointlessValue({
                     obj: wearerAttributes,
                     field: "passive",
@@ -855,9 +849,10 @@ export const validators = Object.freeze({
                     baseErrorPath
                 });
 
-                if (wearerAttributes.passive) {
+                const passive = wearerAttributes.passive;
+                if (passive) {
                     logger.indent("Validating passive wearer attributes", () => {
-                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "passive"), wearerAttributes.passive!);
+                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "passive"), passive);
                     });
                 }
 
@@ -869,9 +864,10 @@ export const validators = Object.freeze({
                     baseErrorPath
                 });
 
-                if (wearerAttributes.active) {
+                const active = wearerAttributes.active;
+                if (active) {
                     logger.indent("Validating active wearer attributes", () => {
-                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "active"), wearerAttributes.active!);
+                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "active"), active);
                     });
                 }
 
@@ -883,10 +879,9 @@ export const validators = Object.freeze({
                     baseErrorPath
                 });
 
-                if (wearerAttributes.on) {
+                const on = wearerAttributes.on;
+                if (on) {
                     logger.indent("Validating on wearer attributes", () => {
-                        const on = wearerAttributes.on!;
-
                         tester.assertNoPointlessValue({
                             obj: on,
                             field: "damageDealt",
@@ -895,10 +890,11 @@ export const validators = Object.freeze({
                             baseErrorPath
                         });
 
-                        if (on.damageDealt) {
+                        const damageDealt = on.damageDealt;
+                        if (damageDealt) {
                             logger.indent("Validating on-damage wearer attributes", () => {
                                 tester.runTestOnArray(
-                                    on.damageDealt!,
+                                    damageDealt,
                                     (entry, errorPath) => {
                                         validateWearerAttributesInternal(errorPath, entry);
                                     },
@@ -915,10 +911,11 @@ export const validators = Object.freeze({
                             baseErrorPath
                         });
 
-                        if (on.kill) {
+                        const kill = on.kill;
+                        if (kill) {
                             logger.indent("Validating on-kill wearer attributes", () => {
                                 tester.runTestOnArray(
-                                    on.kill!,
+                                    kill,
                                     (entry, errorPath) => {
                                         validateWearerAttributesInternal(errorPath, entry);
                                     },
@@ -1066,8 +1063,8 @@ export const validators = Object.freeze({
         this.valueSpecifier(tester.createPath(baseErrorPath, "start"), animated.start, baseValidator);
         this.valueSpecifier(tester.createPath(baseErrorPath, "end"), animated.end, baseValidator);
 
-        (durationValidator ?? (() => {}))(tester.createPath(baseErrorPath, "duration"), animated.duration);
-        (easingValidator ?? (() => {}))(tester.createPath(baseErrorPath, "easing"), animated.easing);
+        (durationValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "duration"), animated.duration);
+        (easingValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "easing"), animated.easing);
     },
     syncedParticleSpawner(baseErrorPath: string, spawner: SyncedParticleSpawnerDefinition): void {
         tester.assertReferenceExists({
