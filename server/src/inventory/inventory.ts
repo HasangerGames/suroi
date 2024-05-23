@@ -8,7 +8,7 @@ import { Loots, type LootDefinition, type WeaponDefinition } from "../../../comm
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { Numeric } from "../../../common/src/utils/math";
-import { type Timeout } from "../../../common/src/utils/misc";
+import { ExtendedMap, type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Player } from "../objects/player";
@@ -65,19 +65,7 @@ export class Inventory {
      * cycled through. It'd be wasteful to re-instantiate them every time the user swaps
      * throwables, so we cache them here
      */
-    readonly throwableItemMap = (() => {
-        return new (class <K, V> extends Map<K, V> {
-            getAndSetIfAbsent(key: K, fallback: () => V): V {
-                // obviously safe
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return (
-                    this.has(key)
-                        ? this
-                        : this.set(key, fallback())
-                ).get(key)!;
-            }
-        })<ReferenceTo<ThrowableDefinition>, ThrowableItem>();
-    })();
+    readonly throwableItemMap = new ExtendedMap<ReferenceTo<ThrowableDefinition>, ThrowableItem>();
 
     /**
      * An internal array storing weapons
@@ -407,7 +395,7 @@ export class Inventory {
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
-            if (item instanceof GunItem && (definition as DualGunNarrowing).isDual) {
+            if (item instanceof GunItem && (definition as GunDefinition).isDual) {
                 this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
                 this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
             } else {
@@ -438,9 +426,9 @@ export class Inventory {
 
                     To solve this, we just ignore capacity limits when the player is dead.
                 */
-                const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral ?? this.owner.dead
+                const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral || this.owner.dead
                     ? 0
-                    : this.items.getItem(ammoType) - (this.backpack?.maxCapacity[ammoType] ?? 0);
+                    : this.items.getItem(ammoType) - (this.backpack.maxCapacity[ammoType] ?? 0);
 
                 if (overAmount > 0) {
                     this.items.decrementItem(ammoType, overAmount);
@@ -687,7 +675,7 @@ export class Inventory {
                         old.stopUse();
                     }
 
-                    const item = this.throwableItemMap.getAndSetIfAbsent(
+                    const item = this.throwableItemMap.getAndGetDefaultIfAbsent(
                         idString,
                         () => new ThrowableItem(definition, this.owner, this.items.getItem(idString))
                     );
@@ -705,7 +693,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
     // private readonly _listenerSet = new Set<(key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void>();
 
     constructor(entries?: ReadonlyArray<[ReferenceTo<ItemDef>, number]>) {
-        this._internal = new Map<ReferenceTo<ItemDef>, number>(entries);
+        this._internal = new Map(entries);
     }
 
     private _recordCache?: Record<ReferenceTo<ItemDef>, number>;
@@ -739,6 +727,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
         const old = this.getItem(key);
 
         this._internal.set(key, amount);
+        // warn for decimal amounts?
 
         if (amount !== old) {
             this._recordCache = undefined;

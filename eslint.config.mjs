@@ -39,16 +39,14 @@ export default tseslint.config(
             ["@stylistic/brace-style"]: ["warn", "1tbs", { allowSingleLine: true }],
             ["@stylistic/indent"]: ["warn", 4, { SwitchCase: 1 }],
             ["@stylistic/linebreak-style"]: ["warn", "unix"],
-            ["@stylistic/max-statements-per-line"]: "off",
             ["@stylistic/member-delimiter-style"]: ["warn", { singleline: { delimiter: "comma" }, multiline: { delimiter: "none" } }],
             ["@stylistic/quotes"]: ["warn", "double", { avoidEscape: true }],
             ["@stylistic/space-before-function-paren"]: ["warn", "never"],
-            // TODO revisit
-            ["@stylistic/type-generic-spacing"]: "off",
             ["@stylistic/no-multi-spaces"]: ["error", { ignoreEOLComments: true }],
 
             // @typescript-eslint
             ["@typescript-eslint/array-type"]: ["warn", { default: "array-simple" }],
+            ["@typescript-eslint/prefer-literal-enum-member"]: ["error", { allowBitwiseExpressions: true }],
             ["@typescript-eslint/ban-ts-comment"]: ["error", {
                 "ts-expect-error": "allow-with-description",
                 "ts-ignore": true,
@@ -56,10 +54,6 @@ export default tseslint.config(
                 "ts-check": false,
                 "minimumDescriptionLength": 5
             }],
-            /**
-             * This rule is just all-around annoying
-             */
-            ["@typescript-eslint/consistent-type-definitions"]: "off",
             ["@typescript-eslint/explicit-function-return-type"]: ["warn", {
                 allowExpressions: true,
                 allowTypedFunctionExpressions: true,
@@ -70,8 +64,47 @@ export default tseslint.config(
                 allowedNames: [],
                 allowIIFEs: false
             }],
-            // TODO revisit
+            ["@typescript-eslint/restrict-template-expressions"]: ["error", {
+                allowAny: true,
+                allowBoolean: true,
+                allowNullish: true,
+                allowNumber: true,
+                allowRegExp: true
+            }],
+            ["@typescript-eslint/prefer-readonly"]: "error",
+            ["@typescript-eslint/no-unused-vars"]: ["error", {
+                vars: "all",
+                args: "none"
+            }],
+
+            // #region disabled rules
+
+            /**
+             * lol no
+             */
+            ["@stylistic/max-statements-per-line"]: "off",
+
+            /**
+             * Literal skill issue filter
+             */
+            ["no-cond-assign"]: "off",
+
+            /**
+             * Literal skill issue filter
+             */
+            ["no-return-assign"]: "off",
+
+            /**
+             * Rule is a bit too aggressive, and writing `void foo()`
+             * conflicts with `@typescript-eslint/no-meaningless-void-operator`
+             */
             ["@typescript-eslint/no-confusing-void-expression"]: "off",
+
+            /**
+             * This rule is just all-around annoying
+             */
+            ["@typescript-eslint/consistent-type-definitions"]: "off",
+
             /**
              * `this`-aliasing is useful to use a `this` context inside a construct which creates its own `this` binding.
              * (and thus overrides the surrounding one)
@@ -80,26 +113,12 @@ export default tseslint.config(
              * `function` inside a class instance
              */
             ["@typescript-eslint/no-this-alias"]: "off",
-            ["@typescript-eslint/prefer-literal-enum-member"]: ["error", { allowBitwiseExpressions: true }],
+
             /**
              * ESLint also kinda mega sucks at detecting when this rule is actually appropriate, and sometimes
              * we want to conflate `false` and `undefined`/`null`.
              */
             ["@typescript-eslint/prefer-nullish-coalescing"]: "off",
-            ["@typescript-eslint/restrict-template-expressions"]: ["error", {
-                allowAny: true,
-                allowBoolean: true,
-                allowNullish: true,
-                allowNumber: true,
-                allowRegExp: true
-            }],
-            // TODO revisit
-            ["@typescript-eslint/use-unknown-in-catch-callback-variable"]: "off",
-            ["@typescript-eslint/prefer-readonly"]: "error",
-            ["@typescript-eslint/no-unused-vars"]: ["error", {
-                vars: "all",
-                args: "none"
-            }],
 
             /**
              * Misbehaves with things like `void (async() => {})()`
@@ -118,6 +137,8 @@ export default tseslint.config(
              *  sanity checks, to provide a fallback, or to detect an abnormal and exceptional circumstance
              */
             ["@typescript-eslint/no-unnecessary-condition"]: "off"
+
+            // #endregion
         }
     },
     {

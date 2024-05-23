@@ -130,7 +130,7 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 let name = sourceParts.at(-1)!;
 
                 if (options.removeExtensions) {
-                    name = name.split(".").slice(0, -1).join();
+                    name = name.split(".").slice(0, -1).join("");
                 }
 
                 json.frames[name] = {

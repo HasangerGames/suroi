@@ -1,4 +1,4 @@
-import { type Result, type ResultRes } from "../../../../../common/src/utils/misc";
+import { ExtendedMap, type Result, type ResultRes } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
 import { stringify } from "../misc";
 import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
@@ -300,26 +300,7 @@ export class ConsoleVariables {
         return fn;
     })();
 
-    private readonly _changeListeners = new (class <K, V> extends Map<K, V> {
-        // note: maybe extract this anon class to… an actual class
-        // if this sort of operation becomes too common lol
-        /**
-         * Retrieves the value at a given key, placing (and returning) a user-defined
-         * default value if no mapping for the key exists
-         * @param key The key to retrieve from
-         * @param fallback A value to place at the given key if it currently not associated with a value
-         * @returns The value emplaced at key `key`; either the one that was already there or `fallback` if
-         * none was present
-         */
-        getAndSetIfAbsent(key: K, fallback: V): V {
-            // pretty obvious why this is okay
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            if (this.has(key)) return this.get(key)!;
-
-            this.set(key, fallback);
-            return fallback;
-        }
-    })<
+    private readonly _changeListeners = new ExtendedMap<
         keyof CVarTypeMapping,
         Array<CVarChangeListener<Stringable>>
     >();

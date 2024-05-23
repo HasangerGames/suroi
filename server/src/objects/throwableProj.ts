@@ -164,7 +164,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             if (isObstacle) {
                 if (collidingWithObject) {
                     let isAbove = false;
-                    // eslint-disable-next-line no-cond-assign
                     if (isAbove = canFlyOver(object)) {
                         this._currentlyAbove.add(object);
                     } else {

@@ -552,9 +552,10 @@ export class UIManager {
             const activityChanged = container.hasClass(ClassNames.IsActive) !== isActive;
 
             if (weapon) {
-                const isGun = "ammoType" in weapon.definition;
+                const definition = weapon.definition;
+                const isGun = "ammoType" in definition;
                 const color = isGun
-                    ? Ammos.fromString((weapon.definition as GunDefinition).ammoType).characteristicColor
+                    ? Ammos.fromString((definition as GunDefinition).ammoType).characteristicColor
                     : { hue: 0, saturation: 0, lightness: 0 };
 
                 if (!hadItem) container.addClass(ClassNames.HasItem);
@@ -580,6 +581,8 @@ export class UIManager {
                 const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
+                    // FIXME broken lol (sets background color of rectangle containing image instead of the svg's background color)
+                    // itemImage.css("background-color", isFists && this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint ? GHILLIE_TINT.toHex() : "");
                     itemImage.attr("src", newSrc);
                 }
 
@@ -843,17 +846,21 @@ export class UIManager {
                             case KillfeedEventType.FinallyKilled:
                                 switch (attackerId) {
                                     case undefined:
-                                        // this can happen if the player is knocked out by a non-player entity (like gas or airdrop)
-                                        // if their team is then wiped, then no one "finally" killed them, they just… finally died
+                                        /*
+                                            this can happen if the player is knocked out by a non-player
+                                            entity (like gas or airdrop) if their team is then wiped,
+                                            then no one "finally" killed them, they just… finally died
+                                        */
                                         killMessage = `${victimText} finally died`;
 
                                         break outer;
                                     case victimId:
                                         /*
-                                            usually, a case where attacker and victim are the same would be counted under the "suicide"
-                                            event type, but there was no easy way to route the event through the "suicide" type whilst
-                                            having it retain the "finally killed" part; this is the best option until someone comes up
-                                            with another
+                                            usually, a case where attacker and victim are the same would be
+                                            counted under the "suicide" event type, but there was no easy
+                                            way to route the event through the "suicide" type whilst having
+                                            it retain the "finally killed" part; this is the best option
+                                            until someone comes up with another
                                         */
                                         killMessage = `${victimText} finally ended themselves`;
 
@@ -878,8 +885,9 @@ export class UIManager {
 
                         const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
-                         * English being complicated means that this will sometimes return bad results (ex: "hour", "NSA", "one" and "university")
-                         * but to be honest, short of downloading a library off of somewhere, this'll have to do
+                         * English being complicated means that this will sometimes return bad results
+                         * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
+                         * a library off of somewhere, this'll have to do
                          */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
                         const weaponNameText = weaponPresent ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}` : "";

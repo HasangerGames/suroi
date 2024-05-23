@@ -7,6 +7,7 @@ import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { Events } from "../pluginManager";
 import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
@@ -74,7 +75,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     damageCeiling(damage = 1): void {
         if (this._wallsToDestroy === Infinity || this.dead) return;
 
-        this.game.pluginManager.emit("buildingCeilingDamage", {
+        this.game.pluginManager.emit(Events.Building_CeilingDamage, {
             building: this,
             damage
         });
@@ -84,7 +85,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
             this.setPartialDirty();
-            this.game.pluginManager.emit("buildingCeilingDestroy", this);
+            this.game.pluginManager.emit(Events.Building_CeilingDestroy, this);
         }
     }
 

@@ -46,7 +46,7 @@ async function loadSpritesheet(data: SpritesheetData, renderer: Renderer): Promi
 
     console.log(`Loading spritesheet ${location.origin}/${image}`);
 
-    return await new Promise<void>(resolve => {
+    await new Promise<void>(resolve => {
         void Assets.load<Texture>(image).then(texture => {
             void renderer.prepare.upload(texture);
             void new Spritesheet(texture, data).parse().then(sheetTextures => {

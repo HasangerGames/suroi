@@ -423,6 +423,8 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
 
     constructor(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>) {
         super();
+        // yes? no? maybe?
+        // if (hitboxes.length === 0) throw new class StupidityError extends Error {} ("you're stupid");
         this.hitboxes = hitboxes;
     }
 

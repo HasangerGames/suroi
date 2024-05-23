@@ -180,7 +180,8 @@ export class SoundManager {
                 {
                     url: path,
                     preload: true,
-                    loaded(error) {
+                    loaded(error: Error | null) {
+                        // despite what the pixi typings say, logging `error` shows that it can be null
                         if (error !== null && !called) {
                             called = true;
                             console.warn(`Failed to load sound '${alias}' (path '${path}')\nError object provided below`);

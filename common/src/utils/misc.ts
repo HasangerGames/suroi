@@ -1,3 +1,17 @@
+declare global {
+    // taken from https://github.com/microsoft/TypeScript/issues/45602#issuecomment-934427206
+    interface Promise<T = void> {
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?: ((reason: unknown) => TResult | PromiseLike<TResult>) | undefined | null,
+        ): Promise<T | TResult>
+    }
+}
+
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
@@ -46,8 +60,8 @@ export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPar
 
     const [source, ...rest] = sources;
 
-    type StringKeys = (keyof T & string);
-    type SymbolKeys = (keyof T & symbol);
+    type StringKeys = keyof T & string;
+    type SymbolKeys = keyof T & symbol;
 
     for (
         const key of (
@@ -359,14 +373,12 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
     enqueue(value: T): void {
         const node = { value };
 
-        if (!this._head) {
+        if (!this._tail) {
             this._tail = this._head = node;
             return;
         }
 
-        // _tail's nullability is the same as _head's
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this._tail = this._tail!.next = node;
+        this._tail = this._tail.next = node;
     }
 
     /**
@@ -378,7 +390,6 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
         if (!this._head) throw new Error("Empty queue");
 
         const value = this._head.value;
-
         (this._head = this._head.next) ?? delete this._tail;
 
         return value;
@@ -438,5 +449,70 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
      */
     [cloneDeepSymbol](): Queue<T> {
         return this._clone(true);
+    }
+}
+
+// top 10 naming
+export class ExtendedMap<K, V> extends Map<K, V> {
+    private _get(key: K): V {
+        // it's up to callers to verify that the key is valid
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return super.get(key)!;
+    }
+
+    /**
+     * Retrieves the value at a given key, placing (and returning) a user-defined
+     * default value if no mapping for the key exists
+     * @param key      The key to retrieve from
+     * @param fallback A value to place at the given key if it currently not associated with a value
+     * @returns The value emplaced at key `key`; either the one that was already there or `fallback` if
+     *          none was present
+     */
+    getAndSetIfAbsent(key: K, fallback: V): V {
+        // pretty obvious why this is okay
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (this.has(key)) return this.get(key)!;
+
+        this.set(key, fallback);
+        return fallback;
+    }
+
+    /**
+     * Retrieves the value at a given key, placing (and returning) a user-defined
+     * default value if no mapping for the key exists
+     * @param key      The key to retrieve from
+     * @param fallback A function providing a value to place at the given key if it currently not
+     *                 associated with a value
+     * @returns The value emplaced at key `key`; either the one that was already there
+     *          or the result of `fallback` if none was present
+     */
+    getAndGetDefaultIfAbsent(key: K, fallback: () => V): V {
+        // pretty obvious why this is okay
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (this.has(key)) return this.get(key)!;
+
+        const value = fallback();
+        this.set(key, value);
+        return value;
+    }
+
+    ifPresent(key: K, callback: (obstacle: V) => void): void {
+        this.ifPresentOrElse(key, callback, () => { /* no-op */ });
+    }
+
+    ifPresentOrElse(key: K, callback: (obstacle: V) => void, ifAbsent: () => void): void {
+        const mappingPresent = super.has(key);
+
+        if (!mappingPresent) {
+            return ifAbsent();
+        }
+
+        callback(this._get(key));
+    }
+
+    mapIfPresent<U = V>(key: K, mapper: (value: V) => U): U | undefined {
+        if (!super.has(key)) return undefined;
+
+        return mapper(this._get(key));
     }
 }

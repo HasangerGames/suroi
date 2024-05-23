@@ -27,12 +27,14 @@ class PacketRegister {
     }
 
     private _register(packet: typeof Packet & (new () => Packet)): void {
-        if (this.typeToId[packet.name] !== undefined) {
+        let name: string;
+        if ((name = packet.name) in this.typeToId) {
             console.warn(`Packet ${packet.name} registered multiple times`);
             return;
         }
+
         const id = this._nextTypeId++;
-        this.typeToId[packet.name] = id;
+        this.typeToId[name] = id;
         this.idToCtor[id] = packet;
     }
 }
@@ -95,10 +97,12 @@ export class PacketStream {
     }
 
     private _serializePacket(packet: Packet, register: PacketRegister): void {
-        const type = register.typeToId[packet.constructor.name];
-        if (type === undefined) {
-            throw new Error(`Unknown packet type: ${packet.constructor.name}, did you forget to register it?`);
+        const name = packet.constructor.name;
+        if (!(name in register.typeToId)) {
+            throw new Error(`Unknown packet type: ${name}, did you forget to register it?`);
         }
+
+        const type = register.typeToId[name];
         this.stream.writeBits(type, register.bits);
         packet.serialize(this.stream);
         this.stream.writeAlignToNextByte();

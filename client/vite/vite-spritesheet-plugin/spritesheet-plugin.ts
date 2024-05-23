@@ -129,7 +129,7 @@ export function spritesheet(): Plugin[] {
                             if (module !== undefined) void server.reloadModule(module);
                             const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
                             if (module2 !== undefined) void server.reloadModule(module2);
-                        }).catch(console.error);
+                        }).catch(e => console.error(e));
                     }, 500);
                 }
 
@@ -146,9 +146,10 @@ export function spritesheet(): Plugin[] {
                 async function buildSheets(): Promise<void> {
                     atlases = await buildSpritesheets();
 
+                    const { low, high } = exportedAtlases;
                     for (const atlasId in atlases) {
-                        exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
-                        exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
+                        high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
+                        low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
                     }
 
                     files.clear();

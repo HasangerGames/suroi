@@ -11,6 +11,7 @@ import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
+import { Events } from "../pluginManager";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -42,7 +43,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      */
     private static readonly _dragConstant = Math.exp(-3.69 / Config.tps);
 
-    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
+    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel = 0.003) {
         super(game, position);
 
         this.definition = Loots.reify(definition);
@@ -52,7 +53,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
         }
 
-        this.push(randomRotation(), 0.003);
+        this.push(randomRotation(), pushVel);
 
         this.game.addTimeout(() => {
             this.isNew = false;
@@ -207,9 +208,14 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
     interact(player: Player, noPickup = false): void {
         if (this.dead) return;
-        const createNewItem = (type: LootDefinition = this.definition): void => {
+        const createNewItem = (
+            { type, count }: {
+                readonly type: LootDefinition
+                readonly count: number
+            } = { type: this.definition, count: this._count }
+        ): void => {
             this.game
-                .addLoot(type, this.position, this._count)
+                .addLoot(type, this.position, count)
                 .push(player.rotation + Math.PI, 0.0007);
         };
 
@@ -345,11 +351,11 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             case ItemType.Armor: {
                 switch (definition.armorType) {
                     case ArmorType.Helmet:
-                        if (player.inventory.helmet) createNewItem(player.inventory.helmet);
+                        if (player.inventory.helmet) createNewItem({ type: player.inventory.helmet, count: 1 });
                         player.inventory.helmet = definition;
                         break;
                     case ArmorType.Vest:
-                        if (player.inventory.vest) createNewItem(player.inventory.vest);
+                        if (player.inventory.vest) createNewItem({ type: player.inventory.vest, count: 1 });
                         player.inventory.vest = definition;
                 }
 
@@ -357,7 +363,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 break;
             }
             case ItemType.Backpack: {
-                if (player.inventory.backpack.level > 0) createNewItem(player.inventory.backpack);
+                if (player.inventory.backpack.level > 0) createNewItem({ type: player.inventory.backpack, count: 1 });
                 player.inventory.backpack = definition;
 
                 player.setDirty();
@@ -373,7 +379,11 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 break;
             }
             case ItemType.Skin: {
-                createNewItem(player.loadout.skin);
+                if (player.loadout.skin === definition) {
+                    break;
+                }
+
+                createNewItem({ type: player.loadout.skin, count: 1 });
                 player.loadout.skin = definition;
 
                 player.setDirty();
@@ -393,7 +403,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         packet.item = this.definition;
         player.sendPacket(packet);
 
-        this.game.pluginManager.emit("lootInteract", {
+        this.game.pluginManager.emit(Events.Loot_Interact, {
             loot: this,
             player
         });

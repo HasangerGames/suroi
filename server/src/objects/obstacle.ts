@@ -10,6 +10,7 @@ import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
+import { Events } from "../pluginManager";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { BaseGameObject, DamageParams } from "./gameObject";
@@ -119,7 +120,6 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             }
         }
 
-        /* eslint-disable no-cond-assign */
         // noinspection JSAssignmentUsedAsCondition
         if (this.isDoor = (definition.role === ObstacleSpecialRoles.Door)) {
             const hitboxes = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
@@ -157,7 +157,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             return;
         }
 
-        this.game.pluginManager.emit("obstacleDamage", {
+        this.game.pluginManager.emit(Events.Obstacle_Damage, {
             obstacle: this,
             ...params
         });
@@ -169,7 +169,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             this.health = 0;
             this.dead = true;
 
-            this.game.pluginManager.emit("obstacleDestroy", {
+            this.game.pluginManager.emit(Events.Obstacle_Destroy, {
                 obstacle: this,
                 source,
                 weaponUsed,
@@ -263,7 +263,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     interact(player?: Player): void {
         if (!this.canInteract(player)) return;
 
-        this.game.pluginManager.emit("obstacleInteract", {
+        this.game.pluginManager.emit(Events.Obstacle_Interact, {
             obstacle: this,
             player
         });

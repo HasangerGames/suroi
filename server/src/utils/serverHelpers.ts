@@ -29,7 +29,5 @@ export function forbidden(resp: HttpResponse): void {
 export const textDecoder = new TextDecoder();
 
 export function getIP(res: HttpResponse, req: HttpRequest): string {
-    return Config.ipHeader
-        ? req.getHeader(Config.ipHeader) ?? textDecoder.decode(res.getRemoteAddressAsText())
-        : textDecoder.decode(res.getRemoteAddressAsText());
+    return (Config.ipHeader && req.getHeader(Config.ipHeader)) || textDecoder.decode(res.getRemoteAddressAsText());
 }

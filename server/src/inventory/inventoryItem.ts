@@ -1,6 +1,7 @@
 import { Loots, type LootDefinition, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type ItemType, type ReifiableDef, type WearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
+import { Events } from "../pluginManager";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
@@ -12,7 +13,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      */
     readonly category: ItemType;
     /**
-     * The `ObjectType` instance associated with this item
+     * The `WeaponDefinition` instance associated with this item
      */
     readonly definition: Def;
     /**
@@ -20,7 +21,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      */
     readonly owner: Player;
 
-    readonly _modifiers = {
+    private readonly _modifiers = {
         // Multiplicative
         maxHealth: 1,
         maxAdrenaline: 1,
@@ -30,10 +31,25 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         minAdrenaline: 0
     };
 
+    /**
+     * Returns a clone
+     */
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    get modifiers() { return { ...this._modifiers }; }
+
     private _isActive = false;
 
     get isActive(): boolean { return this._isActive; }
     set isActive(isActive: boolean) {
+        if (this._isActive !== isActive) {
+            this.owner.game.pluginManager.emit(
+                isActive
+                    ? Events.InvItem_Equip
+                    : Events.InvItem_Unequip,
+                this
+            );
+        }
+
         this._isActive = isActive;
         this.refreshModifiers();
     }
@@ -61,6 +77,9 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         };
     })();
 
+    /**
+     * Returns referentially equal to internal
+     */
     // shut the up
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     get stats() { return this._stats; }
@@ -113,7 +132,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         if (!definition.wearerAttributes) return;
 
         const { active, passive, on } = definition.wearerAttributes;
-        const newModifiers: this["_modifiers"] = {
+        const newModifiers: this["modifiers"] = {
             maxHealth: 1,
             maxAdrenaline: 1,
             baseSpeed: 1,
@@ -148,10 +167,32 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             }
         }
 
-        this._modifiers.maxHealth = newModifiers.maxHealth;
-        this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
-        this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
-        this._modifiers.baseSpeed = newModifiers.baseSpeed;
+        const diff = {
+            maxHealth: this._modifiers.maxHealth !== newModifiers.maxHealth,
+            maxAdrenaline: this._modifiers.maxAdrenaline !== newModifiers.maxAdrenaline,
+            minAdrenaline: this._modifiers.minAdrenaline !== newModifiers.minAdrenaline,
+            baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed
+        };
+
+        if (Object.values(diff).some(v => v)) {
+            const old = this.modifiers;
+
+            this._modifiers.maxHealth = newModifiers.maxHealth;
+            this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
+            this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
+            this._modifiers.baseSpeed = newModifiers.baseSpeed;
+
+            this.owner.game.pluginManager.emit(
+                Events.InvItem_ModifiersChanged,
+                {
+                    item: this,
+                    oldMods: old,
+                    newMods: this.modifiers,
+                    diff
+                }
+            );
+        }
+
         this.owner.updateAndApplyModifiers();
     }
 

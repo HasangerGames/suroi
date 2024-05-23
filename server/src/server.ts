@@ -80,8 +80,10 @@ if (isMainThread) {
             if (punishment.punishmentType === "warning") {
                 const protection = Config.protection;
                 if (protection?.punishments?.url) {
-                    fetch(`${protection.punishments.url}/punishments/${ip}`, { headers: { "api-key": protection.punishments.password } })
-                        .catch(e => console.error("Error acknowledging warning. Details: ", e));
+                    fetch(
+                        `${protection.punishments.url}/punishments/${ip}`,
+                        { headers: { "api-key": protection.punishments.password } }
+                    ).catch(e => console.error("Error acknowledging warning. Details: ", e));
                 }
                 removePunishment(ip);
             }
@@ -100,7 +102,7 @@ if (isMainThread) {
                     response = { success: false };
                 }
             } else {
-                response = await findGame();
+                response = findGame();
             }
 
             if (response.success) {

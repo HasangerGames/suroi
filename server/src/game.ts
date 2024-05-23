@@ -15,7 +15,7 @@ import { Packet } from "../../common/src/packets/packet";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
-import type { MapPingSerialization } from "../../common/src/packets/updatePacket";
+import { type MapPingSerialization } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
@@ -29,7 +29,7 @@ import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage 
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
-import { Map } from "./map";
+import { GameMap } from "./map";
 import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
@@ -41,7 +41,7 @@ import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
-import { PluginManager } from "./pluginManager";
+import { Events, PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
@@ -49,19 +49,19 @@ import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 
-export class Game {
+export class Game implements GameData {
     readonly _id: number;
     get id(): number { return this._id; }
 
     server: TemplatedApp;
 
     // string = ip, number = expire time
-    readonly allowedIPs = new globalThis.Map<string, number>();
+    readonly allowedIPs = new Map<string, number>();
 
     readonly simultaneousConnections: Record<string, number> = {};
     joinAttempts: Record<string, number> = {};
 
-    readonly map: Map;
+    readonly map: GameMap;
     readonly gas: Gas;
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
@@ -91,7 +91,7 @@ export class Game {
 
     readonly teamMode: boolean;
 
-    readonly teams = new (class <T> extends Set<T> {
+    readonly teams = new (class SetArray<T> extends Set<T> {
         private _valueCache?: T[];
         get valueArray(): T[] {
             return this._valueCache ??= [...super.values()];
@@ -166,11 +166,18 @@ export class Game {
     }
 
     private _started = false;
+
+    // #region GameData interface members
+
+    startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
     allowJoin = false;
     over = false;
     stopped = false;
+    get aliveCount(): number {
+        return this.livingPlayers.size;
+    }
 
-    startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
+    // #endregion
 
     startTimeout?: Timeout;
 
@@ -189,6 +196,17 @@ export class Game {
     get dt(): number { return this._dt; }
 
     tickTimes: number[] = [];
+
+    private readonly _idAllocator = new IDAllocator(OBJECT_ID_BITS);
+
+    /**
+     * **Warning**: This is a getter _with side effects_! Make
+     * sure to either use the id returned by this getter or
+     * to return it.
+     */
+    get nextObjectID(): number {
+        return this._idAllocator.takeNext();
+    }
 
     constructor() {
         this._id = (workerData as WorkerInitData).id;
@@ -362,13 +380,13 @@ export class Game {
 
         const map = Maps[Config.mapName];
         this.grid = new Grid(this, map.width, map.height);
-        this.map = new Map(this, Config.mapName);
+        this.map = new GameMap(this, Config.mapName);
 
         this.gas = new Gas(this);
 
         this.setGameData({ allowJoin: true });
 
-        this.pluginManager.emit("gameCreated", this);
+        this.pluginManager.emit(Events.Game_Created, this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -504,8 +522,6 @@ export class Game {
             player.secondUpdate();
         }
 
-        this.pluginManager.emit("gameTick", this);
-
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
             if (!player.joined) continue;
@@ -545,10 +561,10 @@ export class Game {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
-                this.pluginManager.emit("playerWin", player);
+                this.pluginManager.emit(Events.Player_Win, player);
             }
 
-            this.pluginManager.emit("gameEnd", this);
+            this.pluginManager.emit(Events.Game_End, this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -571,13 +587,18 @@ export class Game {
             this.tickTimes = [];
         }
 
+        this.pluginManager.emit(Events.Game_Tick, this);
+
         if (!this.stopped) {
             setTimeout(this.tick.bind(this), 1000 / Config.tps);
         }
     }
 
-    setGameData(data: Partial<GameData>): void {
-        for (const [key, value] of Object.entries(data) as Array<[keyof this, this[keyof this]]>) this[key] = value;
+    setGameData(data: Partial<Omit<GameData, "aliveCount">>): void {
+        for (const [key, value] of Object.entries(data)) {
+            // HACK this is kinda really fkin dumb, i dunno why this isn't working
+            this[key as keyof typeof data] = value as never;
+        }
         this.updateGameData(data);
     }
 
@@ -721,7 +742,7 @@ export class Game {
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, team);
-        this.pluginManager.emit("playerConnect", player);
+        this.pluginManager.emit(Events.Player_Connect, player);
         return player;
     }
 
@@ -791,7 +812,7 @@ export class Game {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
-        this.pluginManager.emit("playerJoin", player);
+        this.pluginManager.emit(Events.Player_Join, player);
     }
 
     removePlayer(player: Player): void {
@@ -808,7 +829,12 @@ export class Game {
 
             if (this.teamMode) {
                 player.teamWipe();
-                player.team?.removePlayer(player);
+                const team = player.team;
+                if (team) {
+                    team.removePlayer(player);
+
+                    if (!team.players.length) this.teams.delete(team);
+                }
                 player.beingRevivedBy?.action?.cancel();
             }
         } else {
@@ -834,7 +860,7 @@ export class Game {
         try {
             player.socket.close();
         } catch (e) { /* not a really big deal if we can't close the socket */ }
-        this.pluginManager.emit("playerDisconnect", player);
+        this.pluginManager.emit(Events.Player_Disconnect, player);
     }
 
     /**
@@ -845,16 +871,17 @@ export class Game {
      * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
      * @returns The created loot object
      */
-    addLoot(definition: ReifiableDef<LootDefinition>, position: Vector, count?: number): Loot {
+    addLoot(definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel?: number): Loot {
         const loot = new Loot(
             this,
             definition,
             position,
-            count
+            count,
+            pushVel
         );
 
         this.grid.addObject(loot);
-        this.pluginManager.emit("lootGenerated", loot);
+        this.pluginManager.emit(Events.Loot_Generated, loot);
         return loot;
     }
 
@@ -962,7 +989,7 @@ export class Game {
      */
     removeObject(object: GameObject): void {
         this.grid.removeObject(object);
-        this.idAllocator.give(object.id);
+        this._idAllocator.give(object.id);
         this.updateObjects = true;
     }
 
@@ -1037,7 +1064,7 @@ export class Game {
 
         const airdrop = { position, type: crateDef };
 
-        this.pluginManager.emit("airdropSummoned", airdrop);
+        this.pluginManager.emit(Events.Airdrop_Summoned, airdrop);
 
         this.airdrops.push(airdrop);
 
@@ -1051,16 +1078,6 @@ export class Game {
                 position
             });
         }, GameConstants.airdrop.flyTime);
-    }
-
-    get aliveCount(): number {
-        return this.livingPlayers.size;
-    }
-
-    idAllocator = new IDAllocator(OBJECT_ID_BITS);
-
-    get nextObjectID(): number {
-        return this.idAllocator.takeNext();
     }
 }
 

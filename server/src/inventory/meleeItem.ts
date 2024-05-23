@@ -59,17 +59,16 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
                 // Damage the closest object
 
-                const damagedObjects: CollidableGameObject[] = [];
-
-                for (const object of owner.game.grid.intersectsHitbox(hitbox)) {
-                    if (!object.dead && object !== owner && object.damageable) {
-                        if (object.hitbox && hitbox.collidesWith(object.hitbox)) {
-                            damagedObjects.push(object as CollidableGameObject);
-                        }
-                    }
-                }
-
-                damagedObjects.sort((a: CollidableGameObject, b: CollidableGameObject): number => {
+                const damagedObjects: readonly CollidableGameObject[] = (
+                    [...owner.game.grid.intersectsHitbox(hitbox)]
+                        .filter(
+                            object => !object.dead
+                            && object !== owner
+                            && object.damageable
+                            && object.hitbox
+                            && hitbox.collidesWith(object.hitbox)
+                        ) as CollidableGameObject[]
+                ).sort((a, b) => {
                     if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
                     if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 

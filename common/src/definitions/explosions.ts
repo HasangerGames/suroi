@@ -190,8 +190,6 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
         apply(
             "explosion_factory",
             {
-                idString: "large_refinery_barrel_explosion",
-                name: "Large Refinery Barrel",
                 damage: 10000,
                 obstacleMultiplier: 3,
                 radius: {

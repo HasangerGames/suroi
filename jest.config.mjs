@@ -1,8 +1,6 @@
 // @ts-check
 
-import jest from "jest";
-
-/** @type {jest.Config} */
+/** @type {import("jest").Config} */
 const config = {
     projects: [
         {

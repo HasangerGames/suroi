@@ -5,7 +5,7 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { GunItem } from "../inventory/gunItem";
 import { Player } from "../objects/player";
-import { GamePlugin } from "../pluginManager";
+import { Events, GamePlugin } from "../pluginManager";
 
 const selectableGuns = Guns.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
 const selectableMelees = Melees.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
@@ -16,9 +16,7 @@ const selectableThrowables = Throwables.definitions.filter(g => !g.killstreak &&
  */
 export class WeaponSwapPlugin extends GamePlugin {
     protected override initListeners(): void {
-        this.on("playerKill", event => {
-            const { source } = event;
-
+        this.on(Events.Player_Death, ({ source }) => {
             if (!(source instanceof Player)) return;
 
             const inventory = source.inventory;

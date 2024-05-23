@@ -130,8 +130,8 @@ export class BaseBullet {
         // Sort by closest to initial position
         collisions.sort(
             (a, b) =>
-                Geometry.distanceSquared(a.intersection?.point, this.initialPosition)
-                - Geometry.distanceSquared(b.intersection?.point, this.initialPosition)
+                Geometry.distanceSquared(a.intersection.point, this.initialPosition)
+                - Geometry.distanceSquared(b.intersection.point, this.initialPosition)
         );
 
         return collisions;

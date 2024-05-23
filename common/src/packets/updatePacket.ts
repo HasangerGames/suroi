@@ -155,7 +155,6 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 }
 
 function deserializePlayerData(stream: SuroiBitStream): PlayerData {
-    /* eslint-disable no-cond-assign */
     const dirty = {} as PlayerData["dirty"];
     const inventory = {} as PlayerData["inventory"];
     const data = { dirty, inventory } as PlayerData;

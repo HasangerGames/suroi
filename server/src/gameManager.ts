@@ -11,10 +11,9 @@ export interface WorkerInitData {
 }
 
 export class GameContainer {
-    id: number;
-    worker: Worker;
+    readonly worker: Worker;
 
-    data: GameData = {
+    private _data: GameData = {
         aliveCount: 0,
         allowJoin: false,
         over: false,
@@ -22,18 +21,22 @@ export class GameContainer {
         startedTime: -1
     };
 
-    ipPromiseMap = new Map<string, Array<() => void>>();
+    get data(): GameData { return this._data; }
 
-    constructor(id: number) {
-        this.id = id;
-        // @ts-expect-error no typings for this
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const isTSNode = process[Symbol.for("ts-node.register.instance")];
-        this.worker = new Worker(path.resolve(__dirname, `game.${isTSNode ? "ts" : "js"}`), { workerData: { id, maxTeamSize } });
-        this.worker.on("message", (message: WorkerMessage): void => {
+    private readonly _ipPromiseMap = new Map<string, Array<() => void>>();
+
+    constructor(readonly id: number) {
+        (
+            this.worker = new Worker(
+                //                               @ts-expect-error No typings available for this
+                //                              ______________________^^^^______________________
+                path.resolve(__dirname, `game.${process[Symbol.for("ts-node.register.instance")] ? "ts" : "js"}`),
+                { workerData: { id, maxTeamSize } satisfies WorkerInitData }
+            )
+        ).on("message", (message: WorkerMessage): void => {
             switch (message.type) {
                 case WorkerMessages.UpdateGameData: {
-                    this.data = { ...this.data, ...message.data };
+                    this._data = { ...this._data, ...message.data };
 
                     if (message.data.allowJoin === true) { // This means the game was just created
                         creatingID = -1;
@@ -51,10 +54,10 @@ export class GameContainer {
                     break;
                 }
                 case WorkerMessages.IPAllowed: {
-                    const promises = this.ipPromiseMap.get(message.ip);
+                    const promises = this._ipPromiseMap.get(message.ip);
                     if (!promises) break;
                     for (const resolve of promises) resolve();
-                    this.ipPromiseMap.delete(message.ip);
+                    this._ipPromiseMap.delete(message.ip);
                     break;
                 }
             }
@@ -63,13 +66,13 @@ export class GameContainer {
 
     async allowIP(ip: string): Promise<void> {
         return await new Promise(resolve => {
-            const promises = this.ipPromiseMap.get(ip);
+            const promises = this._ipPromiseMap.get(ip);
             if (promises) {
                 promises.push(resolve);
             } else {
                 this.worker.postMessage({ type: WorkerMessages.AllowIP, ip });
 
-                this.ipPromiseMap.set(ip, [resolve]);
+                this._ipPromiseMap.set(ip, [resolve]);
             }
         });
     }
@@ -84,15 +87,15 @@ export enum WorkerMessages {
 
 export type WorkerMessage =
     {
-        type: WorkerMessages.AllowIP | WorkerMessages.IPAllowed
-        ip: string
+        readonly type: WorkerMessages.AllowIP | WorkerMessages.IPAllowed
+        readonly ip: string
     } |
     {
-        type: WorkerMessages.UpdateGameData
-        data: Partial<GameData>
+        readonly type: WorkerMessages.UpdateGameData
+        readonly data: Partial<GameData>
     } |
     {
-        type: WorkerMessages.CreateNewGame
+        readonly type: WorkerMessages.CreateNewGame
     };
 
 export interface GameData {
@@ -103,7 +106,7 @@ export interface GameData {
     startedTime: number
 }
 
-export async function findGame(): Promise<GetGameResponse> {
+export function findGame(): GetGameResponse {
     for (let gameID = 0; gameID < Config.maxGames; gameID++) {
         const game = games[gameID];
         if (canJoin(game) && game?.data.allowJoin) {
@@ -121,11 +124,9 @@ export async function findGame(): Promise<GetGameResponse> {
             .filter((g => g && !g.data.over) as (g?: GameContainer) => g is GameContainer)
             .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
 
-        if (game) {
-            return { success: true, gameID: game.id };
-        } else {
-            return { success: false };
-        }
+        return game
+            ? { success: true, gameID: game.id }
+            : { success: false };
     }
 }
 
@@ -143,9 +144,9 @@ export function newGame(id?: number): number {
             return id;
         }
     } else {
-        for (let i = 0; i < Config.maxGames; i++) {
-            const game = games[i];
-            if (!game || game?.data?.stopped) return newGame(i);
+        const maxGames = Config.maxGames;
+        for (let i = 0; i < maxGames; i++) {
+            if (games[i]?.data.stopped !== false) return newGame(i);
         }
     }
     return -1;

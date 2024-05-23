@@ -151,7 +151,7 @@ export class GameConsole {
 
     private readonly localStorageKey = "suroi_config";
 
-    private readonly _history = new (class <T> {
+    private readonly _history = new (class HistoryManager<T> {
         private readonly _backingSet = new Set<T>();
         private readonly _backingArray: T[] = [];
 
@@ -296,9 +296,8 @@ export class GameConsole {
         };
 
         map.clear = () => {
-            const retVal = nativeClear();
+            nativeClear();
             this._autocmpData.cache.invalidateCommands();
-            return retVal;
         };
 
         map.delete = key => {
@@ -330,9 +329,8 @@ export class GameConsole {
         };
 
         map.clear = () => {
-            const retVal = nativeClear();
+            nativeClear();
             this._autocmpData.cache.invalidateAliases();
-            return retVal;
         };
 
         map.delete = (key: string, removeInverse = false) => {

@@ -2,7 +2,7 @@ import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -71,24 +71,32 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 // find the direction to cast rays
                 let collision: CollisionResponse = null;
 
-                if (hitbox instanceof CircleHitbox) {
-                    collision = Collision.circleCircleIntersection(
-                        hitbox.position,
-                        hitbox.radius,
-                        playerHitbox.position,
-                        playerHitbox.radius
-                    );
-                } else if (hitbox instanceof RectangleHitbox) {
-                    collision = Collision.rectCircleIntersection(
-                        hitbox.min,
-                        hitbox.max,
-                        playerHitbox.position,
-                        playerHitbox.radius
-                    );
+                switch (true) {
+                    case hitbox instanceof CircleHitbox: {
+                        collision = Collision.circleCircleIntersection(
+                            hitbox.position,
+                            hitbox.radius,
+                            playerHitbox.position,
+                            playerHitbox.radius
+                        );
+                        break;
+                    }
+                    case hitbox instanceof RectangleHitbox: {
+                        collision = Collision.rectCircleIntersection(
+                            hitbox.min,
+                            hitbox.max,
+                            playerHitbox.position,
+                            playerHitbox.radius
+                        );
+                        break;
+                    }
+                    case hitbox instanceof PolygonHitbox: {
+                        // TODO
+                        break;
+                    }
                 }
 
                 const direction = collision?.dir;
-
                 if (direction) {
                     /* if (HITBOX_DEBUG_MODE) {
                         graphics?.lineStyle({
@@ -111,26 +119,44 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     const halfPi = Math.PI / 2;
                     for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
                         collided = false;
-                        const vec = Vec.add(player.position, Vec.scale(Vec.create(Math.cos(i), Math.sin(i)), visionSize));
-                        const end = this.ceilingHitbox.intersectsLine(player.position, vec)?.point;
+
+                        const end = this.ceilingHitbox.intersectsLine(
+                            player.position,
+                            Vec.add(
+                                player.position,
+                                Vec.scale(
+                                    Vec.create(Math.cos(i), Math.sin(i)),
+                                    visionSize
+                                )
+                            )
+                        )?.point;
+
                         if (!end) {
+                            // what's the point of this assignment?
                             collided = true;
                             continue;
                         }
-                        graphics?.moveTo(player.position.x, player.position.y);
-                        graphics?.lineTo(end.x, end.y);
-                        graphics?.endFill();
 
-                        for (const obstacle of this.game.objects.getCategory(ObjectCategory.Obstacle)) {
-                            if (obstacle.damageable
-                                && !obstacle.dead
-                                && obstacle.definition.role !== ObstacleSpecialRoles.Window
-                                && obstacle.hitbox?.intersectsLine(player.position, end)) {
-                                collided = true;
-                                break;
-                            }
+                        if (graphics) {
+                            graphics.moveTo(player.position.x, player.position.y);
+                            graphics.lineTo(end.x, end.y);
+                            graphics.endFill();
                         }
-                        if (!collided) break;
+
+                        if (!(
+                            collided ||= [...this.game.objects.getCategory(ObjectCategory.Obstacle)]
+                                .some(
+                                    ({
+                                        damageable,
+                                        dead,
+                                        definition: { role },
+                                        hitbox
+                                    }) => damageable
+                                    && !dead
+                                    && role !== ObstacleSpecialRoles.Window
+                                    && hitbox?.intersectsLine(player.position, end)
+                                )
+                        )) break;
                     }
                     visible = !collided;
                 } else {

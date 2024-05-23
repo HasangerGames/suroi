@@ -1,19 +1,20 @@
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { Orientation } from "../../../common/src/typings";
 import { ColorStyles, styleText } from "../../../common/src/utils/ansiColoring";
+import { ExtendedMap } from "../../../common/src/utils/misc";
 import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
 import { Player } from "../objects/player";
-import { GamePlugin } from "../pluginManager";
+import { Events, GamePlugin } from "../pluginManager";
 
 /**
  * Plugin to help place objects when developing buildings
  */
 export class PlaceObjectPlugin extends GamePlugin {
     readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "window";
-    private readonly _playerToObstacle = new class extends Map<Player, Obstacle> {
-        ifPresent(key: Player, callback: (obstacle: Obstacle) => void): void {
+    private readonly _playerToObstacle = new class extends ExtendedMap<Player, Obstacle> {
+        override ifPresent(key: Player, callback: (obstacle: Obstacle) => void): void {
             const obstacle = super.get(key);
 
             if (obstacle === undefined) {
@@ -26,20 +27,20 @@ export class PlaceObjectPlugin extends GamePlugin {
     } ();
 
     protected override initListeners(): void {
-        this.on("playerJoin", player => {
+        this.on(Events.Player_Join, player => {
             const obstacle = new Obstacle(player.game, this.obstacleToPlace, player.position);
             this._playerToObstacle.set(player, obstacle);
             this.game.grid.addObject(obstacle);
         });
 
-        this.on("playerDisconnect", player => {
+        this.on(Events.Player_Disconnect, player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 this.game.grid.removeObject(obstacle);
                 this._playerToObstacle.delete(player);
             });
         });
 
-        this.on("playerEmote", ({ player }) => {
+        this.on(Events.Player_Emote, ({ player }) => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 obstacle.rotation += 1;
                 obstacle.rotation %= 4;
@@ -47,7 +48,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on("playerUpdate", player => {
+        this.on(Events.Player_Update, player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const position = Vec.add(
                     player.position,
@@ -59,7 +60,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on("playerStartAttacking", player => {
+        this.on(Events.Player_StartAttacking, player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const map = this.game.map;
                 const round = (n: number): number => Math.round(n * 100) / 100;

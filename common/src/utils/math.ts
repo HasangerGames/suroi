@@ -99,8 +99,7 @@ export const Numeric = Object.freeze({
      * Remaps a value from a range to another
      */
     remap(value: number, min0: number, max0: number, min1: number, max1: number) {
-        const t = Numeric.clamp((value - min0) / (max0 - min0), 0.0, 1.0);
-        return Numeric.lerp(min1, max1, t);
+        return Numeric.lerp(min1, max1, Numeric.clamp((value - min0) / (max0 - min0), 0, 1));
     }
 });
 

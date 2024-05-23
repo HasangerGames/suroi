@@ -39,6 +39,12 @@ export function safeString(value: unknown): string {
     }
 }
 
+function convertUnknownErrorToString(err: unknown): string {
+    return err instanceof Error
+        ? err.stack ?? `${err.name}: ${err.message}`
+        : safeString(err);
+}
+
 export const tester = (() => {
     type Helper<
         PlainValue,
@@ -101,70 +107,83 @@ export const tester = (() => {
                 }
             ) & OtherParams
         ): void => {
-            const [value, errorPath] = "value" in params
-                ? [
-                    params.value,
-                    params.errorPath
-                ]
-                : [
-                    params.obj[params.field] as PlainValue,
-                    tester.createPath(params.baseErrorPath, `field ${String(params.field)}`)
-                ];
+            const _fatalErrors: string[] = [];
+            const _errors: string[] = [];
+            const _warnings: string[] = [];
 
-            const result = {
-                fatalErrors: [],
-                errors: [],
-                warnings: [],
-                ...(
-                    (() => {
-                        try {
-                            return predicate(
-                                value,
-                                params,
-                                (target, args) => {
-                                    const oldErrLen = errors.length;
-                                    target({
-                                        value,
-                                        errorPath,
-                                        ...args
-                                    });
+            let errorPath = "unknown";
 
-                                    return errors.length !== oldErrLen;
-                                },
-                                errorPath
-                            ) ?? {};
-                        } catch (e) {
-                            return {
-                                fatalErrors: [
-                                    e instanceof Error
-                                        ? e.stack ?? `${e.name}: ${e.message}`
-                                        : safeString(e)
-                                ]
-                            };
-                        }
-                    })()
-                )
-            };
+            try {
+                const plainValue = "value" in params;
+                errorPath = plainValue
+                    ? params.errorPath
+                    : tester.createPath(params.baseErrorPath, `field ${String(params.field)}`);
 
-            if (result === undefined || result.fatalErrors.length + result.errors.length + result.warnings.length === 0) return;
+                const value = plainValue
+                    ? params.value
+                    : params.obj[params.field] as PlainValue;
 
-            const prependErrorPath = (err: string): [string, string] => [errorPath, err];
+                const result = {
+                    fatalErrors: [],
+                    errors: [],
+                    warnings: [],
+                    ...(
+                        (() => {
+                            try {
+                                return predicate(
+                                    value,
+                                    params,
+                                    (target, args) => {
+                                        const oldErrLen = errors.length;
+                                        target({
+                                            value,
+                                            errorPath,
+                                            ...args
+                                        });
+
+                                        return errors.length !== oldErrLen;
+                                    },
+                                    errorPath
+                                ) ?? {};
+                            } catch (e) {
+                                return {
+                                    fatalErrors: [
+                                        convertUnknownErrorToString(e)
+                                    ]
+                                };
+                            }
+                        })()
+                    )
+                };
+
+                if (result === undefined || result.fatalErrors.length + result.errors.length + result.warnings.length === 0) return;
+
+                _fatalErrors.push(...result.fatalErrors);
+                _errors.push(...result.errors);
+                _warnings.push(...result.warnings);
+            } catch (e) {
+                _fatalErrors.push(
+                    convertUnknownErrorToString(e)
+                );
+            }
+
+            const prependErrorPath = (err: string): readonly [string, string] => [errorPath, err];
 
             tester.fatalErrors.push(
-                ...result.fatalErrors.map(prependErrorPath)
+                ..._fatalErrors.map(prependErrorPath)
             );
             tester.errors.push(
-                ...result.errors.map(prependErrorPath)
+                ..._errors.map(prependErrorPath)
             );
             tester.warnings.push(
-                ...result.warnings.map(prependErrorPath)
+                ..._warnings.map(prependErrorPath)
             );
         };
     }
 
-    const warnings: Array<[string, string]> = [];
-    const errors: Array<[string, string]> = [];
-    const fatalErrors: Array<[string, string]> = [];
+    const warnings: Array<readonly [string, string]> = [];
+    const errors: Array<readonly [string, string]> = [];
+    const fatalErrors: Array<readonly [string, string]> = [];
 
     function createPath(...components: string[]): string {
         return components.join(" -> ");
@@ -1194,9 +1213,7 @@ export const logger = (() => {
             } catch (e) {
                 tester.fatalErrors.push([
                     "unknown",
-                    e instanceof Error
-                        ? e.stack ?? `${e.name}: ${e.message}`
-                        : safeString(e)
+                    convertUnknownErrorToString(e)
                 ]);
             }
 

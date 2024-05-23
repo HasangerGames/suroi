@@ -8,7 +8,7 @@ import { type EmoteDefinition } from "../../../../common/src/definitions/emotes"
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
-import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
@@ -578,7 +578,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        // fixme hack to prevent visual glitches when downed
+        // FIXME hack to prevent visual glitches when downed
         // The ThrowableCook animation seems to be causing the issues
         if (this.downed) {
             this.updateWeapon(isNew);
@@ -704,12 +704,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    private _getItemReference(): SingleGunNarrowing & WeaponDefinition {
+    private _getItemReference(): SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition> {
         const weaponDef = this.activeItem;
 
         return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
             ? Loots.fromString<SingleGunNarrowing>(weaponDef.singleVariant)
-            : weaponDef as SingleGunNarrowing & WeaponDefinition;
+            : weaponDef as SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>;
     }
 
     private _getOffset(): number {
@@ -729,15 +729,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.rightLeg?.setVisible(this.downed);
 
         const reference = this._getItemReference();
-        const fists = reference.fists ?? {
-            left: Vec.create(38, -35),
-            right: Vec.create(38, 35)
-        };
+
+        type FistsRef = (SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>)["fists"] & object;
+        const fists: FistsRef = reference.fists ?? DEFAULT_HAND_RIGGING;
 
         const offset = this._getOffset();
 
         if (anim) {
-            const duration = "animationDuration" in fists ? fists.animationDuration : 150;
+            const duration: number = "animationDuration" in fists ? fists.animationDuration as number : 150;
 
             this.anims.leftFist = this.game.addTween({
                 target: this.images.leftFist,
@@ -764,9 +763,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (reference.image) {
-            this.images.weapon.setPos(reference.image.position.x, reference.image.position.y + offset);
-            this.images.altWeapon.setPos(reference.image.position.x, reference.image.position.y - offset);
-            this.images.weapon.setAngle(reference.image.angle);
+            const { image: { position, angle } } = reference;
+
+            this.images.weapon.setPos(position.x, position.y + offset);
+            this.images.altWeapon.setPos(position.x, position.y - offset);
+            this.images.weapon.setAngle(angle);
         }
     }
 
@@ -784,16 +785,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem;
         const reference = this._getItemReference();
 
-        this.images.weapon.setVisible(reference.image !== undefined);
-        this.images.muzzleFlash.setVisible(reference.image !== undefined);
+        const { fists, image } = reference;
 
-        if (reference.image) {
-            const frame = `${reference.idString}${weaponDef.itemType === ItemType.Gun || (reference.image as NonNullable<MeleeDefinition["image"]>).separateWorldImage ? "_world" : ""}`;
+        const imagePresent = image !== undefined;
+        if (imagePresent) {
+            const frame = `${reference.idString}${
+                weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
+                    ? "_world"
+                    : ""
+            }`;
+
+            const { angle, position: { x: pX, y: pY } } = image;
 
             this.images.weapon.setFrame(frame);
             this.images.altWeapon.setFrame(frame);
-            this.images.weapon.setAngle(reference.image.angle);
-            this.images.altWeapon.setAngle(reference.image.angle); // there's an ambiguity here as to whether the angle should be inverted or the same
+            this.images.weapon.setAngle(angle);
+            this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
 
             if (this.activeItem !== this._oldItem) {
                 this.anims.muzzleFlashFade?.kill();
@@ -803,17 +810,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
 
             const offset = this._getOffset();
-            this.images.weapon.setPos(reference.image.position.x, reference.image.position.y + offset);
-            this.images.altWeapon.setPos(reference.image.position.x, reference.image.position.y - offset);
+            this.images.weapon.setPos(pX, pY + offset);
+            this.images.altWeapon.setPos(pX, pY - offset);
         }
+
+        this.images.weapon.setVisible(imagePresent);
+        this.images.muzzleFlash.setVisible(imagePresent);
 
         this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
-                this.images.rightFist.setZIndex(reference.fists.rightZIndex);
-                this.images.leftFist.setZIndex(reference.fists.leftZIndex);
-                this.images.weapon.setZIndex(reference.image.zIndex);
+                this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex);
+                this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex);
+                this.images.weapon.setZIndex(image?.zIndex ?? 2);
                 this.images.altWeapon.setZIndex(2);
                 this.images.body.setZIndex(3);
                 break;
@@ -916,10 +926,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
                 break;
             case "backpack":
-                if (this.equipment.backpack) {
-                    return this.equipment.backpack;
-                }
-                break;
+                return this.equipment.backpack;
         }
         return equipment;
     }
@@ -946,17 +953,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         );
         this.emote.image.setFrame(type.idString);
 
-        this.emote.container.visible = true;
-        this.emote.container.scale.set(0);
-        this.emote.container.alpha = 0;
+        const container = this.emote.container;
+        container.visible = true;
+        container.scale.set(0);
+        container.alpha = 0;
 
         this.anims.emote = this.game.addTween({
-            target: this.emote.container,
+            target: container,
             to: { alpha: 1 },
             duration: 250,
             ease: EaseFunctions.backOut,
             onUpdate: () => {
-                this.emote.container.scale.set(this.emote.container.alpha);
+                container.scale.set(container.alpha);
             },
             onComplete: () => {
                 this.anims.emote = undefined;
@@ -965,17 +973,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this._emoteHideTimeout = this.addTimeout(() => {
             this.anims.emoteHide = this.game.addTween({
-                target: this.emote.container,
+                target: container,
                 to: { alpha: 0 },
                 duration: 200,
                 onUpdate: () => {
-                    this.emote.container.scale.set(this.emote.container.alpha);
+                    container.scale.set(container.alpha);
                 },
                 onComplete: () => {
                     this._emoteHideTimeout = undefined;
                     this.anims.emoteHide = undefined;
 
-                    this.emote.container.visible = false;
+                    container.visible = false;
                     this.anims.emote?.kill();
                     this.anims.emote = undefined;
                     this._emoteHideTimeout = undefined;
@@ -993,7 +1001,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
                 this.updateFistsPosition(false);
                 const weaponDef = this.activeItem;
-                if (weaponDef.fists.useLeft === undefined) break;
 
                 let altFist = Math.random() < 0.5;
                 if (!weaponDef.fists.randomFist) altFist = true;
@@ -1045,34 +1052,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
-                    const rotated = Vec.rotate(weaponDef.offset, this.rotation);
-                    const position = Vec.add(this.position, rotated);
+                    const selfHitbox = this.hitbox;
+
+                    const position = Vec.add(this.position, Vec.rotate(weaponDef.offset, this.rotation));
                     const hitbox = new CircleHitbox(weaponDef.radius, position);
+                    const angleToPos = Angle.betweenPoints(this.position, position);
 
-                    const damagedObjects: Array<Player | Obstacle> = [];
+                    for (
+                        const target of (
+                            [...this.game.objects].filter(
+                                object => !object.dead
+                                && object !== this
+                                && object.damageable
+                                && (object instanceof Obstacle || object instanceof Player)
+                                && object.hitbox.collidesWith(hitbox)
+                            ) as Array<Player | Obstacle>
+                        ).sort(
+                            (a, b) => {
+                                if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
+                                if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 
-                    for (const object of this.game.objects) {
-                        if (
-                            !object.dead
-                            && object !== this
-                            && object.damageable
-                            && (object instanceof Obstacle || object instanceof Player)
-                        ) {
-                            if (object.hitbox?.collidesWith(hitbox)) {
-                                damagedObjects.push(object);
+                                return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                             }
-                        }
-                    }
-
-                    damagedObjects
-                        .sort((a: Player | Obstacle, b: Player | Obstacle): number => {
-                            if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
-                            if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
-
-                            return a.hitbox.distanceTo(this.hitbox).distance - b.hitbox.distanceTo(this.hitbox).distance;
-                        })
-                        .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
-                        .forEach(target => target.hitEffect(position, Angle.betweenPoints(this.position, position)));
+                        )
+                            .slice(0, weaponDef.maxTargets)
+                    ) target.hitEffect(position, angleToPos);
                 }, 50);
 
                 break;
@@ -1131,18 +1135,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }, 200);
                 break;
             }
-            case AnimationType.Gun:
-            case AnimationType.GunAlt:
+            case AnimationType.GunFire:
+            case AnimationType.GunFireAlt:
             case AnimationType.LastShot: {
                 if (this.activeItem.itemType !== ItemType.Gun) {
                     console.warn(`Attempted to play gun animation (${AnimationType[anim]}) with non-gun item '${this.activeItem.idString}'`);
                     return;
                 }
                 const weaponDef = this.activeItem;
-                const reference = this._getItemReference();
+                const {
+                    idString,
+                    image: { position: { x: imgX } },
+                    fists: {
+                        left: { x: leftFistX },
+                        right: { x: rightFistX }
+                    }
+                } = this._getItemReference() as SingleGunNarrowing;
 
                 this.playSound(
-                    `${reference.idString}_fire`,
+                    `${idString}_fire`,
                     {
                         falloff: 0.5
                     }
@@ -1150,7 +1161,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 if (anim === AnimationType.LastShot) {
                     this.playSound(
-                        `${reference.idString}_last_shot`,
+                        `${idString}_last_shot`,
                         {
                             falloff: 0.5
                         }
@@ -1158,7 +1169,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 const isAltFire = weaponDef.isDual
-                    ? anim === AnimationType.GunAlt
+                    ? anim === AnimationType.GunFireAlt
                     : undefined;
 
                 this.updateFistsPosition(false);
@@ -1166,7 +1177,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.anims.weapon = this.game.addTween({
                     target: isAltFire ? this.images.altWeapon : this.images.weapon,
-                    to: { x: reference.image.position.x - recoilAmount },
+                    to: { x: imgX - recoilAmount },
                     duration: 50,
                     yoyo: true
                 });
@@ -1209,7 +1220,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 if (isAltFire !== false) {
                     this.anims.leftFist = this.game.addTween({
                         target: this.images.leftFist,
-                        to: { x: reference.fists.left.x - recoilAmount },
+                        to: { x: leftFistX - recoilAmount },
                         duration: 50,
                         yoyo: true,
                         onComplete: () => {
@@ -1221,7 +1232,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 if (isAltFire !== true) {
                     this.anims.rightFist = this.game.addTween({
                         target: this.images.rightFist,
-                        to: { x: reference.fists.right.x - recoilAmount },
+                        to: { x: rightFistX - recoilAmount },
                         duration: 50,
                         yoyo: true,
                         onComplete: () => {

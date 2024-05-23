@@ -30,8 +30,8 @@ export enum AnimationType {
     Downed,
     ThrowableCook,
     ThrowableThrow,
-    Gun,
-    GunAlt,
+    GunFire,
+    GunFireAlt,
     GunClick,
     LastShot,
     Revive

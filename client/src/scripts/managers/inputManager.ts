@@ -529,7 +529,7 @@ export class InputManager {
     cycleThrowable(offset: number): void {
         const throwable = this.game.uiManager.inventory.weapons
             .find(weapon => weapon?.definition.itemType === ItemType.Throwable)
-            ?.definition as ThrowableDefinition;
+            ?.definition as ThrowableDefinition | undefined;
 
         if (!throwable) return;
 
