@@ -366,7 +366,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "regular_crate", position: Vec.create(-14, -28.5) },
                 { idString: "regular_crate", position: Vec.create(14, 28.5) },
                 { idString: warehouseObstacle, position: Vec.create(-14, 28.5) },
-                { idString: "regular_crate", position: Vec.create(14, 28.5) },
+                { idString: "regular_crate", position: Vec.create(0, 0) },
 
                 { idString: "ammo_crate", position: Vec.create(-10, 0), scale: 0.97 },
                 { idString: "ammo_crate", position: Vec.create(10, 0), scale: 0.97 },
