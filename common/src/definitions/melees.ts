@@ -132,7 +132,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         },
         {
             idString: "steelfang",
-            name: "Steelfang",
+            name: "Kurambik",
             damage: 40,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
