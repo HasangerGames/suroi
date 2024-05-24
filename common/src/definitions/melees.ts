@@ -65,6 +65,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             name: "Baseball Bat",
             damage: 34,
             obstacleMultiplier: 1.5,
+            piercingMultiplier: 1,
             radius: 3.8,
             offset: Vec.create(3.8, 2.2),
             cooldown: 340,
