@@ -25,7 +25,7 @@ import { type WorkerMessage, WorkerMessages, type GameData } from "./gameManager
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
-import { Map } from "./map";
+import { Map, MergeMap } from "./map";
 import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
@@ -43,6 +43,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { ModeDefinition } from "../../common/src/definitions/modes";
 
 export class Game {
     readonly _id: number;
@@ -190,9 +191,12 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    mode:ModeDefinition
+
     constructor() {
         this._id = workerData.id;
         this.maxTeamSize = workerData.maxTeamSize;
+        this.mode=workerData.mode;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
         const start = Date.now();
@@ -357,9 +361,11 @@ export class Game {
             }, Config.protection.maxJoinAttempts.duration);
         }
 
-        const map = Maps[Config.mapName];
-        this.grid = new Grid(this, map.width, map.height);
-        this.map = new Map(this, Config.mapName);
+        let map=Maps[this.mode.mapName]
+        if(map.extends){map=MergeMap(map,Maps[map.extends])}
+        this.grid = new Grid(this, map.width ?? 1000, map.height ?? 1000);
+        
+        this.map = new Map(this, map);
 
         this.gas = new Gas(this);
 

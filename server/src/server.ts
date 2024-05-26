@@ -89,7 +89,7 @@ if (isMainThread) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
                     response = games[team.gameID]
-                        ? { success: true, gameID: team.gameID }
+                        ? { success: true, gameID: team.gameID,mode:games[team.gameID]!.mode }
                         : { success: false };
                 } else {
                     response = { success: false };
@@ -279,7 +279,7 @@ if (isMainThread) {
         Logger.log(`Listening on ${Config.host}:${Config.port}`);
         Logger.log("Press Ctrl+C to exit.");
 
-        newGame(0);
+        newGame(Config.defaultMode,0);
 
         setInterval(() => {
             const memoryUsage = process.memoryUsage().rss;

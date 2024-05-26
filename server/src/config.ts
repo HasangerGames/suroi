@@ -1,7 +1,6 @@
 import { TeamSize } from "../../common/src/constants";
+import { Modes } from "../../common/src/definitions/modes";
 import { type Vector } from "../../common/src/utils/vector";
-import { type Maps } from "./data/maps";
-
 export enum SpawnMode {
     Normal,
     Radius,
@@ -18,12 +17,12 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    defaultMode: "winter",
 
     spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
-    maxGames: 4,
+    maxGames: 2,
     preventJoinAfter: 60000,
 
     gas: { mode: GasMode.Normal },
@@ -72,10 +71,9 @@ export interface ConfigType {
     }
 
     /**
-     * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
-     * Example: `"main"` for the main map or `"debug"` for the debug map
+     * There are Game Modes, like: Halloween, Cristmas, Normal and others 
      */
-    readonly mapName: keyof typeof Maps
+    readonly defaultMode: string
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

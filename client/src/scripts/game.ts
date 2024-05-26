@@ -163,11 +163,11 @@ export class Game {
                 }
             });
 
-            await loadTextures(
+            /*await loadTextures(
                 this.pixi.renderer,
                 this.console.getBuiltInCVar("cv_high_res_textures") &&
                     (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
-            );
+            );*/
 
             // @HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
@@ -227,6 +227,7 @@ export class Game {
     }
 
     connect(address: string): void {
+        this.pixi.renderer.background.color=COLORS.grass
         this.error = false;
 
         if (this.gameStarted) return;
@@ -396,7 +397,7 @@ export class Game {
         this.teamMode = packet.maxTeamSize > TeamSize.Solo;
 
         $("canvas").addClass("active");
-        $("#splash-ui").fadeOut(400, resetPlayButtons);
+        //$("#splash-ui").fadeOut(400, resetPlayButtons);
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");

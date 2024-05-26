@@ -5,6 +5,7 @@ export type GetGameResponse =
     {
         readonly success: true
         readonly gameID: number
+        readonly mode:string
     } |
     {
         readonly success: false

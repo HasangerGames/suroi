@@ -4,6 +4,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
 
 const textures: Record<string, Texture> = {};
+export var loaded_mode=MODE
 
 export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures
@@ -37,6 +38,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         for (const sheet of atlases[MODE.reskin]) {
             await loadSpritesheet(sheet, renderer);
         }
+        loaded_mode=MODE
     }
 }
 
