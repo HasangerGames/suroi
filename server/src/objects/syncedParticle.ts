@@ -145,7 +145,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         }
     }
 
-    override damage(_amount: number, _source?: unknown): void {}
+    override damage(): void {}
 
     setTarget(target: Vector, timespan: number, easing: EasingFunction): void {
         this._target = {
@@ -170,7 +170,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
 
         this.setPartialDirty();
 
-        const dt = GameConstants.msPerTick;
+        const dt = this.game.dt;
 
         this._rotation = Angle.normalize(this._rotation + this.angularVelocity * dt);
 

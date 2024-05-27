@@ -2,7 +2,7 @@ import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
 import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { type LootDefinition } from "../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
 import { MapPings, type MapPingDefinition } from "../../common/src/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
@@ -18,7 +18,7 @@ import { PingPacket } from "../../common/src/packets/pingPacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
@@ -46,6 +46,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { PluginManager } from "./pluginManager";
 
 export class Game {
     readonly _id: number;
@@ -62,6 +63,7 @@ export class Game {
     readonly map: Map;
     readonly gas: Gas;
     readonly grid: Grid;
+    readonly pluginManager = new PluginManager(this);
 
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
@@ -190,6 +192,12 @@ export class Game {
     private _now = Date.now();
     get now(): number { return this._now; }
 
+    /**
+     * Game Tick delta time
+     */
+    private _dt = Config.tps / 1000;
+    get dt(): number { return this._dt; }
+
     tickTimes: number[] = [];
 
     constructor() {
@@ -198,6 +206,7 @@ export class Game {
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
         const start = Date.now();
+        this.pluginManager.loadPlugins();
 
         parentPort?.on("message", (message: WorkerMessage) => {
             switch (message.type) {
@@ -283,7 +292,7 @@ export class Game {
                         try {
                             const colorString = searchParams.get("nameColor");
                             if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                        } catch {}
+                        } catch { }
                     }
                 }
 
@@ -365,6 +374,7 @@ export class Game {
 
         this.setGameData({ allowJoin: true });
 
+        this.pluginManager.emit("gameCreated", this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -405,7 +415,9 @@ export class Game {
     }
 
     tick(): void {
-        this._now = Date.now();
+        const now = Date.now();
+        this._dt = now - this._now;
+        this._now = now;
 
         // execute timeouts
         for (const timeout of this._timeouts) {
@@ -454,7 +466,12 @@ export class Game {
         // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
         // while on the server, without this, some bullets won't because the first bullets will kill the crate
         for (const { object, damage, source, weapon, position } of records) {
-            object.damage(damage, source, weapon, position);
+            object.damage({
+                amount: damage,
+                source,
+                weaponUsed: weapon,
+                position: position
+            });
         }
 
         // Handle explosions
@@ -485,6 +502,8 @@ export class Game {
             if (!player.joined) continue;
             player.secondUpdate();
         }
+
+        this.pluginManager.emit("gameTick", this);
 
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
@@ -528,7 +547,10 @@ export class Game {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
+                this.pluginManager.emit("playerWin", player);
             }
+
+            this.pluginManager.emit("gameEnd", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -547,12 +569,12 @@ export class Game {
 
         if (this.tickTimes.length >= 200) {
             const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.msPerTick) * 100).toFixed(1)}%`);
+            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
             this.tickTimes = [];
         }
 
         if (!this.stopped) {
-            setTimeout(this.tick.bind(this), GameConstants.msPerTick - tickTime);
+            setTimeout(this.tick.bind(this), 1000 / Config.tps);
         }
     }
 
@@ -691,11 +713,18 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, socket, spawnPosition, team);
+        const player = new Player(this, socket, spawnPosition, team);
+        this.pluginManager.emit("playerConnect", player);
+        return player;
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
+        if (packet.protocolVersion !== GameConstants.protocolVersion) {
+            player.disconnect("Invalid game version");
+            return;
+        }
+
         player.name = cleanUsername(packet.name);
 
         player.isMobile = packet.isMobile;
@@ -727,7 +756,6 @@ export class Game {
         player.joined = true;
 
         const joinedPacket = new JoinedPacket();
-        joinedPacket.protocolVersion = GameConstants.protocolVersion;
         joinedPacket.maxTeamSize = this.maxTeamSize;
         joinedPacket.teamID = player.teamID ?? 0;
         joinedPacket.emotes = player.loadout.emotes;
@@ -756,6 +784,7 @@ export class Game {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
+        this.pluginManager.emit("playerJoin", player);
     }
 
     removePlayer(player: Player): void {
@@ -798,6 +827,7 @@ export class Game {
         try {
             player.socket.close();
         } catch (e) { }
+        this.pluginManager.emit("playerDisconnect", player);
     }
 
     /**
@@ -817,6 +847,7 @@ export class Game {
         );
 
         this.grid.addObject(loot);
+        this.pluginManager.emit("lootGenerated", loot);
         return loot;
     }
 
@@ -839,7 +870,7 @@ export class Game {
         return bullet;
     }
 
-    addExplosion(type: ReferenceTo<ExplosionDefinition> | ExplosionDefinition, position: Vector, source: GameObject): Explosion {
+    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
         const explosion = new Explosion(this, type, position, source);
         this.explosions.push(explosion);
         return explosion;
@@ -998,6 +1029,8 @@ export class Game {
         );
 
         const airdrop = { position, type: crateDef };
+
+        this.pluginManager.emit("airdropSummoned", airdrop);
 
         this.airdrops.push(airdrop);
 

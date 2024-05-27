@@ -438,6 +438,7 @@ export class Map {
 
         if (!definition.hideOnMap) this.packet.objects.push(building);
         this.game.grid.addObject(building);
+        this.game.pluginManager.emit("buildingGenerated", building);
         return building;
     }
 
@@ -506,6 +507,7 @@ export class Map {
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
+        this.game.pluginManager.emit("obstacleGenerated", obstacle);
         return obstacle;
     }
 

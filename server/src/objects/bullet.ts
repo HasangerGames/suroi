@@ -70,10 +70,10 @@ export class Bullet extends BaseBullet {
     }
 
     update(): DamageRecord[] {
-        const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, GameConstants.msPerTick)));
+        const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, this.game.dt)));
 
         const objects = this.game.grid.intersectsHitbox(lineRect);
-        const collisions = this.updateAndGetCollisions(GameConstants.msPerTick, objects);
+        const collisions = this.updateAndGetCollisions(this.game.dt, objects);
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds

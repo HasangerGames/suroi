@@ -268,10 +268,16 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this.weapons[0], this.weapons[1]]
-        = [this.weapons[1], this.weapons[0]];
+            = [this.weapons[1], this.weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
+    }
+
+    replaceWeapon(slot: number, item: ReifiableItem): void {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
+        if (slot === this.activeWeaponIndex) this.owner.setDirty();
+        this._setWeapon(slot, this._reifyItem(item));
     }
 
     /**
@@ -282,7 +288,7 @@ export class Inventory {
      */
     addOrReplaceWeapon(slot: number, item: ReifiableItem): void {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
-        this.owner.setDirty();
+        if (slot === this.activeWeaponIndex) this.owner.setDirty();
 
         /**
          * `dropWeapon` changes the active item index to something potentially undesirable,
@@ -375,8 +381,6 @@ export class Inventory {
         } else {
             this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
         }
-
-        this.owner.dirty.throwable = true;
     }
 
     /**
@@ -626,7 +630,7 @@ export class Inventory {
      * Attempts to use a consumable item or a scope with the given `idString`
      * @param itemString The `idString` of the consumable or scope to use
      */
-    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition >): void {
+    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition>): void {
         const definition = Loots.reify(itemString);
         const idString = definition.idString;
 

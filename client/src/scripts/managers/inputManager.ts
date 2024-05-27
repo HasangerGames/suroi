@@ -233,7 +233,7 @@ export class InputManager {
                     $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
                 } else {
                     this.selectedEmote = undefined;
-                    $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_center.svg"), url("./img/misc/emote_wheel.svg")`);
+                    $("#emote-wheel").css("background-image", "url(\"./img/misc/emote_wheel_highlight_center.svg\"), url(\"./img/misc/emote_wheel.svg\")");
                 }
             }
 

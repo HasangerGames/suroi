@@ -309,6 +309,13 @@ export class UIManager {
                 $("#spectating-msg-player").html(this.getPlayerName(data.id));
             }
             $("#spectating-container").toggle(data.spectating);
+            $("#spectating-msg").toggle(data.spectating);
+
+            if (this.game.inputManager.isMobile) {
+                $("#btn-emotes").toggle(!data.spectating);
+                $("#btn-toggle-ping").toggle(!data.spectating);
+                $("#btn-game-menu").toggle(!data.spectating);
+            }
         }
 
         if (data.dirty.teammates && this.game.teamMode) {
@@ -533,17 +540,18 @@ export class UIManager {
                     .text(weapon.definition.name);
 
                 const isFists = weapon.definition.idString === "fists";
-                container
-                    .children(".item-image")
+                const itemImage = container.children(".item-image");
+                const oldSrc = itemImage.attr("src");
+                const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
+                if (oldSrc !== newSrc) this.playSlotAnimation(container);
+                itemImage
                     .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
                     .toggleClass("is-fists", isFists)
-                    .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
+                    .attr("src", newSrc)
                     .show();
 
                 if (weapon.definition.idString === "ghillie_suit") {
-                    container
-                        .children(".item-image")
-                        .css("background-color", GHILLIE_TINT.toHex());
+                    itemImage.css("background-color", GHILLIE_TINT.toHex());
                 }
 
                 if (weapon.count !== undefined) {
@@ -561,15 +569,27 @@ export class UIManager {
         }
     }
 
+    playSlotAnimation(slot: JQuery): void {
+        slot.toggleClass("active");
+        slot[0].offsetWidth; // causes browser reflow
+        slot.toggleClass("active");
+        console.log(slot.hasClass("active"));
+    }
+
     updateItems(): void {
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
+            const countElem = $(`#${item}-count`);
 
             const itemDef = Loots.fromString(item);
-
-            $(`#${item}-count`).text(count);
-
             const itemSlot = $(`#${item}-slot`);
+
+            if (countElem.text() !== "" && parseInt(countElem.text()) < count && itemSlot.length) {
+                this.playSlotAnimation(itemSlot);
+            }
+
+            countElem.text(count);
+
             if (this.game.activePlayer) {
                 const backpack = this.game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);

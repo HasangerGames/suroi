@@ -366,19 +366,19 @@
         >
           <i class="fa-solid fa-rotate-right"></i>
         </button>
-        <div id="top-left-container">
-          <div style="display: flex">
-            <div id="minimap-border"></div>
+      <div id="top-left-container">
+        <div id="game-misc-stats">
+          <div id="minimap-border"></div>
             <div style="display: flex; flex-direction: column; gap: 5px">
               <button
                 class="btn btn-lg btn-primary fa-solid fa-bars"
-                style="display: none; margin-left: 5px"
+                style="display: none; margin-left: 5px; width: 50px;"
                 id="btn-game-menu"
               ></button>
               <button
                 class="btn btn-lg btn-primary"
                 id="btn-emotes"
-                style="display: none; margin-left: 5px"
+                style="display: none; margin-left: 5px; width: 50px;"
               >
                 <img
                   src="./img/misc/emotes_icon.svg"
@@ -387,11 +387,11 @@
               </button>
               <button
                 class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"
-                style="display: none; margin-left: 5px"
+                style="display: none; margin-left: 5px; width: 50px;"
                 id="btn-toggle-ping"
               ></button>
             </div>
-          </div>
+          <div>
           <div id="gas-timer">
             <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg" />
             <span id="gas-timer-text">0:00</span>
@@ -402,6 +402,33 @@
             <div id="coordinates-hud"></div>
           </div>
         </div>
+          <div id="spectating-container" style="display: none">
+            <div id="spectating-buttons-container">
+              <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              <button id="btn-report" class="btn btn-lg btn-danger">
+                Report
+              </button>
+              <button id="btn-spectate-next" class="btn btn-lg btn-primary">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button
+                id="btn-spectate-kill-leader"
+                class="btn btn-lg btn-secondary"
+              >
+                Spectate Kill Leader
+              </button>
+              <button id="btn-spectate-replay" class="btn btn-lg btn-primary">
+                Play Again
+              </button>
+              <button id="btn-spectate-menu" class="btn btn-lg btn-secondary">
+                Menu
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
         <div id="team-container"></div>
 
@@ -479,33 +506,8 @@
 
         <div id="center-top-container">
           <div class="inventory-container" id="scopes-container"></div>
-          <div id="spectating-container" style="display: none">
-            <div id="spectating-msg">
-              Spectating <span id="spectating-msg-player"></span>
-            </div>
-            <div id="spectating-buttons-container">
-              <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
-                <i class="fa-solid fa-arrow-left"></i>
-              </button>
-              <button id="btn-report" class="btn btn-lg btn-danger">
-                Report
-              </button>
-              <button id="btn-spectate-next" class="btn btn-lg btn-primary">
-                <i class="fa-solid fa-arrow-right"></i>
-              </button>
-              <button
-                id="btn-spectate-kill-leader"
-                class="btn btn-lg btn-secondary"
-              >
-                Spectate Kill Leader
-              </button>
-              <button id="btn-spectate-replay" class="btn btn-lg btn-primary">
-                Play Again
-              </button>
-              <button id="btn-spectate-menu" class="btn btn-lg btn-secondary">
-                Menu
-              </button>
-            </div>
+          <div id="spectating-msg">
+            Spectating <span id="spectating-msg-player"></span>
           </div>
           <div id="gas-msg" style="display: none">
             <div id="gas-msg-info"></div>
@@ -982,8 +984,14 @@
               <div class="emote-left"></div>
             </div>
             <div id="emote-wheel-bottom">
-              <div class="emote-win"><i class="fa-solid fa-xmark"></i><i class="fa-solid fa-crown"></i></i></div>
-              <div class="emote-death"><i class="fa-solid fa-xmark"></i><img src="./img/misc/skull_icon.svg" /></i></div>
+              <div class="emote-win">
+                <i class="fa-solid fa-crown"></i>
+                <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+              </div>
+              <div class="emote-death">
+                <img src="./img/misc/skull_icon.svg" />
+                <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+              </div>
             </div>
           </div>
           <div id="emotes-list"></div>

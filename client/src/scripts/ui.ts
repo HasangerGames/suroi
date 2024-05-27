@@ -4,7 +4,7 @@ import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
@@ -790,51 +790,64 @@ Video evidence is required.`)) {
             $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
             $(this).hide();
         });
-    
+
         if (game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) === "") $(emoteSelector).hide();
     }
-    
+
     handleEmote("win");
     handleEmote("death");
-    
+
     let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
     function updateEmotesList(): void {
         const emoteList = $("#emotes-list");
-    
+
         emoteList.empty();
-    
-        for (const emote of Emotes.definitions) {
+
+        const emotes = [...Emotes.definitions].sort((a, b) => {
+            return a.category - b.category;
+        });
+
+        let lastCategory = -1;
+        for (const emote of emotes) {
             if (emote.isTeamEmote) continue;
-    
-            const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-                <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
-                <span class="emote-name">${emote.name}</span>
-                </div>`);
-    
+
+            if (emote.category !== lastCategory) {
+                const categoryHeader = $(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                emoteList.append(categoryHeader);
+                lastCategory = emote.category;
+            }
+
+            // noinspection CssUnknownTarget
+            const emoteItem
+                = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+    ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
+    <span class="emote-name">${emote.name}</span>
+    </div>`);
+
             emoteItem.on("click", function() {
                 if (selectedEmoteSlot === undefined) return;
-    
+
                 const cvarName = selectedEmoteSlot;
                 const emoteSelector = `#emote-wheel-bottom .emote-${cvarName} .fa-xmark`;
-    
+
                 $(emoteSelector).show();
-    
+
                 game.console.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
-    
+
                 $(this).addClass("selected").siblings().removeClass("selected");
-    
+
                 $(`#emote-wheel-container .emote-${cvarName}`).css(
                     "background-image",
                     `url("./img/game/emotes/${emote.idString}.svg")`
                 );
             });
-    
+
             emoteList.append(emoteItem);
         }
     }
-    
 
     updateEmotesList();
+
     for (const slot of emoteSlots) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
@@ -866,8 +879,14 @@ Video evidence is required.`)) {
                 $(".emotes-list-item-container")
                     .removeClass("selected")
                     .css("cursor", "pointer");
+
                 $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) || "none"}`).addClass("selected");
             });
+
+        $(`#emote-wheel-bottom .emote-${slot} .remove-emote-btn`).on("click", () => {
+            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
+            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
+        });
     }
 
     // Load crosshairs
@@ -1103,14 +1122,12 @@ Video evidence is required.`)) {
     );
     $("#toggle-autopickup").parent().parent().toggle(game.inputManager.isMobile);
 
-
     // Autopickup a dual gun
     addCheckboxListener(
         "#toggle-autopickup-dual-guns",
         "cv_autopickup_dual_guns"
     );
     $("#toggle-autopickup-dual-guns").parent().parent().toggle(game.inputManager.isMobile);
-
 
     // Anonymous player names toggle
     addCheckboxListener(
@@ -1435,7 +1452,7 @@ Video evidence is required.`)) {
 
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
-        <div class="inventory-slot item-slot" id="${item.idString}-slot">
+        <div class="inventory-slot item-slot active" id="${item.idString}-slot">
             <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
@@ -1471,7 +1488,7 @@ Video evidence is required.`)) {
         if (ammo.ephemeral) continue;
 
         $(`#${ammo.hideUnlessPresent ? "special-" : ""}ammo-container`).append(`
-        <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
+        <div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
             <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);

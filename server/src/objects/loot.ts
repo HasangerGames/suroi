@@ -8,6 +8,7 @@ import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/uti
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { Config } from "../config";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { BaseGameObject } from "./gameObject";
@@ -39,7 +40,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      *
      * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
-    private static readonly _dragConstant = Math.exp(-3.69 / GameConstants.tickrate);
+    private static readonly _dragConstant = Math.exp(-3.69 / Config.tps);
 
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
         super(game, position);
@@ -82,7 +83,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             }
         }
 
-        const dt = GameConstants.msPerTick;
+        const dt = this.game.dt;
         const halfDt = dt * 0.5;
 
         const calculateSafeDisplacement = (): Vector => {
@@ -390,6 +391,11 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         const packet = new PickupPacket();
         packet.item = this.definition;
         player.sendPacket(packet);
+
+        this.game.pluginManager.emit("lootInteract", {
+            loot: this,
+            player
+        });
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (this._count > 0) createNewItem();

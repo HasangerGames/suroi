@@ -1,6 +1,8 @@
 import { TeamSize } from "../../common/src/constants";
 import { type Vector } from "../../common/src/utils/vector";
 import { type Maps } from "./data/maps";
+import { type Game } from "./game";
+import { type GamePlugin } from "./pluginManager";
 
 export enum SpawnMode {
     Normal,
@@ -20,6 +22,10 @@ export const Config = {
 
     mapName: "main",
 
+    tps: 40,
+
+    plugins: [],
+
     spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
@@ -37,15 +43,16 @@ export const Config = {
     roles: {
         "developr": { password: "developr", isDev: true },
         "moderatr": { password: "moderatr", isDev: true },
-        // "trial_moderatr": { password: "trial_moderatr" },
+        "trial_moderatr": { password: "trial_moderatr" },
         "designr": { password: "designr" },
-        // "lead_designr": { password: "lead_designr" },
-        // "vip_designr": { password: "vip_designr" },
-        // "studio_managr": { password: "studio_managr" },
+        "lead_designr": { password: "lead_designr" },
+        "vip_designr": { password: "vip_designr" },
+        "studio_managr": { password: "studio_managr" },
         "composr": { password: "composr" },
-        // "lead_composr": { password: "lead_composr" },
+        "lead_composr": { password: "lead_composr" },
         "youtubr": { password: "youtubr" },
-        // "boostr": { password: "boostr" },
+        "boostr": { password: "boostr" },
+
         "hasanger": { password: "hasanger", isDev: true },
         "leia": { password: "leia", isDev: true },
         "katie": { password: "katie", isDev: true },
@@ -86,6 +93,16 @@ export interface ConfigType {
     readonly mapName: keyof typeof Maps
 
     /**
+     * Server Ticks Per Second
+     */
+    readonly tps: number
+
+    /**
+     * List of plugin classes to load
+     */
+    readonly plugins: Array<new (game: Game) => GamePlugin>
+
+    /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
      * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
@@ -111,19 +128,22 @@ export interface ConfigType {
 
     /**
      * The maximum number of players allowed to join a team.
+     *
+     * Specifying a {@link TeamSize} causes the team size to
+     * simply remains at that value indefinitely; alternatively,
+     * specifying a cron pattern and an array of team sizes
+     * allows for team sizes to change periodically
      */
-    readonly maxTeamSize:
-        TeamSize | // Fixed team size
-        { // Rotating team size
+    readonly maxTeamSize: TeamSize | {
         /**
          * The duration between switches. Must be a cron pattern.
          */
-            switchSchedule: string
-            /**
+        readonly switchSchedule: string
+        /**
          * The team sizes to switch between.
          */
-            rotation: TeamSize[]
-        }
+        readonly rotation: TeamSize[]
+    }
 
     /**
      * The maximum number of players allowed to join a game.
@@ -146,18 +166,15 @@ export interface ConfigType {
      * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
      * GasMode.Disabled: Gas is disabled.
      */
-    readonly gas:
-        {
-            readonly mode: GasMode.Disabled
-        } |
-        {
-            readonly mode: GasMode.Normal
-        } |
-        {
-            readonly mode: GasMode.Debug
-            readonly overridePosition?: boolean
-            readonly overrideDuration?: number
-        }
+    readonly gas: {
+        readonly mode: GasMode.Disabled
+    } | {
+        readonly mode: GasMode.Normal
+    } | {
+        readonly mode: GasMode.Debug
+        readonly overridePosition?: boolean
+        readonly overrideDuration?: number
+    }
 
     readonly movementSpeed: number
 
@@ -216,9 +233,10 @@ export interface ConfigType {
 
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
-     * If isDev is set to true for a role, cheats will be enabled for that role.
+     * If `isDev` is set to `true` for a role, cheats will be enabled for that role.
      * To use roles, add `?password=PASSWORD&role=ROLE` to the URL, for example: `http://127.0.0.1:3000/?password=dev&role=dev`
-     * Dev cheats can be enabled using the `lobbyClearing` option: `http://127.0.0.1:3000/?password=dev&role=dev&lobbyClearing=true`
+     * Dev cheats can be enabled using the `lobbyClearing` option (`http://127.0.0.1:3000/?password=dev&role=dev&lobbyClearing=true`),
+     * but the server must also have it enabled (thru {@link ConfigType.disableLobbyClearing})
      */
     readonly roles: Record<string, {
         readonly password: string
@@ -226,7 +244,7 @@ export interface ConfigType {
     }>
 
     /**
-     * Disables the lobbyClearing option if set to true
+     * Disables the lobbyClearing option if set to `true`
      */
     readonly disableLobbyClearing?: boolean
 }

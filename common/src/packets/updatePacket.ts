@@ -33,7 +33,6 @@ export interface PlayerData {
         id: boolean
         teammates: boolean
         zoom: boolean
-        throwable: boolean
     }
 
     id: number

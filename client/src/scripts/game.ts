@@ -2,7 +2,7 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -52,6 +52,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
 import type { DualGunNarrowing } from "../../../common/src/definitions/guns";
 
 interface ObjectClassMapping {
@@ -115,7 +116,7 @@ export class Game {
 
     lastPingDate = 0;
 
-    private _tickTimeoutID: number | undefined;
+    disconnectReason = "";
 
     readonly pixi = new Application();
     readonly soundManager: SoundManager;
@@ -244,6 +245,7 @@ export class Game {
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
+            this.disconnectReason = "";
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(this.uiManager.gameOverScreenTimeout);
@@ -284,7 +286,6 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
-            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.msPerTick);
         };
 
         // Handle incoming messages
@@ -310,14 +311,23 @@ export class Game {
 
         this._socket.onclose = (): void => {
             resetPlayButtons();
+
+            const reason = this.disconnectReason || "Connection lost";
+
             if (!this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn(400);
-                    $("#splash-server-message-text").html("Connection lost.");
+                    $("#splash-server-message-text").html(this.disconnectReason || "Connection lost.");
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
                 if (!this.error) void this.endGame();
+            }
+
+            if (reason === "Invalid game version") {
+                alert(reason);
+                // reload the page with a time stamp to try clearing cache
+                location.search = `t=${Date.now()}`;
             }
         };
     }
@@ -384,15 +394,13 @@ export class Game {
                 this.soundManager.play(soundID);
                 break;
             }
+            case packet instanceof DisconnectPacket:
+                this.disconnectReason = packet.reason;
+                break;
         }
     }
 
     startGame(packet: JoinedPacket): void {
-        if (packet.protocolVersion !== GameConstants.protocolVersion) {
-            alert("Invalid game version.");
-            // reload the page with a time stamp to try clearing cache
-            location.search = `t=${Date.now()}`;
-        }
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
@@ -411,8 +419,6 @@ export class Game {
 
     async endGame(): Promise<void> {
         return await new Promise(resolve => {
-            clearTimeout(this._tickTimeoutID);
-
             $("#splash-options").addClass("loading");
 
             this.soundManager.stopAll();
@@ -536,7 +542,14 @@ export class Game {
         this.camera.update();
     }
 
+    lastUpdateTime = 0;
+    serverDt = 0;
+
     processUpdate(updateData: UpdatePacket): void {
+        const now = Date.now();
+        this.serverDt = now - this.lastUpdateTime;
+        this.lastUpdateTime = now;
+
         for (const newPlayer of updateData.newPlayers) {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
@@ -622,6 +635,8 @@ export class Game {
         for (const ping of updateData.mapPings) {
             this.map.addMapPing(ping.position, ping.definition, ping.playerId);
         }
+
+        this.tick();
     }
 
     addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
@@ -814,34 +829,55 @@ export class Game {
 
                 // Mobile stuff
                 if (this.inputManager.isMobile && canInteract) {
-                    // Auto pickup
+                    const weapons = this.uiManager.inventory.weapons;
+
+                    // Auto pickup (top 10 conditionals)
                     if (
                         this.console.getBuiltInCVar("cv_autopickup")
+                        && object instanceof Loot
                         && (
-                            (object instanceof Loot
-// Auto-pickup dual gun
-                            // Only pick up melees if no melee is equipped
-                            && (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists")
+                            (
+                                (
+                                    // Auto-pickup dual gun
+                                    // Only pick up melees if no melee is equipped
+                                    (
+                                        type !== ItemType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
+                                    )
 
-                            // Only pick up guns if there's a free slot
-                            && (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1]))
+                                    // Only pick up guns if there's a free slot
+                                    && (
+                                        type !== ItemType.Gun || (!weapons?.[0] || !weapons?.[1])
+                                    )
 
-                            // Don't pick up skins
-                            && type !== ItemType.Skin)
-                            
-                            // Don't autopickup if currently reloading gun
-                            && !(this.activePlayer.action?.type === PlayerActions.Reload)
-                        )
-                        || (
-                            object instanceof Loot
-                            && type === ItemType.Gun
-                            && this.uiManager.inventory.weapons?.some(
-                                weapon => weapon?.definition.itemType === ItemType.Gun
-                                && (
-                                    (object?.definition === weapon?.definition && !weapon.definition.isDual) // Picking up a single pistol when inventoru has single pistol
-                                    || ((object.definition as DualGunNarrowing | undefined)?.singleVariant === weapon?.definition.idString) // Picking up dual pistols when inventory has a pistol (implement splitting of dual guns to not lost reload later)
+                                    // Don't pick up skins
+                                    && type !== ItemType.Skin
                                 )
-                            )   
+
+                                // Don't autopickup if currently reloading gun
+                                && this.activePlayer.action?.type !== PlayerActions.Reload
+                            ) || (
+                                type === ItemType.Gun
+                                    && weapons?.some(
+                                        weapon => {
+                                            const definition = weapon?.definition;
+
+                                            return definition?.itemType === ItemType.Gun
+                                                && (
+                                                    (
+                                                        object?.definition === definition
+                                                        && !definition.isDual
+                                                    ) // Picking up a single pistol when inventory has single pistol
+                                                    || (
+                                                        (
+                                                            object.definition as DualGunNarrowing | undefined
+                                                        )?.singleVariant === definition.idString
+                                                    )
+                                                    // Picking up dual pistols when inventory has a pistol
+                                                    // TODO implement splitting of dual guns to not lost reload later
+                                                );
+                                        }
+                                    )
+                            )
                         )
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
