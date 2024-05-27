@@ -1058,7 +1058,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     });
                 };
 
-                const reportURL = ""; // FIXME what?
+                const reportURL = ""; // Set me to the webhook url :P
                 const reportData = {
                     embeds: [
                         {

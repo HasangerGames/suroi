@@ -1603,6 +1603,48 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
+            idString: "firework_launcher",
+            name: "Firework Launcher",
+            ammoType: "firework_rocket",
+            ammoSpawnAmount: 1,
+            capacity: 3,
+            reloadTime: 3,
+            fireDelay: 2500,
+            switchDelay: 900,
+            speedMultiplier: 0.45,
+            recoilMultiplier: 0.5,
+            recoilDuration: 925,
+            fireMode: FireMode.Single,
+            shotSpread: 5,
+            moveSpread: 14,
+            length: 10.7,
+            fists: {
+                left: Vec.create(115, -1),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            image: {
+                position: Vec.create(90, -3.5),
+                lootScale: 0.5
+            },
+            casingParticles: [{
+                frame: "casing_firework_rocket",
+                position: Vec.create(4, 0.6)
+            }],
+            ballistics: {
+                damage: 8,
+                obstacleMultiplier: 2,
+                speed: 0.1,
+                range: 120,
+                onHitExplosion: "firework_explosion",
+                tracer: {
+                    length: 0.5,
+                    color: 534324
+                }
+            }
+        },
+        {
             idString: "s_g17",
             name: "G17 (scoped)",
             ammoType: "bb",

@@ -155,7 +155,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             },
             wearerAttributes: {
                 passive: {
-                    speedBoost: 1.5
+                    speedBoost: 1.1
                 }
             }
         },

@@ -131,6 +131,18 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
                 lightness: 75
             },
             ephemeral: true
+        },
+        {
+            idString: "firework_rocket",
+            name: "Firework Rocket",
+            maxStackSize: 5,
+            characteristicColor: {
+                hue: 190,
+                saturation: 100,
+                lightness: 85
+            },
+            defaultCasingFrame: "casing_firework_rocket",
+            hideUnlessPresent: true
         }
     ]
 );
