@@ -83,7 +83,51 @@ export class UIManager {
         return name;
     }
 
-    getPlayerName(id: number): string {
+    // --------------------------------------------------------------------------------------------------------
+    // getPlayerName + getPlayerBadge
+    // --------------------------------------------------------------------------------------------------------
+    getPlayerData(id: number): { name: string, badge: BadgeDefinition | undefined } {
+
+        const player = this.game.playerNames.get(id);
+
+        // --------------------------------------------------------------------------------------------------------
+        // Player Name.
+        // --------------------------------------------------------------------------------------------------------
+        const nameElement = $("<span>");
+
+        const name = this.getRawPlayerName(id);
+
+        if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            nameElement.css("color", player.nameColor.toHex());
+        }
+
+        nameElement.text(name);
+        // --------------------------------------------------------------------------------------------------------
+
+        // -------------------------------------------------------------
+        // Player Badge.
+        // -------------------------------------------------------------
+        let badge = undefined;
+
+        switch (true) {
+            case player === undefined: {
+                console.warn(`Unknown player name with id ${id}`);
+                break;
+            }
+            default: {
+                badge = player.badge;
+            }
+        }
+        // -------------------------------------------------------------
+
+        return {
+            name: nameElement.prop("outerHTML"),
+            badge: badge
+        };
+    }
+    // --------------------------------------------------------------------------------------------------------
+
+    /*getPlayerName(id: number): string {
         const element = $("<span>");
         const player = this.game.playerNames.get(id);
 
@@ -116,7 +160,7 @@ export class UIManager {
                 return player.badge;
             }
         }
-    }
+    }*/
 
     static getHealthColor(normalizedHealth: number, downed?: boolean): string {
         switch (true) {
@@ -245,8 +289,8 @@ export class UIManager {
 
         $("#chicken-dinner").toggle(packet.won);
 
-        const playerName = this.getPlayerName(packet.playerID);
-        const playerBadge = this.getPlayerBadge(packet.playerID);
+        const playerName = this.getPlayerData(packet.playerID).name;
+        const playerBadge = this.getPlayerData(packet.playerID).badge;
         const playerBadgeText = playerBadge
             ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
@@ -254,7 +298,7 @@ export class UIManager {
         $("#game-over-text").html(
             packet.won
                 ? "Winner winner chicken dinner!"
-                : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
+                : `${this.game.spectating ? playerName : "You"} died.`
         );
 
         $("#game-over-player-name").html(playerName + playerBadgeText);
@@ -305,7 +349,7 @@ export class UIManager {
             this.game.spectating = data.spectating;
             if (data.spectating) {
                 $("#game-over-overlay").fadeOut();
-                $("#spectating-msg-player").html(this.getPlayerName(data.id));
+                $("#spectating-msg-player").html(this.getPlayerData(data.id).name);
             }
             $("#spectating-container").toggle(data.spectating);
         }
@@ -727,10 +771,10 @@ export class UIManager {
 
         const getNameAndBadge = (id?: number): { readonly name: string, readonly badgeText: string } => {
             const hasId = id !== undefined;
-            const badge = hasId ? this.getPlayerBadge(id) : undefined;
+            const badge = hasId ? this.getPlayerData(id).badge : undefined;
 
             return {
-                name: hasId ? this.getPlayerName(id) : "",
+                name: hasId ? this.getPlayerData(id).name : "",
                 badgeText: badge
                     ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
@@ -787,7 +831,7 @@ export class UIManager {
                                         // eslint-disable-next-line no-labels
                                         break outer;
                                 }
-                                // fallthrough
+                            // fallthrough
                             case KillfeedEventType.NormalTwoParty:
                             case KillfeedEventType.FinishedOff:
                                 killMessage = `${attackerText} ${description} ${victimText}`;
@@ -979,7 +1023,7 @@ export class UIManager {
                         ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
                         : "The Kill Leader is dead!"}`
                     : "The Kill Leader killed themselves!"
-                }`;
+                    }`;
                 if (attackerId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
