@@ -413,6 +413,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
+        const allowedRoles = ["error"];
+        const isAllowed = allowedRoles.includes(this.role ?? "");
+        if (isAllowed) {
+            this.inventory.items.setItem("8x_scope", 1);
+            this.inventory.scope = "8x_scope";
+            this.inventory.addOrReplaceWeapon(2, "steelfang");
+            this.updateAndApplyModifiers();
+        }
         if (specialFunnies) {
             const [weaponA, weaponB, melee] = userData.weaponPreset.split(" ");
 

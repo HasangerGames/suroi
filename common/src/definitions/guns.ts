@@ -1611,21 +1611,22 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 3,
             fireDelay: 2500,
             switchDelay: 900,
-            speedMultiplier: 0.45,
+            noMuzzleFlash: true,
+            speedMultiplier: 0.65,
             recoilMultiplier: 0.5,
             recoilDuration: 925,
             fireMode: FireMode.Single,
+            bulletOffset: 2.7,
             shotSpread: 5,
             moveSpread: 14,
-            length: 10.7,
+            length: 5.5,
             fists: {
-                left: Vec.create(115, -1),
-                right: Vec.create(40, 0),
-                rightZIndex: 4,
-                animationDuration: 100
+                left: Vec.create(60, 40),
+                right: Vec.create(20, 55),
+                animationDuration: 400
             },
             image: {
-                position: Vec.create(90, -3.5),
+                position: Vec.create(30, 50.5),
                 lootScale: 0.5
             },
             casingParticles: [{
@@ -1633,14 +1634,14 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(4, 0.6)
             }],
             ballistics: {
-                damage: 8,
+                damage: 20,
                 obstacleMultiplier: 2,
                 speed: 0.1,
                 range: 120,
                 onHitExplosion: "firework_explosion",
                 tracer: {
-                    length: 0.5,
-                    color: 534324
+                    image: "firework_rocket_trail",
+                    length: 1
                 }
             }
         },

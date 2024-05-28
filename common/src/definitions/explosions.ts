@@ -264,7 +264,7 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1500,
-                tint: 0x19B8BA,
+                tint: 0xA04412,
                 scale: 0.8
             },
             shrapnelCount: 17,
