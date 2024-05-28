@@ -62,6 +62,10 @@ export const Config = {
         "radians": { password: "radians", isDev: true },
         "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" }
+    },
+
+    authServer: {
+        address: "http://localhost:8080"
     }
 } satisfies ConfigType as ConfigType;
 
@@ -246,5 +250,14 @@ export interface ConfigType {
     /**
      * Disables the lobbyClearing option if set to `true`
      */
-    readonly disableLobbyClearing?: boolean
+    readonly disableLobbyClearing?: boolean,
+
+    /**
+     * Options for the authentication server
+     * 
+     * Optional; If not specified, the server will not use an authentication server
+     */
+    readonly authServer?: {
+        readonly address: string
+    }
 }
