@@ -100,6 +100,7 @@
         border-radius: 5px;
     }
 }
+
 #debug-hud {
     //margin-top: -10px;
     text-shadow: 1px 1px 2px black;
@@ -109,6 +110,7 @@
         font-size: 14px;
     }
 }
+
 #gas-timer {
     width: 80px;
     padding: 6px 9px 6px 9px;
@@ -248,7 +250,9 @@
         }
 
         @media screen and (max-width: $screen_large) {
-            .teammate-name, .teammate-badge {
+
+            .teammate-name,
+            .teammate-badge {
                 display: none;
             }
         }
@@ -266,6 +270,7 @@
     border-radius: 8px;
     padding: 8px 12px 8px 12px;
     gap: 10px;
+
     @media screen and (max-width: $screen_large) {
         top: 7px;
         right: 80px;
@@ -353,12 +358,15 @@
     #kill-feed {
         margin-right: 180px;
         margin-top: -10px;
+
         @media screen and (max-width: $screen_large) {
             margin-right: 80px;
         }
-        @media screen and (max-width: $screen_medium) and (max-height: 500px){
+
+        @media screen and (max-width: $screen_medium) and (max-height: 500px) {
             margin-top: -40px;
         }
+
         .kill-feed-item {
             max-width: fit-content;
             padding: 8px 10px 8px 10px;
@@ -759,7 +767,6 @@
 
 #spectating-msg {
     text-align: center;
-    display: flex;
 
     font-weight: bold;
     font-size: 30px;
@@ -770,8 +777,28 @@
     }
 
     #spectating-msg-player {
-        margin-left: 8px;
+        display: inline;
+        margin-left: 3px; /* Changed.*/
     }
+
+    /* --------------------- */
+    /* Added. */
+    /* --------------------- */
+    .badge-icon {
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        margin-left: 1px;
+        margin-right: 4px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    /* --------------------- */
+
 }
 
 #spectating-buttons-container {
@@ -796,6 +823,7 @@
     #btn-spectate-menu {
         width: 100%;
     }
+
     #btn-spectate-replay {
         width: 100%;
     }
@@ -1034,7 +1062,8 @@
             width: 110px;
         }
 
-        .slot-number, .item-name {
+        .slot-number,
+        .item-name {
             right: 8px !important;
         }
 
@@ -1088,15 +1117,18 @@
         justify-content: end;
 
         bottom: 50px;
+
         @media screen and (max-width: $screen_medium) {
             bottom: 125px;
             left: -2px;
         }
+
         @media screen and (max-height: 400px) {
             bottom: 10px;
         }
     }
 }
+
 .items-container#ammo {
     flex-direction: row-reverse;
     right: 5px;
@@ -1131,6 +1163,7 @@
         }
     }
 }
+
 .items-container {
     position: absolute;
     top: 120px;
