@@ -16,6 +16,7 @@ import { cleanUsername } from "./utils/usernameFilter";
 import { isMainThread } from "worker_threads";
 import { type GetGameResponse } from "../../common/src/typings";
 import { Cron } from "croner";
+import "dotenv/config"
 
 export interface Punishment {
     readonly type: "warning" | "tempBan" | "permaBan"
@@ -263,7 +264,7 @@ if (isMainThread) {
             const player = socket.getUserData().player;
             player.team.removePlayer(player);
         }
-    }).listen(Config.host, Config.port, (): void => {
+    }).listen(Config.host, Config.port, async (): Promise<void> => {
         console.log(
             `
  _____ _   _______ _____ _____
@@ -277,6 +278,40 @@ if (isMainThread) {
         Logger.log(`Suroi Server v${version}`);
         Logger.log(`Listening on ${Config.host}:${Config.port}`);
         Logger.log("Press Ctrl+C to exit.");
+
+        // Check for auth server
+        if (Config.authServer) {
+            if (!process.env.AUTH_SERVER_API_KEY) {
+                Logger.warn("No auth server API key provided. Exiting...");
+                process.exit(1);
+            }
+
+            if (!process.env.REGION) {
+                Logger.warn("No region provided. Exiting...");
+                process.exit(1);
+            }
+            // Check for auth server connecitvity
+            try {
+                const res = await fetch(`${Config.authServer.address}/api/auth/server/whoami`, {
+                    headers: {
+                        "Api-Key": process.env.AUTH_SERVER_API_KEY
+                    }
+                });
+
+                if (!res.ok) {
+                    Logger.warn(`${res.status} ${res.statusText} status returned from auth server - Check API key?`);
+                    throw "Non-200 status returned from auth server";
+                }
+
+                Logger.log("Connected to auth server");
+            } catch (err) {
+                console.error(err)
+                Logger.warn("Failed to connect to auth server. Exiting...");
+                process.exit(1)
+            }
+        } else {
+            Logger.log("No auth server configured")
+        }
 
         newGame(0);
 

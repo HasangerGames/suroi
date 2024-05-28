@@ -29,3 +29,6 @@ build/
 .pnpm-cache/
 .npm/
 *.log
+
+# env vars
+.env

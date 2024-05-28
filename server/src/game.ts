@@ -47,6 +47,7 @@ import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 import { PluginManager } from "./pluginManager";
+import AuthServer from "./utils/authServer";
 
 export class Game {
     readonly _id: number;
@@ -200,6 +201,8 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    authServer?: AuthServer;
+
     constructor() {
         this._id = workerData.id;
         this.maxTeamSize = workerData.maxTeamSize;
@@ -220,6 +223,10 @@ export class Game {
                 }
             }
         });
+
+        if (Config.authServer) {
+            this.authServer = new AuthServer(this);
+        }
 
         const This = this;
 
@@ -770,7 +777,7 @@ export class Game {
             && !this._started
             && this.startTimeout === undefined
         ) {
-            this.startTimeout = this.addTimeout(() => {
+            this.startTimeout = this.addTimeout(async () => {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
@@ -780,6 +787,10 @@ export class Game {
                     Logger.log(`Game ${this.id} | Preventing new players from joining`);
                     this.setGameData({ allowJoin: false });
                 }, Config.preventJoinAfter);
+
+                if (this.authServer) {
+                    await this.authServer.startGame();
+                }
             }, 3000);
         }
 
