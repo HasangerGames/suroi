@@ -207,7 +207,7 @@ export async function setUpUI(game: Game): Promise<void> {
     updateServerSelectors();
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    serverList.children("li.server-list-item").on("click", async function(this: HTMLLIElement) {
+    serverList.children("li.server-list-item").on("click", async function (this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
 
         if (region === null) return;
@@ -312,7 +312,7 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     const createTeamMenu = $("#create-team-menu");
-    $("#btn-create-team, #btn-join-team").on("click", function() {
+    $("#btn-create-team, #btn-join-team").on("click", function () {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500 || teamSocket) return;
         lastPlayButtonClickTime = now;
@@ -395,6 +395,14 @@ export async function setUpUI(game: Game): Promise<void> {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
                 case CustomTeamMessages.Join: {
+
+                    // ----------------------------------------------
+                    // Added.
+                    // ----------------------------------------------
+                    $("#splash-ui").css("filter", "blur(5px)");
+                    $("#splash-ui").css("pointer-events", "none");
+                    // ----------------------------------------------
+
                     joinedTeam = true;
                     playerID = data.id;
                     teamID = data.teamID;
@@ -438,6 +446,13 @@ export async function setUpUI(game: Game): Promise<void> {
             $("#splash-server-message").show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
+
+            // ----------------------------------------------
+            // Added. (Probably not needed here)
+            // ----------------------------------------------
+            $("#splash-ui").css("filter", "");
+            $("#splash-ui").css("pointer-events", "");
+            // ----------------------------------------------
         };
 
         teamSocket.onclose = (): void => {
@@ -457,6 +472,13 @@ export async function setUpUI(game: Game): Promise<void> {
             joinedTeam = false;
             window.location.hash = "";
             createTeamMenu.fadeOut(250);
+
+            // ----------------------------------------------
+            // Added.
+            // ----------------------------------------------
+            $("#splash-ui").css("filter", "");
+            $("#splash-ui").css("pointer-events", "");
+            // ----------------------------------------------
         };
 
         createTeamMenu.fadeIn(250);
@@ -500,7 +522,7 @@ export async function setUpUI(game: Game): Promise<void> {
             .css("color", "#FFFFFF00");
     });
 
-    $("#create-team-toggle-auto-fill").on("click", function() {
+    $("#create-team-toggle-auto-fill").on("click", function () {
         autoFill = $(this).prop("checked");
         teamSocket?.send(JSON.stringify({
             type: CustomTeamMessages.Settings,
@@ -508,7 +530,7 @@ export async function setUpUI(game: Game): Promise<void> {
         }));
     });
 
-    $("#create-team-toggle-lock").on("click", function() {
+    $("#create-team-toggle-lock").on("click", function () {
         teamSocket?.send(JSON.stringify({
             type: CustomTeamMessages.Settings,
             locked: $(this).prop("checked")
@@ -664,7 +686,7 @@ export async function setUpUI(game: Game): Promise<void> {
         void game.endGame();
     });
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
+    $("#btn-play-again, #btn-spectate-replay").on("click", async () => {
         await game.endGame();
         if (teamSocket) teamSocket.send(JSON.stringify({ type: CustomTeamMessages.Start })); // TODO Check if player is team leader
         else joinGame();
@@ -775,7 +797,7 @@ Video evidence is required.`)) {
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function() {
+        skinItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_skin", skin.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             updateSplashCustomize(skin.idString);
@@ -801,7 +823,7 @@ Video evidence is required.`)) {
     <span class="emote-name">${emote.name}</span>
     </div>`);
 
-            emoteItem.on("click", function() {
+            emoteItem.on("click", function () {
                 if (selectedEmoteSlot === undefined) return;
                 game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
 
@@ -903,7 +925,7 @@ Video evidence is required.`)) {
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function() {
+        crosshairItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
@@ -954,7 +976,7 @@ Video evidence is required.`)) {
             </div>`
         );
 
-        noBadgeItem.on("click", function() {
+        noBadgeItem.on("click", function () {
             game.console.setBuiltInCVar("cv_loadout_badge", "");
             $(this).addClass("selected").siblings().removeClass("selected");
         });
@@ -971,7 +993,7 @@ Video evidence is required.`)) {
                 </div>`
             );
 
-            badgeItem.on("click", function() {
+            badgeItem.on("click", function () {
                 game.console.setBuiltInCVar("cv_loadout_badge", badge.idString);
                 $(this).addClass("selected").siblings().removeClass("selected");
             });
@@ -1182,7 +1204,7 @@ Video evidence is required.`)) {
     });
     renderSelect.value = game.console.getBuiltInCVar("cv_renderer");
 
-    void (async() => {
+    void (async () => {
         $("#webgpu-option").toggle(await isWebGPUSupported());
     })();
 
@@ -1549,7 +1571,7 @@ Video evidence is required.`)) {
 
         $("#btn-toggle-ping")
             .show()
-            .on("click", function() {
+            .on("click", function () {
                 game.inputManager.pingWheelActive = !game.inputManager.pingWheelActive;
                 const { pingWheelActive } = game.inputManager;
                 $(this)
@@ -1609,7 +1631,7 @@ Video evidence is required.`)) {
         tabContent.show();
     });
 
-    $("#warning-modal-agree-checkbox").on("click", function() {
+    $("#warning-modal-agree-checkbox").on("click", function () {
         $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !$(this).prop("checked"));
     });
 
