@@ -22,8 +22,6 @@
     top: 0;
     left: 0;
     position: absolute;
-    top: 0;
-    left: 0;
     transform-origin: 0 0;
 }
 
@@ -996,13 +994,13 @@
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
-            margin-left: -125px;
+            left: 4px;
             top: 2px;
         }
 
         @media screen and (max-width: $screen_medium) {
             font-size: 10px;
-            margin-left: -93px;
+            left: 2px;
             bottom: 25px;
         }
     }
@@ -1155,7 +1153,6 @@
             justify-content:last baseline;
         }
     }
-
 }
 
 .items-container#ammo {
@@ -1192,6 +1189,7 @@
         }
     }
 }
+
 .items-container {
     position: absolute;
     top: 120px;
@@ -1255,13 +1253,13 @@
             left: 110px;
 
             @media screen and (max-width: $screen_large) {
-                //bottom: 30px;
+                // bottom: 30px;
                 left: 75px;
             }
 
             @media screen and (max-width: $screen_small) {
-                //left: 70px;
-                //bottom: 0;
+                // left: 70px;
+                // bottom: 0;
             }
         }
 
@@ -1357,6 +1355,9 @@
                 height: 28px;
             }
         }
+
+        transition-property: width height;
+        transition-duration: 0.25s;
     }
 }
 
@@ -1393,9 +1394,6 @@
                 width: 25px;
                 height: 25px;
             }
-
-            transition-property: width height;
-            transition-duration: 0.25s;
         }
 
         .item-tooltip {
@@ -1428,7 +1426,8 @@
     }
 }
 
-#healing-items-container, #ammo-container {
+#healing-items-container,
+#ammo.items-container .inventory-container {
     & .inventory-slot.active {
         outline-width: 0;
 
@@ -1657,21 +1656,5 @@
         height: 100%;
         width: 50%;
         display: flex;
-    }
-}
-
-.pickup-pulse {
-    animation: pickup-pulse 0.25s ease-in-out;
-}
-
-@keyframes pickup-pulse {
-    0% {
-        scale: 100%;
-    }
-    50% {
-        scale: 110%;
-    }
-    100% {
-        scale: 100%;
     }
 }
