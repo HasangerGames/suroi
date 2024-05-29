@@ -399,7 +399,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     // ----------------------------------------------
                     // Added.
                     // ----------------------------------------------
-                    $("#splash-ui").css("filter", "blur(5px)");
+                    $("#splash-ui").css("filter", "brightness(0.6)");
                     $("#splash-ui").css("pointer-events", "none");
                     // ----------------------------------------------
 
