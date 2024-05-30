@@ -301,11 +301,15 @@ export class UIManager {
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
 
-        const badge = this.getPlayerBadge(data.id);
-
         if (data.dirty.id) {
             this.game.spectating = data.spectating;
             if (data.spectating) {
+
+                // --------------------------------------------
+                // Moved here.
+                // --------------------------------------------
+                const badge = this.getPlayerBadge(data.id);
+                // --------------------------------------------
 
                 const badgeText = badge ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
