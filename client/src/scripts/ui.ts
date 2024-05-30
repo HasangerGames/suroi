@@ -395,14 +395,6 @@ export async function setUpUI(game: Game): Promise<void> {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
                 case CustomTeamMessages.Join: {
-
-                    // ----------------------------------------------
-                    // Added.
-                    // ----------------------------------------------
-                    $("#splash-ui").css("filter", "brightness(0.6)");
-                    $("#splash-ui").css("pointer-events", "none");
-                    // ----------------------------------------------
-
                     joinedTeam = true;
                     playerID = data.id;
                     teamID = data.teamID;
@@ -447,12 +439,12 @@ export async function setUpUI(game: Game): Promise<void> {
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
 
-            // ----------------------------------------------
-            // Added. (Probably not needed here)
-            // ----------------------------------------------
+            // ---------------------------------------------------------
+            // Dimmed backdrop on team menu. (Probably not needed here)
+            // ---------------------------------------------------------
             $("#splash-ui").css("filter", "");
             $("#splash-ui").css("pointer-events", "");
-            // ----------------------------------------------
+            // ---------------------------------------------------------
         };
 
         teamSocket.onclose = (): void => {
@@ -474,7 +466,7 @@ export async function setUpUI(game: Game): Promise<void> {
             createTeamMenu.fadeOut(250);
 
             // ----------------------------------------------
-            // Added.
+            // Dimmed Backdrop on team menu.
             // ----------------------------------------------
             $("#splash-ui").css("filter", "");
             $("#splash-ui").css("pointer-events", "");
@@ -482,6 +474,13 @@ export async function setUpUI(game: Game): Promise<void> {
         };
 
         createTeamMenu.fadeIn(250);
+
+        // ----------------------------------------------
+        // Dimmed Backdrop on team menu.
+        // ----------------------------------------------
+        $("#splash-ui").css("filter", "brightness(0.6)");
+        $("#splash-ui").css("pointer-events", "none");
+        // ----------------------------------------------
     });
 
     $("#close-create-team").on("click", () => {
