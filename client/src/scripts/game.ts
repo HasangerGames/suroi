@@ -401,6 +401,10 @@ export class Game {
     }
 
     startGame(packet: JoinedPacket): void {
+        // Sound which notifies the player that the
+        // game started if page is out of focus.
+        if (!document.hasFocus()) this.soundManager.play("join_notification");
+
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
