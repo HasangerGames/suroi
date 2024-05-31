@@ -139,7 +139,7 @@ export class Game {
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
-        const initPixi = async (): Promise<void> => {
+        const initPixi = async(): Promise<void> => {
             const renderMode = this.console.getBuiltInCVar("cv_renderer");
             const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
 
@@ -166,7 +166,7 @@ export class Game {
             await loadTextures(
                 this.pixi.renderer,
                 this.console.getBuiltInCVar("cv_high_res_textures") &&
-                (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
+                    (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
             );
 
             // @HACK: the game ui covers the canvas
@@ -823,14 +823,14 @@ export class Game {
                         (
                             (object instanceof Loot &&
 
-                                // Only pick up melees if no melee is equipped
-                                (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
+                            // Only pick up melees if no melee is equipped
+                            (type !== ItemType.Melee || this.uiManager.inventory.weapons?.[2]?.definition.idString === "fists") &&
 
-                                // Only pick up guns if there's a free slot
-                                (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
+                            // Only pick up guns if there's a free slot
+                            (type !== ItemType.Gun || (!this.uiManager.inventory.weapons?.[0] || !this.uiManager.inventory.weapons?.[1])) &&
 
-                                // Don't pick up skins
-                                type !== ItemType.Skin) ||
+                            // Don't pick up skins
+                            type !== ItemType.Skin) ||
 
                             // Auto-pickup dual gun
                             (type === ItemType.Gun && this.uiManager.inventory.weapons?.some(weapon => weapon?.definition.itemType === ItemType.Gun && weapon.definition.isDual))
