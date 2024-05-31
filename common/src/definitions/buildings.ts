@@ -2392,12 +2392,54 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             bridgeSpawnOptions: {
                 minRiverWidth: 20,
                 maxRiverWidth: 100,
-                landCheckDist: 30
+                landCheckDist: 103
             },
-            floorImages: [{
-                key: "large_bridge",
-                position: Vec.create(0, 0)
-            }],
+            floorImages: [
+                {
+                    key: "large_bridge_railing",
+                    position: Vec.create(23.3, -38)
+                },
+                {
+                    key: "large_bridge_railing",
+                    position: Vec.create(23.3, 35.3),
+                    rotation: Math.PI,
+                    scale: Vec.create(-1, 1)
+                },
+                {
+                    key: "large_bridge_railing",
+                    position: Vec.create(-23.3, -38),
+                    scale: Vec.create(-1, 1)
+                },
+                {
+                    key: "large_bridge_railing",
+                    position: Vec.create(-23.3, 35.3),
+                    rotation: Math.PI
+                }
+            ],
+            groundGraphics: [
+                {
+                    color: "#5d5d5d",
+                    hitbox: RectangleHitbox.fromRect(44.77, 211.1)
+                },
+                {
+                    color: "#4d4d4d",
+                    hitbox: RectangleHitbox.fromRect(43.77, 210.1)
+                },
+                {
+                    color: "#5d5d5d",
+                    hitbox: RectangleHitbox.fromRect(3.61, 210.1)
+                }
+            ],
+            decals: [
+                { idString: "floor_oil_02", position: Vec.create(5.28, -66.1) },
+                { idString: "floor_oil_03", position: Vec.create(-12.06, 23.49), rotation: 1 },
+                { idString: "smoke_explosion_decal", position: Vec.create(-12.96, -49.37) },
+                { idString: "explosion_decal", position: Vec.create(15.91, -2.56) },
+                { idString: "explosion_decal", position: Vec.create(-8.65, 42.84) },
+                { idString: "explosion_decal", position: Vec.create(-2.11, 85.37) },
+                { idString: "frag_explosion_decal", position: Vec.create(-4.31, -91.09) },
+                { idString: "smoke_explosion_decal", position: Vec.create(11.09, 75.08) }
+            ],
             floors: [
                 { type: "stone", hitbox: RectangleHitbox.fromRect(45, 210, Vec.create(0, 0)) }
             ],
@@ -2421,8 +2463,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "aegis_crate", position: Vec.create(14.5, -30.5) },
 
                 // Center of the Bridge
-                { idString: "humvee", position: Vec.create(-10, -4), rotation: 0 },
-                { idString: "regular_crate", position: Vec.create(5, -20), rotation: 0 },
+                { idString: "m1117_damaged", position: Vec.create(-8.5, -4), rotation: 0 },
+                { idString: "regular_crate", position: Vec.create(7, -20), rotation: 0 },
                 { idString: "gun_case", position: Vec.create(14, 10), rotation: 0 },
 
                 // South-Center of the Bridge

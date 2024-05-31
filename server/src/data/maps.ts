@@ -58,9 +58,10 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        bridges: ["small_bridge"],
         majorBuildings: ["armory", "port_complex", "refinery"],
         buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
@@ -352,9 +353,9 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
-            map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
+            //map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
+            //map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
         }
     },
     singleObstacle: {
