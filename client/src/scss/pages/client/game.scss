@@ -796,6 +796,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     justify-content: center;
+    z-index: 100;
 
     @media screen and (max-width: $screen_large) {
         & > button {
