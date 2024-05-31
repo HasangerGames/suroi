@@ -439,22 +439,20 @@ export class InputManager {
             // ---------------------------------------------------------------------------------------
             let keyPressed = event.code;
 
-            // If it's a letter, use it's code and not it's value.
-            if (keyPressed.includes('Key')) {
+            switch (true) {
+                // If it's a letter, use it's code and not it's value.
+                case keyPressed.startsWith('Key'):
+                    keyPressed = keyPressed.substring(3);
+                    break;
 
-                // Make sure it's only the key character.
-                keyPressed = event.code.replace('Key', '');
-            }
-
-            // Otherwise, use the key's value since it's not affected by keyboard language.
-            else {
-                keyPressed = event.key;
-
-                // -----------------------------------------------------------------------
                 // Special Condition: Semicolon's value seems to be glitchy.
-                // -----------------------------------------------------------------------
-                if (keyPressed === 'Dead' && event.code === 'Semicolon') keyPressed = ';';
-                // -----------------------------------------------------------------------
+                case keyPressed === 'Dead' && event.code === 'Semicolon':
+                    keyPressed = ';';
+                    break;
+                // Otherwise, use the key's value since it's not affected by keyboard language.
+                default:
+                    keyPressed = event.key;
+                    break;
             }
 
             key = keyPressed.length > 1 ? keyPressed : keyPressed.toUpperCase();
