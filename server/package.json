@@ -8,7 +8,7 @@
     "start": "node dist/server/src/server.js",
     "moderation": "node dist/server/src/moderation.js",
     "validateDefinitions": "node dist/server/src/validateDefinitions.js",
-    "dev": "node -r ts-node/register  src/server.ts",
+    "dev": "node -r ts-node/register --watch --watch-path=./src --watch-path=../common src/server.ts",
     "dev:test": "tsc && node --enable-source-maps dist/server/src/stressTest.js"
   },
   "keywords": [],
