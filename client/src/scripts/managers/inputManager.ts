@@ -442,7 +442,7 @@ export class InputManager {
             switch (true) {
                 // If it's a letter, use it's code and not it's value.
                 case keyPressed.startsWith('Key'):
-                    keyPressed = keyPressed.substring(3);
+                    keyPressed = keyPressed.replace("Key", "");
                     break;
 
                 // Special Condition: Semicolon's value seems to be glitchy.
