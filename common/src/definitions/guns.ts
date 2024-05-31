@@ -1695,35 +1695,56 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "arena_closer",
             name: "Destroyer Of Worlds",
             ammoType: "127mm",
-            ammoSpawnAmount: 20,
-            capacity: 500,
+            ammoSpawnAmount: 255,
+            capacity: 255,
             reloadTime: 0.4,
-            fireDelay: 10,
-            switchDelay: 100,
-            speedMultiplier: 1.5,
-            recoilMultiplier: 1,
+            fireDelay: 50,
+            switchDelay: 250,
+            speedMultiplier: 1,
+            recoilMultiplier: 0.95,
             recoilDuration: 100,
             fireMode: FireMode.Auto,
             shotSpread: 0.5,
             moveSpread: 4,
-            length: 9.2,
-            shootOnRelease: true,
+            length: 18,
+            noMuzzleFlash: true,
             fists: {
-                left: Vec.create(115, -4),
+                left: Vec.create(155, -4),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(90, 4) },
-            casingParticles: [{
-                position: Vec.create(2, 0.6),
-                ejectionDelay: 700
-            }],
+            image: { position: Vec.create(170, 0) },
+            casingParticles: [
+                {
+                    position: Vec.create(5, 0.6),
+                    velocity: {
+                        y: {
+                            min: 15,
+                            max: 25
+                        }
+                    }
+                },
+                {
+                    position: Vec.create(5.2, 0.6),
+                    frame: "50_link",
+                    velocity: {
+                        x: {
+                            min: -6,
+                            max: 8
+                        },
+                        y: {
+                            min: 10,
+                            max: 25
+                        }
+                    }
+                }
+            ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
             ballistics: {
                 damage: 300,
                 obstacleMultiplier: 1,
                 speed: 0.45,
-                range: 300,
+                range: 500,
                 tracer: {
                     width: 2.5,
                     length: 4
