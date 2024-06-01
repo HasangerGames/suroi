@@ -667,7 +667,7 @@ export class Game {
                 const teamPosition = this.teamMode ? pickRandomInArray(team!.getLivingPlayers())?.position : undefined;
 
                 let foundPosition = false;
-                for (let tries = 0; !foundPosition && tries < 100; tries++) {
+                for (let tries = 0; !foundPosition && tries < 200; tries++) {
                     const position = this.map.getRandomPosition(
                         hitbox,
                         {
@@ -684,9 +684,9 @@ export class Game {
                     if (!position) break;
                     else spawnPosition = position;
 
-                    // Ensure the position is at least 50 units from other players
+                    // Ensure the position is at least 60 units from other players
                     foundPosition = true;
-                    const radiusHitbox = new CircleHitbox(50, spawnPosition);
+                    const radiusHitbox = new CircleHitbox(60, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (object instanceof Player && (!this.teamMode || !team!.players.includes(object))) {
                             foundPosition = false;

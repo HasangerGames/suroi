@@ -2505,10 +2505,24 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: "sand", hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "bunker_entrance", position: Vec.create(-10, -15), rotation: 0 },
-                { idString: "bunker_entrance_door", position: Vec.create(-25, -15), rotation: 0 },
+                { idString: "bunker_entrance", position: Vec.create(-10, -16), rotation: 0 },
 
-                { idString: "forklift", position: Vec.create(-17.5, 12.5), rotation: 0 },
+                { idString: "sandbags", position: Vec.create(18.42, -27.15), rotation: 0 },
+                { idString: "sandbags", position: Vec.create(25.28, -15.7), rotation: 1 },
+                { idString: "flint_crate", position: Vec.create(15, -17) },
+                { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1 },
+                { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1 },
+
+                { idString: "sandbags", position: Vec.create(-5.5, 7.94), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0 },
+                { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1 },
+
+                { idString: "box", position: Vec.create(16.66, 9.9), rotation: 0 },
+                { idString: "box", position: Vec.create(13.45, 16.63), rotation: 0 },
+                { idString: "box", position: Vec.create(19.13, 16.54), rotation: 0 },
+
+                { idString: "regular_crate", position: Vec.create(-17.34, 6.54) },
+                { idString: "regular_crate", position: Vec.create(-16.5, 17.85) },
 
                 { idString: "roadblock", position: Vec.create(-26, 0), rotation: 0 },
                 { idString: "roadblock", position: Vec.create(-27, 15), rotation: 0 },
@@ -2516,19 +2530,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "roadblock", position: Vec.create(-12.5, 27.5), rotation: 1 },
                 { idString: "roadblock", position: Vec.create(2.5, 27.5), rotation: 1 },
                 { idString: "roadblock", position: Vec.create(17.5, 27.5), rotation: 1 },
-                { idString: "roadblock", position: Vec.create(25, 15), rotation: 0 },
-
-                { idString: "sandbags", position: Vec.create(25, 0), rotation: 1 },
-                { idString: "sandbags", position: Vec.create(25, -15), rotation: 1 },
-                { idString: "sandbags", position: Vec.create(25, -26), rotation: 0 },
-                { idString: "sandbags", position: Vec.create(10, -26), rotation: 0 },
-                { idString: "flint_crate", position: Vec.create(15, -17) },
-                { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1 },
-                { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1 },
-
-                { idString: "regular_crate", position: Vec.create(17, 12.5), rotation: 0 },
-                { idString: "box", position: Vec.create(18, 20), rotation: 0 },
-                { idString: "box", position: Vec.create(12.5, 22.5), rotation: 0 }
+                { idString: "roadblock", position: Vec.create(25, 15), rotation: 0 }
             ],
             lootSpawners: []
         }

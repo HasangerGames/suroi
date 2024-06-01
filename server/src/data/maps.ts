@@ -71,6 +71,7 @@ const maps = {
             warehouse: 5,
             red_house: 6,
             green_house: 2,
+            construction_site: 2,
             mobile_home: 9,
             porta_potty: 12,
             container_3: 2,
@@ -87,7 +88,8 @@ const maps = {
             warehouse: 2,
             green_house: 1,
             mobile_home: 3,
-            porta_potty: 3
+            porta_potty: 3,
+            construction_site: 1
         },
         obstacles: {
             oil_tank: 12,
@@ -353,9 +355,9 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
-            //map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
-            //map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.generateBuilding("construction_site", Vec.create(this.width / 2, this.height / 2), 0);
+            // map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
+            // map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
         }
     },
     singleObstacle: {

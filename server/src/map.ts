@@ -342,9 +342,9 @@ export class Map {
                     const position = river.getPosition(bestPosition);
 
                     if (
-                        this.occupiedBridgePositions.some(pos => Vec.equals(pos, position)) ||
+                        this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
                         // Make sure there's dry land on either side of the bridge
-                        [
+                        || [
                             Vec.addAdjust(position, Vec.create(0, bridgeSpawnOptions.landCheckDist), bestOrientation),
                             Vec.addAdjust(position, Vec.create(0, -bridgeSpawnOptions.landCheckDist), bestOrientation)
                         ].some(point => this.terrain.getFloor(point) === "water")
