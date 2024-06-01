@@ -392,7 +392,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilMultiplier: 0.6,
             recoilDuration: 600,
             fireMode: FireMode.Single,
-            bulletCount: 18,
+            bulletCount: 11,
             shotSpread: 24,
             moveSpread: 28,
             jitterRadius: 1.75,
@@ -408,7 +408,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(4, 0.6)
             }],
             ballistics: {
-                damage: 4,
+                damage: 2,
                 obstacleMultiplier: 0.5,
                 speed: 0.12,
                 range: 40,
