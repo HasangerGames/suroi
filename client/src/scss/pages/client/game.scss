@@ -775,7 +775,7 @@
 
 #spectating-msg {
     text-align: center;
-    display: flex;
+    /*display: flex; - Not needed.*/
 
     font-weight: bold;
     font-size: 30px;
@@ -786,7 +786,22 @@
     }
 
     #spectating-msg-player {
-        margin-left: 8px;
+        display: inline;
+        margin-left: 3px;
+    }
+
+    .badge-icon {
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        margin-left: 1px;
+        margin-right: 4px;
+        margin-bottom: 3px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 16px;
+            height: 16px;
+        }
     }
 }
 

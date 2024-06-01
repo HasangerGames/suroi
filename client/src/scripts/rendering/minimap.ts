@@ -625,7 +625,7 @@ export class Minimap {
 
         // Bug Fix: "Killfeed shifts down with big map open"
         $("#kill-feed").hide();
-        
+
         this.resize();
     }
 
@@ -638,7 +638,7 @@ export class Minimap {
 
         // Bug Fix: "Killfeed shifts down with big map open"
         $("#kill-feed").show();
-        
+
         if (this.game.spectating) $("#spectating-container").show();
         const width = $(window).width();
         if (width && width > 768) $("#ui-kill-leader").show();
