@@ -198,7 +198,9 @@ export class SoundManager {
             puzzle_error: "audio/sfx/puzzle_error",
             puzzle_solved: "audio/sfx/puzzle_solved",
 
-            bleed: "audio/sfx/bleed"
+            bleed: "audio/sfx/bleed",
+
+            join_notification: "audio/sfx/join_notification"
         };
 
         for (const material of Materials) {

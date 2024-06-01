@@ -389,6 +389,11 @@ export class Game {
             // reload the page with a time stamp to try clearing cache
             location.search = `t=${Date.now()}`;
         }
+
+        // Sound which notifies the player that the game started if page
+        // is out of focus.
+        document.hasFocus() || this.soundManager.play('join_notification');
+
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
