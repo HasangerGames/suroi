@@ -304,17 +304,15 @@ export class UIManager {
         if (data.dirty.id) {
             this.game.spectating = data.spectating;
             if (data.spectating) {
-
-                // --------------------------------------------
-                // Moved here.
-                // --------------------------------------------
+                // Read the badge.
                 const badge = this.getPlayerBadge(data.id);
-                // --------------------------------------------
 
+                // Badge HTML-string
                 const badgeText = badge ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 $("#game-over-overlay").fadeOut();
 
+                // Player Name + Badge.
                 $("#spectating-msg-player").html(this.getPlayerName(data.id) + badgeText);
             }
             $("#spectating-container").toggle(data.spectating);
