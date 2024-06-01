@@ -584,12 +584,7 @@ export class Minimap {
         $("#btn-close-minimap").show();
         $("#ui-kill-leader").hide();
         $("#center-bottom-container").hide();
-
-        // ----------------------
-        // Bug Fix
-        // ----------------------
         $("#kill-feed").hide();
-        // ----------------------
 
         $("#kill-counter").show();
         this.resize();
@@ -601,12 +596,7 @@ export class Minimap {
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
-
-        // ----------------------
-        // Bug Fix
-        // ----------------------
         $("#kill-feed").show();
-        // ----------------------
 
         if (this.game.spectating) $("#spectating-container").show();
         const width = $(window).width();
