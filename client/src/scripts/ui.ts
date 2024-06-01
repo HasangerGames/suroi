@@ -462,6 +462,10 @@ export async function setUpUI(game: Game): Promise<void> {
             $("#splash-server-message").show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
+
+            // Dimmed backdrop on team menu. (Probably not needed here)
+            $("#splash-ui").css("filter", "");
+            $("#splash-ui").css("pointer-events", "");
         };
 
         teamSocket.onclose = (): void => {
@@ -481,9 +485,17 @@ export async function setUpUI(game: Game): Promise<void> {
             joinedTeam = false;
             window.location.hash = "";
             createTeamMenu.fadeOut(250);
+
+            // Dimmed backdrop on team menu.
+            $("#splash-ui").css("filter", "");
+            $("#splash-ui").css("pointer-events", "");
         };
 
         createTeamMenu.fadeIn(250);
+
+        // Dimmed backdrop on team menu.
+        $("#splash-ui").css("filter", "brightness(0.6)");
+        $("#splash-ui").css("pointer-events", "none");
     });
 
     $("#close-create-team").on("click", () => {
