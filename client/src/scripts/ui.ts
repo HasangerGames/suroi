@@ -619,6 +619,10 @@ export async function setUpUI(game: Game): Promise<void> {
         {
             name: "g0dak",
             link: "https://www.youtube.com/@g0dak"
+        },
+        {
+            name: "GAMERIO",
+            link: "https://www.youtube.com/@GAMERIO1"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);
