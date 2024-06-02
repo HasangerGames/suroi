@@ -47,8 +47,7 @@ import { type Packet } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import * as https from "https";
-
+import { mod_api_data, sendGetRequest, sendPostRequest } from "../utils/apiHelper";
 export interface PlayerContainer {
     readonly teamID?: string
     readonly autoFill: boolean
@@ -1012,53 +1011,22 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 break;
             }
             case SpectateActions.Report: {
-                if (!existsSync("reports")) mkdirSync("reports");
                 const reportID = randomBytes(4).toString("hex");
-                writeFileSync(`reports/${reportID}.json`, JSON.stringify({
-                    ip: this.spectating?.ip,
-                    name: this.spectating?.name,
-                    time: this.game.now
-                }));
+                // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
+                const reportJson = {
+                    id: reportID,
+                    reporterName: this.name,
+                    suspectName: this.spectating?.name,
+                    suspectIP: this.spectating?.ip,
+                    reporterIP: this.ip
+                }
 
                 const packet = new ReportPacket();
                 packet.playerName = this.spectating?.name ?? "";
                 packet.reportID = reportID;
                 this.sendPacket(packet);
 
-                const sendPostRequest = (url: string, data: unknown): Promise<string> => {
-                    return new Promise((resolve, reject) => {
-                        const payload = JSON.stringify(data);
-
-                        const options: https.RequestOptions = {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Content-Length": Buffer.byteLength(payload)
-                            }
-                        };
-
-                        const req = https.request(url, options, res => {
-                            let responseData = "";
-
-                            res.on("data", chunk => {
-                                responseData += String(chunk);
-                            });
-
-                            res.on("end", () => {
-                                resolve(responseData);
-                            });
-                        });
-
-                        req.on("error", (error: Error) => {
-                            reject(error);
-                        });
-
-                        req.write(payload);
-                        req.end();
-                    });
-                };
-
-                const reportURL = ""; // FIXME what?
+                const reportURL = String(mod_api_data.API_WEBHOOK_URL);
                 const reportData = {
                     embeds: [
                         {
@@ -1073,17 +1041,32 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                 {
                                     name: "Time reported",
                                     value: this.game.now
+                                },
+                                {
+                                    name: "Reporter",
+                                    value: this.name,
                                 }
+
                             ]
                         }
                     ]
                 };
 
-                // FIXME ignored promise result?
+                // FIXME ignored promise result? <- Because we dont really care what happens when we send a post request to discord for logging lol. Either discord does or doesnt do it
                 sendPostRequest(reportURL, reportData)
                     .catch(error => {
                         console.error("Error:", error);
                     });
+
+                // Post the report to the server with the json
+                console.log(`${mod_api_data.API_SERVER_URL}/reports`)
+
+                sendPostRequest(`${mod_api_data.API_SERVER_URL}/reports`, reportJson).then((d: any) => {
+                    console.log(d)
+                }).catch((e: any) => {
+                    console.log(e)
+                })
+                
             }
         }
 
