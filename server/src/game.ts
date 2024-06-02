@@ -20,7 +20,7 @@ import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
@@ -875,11 +875,15 @@ export class Game implements GameData {
         const loot = new Loot(
             this,
             definition,
-            position,
-            count,
-            pushVel
+            Vec.add(
+                position,
+                Vec.fromPolar(
+                    randomRotation(),
+                    random(0, GameConstants.lootSpawnDistance)
+                )
+            ),
+            count
         );
-
         this.grid.addObject(loot);
         this.pluginManager.emit(Events.Loot_Generated, loot);
         return loot;
