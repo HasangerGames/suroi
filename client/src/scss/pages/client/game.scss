@@ -282,10 +282,11 @@
     gap: 10px;
     @media screen and (max-width: $screen_large) {
         top: 7px;
-        right: 80px;
+        right: 90px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
-        height: 22px;
+        height: 26px;
+        border-radius: 4px;
     }
 
     @media screen and (max-width: $screen_medium) {
@@ -304,7 +305,7 @@
         }
 
         @media screen and (max-width: $screen_large) {
-            font-size: 12px;
+            font-size: 16px;
 
             .badge-icon {
                 width: 12px;
@@ -364,13 +365,18 @@
     }
 
     #kill-feed {
-        margin-right: 180px;
+        margin-right: 185px;
         margin-top: -10px;
         @media screen and (max-width: $screen_large) {
-            margin-right: 80px;
+            margin-right: 90px;
+            margin-top: 0px;
+        }
+        @media screen and (max-width: $screen_medium) {
+            margin-right: 5px;
         }
         @media screen and (max-width: $screen_medium) and (max-height: 500px) {
             margin-top: -40px;
+            margin-right: 80px;
         }
         .kill-feed-item {
             max-width: fit-content;
@@ -1338,6 +1344,10 @@
 
             .item-name {
                 display: none;
+            }
+            .item-tooltip {
+                bottom: 40px;
+                left: -15px;
             }
         }
 

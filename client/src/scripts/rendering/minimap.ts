@@ -614,7 +614,7 @@ export class Minimap {
         $("#scopes-container").show();
         if (this.game.spectating) $("#spectating-container").show();
         const width = $(window).width();
-        if (width && width > 1200) $("#ui-kill-leader").show();
+        if (width && width > 768) $("#ui-kill-leader").show();
         $("#kill-counter").hide();
         if (!this.visible) {
             this.container.visible = false;
