@@ -9,6 +9,7 @@ import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings } from "../../../../common/src/definitions/mapPings";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
+import type { KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { freezeDeep } from "../../../../common/src/utils/misc";
@@ -20,7 +21,6 @@ import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import type { KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -506,15 +506,40 @@ export class UIManager {
         this.updateWeaponSlots();
     }
 
+    /*
+        TODO proper caching would require keeping a copy of the inventory currently being shown,
+        TODO so that we can compare it to what it should now be showing (in other words, a kind
+        TODO of "oldInventory—newInventory" thing).
+    */
     updateWeaponSlots(): void {
         const inventory = this.inventory;
 
-        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active").css("outline-color", "");
+        const enum ClassNames {
+            HasItem = "has-item",
+            IsActive = "active"
+        }
+
+        const enum Selectors {
+            ItemName = ".item-name",
+            ItemImage = ".item-image",
+            ItemAmmo = ".item-ammo"
+        }
+
         const max = GameConstants.player.maxWeapons;
         for (let i = 0; i < max; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
+
             const weapon = inventory.weapons[i];
             const isActive = this.inventory.activeWeaponIndex === i;
+
+            const ammoCounter = container.children(Selectors.ItemAmmo);
+            const ammoText = ammoCounter.text();
+            const ammoDirty = !ammoText.length
+                ? weapon?.count !== undefined
+                : +ammoText !== weapon?.count;
+
+            const hadItem = container.hasClass(ClassNames.HasItem);
+            const activityChanged = container.hasClass(ClassNames.IsActive) !== isActive;
 
             if (weapon) {
                 const isGun = "ammoType" in weapon.definition;
@@ -522,70 +547,79 @@ export class UIManager {
                     ? Ammos.fromString((weapon.definition as GunDefinition).ammoType).characteristicColor
                     : { hue: 0, saturation: 0, lightness: 0 };
 
-                container
-                    .addClass("has-item")
-                    .toggleClass("active", isActive)
-                    .css(isGun && this.game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored"
-                        ? {
-                            "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
-                            "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
-                            "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
-                        }
-                        : {
-                            "outline-color": "",
-                            "background-color": "",
-                            "color": ""
-                        })
-                    .children(".item-name")
+                if (!hadItem) container.addClass(ClassNames.HasItem);
+                if (activityChanged) container.toggleClass(ClassNames.IsActive, isActive);
+
+                container.css(isGun && this.game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored"
+                    ? {
+                        "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
+                        "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
+                        "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                    }
+                    : {
+                        "outline-color": "",
+                        "background-color": "",
+                        "color": ""
+                    })
+                    .children(Selectors.ItemName)
                     .text(weapon.definition.name);
 
                 const isFists = weapon.definition.idString === "fists";
-                const itemImage = container.children(".item-image");
+                const itemImage = container.children(Selectors.ItemImage);
                 const oldSrc = itemImage.attr("src");
                 const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
-                if (oldSrc !== newSrc) this.playSlotAnimation(container);
+                if (oldSrc !== newSrc) {
+                    this._playSlotAnimation(container);
+                    itemImage.attr("src", newSrc);
+                }
+
                 itemImage
                     .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
                     .toggleClass("is-fists", isFists)
-                    .attr("src", newSrc)
                     .show();
 
                 if (weapon.definition.idString === "ghillie_suit") {
                     itemImage.css("background-color", GHILLIE_TINT.toHex());
                 }
 
-                if (weapon.count !== undefined) {
-                    container
-                        .children(".item-ammo")
-                        .text(weapon.count)
-                        .css("color", weapon.count > 0 ? "inherit" : "red");
+                const count = weapon.count;
+                if (ammoDirty && count !== undefined) {
+                    ammoCounter
+                        .text(count)
+                        .css("color", count > 0 ? "inherit" : "red");
                 }
             } else {
-                container.removeClass("has-item").css("background-color", "");
-                container.children(".item-name").css("color", "").text("");
-                container.children(".item-image").removeAttr("src").hide();
-                container.children(".item-ammo").text("");
+                container.removeClass(ClassNames.HasItem).removeClass(ClassNames.IsActive)
+                    .css({
+                        "outline-color": "",
+                        "background-color": "",
+                        "color": ""
+                    });
+                container.children(Selectors.ItemName).css("color", "").text("");
+                container.children(Selectors.ItemImage).removeAttr("src").hide();
+                container.children(Selectors.ItemAmmo).text("");
             }
         }
     }
 
-    playSlotAnimation(slot: JQuery): void {
-        slot.toggleClass("active");
-        slot[0].offsetWidth; // causes browser reflow
-        slot.toggleClass("active");
-        console.log(slot.hasClass("active"));
+    private _playSlotAnimation(element: JQuery): void {
+        element.toggleClass("active");
+        element[0].offsetWidth; // causes browser reflow
+        element.toggleClass("active");
     }
 
     updateItems(): void {
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
+            // TODO cache these somewhere lol
             const countElem = $(`#${item}-count`);
 
             const itemDef = Loots.fromString(item);
             const itemSlot = $(`#${item}-slot`);
 
-            if (countElem.text() !== "" && parseInt(countElem.text()) < count && itemSlot.length) {
-                this.playSlotAnimation(itemSlot);
+            if (+countElem.text() < count && itemSlot.length) {
+                console.log(countElem.text(), count);
+                this._playSlotAnimation(itemSlot);
             }
 
             countElem.text(count);
@@ -594,14 +628,16 @@ export class UIManager {
                 const backpack = this.game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
-            itemSlot.toggleClass("has-item", count > 0);
+            const isPresent = count > 0;
+
+            itemSlot.toggleClass("has-item", isPresent);
 
             if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
-                itemSlot.css("visibility", count > 0 ? "visible" : "hidden");
+                itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 
             if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
-                itemSlot.toggle(count > 0).removeClass("active");
+                itemSlot.toggle(isPresent).removeClass("active");
             }
         }
 

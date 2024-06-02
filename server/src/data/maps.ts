@@ -58,9 +58,10 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        bridges: ["small_bridge"],
         majorBuildings: ["armory", "port_complex", "refinery"],
         buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
@@ -70,6 +71,7 @@ const maps = {
             warehouse: 5,
             red_house: 6,
             green_house: 2,
+            construction_site: 2,
             mobile_home: 9,
             porta_potty: 12,
             container_3: 2,
@@ -86,7 +88,8 @@ const maps = {
             warehouse: 2,
             green_house: 1,
             mobile_home: 3,
-            porta_potty: 3
+            porta_potty: 3,
+            construction_site: 1
         },
         obstacles: {
             oil_tank: 12,
