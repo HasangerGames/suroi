@@ -340,6 +340,32 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
+            idString: "firework_warehouse",
+            name: "Firework Warehouse",
+            spawnHitbox: RectangleHitbox.fromRect(110, 70),
+            scopeHitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(65, 48, Vec.create(0, 0)),
+            ),
+            floorImages: [{
+                key: "firework_warehouse",
+                position: Vec.create(0, 0)
+            }],
+            ceilingImages: [{
+                key: "firework_warehouse_ceiling",
+                position: Vec.create(0, 0)
+            }],
+            floors: [
+                {
+                    type: "stone",
+                    hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
+                }
+            ],
+            obstacles: [
+                { idString: "firework_warehouse_exterior", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "rocket_box", position: Vec.create(14, -28.5) },
+            ],
+        },
+        {
             idString: "warehouse",
             name: "Warehouse",
             spawnHitbox: RectangleHitbox.fromRect(60, 88),

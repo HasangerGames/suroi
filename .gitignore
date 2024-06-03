@@ -29,3 +29,6 @@ build/
 .pnpm-cache/
 .npm/
 *.log
+
+# try to prevent error moments from happening (no pun intended)
+.env

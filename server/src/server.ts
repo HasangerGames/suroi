@@ -18,17 +18,21 @@ import { type GetGameResponse } from "../../common/src/typings";
 import { Cron } from "croner";
 
 export interface Punishment {
-    readonly type: "warning" | "tempBan" | "permaBan"
-    readonly expires?: number
+    readonly id: string;
+    readonly ip: string;
+    readonly reportId: string;
+    readonly reason: string;
+    readonly reporter: string;
+    readonly expires?: number;
+    readonly punishmentType: "warning" | "tempBan" | "permaBan";
 }
 
-let punishments: Record<string, Punishment> = {};
+let punishments: Punishment[] = [];
 
 let ipBlocklist: string[] | undefined;
 
 function removePunishment(ip: string): void {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete punishments[ip];
+    punishments = punishments.filter(p => p.ip !== ip);
     if (!Config.protection?.punishments?.url) {
         writeFile(
             "punishments.json",
@@ -40,6 +44,7 @@ function removePunishment(ip: string): void {
         );
     }
 }
+
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
@@ -70,17 +75,17 @@ if (isMainThread) {
 
         let response: GetGameResponse;
 
-        const punishment = punishments[ip];
+        const punishment = punishments.find(p => p.ip === ip);
         if (punishment) {
-            if (punishment.type === "warning") {
+            if (punishment.punishmentType === "warning") {
                 const protection = Config.protection;
                 if (protection?.punishments?.url) {
-                    fetch(`${protection.punishments.url}/api/removePunishment?ip=${ip}`, { headers: { Password: protection.punishments.password } })
+                    fetch(`${protection.punishments.url}/punishments/${ip}`, { headers: { "api-key": protection.punishments.password } })
                         .catch(e => console.error("Error acknowledging warning. Details: ", e));
                 }
                 removePunishment(ip);
             }
-            response = { success: false, message: punishment.type };
+            response = { success: false, message: punishment.punishmentType };
         } else if (ipBlocklist?.includes(ip)) {
             response = { success: false, message: "permaBan" };
         } else {
@@ -314,8 +319,8 @@ if (isMainThread) {
                     void (async() => {
                         try {
                             if (!protection.punishments?.url) return;
-                            const response = await fetch(`${protection.punishments.url}/api/punishments`, { headers: { Password: protection.punishments.password } });
-                            if (response.ok) punishments = await response.json();
+                            const response = await fetch(`${protection.punishments.url}/punishments`, { headers: { "api-key": protection.punishments.password } });
+                            if (response.status === 200) punishments = await response.json();
                             else console.error("Error: Unable to fetch punishment list.");
                         } catch (e) {
                             console.error("Error: Unable to fetch punishment list. Details:", e);
@@ -337,9 +342,13 @@ if (isMainThread) {
                 }
 
                 const now = Date.now();
-                for (const [ip, punishment] of Object.entries(punishments)) {
-                    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-                    if (punishment.expires && punishment.expires < now) delete punishments[ip];
+
+                for (let i = 0; i < punishments.length; i++) {
+                    const punishment = punishments[i];
+                    if (punishment.expires && new Date(punishment.expires).getTime() < now) {
+                        punishments.splice(i, 1);
+                        i--;
+                    }
                 }
 
                 Logger.log("Reloaded punishment list");

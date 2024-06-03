@@ -561,6 +561,26 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "rocket_box",
+            name: "Firework rocket box",
+            material: "cardboard",
+            health: 160,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hitbox: RectangleHitbox.fromRect(4, 4),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            frames: {
+                particle: "box_particle",
+                residue: "box_residue"
+
+            }
+        },
+        {
             idString: "tear_gas_crate",
             name: "Tear Gas Crate",
             material: "crate",
@@ -670,6 +690,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hideOnMap: true,
             rotationMode: RotationMode.None,
             hasLoot: true
+        },
+        {
+            idString: "firework_warehouse_exterior",
+            name: "Firework Warehouse Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(-19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(-19, 23)),
+                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(19, 23)),
+                RectangleHitbox.fromRect(1.88, 18, Vec.create(32, 15)),
+
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            }
         },
         {
             idString: "gold_airdrop_crate",
