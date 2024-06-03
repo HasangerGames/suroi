@@ -177,6 +177,17 @@ export const LootTables: Record<string, LootTable> = {
             { item: "usas12", weight: 0.05 }
         ]
     },
+    birthday_cake: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "special_guns", weight: 0.25 },
+            { tier: "special_equipment", weight: 0.25 },
+            { item: "birthday_cake", weight: 0.25 },
+            { item: "firework_rocket", weight: 0.2 },
+            { item: "firework_launcher", weight: 0.05 }
+        ]
+    },
     blueberry_bush: {
         min: 1,
         max: 1,

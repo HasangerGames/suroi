@@ -438,6 +438,22 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true
         },
         {
+            idString: "birthday_cake",
+            name: "Birthday Cake",
+            material: "pumpkin",
+            health: 100,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(1.9),
+            spawnHitbox: new CircleHitbox(2.9),
+            rotationMode: RotationMode.Full,
+            allowFlyover: FlyoverPref.Always,
+            hasLoot: true
+        },
+        {
             idString: "flint_stone",
             name: "Flint Stone",
             material: "stone",

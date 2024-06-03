@@ -105,6 +105,7 @@ const maps = {
             river_chest: 1,
             river_rock: 45,
             bush: 110,
+            birthday_cake: 100,
             lily_pad: 20,
             blueberry_bush: 30,
             barrel: 80,
