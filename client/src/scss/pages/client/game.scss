@@ -22,8 +22,6 @@
     top: 0;
     left: 0;
     position: absolute;
-    top: 0;
-    left: 0;
     transform-origin: 0 0;
 }
 
@@ -282,11 +280,10 @@
     gap: 10px;
     @media screen and (max-width: $screen_large) {
         top: 7px;
-        right: 90px;
+        right: 80px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
-        height: 26px;
-        border-radius: 4px;
+        height: 22px;
     }
 
     @media screen and (max-width: $screen_medium) {
@@ -305,7 +302,7 @@
         }
 
         @media screen and (max-width: $screen_large) {
-            font-size: 16px;
+            font-size: 12px;
 
             .badge-icon {
                 width: 12px;
@@ -365,18 +362,13 @@
     }
 
     #kill-feed {
-        margin-right: 185px;
+        margin-right: 180px;
         margin-top: -10px;
         @media screen and (max-width: $screen_large) {
-            margin-right: 90px;
-            margin-top: 0px;
-        }
-        @media screen and (max-width: $screen_medium) {
-            margin-right: 5px;
+            margin-right: 80px;
         }
         @media screen and (max-width: $screen_medium) and (max-height: 500px) {
             margin-top: -40px;
-            margin-right: 80px;
         }
         .kill-feed-item {
             max-width: fit-content;
@@ -804,6 +796,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     justify-content: center;
+    z-index: 100;
 
     @media screen and (max-width: $screen_large) {
         & > button {
@@ -1002,13 +995,13 @@
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
-            margin-left: -125px;
+            left: 4px;
             top: 2px;
         }
 
         @media screen and (max-width: $screen_medium) {
             font-size: 10px;
-            margin-left: -93px;
+            left: 2px;
             bottom: 25px;
         }
     }
@@ -1161,7 +1154,6 @@
             justify-content:last baseline;
         }
     }
-
 }
 
 .items-container#ammo {
@@ -1198,6 +1190,7 @@
         }
     }
 }
+
 .items-container {
     position: absolute;
     top: 120px;
@@ -1261,13 +1254,13 @@
             left: 110px;
 
             @media screen and (max-width: $screen_large) {
-                //bottom: 30px;
+                // bottom: 30px;
                 left: 75px;
             }
 
             @media screen and (max-width: $screen_small) {
-                //left: 70px;
-                //bottom: 0;
+                // left: 70px;
+                // bottom: 0;
             }
         }
 
@@ -1345,10 +1338,6 @@
             .item-name {
                 display: none;
             }
-            .item-tooltip {
-                bottom: 40px;
-                left: -15px;
-            }
         }
 
         .item-image {
@@ -1367,6 +1356,9 @@
                 height: 28px;
             }
         }
+
+        transition-property: width height;
+        transition-duration: 0.25s;
     }
 }
 
@@ -1403,9 +1395,6 @@
                 width: 25px;
                 height: 25px;
             }
-
-            transition-property: width height;
-            transition-duration: 0.25s;
         }
 
         .item-tooltip {
@@ -1438,7 +1427,8 @@
     }
 }
 
-#healing-items-container, #ammo-container {
+#healing-items-container,
+#ammo.items-container .inventory-container {
     & .inventory-slot.active {
         outline-width: 0;
 
@@ -1667,21 +1657,5 @@
         height: 100%;
         width: 50%;
         display: flex;
-    }
-}
-
-.pickup-pulse {
-    animation: pickup-pulse 0.25s ease-in-out;
-}
-
-@keyframes pickup-pulse {
-    0% {
-        scale: 100%;
-    }
-    50% {
-        scale: 110%;
-    }
-    100% {
-        scale: 100%;
     }
 }

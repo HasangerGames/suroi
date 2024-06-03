@@ -2353,8 +2353,43 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true
         },
         {
+            idString: "cooler",
+            name: "Cooler",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(8.3, 4.73),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            hasLoot: true
+        },
+        {
             idString: "m1117",
             name: "M1117",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            reflectBullets: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(18.51, 32.28, Vec.create(0, -5.17)), // Body
+                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, -10.87)), // Back wheels
+                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, 10.8)), // Front wheels
+                RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)), // Back of hood
+                RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "m1117_damaged",
+            name: "M1117 damaged",
             material: "metal",
             health: 1000,
             indestructible: true,
@@ -2758,6 +2793,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             noBulletCollision: false,
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
+            particleVariations: 2,
             frames: {
                 particle: "rock_particle"
             },
@@ -2827,22 +2863,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(19.5, 13.25, Vec.create(0, -3.25)),
                 RectangleHitbox.fromRect(1.75, 12.75, Vec.create(8.85, 3.8)),
                 RectangleHitbox.fromRect(1.75, 12.75, Vec.create(-8.85, 3.8))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
-            idString: "bunker_entrance_door",
-            name: "Bunker Entrance Door",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(4.5, 16, Vec.create(-0.75, 0)),
-                RectangleHitbox.fromRect(2, 3, Vec.create(2, 6.5)),
-                RectangleHitbox.fromRect(2, 3, Vec.create(2, -6.5))
             ),
             frames: {
                 particle: "metal_particle"

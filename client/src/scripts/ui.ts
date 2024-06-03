@@ -23,13 +23,13 @@ import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 
 interface RegionInfo {
-    name: string
-    mainAddress: string
-    gameAddress: string
-    playerCount?: number
-    maxTeamSize?: number
-    nextSwitchTime?: number
-    ping?: number
+    readonly name: string
+    readonly mainAddress: string
+    readonly gameAddress: string
+    readonly playerCount?: number
+    readonly maxTeamSize?: number
+    readonly nextSwitchTime?: number
+    readonly ping?: number
 }
 
 let selectedRegion: RegionInfo;

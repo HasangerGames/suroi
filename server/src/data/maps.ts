@@ -58,9 +58,10 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        bridges: ["small_bridge"],
         majorBuildings: ["armory", "port_complex", "refinery"],
         buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
@@ -70,6 +71,7 @@ const maps = {
             warehouse: 5,
             red_house: 6,
             green_house: 2,
+            construction_site: 2,
             mobile_home: 9,
             porta_potty: 12,
             container_3: 2,
@@ -86,7 +88,8 @@ const maps = {
             warehouse: 2,
             green_house: 1,
             mobile_home: 3,
-            porta_potty: 3
+            porta_potty: 3,
+            construction_site: 1
         },
         obstacles: {
             oil_tank: 12,
@@ -352,12 +355,9 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
-            map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("firework_launcher", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("firework_rocket", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
-            map.game.addLoot("curadell", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
+            map.generateBuilding("construction_site", Vec.create(this.width / 2, this.height / 2), 0);
+            // map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
+            // map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
         }
     },
     singleObstacle: {

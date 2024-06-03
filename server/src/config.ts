@@ -24,6 +24,8 @@ export const Config = {
 
     tps: 40,
 
+    tps: 40,
+
     plugins: [],
 
     spawn: { mode: SpawnMode.Center },
