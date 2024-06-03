@@ -280,10 +280,11 @@
     gap: 10px;
     @media screen and (max-width: $screen_large) {
         top: 7px;
-        right: 80px;
+        right: 90px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
-        height: 22px;
+        height: 26px;
+        border-radius: 4px;
     }
 
     @media screen and (max-width: $screen_medium) {
@@ -302,7 +303,7 @@
         }
 
         @media screen and (max-width: $screen_large) {
-            font-size: 12px;
+            font-size: 16px;
 
             .badge-icon {
                 width: 12px;
@@ -362,13 +363,18 @@
     }
 
     #kill-feed {
-        margin-right: 180px;
+        margin-right: 185px;
         margin-top: -10px;
         @media screen and (max-width: $screen_large) {
-            margin-right: 80px;
+            margin-right: 90px;
+            margin-top: 0px;
+        }
+        @media screen and (max-width: $screen_medium) {
+            margin-right: 5px;
         }
         @media screen and (max-width: $screen_medium) and (max-height: 500px) {
             margin-top: -40px;
+            margin-right: 80px;
         }
         .kill-feed-item {
             max-width: fit-content;
@@ -1154,6 +1160,7 @@
             justify-content:last baseline;
         }
     }
+
 }
 
 .items-container#ammo {
@@ -1338,6 +1345,10 @@
             .item-name {
                 display: none;
             }
+            .item-tooltip {
+                bottom: 40px;
+                left: -15px;
+            }
         }
 
         .item-image {
@@ -1395,6 +1406,9 @@
                 width: 25px;
                 height: 25px;
             }
+
+            transition-property: width height;
+            transition-duration: 0.25s;
         }
 
         .item-tooltip {
@@ -1657,5 +1671,21 @@
         height: 100%;
         width: 50%;
         display: flex;
+    }
+}
+
+.pickup-pulse {
+    animation: pickup-pulse 0.25s ease-in-out;
+}
+
+@keyframes pickup-pulse {
+    0% {
+        scale: 100%;
+    }
+    50% {
+        scale: 110%;
+    }
+    100% {
+        scale: 100%;
     }
 }

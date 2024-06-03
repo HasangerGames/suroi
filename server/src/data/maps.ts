@@ -355,9 +355,12 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("construction_site", Vec.create(this.width / 2, this.height / 2), 0);
-            // map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
-            // map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
+            map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("firework_launcher", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("firework_rocket", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
+            map.game.addLoot("curadell", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
         }
     },
     singleObstacle: {

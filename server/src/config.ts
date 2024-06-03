@@ -20,15 +20,13 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "singleBuilding",
-
-    tps: 40,
+    mapName: "main",
 
     tps: 40,
 
     plugins: [],
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
     maxGames: 4,
