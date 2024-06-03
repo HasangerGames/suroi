@@ -536,7 +536,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     sendEmote(emote?: EmoteDefinition): void {
-        if (!this.loadout.emotes.includes(emote) && !emote?.isTeamEmote) return;
+        if (!this.loadout.emotes.includes(emote) && (!this.game.teamMode || !emote?.isTeamEmote)) return;
 
         if (emote) {
             this.game.pluginManager.emit("playerEmote", {
@@ -1066,7 +1066,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }).catch((e: any) => {
                     console.log(e)
                 })
-                
+
             }
         }
 
