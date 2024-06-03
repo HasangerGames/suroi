@@ -274,7 +274,10 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
                 speed: 0.06,
                 range: 10,
                 rangeVariance: 1,
-                shrapnel: true
+                shrapnel: true,
+                tracer: {
+                    color: -1 // = random color
+                }
             },
             sound: "firework_rocket_explode",
             decal: "explosion_decal"

@@ -7,6 +7,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
 import { ObjectCategory } from "../../../../common/src/constants";
+import { random } from "../../../../common/src/utils/random";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -35,7 +36,7 @@ export class Bullet extends BaseBullet {
 
         if (!tracerStats.particle) this.image.anchor.set(1, 0.5);
 
-        const color = new Color(tracerStats.color ?? 0xffffff);
+        const color = new Color(tracerStats.color !== -1 ? tracerStats.color ?? 0xffffff : random(0, 2**24 - 1));
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this.image.tint = color;
