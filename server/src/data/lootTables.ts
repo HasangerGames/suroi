@@ -45,6 +45,15 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "melee", weight: 0.04 }
         ]
     },
+    hazel_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            [ { item: "firework_launcher", weight: 1 } ],
+            [ { item: "1y_birthday", weight: 1 } ],
+            
+        ]
+    },
     viking_chest: {
         min: 1,
         max: 1,
@@ -183,9 +192,9 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "special_guns", weight: 0.25 },
             { tier: "special_equipment", weight: 0.25 },
-            { item: "birthday_cake", weight: 0.25 },
+            { item: "1y_birthday", weight: 0.25 },
             { item: "firework_rocket", weight: 0.2 },
-            { item: "firework_launcher", weight: 0.05 }
+            { item: "firework_launcher", weight: 0.01 }
         ]
     },
     blueberry_bush: {

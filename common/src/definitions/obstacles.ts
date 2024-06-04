@@ -557,6 +557,19 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always
             }
         ),
+        apply(
+            "crate",
+            {
+                idString: "hazel_crate",
+                name: "Hazel Crate",
+                rotationMode: RotationMode.Binary,
+                health: 1700,
+                frames: {
+                    particle: "hazel_crate_particle",
+                    residue: "hazel_crate_residue"
+                }
+            }
+        ),
         {
             idString: "ammo_crate",
             name: "Ammo Crate",
