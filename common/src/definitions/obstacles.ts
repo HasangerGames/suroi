@@ -580,7 +580,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "rocket_box",
             name: "Firework rocket box",
             material: "cardboard",
-            health: 160,
+            health: 45,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -716,11 +716,14 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hideOnMap: true,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(-19, -23)),
-                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(19, -23)),
-                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(-19, 23)),
-                RectangleHitbox.fromRect(27.7, 1.88, Vec.create(19, 23)),
-                RectangleHitbox.fromRect(1.88, 18, Vec.create(32, 15)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, 23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, 23)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, 15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, -15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, 15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, -15)),
 
             ),
             rotationMode: RotationMode.Limited,

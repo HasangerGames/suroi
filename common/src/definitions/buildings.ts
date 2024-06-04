@@ -362,7 +362,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "firework_warehouse_exterior", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "rocket_box", position: Vec.create(14, -28.5) },
+                { idString: "rocket_box", position: Vec.create(0, 0) },
+                { idString: "barrel", position: Vec.create(-10, 0) },
+                { idString: "barrel", position: Vec.create(10, 0) },
+                { idString: "window", position: Vec.create(32.4, 0), rotation: 2 },
+                { idString: "window", position: Vec.create(-32.4, 0), rotation: 2 },
             ],
         },
         {
