@@ -39,7 +39,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      *
      * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
-    private static readonly _dragConstant = Math.exp(-3.69 / GameConstants.tickrate);
+    private static readonly _dragConstant = Math.exp(-4 / GameConstants.tickrate);
 
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
         super(game, position);

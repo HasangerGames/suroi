@@ -155,8 +155,9 @@ export const GameConstants = freezeDeep({
         killLeaderMinKills: 3,
         maxMouseDist: 128,
         reviveTime: 8,
-        maxReviveDist: 5
+        maxReviveDist: 5,
     },
+    lootSpawnDistance:.7,
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
