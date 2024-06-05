@@ -50,8 +50,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             [ { item: "firework_launcher", weight: 1 } ],
-            [ { item: "1y_birthday", weight: 1 } ],
-            
+            [ { item: "1st_birthday", weight: 1 } ]
         ]
     },
     viking_chest: {
@@ -192,7 +191,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "special_guns", weight: 0.25 },
             { tier: "special_equipment", weight: 0.25 },
-            { item: "1y_birthday", weight: 0.25 },
+            { item: "1st_birthday", weight: 0.25 },
             { item: "firework_rocket", weight: 0.2 },
             { item: "firework_launcher", weight: 0.01 }
         ]
