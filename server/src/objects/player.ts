@@ -410,6 +410,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
 
+        if (this.role === "error") {
+            this.inventory.addOrReplaceWeapon(2, "steelfang")
+            this.updateAndApplyModifiers()
+        }
+
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
         if (specialFunnies) {
