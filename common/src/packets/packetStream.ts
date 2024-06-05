@@ -72,7 +72,7 @@ export class PacketStream {
     }
 
     deserializeServerPacket(): Packet | undefined {
-        return this._deserliazePacket(ServerToClientPackets);
+        return this._deserializePacket(ServerToClientPackets);
     }
 
     serializeClientPacket(packet: Packet): void {
@@ -80,10 +80,10 @@ export class PacketStream {
     }
 
     deserializeClientPacket(): Packet | undefined {
-        return this._deserliazePacket(ClientToServerPackets);
+        return this._deserializePacket(ClientToServerPackets);
     }
 
-    private _deserliazePacket(register: PacketRegister): Packet | undefined {
+    private _deserializePacket(register: PacketRegister): Packet | undefined {
         if (this.stream.length - this.stream.byteIndex * 8 >= 1) {
             const id = this.stream.readBits(register.bits);
             const packet = new register.idToCtor[id]();
