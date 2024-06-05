@@ -751,7 +751,7 @@ export class Game {
                 this.gas.advanceGasStage();
 
                 this.addTimeout(() => {
-                    parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
+                    parentPort?.postMessage({ type: WorkerMessages.GameIsFull });
                     Logger.log(`Game ${this.id} | Preventing new players from joining`);
                     this.setGameData({ allowJoin: false });
                 }, Config.preventJoinAfter);

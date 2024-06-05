@@ -40,7 +40,7 @@ export class GameContainer {
                     }
                     break;
                 }
-                case WorkerMessages.CreateNewGame: {
+                case WorkerMessages.GameIsFull: {
                     newGame();
                     break;
                 }
@@ -73,7 +73,7 @@ export enum WorkerMessages {
     AllowIP,
     IPAllowed,
     UpdateGameData,
-    CreateNewGame
+    GameIsFull
 }
 
 export type WorkerMessage =
@@ -86,7 +86,7 @@ export type WorkerMessage =
     data: Partial<GameData>
 } |
 {
-    type: WorkerMessages.CreateNewGame
+    type: WorkerMessages.GameIsFull
 };
 
 export interface GameData {
