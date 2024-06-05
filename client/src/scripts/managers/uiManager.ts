@@ -680,6 +680,11 @@ export class UIManager {
             streakText = streak ? ` (streak: ${streak})` : "";
         }
 
+        // Do not show Kills counter in the knock/down message.
+        else if (severity === KillfeedEventSeverity.Down) {
+            $("#kill-msg-kills").text("");
+        }
+
         const eventText = `You ${UIManager._eventDescriptionMap[type][severity]} `;
         // some of these yield nonsensical sentences, but those that do are occur if
         // `type` takes on bogus values like "Gas" or "Airdrop"
