@@ -134,6 +134,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             idString: "steelfang",
             name: "Steelfang",
             damage: 40,
+            noDrop: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
             radius: 2.7,
@@ -155,7 +156,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             },
             wearerAttributes: {
                 passive: {
-                    speedBoost: 1.5
+                    speedBoost: 1.1
                 }
             }
         },

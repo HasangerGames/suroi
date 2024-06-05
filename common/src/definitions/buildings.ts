@@ -130,6 +130,18 @@ const warehouseObstacle = {
     flint_crate: 1
 };
 
+const fireworkWarehouseObstacle = {
+    regular_crate: 3,
+    barrel: 1,
+    super_barrel: 1,
+    ammo_crate: 2,
+    rocket_box: 1
+};
+const randomBarrel = {
+    super_barrel: 1,
+    barrel: 2
+};
+
 export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
     defaultTemplate => ({
         [defaultTemplate]: () => ({
@@ -338,6 +350,48 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { table: "ground_loot", position: Vec.create(18.48, 6.37) },
                 { table: "ground_loot", position: Vec.create(-23.91, -18.07) }
             ]
+        },
+        {
+            idString: "firework_warehouse",
+            name: "Firework Warehouse",
+            spawnHitbox: RectangleHitbox.fromRect(110, 70),
+            scopeHitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(65, 48, Vec.create(0, 0)),
+            ),
+            floorImages: [{
+                key: "firework_warehouse",
+                position: Vec.create(0, 0)
+            }],
+            ceilingImages: [{
+                key: "firework_warehouse_ceiling",
+                position: Vec.create(0, 0)
+            }],
+            floors: [
+                {
+                    type: "stone",
+                    hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
+                }
+            ],
+            obstacles: [
+                { idString: "firework_warehouse_exterior", position: Vec.create(0, 0), rotation: 0 },
+                { idString: randomBarrel, position: Vec.create(-27, 18) },
+                { idString: randomBarrel, position: Vec.create(27, -18) },
+                { idString: "window", position: Vec.create(32.4, 0), rotation: 2 },
+                { idString: "window", position: Vec.create(-32.4, 0), rotation: 2 },
+                { idString: "door", position: Vec.create(-0.47, 23), rotation: 2 },
+                { idString: "door", position: Vec.create(0.47, -23), rotation: 4 },
+                { idString: "rocket_box", position: Vec.create(29, -12) },
+                { idString: "rocket_box", position: Vec.create(-29, 12) },
+                { idString: "rocket_box", position: Vec.create(-27, 7) },
+                { idString: "rocket_box", position: Vec.create(-22, 9) },
+                { idString: fireworkWarehouseObstacle, position: Vec.create(-17, 17) },
+                { idString: fireworkWarehouseObstacle, position: Vec.create(17, -17) },
+                { idString: "ammo_crate", position: Vec.create(26.8, 17) },
+                { idString: fireworkWarehouseObstacle, position: Vec.create(-26.8, -17) },
+                { idString: { box: 9, grenade_box: 1 }, position: Vec.create(18.8, 14) },
+                { idString: "rocket_box", position: Vec.create(20, 19) },
+                { idString: "hazel_crate", position: Vec.create(0, 0) },
+            ],
         },
         {
             idString: "warehouse",

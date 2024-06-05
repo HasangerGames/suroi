@@ -118,6 +118,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "556mm",
             "762mm",
             "curadell",
+            "firework_rocket",
             "gauze",
             "medikit",
             "cola",

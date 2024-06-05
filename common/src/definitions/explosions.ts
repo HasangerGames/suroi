@@ -249,6 +249,39 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
             sound: "usas_explosion",
             decal: "explosion_decal"
         },
+        {
+            idString: "firework_explosion",
+            name: "Firework Launcher",
+            damage: 97,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 9,
+                max: 19
+            },
+            cameraShake: {
+                duration: 160,
+                intensity: 10
+            },
+            animation: {
+                duration: 1500,
+                tint: 0xA04412,
+                scale: 0.8
+            },
+            shrapnelCount: 17,
+            ballistics: {
+                damage: 3,
+                obstacleMultiplier: 1.5,
+                speed: 0.06,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true,
+                tracer: {
+                    color: -1 // = random color
+                }
+            },
+            sound: "firework_rocket_explode",
+            decal: "explosion_decal"
+        },
         apply(
             "explosion_factory",
             {

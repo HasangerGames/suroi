@@ -438,6 +438,22 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true
         },
         {
+            idString: "birthday_cake",
+            name: "Birthday Cake",
+            material: "pumpkin",
+            health: 100,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(1.9),
+            spawnHitbox: new CircleHitbox(2.9),
+            rotationMode: RotationMode.Full,
+            allowFlyover: FlyoverPref.Always,
+            hasLoot: true
+        },
+        {
             idString: "flint_stone",
             name: "Flint Stone",
             material: "stone",
@@ -541,6 +557,19 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always
             }
         ),
+        apply(
+            "crate",
+            {
+                idString: "hazel_crate",
+                name: "Hazel Crate",
+                rotationMode: RotationMode.Binary,
+                health: 1700,
+                frames: {
+                    particle: "hazel_crate_particle",
+                    residue: "hazel_crate_residue"
+                }
+            }
+        ),
         {
             idString: "ammo_crate",
             name: "Ammo Crate",
@@ -558,6 +587,26 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true,
             frames: {
                 particle: "crate_particle"
+            }
+        },
+        {
+            idString: "rocket_box",
+            name: "Firework rocket box",
+            material: "cardboard",
+            health: 45,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hitbox: RectangleHitbox.fromRect(4, 4),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            frames: {
+                particle: "box_particle",
+                residue: "box_residue"
+
             }
         },
         {
@@ -670,6 +719,32 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hideOnMap: true,
             rotationMode: RotationMode.None,
             hasLoot: true
+        },
+        {
+            idString: "firework_warehouse_exterior",
+            name: "Firework Warehouse Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, 23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, 23)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, 15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, -15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, 15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, -15)),
+
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            }
         },
         {
             idString: "gold_airdrop_crate",

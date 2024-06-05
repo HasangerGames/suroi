@@ -410,11 +410,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
 
-        if (this.role === "error") {
-            this.inventory.addOrReplaceWeapon(2, "steelfang")
-            this.updateAndApplyModifiers()
-        }
-
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
         if (specialFunnies) {
@@ -541,7 +536,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     sendEmote(emote?: EmoteDefinition): void {
-        if (!this.loadout.emotes.includes(emote) && !emote?.isTeamEmote) return;
+        if (!this.loadout.emotes.includes(emote) && (!this.game.teamMode || !emote?.isTeamEmote)) return;
 
         if (emote) {
             this.game.pluginManager.emit("playerEmote", {
@@ -1071,7 +1066,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }).catch((e: any) => {
                     console.log(e)
                 })
-                
+
             }
         }
 

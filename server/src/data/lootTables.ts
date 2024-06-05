@@ -45,6 +45,14 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "melee", weight: 0.04 }
         ]
     },
+    hazel_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            [ { item: "firework_launcher", weight: 1 } ],
+            [ { item: "1st_birthday", weight: 1 } ]
+        ]
+    },
     viking_chest: {
         min: 1,
         max: 1,
@@ -175,6 +183,17 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { item: "s_g17", weight: 0.95 },
             { item: "usas12", weight: 0.05 }
+        ]
+    },
+    birthday_cake: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "special_guns", weight: 0.25 },
+            { tier: "special_equipment", weight: 0.25 },
+            { item: "1st_birthday", weight: 0.25 },
+            { item: "firework_rocket", weight: 0.2 },
+            { item: "firework_launcher", weight: 0.01 }
         ]
     },
     blueberry_bush: {
@@ -436,6 +455,15 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 1 },
             { item: "127mm", count: 10, weight: 0.1 },
             { item: "curadell", weight: 0.1 }
+        ]
+    },
+    rocket_box: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { item: "firework_rocket", count: 10, weight: 1 },
+            { item: "curadell", weight: 0.01 }
         ]
     },
     cabinet: {

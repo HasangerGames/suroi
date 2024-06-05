@@ -107,7 +107,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             "Stardust",
             "Aurora",
             "Nebula",
-            "Birthday Cake"
+            "1st Birthday"
         ].map(name => simple("hidden_skin", [], [name])),
         apply(
             "hidden_skin",

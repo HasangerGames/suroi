@@ -149,6 +149,37 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                     rightFist: Vec.create(4, 2.15)
                 }
             }
+        },
+        {
+            idString: "confetti_grenade",
+            name: "Confetti Grenade",
+            fuseTime: 4000,
+            cookTime: 150,
+            throwTime: 150,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            speedCap: 0.15,
+            detonation: {
+                explosion: "firework_explosion"
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_confetti",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
         }
     ]
 );
