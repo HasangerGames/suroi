@@ -1615,5 +1615,5 @@ export function setUpCommands(game: Game): void {
         b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper command with help text if you want tho)
         c) the whole "hold key to switch to ping mode" thing is annoying
     */
-    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"+map_ping_wheel; +emote_wheel\"");
+    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"-map_ping_wheel; -emote_wheel\"");
 }
