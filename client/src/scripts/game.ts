@@ -599,7 +599,11 @@ export class Game {
             }
 
             object.destroy();
-            this.objects.delete(object);
+
+            // If it's a teammate, do NOT remove the object.
+            if (!(object instanceof Player && object.teamID === this.teamID)) {
+                this.objects.delete(object);
+            }
         }
 
         for (const bullet of updateData.deserializedBullets) {
