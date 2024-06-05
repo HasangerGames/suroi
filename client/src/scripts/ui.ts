@@ -304,7 +304,7 @@ export async function setUpUI(game: Game): Promise<void> {
     let lastPlayButtonClickTime = 0;
 
     // Join server when play buttons are clicked
-    $("#btn-play-solo, #btn-play-duo").on("click", () => {
+    $("#btn-play-solo, #btn-play-duo, #btn-play-squad").on("click", () => {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
         lastPlayButtonClickTime = now;

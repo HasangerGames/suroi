@@ -38,7 +38,7 @@ export const Config = {
 
     censorUsernames: true,
 
-    maxTeamSize: TeamSize.Solo,
+    maxTeamSize: TeamSize.Squad,
 
     roles: {
         "developr": { password: "developr", isDev: true },

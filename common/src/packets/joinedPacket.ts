@@ -10,7 +10,7 @@ export class JoinedPacket extends Packet {
     emotes: Array<EmoteDefinition | undefined> = [];
 
     override serialize(stream: SuroiBitStream): void {
-        stream.writeBits(this.maxTeamSize, 2);
+        stream.writeBits(this.maxTeamSize, 3);
         if (this.maxTeamSize > TeamSize.Solo) {
             stream.writeUint8(this.teamID);
         }
@@ -21,7 +21,7 @@ export class JoinedPacket extends Packet {
     }
 
     override deserialize(stream: SuroiBitStream): void {
-        this.maxTeamSize = stream.readBits(2);
+        this.maxTeamSize = stream.readBits(3);
         if (this.maxTeamSize > TeamSize.Solo) {
             this.teamID = stream.readUint8();
         }
