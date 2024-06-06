@@ -378,6 +378,7 @@
         }
 
         .emotes-list-item {
+            margin-top: auto;
             width: 84px;
             height: 84px;
             flex-shrink: 0;
@@ -511,7 +512,7 @@
         .badges-list-item {
             position: relative;
             width: 102px;
-            height: 98px;
+            height: 102px;
             font-size: 72px;
             div {
                 position: relative;
