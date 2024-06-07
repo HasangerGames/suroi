@@ -1752,12 +1752,12 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             length: 18,
             noMuzzleFlash: true,
             fists: {
-                left: Vec.create(155, -4),
+                left: Vec.create(145, -4),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(170, 0) },
+            image: { position: Vec.create(150, 0) },
             casingParticles: [
                 {
                     position: Vec.create(5, 0.6),

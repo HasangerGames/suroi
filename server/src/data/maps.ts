@@ -308,16 +308,19 @@ const maps = {
             const center = Vec.create(map.width / 2, map.height / 2);
 
             for (const obstacle of obstacles) {
-                map.generateObstacle(obstacle.id, Vec.add(center, obstacle.pos), 0, 1, 1);
-                map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1);
-                map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1);
-                map.generateObstacle(obstacle.id, Vec.add(center, Vec.create(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
+                const { id, pos } = obstacle;
+                const { x: posX, y: posY } = pos;
+
+                map.generateObstacle(id, Vec.add(center, pos), 0, 1, 1);
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), 0, 1);
+                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), 0, 1);
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), 0, 1);
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 80)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 80)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -80)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -80)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -90)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -331,12 +334,13 @@ const maps = {
 
             for (const obstacle in randomObstacles) {
                 const limit = randomObstacles[obstacle];
+                const definition = Obstacles.fromString(obstacle);
+
                 for (let i = 0; i < limit; i++) {
-                    const definition = Obstacles.fromString(obstacle);
                     const pos = map.getRandomPosition(
                         definition.spawnHitbox ?? definition.hitbox,
                         {
-                            collides: pos => Collision.circleCollision(center, 130, pos, 1)
+                            collides: pos => Collision.circleCollision(center, 150, pos, 1)
                         }
                     );
 
