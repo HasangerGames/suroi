@@ -461,9 +461,9 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
+            { item: "firework_rocket", count: 10, weight: 2 },
             { tier: "ammo", weight: 1 },
-            { item: "firework_rocket", count: 10, weight: 1 },
-            { item: "curadell", weight: 0.01 }
+            { item: "curadell", weight: 0.02 }
         ]
     },
     confetti_grenade_box: {
