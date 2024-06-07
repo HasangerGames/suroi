@@ -622,6 +622,10 @@ export class Minimap {
         $("#ui-kill-leader").hide();
         $("#center-bottom-container").hide();
         $("#kill-counter").show();
+
+        // Bug Fix: "Killfeed shifts down with big map open"
+        $("#kill-feed").hide();
+        
         this.resize();
     }
 
@@ -631,6 +635,10 @@ export class Minimap {
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
+
+        // Bug Fix: "Killfeed shifts down with big map open"
+        $("#kill-feed").show();
+        
         if (this.game.spectating) $("#spectating-container").show();
         const width = $(window).width();
         if (width && width > 768) $("#ui-kill-leader").show();
