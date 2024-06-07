@@ -5,7 +5,7 @@ import { ExtendedMap } from "../../common/src/utils/misc";
 import { Vector } from "../../common/src/utils/vector";
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
-import type { InventoryItem } from "./inventory/inventoryItem";
+import { type InventoryItem } from "./inventory/inventoryItem";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
 import { Loot } from "./objects/loot";

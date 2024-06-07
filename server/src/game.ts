@@ -871,18 +871,32 @@ export class Game implements GameData {
      * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
      * @returns The created loot object
      */
-    addLoot(definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel?: number): Loot {
+    addLoot(
+        definition: ReifiableDef<LootDefinition>,
+        position: Vector,
+        { count, pushVel, jitterSpawn = true }: {
+            readonly count?: number
+            readonly pushVel?: number
+            /**
+             * Whether to add a random offset to the given position
+             */
+            readonly jitterSpawn?: boolean
+        } = {}
+    ): Loot {
         const loot = new Loot(
             this,
             definition,
-            Vec.add(
-                position,
-                Vec.fromPolar(
-                    randomRotation(),
-                    random(0, GameConstants.lootSpawnDistance)
+            jitterSpawn
+                ? Vec.add(
+                    position,
+                    Vec.fromPolar(
+                        randomRotation(),
+                        random(0, GameConstants.lootSpawnDistance)
+                    )
                 )
-            ),
-            count
+                : position,
+            count,
+            pushVel
         );
         this.grid.addObject(loot);
         this.pluginManager.emit(Events.Loot_Generated, loot);

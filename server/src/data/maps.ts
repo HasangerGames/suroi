@@ -169,7 +169,7 @@ const maps = {
             // Generate all Loots
             const itemPos = Vec.create(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(item, itemPos, Infinity, 0);
+                map.game.addLoot(item, itemPos, { count: Infinity, pushVel: 0, jitterSpawn: false });
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -270,6 +270,7 @@ const maps = {
                     [ItemType.Skin]: 1
                 };
 
+                const game = map.game;
                 for (const item of Loots.definitions) {
                     if (
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
@@ -278,7 +279,7 @@ const maps = {
                         || item.itemType === ItemType.Skin
                     ) continue;
 
-                    map.game.addLoot(item, itemPos, countMap[item.itemType] ?? 1).velocity = Vec.create(0, 0);
+                    game.addLoot(item, itemPos, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
 
                     itemPos.x += xOff;
                     if (
@@ -317,10 +318,10 @@ const maps = {
                 map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), 0, 1);
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -90)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-67, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(67, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-67, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(67, -90)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -380,7 +381,7 @@ const maps = {
         oceanSize: 8,
         genCallback(map) {
             map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
+            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), { count: Infinity });
         }
     },
     gunsTest: (() => {
@@ -406,7 +407,7 @@ const maps = {
                     player.disableInvulnerability();
                     // setInterval(() => player.activeItem.useItem(), 30);
                     map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));
-                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), Infinity);
+                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), { count: Infinity });
                     map.game.grid.addObject(player);
                 }
             }

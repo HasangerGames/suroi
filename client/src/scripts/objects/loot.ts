@@ -116,7 +116,7 @@ export class Loot extends GameObject {
                 this.animation = this.game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
-                    duration: 700,
+                    duration: 500,
                     ease: EaseFunctions.quadraticOut,
                     onComplete: () => {
                         this.animation = undefined;

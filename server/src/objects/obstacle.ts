@@ -115,7 +115,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 this.game.addLoot(
                     item.idString,
                     this.position,
-                    item.count
+                    { count: item.count }
                 );
             }
         }
@@ -192,17 +192,17 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
             for (const item of this.loot) {
-                const loot = this.game.addLoot(
+                this.game.addLoot(
                     item.idString,
+
                     this.lootSpawnOffset
                         ? Vec.add(this.position, this.lootSpawnOffset)
                         : this.loot.length > 1
                             ? this.hitbox.randomPoint()
                             : this.position,
-                    item.count
-                );
 
-                loot.push(
+                    { count: item.count }
+                ).push(
                     Angle.betweenPoints(this.position, lootSpawnPosition),
                     0.02
                 );

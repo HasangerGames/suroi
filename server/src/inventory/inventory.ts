@@ -10,7 +10,8 @@ import { Throwables, type ThrowableDefinition } from "../../../common/src/defini
 import { Numeric } from "../../../common/src/utils/math";
 import { ExtendedMap, type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type Vector } from "../../../common/src/utils/vector";
+import type { Vector } from "../../../common/src/utils/vector";
+import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
@@ -333,10 +334,11 @@ export class Inventory {
         return -1;
     }
 
-    private _dropItem(toDrop: ReifiableDef<LootDefinition>, options?: { readonly position?: Vector, readonly count?: number, readonly pushForce?: number }): void {
-        this.owner.game
-            .addLoot(toDrop, options?.position ?? this.owner.position, options?.count ?? 1)
-            .push(this.owner.rotation, options?.pushForce ?? -0.03);
+    private _dropItem(
+        toDrop: ReifiableDef<LootDefinition>,
+        options?: Parameters<Game["addLoot"]>[2] & { readonly position?: Vector }
+    ): void {
+        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, options);
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
@@ -383,10 +385,10 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
-     * @param pushForce The velocity to push the loot, defaults to -0.03
+     * @param pushVel The velocity to push the loot, defaults to -0.03
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushForce = -0.03): InventoryItem | undefined {
+    dropWeapon(slot: number, pushVel = -0.03): InventoryItem | undefined {
         const item = this.weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
@@ -396,10 +398,10 @@ export class Inventory {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
             if (item instanceof GunItem && (definition as GunDefinition).isDual) {
-                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
-                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
+                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel });
+                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel });
             } else {
-                this._dropItem(definition, { pushForce });
+                this._dropItem(definition, { pushVel });
             }
 
             this._setWeapon(slot, undefined);
@@ -433,7 +435,7 @@ export class Inventory {
                 if (overAmount > 0) {
                     this.items.decrementItem(ammoType, overAmount);
 
-                    this._dropItem(ammoType, { count: overAmount, pushForce });
+                    this._dropItem(ammoType, { count: overAmount, pushVel });
                 }
             }
         }
@@ -449,7 +451,7 @@ export class Inventory {
      * Attempts to drop a item with given `idString`
      * @param itemString The `idString` of the item;
      */
-    dropItem(itemString: ReifiableDef<LootDefinition>, pushForce = -0.03): void {
+    dropItem(itemString: ReifiableDef<LootDefinition>, pushVel = -0.03): void {
         const definition = Loots.reify(itemString);
         const { idString } = definition;
 
@@ -468,12 +470,12 @@ export class Inventory {
                 const itemAmount = this.items.getItem(idString);
                 const removalAmount = Math.min(itemAmount, Math.ceil(itemAmount / 2));
 
-                this._dropItem(definition, { pushForce, count: removalAmount });
+                this._dropItem(definition, { pushVel, count: removalAmount });
                 this.items.decrementItem(idString, removalAmount);
                 break;
             }
             case ItemType.Scope: {
-                this._dropItem(definition, { pushForce });
+                this._dropItem(definition, { pushVel });
                 this.items.setItem(idString, 0);
 
                 if (this.scope.idString !== idString) break;
@@ -508,7 +510,7 @@ export class Inventory {
                         break;
                     }
                 }
-                this._dropItem(definition, { pushForce });
+                this._dropItem(definition, { pushVel });
                 break;
             }
             case ItemType.Backpack: {
