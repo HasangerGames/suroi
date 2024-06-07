@@ -1584,7 +1584,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             capacity: 3,
             reloadTime: 1.25,
             singleReload: true,
-            fireDelay: 1500,
+            fireDelay: 1250,
             switchDelay: 900,
             noMuzzleFlash: true,
             speedMultiplier: 0.65,
@@ -1610,7 +1610,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ballistics: {
                 damage: 20,
                 obstacleMultiplier: 1,
-                speed: 0.1,
+                speed: 0.15,
                 range: 120,
                 onHitExplosion: "firework_launcher_explosion",
                 explodeOnImpact: true,
