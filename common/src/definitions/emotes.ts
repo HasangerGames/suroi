@@ -92,6 +92,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Pog",
             "Froog",
             "Bleh",
+            "Muller",
             "Suroi General Chat",
             "Fire",
             "RIP"
@@ -99,10 +100,13 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         ...[
             "Question Mark",
             "Team = Ban",
+            "Hack = Ban",
             "gg",
             "ez",
+            "Hi5",
             "oof",
             "real",
+            "fake",
             "Colon Three"
         ].map(name => simple("emote_factory", name, EmoteCategory.Text)),
         ...[
