@@ -1313,7 +1313,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "oil_tanker_ship",
             name: "Oil Tanker",
-            spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
+            spawnHitbox: RectangleHitbox.fromRect(110, 300),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(65, 29, Vec.create(4.5, -102.5)),
                 RectangleHitbox.fromRect(7.5, 28, Vec.create(41.7, -101.5))
@@ -1408,7 +1408,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "super_barrel", position: Vec.create(43, -7.5) },
                 { idString: "sandbags", position: Vec.create(30, -16), rotation: 2 },
                 { idString: "flint_crate", position: Vec.create(41, -35) }
-            ] as BuildingObstacle[]
+            ] as BuildingObstacle[],
+            subBuildings: [
+                { idString: "oil_tanker_ship_vault", position: Vec.create(-17.6, -102.6) }
+            ]
+        },
+        {
+            idString: "oil_tanker_ship_vault",
+            name: "Oil Tanker Ship Vault",
+            spawnHitbox: RectangleHitbox.fromRect(22.73, 28.32),
+            scopeHitbox: RectangleHitbox.fromRect(22.73, 28.32),
+            ceilingImages: [{
+                key: "oil_tanker_ship_vault_ceiling",
+                position: Vec.create(0, 0)
+            }]
         },
         {
             idString: "port",
