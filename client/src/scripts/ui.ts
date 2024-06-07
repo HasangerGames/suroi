@@ -41,8 +41,14 @@ let teamID: string | undefined | null;
 let joinedTeam = false;
 let autoFill = false;
 
+let buttonsLocked = true;
+export function lockPlayButtons() { buttonsLocked = true; }
+export function unlockPlayButtons() { buttonsLocked = false; }
+
 let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLButtonElement>]>;
 export function resetPlayButtons(): void {
+    if (buttonsLocked) return;
+
     $("#splash-options").removeClass("loading");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
