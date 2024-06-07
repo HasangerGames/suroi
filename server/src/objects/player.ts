@@ -4,10 +4,10 @@ import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, Kill
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { Guns, type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type PlayerPing } from "../../../common/src/definitions/mapPings";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { Melees, type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
@@ -502,13 +502,43 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {
-        const inventory = this.inventory;
+        const { inventory } = this;
 
         inventory.items.incrementItem(idString, count ?? 3);
         inventory.useItem(idString);
         // we hope `throwableItemMap` is correctly sync'd
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
+    }
+
+    fillInventory(): void {
+        const { inventory } = this;
+
+        inventory.scope = "4x_scope";
+        inventory.backpack = Loots.fromString("tactical_pack");
+        this.inventory.vest = Loots.fromString("tactical_vest");
+        this.inventory.helmet = Loots.fromString("tactical_helmet");
+
+        const { items } = inventory;
+
+        items.setItem("2x_scope", 1);
+        items.setItem("4x_scope", 1);
+        items.setItem("8x_scope", 1);
+        items.setItem("15x_scope", 1);
+
+        for (const [item, maxCapacity] of Object.entries(inventory.backpack.maxCapacity)) {
+            items.setItem(item, maxCapacity);
+
+            if (inventory.throwableItemMap.has(item)) {
+                // we hope `throwableItemMap` is correctly sync'd
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                inventory.throwableItemMap.get(item)!.count = maxCapacity;
+            }
+        }
+
+        this.giveGun(pickRandomInArray(Guns.definitions).idString);
+        this.giveGun(pickRandomInArray(Guns.definitions).idString);
+        this.inventory.addOrReplaceWeapon(2, pickRandomInArray(Melees.definitions));
     }
 
     spawnPos(position: Vector): void {
