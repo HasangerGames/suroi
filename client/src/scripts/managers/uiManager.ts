@@ -310,6 +310,7 @@ export class UIManager {
             }
             $("#spectating-container").toggle(data.spectating);
             $("#spectating-msg").toggle(data.spectating);
+            this.clearTeammateCache();
 
             if (this.game.inputManager.isMobile) {
                 $("#btn-emotes").toggle(!data.spectating);
