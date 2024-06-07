@@ -41,16 +41,24 @@ let teamID: string | undefined | null;
 let joinedTeam = false;
 let autoFill = false;
 
+let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLButtonElement>]>;
 export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
 
-    const info = selectedRegion ?? regionInfo[Config.defaultRegion];
-    const isSolo = info.maxTeamSize === TeamSize.Solo;
-    const isDuo = info.maxTeamSize === TeamSize.Duo;
+    const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
+    const isSolo = maxTeamSize === TeamSize.Solo;
 
-    $("#btn-play-solo").toggleClass("locked", isDuo);
-    $(".team-btns-container").toggleClass("locked", isSolo);
-    $("#locked-msg").css("top", isSolo ? "227px" : isDuo ? "153px" : "").toggle(isSolo || isDuo);
+    for (
+        const [size, btn] of (
+            btnMap ??= [
+                [TeamSize.Solo, $("#btn-play-solo")],
+                [TeamSize.Duo, $("#btn-play-duo")],
+                [TeamSize.Squad, $("#btn-play-squad")]
+            ]
+        )
+    ) btn.toggleClass("locked", maxTeamSize !== size);
+
+    $("#locked-msg").css("top", isSolo ? "204px" : "153px").show();
 }
 
 export async function setUpUI(game: Game): Promise<void> {
@@ -1705,8 +1713,8 @@ Video evidence is required.`)) {
         tabContent.show();
     });
 
-    $("#warning-modal-agree-checkbox").on("click", function() {
-        $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !$(this).prop("checked"));
+    $<HTMLInputElement>("#warning-modal-agree-checkbox").on("click", function() {
+        $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !this.checked);
     });
 
     $("#warning-btn-play-solo").on("click", () => {
