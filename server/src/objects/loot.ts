@@ -380,6 +380,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             }
             case ItemType.Skin: {
                 if (player.loadout.skin === definition) {
+                    countToRemove = 0; // eipi's fix
                     break;
                 }
 
