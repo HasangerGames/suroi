@@ -1059,8 +1059,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     });
 
                 // Post the report to the server with the json
-                console.log(`${mod_api_data.API_SERVER_URL}/reports`)
-
                 sendPostRequest(`${mod_api_data.API_SERVER_URL}/reports`, reportJson).then((d: any) => {
                     console.log(d)
                 }).catch((e: any) => {

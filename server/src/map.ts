@@ -311,7 +311,6 @@ export class Map {
                 }
 
                 attempts = 0;
-                if (idString === "firework_warehouse") console.log(":pepedls:")
                 this.generateBuilding(definition, position, orientation);
             }
         } else {

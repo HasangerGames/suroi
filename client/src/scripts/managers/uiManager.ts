@@ -619,7 +619,6 @@ export class UIManager {
             const itemSlot = $(`#${item}-slot`);
 
             if (+countElem.text() < count && itemSlot.length) {
-                console.log(countElem.text(), count);
                 this._playSlotAnimation(itemSlot);
             }
 
