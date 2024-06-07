@@ -87,6 +87,7 @@ export class Bullet extends BaseBullet {
         }
 
         const records: DamageRecord[] = [];
+        const definition = this.definition;
 
         for (const collision of collisions) {
             const object = collision.object;
@@ -96,13 +97,13 @@ export class Bullet extends BaseBullet {
                 this.damagedIDs.add(object.id);
                 records.push({
                     object: object as Player,
-                    damage: this.definition.damage / (this.reflectionCount + 1),
+                    damage: definition.damage / (this.reflectionCount + 1),
                     weapon: this.sourceGun,
                     source: this.shooter,
                     position: collision.intersection.point
                 });
 
-                if (this.definition.penetration.players) continue;
+                if (definition.penetration.players) continue;
                 this.dead = true;
                 break;
             }
@@ -112,21 +113,40 @@ export class Bullet extends BaseBullet {
 
                 records.push({
                     object: object as Obstacle,
-                    damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
+                    damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
                     weapon: this.sourceGun,
                     source: this.shooter,
                     position: collision.intersection.point
                 });
 
-                if (this.definition.penetration.obstacles) continue;
+                if (definition.penetration.obstacles) continue;
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
                 if (!object.definition.noCollisions) {
-                    this.position = collision.intersection.point;
+                    const { point, normal } = collision.intersection;
+                    this.position = point;
 
                     if (object.definition.reflectBullets && this.reflectionCount < 3) {
-                        this.reflect(collision.intersection.normal);
-                        this.reflected = true;
+                        let shouldReflect: boolean;
+
+                        /*
+                            no matter what, nudge the bullet
+
+                            if the bullet reflects, we do this to ensure that it doesn't re-collide
+                            with the same obstacle instantly
+
+                            if it doesn't, then we do this to avoid having the obstacle eat the
+                            explosion, thereby shielding others from its effects
+                        */
+                        const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                        this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+
+                        // skill issue
+                        // eslint-disable-next-line no-cond-assign
+                        if (shouldReflect = definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
+                            this.reflect(rotation);
+                            this.reflected = true;
+                        }
                     }
 
                     this.dead = true;
@@ -138,16 +158,13 @@ export class Bullet extends BaseBullet {
         return records;
     }
 
-    reflect(normal: Vector): void {
-        const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-
+    reflect(direction: number): void {
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
             {
-                // move it a bit so it won't collide again with the same hitbox
-                position: Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation))),
-                rotation,
+                position: Vec.clone(this.position),
+                rotation: direction,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance

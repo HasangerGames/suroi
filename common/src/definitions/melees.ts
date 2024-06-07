@@ -21,6 +21,8 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly image?: {
         readonly position: Vector
         readonly usePosition: Vector
+        // no relation to the ZIndexes enum
+        readonly zIndex: number
         readonly angle?: number
         readonly useAngle?: number
         readonly lootScale?: number
@@ -37,6 +39,9 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             killstreak: false,
             speedMultiplier: 1,
             maxTargets: 1,
+            image: {
+                zIndex: 1
+            },
             fireMode: FireMode.Single
         })
     })
@@ -58,7 +63,8 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 right: Vec.create(38, 35),
                 useLeft: Vec.create(75, -10),
                 useRight: Vec.create(75, 10)
-            }
+            },
+            image: undefined
         },
         {
             idString: "baseball_bat",

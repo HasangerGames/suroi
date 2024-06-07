@@ -93,8 +93,8 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             name: "Firework Rocket",
             maxStackSize: 5,
             characteristicColor: {
-                hue: 190,
-                saturation: 100,
+                hue: 0,
+                saturation: 55,
                 lightness: 85
             },
             defaultCasingFrame: "casing_firework_rocket",

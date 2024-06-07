@@ -811,7 +811,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case ItemType.Gun: {
                 this.images.rightFist.setZIndex(reference.fists.rightZIndex);
                 this.images.leftFist.setZIndex(reference.fists.leftZIndex);
-                this.images.weapon.setZIndex(2);
+                this.images.weapon.setZIndex(reference.image.zIndex);
                 this.images.altWeapon.setZIndex(2);
                 this.images.body.setZIndex(3);
                 break;
@@ -820,14 +820,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
-                this.images.weapon.setZIndex(1);
+                this.images.weapon.setZIndex(reference.image?.zIndex ?? 1);
                 break;
             }
             case ItemType.Throwable: {
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
-                this.images.weapon.setZIndex(5);
+                this.images.weapon.setZIndex(reference.image?.zIndex ?? 5);
                 break;
             }
         }

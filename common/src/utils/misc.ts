@@ -3,7 +3,7 @@ export function isObject(item: unknown): item is Record<string, unknown> {
 }
 
 export type DeepPartial<T> = {
-    [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+    [K in keyof T]?: DeepPartial<T[K]>;
 };
 
 export type DeepRequired<T> = T extends Array<infer R>
@@ -13,7 +13,7 @@ export type DeepRequired<T> = T extends Array<infer R>
     };
 
 export type DeepReadonly<T> = {
-    readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+    readonly [K in keyof T]: DeepReadonly<T[K]>;
 };
 
 /**

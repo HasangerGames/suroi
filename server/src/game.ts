@@ -454,8 +454,9 @@ export class Game {
             records = records.concat(bullet.update());
 
             if (bullet.dead) {
-                if (bullet.definition.onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
+                const onHitExplosion = bullet.definition.onHitExplosion;
+                if (onHitExplosion && !bullet.reflected) {
+                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter);
                 }
                 this.bullets.delete(bullet);
             }

@@ -27,6 +27,8 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly image: {
         readonly position: Vector
         readonly angle?: number
+        // no relation to the ZIndexes enum
+        readonly zIndex: number
     }
     readonly speedCap: number
     readonly hitboxRadius: number
@@ -69,6 +71,9 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             cookSpeedMultiplier: 0.7,
             hitboxRadius: 1,
             impactDamage: 0,
+            image: {
+                zIndex: 5
+            },
             maxThrowDistance: 96,
             fireDelay: 250,
             speedCap: Infinity
@@ -165,7 +170,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             },
             speedCap: 0.15,
             detonation: {
-                explosion: "firework_explosion"
+                explosion: "confetti_grenade_explosion"
             },
             animation: {
                 pinImage: "proj_frag_pin",

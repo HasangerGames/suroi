@@ -36,7 +36,12 @@ export class Bullet extends BaseBullet {
 
         if (!tracerStats.particle) this.image.anchor.set(1, 0.5);
 
-        const color = new Color(tracerStats.color !== -1 ? tracerStats.color ?? 0xffffff : random(0, 2**24 - 1));
+        const white = 0xFFFFFF;
+        const color = new Color(
+            tracerStats.color === -1
+                ? random(0, white)
+                : tracerStats.color ?? white
+        );
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this.image.tint = color;

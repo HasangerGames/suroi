@@ -690,7 +690,7 @@ export const LootRadius: Record<ItemType, number> = {
     [ItemType.Skin]: 3
 };
 
-export interface BaseBulletDefinition {
+export type BaseBulletDefinition = {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly speed: number
@@ -704,6 +704,9 @@ export interface BaseBulletDefinition {
         readonly opacity: number
         readonly width: number
         readonly length: number
+        /**
+         * A value of `-1` causes a random color to be chosen
+         */
         readonly color?: number
         readonly image: string
         // used by the radio bullet
@@ -718,7 +721,17 @@ export interface BaseBulletDefinition {
     readonly allowRangeOverride: boolean
     readonly lastShotFX: boolean
     readonly noCollision: boolean
-}
+} & ({
+    readonly onHitExplosion?: never
+} | {
+    readonly onHitExplosion: ReferenceTo<ExplosionDefinition>
+    /**
+     * When hitting a reflective surface:
+     * - `true` causes the explosion to be spawned
+     * - `false` causes the projectile to be reflected
+     */
+    readonly explodeOnImpact?: boolean
+});
 
 export interface WearerAttributes {
     /**

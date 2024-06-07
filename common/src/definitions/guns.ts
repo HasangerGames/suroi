@@ -61,6 +61,8 @@ type BaseGunDefinition = InventoryItemDefinition & {
 
     readonly image: {
         readonly angle: number
+        // no relation to the ZIndexes enum
+        readonly zIndex: number
     }
 
     readonly noMuzzleFlash: boolean
@@ -86,7 +88,8 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly isDual: true
     readonly singleVariant: ReferenceTo<GunDefinition>
     /**
-     * This offset is used for pretty much everything that's unique to dual weapons: it's an offset for projectile spawns, casing spawns and world images
+     * This offset is used for pretty much everything that's unique to dual weapons: it's an offset for projectile
+     * spawns, casing spawns and world images
      */
     readonly leftRightOffset: number
 });
@@ -143,7 +146,8 @@ const defaultGun = {
     },
     casingParticles: [] as RawGunDefinition["casingParticles"],
     image: {
-        angle: 0
+        angle: 0,
+        zIndex: 2
     },
     isDual: false,
     noMuzzleFlash: false,
@@ -1598,7 +1602,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 allowRangeOverride: true,
                 tracer: {
                     length: 0.5,
-                    color: 16711680
+                    color: 0xFF0000
                 }
             }
         },
@@ -1606,10 +1610,11 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "firework_launcher",
             name: "Firework Launcher",
             ammoType: "firework_rocket",
-            ammoSpawnAmount: 1,
+            ammoSpawnAmount: 9,
             capacity: 3,
-            reloadTime: 3,
-            fireDelay: 2500,
+            reloadTime: 1.25,
+            singleReload: true,
+            fireDelay: 1500,
             switchDelay: 900,
             noMuzzleFlash: true,
             speedMultiplier: 0.65,
@@ -1623,22 +1628,22 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fists: {
                 left: Vec.create(60, 40),
                 right: Vec.create(20, 55),
-                animationDuration: 400
+                animationDuration: 100
             },
             image: {
                 position: Vec.create(30, 50.5),
-                lootScale: 0.5
+                zIndex: 4
             },
             casingParticles: [{
-                frame: "casing_firework_rocket",
                 position: Vec.create(4, 0.6)
             }],
             ballistics: {
                 damage: 20,
-                obstacleMultiplier: 2,
+                obstacleMultiplier: 1,
                 speed: 0.1,
                 range: 120,
-                onHitExplosion: "firework_explosion",
+                onHitExplosion: "firework_launcher_explosion",
+                explodeOnImpact: true,
                 tracer: {
                     image: "firework_rocket_trail",
                     length: 1
