@@ -4,11 +4,12 @@ import { Worker } from "node:worker_threads";
 import { type GetGameResponse } from "../../common/src/typings";
 import { maxTeamSize } from "./server";
 import path from "node:path";
+import { Modes } from "../../common/src/definitions/modes";
 
 export class GameContainer {
     id: number;
     worker: Worker;
-
+    mode:string;
     data: GameData = {
         aliveCount: 0,
         allowJoin: false,
@@ -19,11 +20,12 @@ export class GameContainer {
 
     ipPromiseMap = new Map<string, Array<() => void>>();
 
-    constructor(id: number) {
+    constructor(id: number,mode:string) {
         this.id = id;
+        this.mode=mode
         // @ts-expect-error no typings for this
         const isTSNode = process[Symbol.for("ts-node.register.instance")];
-        this.worker = new Worker(path.resolve(__dirname, `game.${isTSNode ? "ts" : "js"}`), { workerData: { id, maxTeamSize } });
+        this.worker = new Worker(path.resolve(__dirname, `game.${isTSNode ? "ts" : "js"}`), { workerData: { id, maxTeamSize,mode:Modes.find(m => m.idString === this.mode)! } });
         this.worker.on("message", (message: WorkerMessage): void => {
             switch (message.type) {
                 case WorkerMessages.UpdateGameData: {
@@ -41,7 +43,7 @@ export class GameContainer {
                     break;
                 }
                 case WorkerMessages.CreateNewGame: {
-                    newGame();
+                    newGame(this.mode);
                     break;
                 }
                 case WorkerMessages.IPAllowed: {
@@ -97,18 +99,19 @@ export interface GameData {
     startedTime: number
 }
 
-export async function findGame(): Promise<GetGameResponse> {
-    for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+export async function findGame(mode?:string): Promise<GetGameResponse> {
+    for (let gameID = 0; gameID <Config.maxGames; gameID++) {
         const game = games[gameID];
-        if (canJoin(game) && game?.data.allowJoin) {
-            return { success: true, gameID };
+        if (canJoin(game) && game?.data.allowJoin && (mode==undefined||game.mode==mode)) {
+            return { success: true, gameID, mode:game.mode };
         }
     }
 
+    const used_mode=mode ? mode : Config.defaultMode
     // Create a game if there's a free slot
-    const gameID = newGame();
+    const gameID = newGame(used_mode);
     if (gameID !== -1) {
-        return { success: true, gameID };
+        return { success: true, gameID, mode:used_mode};
     } else {
         // Join the game that most recently started
         const game = games
@@ -116,7 +119,7 @@ export async function findGame(): Promise<GetGameResponse> {
             .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
 
         if (game) {
-            return { success: true, gameID: game.id };
+            return { success: true, gameID: game.id, mode:game.mode };
         } else {
             return { success: false };
         }
@@ -127,19 +130,19 @@ export const games: Array<GameContainer | undefined> = [];
 
 let creatingID = -1;
 
-export function newGame(id?: number): number {
+export function newGame(mode:string,id?: number): number {
     if (creatingID !== -1) return creatingID;
     if (id !== undefined) {
         if (!games[id] || games[id]?.data.stopped) {
             creatingID = id;
             Logger.log(`Game ${id} | Creating...`);
-            games[id] = new GameContainer(id);
+            games[id] = new GameContainer(id,mode);
             return id;
         }
     } else {
         for (let i = 0; i < Config.maxGames; i++) {
             const game = games[i];
-            if (!game || game?.data?.stopped) return newGame(i);
+            if (!game || game?.data?.stopped) return newGame(mode,i);
         }
     }
     return -1;
@@ -148,7 +151,7 @@ export function newGame(id?: number): number {
 export function endGame(id: number, createNewGame: boolean): void {
     void games[id]?.worker.terminate();
     Logger.log(`Game ${id} | Ended`);
-    if (createNewGame) newGame(id);
+    if (createNewGame) newGame(games[id]!.mode,id);
     else games[id] = undefined;
 }
 

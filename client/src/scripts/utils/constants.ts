@@ -1,6 +1,7 @@
 import { Color } from "pixi.js";
 import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes";
-import { Config } from "../config";
+import { loadTextures,loaded_mode } from "./pixi";
+import type { Game } from "../game";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
@@ -16,10 +17,10 @@ export const HITBOX_COLORS = {
     playerWeapon: new Color("lime")
 };
 
-export const MODE = Modes.find(m => m.idString === Config.mode)!;
+export var MODE = Modes[0];
 
 // Converts the strings in the mode definition to Color objects
-export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
+export var COLORS = (Object.keys(MODE.colors) as ColorKeys[])
     .reduce(
         (result, key) => {
             result[key] = new Color(MODE.colors[key]);
@@ -29,8 +30,27 @@ export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
         {} as Record<ColorKeys, Color>
     );
 
-export const GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
 
+export async function setMode(mode:string,game:Game){
+    MODE   = Modes.find(m => m.idString === mode)!;
+    COLORS = (Object.keys(MODE.colors) as ColorKeys[])
+    .reduce(
+        (result, key) => {
+            result[key] = new Color(MODE.colors[key]);
+            return result;
+        },
+        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter, @typescript-eslint/consistent-type-assertions
+        {} as Record<ColorKeys, Color>
+    )
+    GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+    await loadTextures(
+        game.pixi.renderer,
+        game.console.getBuiltInCVar("cv_high_res_textures") &&
+            (!game.inputManager.isMobile || game.console.getBuiltInCVar("mb_high_res_textures"))
+    );
+}
+
+export let GHILLIE_TINT=COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
 export const TEAMMATE_COLORS = [
     new Color("#00ffff"),
     new Color("#ff00ff"),

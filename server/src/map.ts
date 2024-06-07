@@ -13,12 +13,34 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { Maps } from "./data/maps";
+import { MapDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+
+export function MergeMap(map1:MapDefinition,map2:MapDefinition):MapDefinition{
+    return {
+        width:map1.width   ?? map2.width,
+        height:map1.height ?? map2.height,
+        oceanSize:map1.oceanSize ?? map2.oceanSize,
+        beachSize:map1.beachSize ?? map2.beachSize,
+        bridges:[...map1.bridges ?? [],...map2.bridges ?? []],
+        buildings:{...map1.buildings,...map2.buildings},
+        extends:undefined,
+        genCallback:(map:Map)=>{
+            map1.genCallback ? map1.genCallback(map) : null;
+            map2.genCallback ? map2.genCallback(map) : null;
+        },
+        loots:{...map1.loots,...map2.loots},
+        majorBuildings:[...map1.majorBuildings ?? [],...map2.majorBuildings ?? []],
+        obstacles:{...map1.obstacles,...map2.obstacles},
+        places:[...map1.places ?? [],...map2.places ?? []],
+        quadBuildingLimit:map1.quadBuildingLimit ?? map2.quadBuildingLimit,
+        rivers: map1.rivers ?? map2.rivers
+    }
+}
 
 export class Map {
     readonly game: Game;
@@ -50,26 +72,25 @@ export class Map {
 
     private readonly _beachPadding;
 
-    constructor(game: Game, mapName: keyof typeof Maps) {
+    constructor(game: Game, mapDefinition: MapDefinition) {
         this.game = game;
 
-        const mapDefinition = Maps[mapName];
         const packet = this.packet = new MapPacket();
 
         this.seed = packet.seed = random(0, 2 ** 31);
 
         Logger.log(`Game ${game.id} | Map seed: ${this.seed}`);
 
-        this.width = packet.width = mapDefinition.width;
-        this.height = packet.height = mapDefinition.height;
-        this.oceanSize = packet.oceanSize = mapDefinition.oceanSize;
-        this.beachSize = packet.beachSize = mapDefinition.beachSize;
+        this.width = packet.width = mapDefinition.width ?? 1000;
+        this.height = packet.height = mapDefinition.height ?? 1000;
+        this.oceanSize = packet.oceanSize = mapDefinition.oceanSize ?? 128;
+        this.beachSize = packet.beachSize = mapDefinition.beachSize ?? 32;
 
         this.quadBuildingLimit = mapDefinition.quadBuildingLimit ?? {};
         this.majorBuildings = mapDefinition.majorBuildings ?? [];
 
         // + 8 to account for the jagged points
-        const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
+        const beachPadding = this._beachPadding = this.oceanSize + this.beachSize + 8;
         const oceanSize = this.oceanSize + 8;
 
         this.beachHitbox = new HitboxGroup(
@@ -155,8 +176,8 @@ export class Map {
         this.terrain = new Terrain(
             this.width,
             this.height,
-            mapDefinition.oceanSize,
-            mapDefinition.beachSize,
+            this.oceanSize,
+            this.beachSize,
             this.seed,
             rivers
         );

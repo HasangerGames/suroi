@@ -18,7 +18,7 @@ import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { UI_DEBUG_MODE, emoteSlots, setMode } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 
@@ -226,11 +226,14 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const joinGame = (): void => {
         $("#splash-options").addClass("loading");
-        void $.get(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`, (data: GetGameResponse) => {
+        void $.get(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`, async(data: GetGameResponse) => {
             if (data.success) {
                 const params = new URLSearchParams();
 
+                await setMode(data.mode,game)
+
                 if (teamID) params.set("teamID", teamID);
+
                 if (autoFill) params.set("autoFill", String(autoFill));
 
                 const devPass = game.console.getBuiltInCVar("dv_password");
@@ -256,6 +259,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 }
 
                 game.connect(`${selectedRegion.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
+                $("#splash-ui").fadeOut(400, resetPlayButtons);
                 $("#splash-server-message").hide();
             } else {
                 let showWarningModal = false;

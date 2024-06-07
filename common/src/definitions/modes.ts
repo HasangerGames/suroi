@@ -7,6 +7,11 @@ export interface ModeDefinition {
     readonly reskin?: string
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
+    /**
+     * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
+     * Example: `"main"` for the main map or `"debug"` for the debug map
+     */
+    readonly mapName: string
 }
 
 export interface ReskinDefinition {
@@ -23,7 +28,8 @@ export const Modes: ModeDefinition[] = [
             beach: "hsl(40, 39%, 55%)",
             riverBank: "hsl(33, 50%, 30%)",
             gas: "hsla(17, 100%, 50%, 0.55)"
-        }
+        },
+        mapName:"main"
     },
     {
         idString: "halloween",
@@ -36,7 +42,8 @@ export const Modes: ModeDefinition[] = [
             gas: "hsla(17, 100%, 50%, 0.55)"
         },
         specialMenuMusic: true,
-        reskin: "fall"
+        reskin: "fall",
+        mapName:"main"
     },
     {
         idString: "fall",
@@ -48,7 +55,8 @@ export const Modes: ModeDefinition[] = [
             riverBank: "hsl(33, 50%, 30%)",
             gas: "hsla(17, 100%, 50%, 0.55)"
         },
-        reskin: "fall"
+        reskin: "fall",
+        mapName:"main"
     },
     {
         idString: "winter",
@@ -62,7 +70,8 @@ export const Modes: ModeDefinition[] = [
         },
         specialMenuMusic: true,
         reskin: "winter",
-        bulletTrailAdjust: "hsl(0, 50%, 80%)"
+        bulletTrailAdjust: "hsl(0, 50%, 80%)",
+        mapName:"winter"
     }
 ];
 

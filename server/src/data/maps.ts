@@ -13,10 +13,11 @@ import { Player, type PlayerContainer } from "../objects/player";
 import { type LootTables } from "./lootTables";
 
 export interface MapDefinition {
-    readonly width: number
-    readonly height: number
-    readonly oceanSize: number
-    readonly beachSize: number
+    readonly width?: number
+    readonly height?: number
+    readonly oceanSize?: number
+    readonly beachSize?: number
+    readonly extends?: string
     readonly rivers?: {
         readonly minAmount: number
         readonly maxAmount: number
@@ -43,7 +44,7 @@ export interface MapDefinition {
     readonly genCallback?: (map: Map) => void
 }
 
-const maps = {
+const maps:Record<string,MapDefinition> = {
     main: {
         width: 1632,
         height: 1632,
@@ -90,7 +91,6 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            // christmas_tree: 1, // winter mode
             oak_tree: 250,
             birch_tree: 25,
             pine_tree: 15,
@@ -122,6 +122,12 @@ const maps = {
             { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
+    },
+    winter:{
+        extends:"main",
+        obstacles:{
+            christmas_tree: 1,
+        }
     },
     debug: {
         width: 1620,
@@ -352,9 +358,9 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("armory", Vec.create(this.width / 2, this.height / 2), 0);
-            map.game.addLoot("steelfang", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("tactical_pack", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.generateBuilding("armory", Vec.create(this.width! / 2, this.height! / 2), 0);
+            map.game.addLoot("steelfang", Vec.create(this.width! / 2, this.height! / 2 - 10));
+            map.game.addLoot("tactical_pack", Vec.create(this.width! / 2, this.height! / 2 - 10));
         }
     },
     singleObstacle: {
@@ -363,7 +369,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("bunker_entrance_door", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("bunker_entrance_door", Vec.create(this.width! / 2, this.height! / 2), 0);
         }
     },
     singleGun: {
@@ -372,8 +378,8 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), Infinity);
+            map.game.addLoot("vector", Vec.create(this.width! / 2, this.height! / 2 - 10));
+            map.game.addLoot("9mm", Vec.create(this.width! / 2, this.height! / 2 - 10), Infinity);
         }
     },
     gunsTest: (() => {
