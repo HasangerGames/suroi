@@ -320,43 +320,51 @@ export class Map {
                 return;
             }
 
+            const { minRiverWidth, maxRiverWidth, landCheckDist } = bridgeSpawnOptions;
+
             let spawnedCount = 0;
-            for (const river of this.terrain.rivers.filter(river => (river.width <= bridgeSpawnOptions.maxRiverWidth && river.width >= bridgeSpawnOptions.minRiverWidth))) {
-                const generateBridge = (start: number, end: number): void => {
-                    if (spawnedCount >= count) return;
-                    let shortestDistance = Number.MAX_VALUE;
-                    let bestPosition = 0.5;
-                    let bestOrientation: Orientation = 0;
-                    for (let pos = start; pos <= end; pos += 0.05) {
-                        // Find the best orientation
-                        const direction = Angle.unitVectorToRadians(river.getTangent(pos));
-                        for (let orientation: Orientation = 0; orientation < 4; orientation++) {
-                            const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
-                            if (distance < shortestDistance) {
-                                shortestDistance = distance;
-                                bestPosition = pos;
-                                bestOrientation = orientation as Orientation;
-                            }
+
+            const generateBridge = (river: River) => (start: number, end: number): void => {
+                if (spawnedCount >= count) return;
+                let shortestDistance = Number.MAX_VALUE;
+                let bestPosition = 0.5;
+                let bestOrientation: Orientation = 0;
+                for (let pos = start; pos <= end; pos += 0.05) {
+                    // Find the best orientation
+                    const direction = Vec.direction(river.getTangent(pos));
+                    for (let orientation: Orientation = 0; orientation < 4; orientation++) {
+                        const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
+                        if (distance < shortestDistance) {
+                            shortestDistance = distance;
+                            bestPosition = pos;
+                            bestOrientation = orientation as Orientation;
                         }
                     }
-                    const position = river.getPosition(bestPosition);
+                }
+                const position = river.getPosition(bestPosition);
 
-                    if (
-                        this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
-                        // Make sure there's dry land on either side of the bridge
-                        || [
-                            Vec.addAdjust(position, Vec.create(0, bridgeSpawnOptions.landCheckDist), bestOrientation),
-                            Vec.addAdjust(position, Vec.create(0, -bridgeSpawnOptions.landCheckDist), bestOrientation)
-                        ].some(point => this.terrain.getFloor(point) === "water")
-                    ) return;
+                if (
+                    this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
+                    // Make sure there's dry land on either side of the bridge
+                    || [
+                        Vec.addAdjust(position, Vec.create(0, landCheckDist), bestOrientation),
+                        Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
+                    ].some(point => this.terrain.getFloor(point) === "water")
+                ) return;
 
-                    this.occupiedBridgePositions.push(position);
-                    this.generateBuilding(definition, position, bestOrientation);
-                    spawnedCount++;
-                };
-                generateBridge(0.2, 0.4);
-                generateBridge(0.6, 0.8);
-            }
+                this.occupiedBridgePositions.push(position);
+                this.generateBuilding(definition, position, bestOrientation);
+                spawnedCount++;
+            };
+
+            this.terrain.rivers.filter(
+                ({ width }) => minRiverWidth <= width && width <= maxRiverWidth
+            )
+                .map(generateBridge)
+                .forEach(generator => {
+                    generator(0.2, 0.4);
+                    generator(0.6, 0.8);
+                });
         }
     }
 

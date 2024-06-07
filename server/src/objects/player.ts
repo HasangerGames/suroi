@@ -1019,7 +1019,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     suspectName: this.spectating?.name,
                     suspectIP: this.spectating?.ip,
                     reporterIP: this.ip
-                }
+                };
 
                 const packet = new ReportPacket();
                 packet.playerName = this.spectating?.name ?? "";
@@ -1044,7 +1044,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                 },
                                 {
                                     name: "Reporter",
-                                    value: this.name,
+                                    value: this.name
                                 }
 
                             ]
@@ -1052,19 +1052,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     ]
                 };
 
-                // FIXME ignored promise result? <- Because we dont really care what happens when we send a post request to discord for logging lol. Either discord does or doesnt do it
+                /*
+                    Promise result ignored because we don't really care
+                    what happens when we send a post request to Discord
+                    for logging
+                */
                 sendPostRequest(reportURL, reportData)
                     .catch(error => {
                         console.error("Error:", error);
                     });
 
                 // Post the report to the server with the json
-                sendPostRequest(`${mod_api_data.API_SERVER_URL}/reports`, reportJson).then((d: any) => {
-                    console.log(d)
-                }).catch((e: any) => {
-                    console.log(e)
-                })
-
+                sendPostRequest(`${mod_api_data.API_SERVER_URL}/reports`, reportJson)
+                    .then(console.log)
+                    .catch(console.error);
             }
         }
 

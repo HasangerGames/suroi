@@ -18,13 +18,13 @@ import { type GetGameResponse } from "../../common/src/typings";
 import { Cron } from "croner";
 
 export interface Punishment {
-    readonly id: string;
-    readonly ip: string;
-    readonly reportId: string;
-    readonly reason: string;
-    readonly reporter: string;
-    readonly expires?: number;
-    readonly punishmentType: "warning" | "tempBan" | "permaBan";
+    readonly id: string
+    readonly ip: string
+    readonly reportId: string
+    readonly reason: string
+    readonly reporter: string
+    readonly expires?: number
+    readonly punishmentType: "warning" | "tempBan" | "permaBan"
 }
 
 let punishments: Punishment[] = [];
@@ -44,7 +44,6 @@ function removePunishment(ip: string): void {
         );
     }
 }
-
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 

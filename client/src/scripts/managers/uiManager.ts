@@ -673,16 +673,18 @@ export class UIManager {
         const { severity, victimName, weaponUsed, type } = message;
 
         let streakText = "";
-        if (severity === KillfeedEventSeverity.Kill) {
-            const { streak, kills } = message;
-            (this._killMessageUICache.header ??= $("#kill-msg-kills")).text(`Kills: ${kills}`);
-            (this._killMessageUICache.killCounter ??= $("#ui-kills")).text(kills);
-            streakText = streak ? ` (streak: ${streak})` : "";
-        }
-
-        // Do not show Kills counter in the knock/down message.
-        else if (severity === KillfeedEventSeverity.Down) {
-            $("#kill-msg-kills").text("");
+        switch (severity) {
+            case KillfeedEventSeverity.Kill: {
+                const { streak, kills } = message;
+                (this._killMessageUICache.header ??= $("#kill-msg-kills")).text(`Kills: ${kills}`);
+                (this._killMessageUICache.killCounter ??= $("#ui-kills")).text(kills);
+                streakText = streak ? ` (streak: ${streak})` : "";
+                break;
+            }
+            case KillfeedEventSeverity.Down: {
+                // Do not show kills counter in the down message.
+                $("#kill-msg-kills").text("");
+            }
         }
 
         const eventText = `You ${UIManager._eventDescriptionMap[type][severity]} `;

@@ -51,13 +51,6 @@ export const Angle = Object.freeze({
     },
     orientationToRotation(orientation: number): number {
         return -this.normalize(orientation * halfπ);
-    },
-    /**
-     * Converts a unit vector to radians
-     * @param v The vector to convert
-     */
-    unitVectorToRadians(v: Vector) {
-        return Math.atan2(v.y, v.x);
     }
 });
 

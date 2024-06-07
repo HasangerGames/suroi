@@ -1,3 +1,4 @@
+import { Explosions } from "../../common/src/definitions/explosions";
 import { Loots } from "../../common/src/definitions/loots";
 import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
@@ -35,7 +36,7 @@ export function findDupes(collection: string[]): { readonly foundDupes: boolean,
 export function safeString(value: unknown): string {
     try {
         switch (true) {
-            case Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
+            case !Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
             default: return JSON.stringify(value);
         }
     } catch (_) {
@@ -580,9 +581,11 @@ export const validators = Object.freeze({
                     tester.assertIntAndInBounds({
                         obj: tracer,
                         field: "color",
-                        min: 0x0,
+                        min: -1, // <- random color
                         max: 0xFFFFFF,
-                        baseErrorPath: errorPath
+                        baseErrorPath: errorPath,
+                        includeMin: true,
+                        includeMax: true
                     });
                 }
             });
@@ -596,6 +599,16 @@ export const validators = Object.freeze({
                 max: 1,
                 includeMax: true,
                 includeMin: true,
+                baseErrorPath
+            });
+        }
+
+        if (ballistics.onHitExplosion !== undefined) {
+            tester.assertReferenceExists({
+                obj: ballistics,
+                field: "onHitExplosion",
+                collection: Explosions,
+                collectionName: "Explosions",
                 baseErrorPath
             });
         }

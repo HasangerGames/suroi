@@ -1,9 +1,10 @@
 import * as https from "https";
+// FIXME this should be in a .env!
 export const mod_api_data = {
-    "API_SERVER_URL": "api server url",
-    "API_SERVER_KEY": "Server Key",
-    "API_WEBHOOK_URL": "Logging webhook",
-}
+    API_SERVER_URL: "api server url",
+    API_SERVER_KEY: "Server Key",
+    API_WEBHOOK_URL: "Logging webhook"
+};
 
 /**
  * Sends a POST request to the specified URL with the given data.

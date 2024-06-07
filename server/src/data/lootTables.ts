@@ -49,8 +49,8 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            [ { item: "firework_launcher", weight: 1 } ],
-            [ { item: "1st_birthday", weight: 1 } ]
+            [{ item: "firework_launcher", weight: 1 }],
+            [{ item: "1st_birthday", weight: 1 }]
         ]
     },
     viking_chest: {
@@ -464,6 +464,14 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 1 },
             { item: "firework_rocket", count: 10, weight: 1 },
             { item: "curadell", weight: 0.01 }
+        ]
+    },
+    confetti_grenade_box: {
+        min: 1,
+        max: 2,
+        loot: [
+            { item: "confetti_grenade", count: 4, weight: 2 },
+            { tier: "throwables", weight: 1 }
         ]
     },
     cabinet: {
