@@ -1418,6 +1418,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Oil Tanker Ship Vault",
             spawnHitbox: RectangleHitbox.fromRect(22.73, 28.32),
             scopeHitbox: RectangleHitbox.fromRect(22.73, 28.32),
+            ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [{
                 key: "oil_tanker_ship_vault_ceiling",
                 position: Vec.create(0, 0)
