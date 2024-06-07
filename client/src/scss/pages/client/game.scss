@@ -960,7 +960,7 @@
         }
 
         &:hover {
-            outline: 1px solid $orange;
+            outline: 1px solid $orange !important;
         }
 
         &.active {
