@@ -766,7 +766,7 @@ export class Game implements GameData {
         }
 
         const badge = packet.badge;
-        if (player.role !== undefined && badge?.roles.includes(player.role)) {
+        if (!badge?.roles?.length || (player.role !== undefined && badge.roles.includes(player.role))) {
             player.loadout.badge = badge;
         }
         player.loadout.emotes = packet.emotes;

@@ -1022,7 +1022,7 @@ Video evidence is required.`)) {
     }
 
     // Load badges
-    const allowedBadges = Badges.definitions.filter(badge => badge.roles.length === 0 || badge.roles.includes(role));
+    const allowedBadges = Badges.definitions.filter(({ roles }) => roles?.length && roles.includes(role));
 
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
