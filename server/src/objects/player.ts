@@ -1,18 +1,23 @@
 import { randomBytes } from "crypto";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type WebSocket } from "uWebSockets.js";
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { Ammos } from "../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { type MapPingDefinition } from "../../../common/src/definitions/mapPings";
+import { type PlayerPing } from "../../../common/src/definitions/mapPings";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
+import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { type Packet } from "../../../common/src/packets/packet";
+import { PacketStream } from "../../../common/src/packets/packetStream";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
@@ -33,7 +38,9 @@ import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
+import { Events } from "../pluginManager";
 import { type Team } from "../team";
+import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
@@ -43,11 +50,6 @@ import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
-import { type Packet } from "../../../common/src/packets/packet";
-import { PacketStream } from "../../../common/src/packets/packetStream";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
-import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import { mod_api_data, sendGetRequest, sendPostRequest } from "../utils/apiHelper";
 export interface PlayerContainer {
     readonly teamID?: string
     readonly autoFill: boolean
@@ -86,6 +88,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     get team(): Team | undefined { return this._team; }
 
     set team(value: Team) {
+        if (!this.game.teamMode) {
+            console.warn("Trying to set a player's team while the game isn't in team mode");
+            return;
+        }
+
         this.dirty.teammates = true;
         this._team = value;
     }
@@ -102,7 +109,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
         this.dirty.maxMinStats = true;
-        this.team?.setDirty();
+        this._team?.setDirty();
         this.health = this._health;
     }
 
@@ -113,7 +120,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     get health(): number { return this._health; }
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
-        this.team?.setDirty();
+        this._team?.setDirty();
         this.dirty.health = true;
         this.normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
     }
@@ -155,8 +162,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         minAdrenaline: 0
     };
 
+    /**
+     * Returns a clone
+     */
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    get modifiers() { return this._modifiers; }
+    get modifiers() { return { ...this._modifiers }; }
 
     killedBy?: Player;
     downedBy?: {
@@ -357,7 +367,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     set position(position: Vector) {
         this.hitbox.position = position;
-        this.team?.setDirty();
+        this._team?.setDirty();
     }
 
     baseSpeed = Config.movementSpeed;
@@ -367,13 +377,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
 
-    mapPings: Game["mapPings"] = [];
+    private readonly _mapPings: Game["mapPings"] = [];
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
 
         if (team) {
-            this.team = team;
+            this._team = team;
             this.teamID = team.id;
 
             team.addPlayer(this);
@@ -413,80 +423,46 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
         if (specialFunnies) {
-            const [weaponA, weaponB, melee] = userData.weaponPreset.split(" ");
+            const [
+                weaponA, weaponB, melee,
+                killsA, killB, killsM
+            ] = userData.weaponPreset.split(" ");
 
-            const oldDeterminePreset = (slot: 0 | 1 | 2, char: string): void => {
-                switch (slot) {
-                    case 0:
-                    case 1: {
-                        switch (char) {
-                            case "0": {
-                                this.inventory.addOrReplaceWeapon(slot, "deathray");
-                                (this.inventory.getWeapon(slot) as GunItem).ammo = 1;
-                                break;
-                            }
-                            case "1":
-                            case "2":
-                            case "3":
-                            case "4":
-                            case "5":
-                            case "6": {
-                                this.inventory.addOrReplaceWeapon(slot, "revitalizer");
-                                const revit = this.inventory.getWeapon(slot) as GunItem;
-                                revit.ammo = 5;
-                                revit.stats.kills = Number.parseInt(char, 10) - 1;
-                                this.inventory.items.setItem("12g", 15);
-                                break;
-                            }
-                            case "7": {
-                                this.inventory.addOrReplaceWeapon(slot, "usas12");
-                                (this.inventory.getWeapon(slot) as GunItem).ammo = 10;
-                                this.inventory.items.setItem("12g", 15);
-                                break;
-                            }
-                            case "8": {
-                                this.inventory.addOrReplaceWeapon(slot, "s_g17");
-                                (this.inventory.getWeapon(slot) as GunItem).ammo = 100;
-                                break;
-                            }
-                            case "usas12": {
-                                this.inventory.addOrReplaceWeapon(slot, "usas12");
-                                (this.inventory.getWeapon(slot) as GunItem).ammo = 100;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    case 2: {
-                        switch (char) {
-                            case "0": {
-                                this.inventory.addOrReplaceWeapon(2, "heap_sword");
-                                break;
-                            }
-                            case "1": {
-                                this.inventory.addOrReplaceWeapon(2, "kbar");
-                                break;
-                            }
-                        }
-                        break;
-                    }
+            const backpack = this.inventory.backpack;
+            const determinePreset = (
+                slot: 0 | 1 | 2,
+                weaponName: ReferenceTo<GunDefinition | MeleeDefinition>,
+                kills?: string
+            ): void => {
+                const weaponDef = Loots.fromStringSafe<GunDefinition | MeleeDefinition>(weaponName);
+                //                                                ^ ok because undefined is ignored
+                if (
+                    weaponDef === undefined // no such item
+                    || ![ItemType.Gun, ItemType.Melee].includes(weaponDef.itemType) // neither gun nor melee
+                ) return;
+
+                this.inventory.addOrReplaceWeapon(slot, weaponDef);
+                const weapon = this.inventory.getWeapon(slot) as GunItem | MeleeItem;
+
+                let killCount: number;
+                if (!Number.isNaN(killCount = parseInt(kills ?? "", 10))) {
+                    weapon.stats.kills = killCount;
+                    weapon.refreshModifiers();
                 }
+
+                if (!(weapon instanceof GunItem)) return;
+
+                weapon.ammo = (weaponDef as GunDefinition).capacity;
+                const ammoPtr = (weaponDef as GunDefinition).ammoType;
+                const ammoType = Ammos.fromString(ammoPtr);
+
+                if (ammoType.ephemeral) return;
+                this.inventory.items.setItem(ammoPtr, backpack.maxCapacity[ammoPtr]);
             };
-            const determinePreset = (slot: 0 | 1 | 2, weaponName: string): void => {
-                try {
-                    this.inventory.addOrReplaceWeapon(slot, weaponName);
-                    const weapon = this.inventory.getWeapon(slot) as GunItem;
-                    weapon.ammo = 10000;
-                    weapon._modifiers.maxAdrenaline = 2;
-                    weapon._modifiers.maxHealth = 2;
-                } catch (err) {
-                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                    console.error(`Error in determinePreset: ${err}`);
-                }
-            };
-            determinePreset(0, weaponA);
-            determinePreset(1, weaponB);
-            determinePreset(2, melee);
+
+            determinePreset(0, weaponA, killsA);
+            determinePreset(1, weaponB, killB);
+            determinePreset(2, melee, killsM);
 
             this.inventory.items.setItem("2x_scope", 1);
             this.inventory.items.setItem("4x_scope", 1);
@@ -526,9 +502,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {
-        this.inventory.items.incrementItem(idString, count ?? 3);
-        this.inventory.useItem(idString);
-        this.inventory.throwableItemMap.get(idString)!.count = this.inventory.items.getItem(idString);
+        const inventory = this.inventory;
+
+        inventory.items.incrementItem(idString, count ?? 3);
+        inventory.useItem(idString);
+        // we hope `throwableItemMap` is correctly sync'd
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
     spawnPos(position: Vector): void {
@@ -539,22 +519,24 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (!this.loadout.emotes.includes(emote) && (!this.game.teamMode || !emote?.isTeamEmote)) return;
 
         if (emote) {
-            this.game.pluginManager.emit("playerEmote", {
+            this.game.emotes.push(new Emote(emote, this));
+            this.game.pluginManager.emit(Events.Player_Emote, {
                 player: this,
                 emote
             });
-            this.game.emotes.push(new Emote(emote, this));
         }
     }
 
-    sendMapPing(ping: MapPingDefinition, position: Vector): void {
-        if (!ping.isPlayerPing) return;
-
-        if (this.team) {
-            for (const player of this.team.players) {
+    sendMapPing(ping: PlayerPing, position: Vector): void {
+        if (this._team) {
+            for (const player of this._team.players) {
+                /*
+                    FIXME i have no idea why this is here but i'm leaving it alone
+                          someone please check if this is redundant
+                */
                 if (!player) continue;
 
-                player.mapPings.push({
+                player._mapPings.push({
                     definition: ping,
                     position,
                     playerId: this.id
@@ -563,12 +545,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             return;
         }
 
-        this.mapPings.push({
+        this._mapPings.push({
             definition: ping,
             position,
             playerId: this.id
         });
-        this.game.pluginManager.emit("playerMapPing", {
+        this.game.pluginManager.emit(Events.Player_MapPing, {
             player: this,
             ping,
             position
@@ -607,15 +589,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        const speed = this.baseSpeed // Base speed
+        const speed = this.baseSpeed                        // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1) // Speed multiplier from floor player is standing in
-            * recoilMultiplier // Recoil from items
-            * (this.action?.speedMultiplier ?? 1) // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000)) // Linear speed boost from adrenaline
-            * this.activeItemDefinition.speedMultiplier // Active item speed modifier
-            * (this.downed ? 0.5 : 1) // Knocked out speed multiplier
-            * (this.beingRevivedBy ? 0.5 : 1) // Being revived speed multiplier
-            * this.modifiers.baseSpeed; // Current on-wearer modifier
+            * recoilMultiplier                              // Recoil from items
+            * (this.action?.speedMultiplier ?? 1)           // Speed modifier from performing actions
+            * (1 + (this.adrenaline / 1000))                // Linear speed boost from adrenaline
+            * this.activeItemDefinition.speedMultiplier     // Active item speed modifier
+            * (this.downed ? 0.5 : 1)                       // Knocked out speed multiplier
+            * (this.beingRevivedBy ? 0.5 : 1)               // Being revived speed multiplier
+            * this.modifiers.baseSpeed;                     // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
@@ -688,14 +670,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
-            this.game.pluginManager.emit("playerStartAttacking", this);
+            this.game.pluginManager.emit(Events.Player_StartAttacking, this);
             this.startedAttacking = false;
             this.disableInvulnerability();
             this.activeItem.useItem();
         }
 
         if (this.stoppedAttacking) {
-            this.game.pluginManager.emit("playerStopAttacking", this);
+            this.game.pluginManager.emit(Events.Player_StopAttacking, this);
             this.stoppedAttacking = false;
             this.activeItem.stopUse();
         }
@@ -759,8 +741,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.piercingDamage({
                     amount: depletion.health * dt,
                     source: KillfeedEventType.Gas
+                //          ^^^^^^^^^^^^^^^^^^^^^ dubious
                 });
-                //          ^^^^^^^^^^^^ dubious
             }
 
             if (depletion.adrenaline) {
@@ -772,8 +754,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.effectiveScope = scopeTarget ?? DEFAULT_SCOPE;
         }
 
-        this.game.pluginManager.emit("playerUpdate", this);
         this.turning = false;
+        this.game.pluginManager.emit(Events.Player_Update, this);
     }
 
     private _firstPacket = true;
@@ -841,7 +823,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            teammates: this.game.teamMode ? player.team!.players.filter(p => p.id !== player.id) : [],
+            teammates: this.game.teamMode
+                // teamMode ensures the presence of team
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                ? player._team!.players.filter(p => p.id !== player.id)
+                : [],
             spectating: this.spectating !== undefined,
             dirty: player.dirty,
             inventory: {
@@ -873,39 +859,40 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Cull bullets
-        for (const bullet of game.newBullets) {
-            if (Collision.lineIntersectsRectTest(bullet.initialPosition,
-                bullet.finalPosition,
+        packet.bullets = game.newBullets.filter(
+            ({ initialPosition, finalPosition }) => Collision.lineIntersectsRectTest(
+                initialPosition,
+                finalPosition,
                 this.screenHitbox.min,
-                this.screenHitbox.max)) {
-                packet.bullets.push(bullet);
-            }
-        }
+                this.screenHitbox.max
+            )
+        );
+
+        /**
+         * It's in times like these where `inline constexpr`
+         * would be very cool.
+         */
+        const maxDistSquared = 128 ** 2;
 
         // Cull explosions
-        for (const explosion of game.explosions) {
-            if (this.screenHitbox.isPointInside(explosion.position)
-                || Geometry.distanceSquared(explosion.position, this.position) < 128 ** 2) {
-                packet.explosions.push(explosion);
-            }
-        }
+        packet.explosions = game.explosions.filter(
+            ({ position }) => this.screenHitbox.isPointInside(position)
+            || Geometry.distanceSquared(position, this.position) < maxDistSquared
+        );
 
         // Emotes
-        for (const emote of game.emotes) {
-            if (this.visibleObjects.has(emote.player)) {
-                packet.emotes.push(emote);
-            }
-        }
+        packet.emotes = game.emotes.filter(({ player }) => this.visibleObjects.has(player));
 
+        const gas = game.gas;
         // gas
         packet.gas = {
-            ...game.gas,
-            dirty: game.gas.dirty || this._firstPacket
+            ...gas,
+            dirty: gas.dirty || this._firstPacket
         };
 
         packet.gasProgress = {
-            dirty: game.gas.completionRatioDirty || this._firstPacket,
-            value: game.gas.completionRatio
+            dirty: gas.completionRatioDirty || this._firstPacket,
+            value: gas.completionRatio
         };
 
         // new and deleted players
@@ -932,8 +919,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         packet.planes = game.planes;
-        packet.mapPings = [...game.mapPings, ...this.mapPings];
-        this.mapPings.length = 0;
+        packet.mapPings = [...game.mapPings, ...this._mapPings];
+        this._mapPings.length = 0;
 
         // serialize and send update packet
         this.sendPacket(packet);
@@ -977,9 +964,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const { spectatablePlayers } = game;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
-                if (this.game.teamMode && this.team?.hasLivingPlayers()) {
+                if (this.game.teamMode && this._team?.hasLivingPlayers()) {
                     // Find closest teammate
-                    toSpectate = this.team.getLivingPlayers()
+                    toSpectate = this._team.getLivingPlayers()
                         .reduce((a, b) => Geometry.distanceSquared(a.position, this.position) < Geometry.distanceSquared(b.position, this.position) ? a : b);
                 } else if (this.killedBy !== undefined && !this.killedBy.dead) {
                     toSpectate = this.killedBy;
@@ -1059,13 +1046,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 */
                 sendPostRequest(reportURL, reportData)
                     .catch(error => {
-                        console.error("Error:", error);
+                        console.error("Error: ", error);
                     });
 
                 // Post the report to the server with the json
                 sendPostRequest(`${mod_api_data.API_SERVER_URL}/reports`, reportJson)
                     .then(console.log)
-                    .catch(console.error);
+                    .catch((e: unknown) => console.error(e));
+                // i love eslint
             }
         }
 
@@ -1132,19 +1120,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const { source, weaponUsed } = params;
         let { amount } = params;
 
+        this.game.pluginManager.emit(Events.Player_Damage, {
+            amount,
+            player: this,
+            source,
+            weaponUsed
+        });
+
         // Reductions are merged additively
         amount *= 1 - (
             (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
         );
 
         amount = this._clampDamageAmount(amount);
-
-        this.game.pluginManager.emit("playerDamage", {
-            amount,
-            player: this,
-            source,
-            weaponUsed
-        });
 
         this.piercingDamage({
             amount,
@@ -1172,14 +1160,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         amount = this._clampDamageAmount(amount);
 
-        this.game.pluginManager.emit("playerPiercingDamage", {
+        this.game.pluginManager.emit(Events.Player_PiercingDamage, {
             player: this,
             amount,
             source,
             weaponUsed
         });
 
-        const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
+        const canTrackStats = weaponUsed instanceof InventoryItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const sourceIsPlayer = source instanceof Player;
         const applyPlayerFX = sourceIsPlayer
@@ -1187,7 +1175,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 source.health += modifiers.healthRestored ?? 0;
                 source.adrenaline += modifiers.adrenalineRestored ?? 0;
             }
-            : () => {};
+            : () => { /* nothing to apply */ };
+
+        let statsChanged = false;
+        const oldStats = canTrackStats ? { ...weaponUsed.stats } : undefined;
 
         // Decrease health; update damage done and damage taken
         this.health -= amount;
@@ -1196,6 +1187,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (canTrackStats && !this.dead) {
                 const damageDealt = weaponUsed.stats.damage += amount;
+                statsChanged = true;
 
                 if (sourceIsPlayer) {
                     for (const entry of attributes?.damageDealt ?? []) {
@@ -1214,11 +1206,18 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         if (this.health <= 0 && !this.dead) {
-            if (this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this) && !this.downed) {
+            if (
+                this.game.teamMode
+                // teamMode hopefully guarantees team's existence
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)
+                && !this.downed
+            ) {
                 this.down(source, weaponUsed);
             } else {
                 if (canTrackStats) {
                     const kills = ++weaponUsed.stats.kills;
+                    statsChanged = true;
 
                     if (sourceIsPlayer) {
                         for (const entry of attributes?.kill ?? []) {
@@ -1231,6 +1230,23 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                 this.die(params);
             }
+        }
+
+        if (statsChanged && canTrackStats) {
+            this.game.pluginManager.emit(
+                Events.InvItem_StatsChanged,
+                {
+                    item: weaponUsed,
+                    // canTrackStats ensures this object's existence
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    oldStats: oldStats!,
+                    newStats: { ...weaponUsed.stats },
+                    diff: {
+                        kills: oldStats?.kills !== weaponUsed.stats.kills,
+                        damage: oldStats?.damage !== weaponUsed.stats.damage
+                    }
+                }
+            );
         }
     }
 
@@ -1248,10 +1264,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             if (weapon === undefined) continue;
 
-            newModifiers.maxAdrenaline *= weapon._modifiers.maxAdrenaline;
-            newModifiers.maxHealth *= weapon._modifiers.maxHealth;
-            newModifiers.baseSpeed *= weapon._modifiers.baseSpeed;
-            newModifiers.minAdrenaline += weapon._modifiers.minAdrenaline;
+            const modifiers = weapon.modifiers;
+
+            newModifiers.maxAdrenaline *= modifiers.maxAdrenaline;
+            newModifiers.maxHealth *= modifiers.maxHealth;
+            newModifiers.baseSpeed *= modifiers.baseSpeed;
+            newModifiers.minAdrenaline += modifiers.minAdrenaline;
         }
 
         this._modifiers = newModifiers;
@@ -1270,7 +1288,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const wasDowned = this.downed;
         this.downed = false;
         this.canDespawn = false;
-        this.team?.setDirty();
+        this._team?.setDirty();
 
         let action: Action | undefined;
         if ((action = this.beingRevivedBy?.action) instanceof ReviveAction) {
@@ -1278,16 +1296,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         const sourceIsPlayer = source instanceof Player;
-        // Send kill packets
+
         if (sourceIsPlayer) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
         }
-
-        this.game.pluginManager.emit("playerKill", {
-            player: this,
-            ...params
-        });
 
         if (
             sourceIsPlayer
@@ -1356,11 +1369,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.game.packets.push(killFeedPacket);
         }
 
+        this.game.pluginManager.emit(Events.Player_Death, {
+            player: this,
+            ...params
+        });
+
         // Reset movement and attacking variables
-        this.movement.up = false;
-        this.movement.down = false;
-        this.movement.left = false;
-        this.movement.right = false;
+        this.movement.up = this.movement.down = this.movement.left = this.movement.right = false;
         this.startedAttacking = false;
         this.attacking = false;
         this.stoppedAttacking = false;
@@ -1459,6 +1474,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 });
             }
 
+            // team can't be nullish here because if it were, it would fail the conditional this code is wrapped in
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.game.teams.delete(team!);
         }
     }
@@ -1549,12 +1566,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             ...packet.mobile
         };
 
-        const oldAttackState = this.attacking;
-        const attackState = packet.attacking;
+        const wasAttacking = this.attacking;
+        const isAttacking = packet.attacking;
 
-        this.attacking = attackState;
-        this.startedAttacking ||= !oldAttackState && attackState;
-        this.stoppedAttacking ||= oldAttackState && !attackState;
+        this.attacking = isAttacking;
+        this.startedAttacking ||= !wasAttacking && isAttacking;
+        this.stoppedAttacking ||= wasAttacking && !isAttacking;
 
         this.turning = packet.turning;
         if (this.turning) {
@@ -1626,9 +1643,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             }
                         }
                     }
-                    if (uninteractable.object) {
-                        uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
-                    }
+
+                    uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
 
                     this.canDespawn = false;
                     this.disableInvulnerability();
@@ -1649,14 +1665,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     for (const object of nearObjects) {
                         if (
-                            ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && object.canInteract(this))
-                            && object.hitbox.collidesWith(detectionHitbox)
-                        ) {
-                            const dist = Geometry.distanceSquared(object.position, this.position);
-                            if ((object.type === ObjectCategory.Obstacle || object.type === ObjectCategory.Player) && dist < interactable.minDist) {
-                                interactable.minDist = dist;
-                                interactable.object = object;
-                            }
+                            (
+                                object.type !== ObjectCategory.Obstacle && object.type !== ObjectCategory.Player
+                            )
+                            || !object.canInteract(this)
+                            || !object.hitbox?.collidesWith(detectionHitbox)
+                        ) continue;
+
+                        const dist = Geometry.distanceSquared(object.position, this.position);
+                        if (dist < interactable.minDist) {
+                            interactable.minDist = dist;
+                            interactable.object = object;
                         }
                     }
 
@@ -1700,7 +1719,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        this.game.pluginManager.emit("playerInput", {
+        this.game.pluginManager.emit(Events.Player_Input, {
             player: this,
             packet
         });

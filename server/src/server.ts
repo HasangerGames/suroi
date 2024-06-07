@@ -1,10 +1,13 @@
+import { Cron } from "croner";
 import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { type WebSocket } from "uWebSockets.js";
+import { isMainThread } from "worker_threads";
 import { GameConstants, TeamSize } from "../../common/src/constants";
 import { Badges } from "../../common/src/definitions/badges";
 import { Skins } from "../../common/src/definitions/skins";
+import { type GetGameResponse } from "../../common/src/typings";
 import { Numeric } from "../../common/src/utils/math";
 import { version } from "../../package.json";
 import { Config } from "./config";
@@ -13,9 +16,6 @@ import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./
 import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { isMainThread } from "worker_threads";
-import { type GetGameResponse } from "../../common/src/typings";
-import { Cron } from "croner";
 
 export interface Punishment {
     readonly id: string
@@ -47,7 +47,8 @@ function removePunishment(ip: string): void {
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
-export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
+let _maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
+export const maxTeamSize = _maxTeamSize;
 let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
@@ -59,8 +60,8 @@ if (isMainThread) {
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
-                playerCount: games.reduce((a, b) => (a + (b?.data?.aliveCount ?? 0)), 0),
-                maxTeamSize,
+                playerCount: games.reduce((a, b) => (a + (b?.data.aliveCount ?? 0)), 0),
+                maxTeamSize: _maxTeamSize,
 
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
@@ -79,8 +80,10 @@ if (isMainThread) {
             if (punishment.punishmentType === "warning") {
                 const protection = Config.protection;
                 if (protection?.punishments?.url) {
-                    fetch(`${protection.punishments.url}/punishments/${ip}`, { headers: { "api-key": protection.punishments.password } })
-                        .catch(e => console.error("Error acknowledging warning. Details: ", e));
+                    fetch(
+                        `${protection.punishments.url}/punishments/${ip}`,
+                        { headers: { "api-key": protection.punishments.password } }
+                    ).catch(e => console.error("Error acknowledging warning. Details: ", e));
                 }
                 removePunishment(ip);
             }
@@ -99,7 +102,7 @@ if (isMainThread) {
                     response = { success: false };
                 }
             } else {
-                response = await findGame();
+                response = findGame();
             }
 
             if (response.success) {
@@ -123,7 +126,7 @@ if (isMainThread) {
     }).post("/api/addPunishment", (res, req) => {
         cors(res);
 
-        res.onAborted(() => {});
+        res.onAborted(() => { /* welp, that sucks (why is this handler here anyways?) */ });
 
         const password = req.getHeader("password");
         res.onData(data => {
@@ -131,7 +134,8 @@ if (isMainThread) {
                 const body = textDecoder.decode(data);
                 punishments = {
                     ...punishments,
-                    ...JSON.parse(body)
+                    ...JSON.parse(body) as Record<number, Punishment>
+                    //                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ we hope so, anyways
                 };
                 res.writeStatus("204 No Content").endWithoutBody(0);
             } else {
@@ -155,30 +159,37 @@ if (isMainThread) {
          * Upgrade the connection to WebSocket.
          */
         upgrade(res, req, context) {
-            res.onAborted((): void => { });
+            res.onAborted((): void => { /* (why is this handler here?) */ });
 
             const searchParams = new URLSearchParams(req.getQuery());
 
             const teamID = searchParams.get("teamID");
 
-            if (maxTeamSize === TeamSize.Solo || (teamID && !customTeams.has(teamID))) {
+            let team!: CustomTeam;
+            const noTeamIdGiven = teamID !== null;
+            if (
+                _maxTeamSize === TeamSize.Solo
+                || (
+                    noTeamIdGiven
+                    // @ts-expect-error cleanest overall way to do this (`undefined` gets filtered out anyways)
+                    && (team = customTeams.get(teamID)) === undefined
+                )
+            ) {
                 forbidden(res);
                 return;
             }
 
-            let team: CustomTeam;
             let isLeader: boolean;
-            if (!teamID) {
-                isLeader = true;
-                team = new CustomTeam();
-                customTeams.set(team.id, team);
-            } else {
+            if (noTeamIdGiven) {
                 isLeader = false;
-                team = customTeams.get(teamID)!;
-                if (team.locked || team.players.length >= maxTeamSize) {
+                if (team.locked || team.players.length >= (_maxTeamSize as number)) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
+            } else {
+                isLeader = true;
+                team = new CustomTeam();
+                customTeams.set(team.id, team);
             }
 
             const name = cleanUsername(searchParams.get("name"));
@@ -205,7 +216,7 @@ if (isMainThread) {
                     try {
                         const colorString = searchParams.get("nameColor");
                         if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                    } catch {}
+                    } catch { /* lol your color sucks */ }
                 }
             }
 
@@ -256,6 +267,8 @@ if (isMainThread) {
          */
         message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
             const player = socket.getUserData().player;
+            // we pray
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             void player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
         },
 
@@ -298,16 +311,13 @@ if (isMainThread) {
             Logger.log(perfString);
         }, 60000);
 
-        if (typeof Config.maxTeamSize === "object") {
-            maxTeamSizeSwitchCron = Cron(Config.maxTeamSize.switchSchedule, () => {
-                teamSizeRotationIndex++;
-                // @ts-expect-error maxTeamSize must be an object here
-                teamSizeRotationIndex %= Config.maxTeamSize.rotation.length;
-                // @ts-expect-error maxTeamSize must be an object here
-                maxTeamSize = Config.maxTeamSize.rotation[teamSizeRotationIndex];
+        const teamSize = Config.maxTeamSize;
+        if (typeof teamSize === "object") {
+            maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
+                _maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
-                Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
+                Logger.log(`Switching to ${humanReadableTeamSizes[_maxTeamSize] ?? `team size ${_maxTeamSize}`}`);
             });
         }
 
@@ -319,7 +329,10 @@ if (isMainThread) {
                         try {
                             if (!protection.punishments?.url) return;
                             const response = await fetch(`${protection.punishments.url}/punishments`, { headers: { "api-key": protection.punishments.password } });
-                            if (response.status === 200) punishments = await response.json();
+
+                            // we hope that this is safe
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                            if (response.ok) punishments = await response.json();
                             else console.error("Error: Unable to fetch punishment list.");
                         } catch (e) {
                             console.error("Error: Unable to fetch punishment list. Details:", e);
@@ -328,14 +341,17 @@ if (isMainThread) {
                 } else {
                     if (!existsSync("punishments.json")) writeFileSync("punishments.json", "{}");
                     readFile("punishments.json", "utf8", (error, data) => {
-                        if (!error) {
-                            try {
-                                punishments = data.trim() === "" ? {} : JSON.parse(data);
-                            } catch (e) {
-                                console.error("Error: Unable to parse punishment list. Details:", e);
-                            }
-                        } else {
+                        if (error) {
                             console.error("Error: Unable to load punishment list. Details:", error);
+                            return;
+                        }
+
+                        try {
+                            // we also hope that this is safe
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                            punishments = data.trim().length ? JSON.parse(data) : {};
+                        } catch (e) {
+                            console.error("Error: Unable to parse punishment list. Details:", e);
                         }
                     });
                 }
@@ -353,10 +369,12 @@ if (isMainThread) {
                 Logger.log("Reloaded punishment list");
             }, protection.refreshDuration);
 
-            if (protection.ipBlocklistURL) {
+            const ipBlocklistURL = protection.ipBlocklistURL;
+
+            if (ipBlocklistURL !== undefined) {
                 void (async() => {
                     try {
-                        const response = await fetch(protection.ipBlocklistURL!);
+                        const response = await fetch(ipBlocklistURL);
                         ipBlocklist = (await response.text()).split("\n").map(line => line.split("/")[0]);
                     } catch (e) {
                         console.error("Error: Unable to load IP blocklist. Details:", e);

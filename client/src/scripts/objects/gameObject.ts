@@ -5,9 +5,9 @@ import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type GameSound, type SoundOptions } from "../managers/soundManager";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
-import { type GameSound, type SoundOptions } from "../managers/soundManager";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
@@ -40,7 +40,6 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
             this.destroyed
             || this._oldPosition === undefined
             || this._lastPositionChange === undefined
-            || this.container.position === undefined
         ) return;
 
         this.container.position = toPixiCoords(
@@ -74,7 +73,6 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         if (
             this._oldRotation === undefined
             || this._lastRotationChange === undefined
-            || this.container.rotation === undefined
         ) return;
 
         this.container.rotation = Numeric.lerp(

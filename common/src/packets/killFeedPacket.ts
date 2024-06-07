@@ -1,3 +1,13 @@
+/* eslint-disable */
+/*
+    FIXME
+    HACK
+    TODO
+    ANY-OTHER-TAG-YOU-CAN-THINK-OF
+
+    fix the typings for this packet especially (and the rest of the packet api)
+*/
+
 import { KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../constants";
 import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
 import { type LootDefinition, Loots } from "../definitions/loots";

@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory } from "../../../../common/src/constants";
 import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -60,7 +60,7 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
 
             this._definition = definition;
 
-            this.image.setFrame(`${definition.frame ?? definition.idString}${variant !== undefined ? `_${variant}` : ""}`);
+            this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
             this.container.zIndex = definition.zIndex;
         }

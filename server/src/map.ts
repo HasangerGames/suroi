@@ -17,9 +17,10 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
+import { Events } from "./pluginManager";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
-export class Map {
+export class GameMap {
     readonly game: Game;
 
     private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
@@ -269,7 +270,7 @@ export class Map {
             const { idString, rotationMode } = definition;
             let attempts = 0;
             for (let i = 0; i < count; i++) {
-                let orientation = Map.getRandomBuildingOrientation(rotationMode);
+                let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
                 const position = this.getRandomPosition(definition.spawnHitbox, {
                     orientation,
@@ -374,13 +375,13 @@ export class Map {
         orientation?: Orientation
     ): Building {
         definition = Buildings.reify(definition);
-        orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode);
+        orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation);
 
         for (const obstacleData of definition.obstacles) {
             const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
-            let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
+            let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
                 obstacleRotation = Numeric.addOrientations(orientation, obstacleRotation as Orientation);
@@ -444,7 +445,7 @@ export class Map {
 
         if (!definition.hideOnMap) this.packet.objects.push(building);
         this.game.grid.addObject(building);
-        this.game.pluginManager.emit("buildingGenerated", building);
+        this.game.pluginManager.emit(Events.Building_Generated, building);
         return building;
     }
 
@@ -454,7 +455,7 @@ export class Map {
         for (let i = 0; i < count; i++) {
             const scale = randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
             const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-            const rotation = Map.getRandomRotation(definition.rotationMode);
+            const rotation = GameMap.getRandomRotation(definition.rotationMode);
 
             let orientation: Orientation = 0;
 
@@ -496,7 +497,7 @@ export class Map {
             variation = random(0, definition.variations - 1) as Variation;
         }
 
-        rotation ??= Map.getRandomRotation(definition.rotationMode);
+        rotation ??= GameMap.getRandomRotation(definition.rotationMode);
 
         const obstacle = new Obstacle(
             this.game,
@@ -513,7 +514,7 @@ export class Map {
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
-        this.game.pluginManager.emit("obstacleGenerated", obstacle);
+        this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
         return obstacle;
     }
 
@@ -611,7 +612,7 @@ export class Map {
             case MapObjectSpawnMode.Beach: {
                 getPosition = () => {
                     if (params?.getOrientation) {
-                        orientation = Map.getRandomBuildingOrientation(RotationMode.Limited);
+                        orientation = GameMap.getRandomBuildingOrientation(RotationMode.Limited);
                         params.getOrientation(orientation);
                     }
 
@@ -637,7 +638,7 @@ export class Map {
             }
         }
 
-        if (params?.getPosition) getPosition = params?.getPosition;
+        if (params?.getPosition) getPosition = params.getPosition;
 
         let attempts = 0;
         let collided = true;
@@ -766,7 +767,7 @@ export class Map {
             case RotationMode.Limited:
             case RotationMode.None:
             default:
-                return Map.getRandomRotation(mode);
+                return GameMap.getRandomRotation(mode);
         }
     }
 }

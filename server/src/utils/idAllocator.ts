@@ -65,6 +65,6 @@ export class IDAllocator {
             throw new RangeError(`Cannot give back a value that is not in range (value: ${value})`);
         }
 
-        return this._internal.enqueue(value);
+        this._internal.enqueue(value);
     }
 }

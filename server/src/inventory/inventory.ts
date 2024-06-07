@@ -8,7 +8,7 @@ import { Loots, type LootDefinition, type WeaponDefinition } from "../../../comm
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../common/src/definitions/throwables";
 import { Numeric } from "../../../common/src/utils/math";
-import { type Timeout } from "../../../common/src/utils/misc";
+import { ExtendedMap, type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Player } from "../objects/player";
@@ -61,21 +61,11 @@ export class Inventory {
     }
 
     /**
-     * Each ThrowableItem instance represents a *type* of throwable, and they need to be
+     * Each {@link ThrowableItem} instance represents a *type* of throwable, and they need to be
      * cycled through. It'd be wasteful to re-instantiate them every time the user swaps
      * throwables, so we cache them here
      */
-    readonly throwableItemMap = (() => {
-        return new (class <K, V> extends Map<K, V> {
-            getAndSetIfAbsent(key: K, fallback: () => V): V {
-                return (
-                    this.has(key)
-                        ? this
-                        : this.set(key, fallback())
-                ).get(key)!;
-            }
-        })<ReferenceTo<ThrowableDefinition>, ThrowableItem>();
-    })();
+    readonly throwableItemMap = new ExtendedMap<ReferenceTo<ThrowableDefinition>, ThrowableItem>();
 
     /**
      * An internal array storing weapons
@@ -91,7 +81,6 @@ export class Inventory {
                 (acc[cur] ??= []).push(i);
                 return acc;
             },
-            // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
             {} as Record<ItemType, undefined | number[]>
         )
     );
@@ -143,8 +132,9 @@ export class Inventory {
             oldItem.stopUse();
         }
 
-        const item = this.weapons[slot]!;
         // nna is fine cuz of the hasWeapon call above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const item = this.weapons[slot]!;
         const owner = this.owner;
 
         this._reloadTimeout?.kill();
@@ -194,6 +184,8 @@ export class Inventory {
      * It will never be undefined since the only place that sets the active weapon has an undefined check
      */
     get activeWeapon(): InventoryItem {
+        // we hope that it's never undefined
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.weapons[this._activeWeaponIndex]!;
     }
 
@@ -375,10 +367,15 @@ export class Inventory {
 
             if (!found) {
                 // welp, time to swap to another slot
+
+                // if we get here, there's hopefully a throwable slot
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.weapons[this.slotsByItemType[ItemType.Throwable]![0]] = undefined;
                 this.setActiveWeaponIndex(this._findNextPopulatedSlot());
             }
         } else {
+            // only fails if `throwableItemMap` falls out-of-sync… which hopefully shouldn't happen lol
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
         }
     }
@@ -398,7 +395,7 @@ export class Inventory {
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
-            if (item instanceof GunItem && (definition as DualGunNarrowing).isDual) {
+            if (item instanceof GunItem && (definition as GunDefinition).isDual) {
                 this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
                 this._dropItem((definition as DualGunNarrowing).singleVariant, { pushForce });
             } else {
@@ -429,9 +426,9 @@ export class Inventory {
 
                     To solve this, we just ignore capacity limits when the player is dead.
                 */
-                const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral ?? this.owner.dead
+                const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral || this.owner.dead
                     ? 0
-                    : this.items.getItem(ammoType) - (this.backpack?.maxCapacity[ammoType] ?? 0);
+                    : this.items.getItem(ammoType) - (this.backpack.maxCapacity[ammoType] ?? 0);
 
                 if (overAmount > 0) {
                     this.items.decrementItem(ammoType, overAmount);
@@ -592,8 +589,10 @@ export class Inventory {
 
         const itemType = item?.definition.itemType;
         const permittedType = GameConstants.player.inventorySlotTypings[slot];
-        if (item !== undefined && permittedType !== itemType) {
-            throw new Error(`Tried to put an item of type '${ItemType[itemType!]}' in slot ${slot} (configured to only accept items of type '${ItemType[permittedType]}')`);
+        if (itemType !== undefined && permittedType !== itemType) {
+            throw new Error(
+                `Tried to put an item of type '${ItemType[itemType]}' in slot ${slot} (configured to only accept items of type '${ItemType[permittedType]}')`
+            );
         }
 
         this.weapons[slot] = item;
@@ -676,7 +675,7 @@ export class Inventory {
                         old.stopUse();
                     }
 
-                    const item = this.throwableItemMap.getAndSetIfAbsent(
+                    const item = this.throwableItemMap.getAndGetDefaultIfAbsent(
                         idString,
                         () => new ThrowableItem(definition, this.owner, this.items.getItem(idString))
                     );
@@ -694,7 +693,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
     // private readonly _listenerSet = new Set<(key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void>();
 
     constructor(entries?: ReadonlyArray<[ReferenceTo<ItemDef>, number]>) {
-        this._internal = new Map<ReferenceTo<ItemDef>, number>(entries);
+        this._internal = new Map(entries);
     }
 
     private _recordCache?: Record<ReferenceTo<ItemDef>, number>;
@@ -706,24 +705,29 @@ export class ItemCollection<ItemDef extends LootDefinition> {
                     acc[item] = count;
                     return acc;
                 },
-                // can someone remove the "prefer-reduce-type-parameter" one ffs
-                // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
                 {} as Record<ReferenceTo<ItemDef>, number>
             );
     }
 
+    /**
+     * Note: It's up to the caller to verify that the item exists via {@link hasItem()}
+     * before calling this method
+     */
     getItem(key: ReferenceTo<ItemDef>): number {
+        // please be responsible enough to call `hasItem` beforehand…
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._internal.get(key)!;
     }
 
     hasItem(key: ReferenceTo<ItemDef>): boolean {
-        return this.getItem(key) > 0;
+        return (this._internal.get(key) ?? -1) > 0;
     }
 
     setItem(key: ReferenceTo<ItemDef>, amount: number): void {
         const old = this.getItem(key);
 
         this._internal.set(key, amount);
+        // warn for decimal amounts?
 
         if (amount !== old) {
             this._recordCache = undefined;

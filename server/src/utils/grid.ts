@@ -25,12 +25,12 @@ export class Grid {
 
     readonly pool = new ObjectPool<ObjectMapping>();
 
-    constructor(public game: Game, width: number, height: number) {
+    constructor(public readonly game: Game, width: number, height: number) {
         this.width = Math.floor(width / this.cellSize);
         this.height = Math.floor(height / this.cellSize);
 
         // fill the grid X row with arrays for the Y column
-        // maps are created on demand to save memory usage
+        // maps are created on-demand to save memory usage
         this._grid = Array.from({ length: this.width + 1 }, () => []);
     }
 
@@ -49,7 +49,7 @@ export class Grid {
 
     /**
      * Update an object position on the grid system
-     * This removes it from the grid and re adds it
+     * This removes it from the grid and re-adds it
      */
     updateObject(object: GameObject): void {
         this._removeFromGrid(object);
@@ -112,7 +112,9 @@ export class Grid {
     }
 
     /**
-     * Get all objects near this hitbox. This transforms the hitbox into a rectangle and gets all objects intersecting it after rounding it to grid cells
+     * Get all objects near this hitbox. This transforms the hitbox into a rectangle
+     * and gets all objects intersecting it after rounding it to grid cells
+     *
      * @param hitbox The hitbox
      * @return A set with the objects near this hitbox
      */

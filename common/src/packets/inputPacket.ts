@@ -5,7 +5,7 @@ import { type BackpackDefinition } from "../definitions/backpacks";
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
-import { type MapPingDefinition, MapPings } from "../definitions/mapPings";
+import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
 import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
@@ -13,6 +13,11 @@ import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
+
+/**
+ * {@linkcode InputAction}s requiring no additional parameter
+ */
+export type SimpleInputActions = Exclude<InputActions, InputActions.EquipItem | InputActions.DropWeapon | InputActions.DropItem | InputActions.UseItem | InputActions.Emote | InputActions.MapPing>;
 
 export type InputAction = {
     readonly type: InputActions.UseItem | InputActions.DropItem
@@ -25,20 +30,9 @@ export type InputAction = {
     readonly emote: EmoteDefinition
 } | {
     readonly type: InputActions.MapPing
-    readonly ping: MapPingDefinition
+    readonly ping: PlayerPing
     readonly position: Vector
-} | {
-    readonly type: Exclude<
-        InputActions,
-
-        InputActions.EquipItem |
-        InputActions.DropWeapon |
-        InputActions.DropItem |
-        InputActions.UseItem |
-        InputActions.Emote |
-        InputActions.MapPing
-    >
-};
+} | { readonly type: SimpleInputActions };
 
 export class InputPacket extends Packet {
     movement!: {
@@ -137,7 +131,7 @@ export class InputPacket extends Packet {
 
         // Actions
         stream.readArray(this.actions, 3, () => {
-            const type = stream.readBits(INPUT_ACTIONS_BITS);
+            const type: InputActions = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
             let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | undefined;
@@ -165,7 +159,7 @@ export class InputPacket extends Packet {
                     break;
             }
 
-            return { type, item, slot, emote, ping, position };
+            return { type, item, slot, emote, ping, position } as InputAction;
         });
     }
 

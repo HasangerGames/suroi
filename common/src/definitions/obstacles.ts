@@ -857,7 +857,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer1 - 3,
             reflectBullets: true
         },
-
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 1),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.86, 2) }, 2),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(11.4, 2) }, 3),

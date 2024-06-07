@@ -7,7 +7,8 @@ const badWordRegexes: RegExp[] = [
     /n[a@4]+z[i1]+[s$5z2]*/i, // Nazi references
     /a[d]+[o0]+[/|l1]+[f]+(\s|\W|_)*h[/|!i1]+[t]+[/|!l1]+[e3]+[r]+/i, // Hitler
     /(?=.*k[i1]+[l1]+[l1]*)(?=.*j[e3]+[w]+[s$5z2]*)/i // Antisemitist stuff
-    // fixme too broad, matches "rap"
+    // FIXME too broad, matches "rap"
+    // sounds like that * at the end should be a + then
     /// (?=.*m[o0]+[l1]+[e3]+[s$5z2]+[t+]*)|(?=.*r[a@4]+[p]+[e3]*)/i              // Molest and rape
 ];
 

@@ -21,12 +21,18 @@ export interface MapPingDefinition extends ObjectDefinition {
      * any previous pings from that player will be removed
      */
     readonly isPlayerPing: boolean
-    readonly ignoreExpiration?: boolean
+    readonly ignoreExpiration: boolean
     readonly sound?: string
 }
 
+export type PlayerPing = MapPingDefinition & { readonly isPlayerPing: true };
+export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
+
 export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
-    () => ({
+    defaultTemplate => ({
+        [defaultTemplate]: () => ({
+            ignoreExpiration: false
+        }),
         gamePingFactory: (idString: string, color: number) => ({
             idString,
             color,

@@ -74,8 +74,11 @@ export const Reskins: Record<string, ReskinDefinition> = {
     }
 };
 
-const tempList = Modes
-    .filter(mode => mode.reskin !== undefined)
-    .map(mode => mode.reskin);
-
-export const ModeAtlases = tempList.filter((item, index) => tempList.indexOf(item) === index) as string[];
+/*
+    equivalent to [...new Set(whatever)], but is faster and also becomes
+    even faster when duplicates are present (yes this was benchmarked)
+*/
+export const ModeAtlases = Modes
+    .map(mode => mode.reskin)
+    .filter(reskin => reskin !== undefined)
+    .filter((item, index, array) => array.indexOf(item) === index);

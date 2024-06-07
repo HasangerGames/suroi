@@ -1,4 +1,4 @@
-import { Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpritesheetData, Assets, type Renderer, RendererType, type WebGLRenderer } from "pixi.js";
+import { Assets, RendererType, Sprite, Spritesheet, type ColorSource, type Graphics, type Renderer, type SpritesheetData, type Texture, type WebGLRenderer } from "pixi.js";
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
@@ -6,22 +6,21 @@ import { MODE, PIXI_SCALE } from "./constants";
 const textures: Record<string, Texture> = {};
 
 export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
-    // If device doesn't support 4096x4096 textures
-    // force low resolution textures since they are 2048x2048
-    if (renderer.type === RendererType.WEBGL) {
+    // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
+    if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
         if (gl.getParameter(gl.MAX_TEXTURE_SIZE) < 4096) {
             highResolution = false;
         }
     }
 
-    let atlases: Record<string, SpritesheetData[]>;
-
-    if (highResolution) {
-        atlases = (await import("virtual:spritesheets-jsons-high-res")).atlases;
-    } else {
-        atlases = (await import("virtual:spritesheets-jsons-low-res")).atlases;
-    }
+    // we pray
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const atlases: Record<string, SpritesheetData[]> = highResolution
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ? (await import("virtual:spritesheets-jsons-high-res")).atlases
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        : (await import("virtual:spritesheets-jsons-low-res")).atlases;
 
     const promises: Array<Promise<void>> = [];
     const mainAtlas = atlases.main;
@@ -41,11 +40,13 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 }
 
 async function loadSpritesheet(data: SpritesheetData, renderer: Renderer): Promise<void> {
+    // FIXME I have no idea why this nna is sound, someone please explain here why it is
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const image = data.meta.image!;
 
     console.log(`Loading spritesheet ${location.origin}/${image}`);
 
-    return await new Promise<void>(resolve => {
+    await new Promise<void>(resolve => {
         void Assets.load<Texture>(image).then(texture => {
             void renderer.prepare.upload(texture);
             void new Spritesheet(texture, data).parse().then(sheetTextures => {
@@ -69,7 +70,7 @@ export class SuroiSprite extends Sprite {
     }
 
     static getTexture(frame: string): Texture {
-        if (!textures[frame]) {
+        if (!(frame in textures)) {
             console.warn(`Texture not found: "${frame}"`);
             return textures._missing_texture;
         }

@@ -3,12 +3,12 @@ import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
+import { MapPings, type MapPing, type MapPingDefinition, type PlayerPing } from "../definitions/mapPings";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
-import { MapPings, type MapPingDefinition } from "../definitions/mapPings";
 import { Packet } from "./packet";
 
 interface ObjectFullData {
@@ -120,16 +120,19 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             stream.writeBoolean(weapon !== undefined);
 
             if (weapon !== undefined) {
-                Loots.writeToStream(stream, weapon.definition);
+                const { definition, count, stats } = weapon;
+                Loots.writeToStream(stream, definition);
 
-                const hasCount = weapon.count !== undefined;
+                const hasCount = count !== undefined;
                 stream.writeBoolean(hasCount);
                 if (hasCount) {
-                    stream.writeUint8(weapon.count!);
+                    stream.writeUint8(count);
                 }
 
-                if (weapon.definition.killstreak) {
-                    stream.writeUint8(weapon.stats!.kills!);
+                if (definition.killstreak) {
+                    // we pray that these nna's are correct at runtime
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    stream.writeUint8(stats!.kills!);
                 }
             }
         }
@@ -152,7 +155,6 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 }
 
 function deserializePlayerData(stream: SuroiBitStream): PlayerData {
-    /* eslint-disable no-cond-assign */
     const dirty = {} as PlayerData["dirty"];
     const inventory = {} as PlayerData["inventory"];
     const data = { dirty, inventory } as PlayerData;
@@ -246,8 +248,19 @@ const UpdateFlags = Object.freeze({
 
 const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
+export type MapPingSerialization = {
+    readonly position: Vector
+} & ({
+    readonly definition: PlayerPing
+    readonly playerId: number
+} | {
+    readonly definition: MapPing
+    readonly playerId?: undefined
+});
+
 export class UpdatePacket extends Packet {
-    playerData!: PlayerData;
+    // obligatory on server, optional on client
+    playerData?: Required<PlayerData>;
 
     deletedObjects: number[] = [];
 
@@ -258,12 +271,12 @@ export class UpdatePacket extends Packet {
     // server side only
 
     fullObjectsCache: Array<{
-        partialStream: SuroiBitStream
-        fullStream: SuroiBitStream
+        get partialStream(): SuroiBitStream
+        get fullStream(): SuroiBitStream
     }> = [];
 
     partialObjectsCache: Array<{
-        partialStream: SuroiBitStream
+        get partialStream(): SuroiBitStream
     }> = [];
 
     bullets: BaseBullet[] = [];
@@ -319,9 +332,11 @@ export class UpdatePacket extends Packet {
         const flagsIdx = stream.index;
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
-        if (Object.values(this.playerData.dirty).includes(true)) {
-            serializePlayerData(stream, this.playerData);
-            flags |= UpdateFlags.PlayerData;
+        if (this.playerData) {
+            if (Object.keys(this.playerData).length > 0) {
+                serializePlayerData(stream, this.playerData);
+                flags |= UpdateFlags.PlayerData;
+            }
         }
 
         if (this.deletedObjects.length) {
@@ -407,6 +422,8 @@ export class UpdatePacket extends Packet {
         }
 
         if (this.aliveCountDirty) {
+            // the troubles of loosely-typing packets
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             stream.writeUint8(this.aliveCount!);
             flags |= UpdateFlags.AliveCount;
         }
@@ -430,6 +447,8 @@ export class UpdatePacket extends Packet {
                 MapPings.writeToStream(stream, ping.definition);
                 stream.writePosition(ping.position);
                 if (ping.definition.isPlayerPing) {
+                    // the troubles of loosely-typing packets
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     stream.writeObjectID(ping.playerId!);
                 }
             });
@@ -580,13 +599,12 @@ export class UpdatePacket extends Packet {
         if (flags & UpdateFlags.MapPings) {
             stream.readArray(this.mapPings, 4, () => {
                 const definition = MapPings.readFromStream(stream);
-                const position = stream.readPosition();
-                const playerId = definition.isPlayerPing ? stream.readObjectID() : undefined;
+
                 return {
                     definition,
-                    position,
-                    playerId
-                };
+                    position: stream.readPosition(),
+                    ...(definition.isPlayerPing ? { playerId: definition.isPlayerPing } : {})
+                } as MapPingSerialization;
             });
         }
     }

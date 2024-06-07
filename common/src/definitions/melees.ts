@@ -31,6 +31,11 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly fireMode: FireMode
 }
 
+export const DEFAULT_HAND_RIGGING = Object.freeze({
+    left: Vec.create(38, -35),
+    right: Vec.create(38, 35)
+}) as InventoryItemDefinition["fists"] & object;
+
 export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
     defaultTemplate => ({
         [defaultTemplate]: () => ({
@@ -59,8 +64,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             fists: {
                 animationDuration: 125,
                 randomFist: true,
-                left: Vec.create(38, -35),
-                right: Vec.create(38, 35),
+                ...DEFAULT_HAND_RIGGING,
                 useLeft: Vec.create(75, -10),
                 useRight: Vec.create(75, 10)
             },

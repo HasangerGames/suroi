@@ -1,4 +1,4 @@
-import { BitStream } from "@damienvesper/bit-buffer";
+import { BitStream, type BitView } from "@damienvesper/bit-buffer";
 import { GameConstants, ObjectCategory } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
@@ -13,7 +13,6 @@ export const VARIATION_BITS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 3;
 
-// @ts-expect-error private field moment
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
         super(source, byteOffset, byteLength);
@@ -280,17 +279,18 @@ export class SuroiBitStream extends BitStream {
      * @param serializeFn The function to serialize each iterator item
      * @param size The iterator size (eg. array.length or set.size)
      */
-    writeArray<T>(arr: T[], bits: number, serializeFn: (item: T) => void): void {
+    writeArray<T>(arr: readonly T[], bits: number, serializeFn: (item: T) => void): void {
         if (bits < 0 || bits >= 31) {
             throw new Error(`Invalid bit count ${bits}`);
         }
 
-        this.writeBits(arr.length, bits);
+        const length = arr.length;
+        this.writeBits(length, bits);
 
         const max = 1 << bits;
-        for (let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < length; i++) {
             if (i > max) {
-                console.warn(`writeArray: iterator overflow: ${bits} bits, ${arr.length} size`);
+                console.warn(`writeArray: iterator overflow: ${bits} bits, ${length} size`);
                 break;
             }
             serializeFn(arr[i]);
@@ -299,41 +299,63 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Read an array from the stream
-     * @param arr The array to add the deserialized elements;
+     * @param out The array to add the deserialized elements to
      * @param serializeFn The function to de-serialize each iterator item
      * @param bits The maximum length of bits to read
+     * @see {@link SuroiBitStream.readAndCreateArray()}
      */
-    readArray<T>(arr: T[], bits: number, deserializeFn: () => T): void {
+    readArray<T>(out: T[], bits: number, deserializeFn: () => T): void {
         const size = this.readBits(bits);
 
         for (let i = 0; i < size; i++) {
-            arr.push(deserializeFn());
+            out.push(deserializeFn());
         }
     }
 
-    // private field L
-    declare _view: {
-        _view: Uint8Array
-    };
+    /**
+     * Read an array from the stream
+     * @param serializeFn The function to de-serialize each iterator item
+     * @param bits The maximum length of bits to read
+     * @returns An array with the desired elements
+     */
+    readAndCreateArray<T>(bits: number, deserializeFn: () => T): T[] {
+        return Array.from(
+            { length: this.readBits(bits) },
+            () => deserializeFn()
+        );
+    }
 
+    // does `src` need to be byte-aligned?
     /**
      * Copy bytes from a source stream to this stream
-     * !!!NOTE: Both streams index must be byte aligned
-     * @param {BitStream} src
-     * @param {number} offset
-     * @param {number} length
+     *
+     * **NOTE**: Both streams index must be byte aligned
+     * @param src    The {@link BitStream} to copy from
+     * @param offset The offset to start reading from
+     * @param length How many bytes to read from the source
      */
-    writeBytes(src: SuroiBitStream, offset: number, length: number): void {
+    writeBytes(src: BitStream, offset: number, length: number): void {
         if (this.index % 8 !== 0) {
-            throw new Error("WriteBytes: stream must be byte aligned");
+            throw new Error("writeBytes: target stream (`this`) must be byte aligned");
         }
-        const data = new Uint8Array(src._view._view.buffer, offset, length);
-        this._view._view.set(data, this.index / 8);
+
+        // HACK evil
+        type UnPrivatizedBitStream = Omit<BitStream, "_view"> & { readonly _view: Omit<BitView, "_view"> & { readonly _view: Uint8Array } };
+
+        (this as unknown as UnPrivatizedBitStream)._view._view.set(
+            new Uint8Array(
+                (src as unknown as UnPrivatizedBitStream)._view._view.buffer,
+                offset,
+                length
+            ),
+            this.index / 8
+        );
         this.index += length * 8;
     }
 
     /**
      * Writes a byte alignment to the stream
+     *
      * This is to ensure the stream index is a multiple of 8
      */
     writeAlignToNextByte(): void {

@@ -1,8 +1,7 @@
-import { platform } from "os";
-import { createHash } from "crypto";
-
-import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import { type Image, createCanvas, loadImage } from "canvas";
+import { createHash } from "crypto";
+import { type IOption, MaxRectsPacker } from "maxrects-packer";
+import { platform } from "os";
 import { type SpritesheetData } from "pixi.js";
 
 export const supportedFormats = ["png", "jpeg"] as const;
@@ -49,11 +48,11 @@ export interface CompilerOptions {
     packerOptions: Omit<IOption, "allowRotation">
 }
 
-export type AtlasList = Array<{ json: SpritesheetData, image: Buffer }>;
+export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer }>;
 
-export type multiResAtlasList = Record<string, {
-    low: AtlasList
-    high: AtlasList
+export type MultiResAtlasList = Record<string, {
+    readonly low: AtlasList
+    readonly high: AtlasList
 }>;
 
 /**
@@ -61,28 +60,26 @@ export type multiResAtlasList = Record<string, {
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(paths: string[], options: CompilerOptions): Promise<{ low: AtlasList, high: AtlasList }> {
+export async function createSpritesheets(paths: readonly string[], options: CompilerOptions): Promise<{ readonly low: AtlasList, readonly high: AtlasList }> {
     if (paths.length === 0) throw new Error("No file given.");
 
     if (!supportedFormats.includes(options.outputFormat)) {
-        const supported = JSON.stringify(supportedFormats);
-        throw new Error(`outputFormat should only be one of ${supported}, but "${options.outputFormat}" was given.`);
+        throw new Error(`outputFormat should only be one of ${JSON.stringify(supportedFormats)}, but "${options.outputFormat}" was given.`);
     }
 
     interface PackerRectData {
-        image: Image
-        path: string
+        readonly image: Image
+        readonly path: string
     }
 
-    const images: PackerRectData[] = [];
-
-    await Promise.all(paths.map(async path => {
-        const image = await loadImage(path);
-        images.push({
-            image,
-            path
-        });
-    }));
+    const images: readonly PackerRectData[] = await Promise.all(
+        paths.map(
+            async path => ({
+                image: await loadImage(path),
+                path
+            })
+        )
+    );
 
     function createSheet(resolution: number): AtlasList {
         const packer = new MaxRectsPacker(
@@ -123,17 +120,17 @@ export async function createSpritesheets(paths: string[], options: CompilerOptio
             };
 
             for (const rect of bin.rects) {
-                const data: PackerRectData = rect.data;
+                const data = rect.data as PackerRectData;
 
                 ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
-                const sourceParts = (rect.data.path as string).split(platform() === "win32" ? "\\" : "/");
-                let name = sourceParts.slice(sourceParts.length - 1, sourceParts.length).join();
+                const sourceParts = data.path.split(platform() === "win32" ? "\\" : "/");
+                // there is _probably_ a file name
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                let name = sourceParts.at(-1)!;
 
                 if (options.removeExtensions) {
-                    const temp = name.split(".");
-                    temp.splice(temp.length - 1, 1);
-                    name = temp.join();
+                    name = name.split(".").slice(0, -1).join("");
                 }
 
                 json.frames[name] = {
@@ -156,9 +153,8 @@ export async function createSpritesheets(paths: string[], options: CompilerOptio
             hash.setEncoding("hex");
             hash.write(buffer);
             hash.end();
-            const sha1 = (hash.read() as string).slice(0, 8);
 
-            json.meta.image = `${options.outDir}/${options.name}-${sha1}@${resolution}x.${options.outputFormat}`;
+            json.meta.image = `${options.outDir}/${options.name}-${(hash.read() as string).slice(0, 8)}@${resolution}x.${options.outputFormat}`;
 
             atlases.push({
                 json,

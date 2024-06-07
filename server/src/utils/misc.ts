@@ -37,6 +37,8 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     for (const item of loots) {
         items.push(
             item.spawnSeparately && (item.count ?? 1) > 1
+                // a null-ish value would fail the conditional this branch is contingent on
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 ? new Array<WeightedItem>(item.count!).fill(item)
                 : item
         );
@@ -61,14 +63,16 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
         }
 
         if ("ammoType" in definition && definition.ammoSpawnAmount) {
-            const ammoSpawnAmount = definition.ammoSpawnAmount;
+            const { ammoType, ammoSpawnAmount } = definition;
+
             if (ammoSpawnAmount > 1) {
+                const halfAmount = ammoSpawnAmount / 2;
                 loot.push(
-                    new LootItem(definition.ammoType, Math.floor(ammoSpawnAmount / 2)),
-                    new LootItem(definition.ammoType, Math.ceil(ammoSpawnAmount / 2))
+                    new LootItem(ammoType, Math.floor(halfAmount)),
+                    new LootItem(ammoType, Math.ceil(halfAmount))
                 );
             } else {
-                loot.push(new LootItem(definition.ammoType, ammoSpawnAmount));
+                loot.push(new LootItem(ammoType, ammoSpawnAmount));
             }
         }
     }

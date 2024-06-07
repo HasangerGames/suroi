@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory } from "../../../common/src/constants";
+import { ObjectCategory } from "../../../common/src/constants";
 import { Bullets } from "../../../common/src/definitions/bullets";
 import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
@@ -71,16 +71,17 @@ export class Bullet extends BaseBullet {
 
     update(): DamageRecord[] {
         const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, this.game.dt)));
+        const { grid, dt, map: { width: mapWidth, height: mapHeight } } = this.game;
 
-        const objects = this.game.grid.intersectsHitbox(lineRect);
-        const collisions = this.updateAndGetCollisions(this.game.dt, objects);
+        const objects = grid.intersectsHitbox(lineRect);
+        const collisions = this.updateAndGetCollisions(dt, objects);
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
         if (
             this.shooter.dead
-            || this.position.x < 0 || this.position.x > this.game.map.width
-            || this.position.y < 0 || this.position.y > this.game.map.height
+            || this.position.x < 0 || this.position.x > mapWidth
+            || this.position.y < 0 || this.position.y > mapHeight
         ) {
             this.dead = true;
             return [];
@@ -127,8 +128,6 @@ export class Bullet extends BaseBullet {
                     this.position = point;
 
                     if (object.definition.reflectBullets && this.reflectionCount < 3) {
-                        let shouldReflect: boolean;
-
                         /*
                             no matter what, nudge the bullet
 
@@ -141,9 +140,7 @@ export class Bullet extends BaseBullet {
                         const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
                         this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
 
-                        // skill issue
-                        // eslint-disable-next-line no-cond-assign
-                        if (shouldReflect = definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
+                        if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
                             this.reflect(rotation);
                             this.reflected = true;
                         }

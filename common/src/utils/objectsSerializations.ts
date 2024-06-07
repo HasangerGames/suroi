@@ -167,16 +167,17 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Player]: {
         serializePartial(stream, data): void {
-            stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 16);
+            const { position, rotation, animation, action } = data;
 
-            const animationDirty = data.animation !== undefined;
+            stream.writePosition(position);
+            stream.writeRotation(rotation, 16);
+
+            const animationDirty = animation !== undefined;
             stream.writeBoolean(animationDirty);
             if (animationDirty) {
-                stream.writeBits(data.animation!, ANIMATION_TYPE_BITS);
+                stream.writeBits(animation, ANIMATION_TYPE_BITS);
             }
 
-            const action = data.action;
             const actionDirty = action !== undefined;
             stream.writeBoolean(actionDirty);
             if (actionDirty) {
@@ -187,23 +188,35 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
         },
         serializeFull(stream, data): void {
-            const full = data.full;
-            stream.writeBoolean(full.dead);
-            stream.writeBoolean(full.downed);
-            stream.writeBoolean(full.beingRevived);
-            stream.writeUint8(full.teamID);
-            stream.writeBoolean(full.invulnerable);
-            Loots.writeToStream(stream, full.activeItem);
-            Skins.writeToStream(stream, full.skin);
-            Backpacks.writeToStream(stream, full.backpack);
+            const { full: {
+                dead,
+                downed,
+                beingRevived,
+                teamID,
+                invulnerable,
+                activeItem,
+                skin,
+                backpack,
+                helmet,
+                vest
+            } } = data;
 
-            stream.writeBoolean(full.helmet !== undefined);
-            if (full.helmet) {
-                Armors.writeToStream(stream, full.helmet);
+            stream.writeBoolean(dead);
+            stream.writeBoolean(downed);
+            stream.writeBoolean(beingRevived);
+            stream.writeUint8(teamID);
+            stream.writeBoolean(invulnerable);
+            Loots.writeToStream(stream, activeItem);
+            Skins.writeToStream(stream, skin);
+            Backpacks.writeToStream(stream, backpack);
+
+            stream.writeBoolean(helmet !== undefined);
+            if (helmet) {
+                Armors.writeToStream(stream, helmet);
             }
-            stream.writeBoolean(full.vest !== undefined);
-            if (full.vest) {
-                Armors.writeToStream(stream, full.vest);
+            stream.writeBoolean(vest !== undefined);
+            if (vest) {
+                Armors.writeToStream(stream, vest);
             }
         },
         deserializePartial(stream) {
@@ -333,7 +346,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBoolean(data.isNew);
             stream.writeObjectID(data.playerID);
         },
-        serializeFull(): void { },
+        serializeFull(): void { /* death markers have no full serialization */ },
         deserializePartial(stream) {
             const position = stream.readPosition();
             const isNew = stream.readBoolean();
@@ -345,7 +358,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 playerID
             };
         },
-        deserializeFull() { }
+        deserializeFull() { /* death markers have no full serialization */ }
     },
     //
     // Building Serialization
@@ -393,7 +406,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writePosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
         },
-        serializeFull(): void { },
+        serializeFull(): void { /* decals have no full serialization */ },
         deserializePartial(stream) {
             const definition = Decals.readFromStream(stream);
             return {
@@ -402,7 +415,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 rotation: stream.readObstacleRotation(definition.rotationMode).rotation
             };
         },
-        deserializeFull() { }
+        deserializeFull() { /* decals have no full serialization */ }
     },
     [ObjectCategory.Parachute]: {
         serializePartial(stream, data) {
@@ -449,19 +462,21 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     },
     [ObjectCategory.SyncedParticle]: {
         serializePartial(stream, data) {
-            stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 8);
+            const { position, rotation, scale, alpha } = data;
 
-            const writeScale = data.scale !== undefined;
+            stream.writePosition(position);
+            stream.writeRotation(rotation, 8);
+
+            const writeScale = scale !== undefined;
             stream.writeBoolean(writeScale);
             if (writeScale) {
-                stream.writeScale(data.scale!);
+                stream.writeScale(scale);
             }
 
-            const writeAlpha = data.alpha !== undefined;
+            const writeAlpha = alpha !== undefined;
             stream.writeBoolean(writeAlpha);
             if (writeAlpha) {
-                stream.writeFloat(data.alpha!, 0, 1, 8);
+                stream.writeFloat(alpha, 0, 1, 8);
             }
         },
         serializeFull(stream, data) {

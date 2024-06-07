@@ -7,12 +7,7 @@ import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDef
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
-/*
-    `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
-    `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
-*/
-
-export function findDupes(collection: string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
+export function findDupes(collection: readonly string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
     const dupes: Record<string, number> = {};
     const set = new Set<string>();
     let foundDupes = false;
@@ -42,6 +37,12 @@ export function safeString(value: unknown): string {
     } catch (_) {
         return String(value);
     }
+}
+
+function convertUnknownErrorToString(err: unknown): string {
+    return err instanceof Error
+        ? err.stack ?? `${err.name}: ${err.message}`
+        : safeString(err);
 }
 
 export const tester = (() => {
@@ -106,70 +107,83 @@ export const tester = (() => {
                 }
             ) & OtherParams
         ): void => {
-            const [value, errorPath] = "value" in params
-                ? [
-                    params.value,
-                    params.errorPath
-                ]
-                : [
-                    params.obj[params.field] as PlainValue,
-                    tester.createPath(params.baseErrorPath, `field ${String(params.field)}`)
-                ];
+            const _fatalErrors: string[] = [];
+            const _errors: string[] = [];
+            const _warnings: string[] = [];
 
-            const result = {
-                fatalErrors: [],
-                errors: [],
-                warnings: [],
-                ...(
-                    (() => {
-                        try {
-                            return predicate(
-                                value,
-                                params,
-                                (target, args) => {
-                                    const oldErrLen = errors.length;
-                                    target({
-                                        value,
-                                        errorPath,
-                                        ...args
-                                    });
+            let errorPath = "unknown";
 
-                                    return errors.length !== oldErrLen;
-                                },
-                                errorPath
-                            ) ?? {};
-                        } catch (e) {
-                            return {
-                                fatalErrors: [
-                                    e instanceof Error
-                                        ? e.stack ?? `${e.name}: ${e.message}`
-                                        : safeString(e)
-                                ]
-                            };
-                        }
-                    })()
-                )
-            };
+            try {
+                const plainValue = "value" in params;
+                errorPath = plainValue
+                    ? params.errorPath
+                    : tester.createPath(params.baseErrorPath, `field ${String(params.field)}`);
 
-            if (result === undefined || result.fatalErrors.length + result.errors.length + result.warnings.length === 0) return;
+                const value = plainValue
+                    ? params.value
+                    : params.obj[params.field] as PlainValue;
 
-            const prependErrorPath = (err: string): [string, string] => [errorPath, err];
+                const result = {
+                    fatalErrors: [],
+                    errors: [],
+                    warnings: [],
+                    ...(
+                        (() => {
+                            try {
+                                return predicate(
+                                    value,
+                                    params,
+                                    (target, args) => {
+                                        const oldErrLen = errors.length;
+                                        target({
+                                            value,
+                                            errorPath,
+                                            ...args
+                                        });
+
+                                        return errors.length !== oldErrLen;
+                                    },
+                                    errorPath
+                                ) ?? {};
+                            } catch (e) {
+                                return {
+                                    fatalErrors: [
+                                        convertUnknownErrorToString(e)
+                                    ]
+                                };
+                            }
+                        })()
+                    )
+                };
+
+                if (result === undefined || result.fatalErrors.length + result.errors.length + result.warnings.length === 0) return;
+
+                _fatalErrors.push(...result.fatalErrors);
+                _errors.push(...result.errors);
+                _warnings.push(...result.warnings);
+            } catch (e) {
+                _fatalErrors.push(
+                    convertUnknownErrorToString(e)
+                );
+            }
+
+            const prependErrorPath = (err: string): readonly [string, string] => [errorPath, err];
 
             tester.fatalErrors.push(
-                ...result.fatalErrors.map(prependErrorPath)
+                ..._fatalErrors.map(prependErrorPath)
             );
             tester.errors.push(
-                ...result.errors.map(prependErrorPath)
+                ..._errors.map(prependErrorPath)
             );
             tester.warnings.push(
-                ...result.warnings.map(prependErrorPath)
+                ..._warnings.map(prependErrorPath)
             );
         };
     }
 
-    const warnings: Array<[string, string]> = [];
-    const errors: Array<[string, string]> = [];
-    const fatalErrors: Array<[string, string]> = [];
+    const warnings: Array<readonly [string, string]> = [];
+    const errors: Array<readonly [string, string]> = [];
+    const fatalErrors: Array<readonly [string, string]> = [];
 
     function createPath(...components: string[]): string {
         return components.join(" -> ");
@@ -369,10 +383,10 @@ export const tester = (() => {
             value: unknown,
             otherParams: {
                 defaultValue: typeof value
-                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
+                equalityFunction?: (a: Exclude<typeof value, undefined>, b: typeof value) => boolean
             }
         ) => {
-            if ((value !== undefined) && (otherParams.equalityFunction ?? ((a, b) => a === b))(value!, otherParams.defaultValue)) {
+            if (value !== undefined && (otherParams.equalityFunction ?? ((a, b) => a === b))(value, otherParams.defaultValue)) {
                 return {
                     warnings: [
                         `This field is optional and has a default value (${safeString(otherParams.defaultValue)}); specifying its default value serves no purpose`
@@ -408,8 +422,8 @@ export const tester = (() => {
             value: unknown,
             otherParams: {
                 defaultValue: typeof value
-                equalityFunction?: (a: NonNullable<typeof value>, b: typeof value) => boolean
-                validatorIfPresent: (val: NonNullable<typeof value>, baseErrorPath: string) => void
+                equalityFunction?: (a: Exclude<typeof value, undefined>, b: typeof value) => boolean
+                validatorIfPresent: (val: Exclude<typeof value, undefined>, baseErrorPath: string) => void
             },
             forwardTo,
             baseErrorPath
@@ -423,7 +437,7 @@ export const tester = (() => {
                     }
                 ) && value !== undefined
             ) {
-                otherParams.validatorIfPresent(value!, baseErrorPath);
+                otherParams.validatorIfPresent(value, baseErrorPath);
             }
         }
     ) as {
@@ -843,10 +857,9 @@ export const validators = Object.freeze({
             }
         }
 
-        if (definition.wearerAttributes) {
+        const wearerAttributes = definition.wearerAttributes;
+        if (wearerAttributes) {
             logger.indent("Validating wearer attributes", () => {
-                const wearerAttributes = definition.wearerAttributes!;
-
                 tester.assertNoPointlessValue({
                     obj: wearerAttributes,
                     field: "passive",
@@ -855,9 +868,10 @@ export const validators = Object.freeze({
                     baseErrorPath
                 });
 
-                if (wearerAttributes.passive) {
+                const passive = wearerAttributes.passive;
+                if (passive) {
                     logger.indent("Validating passive wearer attributes", () => {
-                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "passive"), wearerAttributes.passive!);
+                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "passive"), passive);
                     });
                 }
 
@@ -869,9 +883,10 @@ export const validators = Object.freeze({
                     baseErrorPath
                 });
 
-                if (wearerAttributes.active) {
+                const active = wearerAttributes.active;
+                if (active) {
                     logger.indent("Validating active wearer attributes", () => {
-                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "active"), wearerAttributes.active!);
+                        validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "active"), active);
                     });
                 }
 
@@ -883,10 +898,9 @@ export const validators = Object.freeze({
                     baseErrorPath
                 });
 
-                if (wearerAttributes.on) {
+                const on = wearerAttributes.on;
+                if (on) {
                     logger.indent("Validating on wearer attributes", () => {
-                        const on = wearerAttributes.on!;
-
                         tester.assertNoPointlessValue({
                             obj: on,
                             field: "damageDealt",
@@ -895,10 +909,11 @@ export const validators = Object.freeze({
                             baseErrorPath
                         });
 
-                        if (on.damageDealt) {
+                        const damageDealt = on.damageDealt;
+                        if (damageDealt) {
                             logger.indent("Validating on-damage wearer attributes", () => {
                                 tester.runTestOnArray(
-                                    on.damageDealt!,
+                                    damageDealt,
                                     (entry, errorPath) => {
                                         validateWearerAttributesInternal(errorPath, entry);
                                     },
@@ -915,10 +930,11 @@ export const validators = Object.freeze({
                             baseErrorPath
                         });
 
-                        if (on.kill) {
+                        const kill = on.kill;
+                        if (kill) {
                             logger.indent("Validating on-kill wearer attributes", () => {
                                 tester.runTestOnArray(
-                                    on.kill!,
+                                    kill,
                                     (entry, errorPath) => {
                                         validateWearerAttributesInternal(errorPath, entry);
                                     },
@@ -1066,8 +1082,8 @@ export const validators = Object.freeze({
         this.valueSpecifier(tester.createPath(baseErrorPath, "start"), animated.start, baseValidator);
         this.valueSpecifier(tester.createPath(baseErrorPath, "end"), animated.end, baseValidator);
 
-        (durationValidator ?? (() => {}))(tester.createPath(baseErrorPath, "duration"), animated.duration);
-        (easingValidator ?? (() => {}))(tester.createPath(baseErrorPath, "easing"), animated.easing);
+        (durationValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "duration"), animated.duration);
+        (easingValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "easing"), animated.easing);
     },
     syncedParticleSpawner(baseErrorPath: string, spawner: SyncedParticleSpawnerDefinition): void {
         tester.assertReferenceExists({
@@ -1197,9 +1213,7 @@ export const logger = (() => {
             } catch (e) {
                 tester.fatalErrors.push([
                     "unknown",
-                    e instanceof Error
-                        ? e.stack ?? `${e.name}: ${e.message}`
-                        : safeString(e)
+                    convertUnknownErrorToString(e)
                 ]);
             }
 

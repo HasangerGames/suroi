@@ -1,4 +1,6 @@
 import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { Ammos } from "./ammos";
+import { HealingItems } from "./healingItems";
 
 export enum EmoteCategory {
     People,
@@ -111,18 +113,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Squid"
         ].map(name => simple("emote_factory", name, EmoteCategory.Misc)),
         ...[
-            "9mm",
-            "12g",
-            "50ae",
-            "127mm",
-            "556mm",
-            "762mm",
-            "curadell",
-            "firework_rocket",
-            "gauze",
-            "medikit",
-            "cola",
-            "tablets"
-        ].map(idString => simple("team_emote", idString))
+            ...Ammos.definitions.filter(a => !a.ephemeral),
+            ...HealingItems.definitions
+        ].map(({ idString }) => simple("team_emote", idString))
     ]
 );

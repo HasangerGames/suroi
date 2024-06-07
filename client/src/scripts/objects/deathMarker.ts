@@ -1,5 +1,6 @@
 import { Text, type Container } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -7,7 +8,6 @@ import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
