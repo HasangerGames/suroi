@@ -823,11 +823,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
             id: player.id,
-            teammates: this.game.teamMode
-                // teamMode ensures the presence of team
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                ? player._team!.players.filter(p => p.id !== player.id)
-                : [],
+            teammates: player._team?.players.filter(p => p.id !== player.id) ?? [],
             spectating: this.spectating !== undefined,
             dirty: player.dirty,
             inventory: {
@@ -899,6 +895,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.newPlayers = this._firstPacket
             ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
             : game.newPlayers;
+
+        for (const teammate of (packet.newPlayers as Player[]).filter(p => p.teamID === player.teamID)) {
+            packet.fullObjectsCache.push(teammate);
+        }
 
         packet.deletedPlayers = game.deletedPlayers;
 

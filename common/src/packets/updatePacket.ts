@@ -603,7 +603,7 @@ export class UpdatePacket extends Packet {
                 return {
                     definition,
                     position: stream.readPosition(),
-                    ...(definition.isPlayerPing ? { playerId: definition.isPlayerPing } : {})
+                    ...(definition.isPlayerPing ? { playerId: stream.readObjectID() } : {})
                 } as MapPingSerialization;
             });
         }
