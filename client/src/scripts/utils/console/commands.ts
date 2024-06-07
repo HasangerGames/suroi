@@ -670,8 +670,11 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "emote_wheel",
         function(): undefined {
-            if (game.console.getBuiltInCVar("cv_hide_emotes")) return;
-            if (this.gameOver) return;
+            if (
+                game.console.getBuiltInCVar("cv_hide_emotes")
+                || this.gameOver
+                || this.inputManager.emoteWheelActive
+            ) return;
             const { mouseX, mouseY } = this.inputManager;
 
             const scale = this.console.getBuiltInCVar("cv_ui_scale");
@@ -689,29 +692,29 @@ export function setUpCommands(game: Game): void {
             this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
         },
         function(): undefined {
-            if (this.inputManager.emoteWheelActive) {
-                this.inputManager.emoteWheelActive = false;
-                this.inputManager.pingWheelMinimap = false;
+            if (!this.inputManager.emoteWheelActive) return;
 
-                $("#emote-wheel").hide();
+            this.inputManager.emoteWheelActive = false;
+            this.inputManager.pingWheelMinimap = false;
 
-                if (this.inputManager.selectedEmote === undefined) return;
+            $("#emote-wheel").hide();
 
-                const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
-                if (emote && !this.inputManager.pingWheelActive) {
-                    this.inputManager.addAction({
-                        type: InputActions.Emote,
-                        emote
-                    });
-                } else if (this.inputManager.pingWheelActive) {
-                    this.inputManager.addAction({
-                        type: InputActions.MapPing,
-                        ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
-                        position: this.inputManager.pingWheelPosition
-                    });
-                }
-                this.inputManager.selectedEmote = undefined;
+            if (this.inputManager.selectedEmote === undefined) return;
+
+            const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
+            if (emote && !this.inputManager.pingWheelActive) {
+                this.inputManager.addAction({
+                    type: InputActions.Emote,
+                    emote
+                });
+            } else if (this.inputManager.pingWheelActive) {
+                this.inputManager.addAction({
+                    type: InputActions.MapPing,
+                    ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
+                    position: this.inputManager.pingWheelPosition
+                });
             }
+            this.inputManager.selectedEmote = undefined;
         },
         game,
         {
@@ -1611,8 +1614,9 @@ export function setUpCommands(game: Game): void {
     /*
         few reasons for this:
         a) expanding out these console commands and making a proper implementation of `map_ping` leads to duplicated code
-        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper command with help text if you want tho)
+        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper
+           command with help text if you want tho)
         c) the whole "hold key to switch to ping mode" thing is annoying
     */
-    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"-map_ping_wheel; -emote_wheel\"");
+    gameConsole.handleQuery("alias +map_ping \"+emote_wheel; +map_ping_wheel\" & alias -map_ping \"-emote_wheel; -map_ping_wheel\"");
 }

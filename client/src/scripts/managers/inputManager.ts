@@ -107,7 +107,7 @@ export class InputManager {
     turning = false;
 
     // Initialize an array to store focus state for keypresses
-    focusController: string[] = [];
+    private readonly _focusController = new Set<string>();
 
     private _lastInputPacket: InputPacket | undefined;
     private _inputPacketTimer = 0;
@@ -191,10 +191,11 @@ export class InputManager {
         }
 
         window.addEventListener("blur", () => {
-            for (const k of this.focusController) {
+            for (const k of this._focusController) {
                 this.handleLostFocus(k);
             }
-            this.focusController = [];
+
+            this._focusController.clear();
         });
 
         // different event targets… why?
@@ -339,6 +340,8 @@ export class InputManager {
         // not be honored
         if (document.activeElement !== document.body) return;
 
+        const { type } = event;
+
         /*
             We don't want to allow keybinds to work with modifiers, because firstly,
             pressing ctrl + R to reload is dumb and secondly, doing that refreshes the page
@@ -357,13 +360,12 @@ export class InputManager {
         */
 
         if (event instanceof KeyboardEvent) {
+            const { key } = event;
             // This statement cross references and updates focus checks for key presses.
             if (down) {
-                if (!this.focusController.includes(event.key)) {
-                    this.focusController.push(event.key);
-                }
+                this._focusController.add(key);
             } else {
-                this.focusController = this.focusController.filter(item => item !== event.key);
+                this._focusController.delete(key);
             }
 
             let modifierCount = 0;
@@ -378,13 +380,13 @@ export class InputManager {
             if (
                 (
                     modifierCount > 1
-                    || (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
+                    || (modifierCount === 1 && !["Control", "Meta"].includes(key))
                 ) && down
                 // …but it only invalidates pressing a key, not releasing it
             ) return;
         }
 
-        const key = this.getKeyFromInputEvent(event);
+        const input = this.getKeyFromInputEvent(event);
         let actionsFired = 0;
 
         if (event instanceof WheelEvent) {
@@ -397,14 +399,14 @@ export class InputManager {
             */
             clearTimeout(this.mWheelStopTimer);
             this.mWheelStopTimer = window.setTimeout(() => {
-                actionsFired = this.fireAllEventsAtKey(key, false);
+                actionsFired = this.fireAllEventsAtKey(input, false);
             }, 50);
 
-            actionsFired = this.fireAllEventsAtKey(key, true);
+            actionsFired = this.fireAllEventsAtKey(input, true);
             return;
         }
 
-        actionsFired = this.fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
+        actionsFired = this.fireAllEventsAtKey(input, type === "keydown" || type === "pointerdown");
 
         if (actionsFired > 0 && this.game.gameStarted) {
             event.preventDefault();
