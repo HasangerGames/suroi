@@ -72,7 +72,7 @@ const maps = {
             firework_warehouse: 1, // 1y bday building
             green_house: 2,
             red_house: 6,
-            construction_site: 2,
+            construction_site: 1,
             mobile_home: 9,
             porta_potty: 12,
             container_3: 2,
