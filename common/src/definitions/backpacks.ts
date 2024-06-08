@@ -41,7 +41,7 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                 "firework_rocket": 10,
                 "frag_grenade": 3,
                 "smoke_grenade": 3,
-                "confetti_grenade": 3
+                "confetti_grenade": 5
             },
             noDrop: true
         },
@@ -64,7 +64,7 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "firework_rocket": 20,
                     "frag_grenade": 6,
                     "smoke_grenade": 6,
-                    "confetti_grenade": 6
+                    "confetti_grenade": 9
                 }
             },
             "Basic"
@@ -88,7 +88,7 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "firework_rocket": 30,
                     "frag_grenade": 9,
                     "smoke_grenade": 9,
-                    "confetti_grenade": 9
+                    "confetti_grenade": 12
                 }
             },
             "Regular"
@@ -112,7 +112,7 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "firework_rocket": 40,
                     "frag_grenade": 12,
                     "smoke_grenade": 12,
-                    "confetti_grenade": 12
+                    "confetti_grenade": 16
                 }
             },
             "Tactical"
