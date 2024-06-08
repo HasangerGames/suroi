@@ -1579,6 +1579,15 @@ Video evidence is required.`)) {
         });
     }
 
+    $("#btn-spectate-options").on("click", function() {
+        const spectatingContainer = $("#spectating-container");
+        spectatingContainer.toggle();
+        const visible = spectatingContainer.is(":visible");
+        $("#btn-spectate-options-icon")
+            .toggleClass("fa-eye", !visible)
+            .toggleClass("fa-eye-slash", visible);
+    });
+
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(isMobile.any);
 
@@ -1596,13 +1605,8 @@ Video evidence is required.`)) {
         // noinspection HtmlUnknownTarget
         $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
 
-        // Reload button
-        $("#btn-reload")
-            .show()
-            .on("click", () => {
-                game.console.handleQuery("reload");
-            });
-        // Active weapon ammo button also reloads (surviv muscle memory lol)
+        // Active weapon ammo button reloads
+        $("#weapon-clip-reload-icon").show();
         $("#weapon-clip-ammo").on("click", () => game.console.handleQuery("reload"));
 
         // Emote button & wheel
@@ -1639,28 +1643,20 @@ Video evidence is required.`)) {
         createEmoteWheelListener("bottom", 2);
         createEmoteWheelListener("left", 3);
 
-        $("#btn-game-menu")
-            .show()
-            .on("click", () => {
-                $("#game-menu").toggle();
-            });
+        $("#mobile-options").show();
 
-        $("#btn-emotes")
-            .show()
-            .on("click", () => {
-                $("#emote-wheel").show();
-            });
+        $("#btn-game-menu").on("click", () => $("#game-menu").toggle());
 
-        $("#btn-toggle-ping")
-            .show()
-            .on("click", function() {
-                game.inputManager.pingWheelActive = !game.inputManager.pingWheelActive;
-                const { pingWheelActive } = game.inputManager;
-                $(this)
-                    .removeClass(pingWheelActive ? "btn-primary" : "btn-danger")
-                    .addClass(pingWheelActive ? "btn-danger" : "btn-primary");
-                game.uiManager.updateEmoteWheel();
-            });
+        $("#btn-emotes").on("click", () => $("#emote-wheel").show());
+
+        $("#btn-toggle-ping").on("click", function() {
+            game.inputManager.pingWheelActive = !game.inputManager.pingWheelActive;
+            const { pingWheelActive } = game.inputManager;
+            $(this)
+                .toggleClass("btn-danger", pingWheelActive)
+                .toggleClass("btn-primary", !pingWheelActive);
+            game.uiManager.updateEmoteWheel();
+        });
     }
 
     // Prompt when trying to close the tab while playing

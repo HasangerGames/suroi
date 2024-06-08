@@ -134,7 +134,7 @@ export class UIManager {
 
     readonly ui = {
         ammoCounterContainer: $("#weapon-ammo-container"),
-        activeAmmo: $("#weapon-clip-ammo"),
+        activeAmmo: $("#weapon-clip-ammo-count"),
         reserveAmmo: $("#weapon-inventory-ammo"),
         killStreakIndicator: $("#killstreak-indicator-container"),
         killStreakCounter: $("#killstreak-indicator-counter"),
@@ -1045,7 +1045,7 @@ export class UIManager {
                     messageText = `<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
-                $("#btn-spectate-kill-leader").show();
+                $("#btn-spectate-kill-leader").removeClass("btn-disabled");
                 break;
             }
 
@@ -1067,7 +1067,7 @@ export class UIManager {
                 if (attackerId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
-                $("#btn-spectate-kill-leader").hide();
+                $("#btn-spectate-kill-leader").addClass("btn-disabled");
                 break;
             }
         }

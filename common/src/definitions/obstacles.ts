@@ -441,7 +441,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "birthday_cake",
             name: "Birthday Cake",
             material: "pumpkin",
-            health: 100,
+            health: 70,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,

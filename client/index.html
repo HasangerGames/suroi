@@ -359,73 +359,46 @@
         >
           <i class="fa-solid fa-close"></i>
         </button>
-        <button
-          class="btn btn-lg btn-primary"
-          id="btn-reload"
-          style="display: none"
-        >
-          <i class="fa-solid fa-rotate-right"></i>
-        </button>
       <div id="top-left-container">
         <div id="game-misc-stats">
           <div id="minimap-border"></div>
-            <div style="display: flex; flex-direction: column; gap: 5px">
-              <button
-                class="btn btn-lg btn-primary fa-solid fa-bars"
-                style="display: none; margin-left: 5px; width: 50px;"
-                id="btn-game-menu"
-              ></button>
-              <button
-                class="btn btn-lg btn-primary"
-                id="btn-emotes"
-                style="display: none; margin-left: 5px; width: 50px;"
-              >
-                <img
-                  src="./img/misc/emotes_icon.svg"
-                  style="margin-bottom: -3px"
-                />
+            <div id="mobile-options" style="display: none">
+              <button id="btn-game-menu" class="btn btn-lg btn-primary fa-solid fa-bars"></button>
+              <button id="btn-emotes" class="btn btn-lg btn-primary">
+                <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px" />
               </button>
-              <button
-                class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"
-                style="display: none; margin-left: 5px; width: 50px;"
-                id="btn-toggle-ping"
-              ></button>
+              <button id="btn-toggle-ping" class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"></button>
             </div>
           <div>
-          <div id="gas-timer">
-            <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg" />
-            <span id="gas-timer-text">0:00</span>
-          </div>
-          <div id="debug-hud">
-            <div id="fps-counter"></div>
-            <div id="ping-counter"></div>
-            <div id="coordinates-hud"></div>
-          </div>
-        </div>
-          <div id="spectating-container" style="display: none">
-            <div id="spectating-buttons-container">
-              <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
-                <i class="fa-solid fa-arrow-left"></i>
-              </button>
-              <button id="btn-report" class="btn btn-lg btn-danger">
-                Report
-              </button>
-              <button id="btn-spectate-next" class="btn btn-lg btn-primary">
-                <i class="fa-solid fa-arrow-right"></i>
-              </button>
-              <button
-                id="btn-spectate-kill-leader"
-                class="btn btn-lg btn-secondary"
-              >
-                Spectate Kill Leader
-              </button>
-              <button id="btn-spectate-replay" class="btn btn-lg btn-primary">
-                Play Again
-              </button>
-              <button id="btn-spectate-menu" class="btn btn-lg btn-secondary">
-                Menu
-              </button>
+            <div id="gas-timer">
+              <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg" />
+              <span id="gas-timer-text">0:00</span>
             </div>
+            <div id="debug-hud">
+              <div id="fps-counter"></div>
+              <div id="ping-counter"></div>
+              <div id="coordinates-hud"></div>
+            </div>
+          </div>
+          <div id="spectating-container">
+            <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <button id="btn-report" class="btn btn-lg btn-danger">
+              Report
+            </button>
+            <button id="btn-spectate-next" class="btn btn-lg btn-primary">
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">
+              Spectate Kill Leader
+            </button>
+            <button id="btn-spectate-replay" class="btn btn-lg btn-primary">
+              Play Again
+            </button>
+            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary">
+              Menu
+            </button>
           </div>
         </div>
       </div>
@@ -485,7 +458,10 @@
         </div>
         <div id="center-bottom-container">
           <div id="weapon-ammo-container" style="display: none">
-            <div id="weapon-clip-ammo"></div>
+            <div id="weapon-clip-ammo">
+              <span id="weapon-clip-ammo-count"></span>
+              <i id="weapon-clip-reload-icon" class="fa-solid fa-rotate-right" style="display: none"></i>
+            </div>
             <div id="weapon-inventory-ammo"></div>
           </div>
           <div id="adrenaline-bar-container">
@@ -508,6 +484,9 @@
           <div class="inventory-container" id="scopes-container"></div>
           <div id="spectating-msg">
             Spectating <span id="spectating-msg-player"></span>
+            <button id="btn-spectate-options" class="btn btn-lg btn-primary">
+              <i id="btn-spectate-options-icon" class="fa-solid fa-eye-slash"></i>
+            </button>
           </div>
           <div id="gas-msg" style="display: none">
             <div id="gas-msg-info"></div>
@@ -520,13 +499,13 @@
           <span id="kill-msg-player-name"></span>
           <span id="kill-msg-weapon-used"></span>
         </div>
-        <div class="items-container" id="healing">
-          <div class="inventory-container" id="healing-items-container"></div>
+
+        <div class="inventory-container items-container" id="healing-items-container"></div>
+        <div id="ammos-container">
+          <div class="inventory-container items-container" id="special-ammo-container"></div>
+          <div class="inventory-container items-container" id="ammo-container"></div>
         </div>
-        <div class="items-container" id="ammo">
-          <div class="inventory-container" id="ammo-container"></div>
-          <div class="inventory-container" id="special-ammo-container"></div>
-        </div>
+
         <div class="inventory-container" id="equipment-container">
           <div class="inventory-slot has-item" id="helmet-slot">
             <img class="item-image" draggable="false" />

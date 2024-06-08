@@ -1584,6 +1584,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             capacity: 3,
             reloadTime: 1.25,
             singleReload: true,
+            shootOnRelease: true,
             fireDelay: 1250,
             switchDelay: 900,
             noMuzzleFlash: true,
