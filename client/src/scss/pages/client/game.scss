@@ -763,7 +763,6 @@
     align-items: center;
 
     font-weight: bold;
-    gap: 10px;
     font-size: 30px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
@@ -1276,6 +1275,7 @@
     left: 25%;
     transform: translateX(-75%);
     flex-direction: row;
+    z-index: 1002; /* idk what z-index to put here but it needs it because of joysticks-container */
 
     @media screen and (max-width: $screen_large) {
         bottom: 5px;
