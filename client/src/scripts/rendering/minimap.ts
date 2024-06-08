@@ -1,5 +1,4 @@
 import $ from "jquery";
-import { DropShadowFilter } from "pixi-filters";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
@@ -82,7 +81,8 @@ export class Minimap {
         this.container.addChild(this._objectsContainer);
         this.container.addChild(this._border);
 
-        this.safeZone.zIndex = 998;
+        this.safeZone.zIndex = 997;
+        this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
         this._objectsContainer.addChild(
@@ -728,13 +728,13 @@ export class MapPing {
         this.mapImage = new SuroiSprite(definition.idString)
             .setVPos(position)
             .setTint(this.color)
-            .setScale(0.25);
+            .setScale(0.5);
 
         if (this.definition.showInGame) {
             this.inGameImage = new SuroiSprite(definition.idString)
                 .setVPos(toPixiCoords(position))
                 .setTint(this.color)
-                .setZIndex(ZIndexes.Emotes);
+                .setZIndex(ZIndexes.Gas + 1);
         }
     }
 
