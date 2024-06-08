@@ -60,7 +60,6 @@ const maps = {
         },
         majorBuildings: ["armory", "port_complex", "refinery"],
         buildings: {
-            firework_warehouse: 1, // 1y bday building
             large_bridge: 2,
             small_bridge: Infinity,
             port_complex: 1,
@@ -70,8 +69,9 @@ const maps = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            red_house: 6,
+            firework_warehouse: 1, // 1y bday building
             green_house: 2,
+            red_house: 6,
             construction_site: 2,
             mobile_home: 9,
             porta_potty: 12,
@@ -362,7 +362,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("oil_tanker_ship", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("firework_warehouse", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
