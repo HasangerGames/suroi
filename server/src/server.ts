@@ -123,25 +123,6 @@ if (isMainThread) {
         } else {
             forbidden(res);
         }
-    }).post("/api/addPunishment", (res, req) => {
-        cors(res);
-
-        res.onAborted(() => { /* welp, that sucks (why is this handler here anyways?) */ });
-
-        const password = req.getHeader("password");
-        res.onData(data => {
-            if (password === Config.protection?.punishments?.password) {
-                const body = textDecoder.decode(data);
-                punishments = {
-                    ...punishments,
-                    ...JSON.parse(body) as Record<number, Punishment>
-                    //                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ we hope so, anyways
-                };
-                res.writeStatus("204 No Content").endWithoutBody(0);
-            } else {
-                forbidden(res);
-            }
-        });
     }).get("/api/removePunishment", (res, req) => {
         cors(res);
 
