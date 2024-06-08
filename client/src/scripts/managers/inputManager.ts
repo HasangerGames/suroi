@@ -2,6 +2,7 @@ import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 import { GameConstants, InputActions } from "../../../../common/src/constants";
+import { type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
 import { InputPacket, type InputAction, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
@@ -12,8 +13,6 @@ import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings } from "../utils/console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
-import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import type { WeaponDefinition } from "../../../../common/src/definitions/loots";
 
 export class InputManager {
     readonly game: Game;

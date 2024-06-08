@@ -42,8 +42,8 @@ let joinedTeam = false;
 let autoFill = false;
 
 let buttonsLocked = true;
-export function lockPlayButtons() { buttonsLocked = true; }
-export function unlockPlayButtons() { buttonsLocked = false; }
+export function lockPlayButtons(): void { buttonsLocked = true; }
+export function unlockPlayButtons(): void { buttonsLocked = false; }
 
 let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLButtonElement>]>;
 export function resetPlayButtons(): void {
@@ -1585,7 +1585,7 @@ Video evidence is required.`)) {
         });
     }
 
-    $("#btn-spectate-options").on("click", function() {
+    $("#btn-spectate-options").on("click", () => {
         const spectatingContainer = $("#spectating-container");
         spectatingContainer.toggle();
         const visible = spectatingContainer.is(":visible");

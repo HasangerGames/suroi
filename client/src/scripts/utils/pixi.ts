@@ -24,10 +24,10 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     const mainAtlas = atlases.main;
 
-    const spritesheets = new Array(
+    const spritesheets = [
         ...mainAtlas,
         ...((MODE.reskin !== undefined ? atlases[MODE.reskin] : undefined) ?? [])
-    );
+    ];
 
     let resolved = 0;
     const count = spritesheets.length;
@@ -70,7 +70,7 @@ const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, pat
             });
         });
     });
-}
+};
 
 export class SuroiSprite extends Sprite {
     static getTexture(frame: string): Texture {
