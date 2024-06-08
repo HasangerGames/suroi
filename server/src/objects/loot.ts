@@ -53,7 +53,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
         }
 
-        this.push(randomRotation(), pushVel);
+        pushVel && this.push(randomRotation(), pushVel);
 
         this.game.addTimeout(() => {
             this.isNew = false;
@@ -215,7 +215,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             } = { type: this.definition, count: this._count }
         ): void => {
             this.game
-                .addLoot(type, this.position, count)
+                .addLoot(type, this.position, { count })
                 .push(player.rotation + Math.PI, 0.0007);
         };
 

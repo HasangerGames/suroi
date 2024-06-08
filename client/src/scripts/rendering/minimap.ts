@@ -28,7 +28,7 @@ export class Minimap {
     // used for the gas to player line and circle
     private _gasPos = Vec.create(0, 0);
     private _gasRadius = 0;
-    readonly gasGraphics = new Graphics();
+    readonly safeZone = new Graphics();
 
     private readonly _objectsContainer = new Container();
     readonly container = new Container();
@@ -82,14 +82,14 @@ export class Minimap {
         this.container.addChild(this._objectsContainer);
         this.container.addChild(this._border);
 
-        this.gasGraphics.zIndex = 998;
+        this.safeZone.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
         this._objectsContainer.addChild(
             this.sprite,
             this.placesContainer,
             this.gasRender.graphics,
-            this.gasGraphics,
+            this.safeZone,
             this.pingGraphics,
             this.pingsContainer,
             this.indicator,
@@ -138,7 +138,7 @@ export class Minimap {
 
         // gets the river polygon with the middle 2 points not rounded
         // so it joins nicely with other rivers
-        function getRiverPoly(points: Vector[]): Array<Vector & { radius: number }> {
+        function getRiverPoly(points: readonly Vector[]): Array<Vector & { readonly radius: number }> {
             const half = points.length / 2;
             return points.map(
                 (point, index) => ({
@@ -476,37 +476,38 @@ export class Minimap {
             }
         }
 
-        this.gasRender.update(this.game.gas);
+        const gas = this.game.gas;
+        this.gasRender.update(gas);
         // only re-render gas line and circle if something changed
         if (
-            this.game.gas.state === GasState.Inactive || (
+            gas.state === GasState.Inactive || (
                 this._position.x === this._lastPosition.x
                 && this._position.y === this._lastPosition.y
-                && this.game.gas.newRadius === this._gasRadius
-                && this.game.gas.newPosition.x === this._gasPos.x
-                && this.game.gas.newPosition.y === this._gasPos.y
+                && gas.newRadius === this._gasRadius
+                && gas.newPosition.x === this._gasPos.x
+                && gas.newPosition.y === this._gasPos.y
             )
         ) return;
 
         this._lastPosition = this._position;
-        this._gasPos = this.game.gas.newPosition;
-        this._gasRadius = this.game.gas.newRadius;
+        this._gasPos = gas.newPosition;
+        this._gasRadius = gas.newRadius;
 
-        this.gasGraphics.clear();
+        this.safeZone.clear();
 
-        this.gasGraphics.beginPath();
-        this.gasGraphics.setStrokeStyle({
+        this.safeZone.beginPath();
+        this.safeZone.setStrokeStyle({
             color: 0x00f9f9,
             width: 2,
             cap: "round"
         });
         // draw line from player to gas center
-        this.gasGraphics.moveTo(this._position.x, this._position.y)
+        this.safeZone.moveTo(this._position.x, this._position.y)
             .lineTo(this._gasPos.x, this._gasPos.y)
             .closePath().stroke();
 
         // draw circle
-        this.gasGraphics.beginPath()
+        this.safeZone.beginPath()
             .setStrokeStyle({
                 color: 0xffffff,
                 width: 2,
@@ -574,9 +575,9 @@ export class Minimap {
             }
         }
 
-        this.mask.clear();
-        this.mask.rect(this._margins.x, this._margins.y, this._minimapWidth, this._minimapHeight);
-        this.mask.fill();
+        this.mask.clear()
+            .rect(this._margins.x, this._margins.y, this._minimapWidth, this._minimapHeight)
+            .fill();
 
         this.updatePosition();
         this.updateTransparency();
@@ -668,7 +669,12 @@ export class Minimap {
     }
 
     addMapPing(position: Vector, definition: MapPingDefinition, playerId?: number): void {
-        const ping = new MapPing(position, definition, playerId ? this.game.objects.get(playerId) as Player : undefined);
+        const ping = new MapPing(
+            position,
+            definition,
+            playerId ? this.game.objects.get(playerId) as Player : undefined
+        );
+
         if (definition.sound !== undefined) this.game.soundManager.play(definition.sound);
 
         this.pingsContainer.addChild(ping.mapImage);
@@ -678,7 +684,7 @@ export class Minimap {
         if (ping.definition.isPlayerPing) {
             for (const otherPing of this.pings) {
                 if (
-                    otherPing.definition.idString !== ping.definition.idString
+                    otherPing.definition !== ping.definition
                     || otherPing.player?.id !== playerId
                 ) continue;
 
@@ -686,6 +692,7 @@ export class Minimap {
                 this.pings.delete(otherPing);
             }
         }
+
         this.pings.add(ping);
         if (!ping.definition.ignoreExpiration) {
             this.game.addTimeout(() => {
@@ -714,42 +721,20 @@ export class MapPing {
 
         if (definition.isPlayerPing && player) {
             this.color = TEAMMATE_COLORS[
-                Math.max(player.game.uiManager.teammates.findIndex(p => p.id === player.id) + 1, 0)
+                player.game.uiManager.teammates.findIndex(({ id }) => id === player.id) + 1
             ];
         }
 
         this.mapImage = new SuroiSprite(definition.idString)
             .setVPos(position)
             .setTint(this.color)
-            .setScale(0.5);
-
-        this.mapImage.filters = new DropShadowFilter({
-            blur: 1,
-            quality: 3,
-            alpha: 1,
-            color: 0,
-            offset: {
-                x: 0,
-                y: 0
-            }
-        });
+            .setScale(0.25);
 
         if (this.definition.showInGame) {
             this.inGameImage = new SuroiSprite(definition.idString)
                 .setVPos(toPixiCoords(position))
                 .setTint(this.color)
                 .setZIndex(ZIndexes.Emotes);
-
-            this.inGameImage.filters = new DropShadowFilter({
-                blur: 1,
-                quality: 3,
-                alpha: 0.5,
-                color: 0,
-                offset: {
-                    x: 0,
-                    y: 0
-                }
-            });
         }
     }
 

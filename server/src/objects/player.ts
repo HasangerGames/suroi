@@ -1450,13 +1450,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     do {
                         left -= subtractAmount = Math.min(left, def.maxStackSize);
-                        this.game.addLoot(item, this.position, subtractAmount);
+                        this.game.addLoot(item, this.position, { count: subtractAmount });
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, this.position, count);
+                this.game.addLoot(item, this.position, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }

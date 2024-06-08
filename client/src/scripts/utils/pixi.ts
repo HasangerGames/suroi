@@ -22,38 +22,49 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         : (await import("virtual:spritesheets-jsons-low-res")).atlases;
 
-    const promises: Array<Promise<void>> = [];
     const mainAtlas = atlases.main;
 
-    for (const sheet of mainAtlas) {
-        promises.push(loadSpritesheet(sheet, renderer));
-    }
+    const spritesheets = new Array(
+        ...mainAtlas,
+        ...((MODE.reskin !== undefined ? atlases[MODE.reskin] : undefined) ?? [])
+    );
 
-    await Promise.all(promises);
+    let resolved = 0;
+    const count = spritesheets.length;
+    const loader = loadSpritesheet(renderer);
 
-    // load mode reskins after main mode assets have loaded
-    if (MODE.reskin) {
-        for (const sheet of atlases[MODE.reskin]) {
-            await loadSpritesheet(sheet, renderer);
-        }
-    }
+    await Promise.all(
+        spritesheets.map(
+            spritesheet => {
+                // FIXME I have no idea why this nna is sound, someone please explain here why it is
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const image = spritesheet.meta.image!;
+
+                return new Promise<void>(resolve => {
+                    loader(spritesheet, image)
+                        .then(() => console.log(`Atlas ${image} loaded (${++resolved} / ${count})`))
+                        .catch(err => {
+                            ++resolved;
+                            console.error(`Atlas ${image} failed to load`);
+                            console.error(err);
+                        })
+                        .finally(resolve);
+                });
+            }
+        )
+    );
 }
 
-async function loadSpritesheet(data: SpritesheetData, renderer: Renderer): Promise<void> {
-    // FIXME I have no idea why this nna is sound, someone please explain here why it is
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const image = data.meta.image!;
-
-    console.log(`Loading spritesheet ${location.origin}/${image}`);
+const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, path: string): Promise<void> => {
+    console.log(`Loading spritesheet ${location.origin}/${path}`);
 
     await new Promise<void>(resolve => {
-        void Assets.load<Texture>(image).then(texture => {
+        void Assets.load<Texture>(path).then(texture => {
             void renderer.prepare.upload(texture);
             void new Spritesheet(texture, data).parse().then(sheetTextures => {
                 for (const frame in sheetTextures) {
                     textures[frame] = sheetTextures[frame];
                 }
-                console.log(`Atlas ${image} loaded.`);
 
                 resolve();
             });
@@ -62,19 +73,19 @@ async function loadSpritesheet(data: SpritesheetData, renderer: Renderer): Promi
 }
 
 export class SuroiSprite extends Sprite {
-    constructor(frame?: string) {
-        super(frame ? SuroiSprite.getTexture(frame) : undefined);
-
-        this.anchor.set(0.5);
-        this.setPos(0, 0);
-    }
-
     static getTexture(frame: string): Texture {
         if (!(frame in textures)) {
             console.warn(`Texture not found: "${frame}"`);
             return textures._missing_texture;
         }
         return textures[frame];
+    }
+
+    constructor(frame?: string) {
+        super(frame ? SuroiSprite.getTexture(frame) : undefined);
+
+        this.anchor.set(0.5);
+        this.setPos(0, 0);
     }
 
     setFrame(frame: string): this {

@@ -47,7 +47,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI, teamSocket } from "./ui";
+import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -171,11 +171,12 @@ export class Game {
 
             await loadTextures(
                 this.pixi.renderer,
-                this.console.getBuiltInCVar("cv_high_res_textures")
-                && (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
+                this.inputManager.isMobile
+                    ? this.console.getBuiltInCVar("mb_high_res_textures")
+                    : this.console.getBuiltInCVar("cv_high_res_textures")
             );
 
-            // @HACK: the game ui covers the canvas
+            // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
             $("#game-ui")[0].addEventListener("pointerdown", e => {
                 this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
@@ -212,7 +213,10 @@ export class Game {
         void Promise.all([
             initPixi(),
             setUpUI(this)
-        ]).then(resetPlayButtons);
+        ]).then(() => {
+            unlockPlayButtons();
+            resetPlayButtons();
+        });
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
@@ -452,7 +456,7 @@ export class Game {
                 this.uiManager.clearTeammateCache();
 
                 const map = this.map;
-                map.gasGraphics.clear();
+                map.safeZone.clear();
                 map.pingGraphics.clear();
                 map.pings.clear();
                 map.pingsContainer.removeChildren();
