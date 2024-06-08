@@ -74,15 +74,15 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     medikit: 3,
                     cola: 10,
                     tablets: 3,
-                    "12g": 60,
-                    "556mm": 240,
-                    "762mm": 240,
-                    "9mm": 330,
-                    "127mm": 40,
+                    "12g": 40,
+                    "556mm": 210,
+                    "762mm": 210,
+                    "9mm": 270,
+                    "127mm": 30,
                     power_cell: Infinity,
                     curadell: 3,
-                    frag_grenade: 9,
-                    smoke_grenade: 9
+                    frag_grenade: 8,
+                    smoke_grenade: 8
                 }
             },
             "Regular"
@@ -92,19 +92,19 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
             {
                 level: 3,
                 maxCapacity: {
-                    gauze: 30,
+                    gauze: 20,
                     medikit: 4,
                     cola: 15,
                     tablets: 4,
-                    "12g": 90,
-                    "556mm": 300,
-                    "762mm": 300,
-                    "9mm": 420,
-                    "127mm": 80,
+                    "12g": 60,
+                    "556mm": 240,
+                    "762mm": 240,
+                    "9mm": 330,
+                    "127mm": 40,
                     power_cell: Infinity,
                     curadell: 4,
-                    frag_grenade: 12,
-                    smoke_grenade: 12
+                    frag_grenade: 10,
+                    smoke_grenade: 10
                 }
             },
             "Tactical"
