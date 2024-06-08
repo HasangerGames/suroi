@@ -760,10 +760,10 @@
 }
 
 #spectating-msg {
-    display: flex;
     align-items: center;
 
     font-weight: bold;
+    gap: 10px;
     font-size: 30px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
@@ -771,6 +771,7 @@
         font-size: 14px;
 
         #btn-spectate-options {
+            display: inline;
             font-size: 14px;
             padding: 4px 8px 4px 8px;
             height: initial;
@@ -780,6 +781,10 @@
     #spectating-msg-player {
         display: inline;
         margin-left: 3px;
+    }
+
+    #btn-spectate-options {
+        display: inline;
     }
 
     .badge-icon {
