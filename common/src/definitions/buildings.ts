@@ -2456,7 +2456,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "large_bridge",
             name: "Large Bridge",
-            spawnHitbox: RectangleHitbox.fromRect(60, 230),
+            spawnHitbox: RectangleHitbox.fromRect(105, 230),
             bridgeSpawnOptions: {
                 minRiverWidth: 20,
                 maxRiverWidth: 100,

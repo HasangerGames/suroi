@@ -362,7 +362,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("firework_warehouse", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
