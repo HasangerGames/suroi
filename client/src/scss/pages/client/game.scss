@@ -760,7 +760,6 @@
 }
 
 #spectating-msg {
-    display: flex;
     align-items: center;
 
     font-weight: bold;
@@ -771,6 +770,7 @@
         font-size: 14px;
 
         #btn-spectate-options {
+            display: inline;
             font-size: 14px;
             padding: 4px 8px 4px 8px;
             height: initial;
@@ -780,6 +780,10 @@
     #spectating-msg-player {
         display: inline;
         margin-left: 3px;
+    }
+
+    #btn-spectate-options {
+        display: inline;
     }
 
     .badge-icon {
@@ -957,7 +961,8 @@
         }
 
         &:hover {
-            outline: 1px solid $orange !important;
+            outline: 1px solid $orange;
+            outline-width: 1px !important;
         }
 
         &.active {
@@ -1161,6 +1166,7 @@
 
         &.active {
             animation: 0.25s ease-in-out active-pulse;
+            outline-width: 3px !important;
         }
 
         @keyframes active-pulse {
@@ -1269,6 +1275,7 @@
     left: 25%;
     transform: translateX(-75%);
     flex-direction: row;
+    z-index: 1002; /* idk what z-index to put here but it needs it because of joysticks-container */
 
     @media screen and (max-width: $screen_large) {
         bottom: 5px;
