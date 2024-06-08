@@ -957,7 +957,8 @@
         }
 
         &:hover {
-            outline: 1px solid $orange !important;
+            outline: 1px solid $orange;
+            outline-width: 1px !important;
         }
 
         &.active {
@@ -1161,6 +1162,7 @@
 
         &.active {
             animation: 0.25s ease-in-out active-pulse;
+            outline-width: 3px !important;
         }
 
         @keyframes active-pulse {
