@@ -716,6 +716,7 @@ export const EaseFunctions = Object.freeze({
         : t < 0.5
             ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18)
             : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18) + 1,
+    elasticOut2: (t: number) => (Math.pow(2, t * -10) * Math.sin(((t - 0.75 / 4) * (π * 2)) / 0.75) + 1),
 
     ...generatePolynomialEasingTriplet(2, "quadratic"),
     ...generatePolynomialEasingTriplet(3, "cubic"),

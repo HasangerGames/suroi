@@ -426,6 +426,19 @@ const maps = {
             }
         }
     },
+    obstaclesTest2: {
+        width: 128,
+        height: 128,
+        beachSize: 0,
+        oceanSize: 0,
+        genCallback(map) {
+            for (let x = 0; x <= 128; x += 16) {
+                for (let y = 0; y <= 128; y += 16) {
+                    map.generateObstacle("flint_crate", Vec.create(x, y));
+                }
+            }
+        }
+    },
     playersTest: {
         width: 256,
         height: 256,
