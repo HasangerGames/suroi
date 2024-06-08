@@ -134,8 +134,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: game.teamMode ? new SuroiSprite().setPos(-30, 26).setZIndex(-1) : undefined,
-            rightLeg: game.teamMode ? new SuroiSprite().setPos(-30, -26).setZIndex(-1) : undefined,
+            leftLeg: game.teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
+            rightLeg: game.teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
@@ -494,6 +494,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (this.downed !== full.downed) {
                 this.downed = full.downed;
                 updateContainerZIndex = true;
+                this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
                 this.updateEquipment();
             }
@@ -576,12 +577,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
             }
-        }
-
-        // FIXME hack to prevent visual glitches when downed
-        // The ThrowableCook animation seems to be causing the issues
-        if (this.downed) {
-            this.updateWeapon(isNew);
         }
 
         if (updateContainerZIndex) {
@@ -728,6 +723,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.leftLeg?.setVisible(this.downed);
         this.images.rightLeg?.setVisible(this.downed);
 
+        if (this.downed) {
+            this.images.leftFist.setPos(38, -35);
+            this.images.rightFist.setPos(38, 35);
+            this.images.leftLeg?.setPos(-35, 26);
+            this.images.rightLeg?.setPos(-35, -26);
+            return;
+        }
+
         const reference = this._getItemReference();
 
         type FistsRef = (SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>)["fists"] & object;
@@ -758,8 +761,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y - offset);
             this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
-            this.images.leftLeg?.setPos(-30, 26);
-            this.images.rightLeg?.setPos(-30, -26);
         }
 
         if (reference.image) {
