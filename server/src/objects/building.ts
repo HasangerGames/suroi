@@ -129,7 +129,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         const order = this.definition.puzzle!.order!;
 
         // hack to compare two arrays :boffy:
-        if (JSON.stringify(puzzle.inputOrder) === JSON.stringify(order)) {
+        if (JSON.stringify(puzzle.inputOrder) === JSON.stringify(Object.values(order))) {
             this.solvePuzzle();
         } else if (puzzle.inputOrder.length >= order.length) {
             puzzle.errorSeq = !puzzle.errorSeq;
