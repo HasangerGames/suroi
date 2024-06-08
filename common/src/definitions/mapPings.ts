@@ -38,7 +38,7 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
             color,
             name: idString,
             showInGame: false,
-            lifetime: 10,
+            lifetime: 20,
             isPlayerPing: false,
             sound: idString
         }),
