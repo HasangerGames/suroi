@@ -336,9 +336,10 @@ export class Inventory {
 
     private _dropItem(
         toDrop: ReifiableDef<LootDefinition>,
-        options?: Parameters<Game["addLoot"]>[2] & { readonly position?: Vector }
+        options?: Parameters<Game["addLoot"]>[2] & { readonly position?:Vector },
+        byPlayer=true
     ): void {
-        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, options);
+        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, options,byPlayer);
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
@@ -388,7 +389,7 @@ export class Inventory {
      * @param pushVel The velocity to push the loot, defaults to -0.03
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushVel = -0.03): InventoryItem | undefined {
+    dropWeapon(slot: number, pushVel = -0.03,byPlayer=true): InventoryItem | undefined {
         const item = this.weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
@@ -398,10 +399,10 @@ export class Inventory {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
             if (item instanceof GunItem && (definition as GunDefinition).isDual) {
-                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel });
-                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel });
+                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel },byPlayer);
+                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel },byPlayer);
             } else {
-                this._dropItem(definition, { pushVel });
+                this._dropItem(definition, { pushVel },byPlayer);
             }
 
             this._setWeapon(slot, undefined);
@@ -528,7 +529,7 @@ export class Inventory {
     dropWeapons(): void {
         const weaponLength = this.weapons.length;
         for (let i = 0; i < weaponLength; i++) {
-            this.dropWeapon(i);
+            this.dropWeapon(i,undefined,false);
         }
     }
 

@@ -20,7 +20,7 @@ import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
+import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
@@ -881,7 +881,8 @@ export class Game implements GameData {
              * Whether to add a random offset to the given position
              */
             readonly jitterSpawn?: boolean
-        } = {}
+        } = {},
+        byPlayer = false,
     ): Loot {
         const loot = new Loot(
             this,
@@ -896,7 +897,8 @@ export class Game implements GameData {
                 )
                 : position,
             count,
-            pushVel
+            pushVel,
+            byPlayer
         );
         this.grid.addObject(loot);
         this.pluginManager.emit(Events.Loot_Generated, loot);

@@ -86,6 +86,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             definition: LootDefinition
             count: number
             isNew: boolean
+            byPlayer:boolean
         }
     }
     //
@@ -323,6 +324,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Loots.writeToStream(stream, data.full.definition);
             stream.writeBits(data.full.count, 9);
             stream.writeBoolean(data.full.isNew);
+            stream.writeBoolean(data.full.byPlayer)
         },
         deserializePartial(stream) {
             return {
@@ -333,7 +335,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition: Loots.readFromStream(stream),
                 count: stream.readBits(9),
-                isNew: stream.readBoolean()
+                isNew: stream.readBoolean(),
+                byPlayer:stream.readBoolean()
             };
         }
     },

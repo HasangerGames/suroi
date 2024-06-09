@@ -3,7 +3,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../commo
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { Angle, calculateDoorHitboxes } from "../../../common/src/utils/math";
-import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, LootRadius, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -201,7 +201,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                             ? this.hitbox.randomPoint()
                             : this.position,
 
-                    { count: item.count }
+                    { count: item.count,jitterSpawn:false },
+                    undefined
                 ).push(
                     Angle.betweenPoints(this.position, lootSpawnPosition),
                     0.02

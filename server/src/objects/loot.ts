@@ -29,6 +29,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     get count(): number { return this._count; }
 
     isNew = true;
+    byPlayer:boolean
     velocity = Vec.create(0, 0);
 
     get position(): Vector { return this.hitbox.position; }
@@ -36,14 +37,16 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
     private _oldPosition = Vec.create(0, 0);
 
+
+    //Fix Me V
     /**
      * Ensures that the drag experienced is not dependent on tickrate
      *
      * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
-    private static readonly _dragConstant = Math.exp(-3.69 / Config.tps);
+    private static readonly _dragConstant = Math.exp(-3.8 / Config.tps);
 
-    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel = 0.003) {
+    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel?:number,byPlayer=true) {
         super(game, position);
 
         this.definition = Loots.reify(definition);
@@ -53,12 +56,14 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
         }
 
-        pushVel && this.push(randomRotation(), pushVel);
+        pushVel?this.push(randomRotation(), pushVel):this.push(randomRotation(), 0.003)
 
         this.game.addTimeout(() => {
             this.isNew = false;
             this.setDirty();
         }, 100);
+
+        this.byPlayer=byPlayer
     }
 
     update(): void {
@@ -116,7 +121,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
-                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
+                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.00015));
                 }
 
                 const dist = Math.max(Geometry.distance(object.position, this.position), 1);
@@ -215,7 +220,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             } = { type: this.definition, count: this._count }
         ): void => {
             this.game
-                .addLoot(type, this.position, { count })
+                .addLoot(type, this.position, { count },true)
                 .push(player.rotation + Math.PI, 0.0007);
         };
 
@@ -429,7 +434,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             full: {
                 definition: this.definition,
                 count: this._count,
-                isNew: this.isNew
+                isNew: this.isNew,
+                byPlayer:this.byPlayer
             }
         };
     }
