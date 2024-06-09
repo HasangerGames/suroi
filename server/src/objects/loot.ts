@@ -44,7 +44,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      *
      * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
-    private static readonly _dragConstant = Math.exp(-3.8 / Config.tps);
+    private static readonly _dragConstant = Math.exp(-3.7 / Config.tps);
 
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel?:number,byPlayer=true) {
         super(game, position);
@@ -121,7 +121,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
-                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.00015));
+                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.00025));
                 }
 
                 const dist = Math.max(Geometry.distance(object.position, this.position), 1);

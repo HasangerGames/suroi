@@ -392,6 +392,145 @@ export const LootTables: Record<string, LootTable> = {
             ]
         ]
     },
+    big_airdrop_crate:{
+        min:1,
+        max:1,
+        loot:[
+             //5 Equipments
+             [
+                { tier: "airdrop_equipment", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_equipment", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_equipment", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_equipment", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_equipment", weight: 1 }
+            ],
+
+            //5 Scopes
+            [
+                { tier: "airdrop_scopes", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_scopes", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_scopes", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_scopes", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_scopes", weight: 1 }
+            ],
+
+            //7 Healing Items
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_healing_items", weight: 1 }
+            ],
+
+            //1 skin
+            [
+                { tier: "airdrop_skins", weight: 1 }
+            ],
+            
+            //2 Melee
+            [
+                { tier: "airdrop_melee", weight: 1 }
+            ],
+            [
+                { tier: "airdrop_melee", weight: 1 }
+            ],
+
+            //10 Ammo
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+            [
+                { tier: "ammo", weight: 1 }
+            ],
+
+            //4 Guns
+            [
+                { tier: "airdrop_guns", weight: .8 },
+                { tier: "gold_airdrop_guns", weight: .2 }
+            ],
+            [
+                { tier: "airdrop_guns", weight: .8 },
+                { tier: "gold_airdrop_guns", weight: .2 }
+            ],
+            [
+                { tier: "airdrop_guns", weight: .8 },
+                { tier: "gold_airdrop_guns", weight: .2 }
+            ],
+            [
+                { tier: "airdrop_guns", weight: .8 },
+                { tier: "gold_airdrop_guns", weight: .2 }
+            ],
+            [
+                { tier: "airdrop_guns", weight: .8 },
+                { tier: "gold_airdrop_guns", weight: .2 }
+            ],
+            //3 Granades
+            [
+                { item: "frag_grenade", count: 3, weight: 1 }
+            ],
+            [
+                { item: "frag_grenade", count: 3, weight: 1 }
+            ],
+            [
+                { item: "frag_grenade", count: 3, weight: 1 }
+            ]
+        ]
+    },
     gold_airdrop_crate: {
         min: 1,
         max: 1,

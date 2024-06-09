@@ -741,6 +741,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true
         },
         {
+            idString: "big_airdrop_crate",
+            name: "Big Airdrop Crate",
+            material: "crate",
+            health: 450,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(26.1, 26.1)
+                
+            ),
+            frames: {
+                particle: "airdrop_crate_particle",
+                residue:"airdrop_crate_residue"
+            },
+            spawnHitbox: RectangleHitbox.fromRect(28, 28),
+            hideOnMap: true,
+            rotationMode: RotationMode.None,
+            hasLoot: true
+        },
+        {
             idString: "firework_warehouse_exterior",
             name: "Firework Warehouse Exterior",
             material: "stone",

@@ -204,7 +204,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                     { count: item.count,jitterSpawn:false },
                     undefined
                 ).push(
-                    Angle.betweenPoints(this.position, lootSpawnPosition),
+                    random(0,360),
                     0.02
                 );
             }
