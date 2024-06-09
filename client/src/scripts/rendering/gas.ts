@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Graphics } from "pixi.js";
-import { GameConstants, GasState, ZIndexes } from "../../../../common/src/constants";
+import { GasState, ZIndexes } from "../../../../common/src/constants";
 import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -144,11 +144,14 @@ export class GasRender {
             .closePath()
             .fill(COLORS.gas)
             .moveTo(0, 1);
-        for (let i = 1; i < GasRender._segments; i++) {
-            const theta = i / GasRender._segments;
-            const s = Math.sin(2 * Math.PI * theta);
-            const c = Math.cos(2 * Math.PI * theta);
-            this.graphics.lineTo(s, c);
+
+        const tau = 2 * Math.PI;
+        for (let i = 0; i < GasRender._segments; i++) {
+            const interp = i / GasRender._segments;
+            this.graphics.lineTo(
+                Math.sin(tau * interp),
+                Math.cos(tau * interp)
+            );
         }
         this.graphics
             .closePath()

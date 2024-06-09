@@ -51,13 +51,6 @@ export const Angle = Object.freeze({
     },
     orientationToRotation(orientation: number): number {
         return -this.normalize(orientation * halfπ);
-    },
-    /**
-     * Converts a unit vector to radians
-     * @param v The vector to convert
-     */
-    unitVectorToRadians(v: Vector) {
-        return Math.atan2(v.y, v.x);
     }
 });
 
@@ -98,7 +91,7 @@ export const Numeric = Object.freeze({
      * @param n2 The second orientation
      * @return The sum of the two `Orientation`s
      */
-    addOrientations(n1: Orientation | number, n2: Orientation | number): Orientation {
+    addOrientations(n1: Orientation, n2: Orientation): Orientation {
         return (n1 + n2) % 4 as Orientation;
     },
 
@@ -106,8 +99,7 @@ export const Numeric = Object.freeze({
      * Remaps a value from a range to another
      */
     remap(value: number, min0: number, max0: number, min1: number, max1: number) {
-        const t = Numeric.clamp((value - min0) / (max0 - min0), 0.0, 1.0);
-        return Numeric.lerp(min1, max1, t);
+        return Numeric.lerp(min1, max1, Numeric.clamp((value - min0) / (max0 - min0), 0, 1));
     }
 });
 
@@ -724,6 +716,7 @@ export const EaseFunctions = Object.freeze({
         : t < 0.5
             ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18)
             : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18) + 1,
+    elasticOut2: (t: number) => (Math.pow(2, t * -10) * Math.sin(((t - 0.75 / 4) * (π * 2)) / 0.75) + 1),
 
     ...generatePolynomialEasingTriplet(2, "quadratic"),
     ...generatePolynomialEasingTriplet(3, "cubic"),

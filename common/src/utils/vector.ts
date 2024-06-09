@@ -101,6 +101,13 @@ export const Vec = Object.freeze({
         return Math.sqrt(Vec.squaredLength(a));
     },
     /**
+     * Returns the direction of a given vector in radians
+     * @param a The vector whose direction needs to be known
+     */
+    direction(a: Vector) {
+        return Math.atan2(a.y, a.x);
+    },
+    /**
      * Performs the dot product between two vectors, returning the result. This operation is commutative
      * @param a The first `Vector`
      * @param b The second `Vector`
@@ -143,7 +150,7 @@ export const Vec = Object.freeze({
     normalize(a: Vector): Vector {
         const eps = 0.000001;
         const len = Vec.length(a);
-        return eps
+        return len < eps
             ? {
                 x: a.x / len,
                 y: a.y / len

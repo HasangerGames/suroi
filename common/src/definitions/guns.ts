@@ -61,6 +61,8 @@ type BaseGunDefinition = InventoryItemDefinition & {
 
     readonly image: {
         readonly angle: number
+        // no relation to the ZIndexes enum
+        readonly zIndex: number
     }
 
     readonly noMuzzleFlash: boolean
@@ -86,7 +88,8 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly isDual: true
     readonly singleVariant: ReferenceTo<GunDefinition>
     /**
-     * This offset is used for pretty much everything that's unique to dual weapons: it's an offset for projectile spawns, casing spawns and world images
+     * This offset is used for pretty much everything that's unique to dual weapons: it's an offset for projectile
+     * spawns, casing spawns and world images
      */
     readonly leftRightOffset: number
 });
@@ -128,6 +131,7 @@ const defaultGun = {
     itemType: ItemType.Gun,
     noDrop: false,
     ammoSpawnAmount: 0,
+    speedMultiplier: 0.92,
     singleReload: false,
     infiniteAmmo: false,
     jitterRadius: 0,
@@ -143,7 +147,8 @@ const defaultGun = {
     },
     casingParticles: [] as RawGunDefinition["casingParticles"],
     image: {
-        angle: 0
+        angle: 0,
+        zIndex: 2
     },
     isDual: false,
     noMuzzleFlash: false,
@@ -165,7 +170,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.5,
             fireDelay: 100,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 150,
             fireMode: FireMode.Auto,
@@ -199,7 +203,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.75,
             fireDelay: 75,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 145,
             fireMode: FireMode.Auto,
@@ -231,7 +234,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ammoSpawnAmount: 90,
             fireDelay: 70,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 120,
             fireMode: FireMode.Auto,
@@ -264,7 +266,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ammoSpawnAmount: 90,
             fireDelay: 72.5,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 130,
             fireMode: FireMode.Auto,
@@ -303,7 +304,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 0.55,
             fireDelay: 700,
             switchDelay: 700,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.5,
             recoilDuration: 500,
             fireMode: FireMode.Single,
@@ -339,7 +339,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 0.75,
             fireDelay: 900,
             switchDelay: 900,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.5,
             recoilDuration: 550,
             fireMode: FireMode.Single,
@@ -387,7 +386,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             singleReload: true,
             fireDelay: 300,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.6,
             recoilDuration: 600,
             fireMode: FireMode.Single,
@@ -425,7 +423,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.6,
             fireDelay: 175,
             switchDelay: 250,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.8,
             recoilDuration: 100,
             fireMode: FireMode.Single,
@@ -472,7 +469,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.4,
             fireDelay: 450,
             switchDelay: 650,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.7,
             recoilDuration: 550,
             fireMode: FireMode.Auto,
@@ -511,7 +507,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             singleReload: true,
             fireDelay: 900,
             switchDelay: 900,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.45,
             recoilDuration: 750,
             fireMode: FireMode.Single,
@@ -551,7 +546,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.6,
             fireDelay: 900,
             switchDelay: 900,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.4,
             recoilDuration: 1000,
             fireMode: FireMode.Single,
@@ -590,7 +584,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.2,
             fireDelay: 600,
             switchDelay: 600,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.6,
             recoilDuration: 750,
             fireMode: FireMode.Single,
@@ -629,7 +622,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 3.4,
             fireDelay: 1400,
             switchDelay: 900,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.3,
             recoilDuration: 1500,
             fireMode: FireMode.Single,
@@ -666,7 +658,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ammoSpawnAmount: 28,
             fireDelay: 375,
             switchDelay: 250,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 135,
             fireMode: FireMode.Single,
@@ -722,7 +713,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ammoSpawnAmount: 60,
             fireDelay: 110,
             switchDelay: 250,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.8,
             recoilDuration: 90,
             fireMode: FireMode.Single,
@@ -771,7 +761,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ammoSpawnAmount: 1,
             fireDelay: 500,
             switchDelay: 250,
-            speedMultiplier: 0.92,
             recoilMultiplier: 1,
             recoilDuration: 0,
             fireMode: FireMode.Single,
@@ -815,7 +804,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             ammoSpawnAmount: 64,
             fireDelay: 60,
             switchDelay: 250,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.8,
             recoilDuration: 90,
             fireMode: FireMode.Auto,
@@ -869,7 +857,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 burstCooldown: 325
             },
             switchDelay: 300,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 300,
             fireMode: FireMode.Burst,
@@ -906,7 +893,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 burstCooldown: 325
             },
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 350,
             fireMode: FireMode.Burst,
@@ -939,7 +925,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 1.75,
             fireDelay: 40,
             switchDelay: 300,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 60,
             fireMode: FireMode.Auto,
@@ -972,7 +957,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 1.7,
             fireDelay: 35,
             switchDelay: 300,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 60,
             fireMode: FireMode.Auto,
@@ -1005,7 +989,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.3,
             fireDelay: 50,
             switchDelay: 300,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 150,
             fireMode: FireMode.Auto,
@@ -1042,7 +1025,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.1,
             fireDelay: 90,
             switchDelay: 300,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 150,
             fireMode: FireMode.Auto,
@@ -1075,7 +1057,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.75,
             fireDelay: 87.5,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 130,
             fireMode: FireMode.Auto,
@@ -1314,7 +1295,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.75,
             fireDelay: 75,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 140,
             fireMode: FireMode.Auto,
@@ -1349,7 +1329,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.1,
             fireDelay: 200,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.75,
             recoilDuration: 200,
             fireMode: FireMode.Single,
@@ -1412,7 +1391,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.15,
             fireDelay: 140,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.7,
             recoilDuration: 140,
             fireMode: FireMode.Single,
@@ -1451,7 +1429,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.5,
             fireDelay: 190,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.7,
             recoilDuration: 190,
             fireMode: FireMode.Single,
@@ -1487,7 +1464,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.4,
             fireDelay: 155,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.8,
             recoilDuration: 155,
             fireMode: FireMode.Single,
@@ -1530,7 +1506,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             singleReload: true,
             fireDelay: 375,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.7,
             recoilDuration: 300,
             fireMode: FireMode.Single,
@@ -1571,7 +1546,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 3,
             fireDelay: 525,
             switchDelay: 400,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.7,
             recoilDuration: 525,
             fireMode: FireMode.Auto,
@@ -1598,7 +1572,52 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 allowRangeOverride: true,
                 tracer: {
                     length: 0.5,
-                    color: 16711680
+                    color: 0xFF0000
+                }
+            }
+        },
+        {
+            idString: "firework_launcher",
+            name: "Firework Launcher",
+            ammoType: "firework_rocket",
+            ammoSpawnAmount: 9,
+            capacity: 3,
+            reloadTime: 1.25,
+            singleReload: true,
+            shootOnRelease: true,
+            fireDelay: 1250,
+            switchDelay: 900,
+            noMuzzleFlash: true,
+            speedMultiplier: 0.65,
+            recoilMultiplier: 0.5,
+            recoilDuration: 925,
+            fireMode: FireMode.Single,
+            bulletOffset: 2.7,
+            shotSpread: 5,
+            moveSpread: 14,
+            length: 5.5,
+            fists: {
+                left: Vec.create(60, 40),
+                right: Vec.create(20, 55),
+                animationDuration: 100
+            },
+            image: {
+                position: Vec.create(30, 50.5),
+                zIndex: 4
+            },
+            casingParticles: [{
+                position: Vec.create(4, 0.6)
+            }],
+            ballistics: {
+                damage: 20,
+                obstacleMultiplier: 1,
+                speed: 0.15,
+                range: 120,
+                onHitExplosion: "firework_launcher_explosion",
+                explodeOnImpact: true,
+                tracer: {
+                    image: "firework_rocket_trail",
+                    length: 1
                 }
             }
         },
@@ -1657,7 +1676,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 1.4,
             fireDelay: 40,
             switchDelay: 500,
-            speedMultiplier: 0.92,
             recoilMultiplier: 0.8,
             recoilDuration: 100,
             fireMode: FireMode.Auto,
@@ -1695,35 +1713,56 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "arena_closer",
             name: "Destroyer Of Worlds",
             ammoType: "127mm",
-            ammoSpawnAmount: 20,
-            capacity: 500,
+            ammoSpawnAmount: 255,
+            capacity: 255,
             reloadTime: 0.4,
-            fireDelay: 10,
-            switchDelay: 100,
-            speedMultiplier: 1.5,
-            recoilMultiplier: 1,
+            fireDelay: 50,
+            switchDelay: 250,
+            speedMultiplier: 1,
+            recoilMultiplier: 0.95,
             recoilDuration: 100,
             fireMode: FireMode.Auto,
             shotSpread: 0.5,
             moveSpread: 4,
-            length: 9.2,
-            shootOnRelease: true,
+            length: 18,
+            noMuzzleFlash: true,
             fists: {
-                left: Vec.create(115, -4),
+                left: Vec.create(145, -4),
                 right: Vec.create(40, 0),
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(90, 4) },
-            casingParticles: [{
-                position: Vec.create(2, 0.6),
-                ejectionDelay: 700
-            }],
+            image: { position: Vec.create(150, 0) },
+            casingParticles: [
+                {
+                    position: Vec.create(5, 0.6),
+                    velocity: {
+                        y: {
+                            min: 15,
+                            max: 25
+                        }
+                    }
+                },
+                {
+                    position: Vec.create(5.2, 0.6),
+                    frame: "50_link",
+                    velocity: {
+                        x: {
+                            min: -6,
+                            max: 8
+                        },
+                        y: {
+                            min: 10,
+                            max: 25
+                        }
+                    }
+                }
+            ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
             ballistics: {
                 damage: 300,
                 obstacleMultiplier: 1,
                 speed: 0.45,
-                range: 300,
+                range: 500,
                 tracer: {
                     width: 2.5,
                     length: 4

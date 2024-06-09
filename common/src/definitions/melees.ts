@@ -21,6 +21,8 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly image?: {
         readonly position: Vector
         readonly usePosition: Vector
+        // no relation to the ZIndexes enum
+        readonly zIndex: number
         readonly angle?: number
         readonly useAngle?: number
         readonly lootScale?: number
@@ -28,6 +30,11 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     }
     readonly fireMode: FireMode
 }
+
+export const DEFAULT_HAND_RIGGING = Object.freeze({
+    left: Vec.create(38, -35),
+    right: Vec.create(38, 35)
+}) as InventoryItemDefinition["fists"] & object;
 
 export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
     defaultTemplate => ({
@@ -37,6 +44,9 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             killstreak: false,
             speedMultiplier: 1,
             maxTargets: 1,
+            image: {
+                zIndex: 1
+            },
             fireMode: FireMode.Single
         })
     })
@@ -54,11 +64,11 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             fists: {
                 animationDuration: 125,
                 randomFist: true,
-                left: Vec.create(38, -35),
-                right: Vec.create(38, 35),
+                ...DEFAULT_HAND_RIGGING,
                 useLeft: Vec.create(75, -10),
                 useRight: Vec.create(75, 10)
-            }
+            },
+            image: undefined
         },
         {
             idString: "baseball_bat",
@@ -134,6 +144,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             idString: "steelfang",
             name: "Steelfang",
             damage: 40,
+            noDrop: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
             radius: 2.7,
@@ -155,7 +166,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             },
             wearerAttributes: {
                 passive: {
-                    speedBoost: 1.5
+                    speedBoost: 1.1
                 }
             }
         },

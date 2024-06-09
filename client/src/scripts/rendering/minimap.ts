@@ -1,5 +1,4 @@
 import $ from "jquery";
-import { DropShadowFilter } from "pixi-filters";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
@@ -16,25 +15,26 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
 export class Minimap {
-    game: Game;
-    expanded = false;
+    private _expanded = false;
+    get expanded(): boolean { return this._expanded; }
 
-    visible = true;
+    private _visible = true;
+    get visible(): boolean { return this._visible; }
 
-    position = Vec.create(0, 0);
-    lastPosition = Vec.create(0, 0);
+    private _position = Vec.create(0, 0);
+    private _lastPosition = Vec.create(0, 0);
 
     // used for the gas to player line and circle
-    gasPos = Vec.create(0, 0);
-    gasRadius = 0;
-    gasGraphics = new Graphics();
+    private _gasPos = Vec.create(0, 0);
+    private _gasRadius = 0;
+    readonly safeZone = new Graphics();
 
-    readonly objectsContainer = new Container();
+    private readonly _objectsContainer = new Container();
     readonly container = new Container();
     readonly mask = new Graphics();
 
     readonly sprite = new Sprite();
-    texture?: Texture;
+    private _texture?: Texture;
 
     readonly indicator = new SuroiSprite("player_indicator")
         .setTint(TEAMMATE_COLORS[0])
@@ -43,46 +43,53 @@ export class Minimap {
     readonly teammateIndicators = new Map<number, SuroiSprite>();
     readonly teammateIndicatorContainer = new Container();
 
-    width = 0;
-    height = 0;
+    private _width = 0;
+    get width(): number { return this._width; }
 
-    minimapWidth = 0;
-    minimapHeight = 0;
+    private _height = 0;
+    get height(): number { return this._height; }
 
-    margins = Vec.create(0, 0);
+    private _minimapWidth = 0;
+    get minimapWidth(): number { return this._minimapWidth; }
+
+    private _minimapHeight = 0;
+    get minimapHeight(): number { return this._minimapHeight; }
+
+    private _margins = Vec.create(0, 0);
 
     readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
 
-    terrain = new Terrain(0, 0, 0, 0, 0, []);
+    private _terrain = new Terrain(0, 0, 0, 0, 0, []);
+    get terrain(): Terrain { return this._terrain; }
 
     readonly pings = new Set<MapPing>();
-    readonly border = new Graphics();
+    private readonly _border = new Graphics();
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
 
-    readonly terrainGraphics = new Graphics();
+    private readonly _terrainGraphics = new Graphics();
 
-    objects: MapPacket["objects"] = [];
-    places: MapPacket["places"] = [];
+    private _objects: MapPacket["objects"] = [];
+    private _places: MapPacket["places"] = [];
 
     readonly debugGraphics = new Graphics();
 
-    constructor(game: Game) {
-        this.game = game;
-        this.objectsContainer.mask = this.mask;
+    constructor(public readonly game: Game) {
+        this._objectsContainer.mask = this.mask;
 
-        this.container.addChild(this.objectsContainer);
-        this.container.addChild(this.border);
+        this.container.addChild(this._objectsContainer);
+        this.container.addChild(this._border);
 
-        this.gasGraphics.zIndex = 998;
+        this.safeZone.zIndex = 997;
+        this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
-        this.objectsContainer.addChild(
+        this._objectsContainer.addChild(
             this.sprite,
             this.placesContainer,
             this.gasRender.graphics,
-            this.gasGraphics,
+            this.safeZone,
             this.pingGraphics,
             this.pingsContainer,
             this.indicator,
@@ -112,8 +119,10 @@ export class Minimap {
         ctx.zIndex = ZIndexes.Ground;
 
         const radius = 20 * scale;
-        const beachPoints = this.terrain.beachHitbox.points;
-        const grassPoints = this.terrain.grassHitbox.points;
+        const [
+            { points: beachPoints },
+            { points: grassPoints }
+        ] = [this._terrain.beachHitbox, this._terrain.grassHitbox];
 
         const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
         // The grass is a hole in the map shape, the background clear color is the grass color
@@ -129,32 +138,32 @@ export class Minimap {
 
         // gets the river polygon with the middle 2 points not rounded
         // so it joins nicely with other rivers
-        function getRiverPoly(points: Vector[]): Array<Vector & { radius: number }> {
+        function getRiverPoly(points: readonly Vector[]): Array<Vector & { readonly radius: number }> {
             const half = points.length / 2;
-            return points.map((point, index) => {
-                return {
+            return points.map(
+                (point, index) => ({
                     x: point.x * scale,
                     y: point.y * scale,
                     radius: (index === half || index === half - 1) ? 0 : radius
-                };
-            });
+                })
+            );
         }
 
         // river bank needs to be draw first
         ctx.beginPath();
-        for (const river of this.terrain.rivers) {
+        for (const river of this._terrain.rivers) {
             ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
         }
         ctx.fill(COLORS.riverBank);
 
         ctx.beginPath();
-        for (const river of this.terrain.rivers) {
+        for (const river of this._terrain.rivers) {
             ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
         }
         ctx.fill(COLORS.water);
 
         ctx.beginPath();
-        ctx.rect(0, 0, this.width * scale, this.height * scale);
+        ctx.rect(0, 0, this._width * scale, this._height * scale);
         ctx.fill(COLORS.water);
         ctx.roundShape(beach, radius);
         ctx.cut();
@@ -166,8 +175,8 @@ export class Minimap {
         });
 
         const gridSize = GameConstants.gridSize * scale;
-        const gridWidth = this.width * scale;
-        const gridHeight = this.height * scale;
+        const gridWidth = this._width * scale;
+        const gridHeight = this._height * scale;
         for (let x = 0; x <= gridWidth; x += gridSize) {
             ctx.moveTo(x, 0);
             ctx.lineTo(x, gridHeight);
@@ -180,45 +189,55 @@ export class Minimap {
 
         ctx.stroke();
 
-        for (const building of this.objects) {
+        for (const building of this._objects) {
             if (building.type !== ObjectCategory.Building) continue;
 
             const definition = building.definition;
-            if (definition.groundGraphics) {
-                const drawGroundGraphics = (hitbox: Hitbox): void => {
-                    switch (hitbox.type) {
-                        case HitboxType.Rect: {
-                            const width = hitbox.max.x - hitbox.min.x;
-                            const height = hitbox.max.y - hitbox.min.y;
-                            ctx.rect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
-                            break;
-                        }
-                        case HitboxType.Circle:
-                            ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
-                            break;
-                        case HitboxType.Polygon:
-                            ctx.poly(hitbox.points.map(v => Vec.scale(v, scale)));
-                            break;
-                        case HitboxType.Group:
-                            for (const hitBox of hitbox.hitboxes) {
-                                drawGroundGraphics(hitBox);
-                            }
-                            break;
+            const drawGroundGraphics = (hitbox: Hitbox): void => {
+                switch (hitbox.type) {
+                    case HitboxType.Rect: {
+                        ctx.rect(
+                            hitbox.min.x * scale,
+                            hitbox.min.y * scale,
+                            (hitbox.max.x - hitbox.min.x) * scale,
+                            (hitbox.max.y - hitbox.min.y) * scale
+                        );
+                        break;
                     }
-                };
-                for (const ground of definition.groundGraphics) {
-                    ctx.beginPath();
-                    drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
-                    ctx.closePath();
-                    ctx.fill(ground.color);
+                    case HitboxType.Circle:
+                        ctx.arc(
+                            hitbox.position.x * scale,
+                            hitbox.position.y * scale,
+                            hitbox.radius * scale,
+                            0,
+                            Math.PI * 2
+                        );
+                        break;
+                    case HitboxType.Polygon:
+                        ctx.poly(
+                            hitbox.points.map(v => Vec.scale(v, scale))
+                        );
+                        break;
+                    case HitboxType.Group:
+                        for (const hitBox of hitbox.hitboxes) {
+                            drawGroundGraphics(hitBox);
+                        }
+                        break;
                 }
+            };
+
+            for (const ground of definition.groundGraphics) {
+                ctx.beginPath();
+                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
+                ctx.closePath();
+                ctx.fill(ground.color);
             }
         }
     }
 
     renderMap(): void {
         // Draw the terrain graphics
-        const terrainGraphics = this.terrainGraphics;
+        const terrainGraphics = this._terrainGraphics;
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
 
@@ -231,8 +250,8 @@ export class Minimap {
         const margin = 5120;
         const doubleMargin = margin * 2;
 
-        const realWidth = this.width * PIXI_SCALE;
-        const realHeight = this.height * PIXI_SCALE;
+        const realWidth = this._width * PIXI_SCALE;
+        const realHeight = this._height * PIXI_SCALE;
 
         terrainGraphics.rect(-margin, -margin, realWidth + doubleMargin, margin);
         terrainGraphics.rect(-margin, realHeight, realWidth + doubleMargin, margin);
@@ -246,7 +265,7 @@ export class Minimap {
         const mapRender = new Container();
         mapRender.addChild(mapGraphics);
 
-        for (const mapObject of this.objects) {
+        for (const mapObject of this._objects) {
             switch (mapObject.type) {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
@@ -285,7 +304,7 @@ export class Minimap {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation)
-                            .setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
+                            .setZIndex(definition.ceilingZIndex);
 
                         sprite.scale.set(1 / PIXI_SCALE);
                         if (image.tint !== undefined) sprite.setTint(image.tint);
@@ -299,16 +318,16 @@ export class Minimap {
         mapRender.sortChildren();
 
         // Render all obstacles and buildings to a texture
-        this.texture?.destroy(true);
-        this.texture = RenderTexture.create({
-            width: this.width,
-            height: this.height,
+        this._texture?.destroy(true);
+        this._texture = RenderTexture.create({
+            width: this._width,
+            height: this._height,
             resolution: isMobile.any ? 1 : 2
         });
 
-        this.game.pixi.renderer.render({ container: mapRender, target: this.texture, clearColor: COLORS.grass });
+        this.game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: COLORS.grass });
         this.sprite.texture.destroy(true);
-        this.sprite.texture = this.texture;
+        this.sprite.texture = this._texture;
         mapRender.destroy({
             children: true,
             texture: false
@@ -316,7 +335,7 @@ export class Minimap {
 
         // Add the places
         this.placesContainer.removeChildren();
-        for (const place of this.places) {
+        for (const place of this._places) {
             const text = new Text(
                 {
                     text: place.name,
@@ -354,14 +373,14 @@ export class Minimap {
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
         debugGraphics.zIndex = 99;
-        for (const [hitbox, type] of this.terrain.floors) {
+        for (const [hitbox, type] of this._terrain.floors) {
             drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
         }
 
-        drawHitbox(this.terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
-        drawHitbox(this.terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
+        drawHitbox(this._terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
+        drawHitbox(this._terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
 
-        for (const river of this.terrain.rivers) {
+        for (const river of this._terrain.rivers) {
             const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
 
             drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
@@ -393,10 +412,10 @@ export class Minimap {
     updateFromPacket(mapPacket: MapPacket): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
 
-        const width = this.width = mapPacket.width;
-        const height = this.height = mapPacket.height;
-        this.objects = mapPacket.objects;
-        this.places = mapPacket.places;
+        const width = this._width = mapPacket.width;
+        const height = this._height = mapPacket.height;
+        this._objects = mapPacket.objects;
+        this._places = mapPacket.places;
 
         const mapBounds = new RectangleHitbox(
             Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
@@ -408,7 +427,7 @@ export class Minimap {
             rivers.push(new River(riverData.width, riverData.points, rivers, mapBounds));
         }
 
-        this.terrain = new Terrain(
+        this._terrain = new Terrain(
             width,
             height,
             mapPacket.oceanSize,
@@ -417,11 +436,11 @@ export class Minimap {
             rivers
         );
 
-        for (const object of this.objects) {
+        for (const object of this._objects) {
             if (object.type === ObjectCategory.Building) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
-                    this.terrain.addFloor(floor.type, hitbox);
+                    this._terrain.addFloor(floor.type, hitbox);
                 }
             }
         }
@@ -457,43 +476,44 @@ export class Minimap {
             }
         }
 
-        this.gasRender.update(this.game.gas);
+        const gas = this.game.gas;
+        this.gasRender.update(gas);
         // only re-render gas line and circle if something changed
         if (
-            this.game.gas.state === GasState.Inactive || (
-                this.position.x === this.lastPosition.x
-                && this.position.y === this.lastPosition.y
-                && this.game.gas.newRadius === this.gasRadius
-                && this.game.gas.newPosition.x === this.gasPos.x
-                && this.game.gas.newPosition.y === this.gasPos.y
+            gas.state === GasState.Inactive || (
+                this._position.x === this._lastPosition.x
+                && this._position.y === this._lastPosition.y
+                && gas.newRadius === this._gasRadius
+                && gas.newPosition.x === this._gasPos.x
+                && gas.newPosition.y === this._gasPos.y
             )
         ) return;
 
-        this.lastPosition = this.position;
-        this.gasPos = this.game.gas.newPosition;
-        this.gasRadius = this.game.gas.newRadius;
+        this._lastPosition = this._position;
+        this._gasPos = gas.newPosition;
+        this._gasRadius = gas.newRadius;
 
-        this.gasGraphics.clear();
+        this.safeZone.clear();
 
-        this.gasGraphics.beginPath();
-        this.gasGraphics.setStrokeStyle({
+        this.safeZone.beginPath();
+        this.safeZone.setStrokeStyle({
             color: 0x00f9f9,
             width: 2,
             cap: "round"
         });
         // draw line from player to gas center
-        this.gasGraphics.moveTo(this.position.x, this.position.y)
-            .lineTo(this.gasPos.x, this.gasPos.y)
+        this.safeZone.moveTo(this._position.x, this._position.y)
+            .lineTo(this._gasPos.x, this._gasPos.y)
             .closePath().stroke();
 
         // draw circle
-        this.gasGraphics.beginPath()
+        this.safeZone.beginPath()
             .setStrokeStyle({
                 color: 0xffffff,
                 width: 2,
                 cap: "round"
             })
-            .arc(this.gasPos.x, this.gasPos.y, this.gasRadius, 0, Math.PI * 2)
+            .arc(this._gasPos.x, this._gasPos.y, this._gasRadius, 0, Math.PI * 2)
             .closePath()
             .stroke();
     }
@@ -501,47 +521,47 @@ export class Minimap {
     private readonly _borderContainer = $("#minimap-border");
 
     resize(): void {
-        this.border.visible = this.expanded;
+        this._border.visible = this._expanded;
         const uiScale = this.game.console.getBuiltInCVar("cv_ui_scale");
 
-        if (this.expanded) {
+        if (this._expanded) {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const smallestDim = Math.min(screenHeight, screenWidth);
-            this.container.scale.set(smallestDim / this.height);
+            this.container.scale.set(smallestDim / this._height);
             // noinspection JSSuspiciousNameCombination
-            this.minimapWidth = this.sprite.width * this.container.scale.x;
-            this.minimapHeight = this.sprite.height * this.container.scale.y;
-            this.margins = Vec.create(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
+            this._minimapWidth = this.sprite.width * this.container.scale.x;
+            this._minimapHeight = this.sprite.height * this.container.scale.y;
+            this._margins = Vec.create(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
             const closeButtonPos = Math.min(
-                this.margins.x + this.minimapWidth + 16,
+                this._margins.x + this._minimapWidth + 16,
                 screenWidth - (closeButton.outerWidth() ?? 0)
             ) / uiScale;
             closeButton.css("left", `${closeButtonPos}px`);
 
-            this.border.clear();
-            this.border.setStrokeStyle({
+            this._border.clear();
+            this._border.setStrokeStyle({
                 width: 4,
                 color: 0x00000
             });
-            this.border.rect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
-            this.border.stroke();
+            this._border.rect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
+            this._border.stroke();
 
             this.indicator.scale.set(1);
             for (const [, indicator] of this.teammateIndicators) {
                 indicator.setScale(1);
             }
         } else {
-            if (!this.visible) return;
+            if (!this._visible) return;
 
             const bounds = this._borderContainer[0].getBoundingClientRect();
             const border = parseInt(this._borderContainer.css("border-width")) * uiScale;
 
-            this.minimapWidth = bounds.width - border * 2;
-            this.minimapHeight = bounds.height - border * 2;
-            this.margins = Vec.create(bounds.left + border, bounds.top + border);
+            this._minimapWidth = bounds.width - border * 2;
+            this._minimapHeight = bounds.height - border * 2;
+            this._margins = Vec.create(bounds.left + border, bounds.top + border);
 
             if (window.innerWidth > 1200) {
                 this.container.scale.set(1 / 1.25 * uiScale);
@@ -555,9 +575,9 @@ export class Minimap {
             }
         }
 
-        this.mask.clear();
-        this.mask.rect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
-        this.mask.fill();
+        this.mask.clear()
+            .rect(this._margins.x, this._margins.y, this._minimapWidth, this._minimapHeight)
+            .fill();
 
         this.updatePosition();
         this.updateTransparency();
@@ -568,32 +588,32 @@ export class Minimap {
     }
 
     toggle(): void {
-        if (this.expanded) this.switchToSmallMap();
+        if (this._expanded) this.switchToSmallMap();
         else this.switchToBigMap();
     }
 
     setPosition(pos: Vector): void {
-        this.position = Vec.clone(pos);
+        this._position = Vec.clone(pos);
         this.indicator.setVPos(pos);
         this.updatePosition();
     }
 
     updatePosition(): void {
-        if (this.expanded) {
-            this.container.position.set(window.innerWidth / 2, window.innerHeight / 2 - this.minimapHeight / 2);
-            this.objectsContainer.position.set(-this.width / 2, 0);
+        if (this._expanded) {
+            this.container.position.set(window.innerWidth / 2, window.innerHeight / 2 - this._minimapHeight / 2);
+            this._objectsContainer.position.set(-this._width / 2, 0);
             return;
         }
-        const pos = Vec.clone(this.position);
-        pos.x -= (this.minimapWidth / 2 + this.margins.x) / this.container.scale.x;
-        pos.y -= (this.minimapHeight / 2 + this.margins.y) / this.container.scale.y;
+        const pos = Vec.clone(this._position);
+        pos.x -= (this._minimapWidth / 2 + this._margins.x) / this.container.scale.x;
+        pos.y -= (this._minimapHeight / 2 + this._margins.y) / this.container.scale.y;
 
         this.container.position.set(0, 0);
-        this.objectsContainer.position.copyFrom(Vec.scale(pos, -1));
+        this._objectsContainer.position.copyFrom(Vec.scale(pos, -1));
     }
 
     switchToBigMap(): void {
-        this.expanded = true;
+        this._expanded = true;
         this.container.visible = true;
         this._borderContainer.hide();
         $("#scopes-container").hide();
@@ -603,20 +623,28 @@ export class Minimap {
         $("#ui-kill-leader").hide();
         $("#center-bottom-container").hide();
         $("#kill-counter").show();
+
+        // Bug Fix: "Killfeed shifts down with big map open"
+        $("#kill-feed").hide();
+
         this.resize();
     }
 
     switchToSmallMap(): void {
-        this.expanded = false;
+        this._expanded = false;
         $("#btn-close-minimap").hide();
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
+
+        // Bug Fix: "Killfeed shifts down with big map open"
+        $("#kill-feed").show();
+
         if (this.game.spectating) $("#spectating-container").show();
         const width = $(window).width();
-        if (width && width > 1200) $("#ui-kill-leader").show();
+        if (width && width > 768) $("#ui-kill-leader").show();
         $("#kill-counter").hide();
-        if (!this.visible) {
+        if (!this._visible) {
             this.container.visible = false;
             return;
         }
@@ -626,23 +654,28 @@ export class Minimap {
 
     updateTransparency(): void {
         this.container.alpha = this.game.console.getBuiltInCVar(
-            this.expanded
+            this._expanded
                 ? "cv_map_transparency"
                 : "cv_minimap_transparency"
         );
     }
 
     toggleMinimap(): void {
-        this.visible = !this.visible;
+        this._visible = !this._visible;
 
         this.switchToSmallMap();
-        this.container.visible = this.visible;
-        this._borderContainer.toggle(this.visible);
+        this.container.visible = this._visible;
+        this._borderContainer.toggle(this._visible);
     }
 
     addMapPing(position: Vector, definition: MapPingDefinition, playerId?: number): void {
-        const ping = new MapPing(position, definition, playerId ? this.game.objects.get(playerId) as Player : undefined);
-        if (definition.sound) this.game.soundManager.play(definition.sound);
+        const ping = new MapPing(
+            position,
+            definition,
+            playerId ? this.game.objects.get(playerId) as Player : undefined
+        );
+
+        if (definition.sound !== undefined) this.game.soundManager.play(definition.sound);
 
         this.pingsContainer.addChild(ping.mapImage);
         if (ping.inGameImage) this.game.camera.addObject(ping.inGameImage);
@@ -651,16 +684,17 @@ export class Minimap {
         if (ping.definition.isPlayerPing) {
             for (const otherPing of this.pings) {
                 if (
-                    otherPing.definition.idString === ping.definition.idString
-                    && otherPing.player?.id === playerId
-                ) {
-                    otherPing.destroy();
-                    this.pings.delete(otherPing);
-                }
+                    otherPing.definition !== ping.definition
+                    || otherPing.player?.id !== playerId
+                ) continue;
+
+                otherPing.destroy();
+                this.pings.delete(otherPing);
             }
         }
+
         this.pings.add(ping);
-        if (ping.definition.ignoreExpiration !== true) {
+        if (!ping.definition.ignoreExpiration) {
             this.game.addTimeout(() => {
                 ping.destroy();
             }, 10000);
@@ -669,27 +703,25 @@ export class Minimap {
 }
 
 export class MapPing {
-    position: Vector;
-    startTime: number;
-    endTime: number;
-    mapImage: SuroiSprite;
-    inGameImage?: SuroiSprite;
-    definition: MapPingDefinition;
-    player?: Player;
-    color: ColorSource;
+    readonly startTime: number;
+    readonly endTime: number;
+    readonly mapImage: SuroiSprite;
+    readonly inGameImage?: SuroiSprite;
+    readonly color: ColorSource;
 
-    constructor(position: Vector, definition: MapPingDefinition, player?: Player) {
-        this.position = position;
-        this.definition = definition;
-        this.player = player;
+    constructor(
+        readonly position: Vector,
+        readonly definition: MapPingDefinition,
+        readonly player?: Player
+    ) {
         this.startTime = Date.now();
-        this.endTime = this.startTime + (this.definition.lifetime * 1000);
+        this.endTime = this.startTime + this.definition.lifetime * 1000;
 
         this.color = definition.color;
 
         if (definition.isPlayerPing && player) {
             this.color = TEAMMATE_COLORS[
-                Math.max(player.game.uiManager.teammates.findIndex(p => p.id === player.id) + 1, 0)
+                player.game.uiManager.teammates.findIndex(({ id }) => id === player.id) + 1
             ];
         }
 
@@ -698,32 +730,11 @@ export class MapPing {
             .setTint(this.color)
             .setScale(0.5);
 
-        this.mapImage.filters = new DropShadowFilter({
-            blur: 1,
-            quality: 3,
-            alpha: 1,
-            color: 0,
-            offset: {
-                x: 0,
-                y: 0
-            }
-        });
-
         if (this.definition.showInGame) {
             this.inGameImage = new SuroiSprite(definition.idString)
                 .setVPos(toPixiCoords(position))
                 .setTint(this.color)
-                .setZIndex(ZIndexes.Emotes);
-            this.inGameImage.filters = new DropShadowFilter({
-                blur: 1,
-                quality: 3,
-                alpha: 0.5,
-                color: 0,
-                offset: {
-                    x: 0,
-                    y: 0
-                }
-            });
+                .setZIndex(ZIndexes.Gas + 1);
         }
     }
 

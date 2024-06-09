@@ -33,15 +33,21 @@ export interface ObjectMapping {
 export type GameObject = ObjectMapping[ObjectCategory];
 
 export interface DamageParams {
-    amount: number
-    source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
-    weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+    readonly amount: number
+    readonly source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
+    readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
 }
+
+export type CollidableGameObject<
+    Cat extends ObjectCategory = ObjectCategory,
+    HitboxType extends Hitbox = Hitbox
+> = BaseGameObject<Cat> & { readonly hitbox: HitboxType };
 
 export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
     abstract readonly type: Cat;
-    abstract fullAllocBytes: number;
-    abstract partialAllocBytes: number;
+    readonly abstract fullAllocBytes: number;
+    readonly abstract partialAllocBytes: number;
+
     readonly id: number;
     readonly game: Game;
 
@@ -57,8 +63,11 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     dead = false;
     hitbox?: Hitbox;
 
-    fullStream!: SuroiBitStream;
-    partialStream!: SuroiBitStream;
+    private _fullStream?: SuroiBitStream | undefined;
+    get fullStream(): SuroiBitStream { return this._fullStream ??= SuroiBitStream.alloc(this.fullAllocBytes * 8); }
+
+    private _partialStream?: SuroiBitStream | undefined;
+    get partialStream(): SuroiBitStream { return this._partialStream ??= SuroiBitStream.alloc(this.partialAllocBytes * 8); }
 
     protected constructor(game: Game, position: Vector) {
         this.id = game.nextObjectID;
@@ -68,31 +77,29 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     }
 
     serializeFull(): void {
-        if (this.fullStream === undefined) {
-            this.fullStream = SuroiBitStream.alloc(this.fullAllocBytes * 8);
-        }
         this.serializePartial();
-        this.fullStream.index = 0;
-        ObjectSerializations[this.type].serializeFull(this.fullStream, this.data);
-        this.fullStream.writeAlignToNextByte();
+        const stream = this.fullStream;
+        stream.index = 0;
+        ObjectSerializations[this.type].serializeFull(stream, this.data);
+        stream.writeAlignToNextByte();
     }
 
     serializePartial(): void {
-        if (this.partialStream === undefined) {
-            this.partialStream = SuroiBitStream.alloc(this.partialAllocBytes * 8);
-        }
-        this.partialStream.index = 0;
+        const stream = this.partialStream;
+        stream.index = 0;
 
-        this.partialStream.writeObjectID(this.id);
-        this.partialStream.writeObjectType(this.type);
+        stream.writeObjectID(this.id);
+        stream.writeObjectType(this.type);
 
-        ObjectSerializations[this.type].serializePartial(this.partialStream, this.data);
-        this.partialStream.writeAlignToNextByte();
+        ObjectSerializations[this.type].serializePartial(stream, this.data);
+        stream.writeAlignToNextByte();
     }
 
     /**
      * Sets this object as fully dirty
-     * This means all the serialization data will be sent to clients
+     *
+     * This means all the serialization data will be sent
+     * to clients on the next update
      */
     setDirty(): void {
         this.game.fullDirtyObjects.add(this);
@@ -100,7 +107,9 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     /**
      * Sets this object as partially dirty
+     *
      * This means the partial data will be sent to clients
+     * on the next update
      */
     setPartialDirty(): void {
         this.game.partialDirtyObjects.add(this);

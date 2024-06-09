@@ -40,7 +40,7 @@ interface CommandInfo {
 
 export class Command<
     Invertible extends boolean = false,
-    ErrorType extends Stringable | never = never
+    ErrorType extends Stringable = never
 > {
     private readonly _name: string;
     get name(): string {
@@ -67,7 +67,7 @@ export class Command<
         return this._info;
     }
 
-    static createInvertiblePair<ErrorType extends Stringable | never = never>(
+    static createInvertiblePair<ErrorType extends Stringable = never>(
         name: string,
         on: CommandExecutor<ErrorType>,
         off: CommandExecutor<ErrorType>,
@@ -96,7 +96,7 @@ export class Command<
         minus._inverse = plus;
     }
 
-    static createCommand<ErrorType extends Stringable | never = never>(
+    static createCommand<ErrorType extends Stringable = never>(
         name: string,
         executor: CommandExecutor<ErrorType>,
         game: Game,
@@ -146,7 +146,7 @@ export class Command<
                     i++, arg = args[i]
                 ) {
                     if (arg.rest) {
-                        // @ts-expect-error meh
+                        // @ts-expect-error not worth making the prop mutable just for this edge-case
                         arg.rest = false;
                         console.warn(
                             `Found illegal rest argument in info string of command '${this._name}' (signature ${index}, argument '${arg.name}', position ${i})`
@@ -670,8 +670,11 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "emote_wheel",
         function(): undefined {
-            if (game.console.getBuiltInCVar("cv_hide_emotes")) return;
-            if (this.gameOver) return;
+            if (
+                game.console.getBuiltInCVar("cv_hide_emotes")
+                || this.gameOver
+                || this.inputManager.emoteWheelActive
+            ) return;
             const { mouseX, mouseY } = this.inputManager;
 
             const scale = this.console.getBuiltInCVar("cv_ui_scale");
@@ -689,29 +692,29 @@ export function setUpCommands(game: Game): void {
             this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
         },
         function(): undefined {
-            if (this.inputManager.emoteWheelActive) {
-                this.inputManager.emoteWheelActive = false;
-                this.inputManager.pingWheelMinimap = false;
+            if (!this.inputManager.emoteWheelActive) return;
 
-                $("#emote-wheel").hide();
+            this.inputManager.emoteWheelActive = false;
+            this.inputManager.pingWheelMinimap = false;
 
-                if (this.inputManager.selectedEmote === undefined) return;
+            $("#emote-wheel").hide();
 
-                const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
-                if (emote && !this.inputManager.pingWheelActive) {
-                    this.inputManager.addAction({
-                        type: InputActions.Emote,
-                        emote
-                    });
-                } else if (this.inputManager.pingWheelActive) {
-                    this.inputManager.addAction({
-                        type: InputActions.MapPing,
-                        ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
-                        position: this.inputManager.pingWheelPosition
-                    });
-                }
-                this.inputManager.selectedEmote = undefined;
+            if (this.inputManager.selectedEmote === undefined) return;
+
+            const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
+            if (emote && !this.inputManager.pingWheelActive) {
+                this.inputManager.addAction({
+                    type: InputActions.Emote,
+                    emote
+                });
+            } else if (this.inputManager.pingWheelActive) {
+                this.inputManager.addAction({
+                    type: InputActions.MapPing,
+                    ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
+                    position: this.inputManager.pingWheelPosition
+                });
             }
+            this.inputManager.selectedEmote = undefined;
         },
         game,
         {
@@ -852,7 +855,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "echo",
         function(...messages): undefined {
-            gameConsole.log.raw((messages ?? []).join(" "));
+            gameConsole.log.raw(messages.join(" "));
         },
         game,
         {
@@ -1149,7 +1152,7 @@ export function setUpCommands(game: Game): void {
                     [false, "boolean"],
                     [5678n, "bigint"],
                     [Symbol.for("efgh"), "symbol"],
-                    [function sin(x: number): void {}, "function"],
+                    [function sin(x: number): void { /* lol ok */ }, "function"],
                     [{}, "object"]
                 ] as Array<[unknown, string]>
             ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
@@ -1308,13 +1311,12 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            if (!gameConsole.variables.has(name)) {
+            let cvar: ConVar<Stringable> | undefined;
+            if ((cvar = gameConsole.variables.get(name)) === undefined) {
                 return {
                     err: `CVar '${name}' doesn't exist`
                 };
             }
-
-            const cvar = gameConsole.variables.get(name)!;
 
             if (values.length === 0) {
                 values = ["true", "false"];
@@ -1612,8 +1614,9 @@ export function setUpCommands(game: Game): void {
     /*
         few reasons for this:
         a) expanding out these console commands and making a proper implementation of `map_ping` leads to duplicated code
-        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper command with help text if you want tho)
+        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper
+           command with help text if you want tho)
         c) the whole "hold key to switch to ping mode" thing is annoying
     */
-    gameConsole.handleQuery("alias +map_ping \"+map_ping_wheel; +emote_wheel\" & alias -map_ping \"+map_ping_wheel; +emote_wheel\"");
+    gameConsole.handleQuery("alias +map_ping \"+emote_wheel; +map_ping_wheel\" & alias -map_ping \"-emote_wheel; -map_ping_wheel\"");
 }

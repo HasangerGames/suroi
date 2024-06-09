@@ -3,8 +3,8 @@ import { CustomTeamMessages, type CustomTeamMessage } from "../../common/src/typ
 import { random } from "../../common/src/utils/random";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
-import { removeFrom } from "./utils/misc";
 import { customTeams } from "./server";
+import { removeFrom } from "./utils/misc";
 
 export class Team {
     readonly id: number;
@@ -197,7 +197,7 @@ export class CustomTeam {
                 break;
             }
             case CustomTeamMessages.Start: {
-                const result = await findGame();
+                const result = findGame();
                 if (result.success) {
                     this.gameID = result.gameID;
                     this._publishMessage({ type: CustomTeamMessages.Started });

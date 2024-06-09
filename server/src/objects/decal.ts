@@ -26,5 +26,5 @@ export class Decal extends BaseGameObject<ObjectCategory.Decal> {
         return this;
     }
 
-    override damage(): void { }
+    override damage(): void { /* can't damage a decal */ }
 }

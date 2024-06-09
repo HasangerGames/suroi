@@ -1,9 +1,23 @@
+declare global {
+    // taken from https://github.com/microsoft/TypeScript/issues/45602#issuecomment-934427206
+    interface Promise<T = void> {
+        /**
+         * Attaches a callback for only the rejection of the Promise.
+         * @param onrejected The callback to execute when the Promise is rejected.
+         * @returns A Promise for the completion of the callback.
+         */
+        catch<TResult = never>(
+            onrejected?: ((reason: unknown) => TResult | PromiseLike<TResult>) | undefined | null,
+        ): Promise<T | TResult>
+    }
+}
+
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
 export type DeepPartial<T> = {
-    [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+    [K in keyof T]?: DeepPartial<T[K]>;
 };
 
 export type DeepRequired<T> = T extends Array<infer R>
@@ -13,7 +27,11 @@ export type DeepRequired<T> = T extends Array<infer R>
     };
 
 export type DeepReadonly<T> = {
-    readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+    readonly [K in keyof T]: DeepReadonly<T[K]>;
+};
+
+export type Mutable<T> = {
+    -readonly [K in keyof T]: T[K];
 };
 
 /**
@@ -42,8 +60,8 @@ export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPar
 
     const [source, ...rest] = sources;
 
-    type StringKeys = (keyof T & string);
-    type SymbolKeys = (keyof T & symbol);
+    type StringKeys = keyof T & string;
+    type SymbolKeys = keyof T & symbol;
 
     for (
         const key of (
@@ -66,19 +84,132 @@ export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPar
     return mergeDeep(target, ...rest);
 }
 
+/**
+ * Symbol used to indicate an object's deep-clone method
+ * @see {@linkcode DeepCloneable}
+ * @see {@linkcode cloneDeep}
+*/
+export const cloneDeepSymbol: unique symbol = Symbol("clone deep");
+
+/**
+ * Symbol used to indicate an object's cloning method
+ */
+export const cloneSymbol: unique symbol = Symbol("clone");
+
+// what in the java
+/**
+ * Interface that any value wishing to provide a deep-cloning algorithm should implement
+ * @see {@linkcode cloneDeepSymbol}
+ * @see {@linkcode cloneDeep}
+ */
+export interface DeepCloneable<T> {
+    [cloneDeepSymbol](): T
+}
+
+/**
+ * Interface that any value wishing to provide a cloning algorithm should implement
+ * @see {@linkcode cloneSymbol}
+ */
+export interface Cloneable<T> {
+    [cloneSymbol](): T
+}
+
+/**
+ * Clones a given value recursively. Primitives are returned as-is (effectively cloned), while objects are deeply cloned.
+ *
+ * On a best-effort basis, properties and their descriptors are kept intact; this includes custom properties on `Array`s,
+ * `Map`s, and `Set`s. These three data structures also receive special handling to preserve their contents, and the subclass
+ * is preserved to the best of {@linkcode Object.setPrototypeOf}'s ability.
+ *
+ * For class instances, callers should look into making the class implement the {@linkcode DeepCloneable} interface, and define their
+ * own deep-cloning algorithm there; this method will honor any such method. Doing so ensures that the cloning process is faster,
+ * more secure, and probably more efficient
+ * @param object The value to clone
+ * @returns A deep-copy of `object`, to the best of this method's ability
+ * @see {@linkcode cloneDeepSymbol}
+ * @see {@linkcode DeepCloneable}
+ */
 export function cloneDeep<T>(object: T): T {
-    if (!isObject(object)) return object;
+    // For cyclical data structures, ensures that cyclical-ness is preserved in the clone
+    const clonedNodes = new Map<unknown, unknown>();
 
-    const clone = new (Object.getPrototypeOf(object).constructor)();
+    return (function internal<T>(target: T): T {
+        if (!isObject(target) && !Array.isArray(target)) return target;
+        if (clonedNodes.has(target)) return clonedNodes.get(target) as T;
 
-    for (const [key, desc] of Object.entries(Object.getOwnPropertyDescriptors(object))) {
-        const clonedProperty = object[key as keyof T];
+        if (cloneDeepSymbol in target) {
+            const clone = target[cloneDeepSymbol];
+            if (typeof clone === "function" && clone.length === 0) {
+                // basically we hope that the caller isn't a dumbass and hasn't
+                // passed in an object with a nonsensical cloning method
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                return clone.call(target);
+            } else {
+                console.warn(`Inappropriate use of ${cloneDeepSymbol.toString()}: it should be a no-arg function`);
+            }
+        }
 
-        desc.value = cloneDeep(clonedProperty);
-        Object.defineProperty(clone, key, desc);
-    }
+        const copyAllPropDescs = <T>(
+            to: T,
+            entryFilter: (entry: readonly [string, TypedPropertyDescriptor<unknown>]) => boolean = () => true
+        ): T => {
+            for (const [key, desc] of Object.entries(Object.getOwnPropertyDescriptors(target)).filter(entryFilter)) {
+                desc.value = internal(target[key as keyof typeof target]);
+                Object.defineProperty(to, key, desc);
+            }
 
-    return clone;
+            return to;
+        };
+
+        const prototype = Object.getPrototypeOf(target) as object | null;
+
+        // special handling for certain builtins
+        switch (true) {
+            case target instanceof Array: {
+                // we can probably treat this as an array (unless someone is trolling us)
+                const root = Object.create(prototype) as T & unknown[];
+                clonedNodes.set(target, root);
+
+                for (let i = 0, l = target.length; i < l; i++) {
+                    root[i] = internal(target[i]);
+                }
+
+                return copyAllPropDescs(root, ([key]) => /* filter out numeric keys */ Number.isNaN(+key));
+            }
+            case target instanceof Map: {
+                const root = new Map<unknown, unknown>();
+                clonedNodes.set(target, root);
+
+                for (const [k, v] of (target as T & Map<unknown, unknown>).entries()) {
+                    root.set(internal(k), internal(v));
+                }
+
+                // Map.prototype methods reject targets which aren't direct instances of `Map`, so our hand is kinda forced here
+                Object.setPrototypeOf(root, prototype);
+                return copyAllPropDescs(root as T);
+            }
+            case target instanceof Set: {
+                const root = new Set<unknown>();
+                clonedNodes.set(target, root);
+
+                for (const v of target) root.add(internal(v));
+
+                // Set.prototype methods reject targets which aren't direct instances of `Set`, so our hand is kinda forced here
+                Object.setPrototypeOf(root, prototype);
+                return copyAllPropDescs(root as T);
+            }
+            default: {
+                /*
+                    we pray that if a constructor is present, that it doesn't incur side-effects…
+                    or at least, not necessary ones
+                */
+                const clone = Object.create(prototype) as T;
+                clonedNodes.set(target, clone);
+
+                return copyAllPropDescs(clone);
+            }
+        }
+    })(object);
 }
 
 export function freezeDeep<T>(object: T): DeepReadonly<T> {
@@ -133,7 +264,7 @@ export interface DoublyLinkedList<T> {
  * Implementation of a [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type))
  * @template T The type of the values stored in this collection
  */
-export class Stack<T> {
+export class Stack<T> implements DeepCloneable<Stack<T>>, Cloneable<Stack<T>> {
     /**
      * Internal backing linked list
      */
@@ -180,13 +311,50 @@ export class Stack<T> {
     has(): boolean {
         return !!this._head;
     }
+
+    /**
+     * Cloning implementation
+     * @param deep Whether to also deep-clone this stack's elements
+     */
+    private _clone(deep = false): Stack<T> {
+        const clone = new Stack<T>();
+
+        let current: LinkedList<T> | undefined = this._head;
+        let currentClone: LinkedList<T> | undefined;
+        while (current !== undefined) {
+            const node = deep
+                ? { value: cloneDeep(current.value) }
+                : current;
+
+            currentClone = currentClone
+                ? currentClone.next = node
+                : clone._head = node;
+            current = current.next;
+        }
+
+        return clone;
+    }
+
+    /**
+     * Creates a clone of this {@link Stack}, without cloning the elements within
+     */
+    [cloneSymbol](): Stack<T> {
+        return this._clone(false);
+    }
+
+    /**
+     * Creates a deep clone of this {@link Stack}, cloning the elements inside it
+     */
+    [cloneDeepSymbol](): Stack<T> {
+        return this._clone(true);
+    }
 }
 
 /**
  * Implementation of a [queue](https://en.wikipedia.org/wiki/Queue_(abstract_data_type))
  * @template T The type of the elements stored in this collection
  */
-export class Queue<T> {
+export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
     /**
      * A reference to the beginning of the internal linked list for this collection
      */
@@ -205,12 +373,12 @@ export class Queue<T> {
     enqueue(value: T): void {
         const node = { value };
 
-        if (!this._head) {
+        if (!this._tail) {
             this._tail = this._head = node;
             return;
         }
 
-        this._tail = this._tail!.next = node;
+        this._tail = this._tail.next = node;
     }
 
     /**
@@ -222,7 +390,6 @@ export class Queue<T> {
         if (!this._head) throw new Error("Empty queue");
 
         const value = this._head.value;
-
         (this._head = this._head.next) ?? delete this._tail;
 
         return value;
@@ -246,5 +413,106 @@ export class Queue<T> {
      */
     has(): boolean {
         return !!this._head;
+    }
+
+    /**
+     * Cloning implementation
+     * @param deep Whether to clone this queue's elements
+     */
+    private _clone(deep = false): Queue<T> {
+        const clone = new Queue<T>();
+
+        let current: LinkedList<T> | undefined = this._head;
+        let currentClone: LinkedList<T> | undefined;
+        while (current !== undefined) {
+            const node = { value: cloneDeep(current.value) };
+
+            currentClone = currentClone
+                ? currentClone.next = node
+                : clone._head = node;
+
+            current = current.next ?? void (clone._tail = current);
+        }
+
+        return clone;
+    }
+
+    /**
+     * Creates a clone of this {@link Queue}, without cloning the elements within
+     */
+    [cloneSymbol](): Queue<T> {
+        return this._clone(false);
+    }
+
+    /**
+     * Creates a deep clone of this {@link Queue}, cloning the elements inside it
+     */
+    [cloneDeepSymbol](): Queue<T> {
+        return this._clone(true);
+    }
+}
+
+// top 10 naming
+export class ExtendedMap<K, V> extends Map<K, V> {
+    private _get(key: K): V {
+        // it's up to callers to verify that the key is valid
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return super.get(key)!;
+    }
+
+    /**
+     * Retrieves the value at a given key, placing (and returning) a user-defined
+     * default value if no mapping for the key exists
+     * @param key      The key to retrieve from
+     * @param fallback A value to place at the given key if it currently not associated with a value
+     * @returns The value emplaced at key `key`; either the one that was already there or `fallback` if
+     *          none was present
+     */
+    getAndSetIfAbsent(key: K, fallback: V): V {
+        // pretty obvious why this is okay
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (this.has(key)) return this.get(key)!;
+
+        this.set(key, fallback);
+        return fallback;
+    }
+
+    /**
+     * Retrieves the value at a given key, placing (and returning) a user-defined
+     * default value if no mapping for the key exists
+     * @param key      The key to retrieve from
+     * @param fallback A function providing a value to place at the given key if it currently not
+     *                 associated with a value
+     * @returns The value emplaced at key `key`; either the one that was already there
+     *          or the result of `fallback` if none was present
+     */
+    getAndGetDefaultIfAbsent(key: K, fallback: () => V): V {
+        // pretty obvious why this is okay
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (this.has(key)) return this.get(key)!;
+
+        const value = fallback();
+        this.set(key, value);
+        return value;
+    }
+
+    ifPresent(key: K, callback: (obstacle: V) => void): void {
+        this.ifPresentOrElse(key, callback, () => { /* no-op */ });
+    }
+
+    ifPresentOrElse(key: K, callback: (obstacle: V) => void, ifAbsent: () => void): void {
+        const mappingPresent = super.has(key);
+
+        if (!mappingPresent) {
+            return ifAbsent();
+        }
+
+        callback(this._get(key));
+    }
+
+    mapIfPresent<U = V>(key: K, mapper: (value: V) => U): U | undefined {
+        if (!super.has(key)) return undefined;
+
+        return mapper(this._get(key));
     }
 }

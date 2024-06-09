@@ -28,5 +28,5 @@ export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
         };
     }
 
-    override damage(): void { }
+    override damage(): void { /* can't damage a death marker */ }
 }

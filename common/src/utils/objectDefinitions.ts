@@ -4,20 +4,6 @@ import { mergeDeep, type DeepPartial } from "./misc";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 
-/*
-    eslint-disable
-
-    @typescript-eslint/prefer-reduce-type-parameter
-*/
-
-/*
-    `@typescript-eslint/indent`                       Indenting rules for TS generics suck -> get disabled
-    `@typescript-eslint/consistent-type-definitions`  Top 10 most pointless rules
-    `@typescript-eslint/prefer-reduce-type-parameter` This rule doesn't even work correctly when the accumulator
-                                                      is being built up over the course of the reduction operation
-    `@typescript-eslint/consistent-type-assertions`   this rule is stupid and is meant for angle-bracket casting
-*/
-
 /**
  * A file-wide reference to the `symbol` used for inheritance.
  * Exported through {@linkcode ObjectDefinitions.inheritFromSymbol}
@@ -43,7 +29,7 @@ const _noDefaultInheritSymbol: unique symbol = Symbol("no default inherit");
  * @template Def The definition that will partially be constructed by this function
  */
 // It's a function whose argument types are narrowed if needed, and `unknown` causes false errors
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TemplateFn<Def extends ObjectDefinition> = (...args: readonly any[]) => DeepPartial<Def>;
 
 /**
@@ -319,7 +305,6 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                  * definition.
                  *
                  * @template Key The specific name of the template to inherit from
-                 * @template Overrides The specific type of the provided overrides
                  * @param name The name of the template from which this definition should inherit
                  * @param args A collection of arguments to pass to the inherited template's function.
                  * See {@linkcode GetPartialDeclFn} for more info
@@ -331,8 +316,18 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                     ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
                 ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
             },
+            /**
+             * An object used to provide convenient access to both {@linkcode _inheritFromSymbol}
+             * and {@linkcode _noDefaultInheritSymbol}
+             */
             symbols: {
+                /**
+                 * @see {@linkcode _inheritFromSymbol}
+                 */
                 readonly inheritFrom: typeof _inheritFromSymbol
+                /**
+                 * @see {@linkcode _noDefaultInheritSymbol}
+                 */
                 readonly noDefaultInherit: typeof _noDefaultInheritSymbol
             }
         ) => ReadonlyArray<StageZeroDefinition<Def, TemplateDecl[typeof _defaultTemplateSymbol]>>
@@ -371,21 +366,25 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
              */
             type Keys = keyof TemplateDecl & AllowedTemplateKeys;
 
+            type PartialDeclFn<
+                Key extends keyof TemplateDecl & AllowedTemplateKeys
+            > = GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>;
+
             type ApplyFn = <
                 Key extends keyof TemplateDecl & AllowedTemplateKeys,
                 Overrides extends DeepPartial<Def>
             >(
                 name: Key,
                 overrides: Overrides,
-                ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-            ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides;
+                ...args: Parameters<PartialDeclFn<Key>>
+            ) => ReturnType<PartialDeclFn<Key>> & Overrides;
 
             type SimpleApplyFn = <
                 Key extends keyof TemplateDecl & AllowedTemplateKeys
             >(
                 name: Key,
-                ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-            ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>;
+                ...args: Parameters<PartialDeclFn<Key>>
+            ) => ReturnType<PartialDeclFn<Key>>;
 
             /**
              * A function used to declare the definitions to use inside this definition list.
@@ -420,7 +419,8 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
                     if (typeof value === "function") {
                         if (isDefaultTemplate && value.length !== 0) {
-                            // fixme change this?
+                            // FIXME change this?
+                            // probably not…
                             throw new DefinitionFactoryInitError("Default template must be a no-parameter factory");
                         }
 
@@ -485,10 +485,6 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                         {} as Record<Keys, TemplateFn<Def>>
                     );
 
-                const defaultTemplate = (templates[_defaultTemplateSymbol]?.() ?? {}) as TemplateDecl[typeof _defaultTemplateSymbol] extends (...args: readonly unknown[]) => unknown
-                    ? ReturnType<TemplateDecl[typeof _defaultTemplateSymbol]>
-                    : Record<string, never>;
-
                 const applier = ((name, overrides, ...args) => {
                     type GoofySillyHelper = ReturnType<GetPartialDeclFn<Def, Keys, TemplateDecl, typeof name>> & typeof overrides;
 
@@ -503,10 +499,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 applier.apply = applier;
 
                 // @ts-expect-error init code
-                applier.simple = (name, ...args) => applier(name, {}, ...args);
+                applier.simple = (name, ...args: unknown[]) => applier(name, {}, ...args);
 
                 return new ObjectDefinitions<Def>(
-                    defaultTemplate,
+                    templates[_defaultTemplateSymbol]?.() ?? {},
                     definitionsDecl(
                         applier,
                         {
@@ -527,7 +523,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
 
         this.definitions = definitions.map(
             def => (
-                function withTrace(def: StageZeroDefinition<Def, () => typeof defaultTemplate & object>, ...trace: readonly string[]): Def {
+                function withTrace(
+                    def: StageZeroDefinition<Def, () => typeof defaultTemplate & object>,
+                    ...trace: readonly string[]
+                ): Def {
                     if (_noDefaultInheritSymbol in def) {
                         console.warn("noDefaultInherit does nothing right now, and will probably be removed eventually. so don't use it");
                     }
@@ -571,7 +570,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         for (let i = 0, defLength = this.definitions.length; i < defLength; i++) {
             const idString = this.definitions[i].idString;
 
-            if (this.idStringToNumber[idString] !== undefined) {
+            if (idString in this.idStringToNumber) {
                 throw new Error(`Duplicated idString: ${idString}`);
             }
 
@@ -690,7 +689,7 @@ export const LootRadius: Record<ItemType, number> = {
     [ItemType.Skin]: 3
 };
 
-export interface BaseBulletDefinition {
+export type BaseBulletDefinition = {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly speed: number
@@ -704,6 +703,9 @@ export interface BaseBulletDefinition {
         readonly opacity: number
         readonly width: number
         readonly length: number
+        /**
+         * A value of `-1` causes a random color to be chosen
+         */
         readonly color?: number
         readonly image: string
         // used by the radio bullet
@@ -718,7 +720,17 @@ export interface BaseBulletDefinition {
     readonly allowRangeOverride: boolean
     readonly lastShotFX: boolean
     readonly noCollision: boolean
-}
+} & ({
+    readonly onHitExplosion?: never
+} | {
+    readonly onHitExplosion: ReferenceTo<ExplosionDefinition>
+    /**
+     * When hitting a reflective surface:
+     * - `true` causes the explosion to be spawned
+     * - `false` causes the projectile to be reflected
+     */
+    readonly explodeOnImpact?: boolean
+});
 
 export interface WearerAttributes {
     /**

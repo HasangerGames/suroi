@@ -1,6 +1,58 @@
 import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
+  {
+    date: 1717870665000,
+    author: "HAZEL",
+    title: "Back in the Saddle",
+    bannerImage: "../img/news/v0.18.0.png",
+    content: `After a long break, we're back with some important updates and fun changes. Although we're late, we're celebrating Suroi's 1 year birthday with some new items, and even more exciting, limited edition squads.<br><br>
+
+    A revamped moderation system is here to combat those cheater pests with improved efficiency. Say hello to our new Game Moderatrs on Discord!<br><br>
+
+    There's also a new structure, the large bridge. While huge in proportion, it offers plenty of cover and close quarter combat. It's also a perfect spot to set up your squad in a defensive position!<br><br>
+
+    Lots of changes and bug fixes have made it into this update, so check out the full log. Thank you everyone for sticking with us!`,
+    longContent: `<h2>Suroi v0.18.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Squads!</strong> To celebrate Suroi's 1st birthday, squads will be available for the next week only. They will be back once we have enough players.</li>
+  <li><strong>New structures!</strong> Added the large bridge and the construction site.</li>
+  <li><strong>Birthday exclusive items!</strong> Added the birthday cake skin and obstacle, firework launcher, confetti grenade, and firework warehouse. Like squads, they will be available for the next week only.</li>
+  <li><strong>Better moderation system!</strong> We now have a dedicated team of Game Moderatrs. They will manage #cheatr-reports using a new Discord bot.</li>
+  <ul>
+    <li>In the future, we are planning on moving to a more self-contained report system that doesn't rely on Discord.</li>
+  </ul>
+  <li>Added a new skin and 5 new emotes.</li>
+  <li>Added crawling animation for knocked out players.</li>
+  <li>Added inventory slot animations.</li>
+  <li>Added emote categories.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>New Mosin top down.</li>
+  <li>New ammo crate, forklift, pallet, couch, and life preserver textures.</li>
+  <li>Improved mobile and spectate controls.</li>
+  <li>Improved loot physics.</li>
+  <li>Badges now display next to names when spectating.</li>
+  <li>Adjusted the length of some reload sounds.</li>
+  <li>Changed the way updates from the server are handled, which should improve smoothness.</li>
+  <li>Added LMGs to briefcase loot table.</li>
+  <li>Adjusted pine tree hitbox.</li>
+  <li>The kill feed is now hidden when the map is open.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed issues with team pings.</li>
+  <li>Fixed badges.</li>
+  <li>Fixed infinite health by spamming healing items while knocked out.</li>
+  <li>Fixed team emotes working in solo.</li>
+  <li>Fixed players not rendering correctly after being revived.</li>
+  <li>Fixed drop sound not playing when dropping weapons with fists equipped.</li>
+</ul>`
+    },
     {
         date: 1711917946000,
         author: "HAZEL",
@@ -110,12 +162,12 @@ There are a bunch more new features to check out, such as a new port layout (inc
         longContent: `<h2>Suroi v0.15.0</h2>
 <h3>New features</h3>
 <ul>
-  <li>**Throwables!** Added frag grenades and smoke grenades. Other throwables, like mines and MIRV equivalents, will be added in a future update.</li>
-  <li>**New structures!** Added the armory and mobile home.</li>
-  <li>**New guns!** Added the Vector (an SMG), and the Vepr-12 (a full auto shotgun; equivalent to surviv's Saiga-12).</li>
-  <li>**Updated port!** The port is now smaller, and a new type of ship, the oil tanker, has a 50% chance of spawning in place of the normal ship.</li>
-  <li>**New melees!** Added the maul (a heavy hammer), and the seax (a Viking dagger).</li>
-  <li>**New UI layout!** The UI has been overhauled.</li>
+  <li><strong>Throwables!</strong> Added frag grenades and smoke grenades. Other throwables, like mines and MIRV equivalents, will be added in a future update.</li>
+  <li><strong>New structures!</strong> Added the armory and mobile home.</li>
+  <li><strong>New guns!</strong> Added the Vector (an SMG), and the Vepr-12 (a full auto shotgun; equivalent to surviv's Saiga-12).</li>
+  <li><strong>Updated port!</strong> The port is now smaller, and a new type of ship, the oil tanker, has a 50% chance of spawning in place of the normal ship.</li>
+  <li><strong>New melees!</strong> Added the maul (a heavy hammer), and the seax (a Viking dagger).</li>
+  <li><strong>New UI layout!</strong> The UI has been overhauled.</li>
   <li>Added river rocks.</li>
   <li>Redesigned 2 skins, and added 6 new ones, 1 of which is airdrop exclusive.</li>
 </ul>
@@ -274,9 +326,9 @@ After checking out these frightening additions, enjoy your candy while reading a
         author: "HAZEL",
         title: "Making Waves",
         bannerImage: "../img/news/v0.11.0.png",
-        content: `The island grows ever busier with the newest structure, the port. Search the warehouses and shipping containers for loot, 'cause they’re packed! Containers can also be found throughout the island. But the most valuable loot is contained in the bow of the massive container ship. A highly prized sniper lies within, but you’ll need to solve a puzzle to get in.<br><br>
+        content: `The island grows ever busier with the newest structure, the port. Search the warehouses and shipping containers for loot, 'cause they're packed! Containers can also be found throughout the island. But the most valuable loot is contained in the bow of the massive container ship. A highly prized sniper lies within, but you'll need to solve a puzzle to get in.<br><br>
 
-If you like swimming, you’re in luck! Rivers now snake through the landscape, and the ocean is now accessible.<br><br>
+If you like swimming, you're in luck! Rivers now snake through the landscape, and the ocean is now accessible.<br><br>
 
 We've added two new guns to our arsenal: the Flues, a sawn-off double-barrel shotgun, and the M1895, a revolver.<br><br>
 
@@ -364,7 +416,7 @@ Special thanks to Leia and platonthek. This update wouldn't have been possible w
         author: "HAZEL",
         title: "Behind Closed Doors",
         bannerImage: "../img/news/v0.9.0.png",
-        content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.<br><br>
+        content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you'll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.<br><br>
 
 There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of a punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.<br><br>
 
@@ -503,7 +555,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         author: "Dr. Petrova",
         title: "Doublet State",
         bannerImage: "../img/news/v0.3.0.png",
-        content: "A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -9.3°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!",
+        content: "A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -9.3°C, but found it to be very toxic. You've been warned! In other news, if you're the last one on the island left, you'll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!",
         longContent: `<h2>Suroi v0.3.0</h2>
 <h3>New features</h3>
 <ul>

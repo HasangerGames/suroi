@@ -87,7 +87,8 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             "Bee",
             "Armadillo",
             "Printer",
-            "Distant Shores"
+            "Distant Shores",
+            "Watermelon"
         ].map(name => simple("skin_factory", name)),
         ...[
             "Lemon",
@@ -107,7 +108,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             "Stardust",
             "Aurora",
             "Nebula",
-            "Birthday Cake"
+            "1st Birthday"
         ].map(name => simple("hidden_skin", [], [name])),
         apply(
             "hidden_skin",

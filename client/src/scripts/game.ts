@@ -2,15 +2,24 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, PlayerActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, ObjectCategory, PlayerActions, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
+import { type DualGunNarrowing } from "../../../common/src/definitions/guns";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
+import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { MapPacket } from "../../../common/src/packets/mapPacket";
+import { type Packet } from "../../../common/src/packets/packet";
+import { PacketStream } from "../../../common/src/packets/packetStream";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
@@ -38,22 +47,13 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI, teamSocket } from "./ui";
+import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { type Packet } from "../../../common/src/packets/packet";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { PacketStream } from "../../../common/src/packets/packetStream";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
-import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import type { DualGunNarrowing } from "../../../common/src/definitions/guns";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -171,11 +171,12 @@ export class Game {
 
             await loadTextures(
                 this.pixi.renderer,
-                this.console.getBuiltInCVar("cv_high_res_textures")
-                && (!this.inputManager.isMobile || this.console.getBuiltInCVar("mb_high_res_textures"))
+                this.inputManager.isMobile
+                    ? this.console.getBuiltInCVar("mb_high_res_textures")
+                    : this.console.getBuiltInCVar("cv_high_res_textures")
             );
 
-            // @HACK: the game ui covers the canvas
+            // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
             $("#game-ui")[0].addEventListener("pointerdown", e => {
                 this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
@@ -212,7 +213,10 @@ export class Game {
         void Promise.all([
             initPixi(),
             setUpUI(this)
-        ]).then(resetPlayButtons);
+        ]).then(() => {
+            unlockPlayButtons();
+            resetPlayButtons();
+        });
 
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
@@ -401,6 +405,10 @@ export class Game {
     }
 
     startGame(packet: JoinedPacket): void {
+        // Sound which notifies the player that the
+        // game started if page is out of focus.
+        if (!document.hasFocus()) this.soundManager.play("join_notification");
+
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
@@ -412,7 +420,7 @@ export class Game {
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
-        $("#btn-spectate-kill-leader").hide();
+        $("#btn-spectate-kill-leader").addClass("btn-disabled");
 
         this.uiManager.ui.teamContainer.toggle(this.teamMode);
     }
@@ -448,7 +456,7 @@ export class Game {
                 this.uiManager.clearTeammateCache();
 
                 const map = this.map;
-                map.gasGraphics.clear();
+                map.safeZone.clear();
                 map.pingGraphics.clear();
                 map.pings.clear();
                 map.pingsContainer.removeChildren();
@@ -542,13 +550,22 @@ export class Game {
         this.camera.update();
     }
 
-    lastUpdateTime = 0;
-    serverDt = 0;
+    private _lastUpdateTime = 0;
+    get lastUpdateTime(): number { return this._lastUpdateTime; }
+
+    /**
+     * Otherwise known as "time since last update", in milliseconds
+     */
+    private _serverDt = 0;
+    /**
+     * Otherwise known as "time since last update", in milliseconds
+     */
+    get serverDt(): number { return this._serverDt; }
 
     processUpdate(updateData: UpdatePacket): void {
         const now = Date.now();
-        this.serverDt = now - this.lastUpdateTime;
-        this.lastUpdateTime = now;
+        this._serverDt = now - this._lastUpdateTime;
+        this._lastUpdateTime = now;
 
         for (const newPlayer of updateData.newPlayers) {
             this.playerNames.set(newPlayer.id, {
@@ -599,7 +616,11 @@ export class Game {
             }
 
             object.destroy();
-            this.objects.delete(object);
+
+            // If it's a teammate, do NOT remove the object.
+            if (!(object instanceof Player && object.teamID === this.teamID)) {
+                this.objects.delete(object);
+            }
         }
 
         for (const bullet of updateData.deserializedBullets) {

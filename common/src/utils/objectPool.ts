@@ -22,7 +22,6 @@ export class ObjectPool<Mapping extends { [Cat in ObjectCategory]: GameObject<Ca
                     acc[cur as `${ObjectCategory}`] = new Set<Mapping[ObjectCategory[`${ObjectCategory}` & keyof typeof ObjectCategory]]>();
                     return acc;
                 },
-                // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
                 {} as ObjectPool<Mapping>["_byCategory"]
             );
     }

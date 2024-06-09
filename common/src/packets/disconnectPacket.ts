@@ -4,11 +4,11 @@ import { Packet } from "./packet";
 export class DisconnectPacket extends Packet {
     reason = "";
 
-    serialize(stream: SuroiBitStream): void {
+    override serialize(stream: SuroiBitStream): void {
         stream.writeASCIIString(this.reason);
     }
 
-    deserialize(stream: SuroiBitStream): void {
+    override deserialize(stream: SuroiBitStream): void {
         this.reason = stream.readASCIIString();
     }
 }

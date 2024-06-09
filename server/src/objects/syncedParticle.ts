@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory } from "../../../common/src/constants";
+import { ObjectCategory } from "../../../common/src/constants";
 import { type Animated, type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "../../../common/src/definitions/syncedParticles";
 import { type Variation } from "../../../common/src/typings";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
@@ -145,7 +145,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         }
     }
 
-    override damage(): void {}
+    override damage(): void { /* can't damage a synced particle */ }
 
     setTarget(target: Vector, timespan: number, easing: EasingFunction): void {
         this._target = {

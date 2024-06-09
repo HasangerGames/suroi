@@ -30,5 +30,5 @@ build/
 .npm/
 *.log
 
-# env vars
+# try to prevent error moments from happening (no pun intended)
 .env

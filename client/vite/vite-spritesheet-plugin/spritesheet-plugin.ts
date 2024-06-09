@@ -1,12 +1,11 @@
-import type { FSWatcher, Plugin, ResolvedConfig } from "vite";
 import { watch } from "chokidar";
 import { Minimatch } from "minimatch";
-
-import readDirectory from "./utils/readDirectory.js";
-import { type CompilerOptions, createSpritesheets, type multiResAtlasList } from "./utils/spritesheet.js";
 import { resolve } from "path";
-import { ModeAtlases } from "../../../common/src/definitions/modes";
 import { type SpritesheetData } from "pixi.js";
+import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
+import { ModeAtlases } from "../../../common/src/definitions/modes";
+import readDirectory from "./utils/readDirectory.js";
+import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
 
 const defaultGlob = "**/*.{png,gif,jpg,bmp,tiff,svg}";
 const imagesMatcher = new Minimatch(defaultGlob);
@@ -33,8 +32,8 @@ for (const atlasId of ModeAtlases) {
 
 const foldersToWatch = Object.values(atlasesToBuild);
 
-async function buildSpritesheets(): Promise<multiResAtlasList> {
-    const atlases: multiResAtlasList = {};
+async function buildSpritesheets(): Promise<MultiResAtlasList> {
+    const atlases: MultiResAtlasList = {};
 
     for (const atlasId in atlasesToBuild) {
         const files: string[] = readDirectory(atlasesToBuild[atlasId]).filter(x => imagesMatcher.match(x));
@@ -47,24 +46,38 @@ async function buildSpritesheets(): Promise<multiResAtlasList> {
     return atlases;
 }
 
+const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
+const highResResolvedVirtualModuleId = `\0${highResVirtualModuleId}`;
+
+const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
+const lowResResolvedVirtualModuleId = `\0${lowResVirtualModuleId}`;
+
+const resolveId = (id: string): string | undefined => {
+    switch (id) {
+        case highResVirtualModuleId: return highResResolvedVirtualModuleId;
+        case lowResVirtualModuleId: return lowResResolvedVirtualModuleId;
+    }
+};
+
 export function spritesheet(): Plugin[] {
     let watcher: FSWatcher;
     let config: ResolvedConfig;
 
-    const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
-    const highResresolvedVirtualModuleId = `\0${highResVirtualModuleId}`;
-
-    const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
-    const lowResResolvedVirtualModuleId = `\0${lowResVirtualModuleId}`;
-
-    let atlases: multiResAtlasList = {};
+    let atlases: MultiResAtlasList = {};
 
     const exportedAtlases: {
-        low: Record<string, SpritesheetData[]>
-        high: Record<string, SpritesheetData[]>
+        readonly low: Record<string, readonly SpritesheetData[]>
+        readonly high: Record<string, readonly SpritesheetData[]>
     } = {
         low: {},
         high: {}
+    };
+
+    const load = (id: string): string | undefined => {
+        switch (id) {
+            case highResResolvedVirtualModuleId: return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
+            case lowResResolvedVirtualModuleId: return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
+        }
     };
 
     let buildTimeout: NodeJS.Timeout | undefined;
@@ -95,20 +108,8 @@ export function spritesheet(): Plugin[] {
                     }
                 }
             },
-            resolveId(id) {
-                if (id === highResVirtualModuleId) {
-                    return highResresolvedVirtualModuleId;
-                } else if (id === lowResVirtualModuleId) {
-                    return lowResResolvedVirtualModuleId;
-                }
-            },
-            load(id) {
-                if (id === highResresolvedVirtualModuleId) {
-                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
-                } else if (id === lowResResolvedVirtualModuleId) {
-                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
-                }
-            }
+            resolveId,
+            load
         },
         {
             name: `${PLUGIN_NAME}:serve`,
@@ -128,7 +129,7 @@ export function spritesheet(): Plugin[] {
                             if (module !== undefined) void server.reloadModule(module);
                             const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
                             if (module2 !== undefined) void server.reloadModule(module2);
-                        }).catch(console.error);
+                        }).catch(e => console.error(e));
                     }, 500);
                 }
 
@@ -145,15 +146,18 @@ export function spritesheet(): Plugin[] {
                 async function buildSheets(): Promise<void> {
                     atlases = await buildSpritesheets();
 
+                    const { low, high } = exportedAtlases;
                     for (const atlasId in atlases) {
-                        exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
-                        exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
+                        high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
+                        low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
                     }
 
                     files.clear();
                     for (const atlasId in atlases) {
                         const sheets = atlases[atlasId];
                         for (const sheet of [...sheets.low, ...sheets.high]) {
+                            // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             files.set(sheet.json.meta.image!, sheet.image);
                         }
                     }
@@ -178,20 +182,8 @@ export function spritesheet(): Plugin[] {
             closeBundle: async() => {
                 await watcher.close();
             },
-            resolveId(id) {
-                if (id === highResVirtualModuleId) {
-                    return highResresolvedVirtualModuleId;
-                } else if (id === lowResVirtualModuleId) {
-                    return lowResResolvedVirtualModuleId;
-                }
-            },
-            load(id) {
-                if (id === highResresolvedVirtualModuleId) {
-                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
-                } else if (id === lowResResolvedVirtualModuleId) {
-                    return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
-                }
-            }
+            resolveId,
+            load
         }
     ];
 }

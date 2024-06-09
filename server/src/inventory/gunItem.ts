@@ -88,8 +88,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
         owner.animation = definition.ballistics.lastShotFX && this.ammo === 1
             ? AnimationType.LastShot
             : this._altFire
-                ? AnimationType.GunAlt
-                : AnimationType.Gun;
+                ? AnimationType.GunFireAlt
+                : AnimationType.GunFire;
 
         owner.setPartialDirty();
 
@@ -105,7 +105,6 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const jitter = definition.jitterRadius;
 
         const offset = definition.isDual
-            // eslint-disable-next-line no-cond-assign
             ? ((this._altFire = !this._altFire) ? 1 : -1) * definition.leftRightOffset
             : (definition.bulletOffset ?? 0);
 

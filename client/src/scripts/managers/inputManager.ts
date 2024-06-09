@@ -2,9 +2,10 @@ import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 import { GameConstants, InputActions } from "../../../../common/src/constants";
+import { type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import { InputPacket, type InputAction } from "../../../../common/src/packets/inputPacket";
+import { InputPacket, type InputAction, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -48,7 +49,7 @@ export class InputManager {
 
     readonly actions: InputAction[] = [];
 
-    addAction(action: InputAction | InputActions): void {
+    addAction(action: InputAction | SimpleInputActions): void {
         if (this.actions.length > 7) return;
 
         if (typeof action === "number") {
@@ -56,36 +57,38 @@ export class InputManager {
         }
 
         if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
-            const uiManager = this.game.uiManager;
-            const item: ItemDefinition | undefined = (
-                action as typeof action & { type: InputActions.DropItem }
-            ).item ?? this.game.activePlayer?.activeItem;
+            const { inventory } = this.game.uiManager;
 
-            if (item !== undefined) {
-                let playSound = !item.noDrop;
-
-                if (playSound) {
-                    switch (item.itemType) {
-                        case ItemType.Ammo:
-                        case ItemType.Healing:
-                        case ItemType.Scope:
-                            playSound = uiManager.inventory.items[item.idString] > 0;
-                            break;
-                        case ItemType.Throwable:
-                        case ItemType.Armor:
-                        case ItemType.Gun:
-                        case ItemType.Melee:
-                        case ItemType.Skin:
-                            playSound = true; // probably fine…?
-                            break;
-                        case ItemType.Backpack:
-                            playSound = false; // womp womp
-                            break;
-                    }
-                }
-
-                playSound && this.game.soundManager.play("pickup");
+            let item!: ItemDefinition;
+            if (action.type === InputActions.DropItem) {
+                item = action.item;
+            } else if (action.type === InputActions.DropWeapon) {
+                item = inventory.weapons[action.slot] as unknown as WeaponDefinition;
             }
+
+            let playSound = !item.noDrop;
+
+            if (playSound) {
+                switch (item.itemType) {
+                    case ItemType.Ammo:
+                    case ItemType.Healing:
+                    case ItemType.Scope:
+                        playSound = inventory.items[item.idString] > 0;
+                        break;
+                    case ItemType.Throwable:
+                    case ItemType.Armor:
+                    case ItemType.Gun:
+                    case ItemType.Melee:
+                    case ItemType.Skin:
+                        playSound = true; // probably fine…?
+                        break;
+                    case ItemType.Backpack:
+                        playSound = false; // womp womp
+                        break;
+                }
+            }
+
+            if (playSound) this.game.soundManager.play("pickup");
         }
 
         this.actions.push(action);
@@ -103,7 +106,7 @@ export class InputManager {
     turning = false;
 
     // Initialize an array to store focus state for keypresses
-    focusController: string[] = [];
+    private readonly _focusController = new Set<string>();
 
     private _lastInputPacket: InputPacket | undefined;
     private _inputPacketTimer = 0;
@@ -145,18 +148,17 @@ export class InputManager {
         }
         packet.actions = this.actions;
 
-        this._inputPacketTimer++;
+        this._inputPacketTimer += this.game.serverDt;
 
         if (
             !this._lastInputPacket
             || packet.didChange(this._lastInputPacket)
-            || this._inputPacketTimer >= GameConstants.tickrate
+            || this._inputPacketTimer >= 100
         ) {
             this.game.sendPacket(packet);
             this._lastInputPacket = packet;
+            this._inputPacketTimer = 0;
         }
-
-        this._inputPacketTimer %= GameConstants.tickrate;
 
         this.actions.length = 0;
     }
@@ -188,10 +190,11 @@ export class InputManager {
         }
 
         window.addEventListener("blur", () => {
-            for (const k of this.focusController) {
+            for (const k of this._focusController) {
                 this.handleLostFocus(k);
             }
-            this.focusController = [];
+
+            this._focusController.clear();
         });
 
         // different event targets… why?
@@ -292,7 +295,7 @@ export class InputManager {
                 this.movement.moving = false;
             });
 
-            rightJoyStick.on("move", (_, data: JoystickOutputData) => {
+            rightJoyStick.on("move", (_, data) => {
                 rightJoyStickUsed = true;
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
@@ -336,6 +339,8 @@ export class InputManager {
         // not be honored
         if (document.activeElement !== document.body) return;
 
+        const { type } = event;
+
         /*
             We don't want to allow keybinds to work with modifiers, because firstly,
             pressing ctrl + R to reload is dumb and secondly, doing that refreshes the page
@@ -354,13 +359,12 @@ export class InputManager {
         */
 
         if (event instanceof KeyboardEvent) {
+            const { key } = event;
             // This statement cross references and updates focus checks for key presses.
             if (down) {
-                if (!this.focusController.includes(event.key)) {
-                    this.focusController.push(event.key);
-                }
+                this._focusController.add(key);
             } else {
-                this.focusController = this.focusController.filter(item => item !== event.key);
+                this._focusController.delete(key);
             }
 
             let modifierCount = 0;
@@ -375,13 +379,13 @@ export class InputManager {
             if (
                 (
                     modifierCount > 1
-                    || (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
+                    || (modifierCount === 1 && !["Control", "Meta"].includes(key))
                 ) && down
                 // …but it only invalidates pressing a key, not releasing it
             ) return;
         }
 
-        const key = this.getKeyFromInputEvent(event);
+        const input = this.getKeyFromInputEvent(event);
         let actionsFired = 0;
 
         if (event instanceof WheelEvent) {
@@ -394,14 +398,14 @@ export class InputManager {
             */
             clearTimeout(this.mWheelStopTimer);
             this.mWheelStopTimer = window.setTimeout(() => {
-                actionsFired = this.fireAllEventsAtKey(key, false);
+                actionsFired = this.fireAllEventsAtKey(input, false);
             }, 50);
 
-            actionsFired = this.fireAllEventsAtKey(key, true);
+            actionsFired = this.fireAllEventsAtKey(input, true);
             return;
         }
 
-        actionsFired = this.fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
+        actionsFired = this.fireAllEventsAtKey(input, type === "keydown" || type === "pointerdown");
 
         if (actionsFired > 0 && this.game.gameStarted) {
             event.preventDefault();
@@ -532,7 +536,7 @@ export class InputManager {
     cycleThrowable(offset: number): void {
         const throwable = this.game.uiManager.inventory.weapons
             .find(weapon => weapon?.definition.itemType === ItemType.Throwable)
-            ?.definition as ThrowableDefinition;
+            ?.definition as ThrowableDefinition | undefined;
 
         if (!throwable) return;
 
@@ -755,6 +759,8 @@ class InputMapper {
         if (actions === undefined) return false;
 
         actions.delete(action);
+        // safe because the backward map has already been checked
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._actionToInput.get(action)!.delete(input);
         return true;
     }

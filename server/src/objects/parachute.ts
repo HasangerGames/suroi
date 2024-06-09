@@ -4,6 +4,7 @@ import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
+import { Events } from "../pluginManager";
 import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
 import { Loot } from "./loot";
@@ -37,7 +38,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
-            this.game.pluginManager.emit("airdropLanded", this._airdrop);
+            this.game.pluginManager.emit(Events.Airdrop_Landed, this._airdrop);
 
             // Spawn smoke
             this.game.addSyncedParticles({
@@ -112,5 +113,5 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
         };
     }
 
-    override damage(): void { }
+    override damage(): void { /* "hold on bro, lemme shoot the 'chute" */ }
 }

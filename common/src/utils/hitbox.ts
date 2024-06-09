@@ -1,5 +1,6 @@
 import { type Orientation } from "../typings";
 import { Collision, Geometry, type CollisionRecord, type IntersectionResponse } from "./math";
+import { cloneDeepSymbol, cloneSymbol, type Cloneable, type DeepCloneable } from "./misc";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { Vec, type Vector } from "./vector";
 
@@ -28,6 +29,7 @@ export interface HitboxJSONMapping {
     [HitboxType.Polygon]: {
         readonly type: HitboxType.Polygon
         readonly points: Vector[]
+        readonly center: Vector
     }
 }
 
@@ -42,11 +44,12 @@ export interface HitboxMapping {
 
 export type Hitbox = HitboxMapping[HitboxType];
 
-export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
+export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements DeepCloneable<HitboxMapping[T]>, Cloneable<HitboxMapping[T]> {
     abstract type: HitboxType;
 
     abstract toJSON(): HitboxJSONMapping[T];
 
+    static fromJSON<T extends HitboxType>(data: HitboxJSONMapping[T]): HitboxMapping[T];
     static fromJSON(data: HitboxJSON): Hitbox {
         switch (data.type) {
             case HitboxType.Circle:
@@ -55,7 +58,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
                 return new RectangleHitbox(data.min, data.max);
             case HitboxType.Group:
                 return new HitboxGroup(
-                    ...data.hitboxes.map(d => BaseHitbox.fromJSON(d) as CircleHitbox | RectangleHitbox)
+                    ...data.hitboxes.map(d => BaseHitbox.fromJSON<HitboxType.Circle | HitboxType.Rect>(d))
                 );
             case HitboxType.Polygon:
                 return new PolygonHitbox(data.points);
@@ -68,24 +71,33 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
      * @return `true` if both {@link Hitbox}es collide
      */
     abstract collidesWith(that: Hitbox): boolean;
+
     /**
      * Resolve collision between {@link Hitbox}es.
      * @param that The other {@link Hitbox}
      */
     abstract resolveCollision(that: Hitbox): void;
+
     /**
      * Get the distance from this {@link Hitbox} from another {@link Hitbox}.
      * @param that The other {@link Hitbox}
      * @return A {@link CollisionRecord} with the distance and if both {@link Hitbox}es collide
      */
     abstract distanceTo(that: Hitbox): CollisionRecord;
+
     /**
      * Clone this {@link Hitbox}.
      * @return a new {@link Hitbox} cloned from this one
      */
-    abstract clone(): Hitbox;
+    abstract clone(deep?: boolean): HitboxMapping[T];
+
+    [cloneSymbol](): HitboxMapping[T] { return this.clone(false); }
+
+    [cloneDeepSymbol](): HitboxMapping[T] { return this.clone(true); }
+
     /**
      * Transform this {@link Hitbox} and returns a new {@link Hitbox}.
+     *
      * NOTE: This doesn't change the initial {@link Hitbox}
      * @param position The position to transform the {@link Hitbox} by
      * @param scale The scale to transform the {@link Hitbox}
@@ -93,12 +105,15 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
      * @return A new {@link Hitbox} transformed by the parameters
      */
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
+
     /**
      * Scale this {@link Hitbox}.
+     *
      * NOTE: This does change the initial {@link Hitbox}
      * @param scale The scale
      */
     abstract scale(scale: number): void;
+
     /**
      * Check if a line intersects with this {@link Hitbox}.
      * @param a the start point of the line
@@ -106,6 +121,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> {
      * @return An intersection response containing the intersection position and normal
      */
     abstract intersectsLine(a: Vector, b: Vector): IntersectionResponse;
+
     /**
      * Get a random position inside this {@link Hitbox}.
      * @return A Vector of a random position inside this {@link Hitbox}
@@ -127,6 +143,14 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     override readonly type = HitboxType.Circle;
     position: Vector;
     radius: number;
+
+    static simple(radius: number, center?: Vector): HitboxJSONMapping[HitboxType.Circle] {
+        return {
+            type: HitboxType.Circle,
+            radius,
+            position: center ?? Vec.create(0, 0)
+        };
+    }
 
     constructor(radius: number, position?: Vector) {
         super();
@@ -199,8 +223,8 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
         }
     }
 
-    override clone(): CircleHitbox {
-        return new CircleHitbox(this.radius, Vec.clone(this.position));
+    override clone(deep = true): CircleHitbox {
+        return new CircleHitbox(this.radius, deep ? Vec.clone(this.position) : this.position);
     }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
@@ -237,21 +261,6 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     min: Vector;
     max: Vector;
 
-    constructor(min: Vector, max: Vector) {
-        super();
-
-        this.min = min;
-        this.max = max;
-    }
-
-    toJSON(): HitboxJSONMapping[HitboxType.Rect] {
-        return {
-            type: this.type,
-            min: Vec.clone(this.min),
-            max: Vec.clone(this.max)
-        };
-    }
-
     static fromLine(a: Vector, b: Vector): RectangleHitbox {
         return new RectangleHitbox(
             Vec.create(
@@ -265,13 +274,38 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         );
     }
 
-    static fromRect(width: number, height: number, pos = Vec.create(0, 0)): RectangleHitbox {
+    static fromRect(width: number, height: number, center = Vec.create(0, 0)): RectangleHitbox {
         const size = Vec.create(width / 2, height / 2);
 
         return new RectangleHitbox(
-            Vec.sub(pos, size),
-            Vec.add(pos, size)
+            Vec.sub(center, size),
+            Vec.add(center, size)
         );
+    }
+
+    static simple(width: number, height: number, center = Vec.create(0, 0)): HitboxJSONMapping[HitboxType.Rect] {
+        const size = Vec.create(width / 2, height / 2);
+
+        return {
+            type: HitboxType.Rect,
+            min: Vec.sub(center, size),
+            max: Vec.add(center, size)
+        };
+    }
+
+    constructor(min: Vector, max: Vector) {
+        super();
+
+        this.min = min;
+        this.max = max;
+    }
+
+    override toJSON(): HitboxJSONMapping[HitboxType.Rect] {
+        return {
+            type: this.type,
+            min: Vec.clone(this.min),
+            max: Vec.clone(this.max)
+        };
     }
 
     override collidesWith(that: Hitbox): boolean {
@@ -327,8 +361,11 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         this.throwUnknownSubclassError(that);
     }
 
-    override clone(): RectangleHitbox {
-        return new RectangleHitbox(Vec.clone(this.min), Vec.clone(this.max));
+    override clone(deep = true): RectangleHitbox {
+        return new RectangleHitbox(
+            deep ? Vec.clone(this.min) : this.min,
+            deep ? Vec.clone(this.max) : this.max
+        );
     }
 
     override transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
@@ -375,14 +412,23 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
 export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
-    hitboxes: Array<RectangleHitbox | CircleHitbox>;
+    hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>;
 
-    constructor(...hitboxes: Array<RectangleHitbox | CircleHitbox>) {
+    static simple(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>): HitboxJSONMapping[HitboxType.Group] {
+        return {
+            type: HitboxType.Group,
+            hitboxes: hitboxes.map(h => h.toJSON())
+        };
+    }
+
+    constructor(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>) {
         super();
+        // yes? no? maybe?
+        // if (hitboxes.length === 0) throw new class StupidityError extends Error {} ("you're stupid");
         this.hitboxes = hitboxes;
     }
 
-    toJSON(): HitboxJSONMapping[HitboxType.Group] {
+    override toJSON(): HitboxJSONMapping[HitboxType.Group] {
         return {
             type: HitboxType.Group,
             hitboxes: this.hitboxes.map(hitbox => hitbox.toJSON())
@@ -415,7 +461,7 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
                             break;
                     }
                     break;
-                case HitboxType.Rect: {
+                case HitboxType.Rect:
                     switch (that.type) {
                         case HitboxType.Circle:
                             newRecord = Collision.distanceBetweenRectangleCircle(hitbox.min, hitbox.max, that.position, that.radius);
@@ -423,19 +469,28 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
                         case HitboxType.Rect:
                             newRecord = Collision.distanceBetweenRectangles(that.min, that.max, hitbox.min, hitbox.max);
                     }
-                }
+                    break;
             }
-            if (newRecord!.distance < distance) {
-                record = newRecord!;
-                distance = newRecord!.distance;
+
+            if (newRecord.distance < distance) {
+                record = newRecord;
+                distance = newRecord.distance;
             }
         }
 
+        // we pray that this nna is okay (if this.hitboxes is empty, it won't be okay)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return record!;
     }
 
-    override clone(): HitboxGroup {
-        return new HitboxGroup(...this.hitboxes.map(hitbox => hitbox.clone()));
+    override clone(deep = true): HitboxGroup {
+        return new HitboxGroup(
+            ...(
+                deep
+                    ? this.hitboxes.map(hitbox => hitbox.clone(true))
+                    : this.hitboxes
+            )
+        );
     }
 
     override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): HitboxGroup {
@@ -492,19 +547,30 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
     }
 }
 
-export class PolygonHitbox extends BaseHitbox {
+export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     override readonly type = HitboxType.Polygon;
     points: Vector[];
+    center: Vector;
 
-    constructor(points: Vector[]) {
+    static simple(points: Vector[], center = Vec.create(0, 0)): HitboxJSONMapping[HitboxType.Polygon] {
+        return {
+            type: HitboxType.Polygon,
+            points,
+            center
+        };
+    }
+
+    constructor(points: Vector[], center = Vec.create(0, 0)) {
         super();
         this.points = points;
+        this.center = center;
     }
 
     override toJSON(): HitboxJSONMapping[HitboxType.Polygon] {
         return {
             type: this.type,
-            points: this.points.map(point => Vec.clone(point))
+            points: this.points.map(point => Vec.clone(point)),
+            center: this.center
         };
     }
 
@@ -536,8 +602,12 @@ export class PolygonHitbox extends BaseHitbox {
         this.throwUnknownSubclassError(that);
     }
 
-    override clone(): PolygonHitbox {
-        return new PolygonHitbox(this.points);
+    override clone(deep = true): PolygonHitbox {
+        return new PolygonHitbox(
+            deep
+                ? this.points.map(Vec.clone)
+                : this.points
+        );
     }
 
     override transform(position: Vector, scale = 1, orientation: Orientation = 0): PolygonHitbox {

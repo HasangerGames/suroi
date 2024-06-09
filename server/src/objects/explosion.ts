@@ -28,7 +28,7 @@ export class Explosion {
     explode(): void {
         // List of all near objects
         const objects = this.game.grid.intersectsHitbox(new CircleHitbox(this.definition.radius.max * 2, this.position));
-        const damagedObjects = new Map<number, boolean>();
+        const damagedObjects = new Set<number>();
 
         for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
             // All objects that collided with this line
@@ -71,7 +71,7 @@ export class Explosion {
                 const object = collision.object;
 
                 if (!damagedObjects.has(object.id)) {
-                    damagedObjects.set(object.id, true);
+                    damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
                     if (object instanceof Player || object instanceof Obstacle) {
@@ -98,7 +98,7 @@ export class Explosion {
             }
         }
 
-        for (let i = 0, count = this.definition.shrapnelCount ?? 0; i < count; i++) {
+        for (let i = 0, count = this.definition.shrapnelCount; i < count; i++) {
             this.game.addBullet(
                 this,
                 this.source,

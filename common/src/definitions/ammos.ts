@@ -89,6 +89,18 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             hideUnlessPresent: true
         },
         {
+            idString: "firework_rocket",
+            name: "Firework Rocket",
+            maxStackSize: 5,
+            characteristicColor: {
+                hue: 0,
+                saturation: 55,
+                lightness: 85
+            },
+            defaultCasingFrame: "casing_firework_rocket",
+            hideUnlessPresent: true
+        },
+        {
             idString: "curadell",
             name: "Curadell",
             maxStackSize: 10,

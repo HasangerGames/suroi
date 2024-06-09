@@ -81,13 +81,17 @@ export class Gas {
             yOffset = randomBoolean() ? Math.ceil(yOffset * 0.2) : yOffset;
         }
 
-        // Case switch to depending on the quadrant generate the random offset for said quadrant with a random weight towards outer or inner map
+        // Case switch to, depending on the quadrant, generate the random offset for said
+        // quadrant, with a random weight towards this outside or the inside of the map
         const { x, y } = v;
-        if (x < width / 2 && y < height / 2) {
+        const halfWidth = width / 2;
+        const halfHeight = height / 2;
+
+        if (x < halfWidth && y < halfHeight) {
             return Vec.create(Math.ceil(width / 4 + xOffset), Math.ceil(height / 4 + yOffset));
-        } else if (x >= width / 2 && y < height / 2) {
+        } else if (x >= halfWidth && y < halfHeight) {
             return Vec.create(Math.ceil(3 * width / 4 - xOffset), Math.ceil(height / 4 + yOffset));
-        } else if (x < width / 2 && y >= height / 2) {
+        } else if (x < halfWidth && y >= halfHeight) {
             return Vec.create(Math.ceil(width / 4 + xOffset), Math.ceil(3 * height / 4 - yOffset));
         } else {
             return Vec.create(x, y);

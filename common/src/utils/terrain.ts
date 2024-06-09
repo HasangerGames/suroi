@@ -48,10 +48,12 @@ export class Terrain {
 
     readonly groundRect: RectangleHitbox;
 
-    private readonly _grid: Array<Array<{
-        rivers: River[]
-        floors: Array<{ readonly type: string, readonly hitbox: Hitbox }>
-    }>> = [];
+    private readonly _grid: Array<
+        Array<{
+            readonly rivers: River[]
+            readonly floors: Array<{ readonly type: string, readonly hitbox: Hitbox }>
+        }>
+    > = [];
 
     constructor(
         width: number,
@@ -212,11 +214,12 @@ export class Terrain {
 }
 
 function catmullRomDerivative(t: number, p0: number, p1: number, p2: number, p3: number): number {
-    return 0.5 * (-p0 + p2 + 2 * t * (2 * p0 - 5 * p1 + 4 * p2 - p3) + 3 * t * t * (-p0 + 3 * p1 - 3 * p2 + p3));
+    return 0.5 * (p2 - p0 + 2 * t * (2 * p0 - 5 * p1 + 4 * p2 - p3) + 3 * t * t * (3 * p1 - 3 * p2 + p3 - p0));
 }
 
 function catmullRom(t: number, p0: number, p1: number, p2: number, p3: number): number {
-    return 0.5 * (2 * p1 + t * (-p0 + p2) + t * t * (2 * p0 - 5 * p1 + 4 * p2 - p3) + t * t * t * (-p0 + 3 * p1 - 3 * p2 + p3));
+    const tSquared = t * t;
+    return 0.5 * (2 * p1 + t * (p2 - p0) + tSquared * (2 * p0 - 5 * p1 + 4 * p2 - p3) + tSquared * t * (3 * p1 - 3 * p2 + p3 - p0));
 }
 
 export class River {
@@ -235,8 +238,8 @@ export class River {
 
         this.bankWidth = Numeric.clamp(this.width * 0.75, 12, 20);
 
-        const waterPoints: Vector[] = new Array(length * 2);
-        const bankPoints: Vector[] = new Array(length * 2);
+        const waterPoints: Vector[] = new Array<Vector>(length * 2);
+        const bankPoints: Vector[] = new Array<Vector>(length * 2);
 
         const endsOnMapBounds = !bounds.isPointInside(this.points[this.points.length - 1]);
 

@@ -7,6 +7,7 @@ import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { Events } from "../pluginManager";
 import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
@@ -29,15 +30,23 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     // @ts-expect-error it makes the typings work :3
     declare rotation: Orientation;
 
-    hasPuzzle = false;
-    puzzle?: {
+    private readonly _puzzle?: {
         inputOrder: string[]
         solved: boolean
         errorSeq: boolean
         resetTimeout?: Timeout
-    };
+    } | undefined;
 
-    puzzlePieces: Obstacle[] = [];
+    public get puzzle(): {
+        readonly inputOrder: string[]
+        readonly solved: boolean
+        readonly errorSeq: boolean
+        readonly resetTimeout?: Timeout
+    } | undefined { return this._puzzle; }
+
+    get hasPuzzle(): boolean { return this.puzzle !== undefined; }
+
+    readonly puzzlePieces: Obstacle[] = [];
 
     constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, position);
@@ -54,8 +63,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         }
 
         if (this.definition.puzzle) {
-            this.hasPuzzle = true;
-            this.puzzle = {
+            this._puzzle = {
                 ...this.definition.puzzle,
                 inputOrder: [],
                 solved: false,
@@ -67,7 +75,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     damageCeiling(damage = 1): void {
         if (this._wallsToDestroy === Infinity || this.dead) return;
 
-        this.game.pluginManager.emit("buildingCeilingDamage", {
+        this.game.pluginManager.emit(Events.Building_CeilingDamage, {
             building: this,
             damage
         });
@@ -77,11 +85,11 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
             this.setPartialDirty();
-            this.game.pluginManager.emit("buildingCeilingDestroy", this);
+            this.game.pluginManager.emit(Events.Building_CeilingDestroy, this);
         }
     }
 
-    override damage(): void {}
+    override damage(): void { /* see damageCeiling method */ }
 
     override get data(): FullData<ObjectCategory.Building> {
         return {
@@ -100,31 +108,36 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
             console.warn(`Not a puzzle piece: ${piece.definition.idString}`);
             return;
         }
-        if (!this.puzzle) {
+        const puzzle = this._puzzle;
+
+        if (!puzzle) {
             console.warn("Attempting to toggle puzzle piece when no puzzle is present");
             return;
         }
 
-        if (!("order" in this.puzzle)) {
+        if (!("order" in puzzle)) {
             this.solvePuzzle();
             return;
         }
 
-        if (this.puzzle.resetTimeout) this.puzzle.resetTimeout.kill();
+        if (puzzle.resetTimeout) puzzle.resetTimeout.kill();
 
-        this.puzzle.inputOrder.push(piece.puzzlePiece as string);
+        puzzle.inputOrder.push(piece.puzzlePiece as string);
 
+        // we hope that puzzle and puzzle.order are sync'd correctly with the definition
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const order = this.definition.puzzle!.order!;
+
         // hack to compare two arrays :boffy:
-        if (JSON.stringify(this.puzzle.inputOrder) === JSON.stringify(order)) {
+        if (JSON.stringify(puzzle.inputOrder) === JSON.stringify(Object.values(order))) {
             this.solvePuzzle();
-        } else if (this.puzzle.inputOrder.length >= order.length) {
-            this.puzzle.errorSeq = !this.puzzle.errorSeq;
+        } else if (puzzle.inputOrder.length >= order.length) {
+            puzzle.errorSeq = !puzzle.errorSeq;
             this.setPartialDirty();
-            this.puzzle.resetTimeout = this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
+            puzzle.resetTimeout = this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
         } else {
-            this.puzzle.resetTimeout = this.game.addTimeout(() => {
-                this.puzzle!.errorSeq = !this.puzzle!.errorSeq;
+            puzzle.resetTimeout = this.game.addTimeout(() => {
+                puzzle.errorSeq = !puzzle.errorSeq;
                 this.setPartialDirty();
                 this.game.addTimeout(this.resetPuzzle.bind(this), 1000);
             }, 10000);
@@ -132,16 +145,21 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     }
 
     solvePuzzle(): void {
-        if (!this.puzzle) {
+        const puzzle = this._puzzle;
+        if (!puzzle) {
             Logger.warn("Attempting to solve puzzle when no puzzle is present");
             return;
         }
 
+        // we hope the `this.puzzle` field is sync'd with the definition
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const puzzleDef = this.definition.puzzle!;
+
         this.game.addTimeout(() => {
-            this.puzzle!.solved = true;
+            puzzle.solved = true;
             this.setPartialDirty();
         }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.interactDelay);
+
         this.game.addTimeout(() => {
             for (const obstacle of this.interactableObstacles) {
                 if (obstacle.definition.idString === puzzleDef.triggerInteractOn) {
@@ -152,11 +170,11 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     }
 
     resetPuzzle(): void {
-        if (!this.puzzle) {
+        if (!this._puzzle) {
             Logger.warn("Attempting to reset puzzle when no puzzle is present");
             return;
         }
-        this.puzzle.inputOrder = [];
+        this._puzzle.inputOrder = [];
         for (const piece of this.puzzlePieces) {
             piece.activated = false;
             piece.setDirty();

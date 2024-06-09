@@ -1,14 +1,11 @@
 import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
 export interface BadgeDefinition extends ObjectDefinition {
-    readonly roles: string[]
+    readonly roles?: string[]
 }
 
 export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
-    defaultFactory => ({
-        [defaultFactory]: () => ({
-            roles: []
-        }),
+    () => ({
         badge_factory: (name: string, roles: string[] = []) => ({
             idString: name.toLowerCase().replace(/ /g, "_"),
             name,

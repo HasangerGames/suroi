@@ -27,12 +27,14 @@ class PacketRegister {
     }
 
     private _register(packet: typeof Packet & (new () => Packet)): void {
-        if (this.typeToId[packet.name] !== undefined) {
+        let name: string;
+        if ((name = packet.name) in this.typeToId) {
             console.warn(`Packet ${packet.name} registered multiple times`);
             return;
         }
+
         const id = this._nextTypeId++;
-        this.typeToId[packet.name] = id;
+        this.typeToId[name] = id;
         this.idToCtor[id] = packet;
     }
 }
@@ -72,7 +74,7 @@ export class PacketStream {
     }
 
     deserializeServerPacket(): Packet | undefined {
-        return this._deserliazePacket(ServerToClientPackets);
+        return this._deserializePacket(ServerToClientPackets);
     }
 
     serializeClientPacket(packet: Packet): void {
@@ -80,10 +82,10 @@ export class PacketStream {
     }
 
     deserializeClientPacket(): Packet | undefined {
-        return this._deserliazePacket(ClientToServerPackets);
+        return this._deserializePacket(ClientToServerPackets);
     }
 
-    private _deserliazePacket(register: PacketRegister): Packet | undefined {
+    private _deserializePacket(register: PacketRegister): Packet | undefined {
         if (this.stream.length - this.stream.byteIndex * 8 >= 1) {
             const id = this.stream.readBits(register.bits);
             const packet = new register.idToCtor[id]();
@@ -95,10 +97,12 @@ export class PacketStream {
     }
 
     private _serializePacket(packet: Packet, register: PacketRegister): void {
-        const type = register.typeToId[packet.constructor.name];
-        if (type === undefined) {
-            throw new Error(`Unknown packet type: ${packet.constructor.name}, did you forget to register it?`);
+        const name = packet.constructor.name;
+        if (!(name in register.typeToId)) {
+            throw new Error(`Unknown packet type: ${name}, did you forget to register it?`);
         }
+
+        const type = register.typeToId[name];
         this.stream.writeBits(type, register.bits);
         packet.serialize(this.stream);
         this.stream.writeAlignToNextByte();

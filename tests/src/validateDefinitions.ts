@@ -168,11 +168,29 @@ logger.indent("Validating map definitions", () => {
                                 errorPath: errorPath2
                             });
 
-                            tester.assertIsNaturalFiniteNumber({
-                                obj: buildings,
-                                field: building,
-                                baseErrorPath: errorPath2
-                            });
+                            (
+                                (
+                                    (
+                                        Buildings.fromStringSafe(building) ?? { bridgeSpawnOptions: null }
+                                    )?.bridgeSpawnOptions === undefined
+                                        ? tester.assertIsNaturalFiniteNumber
+                                        : tester.assertIsNaturalNumber
+                                ) as (params: {
+                                    readonly obj: object
+                                    readonly field: string
+                                    readonly baseErrorPath: string
+                                } | {
+                                    readonly value: number
+                                    readonly errorPath: string
+                                }) => void
+                            ).call(
+                                tester,
+                                {
+                                    obj: buildings,
+                                    field: building,
+                                    baseErrorPath: errorPath2
+                                }
+                            );
                         }
                     });
                 },
@@ -1271,26 +1289,46 @@ logger.indent("Validating guns", () => {
                 logger.indent("Validating fists", () => {
                     const errorPath2 = tester.createPath(errorPath, "fists");
 
-                    validators.vector(tester.createPath(errorPath2, "left"), gun.fists.left);
-                    validators.vector(tester.createPath(errorPath2, "right"), gun.fists.right);
+                    const fists = gun.fists;
+                    validators.vector(tester.createPath(errorPath2, "left"), fists.left);
+                    validators.vector(tester.createPath(errorPath2, "right"), fists.right);
 
                     tester.assertIsPositiveReal({
-                        obj: gun.fists,
+                        obj: fists,
                         field: "animationDuration",
+                        baseErrorPath: errorPath2
+                    });
+
+                    tester.assertIsRealNumber({
+                        obj: fists,
+                        field: "leftZIndex",
+                        baseErrorPath: errorPath2
+                    });
+
+                    tester.assertIsRealNumber({
+                        obj: fists,
+                        field: "rightZIndex",
                         baseErrorPath: errorPath2
                     });
                 });
 
                 logger.indent("Validating image", () => {
                     const errorPath2 = tester.createPath(errorPath, "image");
+                    const image = gun.image;
 
                     if (!gun.isDual) {
-                        validators.vector(tester.createPath(errorPath2, "position"), gun.image.position);
+                        validators.vector(tester.createPath(errorPath2, "position"), image.position);
                     }
 
                     tester.assertIsRealNumber({
-                        obj: gun.image,
+                        obj: image,
                         field: "angle",
+                        baseErrorPath: errorPath2
+                    });
+
+                    tester.assertIsRealNumber({
+                        obj: image,
+                        field: "zIndex",
                         baseErrorPath: errorPath2
                     });
                 });
@@ -1619,6 +1657,12 @@ logger.indent("Validating melees", () => {
                             baseErrorPath: errorPath2
                         });
                     }
+
+                    tester.assertIsRealNumber({
+                        obj: image,
+                        field: "zIndex",
+                        baseErrorPath: errorPath2
+                    });
 
                     tester.assertValidOrNPV({
                         obj: image,
@@ -2222,6 +2266,12 @@ logger.indent("Validating throwables", () => {
                             errorPath
                         });
                     },
+                    baseErrorPath: errorPath2
+                });
+
+                tester.assertIsRealNumber({
+                    obj: image,
+                    field: "zIndex",
                     baseErrorPath: errorPath2
                 });
             });

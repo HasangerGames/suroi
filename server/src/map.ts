@@ -17,9 +17,10 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
+import { Events } from "./pluginManager";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
-export class Map {
+export class GameMap {
     readonly game: Game;
 
     private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
@@ -27,6 +28,8 @@ export class Map {
 
     private readonly majorBuildings: string[];
     private readonly occupiedQuadrants: number[] = [];
+
+    private readonly occupiedBridgePositions: Vector[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -52,23 +55,23 @@ export class Map {
     constructor(game: Game, mapName: keyof typeof Maps) {
         this.game = game;
 
-        const mapDefinition = Maps[mapName];
+        const mapDef = Maps[mapName];
         const packet = this.packet = new MapPacket();
 
         this.seed = packet.seed = random(0, 2 ** 31);
 
         Logger.log(`Game ${game.id} | Map seed: ${this.seed}`);
 
-        this.width = packet.width = mapDefinition.width;
-        this.height = packet.height = mapDefinition.height;
-        this.oceanSize = packet.oceanSize = mapDefinition.oceanSize;
-        this.beachSize = packet.beachSize = mapDefinition.beachSize;
+        this.width = packet.width = mapDef.width;
+        this.height = packet.height = mapDef.height;
+        this.oceanSize = packet.oceanSize = mapDef.oceanSize;
+        this.beachSize = packet.beachSize = mapDef.beachSize;
 
-        this.quadBuildingLimit = mapDefinition.quadBuildingLimit ?? {};
-        this.majorBuildings = mapDefinition.majorBuildings ?? [];
+        this.quadBuildingLimit = mapDef.quadBuildingLimit ?? {};
+        this.majorBuildings = mapDef.majorBuildings ?? [];
 
         // + 8 to account for the jagged points
-        const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
+        const beachPadding = this._beachPadding = mapDef.oceanSize + mapDef.beachSize + 8;
         const oceanSize = this.oceanSize + 8;
 
         this.beachHitbox = new HitboxGroup(
@@ -92,8 +95,8 @@ export class Map {
 
         const rivers: River[] = [];
 
-        if (mapDefinition.rivers) {
-            const riverDef = mapDefinition.rivers;
+        if (mapDef.rivers) {
+            const riverDef = mapDef.rivers;
             const riverPadding = 64;
             const randomGenerator = new SeededRandom(this.seed);
             const amount = randomGenerator.getInt(riverDef.minAmount, riverDef.maxAmount);
@@ -154,71 +157,22 @@ export class Map {
         this.terrain = new Terrain(
             this.width,
             this.height,
-            mapDefinition.oceanSize,
-            mapDefinition.beachSize,
+            mapDef.oceanSize,
+            mapDef.beachSize,
             this.seed,
             rivers
         );
 
-        for (const bridge of mapDefinition.bridges ?? []) {
-            const { bridgeSpawnOptions } = Buildings.reify(bridge);
-            if (!bridgeSpawnOptions) {
-                Logger.warn("Attempting to spawn non-bridge building as a bridge");
-                continue;
-            }
+        Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this.generateBuildings(building, count));
 
-            for (const river of this.terrain.rivers.filter(river => (river.width <= bridgeSpawnOptions.maxRiverWidth && river.width >= bridgeSpawnOptions.minRiverWidth))) {
-                const generateBridge = (start: number, end: number): void => {
-                    let shortestDistance = Number.MAX_VALUE;
-                    let bestPosition = 0.5;
-                    let bestOrientation: Orientation = 0;
-                    for (let pos = start; pos <= end; pos += 0.05) {
-                        // Find the best orientation
-                        const direction = Angle.unitVectorToRadians(river.getTangent(pos));
-                        for (let orientation: Orientation = 0; orientation < 4; orientation++) {
-                            const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
-                            if (distance < shortestDistance) {
-                                shortestDistance = distance;
-                                bestPosition = pos;
-                                bestOrientation = orientation as Orientation;
-                            }
-                        }
-                    }
-                    const position = river.getPosition(bestPosition);
+        Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this.generateObstacles(obstacle, count));
 
-                    // Make sure there's dry land on either side of the bridge
-                    if (
-                        [
-                            Vec.addAdjust(position, Vec.create(0, bridgeSpawnOptions.landCheckDist), bestOrientation),
-                            Vec.addAdjust(position, Vec.create(0, -bridgeSpawnOptions.landCheckDist), bestOrientation)
-                        ].some(point => this.terrain.getFloor(point) === "water")
-                    ) return;
+        Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this.generateLoots(loot, count));
 
-                    this.generateBuilding(bridge, position, bestOrientation);
-                };
-                generateBridge(0.2, 0.4);
-                generateBridge(0.6, 0.8);
-            }
-        }
+        if (mapDef.genCallback) mapDef.genCallback(this);
 
-        // Generate buildings
-        for (const building in mapDefinition.buildings) {
-            this.generateBuildings(building, mapDefinition.buildings[building]);
-        }
-
-        for (const obstacle in mapDefinition.obstacles) {
-            this.generateObstacles(obstacle, mapDefinition.obstacles[obstacle]);
-        }
-
-        // Generate loots
-        for (const loot in mapDefinition.loots) {
-            this.generateLoots(loot, mapDefinition.loots[loot]);
-        }
-
-        if (mapDefinition.genCallback) mapDefinition.genCallback(this);
-
-        if (mapDefinition.places) {
-            for (const place of mapDefinition.places) {
+        if (mapDef.places) {
+            for (const place of mapDef.places) {
                 const position = Vec.create(
                     this.width * (place.position.x + randomFloat(-0.04, 0.04)),
                     this.height * (place.position.y + randomFloat(-0.04, 0.04))
@@ -311,54 +265,107 @@ export class Map {
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
-        const rotationMode = definition.rotationMode;
 
-        let attempts = 0;
-        for (let i = 0; i < count; i++) {
-            let orientation = Map.getRandomBuildingOrientation(rotationMode);
+        if (!definition.bridgeSpawnOptions) {
+            const { idString, rotationMode } = definition;
+            let attempts = 0;
+            for (let i = 0; i < count; i++) {
+                let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
-            const position = this.getRandomPosition(definition.spawnHitbox, {
-                orientation,
-                spawnMode: definition.spawnMode,
-                getOrientation: (newOrientation: Orientation) => {
-                    orientation = newOrientation;
-                },
-                maxAttempts: 400
-            });
-            if (!position) {
-                Logger.warn(`Failed to find valid position for building ${definition.idString}`);
-                continue;
-            }
-
-            const { idString } = definition;
-            const quad = this.getQuadrant(position.x, position.y, this.width, this.height);
-
-            if (this.majorBuildings.includes(idString)) {
-                if (this.occupiedQuadrants.includes(quad) && attempts < 100) {
-                    i--;
-                    attempts++;
+                const position = this.getRandomPosition(definition.spawnHitbox, {
+                    orientation,
+                    spawnMode: definition.spawnMode,
+                    getOrientation: (newOrientation: Orientation) => {
+                        orientation = newOrientation;
+                    },
+                    maxAttempts: 400
+                });
+                if (!position) {
+                    Logger.warn(`Failed to find valid position for building ${idString}`);
                     continue;
                 }
-                this.occupiedQuadrants.push(quad);
+
+                const quad = this.getQuadrant(position.x, position.y, this.width, this.height);
+
+                if (this.majorBuildings.includes(idString)) {
+                    if (this.occupiedQuadrants.includes(quad) && attempts < 100) {
+                        i--;
+                        attempts++;
+                        continue;
+                    }
+                    this.occupiedQuadrants.push(quad);
+                }
+
+                if (idString in this.quadBuildingLimit) {
+                    this.quadBuildingCounts[quad] ??= {};
+                    const quadCounts = this.quadBuildingCounts[quad];
+                    if (
+                        quadCounts[idString] !== undefined
+                        && quadCounts[idString] >= this.quadBuildingLimit[idString]
+                        && attempts < 100
+                    ) {
+                        i--;
+                        attempts++;
+                        continue;
+                    }
+                    quadCounts[idString] = (quadCounts[idString] ?? 0) + 1;
+                }
+
+                attempts = 0;
+                this.generateBuilding(definition, position, orientation);
+            }
+        } else {
+            const { bridgeSpawnOptions } = definition;
+            if (!bridgeSpawnOptions) {
+                Logger.warn("Attempting to spawn non-bridge building as a bridge");
+                return;
             }
 
-            if (idString in this.quadBuildingLimit) {
-                this.quadBuildingCounts[quad] ??= {};
-                const quadCounts = this.quadBuildingCounts[quad];
+            const { minRiverWidth, maxRiverWidth, landCheckDist } = bridgeSpawnOptions;
+
+            let spawnedCount = 0;
+
+            const generateBridge = (river: River) => (start: number, end: number): void => {
+                if (spawnedCount >= count) return;
+                let shortestDistance = Number.MAX_VALUE;
+                let bestPosition = 0.5;
+                let bestOrientation: Orientation = 0;
+                for (let pos = start; pos <= end; pos += 0.05) {
+                    // Find the best orientation
+                    const direction = Vec.direction(river.getTangent(pos));
+                    for (let orientation: Orientation = 0; orientation < 4; orientation++) {
+                        const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
+                        if (distance < shortestDistance) {
+                            shortestDistance = distance;
+                            bestPosition = pos;
+                            bestOrientation = orientation as Orientation;
+                        }
+                    }
+                }
+                const position = river.getPosition(bestPosition);
+
                 if (
-                    quadCounts[idString] !== undefined
-                    && quadCounts[idString] >= this.quadBuildingLimit[idString]
-                    && attempts < 100
-                ) {
-                    i--;
-                    attempts++;
-                    continue;
-                }
-                quadCounts[idString] = (quadCounts[idString] ?? 0) + 1;
-            }
+                    this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
+                    // Make sure there's dry land on either side of the bridge
+                    || [
+                        Vec.addAdjust(position, Vec.create(0, landCheckDist), bestOrientation),
+                        Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
+                    ].some(point => this.terrain.getFloor(point) === "water")
+                ) return;
 
-            attempts = 0;
-            this.generateBuilding(definition, position, orientation);
+                this.occupiedBridgePositions.push(position);
+                this.generateBuilding(definition, position, bestOrientation);
+                spawnedCount++;
+            };
+
+            this.terrain.rivers.filter(
+                ({ width }) => minRiverWidth <= width && width <= maxRiverWidth
+            )
+                .map(generateBridge)
+                .forEach(generator => {
+                    generator(0.2, 0.4);
+                    generator(0.6, 0.8);
+                });
         }
     }
 
@@ -368,13 +375,13 @@ export class Map {
         orientation?: Orientation
     ): Building {
         definition = Buildings.reify(definition);
-        orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode);
+        orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation);
 
         for (const obstacleData of definition.obstacles) {
             const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
-            let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
+            let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
                 obstacleRotation = Numeric.addOrientations(orientation, obstacleRotation as Orientation);
@@ -414,7 +421,7 @@ export class Map {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
-                    item.count
+                    { count: item.count }
                 );
             }
         }
@@ -438,7 +445,7 @@ export class Map {
 
         if (!definition.hideOnMap) this.packet.objects.push(building);
         this.game.grid.addObject(building);
-        this.game.pluginManager.emit("buildingGenerated", building);
+        this.game.pluginManager.emit(Events.Building_Generated, building);
         return building;
     }
 
@@ -448,7 +455,7 @@ export class Map {
         for (let i = 0; i < count; i++) {
             const scale = randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
             const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-            const rotation = Map.getRandomRotation(definition.rotationMode);
+            const rotation = GameMap.getRandomRotation(definition.rotationMode);
 
             let orientation: Orientation = 0;
 
@@ -490,7 +497,7 @@ export class Map {
             variation = random(0, definition.variations - 1) as Variation;
         }
 
-        rotation ??= Map.getRandomRotation(definition.rotationMode);
+        rotation ??= GameMap.getRandomRotation(definition.rotationMode);
 
         const obstacle = new Obstacle(
             this.game,
@@ -507,7 +514,7 @@ export class Map {
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
-        this.game.pluginManager.emit("obstacleGenerated", obstacle);
+        this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
         return obstacle;
     }
 
@@ -534,7 +541,7 @@ export class Map {
                 this.game.addLoot(
                     item.idString,
                     position,
-                    item.count
+                    { count: item.count }
                 );
             }
         }
@@ -605,7 +612,7 @@ export class Map {
             case MapObjectSpawnMode.Beach: {
                 getPosition = () => {
                     if (params?.getOrientation) {
-                        orientation = Map.getRandomBuildingOrientation(RotationMode.Limited);
+                        orientation = GameMap.getRandomBuildingOrientation(RotationMode.Limited);
                         params.getOrientation(orientation);
                     }
 
@@ -631,7 +638,7 @@ export class Map {
             }
         }
 
-        if (params?.getPosition) getPosition = params?.getPosition;
+        if (params?.getPosition) getPosition = params.getPosition;
 
         let attempts = 0;
         let collided = true;
@@ -760,7 +767,7 @@ export class Map {
             case RotationMode.Limited:
             case RotationMode.None:
             default:
-                return Map.getRandomRotation(mode);
+                return GameMap.getRandomRotation(mode);
         }
     }
 }

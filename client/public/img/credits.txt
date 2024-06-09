@@ -1,6 +1,6 @@
 Skins:
   Forest Camo body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Henry Sanger
+  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Arman, Henry Sanger
 Loot:
   Level 1 Vest (Loot Image): Slapdap, modified by Leia
   Level 2 Vest (Loot Image): Slapdap, modified by Leia
