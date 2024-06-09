@@ -5,6 +5,7 @@ import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { random } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -112,16 +113,31 @@ export class Loot extends GameObject {
 
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
-                this.container.scale.set(0);
-                this.animation = this.game.addTween({
-                    target: this.container.scale,
-                    to: { x: 1, y: 1 },
-                    duration: 1000,
-                    ease: EaseFunctions.elasticOut2,
-                    onComplete: () => {
-                        this.animation = undefined;
-                    }
-                });
+                if(data.full.byPlayer){
+                    //Throw Animation
+                    this.container.scale.set(0.5);
+                    this.animation = this.game.addTween({
+                        target: this.container.scale,
+                        to: { x: 1, y: 1 },
+                        duration: 1000,
+                        ease: EaseFunctions.elasticOut,
+                        onComplete: () => {
+                            this.animation = undefined;
+                        }
+                    });
+                }else{
+                    //Main Animation
+                    this.container.scale.set(0);
+                    this.animation = this.game.addTween({
+                        target: this.container.scale,
+                        to: { x: 1, y: 1 },
+                        duration: 1000,
+                        ease: EaseFunctions.cubicOut,
+                        onComplete: () => {
+                            this.animation = undefined;
+                        }
+                    });
+                }
             }
         }
 
