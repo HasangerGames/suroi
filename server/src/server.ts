@@ -330,7 +330,7 @@ if (isMainThread) {
                         try {
                             // we also hope that this is safe
                             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                            punishments = data.trim().length ? JSON.parse(data) : {};
+                            punishments = data.trim().length ? JSON.parse(data) : [];
                         } catch (e) {
                             console.error("Error: Unable to parse punishment list. Details:", e);
                         }
