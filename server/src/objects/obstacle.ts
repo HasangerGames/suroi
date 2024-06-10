@@ -115,7 +115,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 this.game.addLoot(
                     item.idString,
                     this.position,
-                    { count: item.count }
+                    { count: item.count,jitterSpawn:false }
                 );
             }
         }
