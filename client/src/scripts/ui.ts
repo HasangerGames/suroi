@@ -293,17 +293,17 @@ export async function setUpUI(game: Game): Promise<void> {
                     let title: string | undefined;
                     let message: string;
                     switch (data.message) {
-                        case "warning":
+                        case "warn":
                             showWarningModal = true;
                             title = "Teaming is against the rules!";
                             message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
                             break;
-                        case "tempBan":
+                        case "temp":
                             showWarningModal = true;
                             title = "You have been banned for 1 day for teaming!";
                             message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
                             break;
-                        case "permaBan":
+                        case "perma":
                             showWarningModal = true;
                             title = "You have been permanently banned for hacking!";
                             message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
@@ -315,7 +315,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     if (showWarningModal) {
                         $("#warning-modal-title").text(title ?? "");
                         $("#warning-modal-text").html(message ?? "");
-                        $("#warning-modal-agree-options").toggle(data.message === "warning");
+                        $("#warning-modal-agree-options").toggle(data.message === "warn");
                         $("#warning-modal-agree-checkbox").prop("checked", false);
                         $("#warning-modal").show();
                         $("#splash-options").addClass("loading");
