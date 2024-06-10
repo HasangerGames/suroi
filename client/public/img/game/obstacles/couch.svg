@@ -65,7 +65,7 @@
          transform="translate(-0.09354433,1.683798)">
         <path
            id="rect105"
-           style="fill:#813627;stroke:#341610;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;paint-order:fill markers stroke"
+           style="fill:#6d2c22;fill-opacity:1;stroke:#341610;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;paint-order:fill markers stroke"
            d="m -35.172672,67.632553 c 8.949074,0 17.898149,0 26.847223,0 1.5902537,10.227515 1.5902537,20.735663 0,30.682545 -8.949074,0 -17.898149,0 -26.847223,0 0,-10.227515 0,-20.45503 0,-30.682545 z"
            sodipodi:nodetypes="ccccc" />
         <g
@@ -89,7 +89,7 @@
              inkscape:transform-center-y="1.4403176"
              transform="matrix(0.95396194,-0.88516075,0.88516075,0.95396194,-66.776288,-13.484813)" />
           <circle
-             style="fill:#813627;fill-opacity:1;stroke:none;stroke-width:1.99602;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+             style="fill:#6d2c22;fill-opacity:1;stroke:none;stroke-width:1.99602;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
              id="path106"
              cx="-20.892546"
              cy="82.840302"
@@ -101,7 +101,7 @@
          transform="translate(-0.04933581,32.40017)">
         <path
            id="rect105-1"
-           style="fill:#813627;stroke:#341610;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;paint-order:fill markers stroke"
+           style="fill:#6d2c22;fill-opacity:1;stroke:#341610;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;paint-order:fill markers stroke"
            d="m -35.172672,67.632553 c 8.949074,0 17.898149,0 26.847223,0 1.5902537,10.227515 1.5902537,20.735663 0,30.682545 -8.949074,0 -17.898149,0 -26.847223,0 0,-10.227515 0,-20.45503 0,-30.682545 z"
            sodipodi:nodetypes="ccccc" />
         <g
@@ -125,7 +125,7 @@
              inkscape:transform-center-y="1.4403176"
              transform="matrix(0.95396194,-0.88516075,0.88516075,0.95396194,-66.776288,-13.484813)" />
           <circle
-             style="fill:#813627;fill-opacity:1;stroke:none;stroke-width:1.99602;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+             style="fill:#6d2c22;fill-opacity:1;stroke:none;stroke-width:1.99602;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
              id="path106-6"
              cx="-20.892546"
              cy="82.840302"

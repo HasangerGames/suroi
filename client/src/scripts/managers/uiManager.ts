@@ -1036,7 +1036,12 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderAssigned: {
-                if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+                if (victimId === this.game.activePlayerID) {
+                    classes.push("kill-feed-item-killer");
+                }
+                else {
+                    classes.push("kill-feed-kill-leader");
+                }
 
                 $("#kill-leader-leader").html(`${victimName}${victimBadgeText}`);
                 $("#kill-leader-kills-counter").text(attackerKills);
@@ -1064,8 +1069,15 @@ export class UIManager {
                         : "The Kill Leader is dead!"
                     : "The Kill Leader killed themselves!"
                 }`;
-                if (attackerId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
-                else if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-victim");
+                if (attackerId === this.game.activePlayerID) {
+                    classes.push("kill-feed-item-killer");
+                }
+                else if (victimId === this.game.activePlayerID) {
+                    classes.push("kill-feed-item-victim");
+                }
+                else {
+                    classes.push("kill-feed-kill-leader");
+                }
                 this.game.soundManager.play("kill_leader_dead");
                 $("#btn-spectate-kill-leader").addClass("btn-disabled");
                 break;

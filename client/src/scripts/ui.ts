@@ -527,7 +527,22 @@ export async function setUpUI(game: Game): Promise<void> {
         void navigator.clipboard
             .writeText(url as string)
             .then(() => {
-                alert("Link copied to clipboard.");
+                $("#btn-copy-team-url")
+                    .addClass("btn-success")
+                    .html(`
+                        <i class="fa-solid fa-check" id="copy-team-btn-icon"></i>
+                        Copied`
+                    );
+
+                // After some seconds, reset the copy button's css
+                setTimeout(() => {
+                    $("#btn-copy-team-url")
+                        .removeClass("btn-success")
+                        .html(`
+                            <i class="fa-solid fa-clipboard" id="copy-team-btn-icon"></i>
+                            Copy`
+                        );
+                }, 2000); // 2sec
             })
             .catch(() => {
                 alert("Unable to copy link to clipboard.");
