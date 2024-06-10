@@ -134,15 +134,15 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#locked-info").on("click", () => $("#locked-tooltip").fadeToggle(250));
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
-    const updateSwitchTime = (): void => {
+    async function updateSwitchTime(){
         if (!selectedRegion?.nextSwitchTime) {
             $("#locked-time").text("--:--:--");
             return;
         }
         const millis = selectedRegion.nextSwitchTime - Date.now();
         if (millis < 0) {
-            location.reload();
-            return;
+            $("#locked-time").text("--:--:--");
+            await updateServerSelectors()
         }
         const hours = Math.floor(millis / 3600000) % 24;
         const minutes = Math.floor(millis / 60000) % 60;
@@ -173,63 +173,63 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     // Get player counts + find server w/ best ping
-    let bestPing = Number.MAX_VALUE;
-    let bestRegion: string | undefined;
-    for (const [regionID, region] of regionMap) {
-        const listItem = $(`.server-list-item[data-region=${regionID}]`);
-        try {
-            const pingStartTime = Date.now();
+    
 
-            interface ServerInfo {
-                readonly protocolVersion: number
-                readonly playerCount: number
-                readonly maxTeamSize: TeamSize
-                readonly nextSwitchTime: number
-            };
+    async function updateServerSelectors(){
+        let bestPing = Number.MAX_VALUE;
+        let bestRegion: string | undefined;
 
-            const serverInfo = await (
-                await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(5000) })
-            )?.json() as ServerInfo;
+        for (const [regionID, region] of regionMap) {
+            const listItem = $(`.server-list-item[data-region=${regionID}]`);
+            try {
+                const pingStartTime = Date.now();
 
-            const ping = Date.now() - pingStartTime;
+                interface ServerInfo {
+                    readonly protocolVersion: number
+                    readonly playerCount: number
+                    readonly maxTeamSize: TeamSize
+                    readonly nextSwitchTime: number
+                };
 
-            if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
-                continue;
+                const serverInfo = await (
+                    await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(5000) })
+                )?.json() as ServerInfo;
+
+                const ping = Date.now() - pingStartTime;
+
+                if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
+                    console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
+                    continue;
+                }
+
+                regionInfo[regionID] = {
+                    ...region,
+                    ...serverInfo,
+                    ping
+                };
+
+                listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+                // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+
+                if (ping < bestPing) {
+                    bestPing = ping;
+                    bestRegion = regionID;
+                }
+            } catch (e) {
+                console.error(`Failed to load server info for region ${regionID}. Details:`, e);
             }
-
-            regionInfo[regionID] = {
-                ...region,
-                ...serverInfo,
-                ping
-            };
-
-            listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
-            // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
-
-            if (ping < bestPing) {
-                bestPing = ping;
-                bestRegion = regionID;
-            }
-        } catch (e) {
-            console.error(`Failed to load server info for region ${regionID}. Details:`, e);
         }
-    }
 
-    const updateServerSelectors = (): void => {
-        if (!selectedRegion) { // Handle invalid region
-            selectedRegion = regionInfo[Config.defaultRegion];
-            game.console.setBuiltInCVar("cv_region", "");
-        }
+        selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
+
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
-        updateSwitchTime();
         resetPlayButtons();
     };
 
-    selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
-    updateServerSelectors();
+    await updateServerSelectors();
+    updateSwitchTime();
 
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");

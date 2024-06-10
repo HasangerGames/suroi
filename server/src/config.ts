@@ -1,8 +1,16 @@
 import { TeamSize } from "../../common/src/constants";
-import { type Vector } from "../../common/src/utils/vector";
+import { Vector } from "../../common/src/utils/vector";
 import { type Maps } from "./data/maps";
+import { PlaceObjectPlugin } from "./defaultPlugins/placeObjectPlugin";
+import { WeaponSwapPlugin } from "./defaultPlugins/weaponSwapPlugin";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
+import { TimeRotation } from "./utils/misc";
+
+export interface PluginsConfig{
+    plugins:Array<new (game: Game) => GamePlugin>,
+    name:string
+}
 
 export enum SpawnMode {
     Normal,
@@ -24,8 +32,10 @@ export const Config = {
 
     tps: 40,
 
-    plugins: [],
-
+    plugins: {
+        plugins:[],
+        name:"normal"
+    },
     spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
@@ -38,7 +48,7 @@ export const Config = {
 
     censorUsernames: true,
 
-    maxTeamSize: TeamSize.Squad,
+    maxTeamSize: TeamSize.Solo,
 
     roles: {
         "developr": { password: "developr", isDev: true },
@@ -100,7 +110,7 @@ export interface ConfigType {
     /**
      * List of plugin classes to load
      */
-    readonly plugins: Array<new (game: Game) => GamePlugin>
+    readonly plugins: PluginsConfig | TimeRotation<PluginsConfig>
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
@@ -134,16 +144,7 @@ export interface ConfigType {
      * specifying a cron pattern and an array of team sizes
      * allows for team sizes to change periodically
      */
-    readonly maxTeamSize: TeamSize | {
-        /**
-         * The duration between switches. Must be a cron pattern.
-         */
-        readonly switchSchedule: string
-        /**
-         * The team sizes to switch between.
-         */
-        readonly rotation: TeamSize[]
-    }
+    readonly maxTeamSize: TeamSize | TimeRotation<TeamSize>
 
     /**
      * The maximum number of players allowed to join a game.

@@ -103,3 +103,14 @@ export function removeFrom<T>(array: T[], value: T): void {
 }
 
 export const CARDINAL_DIRECTIONS = Array.from({ length: 4 }, (_, i) => i / 2 * Math.PI);
+
+export interface TimeRotation<Type>{
+    /**
+     * The duration between switches. Must be a cron pattern.
+     */
+    readonly switchSchedule: string
+    /**
+     * The team sizes to switch between.
+     */
+    readonly rotation: Type[]
+}
