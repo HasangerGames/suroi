@@ -10,10 +10,10 @@ import { Skins } from "../../common/src/definitions/skins";
 import { type GetGameResponse } from "../../common/src/typings";
 import { Numeric } from "../../common/src/utils/math";
 import { version } from "../../package.json";
-import { Config } from "./config";
+import { Config, PluginsConfig } from "./config";
 import { findGame, games, newGame } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
-import { Logger } from "./utils/misc";
+import { Logger, TimeRotation } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 
@@ -53,6 +53,10 @@ let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
 
+export var pluginsIndex = 0;
+
+let pluginsSwitchCron: Cron | undefined;
+
 if (isMainThread) {
     // Initialize the server
     createServer().get("/api/serverInfo", res => {
@@ -63,7 +67,9 @@ if (isMainThread) {
                 playerCount: games.reduce((a, b) => (a + (b?.data.aliveCount ?? 0)), 0),
                 maxTeamSize: _maxTeamSize,
 
-                nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                //nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                //pluginsNextSwitchTime: pluginsSwitchCron?.nextRun()?.getTime(),
+                nextSwitchTime: pluginsSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
             }));
     }).get("/api/getGame", async(res, req) => {
@@ -318,6 +324,12 @@ if (isMainThread) {
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
                 Logger.log(`Switching to ${humanReadableTeamSizes[_maxTeamSize] ?? `team size ${_maxTeamSize}`}`);
+            });
+        }
+        if (Object.hasOwn(Config.plugins,"rotation")) {
+            const plug=Config.plugins as TimeRotation<PluginsConfig>
+            pluginsSwitchCron = Cron(plug.switchSchedule, () => {
+                pluginsIndex = (pluginsIndex + 1) % plug.rotation.length
             });
         }
 

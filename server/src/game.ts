@@ -23,7 +23,7 @@ import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/sr
 import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { Config, SpawnMode } from "./config";
+import { Config, PluginsConfig, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
@@ -45,7 +45,7 @@ import { Events, PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
-import { Logger, removeFrom } from "./utils/misc";
+import { Logger, TimeRotation, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 
@@ -214,7 +214,7 @@ export class Game implements GameData {
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
         const start = Date.now();
-        this.pluginManager.loadPlugins();
+        this.pluginManager.loadPlugins(Object.hasOwn(Config.plugins,"rotation") ? (Config.plugins as TimeRotation<PluginsConfig>).rotation[workerData.plugins]: Config.plugins as PluginsConfig);
 
         parentPort?.on("message", (message: WorkerMessage) => {
             switch (message.type) {

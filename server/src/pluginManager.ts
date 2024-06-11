@@ -3,7 +3,7 @@ import { type PlayerPing } from "../../common/src/definitions/mapPings";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { ExtendedMap } from "../../common/src/utils/misc";
 import { Vector } from "../../common/src/utils/vector";
-import { Config } from "./config";
+import { Config, PluginsConfig } from "./config";
 import { Airdrop, Game } from "./game";
 import { type InventoryItem } from "./inventory/inventoryItem";
 import { Building } from "./objects/building";
@@ -420,6 +420,7 @@ export abstract class GamePlugin {
 /**
  * This class manages plugins and game events
  */
+
 export class PluginManager {
     private readonly _plugins = new Set<GamePlugin>();
 
@@ -448,9 +449,15 @@ export class PluginManager {
     unloadPlugin(plugin: GamePlugin): void {
         this._plugins.delete(plugin);
     }
+    unloadPlugins(): void {
+        for(const p of this._plugins){
+            this.unloadPlugin(p)
+        }
+    }
 
-    loadPlugins(): void {
-        for (const plugin of Config.plugins) {
+    loadPlugins(config:PluginsConfig): void {
+        this.unloadPlugins()
+        for (const plugin of config.plugins) {
             this.loadPlugin(plugin);
         }
     }

@@ -2,12 +2,13 @@ import path from "node:path";
 import { Worker } from "node:worker_threads";
 import { type GetGameResponse } from "../../common/src/typings";
 import { Config } from "./config";
-import { maxTeamSize } from "./server";
+import { maxTeamSize,pluginsIndex } from "./server";
 import { Logger } from "./utils/misc";
 
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
+    readonly plugins:number
 }
 
 export class GameContainer {
@@ -31,7 +32,7 @@ export class GameContainer {
                 //                               @ts-expect-error No typings available for this
                 //                              ______________________^^^^______________________
                 path.resolve(__dirname, `game.${process[Symbol.for("ts-node.register.instance")] ? "ts" : "js"}`),
-                { workerData: { id, maxTeamSize } satisfies WorkerInitData }
+                { workerData: { id, maxTeamSize,plugins:pluginsIndex } satisfies WorkerInitData }
             )
         ).on("message", (message: WorkerMessage): void => {
             switch (message.type) {
