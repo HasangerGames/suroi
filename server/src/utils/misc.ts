@@ -2,6 +2,7 @@ import { Loots, type LootDefinition } from "../../../common/src/definitions/loot
 import { ColorStyles, styleText } from "../../../common/src/utils/ansiColoring";
 import { type ObjectDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { weightedRandom } from "../../../common/src/utils/random";
+import { Config } from "../config";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 
 export const Logger = {
@@ -21,6 +22,11 @@ function internalLog(...message: string[]): void {
         message.join(" ")
     );
 }
+
+export const dragConst = (aggressiveness: number, base?: number): number => Math.pow(
+    base ?? Math.E,
+    -(aggressiveness + 1 / (1.78734 * Config.tps ** 2.32999)) / Config.tps
+);
 
 export class LootItem {
     constructor(

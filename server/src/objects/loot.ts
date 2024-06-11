@@ -8,10 +8,10 @@ import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/uti
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
-import { Config } from "../config";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Events } from "../pluginManager";
+import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -41,7 +41,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      *
      * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
-    private static readonly _dragConstant = Math.exp(-3.69 / Config.tps);
+    private static readonly _dragConstant = dragConst(3.69);
 
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel = 0.003) {
         super(game, position);
