@@ -12,6 +12,14 @@ export enum TeamSize {
     Squad = 4
 }
 
+export enum Layer {
+    Basement = -2,
+    StairsToBasement= -1,
+    Floor1 = 0,
+    StairsToFloor1 = 1,
+    Floor2 = 2
+}
+
 export enum ObjectCategory {
     Player,
     Obstacle,

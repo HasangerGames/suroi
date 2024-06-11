@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
-import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
@@ -240,7 +240,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         weapons: true,
         slotLocks: true,
         items: true,
-        zoom: true
+        zoom: true,
+        layer: true,
     };
 
     readonly inventory = new Inventory(this);
@@ -394,6 +395,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             team.addPlayer(this);
             team.setDirty();
         }
+
+        this.layer = Layer.Floor1;
 
         const userData = socket.getUserData();
         this.socket = socket;
@@ -669,6 +672,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     potential.type === ObjectCategory.Obstacle
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
+                    && potential.layer === this.layer
                 ) {
                     collided = true;
                     this.hitbox.resolveCollision(potential.hitbox);
@@ -832,7 +836,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
 
             for (const object of newVisibleObjects) {
-                if (!this.visibleObjects.has(object)) {
+                if (!this.visibleObjects.has(object) && this.layer === object.layer) {
                     this.visibleObjects.add(object);
                     packet.fullObjectsCache.push(object);
                 }
@@ -861,6 +865,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,
             zoom: player._scope.zoomLevel,
+            layer: player.layer,
             id: player.id,
             teammates: player._team?.players.filter(p => p.id !== player.id) ?? [],
             spectating: this.spectating !== undefined,

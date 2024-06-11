@@ -1,4 +1,4 @@
-import { KillfeedEventType, type ObjectCategory } from "../../../common/src/constants";
+import { KillfeedEventType, Layer, type ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { ObjectSerializations, type FullData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -61,6 +61,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     damageable = false;
     dead = false;
+    layer: Layer = Layer.Floor1;
     hitbox?: Hitbox;
 
     private _fullStream?: SuroiBitStream | undefined;

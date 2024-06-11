@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, GameConstants, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, Layer, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
@@ -34,6 +34,7 @@ export interface PlayerData {
         id: boolean
         teammates: boolean
         zoom: boolean
+        layer: boolean
     }
 
     id: number
@@ -55,6 +56,7 @@ export interface PlayerData {
     maxAdrenaline: number
 
     zoom: number
+    layer: Layer
 
     inventory: {
         activeWeaponIndex: number
@@ -94,6 +96,11 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
     stream.writeBoolean(dirty.zoom);
     if (dirty.zoom) {
         stream.writeUint8(data.zoom);
+    }
+
+    stream.writeBoolean(dirty.layer);
+    if (dirty.layer) {
+        stream.writeUint8(data.layer);
     }
 
     stream.writeBoolean(dirty.id);
@@ -182,6 +189,10 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
 
     if (dirty.zoom = stream.readBoolean()) {
         data.zoom = stream.readUint8();
+    }
+
+    if (dirty.layer = stream.readBoolean()) {
+        data.layer = stream.readUint8();
     }
 
     if (dirty.id = stream.readBoolean()) {

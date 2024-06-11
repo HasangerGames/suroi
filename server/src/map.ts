@@ -1,4 +1,4 @@
-import { ObjectCategory } from "../../common/src/constants";
+import { Layer, ObjectCategory } from "../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
@@ -461,7 +461,7 @@ export class GameMap {
             this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.idString), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
         }
 
-        if (!definition.hideOnMap) this.packet.objects.push(building);
+        if (!definition.hideOnMap && building.layer === Layer.Floor1) this.packet.objects.push(building);
         this.game.grid.addObject(building);
         this.game.pluginManager.emit(Events.Building_Generated, building);
         return building;
@@ -529,7 +529,7 @@ export class GameMap {
             puzzlePiece
         );
 
-        if (!definition.hideOnMap && !definition.invisible) this.packet.objects.push(obstacle);
+        if (!definition.hideOnMap && !definition.invisible && obstacle.layer === Layer.Floor1) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);

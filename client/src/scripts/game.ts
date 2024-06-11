@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -667,6 +667,12 @@ export class Game {
 
         for (const ping of updateData.mapPings) {
             this.map.addMapPing(ping.position, ping.definition, ping.playerId);
+        }
+
+        if (updateData.playerData?.dirty.layer) {
+            if (updateData.playerData.layer === Layer.Basement) {
+                this.pixi.renderer.background.color = COLORS.dirt;
+            }
         }
 
         this.tick();

@@ -1,4 +1,4 @@
-import { ObjectCategory } from "../../../common/src/constants";
+import { Layer, ObjectCategory } from "../../../common/src/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
@@ -75,6 +75,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         this.scale = this.maxScale = scale;
         this.variation = variation;
 
+        this.layer = Layer.Floor1;
+        
         this.lootSpawnOffset = lootSpawnOffset;
 
         this.parentBuilding = parentBuilding;

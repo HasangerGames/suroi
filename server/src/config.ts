@@ -20,19 +20,19 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "arena",
 
     tps: 40,
 
     plugins: [],
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxPlayersPerGame: 80,
     maxGames: 4,
     preventJoinAfter: 60000,
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Disabled },
 
     movementSpeed: 0.02655,
 
