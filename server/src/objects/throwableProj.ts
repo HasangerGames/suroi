@@ -6,7 +6,6 @@ import { Angle, Collision, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
-import { Config } from "../config";
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
 import { dragConst } from "../utils/misc";
