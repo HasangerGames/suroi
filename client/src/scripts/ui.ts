@@ -518,7 +518,9 @@ export async function setUpUI(game: Game): Promise<void> {
         socket?.close();
     });
 
-    $("#btn-copy-team-url").on("click", () => {
+    const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
+
+    copyUrl.on("click", () => {
         const url = $("#create-team-url-field").val();
         if (!url) {
             alert("Unable to copy link to clipboard.");
@@ -527,8 +529,9 @@ export async function setUpUI(game: Game): Promise<void> {
         void navigator.clipboard
             .writeText(url as string)
             .then(() => {
-                $("#btn-copy-team-url")
+                copyUrl
                     .addClass("btn-success")
+                    .css("pointer-events", "none")
                     .html(`
                         <i class="fa-solid fa-check" id="copy-team-btn-icon"></i>
                         Copied`
@@ -536,13 +539,14 @@ export async function setUpUI(game: Game): Promise<void> {
 
                 // After some seconds, reset the copy button's css
                 setTimeout(() => {
-                    $("#btn-copy-team-url")
+                    copyUrl
                         .removeClass("btn-success")
+                        .css("pointer-events", "")
                         .html(`
                             <i class="fa-solid fa-clipboard" id="copy-team-btn-icon"></i>
                             Copy`
                         );
-                }, 2000); // 2sec
+                }, 2000); // 2 sec
             })
             .catch(() => {
                 alert("Unable to copy link to clipboard.");

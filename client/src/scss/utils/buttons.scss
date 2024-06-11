@@ -73,11 +73,10 @@
   box-shadow: inset 0 -2px $purple_bg;
 }
 
-.btn-success { // for the copy button in the team menu
+.btn-success {
   background: $grass_bg;
   border-bottom: 2px solid $success;
   box-shadow: inset 0 -2px $success;
-  pointer-events: none; // to prevent spam clicks, otherwise it messes up the setTimeout effect
 }
 
 // Socials
