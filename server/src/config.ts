@@ -28,8 +28,8 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxPlayersPerGame: 70,
-    maxGames: 2,
+    maxPlayersPerGame: 60,
+    maxGames: 6, //360 players with good games
     preventJoinAfter: 60000,
     playerRemoveCount:923,
 
