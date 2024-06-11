@@ -14,7 +14,7 @@ import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 79,
+    botCount: 69,
     joinDelay: 100
 };
 

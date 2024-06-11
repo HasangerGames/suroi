@@ -28,11 +28,12 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxPlayersPerGame: 80,
-    maxGames: 4,
+    maxPlayersPerGame: 70,
+    maxGames: 2,
     preventJoinAfter: 60000,
+    playerRemoveCount:923,
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Debug,overrideDuration:100 },
 
     movementSpeed: 0.02655,
 
@@ -159,6 +160,7 @@ export interface ConfigType {
      * The number of milliseconds after which players are prevented from joining a game.
      */
     readonly preventJoinAfter: number
+    readonly playerRemoveCount: number
 
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.

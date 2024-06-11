@@ -173,6 +173,7 @@ export class Game implements GameData {
     allowJoin = false;
     over = false;
     stopped = false;
+    joinTime:number;
     get aliveCount(): number {
         return this.livingPlayers.size;
     }
@@ -385,7 +386,7 @@ export class Game implements GameData {
         this.gas = new Gas(this);
 
         this.setGameData({ allowJoin: true });
-
+        this.joinTime=Config.preventJoinAfter
         this.pluginManager.emit(Events.Game_Created, this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
@@ -545,34 +546,45 @@ export class Game implements GameData {
         this.gas.completionRatioDirty = false;
         this.updateObjects = false;
 
-        // Winning logic
         if (
             this._started
             && !this.over
-            && (
+        ) {
+            // Winning logic
+            if (
                 this.teamMode
                     ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
-            )
-        ) {
-            for (const player of this.livingPlayers) {
-                const { movement } = player;
-                movement.up = movement.down = movement.left = movement.right = false;
-                player.attacking = false;
-                player.sendEmote(player.loadout.emotes[4]);
-                player.sendGameOverPacket(true);
-                this.pluginManager.emit(Events.Player_Win, player);
+            ){
+                for (const player of this.livingPlayers) {
+                    const { movement } = player;
+                    movement.up = movement.down = movement.left = movement.right = false;
+                    player.attacking = false;
+                    player.sendEmote(player.loadout.emotes[4]);
+                    player.sendGameOverPacket(true);
+                    this.pluginManager.emit(Events.Player_Win, player);
+                }
+
+                this.pluginManager.emit(Events.Game_End, this);
+
+                this.setGameData({ allowJoin: false, over: true });
+
+                // End the game in 1 second
+                this.addTimeout(() => {
+                    this.server.close();
+                    this.setGameData({ stopped: true });
+                }, 1000);
+
             }
 
-            this.pluginManager.emit(Events.Game_End, this);
-
-            this.setGameData({ allowJoin: false, over: true });
-
-            // End the game in 1 second
-            this.addTimeout(() => {
-                this.server.close();
-                this.setGameData({ stopped: true });
-            }, 1000);
+            // Prevent Join After
+            if(this.joinTime>0){
+                this.joinTime-=1000 / Config.tps
+            }else if (this.allowJoin){
+                parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
+                Logger.log(`Game ${this.id} | Preventing new players from joining`);
+                this.setGameData({ allowJoin: false });
+            }
         }
 
         // Record performance and start the next tick
@@ -793,6 +805,9 @@ export class Game implements GameData {
 
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
+        if(this.allowJoin){
+            this.joinTime-=Config.playerRemoveCount
+        }
         if (
             (this.teamMode ? this.teams.size : this.aliveCount) > 1
             && !this._started
@@ -802,12 +817,6 @@ export class Game implements GameData {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
-
-                this.addTimeout(() => {
-                    parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
-                    this.setGameData({ allowJoin: false });
-                }, Config.preventJoinAfter);
             }, 3000);
         }
 
