@@ -524,6 +524,7 @@ export class GameMap {
 
     generateObstacleClumps(clumpDef: ObstacleClump): void {
         for (let i = 0; i < clumpDef.clumpAmount; i++) {
+            const rotation = randomFloat(0, TAU)
             const amountOfObstacles = random(clumpDef.clump.minAmount, clumpDef.clump.maxAmount);
 
             const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
@@ -542,7 +543,7 @@ export class GameMap {
                     pickRandomInArray(clumpDef.clump.obstacles),
                     Vec.add(
                         randomPointInsideCircle(position, clumpDef.clump.jitter),
-                        Vec.fromPolar(j * TAU / amountOfObstacles, clumpDef.clump.radius)
+                        Vec.fromPolar(j * TAU / amountOfObstacles + rotation, clumpDef.clump.radius)
                     )
                 );
             }
