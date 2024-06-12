@@ -1355,40 +1355,56 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             };
 
-            if (source === KillfeedEventType.FinallyKilled) {
+            const attributeToDowner = (): boolean => {
+                const downer = this.downedBy;
+                if (!downer) return false;
+
+                const { player, item } = downer;
+
+                ++player.kills;
+                if ((item instanceof GunItem || item instanceof MeleeItem)
+                    && player.inventory.weapons.includes(item)) {
+                    const kills = ++item.stats.kills;
+
+                    for (const entry of item.definition.wearerAttributes?.on?.kill ?? []) {
+                        if (kills >= (entry.limit ?? Infinity)) continue;
+
+                        player.health += entry.healthRestored ?? 0;
+                        player.adrenaline += entry.adrenalineRestored ?? 0;
+                    }
+                }
+
+                killFeedPacket.weaponUsed = item?.definition;
+                attributeToPlayer(player, item);
+
+                return true;
+            };
+
+            if (
+                (
+                    [
+                        KillfeedEventType.FinallyKilled,
+                        KillfeedEventType.Gas,
+                        KillfeedEventType.BleedOut
+                    ].includes as (arg: DamageParams["source"]) => arg is DamageParams["source"] & KillfeedEventType
+                )(source)
+            ) {
                 killFeedPacket.eventType = source;
 
-                const antecedent = this.downedBy;
-                if (antecedent) {
-                    const { player, item } = antecedent;
-
-                    ++player.kills;
-                    if (
-                        (item instanceof GunItem || item instanceof MeleeItem)
-                        && player.inventory.weapons.includes(item)
-                    ) {
-                        const kills = ++item.stats.kills;
-
-                        for (
-                            const entry of item.definition.wearerAttributes?.on?.kill ?? []
-                        ) {
-                            if (kills >= (entry.limit ?? Infinity)) continue;
-
-                            player.health += entry.healthRestored ?? 0;
-                            player.adrenaline += entry.adrenalineRestored ?? 0;
-                        }
-                    }
-
-                    killFeedPacket.weaponUsed = item?.definition;
-                    attributeToPlayer(player, item);
-                }
+                attributeToDowner();
             } else if (sourceIsPlayer) {
                 if (source !== this) {
                     killFeedPacket.eventType = wasDowned
                         ? KillfeedEventType.FinishedOff
                         : KillfeedEventType.NormalTwoParty;
 
-                    attributeToPlayer(source);
+                    if (
+                        this.teamID === undefined // if we're in solos…
+                        || source.teamID !== this.teamID // …or the killer is in a different team from the downer…
+                        || !attributeToDowner() // …or if the downer can't be found…
+                    ) {
+                        attributeToPlayer(source); // …then attribute to the killer
+                    }
                 }
             } else if (source instanceof BaseGameObject) {
                 console.warn(`Unexpected source of death for player '${this.name}' (id: ${this.id}); source is of category ${ObjectCategory[source.type]}`);
