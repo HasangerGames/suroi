@@ -1277,7 +1277,14 @@ class PlayerHealthUI {
         }
 
         if (this._name.dirty) {
-            this.nameLabel.text(this._name.value);
+            const teammate = this.game.playerNames.get(this._id.value);
+
+            if (teammate) {
+                this.nameLabel.text(teammate.name);
+            }
+            else {
+                this.nameLabel.text("Loading..");
+            }
         }
 
         if (
@@ -1292,17 +1299,21 @@ class PlayerHealthUI {
         }
 
         if (this._badge.dirty) {
-            if (this._badge.value) {
-                this.badgeImage
-                    .attr(
-                        "src",
-                        `./img/game/badges/${this._badge.value.idString}.svg`
-                    )
-                    .css({ display: "", visibility: "" });
-            } else {
-                this.badgeImage
-                    .attr("src", "")
-                    .css({ display: "none", visibility: "none" });
+            const teammate = this.game.playerNames.get(this._id.value);
+
+            if (teammate) {
+                if (teammate.badge) {
+                    this.badgeImage
+                        .attr(
+                            "src",
+                            `./img/game/badges/${teammate.badge.idString}.svg`
+                        )
+                        .css({ display: "", visibility: "" });
+                } else {
+                    this.badgeImage
+                        .attr("src", "")
+                        .css({ display: "none", visibility: "none" });
+                }
             }
         }
     }
