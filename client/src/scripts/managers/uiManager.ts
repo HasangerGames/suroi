@@ -1225,6 +1225,7 @@ class PlayerHealthUI {
 
     update(data?: UpdateDataType): void {
         const id = this._id.value;
+        const hadNoHealth = this._normalizedHealth.value <= 0;
 
         if (data !== undefined) {
             ([
@@ -1256,11 +1257,13 @@ class PlayerHealthUI {
         let recalcIndicatorFrame = false;
 
         if (this._normalizedHealth.dirty) {
-            this.healthDisplay
-                .css("stroke", UIManager.getHealthColor(this._normalizedHealth.value, this._downed.value))
-                .css("stroke-dashoffset", 132 * (1 - this._normalizedHealth.value));
+            const normHp = this._normalizedHealth.value;
 
-            recalcIndicatorFrame = true;
+            this.healthDisplay
+                .css("stroke", UIManager.getHealthColor(normHp, this._downed.value))
+                .css("stroke-dashoffset", 132 * (1 - normHp));
+
+            recalcIndicatorFrame = hadNoHealth !== (normHp <= 0);
         }
 
         if (this._downed.dirty) {
