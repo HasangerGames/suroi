@@ -165,9 +165,9 @@ export class GameMap {
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this.generateBuildings(building, count));
 
-        (mapDef.obstacleClumps ?? []).forEach((clump) => {
-            for (let i = 0; i < clump.clumpAmount; i++) this.generateObstacleClumps(clump)
-        })
+        (mapDef.obstacleClumps ?? []).forEach(clump => {
+            for (let i = 0; i < clump.clumpAmount; i++) this.generateObstacleClumps(clump);
+        });
 
         Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this.generateObstacles(obstacle, count));
 
@@ -524,32 +524,28 @@ export class GameMap {
 
     generateObstacleClumps(clumpDef: ObstacleClump): void {
         for (let i = 0; i < clumpDef.clumpAmount; i++) {
-            const amountOfObstacles = Math.round(randomFloat(clumpDef.clump.minAmount, clumpDef.clump.maxAmount))
+            const amountOfObstacles = random(clumpDef.clump.minAmount, clumpDef.clump.maxAmount);
 
-            let clump: Array<{position: Vector, idString: ReferenceTo<ObstacleDefinition>}> = []
+            const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
 
-            let valid = true
+            const position = this.getRandomPosition(new CircleHitbox(clumpDef.clump.radius + clumpDef.clump.jitter), {
+                spawnMode: firstObstacle.spawnMode
+            });
 
-            //! idk where else to put this constant
-            const maxTries = 200
-            for (let attempt = 0; attempt < maxTries; attempt++) {
-                const position = randomVector(0, this.width, 0, this.height)
-                clump = Array.from(Array(amountOfObstacles)).map((_, index) => ({
-                    position: Vec.add(
-                        randomPointInsideCircle(position, clumpDef.clump.radius, 0),
-                        Vec.fromPolar(index * TAU / amountOfObstacles, clumpDef.clump.radius)
-                    ),
-                    idString: pickRandomInArray(clumpDef.clump.obstacles),
-                }))
-                for (const obstacle of clump) {
-                    const obstacleDef = Obstacles.reify(obstacle.idString)
-
-                    // is there literally no function to check if an obstacle is in a valid position???
-                    const validPosition = todo!()
-                }
+            if (!position) {
+                Logger.warn("Spawn position cannot be found");
+                continue;
             }
-             
-            if (!valid) continue;
+
+            for (let j = 0; j < amountOfObstacles; j++) {
+                this.generateObstacle(
+                    pickRandomInArray(clumpDef.clump.obstacles),
+                    Vec.add(
+                        randomPointInsideCircle(position, clumpDef.clump.jitter),
+                        Vec.fromPolar(j * TAU / amountOfObstacles, clumpDef.clump.radius)
+                    )
+                );
+            }
         }
     }
 

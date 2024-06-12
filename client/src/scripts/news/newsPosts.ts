@@ -1,19 +1,19 @@
 import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
-  {
-    date: 1717870665000,
-    author: "HAZEL",
-    title: "Back in the Saddle",
-    bannerImage: "../img/news/v0.18.0.png",
-    content: `After a long break, we're back with some important updates and fun changes. Although we're late, we're celebrating Suroi's 1 year birthday with some new items, and even more exciting, limited edition squads.<br><br>
+    {
+        date: 1717870665000,
+        author: "HAZEL",
+        title: "Back in the Saddle",
+        bannerImage: "../img/news/v0.18.0.png",
+        content: `After a long break, we're back with some important updates and fun changes. Although we're late, we're celebrating Suroi's 1 year birthday with some new items, and even more exciting, limited edition squads.<br><br>
 
     A revamped moderation system is here to combat those cheater pests with improved efficiency. Say hello to our new Game Moderatrs on Discord!<br><br>
 
     There's also a new structure, the large bridge. While huge in proportion, it offers plenty of cover and close quarter combat. It's also a perfect spot to set up your squad in a defensive position!<br><br>
 
     Lots of changes and bug fixes have made it into this update, so check out the full log. Thank you everyone for sticking with us!`,
-    longContent: `<h2>Suroi v0.18.0</h2>
+        longContent: `<h2>Suroi v0.18.0</h2>
 <h3>New features</h3>
 <ul>
   <li><strong>Squads!</strong> To celebrate Suroi's 1st birthday, squads will be available for the next week only. They will be back once we have enough players.</li>
