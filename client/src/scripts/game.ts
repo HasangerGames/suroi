@@ -98,7 +98,6 @@ export class Game {
     }>();
 
     activePlayerID = -1;
-
     teamID = -1;
 
     teamMode = false;
@@ -112,12 +111,11 @@ export class Game {
     spectating = false;
     error = false;
 
-    readonly uiManager = new UIManager(this);
-
     lastPingDate = 0;
 
     disconnectReason = "";
 
+    readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
@@ -577,7 +575,6 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
-
         if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
@@ -589,23 +586,25 @@ export class Game {
 
             if (object === undefined || object.destroyed) {
                 type K = typeof type;
+
                 this.objects.add(
                     new (
                         ObjectClassMapping[type] as (new (game: Game, id: number, data: FullData<K>) => ObjectMapping[K])
                     )(this, id, data)
                 );
-            }
-
-            if (object) {
+            } else {
                 object.updateFromData(data, false);
             }
         }
 
         for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
-            if (object) {
-                (object as GameObject).updateFromData(data, false);
+            if (object === undefined) {
+                console.warn(`Trying to partially update non-existant object with ID ${id}`);
+                continue;
             }
+
+            (object as GameObject).updateFromData(data, false);
         }
 
         for (const id of updateData.deletedObjects) {
@@ -616,11 +615,7 @@ export class Game {
             }
 
             object.destroy();
-
-            // If it's a teammate, do NOT remove the object.
-            if (!(object instanceof Player && object.teamID === this.teamID)) {
-                this.objects.delete(object);
-            }
+            this.objects.delete(object);
         }
 
         for (const bullet of updateData.deserializedBullets) {

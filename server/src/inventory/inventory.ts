@@ -161,7 +161,7 @@ export class Inventory {
         }
 
         owner.effectiveSwitchDelay = effectiveSwitchDelay;
-        owner.lastSwitch = item.switchDate = now;
+        item.switchDate = now;
 
         if (item instanceof GunItem && item.ammo <= 0) {
             this._reloadTimeout = this.owner.game.addTimeout(

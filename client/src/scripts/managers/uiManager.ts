@@ -66,13 +66,12 @@ export class UIManager {
         this.game = game;
     }
 
-    getRawPlayerName(id: number): string {
-        const player = this.game.playerNames.get(id);
-        let name: string;
+    getRawPlayerNameNullish(id: number): string | undefined {
+        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
+        let name: string | undefined;
 
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
-            name = "[Unknown Player]";
         } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
             name = `${GameConstants.player.defaultName}_${id}`;
         } else {
@@ -82,14 +81,18 @@ export class UIManager {
         return name;
     }
 
+    getRawPlayerName(id: number): string {
+        return this.getRawPlayerNameNullish(id) ?? "[Unknown Player]";
+    }
+
     getPlayerName(id: number): string {
         const element = $("<span>");
-        const player = this.game.playerNames.get(id);
+        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
         const name = this.getRawPlayerName(id);
 
         if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            element.css("color", player.nameColor.toHex());
+            element.css("color", player.nameColor?.toHex() ?? "");
         }
 
         element.text(name);
@@ -103,7 +106,7 @@ export class UIManager {
             return;
         }
 
-        const player = this.game.playerNames.get(id);
+        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
         switch (true) {
             case this.game.console.getBuiltInCVar("cv_anonymize_player_names"): {
@@ -132,7 +135,7 @@ export class UIManager {
         }
     }
 
-    readonly ui = {
+    readonly ui = Object.freeze({
         ammoCounterContainer: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo-count"),
         reserveAmmo: $("#weapon-inventory-ammo"),
@@ -161,7 +164,7 @@ export class UIManager {
 
         emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
             .map(selector => $(`#emote-wheel > ${selector}`))
-    };
+    });
 
     readonly action = {
         active: false,
@@ -349,15 +352,23 @@ export class UIManager {
                 notVisited.delete(id);
 
                 const cacheEntry = _teammateDataCache.get(id);
+                const nameData = this.game.playerNames.get(id);
+                const nameObj = {
+                    hasColor: nameData?.hasColor,
+                    nameColor: nameData?.hasColor ? nameData.nameColor : null,
+                    name: nameData?.name,
+                    badge: nameData?.badge ?? null
+                };
+
                 if (cacheEntry !== undefined) {
                     cacheEntry.update({
                         ...player,
+                        ...nameObj,
                         colorIndex: index
                     });
                     return;
                 }
 
-                const nameData = this.game.playerNames.get(id);
                 const ele = new PlayerHealthUI(
                     this.game,
                     {
@@ -366,10 +377,7 @@ export class UIManager {
                         downed: player.downed,
                         normalizedHealth: player.normalizedHealth,
                         position: player.position,
-                        hasColor: nameData?.hasColor,
-                        nameColor: nameData?.hasColor ? nameData.nameColor : null,
-                        name: nameData?.name,
-                        badge: nameData?.badge ?? null
+                        ...nameObj
                     }
                 );
                 _teammateDataCache.set(id, ele);
@@ -461,7 +469,6 @@ export class UIManager {
             this.inventory.scope = inventory.scope;
             this.updateItems();
         }
-        // idiot
 
         if (inventory.weapons || inventory.items) {
             this.updateWeapons();
@@ -522,8 +529,8 @@ export class UIManager {
 
     /*
         TODO proper caching would require keeping a copy of the inventory currently being shown,
-        TODO so that we can compare it to what it should now be showing (in other words, a kind
-        TODO of "oldInventory—newInventory" thing).
+             so that we can compare it to what it should now be showing (in other words, a kind
+             of "oldInventory—newInventory" thing).
     */
     updateWeaponSlots(): void {
         const inventory = this.inventory;
@@ -1036,12 +1043,11 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderAssigned: {
-                if (victimId === this.game.activePlayerID) {
-                    classes.push("kill-feed-item-killer");
-                }
-                else {
-                    classes.push("kill-feed-kill-leader");
-                }
+                classes.push(
+                    victimId === this.game.activePlayerID
+                        ? "kill-feed-item-killer"
+                        : "kill-feed-kill-leader"
+                );
 
                 $("#kill-leader-leader").html(`${victimName}${victimBadgeText}`);
                 $("#kill-leader-kills-counter").text(attackerKills);
@@ -1069,15 +1075,22 @@ export class UIManager {
                         : "The Kill Leader is dead!"
                     : "The Kill Leader killed themselves!"
                 }`;
-                if (attackerId === this.game.activePlayerID) {
-                    classes.push("kill-feed-item-killer");
+
+                switch (this.game.activePlayerID) {
+                    case attackerId: {
+                        classes.push("kill-feed-item-killer");
+                        break;
+                    }
+                    case victimId: {
+                        classes.push("kill-feed-item-victim");
+                        break;
+                    }
+                    default: {
+                        classes.push("kill-feed-kill-leader");
+                        break;
+                    }
                 }
-                else if (victimId === this.game.activePlayerID) {
-                    classes.push("kill-feed-item-victim");
-                }
-                else {
-                    classes.push("kill-feed-kill-leader");
-                }
+
                 this.game.soundManager.play("kill_leader_dead");
                 $("#btn-spectate-kill-leader").addClass("btn-disabled");
                 break;
@@ -1090,9 +1103,7 @@ export class UIManager {
 
 class Wrapper<T> {
     private _dirty = true;
-    get dirty(): boolean {
-        return this._dirty;
-    }
+    get dirty(): boolean { return this._dirty; }
 
     private _value: T;
     get value(): T { return this._value; }
@@ -1129,7 +1140,7 @@ interface UpdateDataType {
 class PlayerHealthUI {
     readonly game: Game;
 
-    readonly container: JQuery;
+    readonly container: JQuery<HTMLDivElement>;
 
     readonly svgContainer: JQuery<SVGElement>;
     readonly healthDisplay: JQuery<SVGCircleElement>;
@@ -1156,15 +1167,34 @@ class PlayerHealthUI {
     */
 
     private readonly _id = new Wrapper<number>(-1);
+    get id(): number { return this._id.value; }
+
     private readonly _normalizedHealth = new Wrapper<number>(1);
+    get normalizedHealth(): number { return this._normalizedHealth.value; }
+
     private readonly _downed = new Wrapper<boolean | undefined>(undefined);
+    get downed(): boolean | undefined { return this._downed.value; }
+
     private readonly _disconnected = new Wrapper<boolean>(false);
+    get disconnected(): boolean { return this._disconnected.value; }
+
     private readonly _position = new Wrapper<Vector | undefined>(undefined);
+    get position(): Vector | undefined { return this._position.value; }
+
     private readonly _colorIndex = new Wrapper<number>(0);
+    get colorIndex(): number { return this._colorIndex.value; }
+
     private readonly _name = new Wrapper<string>(GameConstants.player.defaultName);
+    get name(): string { return this._name.value; }
+
     private readonly _hasColor = new Wrapper<boolean>(false);
+    get hasColor(): boolean { return this._hasColor.value; }
+
     private readonly _nameColor = new Wrapper<Color | undefined>(undefined);
+    get nameColor(): Color | undefined { return this._nameColor.value; }
+
     private readonly _badge = new Wrapper<BadgeDefinition | undefined>(undefined);
+    get badge(): BadgeDefinition | undefined { return this._badge.value; }
 
     constructor(game: Game, data?: UpdateDataType) {
         this.game = game;
@@ -1185,10 +1215,17 @@ class PlayerHealthUI {
             this.badgeImage
         );
 
+        if (typeof data?.id === "number") {
+            this._id.value = data.id;
+            this._id.markClean();
+        }
+
         this.update(data);
     }
 
     update(data?: UpdateDataType): void {
+        const id = this._id.value;
+
         if (data !== undefined) {
             ([
                 "id",
@@ -1213,6 +1250,7 @@ class PlayerHealthUI {
 
         if (this._id.dirty) {
             // uh… no-op?
+            console.warn(`PlayerHealthUI id unexpectedly marked dirty (was ${id}, currently ${this._id.value}); ignoring change request.`);
         }
 
         let recalcIndicatorFrame = false;
@@ -1226,7 +1264,7 @@ class PlayerHealthUI {
         }
 
         if (this._downed.dirty) {
-            this.container.toggleClass("downed", this._downed.value);
+            this.container.toggleClass("downed", this._downed.value === true);
 
             recalcIndicatorFrame = true;
         }
@@ -1277,14 +1315,7 @@ class PlayerHealthUI {
         }
 
         if (this._name.dirty) {
-            const teammate = this.game.playerNames.get(this._id.value);
-
-            if (teammate) {
-                this.nameLabel.text(teammate.name);
-            }
-            else {
-                this.nameLabel.text("Loading..");
-            }
+            this.nameLabel.text((this.game.uiManager.getRawPlayerNameNullish(this._id.value) ?? this._name.value) || "Loading…");
         }
 
         if (
@@ -1301,21 +1332,34 @@ class PlayerHealthUI {
         if (this._badge.dirty) {
             const teammate = this.game.playerNames.get(this._id.value);
 
-            if (teammate) {
-                if (teammate.badge) {
-                    this.badgeImage
-                        .attr(
-                            "src",
-                            `./img/game/badges/${teammate.badge.idString}.svg`
-                        )
-                        .css({ display: "", visibility: "" });
-                } else {
-                    this.badgeImage
-                        .attr("src", "")
-                        .css({ display: "none", visibility: "none" });
-                }
+            if (teammate?.badge) {
+                this.badgeImage
+                    .attr(
+                        "src",
+                        `./img/game/badges/${teammate.badge.idString}.svg`
+                    )
+                    .css({ display: "", visibility: "" });
+            } else {
+                this.badgeImage
+                    .attr("src", "")
+                    .css({ display: "none", visibility: "none" });
             }
         }
+
+        ([
+            "id",
+            "colorIndex",
+            "downed",
+            "disconnected",
+            "normalizedHealth",
+            "position",
+            "name",
+            "hasColor",
+            "nameColor",
+            "badge"
+        ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
+            (this[`_${prop}`] as Wrapper<unknown>).markClean();
+        });
     }
 
     destroy(): void {

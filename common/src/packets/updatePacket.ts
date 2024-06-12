@@ -183,8 +183,7 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
     }
 
     if (dirty.teammates = stream.readBoolean()) {
-        data.teammates = [];
-        stream.readArray(data.teammates, 2, () => {
+        stream.readArray(data.teammates = [], 2, () => {
             return {
                 id: stream.readObjectID(),
                 position: stream.readPosition(),
