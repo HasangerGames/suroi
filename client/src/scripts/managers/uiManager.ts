@@ -1005,6 +1005,8 @@ export class UIManager {
                         && (target = this.game.objects.get(id))
                         && target instanceof Player
                         && target.teamID === this.game.teamID
+                    ) || (
+                        this._teammateDataCache.has(id)
                     );
                 };
 

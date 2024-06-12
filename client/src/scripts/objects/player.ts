@@ -1085,7 +1085,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.Downed: {
                 this.updateFistsPosition(false);
 
-                if (this.images.rightLeg) {
+                if (this.images.rightLeg && !this.destroyed) {
                     this.anims.rightLeg = this.game.addTween({
                         target: this.images.rightLeg,
                         to: { x: this.images.rightLeg.x - 10, y: this.images.rightLeg.y },
@@ -1110,7 +1110,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 setTimeout(() => {
-                    if (this.images.leftLeg) {
+                    if (this.images.leftLeg && !this.destroyed) {
                         this.anims.leftLeg = this.game.addTween({
                             target: this.images.leftLeg,
                             to: { x: this.images.leftLeg.x - 10, y: this.images.leftLeg.y },
