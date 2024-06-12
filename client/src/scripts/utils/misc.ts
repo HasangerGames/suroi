@@ -38,6 +38,15 @@ export function stringify(val: unknown): string {
     }
 }
 
+export function html(a: TemplateStringsArray, ...b: string[]): string {
+    let buffer = ""
+    for (let i = 0; i < a.length; i++) {
+        buffer += a[i] ?? ""
+        buffer += b[i] ?? ""
+    }
+    return buffer
+}
+
 export const allowedTags = Object.freeze([
     // Headings
     "h1", "h2", "h3", "h4", "h5", "h6",

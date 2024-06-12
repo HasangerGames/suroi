@@ -19,7 +19,7 @@ import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
-import { formatDate } from "../utils/misc";
+import { formatDate, html } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 function safeRound(value: number): number {
@@ -251,7 +251,7 @@ export class UIManager {
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
         const playerBadgeText = playerBadge
-            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            ? html`<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
         $("#game-over-text").html(
@@ -315,7 +315,7 @@ export class UIManager {
             this.game.spectating = data.spectating;
             if (data.spectating) {
                 const badge = this.getPlayerBadge(data.id);
-                const badgeText = badge ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 $("#game-over-overlay").fadeOut();
 
@@ -819,7 +819,7 @@ export class UIManager {
             return {
                 name: hasId ? this.getPlayerName(id) : "",
                 badgeText: badge
-                    ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                    ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
             };
         };
@@ -909,9 +909,9 @@ export class UIManager {
                         const icon = (() => {
                             switch (severity) {
                                 case KillfeedEventSeverity.Down:
-                                    return "<img class=\"kill-icon\" src=\"./img/misc/downed.svg\" alt=\"Downed\">";
+                                    return html`<img class="kill-icon" src="./img/misc/downed.svg" alt="Downed">`;
                                 case KillfeedEventSeverity.Kill:
-                                    return "<img class=\"kill-icon\" src=\"./img/misc/skull_icon.svg\" alt=\"Skull\">";
+                                    return html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">`;
                             }
                         })();
 
@@ -922,13 +922,13 @@ export class UIManager {
                         break;
                     }
                     case "icon": {
-                        const downedIcon = "<img class=\"kill-icon\" src=\"./img/misc/downed.svg\" alt=\"Downed\">";
-                        const skullIcon = "<img class=\"kill-icon\" src=\"./img/misc/skull_icon.svg\" alt=\"Finished off\">";
-                        const bleedOutIcon = "<img class=\"kill-icon\" src=\"./img/misc/bleed_out.svg\" alt=\"Bleed out\">";
-                        const finallyKilledIcon = "<img class=\"kill-icon\" src=\"./img/misc/finally_killed.svg\" alt=\"Finally killed\">";
+                        const downedIcon = html`<img class="kill-icon" src="./img/misc/downed.svg" alt="Downed">`;
+                        const skullIcon = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Finished off">`;
+                        const bleedOutIcon = html`<img class="kill-icon" src="./img/misc/bleed_out.svg" alt="Bleed out">`;
+                        const finallyKilledIcon = html`<img class="kill-icon" src="./img/misc/finally_killed.svg" alt="Finally killed">`;
 
                         const killstreakText = hasKillstreak
-                            ? `
+                            ? html`
                             <span style="font-size: 80%">(${killstreak}
                                 <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull" height=12>)
                             </span>`
@@ -947,7 +947,7 @@ export class UIManager {
                                 break;
                         }
                         const altText = weaponUsed ? weaponUsed.name : iconName;
-                        const weaponText = `<img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">`;
+                        const weaponText = html`<img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">`;
 
                         const severityIcon = (() => {
                             switch (severity) {
@@ -1059,7 +1059,7 @@ export class UIManager {
                 $("#kill-leader-kills-counter").text(attackerKills);
 
                 if (!hideFromKillfeed) {
-                    messageText = `<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
+                    messageText = html`<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
                 $("#btn-spectate-kill-leader").removeClass("btn-disabled");
@@ -1075,7 +1075,7 @@ export class UIManager {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
+                messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
                     ? attackerId !== victimId
                         ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
                         : "The Kill Leader is dead!"
