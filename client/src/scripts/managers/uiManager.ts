@@ -901,7 +901,11 @@ export class UIManager {
                          * a library off of somewhere, this'll have to do
                          */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
-                        const weaponNameText = weaponPresent ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}` : "";
+
+                        const weaponNameText = weaponPresent
+                            ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}`
+                            : "";
+
                         const icon = (() => {
                             switch (severity) {
                                 case KillfeedEventSeverity.Down:

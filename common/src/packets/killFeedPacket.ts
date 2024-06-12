@@ -83,7 +83,14 @@ export class KillFeedPacket extends Packet implements KillFeedMessageOptions {
                 }
                 stream.writeBits(this.severity ?? KillfeedEventSeverity.Kill, KILLFEED_EVENT_SEVERITY_BITS);
 
-                const weaponWasUsed = this.weaponUsed !== undefined;
+                const weaponWasUsed = this.weaponUsed !== undefined
+                    && ![
+                        KillfeedEventType.FinallyKilled,
+                        KillfeedEventType.Gas,
+                        KillfeedEventType.BleedOut,
+                        KillfeedEventType.Airdrop
+                    ].includes(type);
+
                 stream.writeBoolean(weaponWasUsed);
                 if (weaponWasUsed) {
                     damageSourcesDefinitions.writeToStream(stream, this.weaponUsed!);
