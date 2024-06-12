@@ -32,6 +32,7 @@ export interface MapDefinition {
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
+    readonly obstacleClumps?: Array<ObstacleClump>
     readonly loots?: Record<keyof typeof LootTables, number>
 
     readonly places?: Array<{
@@ -116,6 +117,18 @@ const maps = {
             gold_rock: 1,
             flint_stone: 1
         },
+        obstacleClumps: [
+            {
+                clumpAmount: 20,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 5,
+                    jitter: 5,
+                    obstacles: ["oak_tree", "birch_tree", "pine_tree"],
+                    radius: 10
+                }
+            }
+        ],
         loots: {
             ground_loot: 60
         },
@@ -507,3 +520,14 @@ const maps = {
 } satisfies Record<string, MapDefinition>;
 
 export const Maps: Record<keyof typeof maps, MapDefinition> = maps;
+
+export type ObstacleClump = {
+    clumpAmount: number,
+    clump: {
+        obstacles: ReferenceTo<ObstacleDefinition>[],
+        minAmount: number,
+        maxAmount: number,
+        radius: number,
+        jitter: number
+    }
+}

@@ -4,9 +4,16 @@ import { RectangleHitbox } from "./hitbox";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { Vec, type Vector } from "./vector";
 
-const π = Math.PI;
-const halfπ = π / 2;
-const τ = 2 * π;
+export const π = Math.PI;
+export const halfπ = π / 2;
+export const τ = 2 * π;
+
+// For accessibility
+
+export const PI = π;
+export const HALF_PI = π / 2;
+export const TAU = 2 * π;
+
 export const Angle = Object.freeze({
     /**
      * Draws a line between two points and returns that line's angle

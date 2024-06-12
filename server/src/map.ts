@@ -6,13 +6,13 @@ import { MapPacket } from "../../common/src/packets/mapPacket";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { Angle, Collision, Geometry, Numeric } from "../../common/src/utils/math";
+import { Angle, Collision, Geometry, Numeric, TAU } from "../../common/src/utils/math";
 import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { Maps } from "./data/maps";
+import { MapDefinition, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
@@ -164,6 +164,10 @@ export class GameMap {
         );
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this.generateBuildings(building, count));
+
+        (mapDef.obstacleClumps ?? []).forEach((clump) => {
+            for (let i = 0; i < clump.clumpAmount; i++) this.generateObstacleClumps(clump)
+        })
 
         Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this.generateObstacles(obstacle, count));
 
@@ -516,6 +520,37 @@ export class GameMap {
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
         return obstacle;
+    }
+
+    generateObstacleClumps(clumpDef: ObstacleClump): void {
+        for (let i = 0; i < clumpDef.clumpAmount; i++) {
+            const amountOfObstacles = Math.round(randomFloat(clumpDef.clump.minAmount, clumpDef.clump.maxAmount))
+
+            let clump: Array<{position: Vector, idString: ReferenceTo<ObstacleDefinition>}> = []
+
+            let valid = true
+
+            //! idk where else to put this constant
+            const maxTries = 200
+            for (let attempt = 0; attempt < maxTries; attempt++) {
+                const position = randomVector(0, this.width, 0, this.height)
+                clump = Array.from(Array(amountOfObstacles)).map((_, index) => ({
+                    position: Vec.add(
+                        randomPointInsideCircle(position, clumpDef.clump.radius, 0),
+                        Vec.fromPolar(index * TAU / amountOfObstacles, clumpDef.clump.radius)
+                    ),
+                    idString: pickRandomInArray(clumpDef.clump.obstacles),
+                }))
+                for (const obstacle of clump) {
+                    const obstacleDef = Obstacles.reify(obstacle.idString)
+
+                    // is there literally no function to check if an obstacle is in a valid position???
+                    const validPosition = todo!()
+                }
+            }
+             
+            if (!valid) continue;
+        }
     }
 
     generateLoots(table: keyof typeof LootTables, count: number): void {
