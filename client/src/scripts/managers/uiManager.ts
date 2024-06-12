@@ -1306,7 +1306,10 @@ class PlayerHealthUI {
 
         if (recalcIndicatorFrame) {
             const frame = `player_indicator${this._normalizedHealth.value === 0 ? "_dead" : this._downed.value ? "_downed" : ""}`;
-            this.teammateIndicator.attr("src", `./img/game/player/${frame}.svg`);
+            const newSrc = `./img/game/player/${frame}.svg`;
+            if (this.teammateIndicator.attr("src") !== newSrc) {
+                this.teammateIndicator.attr("src", newSrc);
+            }
             indicator?.setFrame(frame);
         }
 
@@ -1336,12 +1339,13 @@ class PlayerHealthUI {
             const teammate = this.game.playerNames.get(this._id.value);
 
             if (teammate?.badge) {
-                this.badgeImage
-                    .attr(
-                        "src",
-                        `./img/game/badges/${teammate.badge.idString}.svg`
-                    )
-                    .css({ display: "", visibility: "" });
+                const src = `./img/game/badges/${teammate.badge.idString}.svg`;
+
+                if (this.badgeImage.attr("src") !== src) {
+                    this.badgeImage
+                        .attr("src", src)
+                        .css({ display: "", visibility: "" });
+                }
             } else {
                 this.badgeImage
                     .attr("src", "")
