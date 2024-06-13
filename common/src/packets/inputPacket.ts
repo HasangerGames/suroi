@@ -10,7 +10,7 @@ import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
@@ -34,7 +34,7 @@ export type InputAction = {
     readonly position: Vector
 } | { readonly type: SimpleInputActions };
 
-export class InputPacket extends Packet {
+export class InputPacket implements Packet {
     movement!: {
         up: boolean
         down: boolean
@@ -56,7 +56,7 @@ export class InputPacket extends Packet {
 
     actions: InputAction[] = [];
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.movement.up);
         stream.writeBoolean(this.movement.down);
         stream.writeBoolean(this.movement.left);
@@ -103,7 +103,7 @@ export class InputPacket extends Packet {
         });
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         this.movement = {
             up: stream.readBoolean(),
             down: stream.readBoolean(),

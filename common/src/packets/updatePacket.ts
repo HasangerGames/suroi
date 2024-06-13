@@ -9,7 +9,7 @@ import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
 interface ObjectFullData {
     readonly id: number
@@ -257,7 +257,7 @@ export type MapPingSerialization = {
     readonly playerId?: undefined
 });
 
-export class UpdatePacket extends Packet {
+export class UpdatePacket implements Packet {
     // obligatory on server, optional on client
     playerData?: Required<PlayerData>;
 
@@ -325,7 +325,7 @@ export class UpdatePacket extends Packet {
         readonly playerId?: number
     }> = [];
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         let flags = 0;
         // save the current index to write flags latter
         const flagsIdx = stream.index;
@@ -461,7 +461,7 @@ export class UpdatePacket extends Packet {
         stream.index = idx;
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         const flags = stream.readBits(UPDATE_FLAGS_BITS);
 
         if (flags & UpdateFlags.PlayerData) {

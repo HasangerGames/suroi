@@ -4,7 +4,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions
 import { type Variation } from "../typings";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
 type MapObject = {
     readonly position: Vector
@@ -19,7 +19,7 @@ type MapObject = {
     readonly definition: BuildingDefinition
 });
 
-export class MapPacket extends Packet {
+export class MapPacket implements Packet {
     seed!: number;
     width!: number;
     height!: number;
@@ -32,7 +32,7 @@ export class MapPacket extends Packet {
 
     places: Array<{ readonly position: Vector, readonly name: string }> = [];
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeUint32(this.seed);
         stream.writeUint16(this.width);
         stream.writeUint16(this.height);
@@ -72,7 +72,7 @@ export class MapPacket extends Packet {
         });
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         this.seed = stream.readUint32();
         this.width = stream.readUint16();
         this.height = stream.readUint16();

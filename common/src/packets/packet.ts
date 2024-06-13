@@ -1,6 +1,6 @@
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 
-export abstract class Packet {
-    abstract serialize(stream: SuroiBitStream): void;
-    abstract deserialize(stream: SuroiBitStream): void;
+export interface Packet {
+    serialize(stream: SuroiBitStream): void
+    deserialize(stream: SuroiBitStream): void
 }

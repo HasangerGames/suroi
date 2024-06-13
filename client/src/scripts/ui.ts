@@ -3,7 +3,6 @@ import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
-import type { ArmorDefinition } from "../../../common/src/definitions/armors";
 import { Badges } from "../../../common/src/definitions/badges";
 import { EmoteCategory, Emotes } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
@@ -1727,7 +1726,8 @@ Video evidence is required.`)) {
                 inputManager.addAction({
                     type: InputActions.DropItem,
                     // clicking on the slot necessitates the presence of an item
-                    item: game.activePlayer.getEquipment(type) as ArmorDefinition
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    item: game.activePlayer.getEquipment(type)!
                 });
             }
         });

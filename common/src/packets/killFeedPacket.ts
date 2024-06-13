@@ -13,7 +13,7 @@ import { type ExplosionDefinition, Explosions } from "../definitions/explosions"
 import { type LootDefinition, Loots } from "../definitions/loots";
 import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { type SuroiBitStream, calculateEnumPacketBits } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
 const KILLFEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillfeedMessageType);
 const KILLFEED_EVENT_TYPE_BITS = calculateEnumPacketBits(KillfeedEventType);
@@ -33,7 +33,7 @@ interface KillFeedMessageOptions {
     weaponUsed?: LootDefinition | ExplosionDefinition
 }
 
-export class KillFeedPacket extends Packet implements KillFeedMessageOptions {
+export class KillFeedPacket implements Packet, KillFeedMessageOptions {
     messageType!: KillfeedMessageType;
     victimId?: number;
     eventType?: KillfeedEventType;
