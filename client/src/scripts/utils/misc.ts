@@ -38,13 +38,15 @@ export function stringify(val: unknown): string {
     }
 }
 
-export function html(a: TemplateStringsArray, ...b: string[]): string {
-    let buffer = ""
-    for (let i = 0; i < a.length; i++) {
-        buffer += a[i] ?? ""
-        buffer += b[i] ?? ""
+export function html(a: TemplateStringsArray, ...b: ReadonlyArray<string | number | bigint | null | undefined>): string {
+    let buffer = "";
+    const length = a.length;
+    for (let i = 0; i < length; i++) {
+        // shut the fuck up
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        buffer += (a[i] ?? "") + (b[i] ?? "");
     }
-    return buffer
+    return buffer;
 }
 
 export const allowedTags = Object.freeze([
