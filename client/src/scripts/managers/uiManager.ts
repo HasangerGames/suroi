@@ -1196,7 +1196,6 @@ export class UIManager {
                         : "The Kill Leader is dead!"
                     : "The Kill Leader killed themselves!"
                 }`;
-
                 switch (this.game.activePlayerID) {
                     case attackerId: {
                         classes.push("kill-feed-item-killer");

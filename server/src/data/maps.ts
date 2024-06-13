@@ -32,6 +32,7 @@ export interface MapDefinition {
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
+    readonly obstacleClumps?: ObstacleClump[]
     readonly loots?: Record<keyof typeof LootTables, number>
 
     readonly places?: Array<{
@@ -95,9 +96,9 @@ const maps = {
         obstacles: {
             oil_tank: 12,
             // christmas_tree: 1, // winter mode
-            oak_tree: 250,
-            birch_tree: 25,
-            pine_tree: 15,
+            oak_tree: 100,
+            birch_tree: 20,
+            pine_tree: 10,
             regular_crate: 160,
             flint_crate: 5,
             aegis_crate: 5,
@@ -116,6 +117,38 @@ const maps = {
             gold_rock: 1,
             flint_stone: 1
         },
+        obstacleClumps: [
+            {
+                clumpAmount: 10,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 5,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 2,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
         loots: {
             ground_loot: 60
         },
@@ -507,3 +540,14 @@ const maps = {
 } satisfies Record<string, MapDefinition>;
 
 export const Maps: Record<keyof typeof maps, MapDefinition> = maps;
+
+export type ObstacleClump = {
+    clumpAmount: number
+    clump: {
+        obstacles: Array<ReferenceTo<ObstacleDefinition>>
+        minAmount: number
+        maxAmount: number
+        radius: number
+        jitter: number
+    }
+};
