@@ -10,6 +10,7 @@ import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
+import { ExtendedMap } from "../../../common/src/utils/misc";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec } from "../../../common/src/utils/vector";
@@ -68,34 +69,37 @@ export function resetPlayButtons(): void {
 }
 
 export async function setUpUI(game: Game): Promise<void> {
+    const { inputManager, uiManager: { ui } } = game;
+
     if (UI_DEBUG_MODE) {
         // Kill message
-        $("#kill-msg-kills").text("Kills: 7");
-        $("#kill-msg-player-name").html("Player");
-        $("#kill-msg-weapon-used").text(" with Mosin-Nagant (streak: 255)");
-        $("#kill-msg").show();
+        ui.killMsgHeader.text("Kills: 7");
+        ui.killMsgVictimName.html("Player");
+        ui.killMsgWeaponUsed.text(" with Mosin-Nagant (streak: 255)");
+        ui.killMsgModal.show();
 
         // Spectating message
-        $("#spectating-msg-player").html("Player");
-        $("#spectating-container").show();
+        ui.spectatingMsgPlayer.html("Player");
+        ui.spectatingContainer.show();
 
         // Gas message
-        $("#gas-msg-info")
+        ui.gasMsgInfo
             .text("Toxic gas is advancing! Move to the safe zone")
             .css("color", "cyan");
-        $("#gas-msg").show();
+        ui.gasMsg.show();
 
-        $("#weapon-ammo-container").show();
+        ui.ammoCounterContainer.show();
 
         // Kill feed messages
+        const killFeed = ui.killFeed;
         for (let i = 0; i < 5; i++) {
-            const killFeedItem = $("<div>");
+            const killFeedItem = $<HTMLDivElement>("<div>");
             killFeedItem.addClass("kill-feed-item");
             // noinspection HtmlUnknownTarget
             killFeedItem.html(
                 '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant'
             );
-            $("#kill-feed").prepend(killFeedItem);
+            killFeed.prepend(killFeedItem);
         }
     }
 
@@ -127,16 +131,16 @@ export async function setUpUI(game: Game): Promise<void> {
         newsText += `<p>${newsPost.content}<br><i>- ${newsPost.author}</i></p></article>`;
     }
 
-    $("#news-posts").html(newsText);
+    ui.newsPosts.html(newsText);
 
     // createDropdown("#splash-more");
 
-    $("#locked-info").on("click", () => $("#locked-tooltip").fadeToggle(250));
+    ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
     const updateSwitchTime = (): void => {
         if (!selectedRegion?.nextSwitchTime) {
-            $("#locked-time").text("--:--:--");
+            ui.lockedTime.text("--:--:--");
             return;
         }
         const millis = selectedRegion.nextSwitchTime - Date.now();
@@ -147,16 +151,23 @@ export async function setUpUI(game: Game): Promise<void> {
         const hours = Math.floor(millis / 3600000) % 24;
         const minutes = Math.floor(millis / 60000) % 60;
         const seconds = Math.floor(millis / 1000) % 60;
-        $("#locked-time").text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+        ui.lockedTime.text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
     };
     setInterval(updateSwitchTime, 1000);
 
     const regionMap = Object.entries(regionInfo);
-    const serverList = $("#server-list");
+    const serverList = $<HTMLUListElement>("#server-list");
 
     // Load server list
+    const regionUICache: Record<string, JQuery<HTMLLIElement>> = {};
+
     for (const [regionID, region] of regionMap) {
-        const listItem = $(`
+        /* <span style="margin-left: 5px">
+          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+          <span class="server-ping">-</span>
+        </span> */
+        serverList.append(
+            regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
                     <span class="server-name">${region.name}</span>
                     <span style="margin-left: auto">
@@ -164,19 +175,16 @@ export async function setUpUI(game: Game): Promise<void> {
                       <span class="server-player-count">-</span>
                     </span>
                 </li>
-            `);
-        /* <span style="margin-left: 5px">
-          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-          <span class="server-ping">-</span>
-        </span> */
-        serverList.append(listItem);
+            `)
+        );
     }
 
     // Get player counts + find server w/ best ping
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
     for (const [regionID, region] of regionMap) {
-        const listItem = $(`.server-list-item[data-region=${regionID}]`);
+        const listItem = regionUICache[regionID];
+
         try {
             const pingStartTime = Date.now();
 
@@ -216,13 +224,15 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     }
 
+    const serverName = $<HTMLSpanElement>("#server-name");
+    const playerCount = $<HTMLSpanElement>("#server-player-count");
     const updateServerSelectors = (): void => {
         if (!selectedRegion) { // Handle invalid region
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", "");
         }
-        $("#server-name").text(selectedRegion.name);
-        $("#server-player-count").text(selectedRegion.playerCount ?? "-");
+        serverName.text(selectedRegion.name);
+        playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
         resetPlayButtons();
@@ -249,7 +259,7 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     const joinGame = (): void => {
-        $("#splash-options").addClass("loading");
+        ui.splashOptions.addClass("loading");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
@@ -287,7 +297,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     }
 
                     game.connect(`${target.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
-                    $("#splash-server-message").hide();
+                    ui.splashMsg.hide();
                 } else {
                     let showWarningModal = false;
                     let title: string | undefined;
@@ -312,23 +322,24 @@ export async function setUpUI(game: Game): Promise<void> {
                             message = "Error joining game.<br>Please try again.";
                             break;
                     }
+
                     if (showWarningModal) {
-                        $("#warning-modal-title").text(title ?? "");
-                        $("#warning-modal-text").html(message ?? "");
-                        $("#warning-modal-agree-options").toggle(data.message === "warn");
-                        $("#warning-modal-agree-checkbox").prop("checked", false);
-                        $("#warning-modal").show();
-                        $("#splash-options").addClass("loading");
+                        ui.warningTitle.text(title ?? "");
+                        ui.warningText.html(message ?? "");
+                        ui.warningAgreeOpts.toggle(data.message === "warn");
+                        ui.warningAgreeCheckbox.prop("checked", false);
+                        ui.warningModal.show();
+                        ui.splashOptions.addClass("loading");
                     } else {
-                        $("#splash-server-message-text").html(message);
-                        $("#splash-server-message").show();
+                        ui.splashMsgText.html(message);
+                        ui.splashMsg.show();
                     }
                     resetPlayButtons();
                 }
             }
         ).fail(() => {
-            $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
-            $("#splash-server-message").show();
+            ui.splashMsgText.html("Error finding game.<br>Please try again.");
+            ui.splashMsg.show();
             resetPlayButtons();
         });
     };
@@ -344,19 +355,19 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     const createTeamMenu = $("#create-team-menu");
-    $("#btn-create-team, #btn-join-team").on("click", function() {
+    $<HTMLButtonElement>("#btn-create-team, #btn-join-team").on("click", function() {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500 || teamSocket || selectedRegion === undefined) return;
         lastPlayButtonClickTime = now;
 
-        $("#splash-options").addClass("loading");
+        ui.splashOptions.addClass("loading");
 
         const params = new URLSearchParams();
 
-        const joiningTeam = $(this).attr("id") === "btn-join-team";
+        const joiningTeam = this.id === "btn-join-team";
         if (joiningTeam) {
-            $("#btn-start-game").addClass("btn-disabled").text("Waiting...");
-            $("#create-team-toggles").addClass("disabled");
+            ui.btnStartGame.addClass("btn-disabled").text("Waiting...");
+            ui.createTeamToggles.addClass("disabled");
 
             // also rejects the empty string, but like who cares
             while (!teamID) {
@@ -383,8 +394,8 @@ export async function setUpUI(game: Game): Promise<void> {
 
             params.set("teamID", teamID);
         } else {
-            $("#btn-start-game").removeClass("btn-disabled").text("Start Game");
-            $("#create-team-toggles").removeClass("disabled");
+            ui.btnStartGame.removeClass("btn-disabled").text("Start Game");
+            ui.createTeamToggles.removeClass("disabled");
         }
 
         params.set("name", game.console.getBuiltInCVar("cv_player_name"));
@@ -437,30 +448,34 @@ export async function setUpUI(game: Game): Promise<void> {
                     playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
-                    $("#create-team-url-field").val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
-                    $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
-                    $("#create-team-toggle-lock").prop("checked", data.locked);
-                    $("#create-team-players").html(data.players.map(getPlayerHTML).join(""));
+
+                    ui.createTeamUrl.val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
+                    ui.createTeamAutoFill.prop("checked", data.autoFill);
+                    ui.createTeamLock.prop("checked", data.locked);
+                    ui.createTeamPlayers.html(data.players.map(getPlayerHTML).join(""));
                     break;
                 }
                 case CustomTeamMessages.PlayerJoin: {
-                    $("#create-team-players").append(getPlayerHTML(data));
+                    ui.createTeamPlayers.append(getPlayerHTML(data));
                     break;
                 }
                 case CustomTeamMessages.PlayerLeave: {
-                    $("#create-team-players").find(`[data-id="${data.id}"]`).remove();
-                    if (data.newLeaderID !== undefined) {
-                        $("#create-team-players").find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
-                        if (data.newLeaderID === playerID) {
-                            $("#btn-start-game").removeClass("btn-disabled").text("Start Game");
-                            $("#create-team-toggles").removeClass("disabled");
-                        }
+                    ui.createTeamPlayers.find(`[data-id="${data.id}"]`).remove();
+                    if (data.newLeaderID === undefined) {
+                        break;
+                    }
+
+                    ui.createTeamPlayers.find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
+
+                    if (data.newLeaderID === playerID) {
+                        ui.btnStartGame.removeClass("btn-disabled").text("Start Game");
+                        ui.createTeamToggles.removeClass("disabled");
                     }
                     break;
                 }
                 case CustomTeamMessages.Settings: {
-                    $("#create-team-toggle-auto-fill").prop("checked", data.autoFill);
-                    $("#create-team-toggle-lock").prop("checked", data.locked);
+                    ui.createTeamAutoFill.prop("checked", data.autoFill);
+                    ui.createTeamLock.prop("checked", data.locked);
                     break;
                 }
                 case CustomTeamMessages.Started: {
@@ -472,26 +487,25 @@ export async function setUpUI(game: Game): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            $("#splash-server-message-text").html("Error joining team.<br>It may not exist or it is full.");
-            $("#splash-server-message").show();
+            ui.splashMsgText.html("Error joining team.<br>It may not exist or it is full.");
+            ui.splashMsg.show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
 
             // Dimmed backdrop on team menu. (Probably not needed here)
-            $("#splash-ui").css("filter", "");
-            $("#splash-ui").css("pointer-events", "");
+            ui.splashUi.css({ filter: "", pointerEvents: "" });
         };
 
         teamSocket.onclose = (): void => {
             // The socket is set to undefined in the close button listener
             // If it's not undefined, the socket was closed by other means, so show an error message
             if (teamSocket) {
-                $("#splash-server-message-text").html(
+                ui.splashMsgText.html(
                     joinedTeam
                         ? "Lost connection to team."
                         : "Error joining team.<br>It may not exist or it is full."
                 );
-                $("#splash-server-message").show();
+                ui.splashMsg.show();
             }
             resetPlayButtons();
             teamSocket = undefined;
@@ -501,33 +515,35 @@ export async function setUpUI(game: Game): Promise<void> {
             createTeamMenu.fadeOut(250);
 
             // Dimmed backdrop on team menu.
-            $("#splash-ui").css("filter", "");
-            $("#splash-ui").css("pointer-events", "");
+            ui.splashUi.css({ filter: "", pointerEvents: "" });
         };
 
         createTeamMenu.fadeIn(250);
 
         // Dimmed backdrop on team menu.
-        $("#splash-ui").css("filter", "brightness(0.6)");
-        $("#splash-ui").css("pointer-events", "none");
+        ui.splashUi.css({
+            filter: "brightness(0.6)",
+            pointerEvents: "none"
+        });
     });
 
-    $("#close-create-team").on("click", () => {
+    ui.closeCreateTeam.on("click", () => {
         const socket = teamSocket;
         teamSocket = undefined;
         socket?.close();
     });
 
     const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
+    const hideUrl = $<HTMLButtonElement>("#btn-hide-team-url");
 
     copyUrl.on("click", () => {
-        const url = $("#create-team-url-field").val();
+        const url = ui.createTeamUrl.val();
         if (!url) {
             alert("Unable to copy link to clipboard.");
             return;
         }
         void navigator.clipboard
-            .writeText(url as string)
+            .writeText(url)
             .then(() => {
                 copyUrl
                     .addClass("btn-success")
@@ -553,18 +569,24 @@ export async function setUpUI(game: Game): Promise<void> {
             });
     });
 
-    $("#btn-hide-team-url").on("click", () => {
-        const icon = $("#btn-hide-team-url i");
-        const urlField = $("#create-team-url-field");
+    const icon = hideUrl.children("i");
+
+    hideUrl.on("click", () => {
+        const urlField = ui.createTeamUrl;
+
         if (urlField.hasClass("hidden")) {
             icon.removeClass("fa-eye")
                 .addClass("fa-eye-slash");
+
             urlField.removeClass("hidden")
                 .css("color", "");
+
             return;
         }
+
         icon.removeClass("fa-eye-slash")
             .addClass("fa-eye");
+
         urlField.addClass("hidden")
             .css("color", "#FFFFFF00");
     });
@@ -584,7 +606,7 @@ export async function setUpUI(game: Game): Promise<void> {
         }));
     });
 
-    $("#btn-start-game").on("click", () => {
+    ui.btnStartGame.on("click", () => {
         teamSocket?.send(JSON.stringify({ type: CustomTeamMessages.Start }));
     });
 
@@ -610,7 +632,7 @@ export async function setUpUI(game: Game): Promise<void> {
         location.search = "";
     }
 
-    const usernameField = $("#username-input");
+    const usernameField = $<HTMLInputElement>("#username-input");
 
     const youtubers = [
         {
@@ -692,19 +714,25 @@ export async function setUpUI(game: Game): Promise<void> {
 
     usernameField.val(game.console.getBuiltInCVar("cv_player_name"));
 
-    usernameField.on("input", () => {
-        usernameField.val(
-            (usernameField.val() as string)
-                // Replace fancy quotes & dashes, so they don't get stripped out
-                .replace(/[\u201c\u201d\u201f]/g, '"')
-                .replace(/[\u2018\u2019\u201b]/g, "'")
-                .replace(/[\u2013\u2014]/g, "-")
+    usernameField.on("input", function() {
+        // Replace fancy quotes & dashes, so they don't get stripped out
 
-                // Strip out non-ASCII chars
+        game.console.setBuiltInCVar(
+            "cv_player_name",
+            this.value = this.value
+                .replace(/[\u201c\u201d\u201f]/g, '"')
+                //         |  “  |  ”  |  ‟  |
+
+                .replace(/[\u2018\u2019\u201b]/g, "'")
+                //         |  ‘  |  ’  |  ‛  |
+
+                .replace(/[\u2013\u2014]/g, "-")
+                //         |  –  |  —  |
+
+                // Strip out non-ASCII chars and
+                // the C0/C1 control characters
                 .replace(/[^\x20-\x7E]/g, "")
         );
-
-        game.console.setBuiltInCVar("cv_player_name", usernameField.val() as string);
     });
 
     createDropdown("#server-select");
@@ -720,7 +748,7 @@ export async function setUpUI(game: Game): Promise<void> {
         } */
     });
 
-    const rulesBtn = $("#btn-rules");
+    const rulesBtn = $<HTMLButtonElement>("#btn-rules");
 
     // Highlight rules & tutorial button for new players
     if (!game.console.getBuiltInCVar("cv_rules_acknowledged")) {
@@ -749,40 +777,40 @@ export async function setUpUI(game: Game): Promise<void> {
         game.sendPacket(packet);
     };
 
-    $("#btn-spectate").on("click", () => {
+    ui.btnSpectate.on("click", () => {
         sendSpectatePacket(SpectateActions.BeginSpectating);
         game.spectating = true;
         game.map.indicator.setFrame("player_indicator");
     });
 
-    $("#btn-spectate-previous").on("click", () => {
+    ui.spectatePrevious.on("click", () => {
         sendSpectatePacket(SpectateActions.SpectatePrevious);
     });
 
-    $("#btn-spectate-kill-leader").on("click", () => {
+    ui.spectateKillLeader.on("click", () => {
         sendSpectatePacket(SpectateActions.SpectateKillLeader);
     });
 
-    $("#btn-report").on("click", () => {
+    ui.btnReport.on("click", () => {
         if (confirm(`Are you sure you want to report this player?
 Players should only be reported for teaming or hacking.
 Video evidence is required.`)) {
             sendSpectatePacket(SpectateActions.Report);
         }
     });
-    $("#btn-spectate-next").on("click", () => {
+    ui.spectateNext.on("click", () => {
         sendSpectatePacket(SpectateActions.SpectateNext);
     });
 
-    $("#btn-resume-game").on("click", () => gameMenu.hide());
-    $("#btn-fullscreen").on("click", () => {
+    $<HTMLButtonElement>("#btn-resume-game").on("click", () => gameMenu.hide());
+    $<HTMLButtonElement>("#btn-fullscreen").on("click", () => {
         requestFullscreen();
-        $("#game-menu").hide();
+        ui.gameMenu.hide();
     });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape") {
-            if ($("canvas").hasClass("active") && !game.console.isOpen) {
+            if (ui.canvas.hasClass("active") && !game.console.isOpen) {
                 gameMenu.fadeToggle(250);
                 settingsMenu.hide();
             }
@@ -790,30 +818,30 @@ Video evidence is required.`)) {
         }
     });
 
-    $("#btn-settings").on("click", () => {
+    $<HTMLButtonElement>("#btn-settings").on("click", () => {
         $(".dialog").hide();
         settingsMenu.fadeToggle(250);
         settingsMenu.removeClass("in-game");
     });
 
-    $("#btn-settings-game").on("click", () => {
+    $<HTMLButtonElement>("#btn-settings-game").on("click", () => {
         gameMenu.hide();
         settingsMenu.fadeToggle(250);
         settingsMenu.addClass("in-game");
     });
 
-    $("#close-settings").on("click", () => {
+    $<HTMLButtonElement>("#close-settings").on("click", () => {
         settingsMenu.fadeOut(250);
     });
 
-    const customizeMenu = $("#customize-menu");
-    $("#btn-customize").on("click", () => {
+    const customizeMenu = $<HTMLButtonElement>("#customize-menu");
+    $<HTMLButtonElement>("#btn-customize").on("click", () => {
         $(".dialog").hide();
         customizeMenu.fadeToggle(250);
     });
-    $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
+    $<HTMLButtonElement>("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
-    $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
+    $<HTMLButtonElement>("#close-report").on("click", () => ui.reportingModal.fadeOut(250));
 
     const role = game.console.getBuiltInCVar("dv_role");
 
@@ -822,58 +850,75 @@ Video evidence is required.`)) {
         game.console.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
     }
 
+    const base = $<HTMLDivElement>("#skin-base");
+    const fists = $<HTMLDivElement>("#skin-left-fist, #skin-right-fist");
+
     const updateSplashCustomize = (skinID: string): void => {
-        $("#skin-base").css(
+        base.css(
             "background-image",
             `url("./img/game/skins/${skinID}_base.svg")`
         );
-        $("#skin-left-fist, #skin-right-fist").css(
+
+        fists.css(
             "background-image",
             `url("./img/game/skins/${skinID}_fist.svg")`
         );
     };
-    updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
-    for (const skin of Skins) {
-        if (skin.hideFromLoadout || (skin.roleRequired ?? role) !== role) continue;
+
+    const currentSkin = game.console.getBuiltInCVar("cv_loadout_skin");
+    updateSplashCustomize(currentSkin);
+    const skinList = $<HTMLDivElement>("#skins-list");
+
+    for (const { idString, name, hideFromLoadout, roleRequired } of Skins) {
+        if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
 
         // noinspection CssUnknownTarget
         const skinItem
-            = $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
+            = $<HTMLDivElement>(`<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
   <div class="skin">
-    <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
-    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
-    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-base" style="background-image: url('./img/game/skins/${idString}_base.svg')"></div>
+    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
+    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
   </div>
-  <span class="skin-name">${skin.name}</span>
+  <span class="skin-name">${name}</span>
 </div>`);
-        skinItem.on("click", function() {
-            game.console.setBuiltInCVar("cv_loadout_skin", skin.idString);
-            $(this).addClass("selected").siblings().removeClass("selected");
-            updateSplashCustomize(skin.idString);
+        skinItem.on("click", () => {
+            game.console.setBuiltInCVar("cv_loadout_skin", idString);
+
+            skinItem.addClass("selected")
+                .siblings()
+                .removeClass("selected");
+
+            updateSplashCustomize(idString);
         });
-        $("#skins-list").append(skinItem);
+        skinList.append(skinItem);
     }
-    $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
     function handleEmote(slot: "win" | "death"): void { // eipi can you improve this so that it uses `emoteSlots` items with index >3
-        const emoteSelector = `#emote-wheel-bottom .emote-${slot} .fa-xmark`;
-        $(emoteSelector).on("click", function() {
-            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
-            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
-            $(this).hide();
+        const emote = $(`#emote-wheel-bottom .emote-${slot} .fa-xmark`);
+        const cvar = `cv_loadout_${slot}_emote` as const;
+        const emoteSlot = $(`#emote-wheel-container .emote-${slot}`);
+
+        emote.on("click", () => {
+            game.console.setBuiltInCVar(cvar, "");
+            emoteSlot.css("background-image", "none");
+            emote.hide();
         });
 
-        if (game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) === "") $(emoteSelector).hide();
+        if (game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) === "") emote.hide();
     }
 
     handleEmote("win");
     handleEmote("death");
 
     let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
-    function updateEmotesList(): void {
-        const emoteList = $("#emotes-list");
+    const emoteList = $<HTMLDivElement>("#emotes-list");
 
+    const bottomEmoteUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLSpanElement>>> = {};
+    const emoteWheelUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLDivElement>>> = {};
+
+    function updateEmotesList(): void {
         emoteList.empty();
 
         const emotes = [...Emotes.definitions].sort((a, b) => {
@@ -881,35 +926,40 @@ Video evidence is required.`)) {
         });
 
         let lastCategory = -1;
+
         for (const emote of emotes) {
             if (emote.isTeamEmote) continue;
 
             if (emote.category as number !== lastCategory) {
-                const categoryHeader = $(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
                 emoteList.append(categoryHeader);
                 lastCategory = emote.category;
             }
 
             // noinspection CssUnknownTarget
             const emoteItem
-                = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+                = $<HTMLDivElement>(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
     ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
     <span class="emote-name">${emote.name}</span>
     </div>`);
 
-            emoteItem.on("click", function() {
+            emoteItem.on("click", () => {
                 if (selectedEmoteSlot === undefined) return;
 
                 const cvarName = selectedEmoteSlot;
-                const emoteSelector = `#emote-wheel-bottom .emote-${cvarName} .fa-xmark`;
-
-                $(emoteSelector).show();
+                (
+                    bottomEmoteUiCache[cvarName] ??= $((`#emote-wheel-bottom .emote-${cvarName} .fa-xmark` as const))
+                ).show();
 
                 game.console.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
 
-                $(this).addClass("selected").siblings().removeClass("selected");
+                emoteItem.addClass("selected")
+                    .siblings()
+                    .removeClass("selected");
 
-                $(`#emote-wheel-container .emote-${cvarName}`).css(
+                (
+                    emoteWheelUiCache[cvarName] ??= $(`#emote-wheel-container .emote-${cvarName}`)
+                ).css(
                     "background-image",
                     `url("./img/game/emotes/${emote.idString}.svg")`
                 );
@@ -921,46 +971,68 @@ Video evidence is required.`)) {
 
     updateEmotesList();
 
-    for (const slot of emoteSlots) {
-        const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
+    const customizeEmote = $<HTMLDivElement>("#emote-customize-wheel");
+    const emoteListItemContainer = $<HTMLDivElement>(".emotes-list-item-container");
 
-        $(`#emote-wheel-container .emote-${slot}`)
+    for (const slot of emoteSlots) {
+        const cvar = `cv_loadout_${slot}_emote` as const;
+        const emote = game.console.getBuiltInCVar(cvar);
+
+        (
+            emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+        )
             .css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none")
             .on("click", () => {
                 if (selectedEmoteSlot === slot) return;
 
-                $(`#emote-wheel-container .emote-${selectedEmoteSlot}`)
-                    .removeClass("selected");
+                if (selectedEmoteSlot !== undefined) {
+                    (
+                        emoteWheelUiCache[selectedEmoteSlot] ??= $(`#emote-wheel-container .emote-${selectedEmoteSlot}`)
+                    ).removeClass("selected");
+                }
+
                 selectedEmoteSlot = slot;
 
                 updateEmotesList();
 
                 if (emoteSlots.indexOf(slot) > 3) {
                     // win / death emote
-                    $("#emote-customize-wheel").css(
+                    customizeEmote.css(
                         "background-image",
                         "url('/img/misc/emote_wheel.svg')"
                     );
-                    $(`#emote-wheel-container .emote-${slot}`).addClass("selected");
+
+                    (
+                        emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+                    ).addClass("selected");
                 } else {
-                    $("#emote-customize-wheel").css(
+                    customizeEmote.css(
                         "background-image",
                         `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
                     );
                 }
 
-                $(".emotes-list-item-container")
+                emoteListItemContainer
                     .removeClass("selected")
                     .css("cursor", "pointer");
 
-                $(`#emote-${game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`) || "none"}`).addClass("selected");
+                $(`#emote-${game.console.getBuiltInCVar(cvar) || "none"}`).addClass("selected");
             });
 
-        $(`#emote-wheel-bottom .emote-${slot} .remove-emote-btn`).on("click", () => {
-            game.console.setBuiltInCVar(`cv_loadout_${slot}_emote`, "");
-            $(`#emote-wheel-container .emote-${slot}`).css("background-image", "none");
-        });
+        (
+            emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+        ).children(".remove-emote-btn")
+            .on("click", () => {
+                game.console.setBuiltInCVar(cvar, "");
+                (
+                    emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+                ).css("background-image", "none");
+            });
     }
+
+    const crosshairImage = $<HTMLDivElement>("#crosshair-image");
+    const crosshairControls = $<HTMLDivElement>("#crosshair-controls");
+    const crosshairTargets = $<HTMLDivElement>("#crosshair-preview, #game");
 
     // Load crosshairs
     function loadCrosshair(): void {
@@ -974,54 +1046,67 @@ Video evidence is required.`)) {
         );
         const cursor = crosshair === "crosshair" ? crosshair : `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
 
-        $("#crosshair-image").css({
+        crosshairImage.css({
             backgroundImage: `url("${crosshair}")`,
             width: size,
             height: size
         });
 
-        $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]);
-
-        $("#crosshair-preview, #game").css({ cursor });
+        crosshairControls.toggleClass("disabled", !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]);
+        crosshairTargets.css({ cursor });
     }
+
     loadCrosshair();
+
+    const crosshairCache: Array<JQuery<HTMLDivElement>> = [];
 
     game.console.variables.addChangeListener(
         "cv_loadout_crosshair",
-        (game, value) => {
-            $(`#crosshair-${value}`).addClass("selected").siblings().removeClass("selected");
+        (_, value) => {
+            (crosshairCache[value] ??= $(`#crosshair-${value}`))
+                .addClass("selected")
+                .siblings()
+                .removeClass("selected");
+
             loadCrosshair();
         }
     );
 
-    Crosshairs.forEach((_, crosshairIndex) => {
-        const crosshairItem = $(`
-    <div id="crosshair-${crosshairIndex}" class="crosshairs-list-item-container">
-        <div class="crosshairs-list-item"></div>
-    </div>`);
+    const crosshairSize = game.console.getBuiltInCVar("cv_crosshair_size");
+    const currentCrosshair = game.console.getBuiltInCVar("cv_loadout_crosshair");
 
-        crosshairItem.find(".crosshairs-list-item").css({
-            "backgroundImage": `url("${getCrosshair(
-                crosshairIndex,
-                "#fff",
-                game.console.getBuiltInCVar("cv_crosshair_size"),
-                "#0",
-                0
-            )}")`,
-            "background-size": "contain",
-            "background-repeat": "no-repeat"
-        });
+    $<HTMLDivElement>("#crosshairs-list").append(
+        Crosshairs.map((_, crosshairIndex) => {
+            const listItem = $<HTMLDivElement>("<div class=\"crosshairs-list-item\"></div>");
+            const crosshairItem = $<HTMLDivElement>(
+                `<div id="crosshair-${crosshairIndex}" class="crosshairs-list-item-container${currentCrosshair === crosshairIndex ? " selected" : ""}"></div>`
+            );
 
-        crosshairItem.on("click", function() {
-            game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
-            loadCrosshair();
-            $(this).addClass("selected").siblings().removeClass("selected");
-        });
+            crosshairItem.append(listItem);
 
-        $("#crosshairs-list").append(crosshairItem);
-    });
+            listItem.css({
+                "backgroundImage": `url("${getCrosshair(
+                    crosshairIndex,
+                    "#fff",
+                    crosshairSize,
+                    "#0",
+                    0
+                )}")`,
+                "background-size": "contain",
+                "background-repeat": "no-repeat"
+            });
 
-    $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
+            crosshairItem.on("click", () => {
+                game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
+                loadCrosshair();
+                crosshairItem.addClass("selected")
+                    .siblings()
+                    .removeClass("selected");
+            });
+
+            return crosshairItem;
+        })
+    );
 
     // Load special tab
     if (game.console.getBuiltInCVar("dv_role") !== "") {
@@ -1060,39 +1145,43 @@ Video evidence is required.`)) {
     if (allowedBadges.length > 0) {
         $("#tab-badges").show();
 
-        const noBadgeItem = $(
+        const noBadgeItem = $<HTMLDivElement>(
             "<div id=\"badge-\" class=\"badges-list-item-container\">\
-            <div class=\"badges-list-item\"> </div>\
-            <span class=\"badge-name\">None</span>\
+                <div class=\"badges-list-item\"> </div>\
+                <span class=\"badge-name\">None</span>\
             </div>"
         );
 
-        noBadgeItem.on("click", function() {
+        noBadgeItem.on("click", () => {
             game.console.setBuiltInCVar("cv_loadout_badge", "");
-            $(this).addClass("selected").siblings().removeClass("selected");
+            noBadgeItem.addClass("selected").siblings().removeClass("selected");
         });
 
-        $("#badges-list").append(noBadgeItem);
-        for (const badge of allowedBadges) {
-            // noinspection CssUnknownTarget
-            const badgeItem = $(
-                `<div id="badge-${badge.idString}" class="badges-list-item-container">\
-                <div class="badges-list-item">\
-                    <div style="background-image: url('./img/game/badges/${badge.idString}.svg')"></div>\
-                </div>\
-                <span class="badge-name">${badge.name}</span>\
-                </div>`
-            );
+        const activeBadge = game.console.getBuiltInCVar("cv_loadout_badge");
 
-            badgeItem.on("click", function() {
-                game.console.setBuiltInCVar("cv_loadout_badge", badge.idString);
-                $(this).addClass("selected").siblings().removeClass("selected");
-            });
+        $("#badges-list").append(
+            noBadgeItem,
+            ...allowedBadges.map(({ idString, name }) => {
+                // noinspection CssUnknownTarget
+                const badgeItem = $(
+                    `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
+                    <div class="badges-list-item">\
+                        <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
+                    </div>\
+                    <span class="badge-name">${name}</span>\
+                    </div>`
+                );
 
-            $("#badges-list").append(badgeItem);
-        }
+                badgeItem.on("click", () => {
+                    game.console.setBuiltInCVar("cv_loadout_badge", idString);
+                    badgeItem.addClass("selected")
+                        .siblings()
+                        .removeClass("selected");
+                });
 
-        $(`#badge-${game.console.getBuiltInCVar("cv_loadout_badge")}`).addClass("selected");
+                return badgeItem;
+            })
+        );
     }
 
     function addSliderListener(
@@ -1203,14 +1292,14 @@ Video evidence is required.`)) {
         "#toggle-autopickup",
         "cv_autopickup"
     );
-    $("#toggle-autopickup").parent().parent().toggle(game.inputManager.isMobile);
+    $("#toggle-autopickup").parent().parent().toggle(inputManager.isMobile);
 
     // Autopickup a dual gun
     addCheckboxListener(
         "#toggle-autopickup-dual-guns",
         "cv_autopickup_dual_guns"
     );
-    $("#toggle-autopickup-dual-guns").parent().parent().toggle(game.inputManager.isMobile);
+    $("#toggle-autopickup-dual-guns").parent().parent().toggle(inputManager.isMobile);
 
     // Anonymous player names toggle
     addCheckboxListener(
@@ -1321,7 +1410,7 @@ Video evidence is required.`)) {
     renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
 
     // High resolution toggle
-    $("#toggle-high-res").parent().parent().toggle(!game.inputManager.isMobile);
+    $("#toggle-high-res").parent().parent().toggle(!inputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
 
     // Anti-aliasing toggle
@@ -1339,7 +1428,7 @@ Video evidence is required.`)) {
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
 
-    const gameUi = $("#game-ui");
+    const gameUi = $<HTMLDivElement>("#game-ui");
     function updateUiScale(): void {
         const scale = game.console.getBuiltInCVar("cv_ui_scale");
 
@@ -1360,7 +1449,7 @@ Video evidence is required.`)) {
     );
 
     // TODO: fix joysticks on mobile when UI scale is not 1
-    if (game.inputManager.isMobile) {
+    if (inputManager.isMobile) {
         $("#ui-scale-container").hide();
         game.console.setBuiltInCVar("cv_ui_scale", 1);
     }
@@ -1385,7 +1474,7 @@ Video evidence is required.`)) {
         "cv_minimap_minimized",
         value => {
             // HACK minimap code is hacky and it scares me too much
-            // HACK for me to add a "setVisible" method or smth
+            //      for me to add a "setVisible" method or smth
             let iterationCount = 0;
             while (game.map.visible === value && ++iterationCount < 100) {
                 game.map.toggleMinimap();
@@ -1421,10 +1510,13 @@ Video evidence is required.`)) {
     // Hide option to hide rules if rules haven't been acknowledged
     $(".checkbox-setting").has("#toggle-hide-rules").toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
 
+    const rules = $<HTMLButtonElement>("#btn-rules, #rules-close-btn");
+    const toggleHideRules = $<HTMLInputElement>("#toggle-hide-rules");
+
     $("#rules-close-btn").on("click", () => {
-        $("#btn-rules, #rules-close-btn").hide();
+        rules.hide();
         game.console.setBuiltInCVar("cv_hide_rules_button", true);
-        $("#toggle-hide-rules").prop("checked", true);
+        toggleHideRules.prop("checked", true);
     }).toggle(game.console.getBuiltInCVar("cv_rules_acknowledged") && !game.console.getBuiltInCVar("cv_hide_rules_button"));
 
     // Import settings
@@ -1484,108 +1576,138 @@ Video evidence is required.`)) {
 
     // Switch weapon slots by clicking
     const maxWeapons = GameConstants.player.maxWeapons;
+    const step = 1; // Define the step for cycling
+    const inventorySlotTypings = GameConstants.player.inventorySlotTypings;
+
     for (let slot = 0; slot < maxWeapons; slot++) {
-        const slotElement = $(`#weapon-slot-${slot + 1}`);
+        const slotElement = $<HTMLDivElement>(`#weapon-slot-${slot + 1}`);
+        const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
+
         slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
-            if (slotElement.hasClass("has-item")) {
-                e.stopImmediatePropagation();
-                if (slot === 3) { // Check if the slot is 4 (0-indexed)
-                    const step = 1; // Define the step for cycling
-                    if (game.activePlayer?.activeItem.itemType === ItemType.Throwable) game.inputManager.cycleThrowable(step);
-                }
-                game.inputManager.addAction({
-                    type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
-                    slot
-                });
+            if (!slotElement.hasClass("has-item")) return;
+
+            e.stopImmediatePropagation();
+            if (
+                isGrenadeSlot
+                && game.activePlayer?.activeItem.itemType === ItemType.Throwable
+            ) {
+                inputManager.cycleThrowable(step);
             }
+
+            inputManager.addAction({
+                type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
+                slot
+            });
         });
     }
 
-    const slotListener = (idString: string, listener: (button: number) => void): void => {
-        $(`#${idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+    const slotListener = (element: JQuery<HTMLDivElement>, listener: (button: number) => void): void => {
+        element[0].addEventListener("pointerdown", (e: PointerEvent): void => {
             listener(e.button);
             e.stopPropagation();
         });
     };
 
     // Generate the UI for scopes, healing items and ammos
-    for (const scope of Scopes) {
-        $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
-            <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
-        </div>`);
+    $<HTMLDivElement>("#scopes-container").append(
+        Scopes.definitions.map(scope => {
+            const ele = $<HTMLDivElement>(
+                `<div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+                    <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
+                    <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
+                </div>`
+            );
 
-        slotListener(scope.idString, (button: number): void => {
-            if (button === 0) {
-                game.inputManager.addAction({
-                    type: InputActions.UseItem,
-                    item: scope
-                });
-            } else if (button === 2 && game.teamMode) {
-                game.inputManager.addAction({
-                    type: InputActions.DropItem,
-                    item: scope
-                });
-            }
-        });
-
-        if (UI_DEBUG_MODE) {
-            $(`#${scope.idString}-slot`).show();
-        }
-    }
-
-    for (const item of HealingItems) {
-        $("#healing-items-container").append(`
-        <div class="inventory-slot item-slot active" id="${item.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
-            <span class="item-count" id="${item.idString}-count">0</span>
-            <div class="item-tooltip">
-                ${item.name}
-                <br>
-                Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
-            </div>
-        </div>`);
-
-        slotListener(item.idString, (button: number) => {
-            if (button === 0) {
-                if (game.inputManager.pingWheelActive) {
-                    game.inputManager.addAction({
-                        type: InputActions.Emote,
-                        emote: Emotes.fromString(item.idString)
-                    });
-                } else {
-                    game.inputManager.addAction({
+            slotListener(ele, button => {
+                if (button === 0) {
+                    inputManager.addAction({
                         type: InputActions.UseItem,
+                        item: scope
+                    });
+                }
+
+                if (button === 2 && game.teamMode) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: scope
+                    });
+                }
+            });
+
+            if (UI_DEBUG_MODE) ele.show();
+
+            return ele;
+        })
+    );
+
+    $<HTMLDivElement>("#healing-items-container").append(
+        HealingItems.definitions.map(item => {
+            const ele = $<HTMLDivElement>(
+                `<div class="inventory-slot item-slot active" id="${item.idString}-slot">
+                    <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
+                    <span class="item-count" id="${item.idString}-count">0</span>
+                    <div class="item-tooltip">
+                        ${item.name}
+                        <br>
+                        Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
+                    </div>
+                </div>`
+            );
+
+            slotListener(ele, button => {
+                if (button === 0) {
+                    if (inputManager.pingWheelActive) {
+                        inputManager.addAction({
+                            type: InputActions.Emote,
+                            emote: Emotes.fromString(item.idString)
+                        });
+                    } else {
+                        inputManager.addAction({
+                            type: InputActions.UseItem,
+                            item
+                        });
+                    }
+                }
+
+                if (button === 2 && game.teamMode) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
                         item
                     });
                 }
-            } else if (button === 2 && game.teamMode) {
-                game.inputManager.addAction({
-                    type: InputActions.DropItem,
-                    item
-                });
-            }
-        });
-    }
+            });
+
+            return ele;
+        })
+    );
+
+    const ammoContainers = {
+        true: $<HTMLDivElement>("#special-ammo-container"),
+        false: $<HTMLDivElement>("#ammo-container")
+    } as const;
 
     for (const ammo of Ammos) {
         if (ammo.ephemeral) continue;
 
-        $(`#${ammo.hideUnlessPresent ? "special-" : ""}ammo-container`).append(`
-        <div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
-            <span class="item-count" id="${ammo.idString}-count">0</span>
-        </div>`);
+        const ele = $<HTMLDivElement>(
+            `<div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
+                <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
+                <span class="item-count" id="${ammo.idString}-count">0</span>
+            </div>`
+        );
 
-        slotListener(ammo.idString, (button: number) => {
-            if (button === 0 && game.inputManager.pingWheelActive) {
-                game.inputManager.addAction({
+        ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
+
+        slotListener(ele, button => {
+            if (button === 0 && inputManager.pingWheelActive) {
+                inputManager.addAction({
                     type: InputActions.Emote,
                     emote: Emotes.fromString(ammo.idString)
                 });
-            } else if (button === 2 && game.teamMode) {
-                game.inputManager.addAction({
+            }
+
+            if (button === 2 && game.teamMode) {
+                inputManager.addAction({
                     type: InputActions.DropItem,
                     item: ammo
                 });
@@ -1593,22 +1715,30 @@ Video evidence is required.`)) {
         });
     }
 
-    for (const armor of ["helmet", "vest"] as const) {
-        slotListener(armor, (button: number): void => {
+    for (
+        const [ele, type] of [
+            [$<HTMLDivElement>("#helmet-slot"), "helmet"],
+            [$<HTMLDivElement>("#vest-slot"), "vest"]
+        ] as const
+    ) {
+        slotListener(ele, button => {
             if (button === 2 && game.activePlayer && game.teamMode) {
-                game.inputManager.addAction({
+                inputManager.addAction({
                     type: InputActions.DropItem,
-                    item: game.activePlayer.getEquipment(armor)
+                    // clicking on the slot necessitates the presence of an item
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    item: game.activePlayer.getEquipment(type)!
                 });
             }
         });
     }
 
-    $("#btn-spectate-options").on("click", () => {
-        const spectatingContainer = $("#spectating-container");
-        spectatingContainer.toggle();
-        const visible = spectatingContainer.is(":visible");
-        $("#btn-spectate-options-icon")
+    const optionsIcon = $("#btn-spectate-options-icon");
+    $<HTMLButtonElement>("#btn-spectate-options").on("click", () => {
+        ui.spectatingContainer.toggle();
+
+        const visible = ui.spectatingContainer.is(":visible");
+        optionsIcon
             .toggleClass("fa-eye", !visible)
             .toggleClass("fa-eye-slash", visible);
     });
@@ -1617,36 +1747,36 @@ Video evidence is required.`)) {
     $("#tab-mobile").toggle(isMobile.any);
 
     // Mobile event listeners
-    if (game.inputManager.isMobile) {
+    if (inputManager.isMobile) {
         // Interact message
-        $("#interact-message").on("click", () => {
+        ui.interactMsg.on("click", () => {
             if (game.uiManager.action.active) {
-                game.inputManager.addAction(InputActions.Cancel);
+                inputManager.addAction(InputActions.Cancel);
             } else {
-                game.inputManager.addAction(InputActions.Interact);
-                game.inputManager.addAction(InputActions.Loot);
+                inputManager.addAction(InputActions.Interact);
+                inputManager.addAction(InputActions.Loot);
             }
         });
         // noinspection HtmlUnknownTarget
-        $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
+        ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
 
         // Active weapon ammo button reloads
         $("#weapon-clip-reload-icon").show();
         $("#weapon-clip-ammo").on("click", () => game.console.handleQuery("reload"));
 
         // Emote button & wheel
-        $("#emote-wheel")
+        ui.emoteWheel
             .css("top", "50%")
             .css("left", "50%");
 
         const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
-                $("#emote-wheel").hide();
+                ui.emoteWheel.hide();
 
-                if (game.inputManager.pingWheelActive) {
+                if (inputManager.pingWheelActive) {
                     const ping = game.uiManager.mapPings[emoteSlot];
                     if (ping) {
-                        game.inputManager.addAction({
+                        inputManager.addAction({
                             type: InputActions.MapPing,
                             ping,
                             position: game.activePlayer?.position ?? Vec.create(0, 0)
@@ -1655,7 +1785,7 @@ Video evidence is required.`)) {
                 } else {
                     const emote = game.uiManager.emotes[emoteSlot];
                     if (emote) {
-                        game.inputManager.addAction({
+                        inputManager.addAction({
                             type: InputActions.Emote,
                             emote
                         });
@@ -1670,38 +1800,41 @@ Video evidence is required.`)) {
 
         $("#mobile-options").show();
 
-        $("#btn-game-menu").on("click", () => $("#game-menu").toggle());
+        ui.menuButton.on("click", () => $("#game-menu").toggle());
+        ui.emoteButton.on("click", () => ui.emoteWheel.show());
 
-        $("#btn-emotes").on("click", () => $("#emote-wheel").show());
-
-        $("#btn-toggle-ping").on("click", function() {
-            game.inputManager.pingWheelActive = !game.inputManager.pingWheelActive;
-            const { pingWheelActive } = game.inputManager;
-            $(this)
+        ui.pingToggle.on("click", () => {
+            inputManager.pingWheelActive = !inputManager.pingWheelActive;
+            const { pingWheelActive } = inputManager;
+            ui.pingToggle
                 .toggleClass("btn-danger", pingWheelActive)
                 .toggleClass("btn-primary", !pingWheelActive);
+
             game.uiManager.updateEmoteWheel();
         });
     }
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if ($("canvas").hasClass("active") && game.console.getBuiltInCVar("cv_leave_warning") && !game.gameOver) {
+        if (ui.canvas.hasClass("active") && game.console.getBuiltInCVar("cv_leave_warning") && !game.gameOver) {
             e.preventDefault();
         }
     });
 
+    const wrapperCache = new ExtendedMap<HTMLElement, JQuery>();
+
     // Hack to style range inputs background and add a label with the value :)
     function updateRangeInput(element: HTMLInputElement): void {
         const value = +element.value;
-        const max = +element.max;
         const min = +element.min;
+        const max = +element.max;
         const x = ((value - min) / (max - min)) * 100;
-        $(element).css(
-            "--background",
-            `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`
-        );
-        $(element)
+
+        wrapperCache.getAndGetDefaultIfAbsent(element, () => $(element))
+            .css(
+                "--background",
+                `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`
+            )
             .siblings(".range-input-value")
             .text(
                 element.id !== "slider-joystick-size"
@@ -1711,21 +1844,20 @@ Video evidence is required.`)) {
     }
 
     $<HTMLInputElement>("input[type=range]")
-        .on("input", e => {
-            updateRangeInput(e.target);
+        .on("input", ({ target }) => {
+            updateRangeInput(target);
         })
-        .each((_i, element) => {
+        .each((_, element) => {
             updateRangeInput(element);
         });
 
-    $(".tab").on("click", ev => {
-        const tab = $(ev.target);
-
-        tab.siblings().removeClass("active");
+    $(".tab").on("click", ({ target }) => {
+        const tab = wrapperCache.getAndGetDefaultIfAbsent(target, () => $(target));
 
         tab.addClass("active");
+        tab.siblings().removeClass("active");
 
-        const tabContent = $(`#${ev.target.id}-content`);
+        const tabContent = $(`#${target.id}-content`);
 
         tabContent.siblings().removeClass("active");
         tabContent.siblings().hide();
@@ -1734,18 +1866,21 @@ Video evidence is required.`)) {
         tabContent.show();
     });
 
+    const soloButtons = $<HTMLButtonElement>("#warning-btn-play-solo, #btn-play-solo");
     $<HTMLInputElement>("#warning-modal-agree-checkbox").on("click", function() {
-        $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !this.checked);
+        soloButtons.toggleClass("btn-disabled", !this.checked);
     });
 
+    const soloButton = $<HTMLButtonElement>("#btn-play-solo");
     $("#warning-btn-play-solo").on("click", () => {
-        $("#warning-modal").hide();
-        $("#btn-play-solo").trigger("click");
+        ui.warningModal.hide();
+        soloButton.trigger("click");
     });
 
+    const joinTeam = $("#btn-join-team");
     if (window.location.hash) {
         teamID = window.location.hash.slice(1);
-        $("#btn-join-team").trigger("click");
+        joinTeam.trigger("click");
     }
 }
 

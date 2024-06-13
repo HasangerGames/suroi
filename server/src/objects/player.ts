@@ -115,19 +115,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private _health = this._maxHealth;
 
-    normalizedHealth = 0;
+    private _normalizedHealth = 0;
+    get normalizedHealth(): number { return this._normalizedHealth; }
 
     get health(): number { return this._health; }
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
         this._team?.setDirty();
         this.dirty.health = true;
-        this.normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
+        this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
     }
 
     private _maxAdrenaline = GameConstants.player.maxAdrenaline;
 
-    normalizedAdrenaline = 0;
+    private _normalizedAdrenaline = 0;
+    get normalizedAdrenaline(): number { return this._normalizedAdrenaline; }
 
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
@@ -149,7 +151,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     set adrenaline(adrenaline: number) {
         this._adrenaline = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
         this.dirty.adrenaline = true;
-        this.normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
+        this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
     private _modifiers = {
@@ -348,7 +350,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     canDespawn = true;
 
-    lastSwitch = 0;
     lastFreeSwitch = 0;
     effectiveSwitchDelay = 0;
 
@@ -366,6 +367,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     set position(position: Vector) {
+        if (Vec.equals(position, this.position)) return;
+
         this.hitbox.position = position;
         this._team?.setDirty();
     }
@@ -846,8 +849,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // player data
         packet.playerData = {
-            normalizedHealth: player.normalizedHealth,
-            normalizedAdrenaline: player.normalizedAdrenaline,
+            normalizedHealth: player._normalizedHealth,
+            normalizedAdrenaline: player._normalizedAdrenaline,
             maxHealth: player.maxHealth,
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,

@@ -160,7 +160,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         );
 
         if (game.teamMode) {
-            // teamMode guarantees these images' prescence
+            // teamMode guarantees these images' presence
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
@@ -913,23 +913,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    getEquipment(equipmentType: string): ArmorDefinition | BackpackDefinition {
-        const equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
+    getEquipment<
+        const Type extends "helmet" | "vest" | "backpack"
+    >(equipmentType: Type): Type extends "backpack" ? BackpackDefinition : ArmorDefinition | undefined {
+        type Ret = Type extends "backpack" ? BackpackDefinition : ArmorDefinition | undefined;
+
         switch (equipmentType) {
-            case "helmet":
-                if (this.equipment.helmet) {
-                    return this.equipment.helmet;
-                }
-                break;
-            case "vest":
-                if (this.equipment.vest) {
-                    return this.equipment.vest;
-                }
-                break;
-            case "backpack":
-                return this.equipment.backpack;
+            case "helmet": return this.equipment.helmet as Ret;
+            case "vest": return this.equipment.vest as Ret;
+            case "backpack": return this.equipment.backpack as Ret;
         }
-        return equipment;
+
+        // never happens
+        return undefined as Ret;
     }
 
     canInteract(player: Player): boolean {
@@ -1085,7 +1081,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.Downed: {
                 this.updateFistsPosition(false);
 
-                if (this.images.rightLeg) {
+                if (this.images.rightLeg && !this.destroyed) {
                     this.anims.rightLeg = this.game.addTween({
                         target: this.images.rightLeg,
                         to: { x: this.images.rightLeg.x - 10, y: this.images.rightLeg.y },
@@ -1110,7 +1106,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 setTimeout(() => {
-                    if (this.images.leftLeg) {
+                    if (this.images.leftLeg && !this.destroyed) {
                         this.anims.leftLeg = this.game.addTween({
                             target: this.images.leftLeg,
                             to: { x: this.images.leftLeg.x - 10, y: this.images.leftLeg.y },

@@ -620,8 +620,6 @@ export type CollisionResponse = {
 } | null;
 
 export function calculateDoorHitboxes<
-    // tf are you talking about
-
     U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
 >(
     definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },
@@ -643,7 +641,14 @@ export function calculateDoorHitboxes<
     switch (definition.operationStyle) {
         case "slide": {
             const openHitbox = Geometry.transformRectangle(
-                Vec.addAdjust(position, Vec.create((definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1), 0), rotation),
+                Vec.addAdjust(
+                    position,
+                    Vec.create(
+                        (definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1),
+                        0
+                    ),
+                    rotation
+                ),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,

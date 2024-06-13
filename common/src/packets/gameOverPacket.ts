@@ -1,7 +1,7 @@
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
-export class GameOverPacket extends Packet {
+export class GameOverPacket implements Packet {
     won!: boolean;
     playerID!: number;
     kills!: number;
@@ -10,7 +10,7 @@ export class GameOverPacket extends Packet {
     timeAlive!: number;
     rank!: number;
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.won);
         stream.writeObjectID(this.playerID);
         stream.writeUint8(this.kills);
@@ -20,7 +20,7 @@ export class GameOverPacket extends Packet {
         if (!this.won) stream.writeBits(this.rank, 7);
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         this.won = stream.readBoolean();
         this.playerID = stream.readObjectID();
         this.kills = stream.readUint8();

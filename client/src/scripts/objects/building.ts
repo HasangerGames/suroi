@@ -140,7 +140,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         if (graphics) {
                             graphics.moveTo(player.position.x, player.position.y);
                             graphics.lineTo(end.x, end.y);
-                            graphics.endFill();
+                            graphics.fill();
                         }
 
                         if (!(

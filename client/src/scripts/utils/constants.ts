@@ -16,7 +16,7 @@ export const HITBOX_COLORS = {
     playerWeapon: new Color("lime")
 };
 
-// validaed by dv
+// validated by dv
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const MODE = Modes.find(m => m.idString === Config.mode)!;
 

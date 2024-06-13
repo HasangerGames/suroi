@@ -38,6 +38,17 @@ export function stringify(val: unknown): string {
     }
 }
 
+export function html(a: TemplateStringsArray, ...b: ReadonlyArray<string | number | bigint | null | undefined>): string {
+    let buffer = "";
+    const length = a.length;
+    for (let i = 0; i < length; i++) {
+        // shut the fuck up
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        buffer += (a[i] ?? "") + (b[i] ?? "");
+    }
+    return buffer;
+}
+
 export const allowedTags = Object.freeze([
     // Headings
     "h1", "h2", "h3", "h4", "h5", "h6",
