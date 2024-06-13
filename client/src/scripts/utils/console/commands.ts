@@ -13,8 +13,8 @@ import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/obje
 import { Vec } from "../../../../../common/src/utils/vector";
 import { Config } from "../../config";
 import { type Game } from "../../game";
-import { COLORS } from "../constants";
 import { type InputManager } from "../../managers/inputManager";
+import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
@@ -616,7 +616,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_minimap",
         function(): undefined {
-            if (!$("canvas").hasClass("over-hud")) {
+            if (!this.uiManager.ui.canvas.hasClass("over-hud")) {
                 game.console.setBuiltInCVar("cv_minimap_minimized", !game.console.getBuiltInCVar("cv_minimap_minimized"));
             }
         },
@@ -683,7 +683,7 @@ export function setUpCommands(game: Game): void {
                 this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
             }
 
-            $("#emote-wheel")
+            this.uiManager.ui.emoteWheel
                 .css("left", `${mouseX / scale}px`)
                 .css("top", `${mouseY / scale}px`)
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
@@ -697,7 +697,7 @@ export function setUpCommands(game: Game): void {
             this.inputManager.emoteWheelActive = false;
             this.inputManager.pingWheelMinimap = false;
 
-            $("#emote-wheel").hide();
+            this.uiManager.ui.emoteWheel.hide();
 
             if (this.inputManager.selectedEmote === undefined) return;
 

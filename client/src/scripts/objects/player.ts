@@ -913,23 +913,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    getEquipment(equipmentType: string): ArmorDefinition | BackpackDefinition {
-        const equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
+    getEquipment<
+        const Type extends "helmet" | "vest" | "backpack"
+    >(equipmentType: Type): Type extends "backpack" ? BackpackDefinition : ArmorDefinition | undefined {
+        type Ret = Type extends "backpack" ? BackpackDefinition : ArmorDefinition | undefined;
+
         switch (equipmentType) {
-            case "helmet":
-                if (this.equipment.helmet) {
-                    return this.equipment.helmet;
-                }
-                break;
-            case "vest":
-                if (this.equipment.vest) {
-                    return this.equipment.vest;
-                }
-                break;
-            case "backpack":
-                return this.equipment.backpack;
+            case "helmet": return this.equipment.helmet as Ret;
+            case "vest": return this.equipment.vest as Ret;
+            case "backpack": return this.equipment.backpack as Ret;
         }
-        return equipment;
+
+        // never happens
+        return undefined as Ret;
     }
 
     canInteract(player: Player): boolean {

@@ -154,18 +154,20 @@ export class UIManager {
         adrenalineBar: $<HTMLDivElement>("#adrenaline-bar"),
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
-        killModal: $<HTMLDivElement>("#kill-msg"),
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
         interactMsg: $<HTMLDivElement>("#interact-message"),
         interactKey: $("#interact-key"),
+        interactText: $<HTMLSpanElement>("#interact-text"),
 
         teamContainer: $<HTMLDivElement>("#team-container"),
+        createTeamMenu: $<HTMLDivElement>("#create-team-menu"),
 
         emoteButton: $<HTMLButtonElement>("#btn-emotes"),
         pingToggle: $<HTMLButtonElement>("#btn-toggle-ping"),
         menuButton: $<HTMLButtonElement>("#btn-game-menu"),
 
+        emoteWheel: $<HTMLDivElement>("#emote-wheel"),
         emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
             .map(selector => $<HTMLDivElement>(`#emote-wheel > ${selector}`)),
 
@@ -178,8 +180,11 @@ export class UIManager {
         spectatingMsg: $<HTMLDivElement>("#spectating-msg"),
         spectatingMsgPlayer: $<HTMLSpanElement>("#spectating-msg-player"),
         btnSpectate: $<HTMLButtonElement>("#btn-spectate"),
+        spectatePrevious: $<HTMLButtonElement>("#btn-spectate-previous"),
+        spectateNext: $<HTMLButtonElement>("#btn-spectate-next"),
 
         gasMsg: $<HTMLDivElement>("#gas-msg"),
+        gasMsgInfo: $<HTMLDivElement>("#gas-msg-info"),
 
         joystickContainer: $<HTMLDivElement>("#joysticks-containers"),
 
@@ -193,6 +198,7 @@ export class UIManager {
         gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
         chickenDinner: $<HTMLImageElement>("#chicken-dinner"),
 
+        killMsgModal: $<HTMLDivElement>("#kill-msg"),
         killMsgHeader: $<HTMLDivElement>("#kill-msg-kills"),
         killMsgCounter: $<HTMLDivElement>("#ui-kills"),
         killMsgSeverity: $<HTMLSpanElement>("#kill-msg-severity"),
@@ -201,7 +207,44 @@ export class UIManager {
 
         killLeaderLeader: $<HTMLSpanElement>("#kill-leader-leader"),
         killLeaderCount: $<HTMLSpanElement>("#kill-leader-kills-counter"),
-        spectateKillLeader: $<HTMLButtonElement>("#btn-spectate-kill-leader")
+        spectateKillLeader: $<HTMLButtonElement>("#btn-spectate-kill-leader"),
+
+        splashMsgText: $<HTMLSpanElement>("#splash-server-message-text"),
+        splashMsg: $<HTMLDivElement>("#splash-server-message"),
+        splashUi: $<HTMLDivElement>("#splash-ui"),
+        splashOptions: $<HTMLDivElement>("#splash-options"),
+
+        btnReport: $<HTMLButtonElement>("#btn-report"),
+        reportingName: $<HTMLSpanElement>("#reporting-name"),
+        reportingId: $<HTMLSpanElement>("#report-name"),
+        reportingModal: $<HTMLDivElement>("#report-modal"),
+
+        gameMenu: $<HTMLDivElement>("#game-menu"),
+
+        canvas: $<HTMLCanvasElement>("canvas"),
+
+        playerAlive: $<HTMLDivElement>("#ui-players-alive"),
+
+        newsPosts: $<HTMLDivElement>("#news-posts"),
+
+        lockedInfo: $<HTMLButtonElement>("#locked-info"),
+        lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
+        lockedTime: $<HTMLSpanElement>("#locked-time"),
+
+        warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
+        warningText: $<HTMLParagraphElement>("#warning-modal-text"),
+        warningAgreeOpts: $<HTMLDivElement>("#warning-modal-agree-options"),
+        warningAgreeCheckbox: $<HTMLInputElement>("#warning-modal-agree-checkbox"),
+        warningModal: $<HTMLDivElement>("#warning-modal"),
+
+        btnStartGame: $<HTMLButtonElement>("#btn-start-game"),
+        createTeamToggles: $<HTMLDivElement>("#create-team-toggles"),
+
+        createTeamUrl: $<HTMLInputElement>("#create-team-url-field"),
+        createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
+        createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
+        createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
+        closeCreateTeam: $<HTMLButtonElement>("#close-create-team")
     });
 
     private readonly _weaponSlotCache: Array<JQuery<HTMLDivElement>> = [];
@@ -775,13 +818,13 @@ export class UIManager {
             ` ${weaponUsed !== undefined ? `with ${weaponUsed}` : ""}${streakText}`
         );
 
-        this.ui.killModal.fadeIn(350, () => {
+        this.ui.killMsgModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
             // fast if the player makes more than one kill in a short time span
             clearTimeout(this._killMessageTimeoutID);
 
             this._killMessageTimeoutID = window.setTimeout(() => {
-                this.ui.killModal.fadeOut(350);
+                this.ui.killMsgModal.fadeOut(350);
             }, 3000);
         });
     }
