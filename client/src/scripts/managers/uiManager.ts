@@ -13,7 +13,7 @@ import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPack
 import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { freezeDeep } from "../../../../common/src/utils/misc";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
@@ -57,9 +57,9 @@ export class UIManager {
     teammates: (UpdatePacket["playerData"] & object)["teammates"] = [];
 
     readonly debugReadouts = Object.freeze({
-        fps: $("#fps-counter"),
-        ping: $("#ping-counter"),
-        pos: $("#coordinates-hud")
+        fps: $<HTMLSpanElement>("#fps-counter"),
+        ping: $<HTMLSpanElement>("#ping-counter"),
+        pos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
     constructor(game: Game) {
@@ -86,7 +86,7 @@ export class UIManager {
     }
 
     getPlayerName(id: number): string {
-        const element = $("<span>");
+        const element = $<HTMLSpanElement>("<span>");
         const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
         const name = this.getRawPlayerName(id);
@@ -136,35 +136,78 @@ export class UIManager {
     }
 
     readonly ui = Object.freeze({
-        ammoCounterContainer: $("#weapon-ammo-container"),
-        activeAmmo: $("#weapon-clip-ammo-count"),
-        reserveAmmo: $("#weapon-inventory-ammo"),
-        killStreakIndicator: $("#killstreak-indicator-container"),
-        killStreakCounter: $("#killstreak-indicator-counter"),
+        ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
+        activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
+        reserveAmmo: $<HTMLDivElement>("#weapon-inventory-ammo"),
+        killStreakIndicator: $<HTMLDivElement>("#killstreak-indicator-container"),
+        killStreakCounter: $<HTMLSpanElement>("#killstreak-indicator-counter"),
 
-        weaponsContainer: $("#weapons-container"),
+        weaponsContainer: $<HTMLDivElement>("#weapons-container"),
 
-        minMaxAdren: $("#adrenaline-bar-min-max"),
-        maxHealth: $("#health-bar-max"),
+        minMaxAdren: $<HTMLSpanElement>("#adrenaline-bar-min-max"),
+        maxHealth: $<HTMLSpanElement>("#health-bar-max"),
 
-        healthBar: $("#health-bar"),
-        healthBarAmount: $("#health-bar-percentage"),
-        healthAnim: $("#health-bar-animation"),
+        healthBar: $<HTMLDivElement>("#health-bar"),
+        healthBarAmount: $<HTMLSpanElement>("#health-bar-amount"),
+        healthAnim: $<HTMLDivElement>("#health-bar-animation"),
 
-        adrenalineBar: $("#adrenaline-bar"),
-        adrenalineBarPercentage: $("#adrenaline-bar-percentage"),
+        adrenalineBar: $<HTMLDivElement>("#adrenaline-bar"),
+        adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
-        killModal: $("#kill-msg"),
-        killFeed: $("#kill-feed"),
+        killModal: $<HTMLDivElement>("#kill-msg"),
+        killFeed: $<HTMLDivElement>("#kill-feed"),
 
-        interactMsg: $("#interact-message"),
+        interactMsg: $<HTMLDivElement>("#interact-message"),
         interactKey: $("#interact-key"),
 
-        teamContainer: $("#team-container"),
+        teamContainer: $<HTMLDivElement>("#team-container"),
+
+        emoteButton: $<HTMLButtonElement>("#btn-emotes"),
+        pingToggle: $<HTMLButtonElement>("#btn-toggle-ping"),
+        menuButton: $<HTMLButtonElement>("#btn-game-menu"),
 
         emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
-            .map(selector => $(`#emote-wheel > ${selector}`))
+            .map(selector => $<HTMLDivElement>(`#emote-wheel > ${selector}`)),
+
+        actionContainer: $<HTMLDivElement>("#action-container"),
+        actionName: $<HTMLDivElement>("#action-name"),
+        actionTime: $<HTMLHeadingElement>("#action-time"),
+        actionTimer: $<SVGElement>("#action-timer-anim"),
+
+        spectatingContainer: $<HTMLDivElement>("#spectating-container"),
+        spectatingMsg: $<HTMLDivElement>("#spectating-msg"),
+        spectatingMsgPlayer: $<HTMLSpanElement>("#spectating-msg-player"),
+        btnSpectate: $<HTMLButtonElement>("#btn-spectate"),
+
+        gasMsg: $<HTMLDivElement>("#gas-msg"),
+
+        joystickContainer: $<HTMLDivElement>("#joysticks-containers"),
+
+        gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
+        gameOverText: $<HTMLHeadingElement>("#game-over-text"),
+        gameOverPlayerName: $<HTMLHeadingElement>("#game-over-text"),
+        gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
+        gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
+        gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
+        gameOverTime: $<HTMLSpanElement>("#game-over-time"),
+        gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
+        chickenDinner: $<HTMLImageElement>("#chicken-dinner"),
+
+        killMsgHeader: $<HTMLDivElement>("#kill-msg-kills"),
+        killMsgCounter: $<HTMLDivElement>("#ui-kills"),
+        killMsgSeverity: $<HTMLSpanElement>("#kill-msg-severity"),
+        killMsgVictimName: $<HTMLSpanElement>("#kill-msg-player-name"),
+        killMsgWeaponUsed: $<HTMLSpanElement>("#kill-msg-weapon-used"),
+
+        killLeaderLeader: $<HTMLSpanElement>("#kill-leader-leader"),
+        killLeaderCount: $<HTMLSpanElement>("#kill-leader-kills-counter"),
+        spectateKillLeader: $<HTMLButtonElement>("#btn-spectate-kill-leader")
     });
+
+    private readonly _weaponSlotCache: Array<JQuery<HTMLDivElement>> = [];
+    private readonly _itemCountCache: Record<string, JQuery<HTMLSpanElement>> = {};
+    private readonly _itemSlotCache: Record<string, JQuery<HTMLDivElement>> = {};
+    private readonly _scopeSlotCache: Record<ReferenceTo<ScopeDefinition>, JQuery<HTMLDivElement>> = {};
 
     readonly action = {
         active: false,
@@ -185,7 +228,7 @@ export class UIManager {
         this.action.fake = fake;
         if (time > 0) {
             this.action.start = Date.now();
-            $("#action-timer-anim")
+            this.ui.actionTimer
                 .stop()
                 .css({ "stroke-dashoffset": "226" })
                 .animate(
@@ -193,15 +236,15 @@ export class UIManager {
                     time * 1000,
                     "linear",
                     () => {
-                        $("#action-container").hide();
+                        this.ui.actionContainer.hide();
                         this.action.active = false;
                     }
                 );
         }
 
         if (name) {
-            $("#action-name").text(name);
-            $("#action-container").show();
+            this.ui.actionName.text(name);
+            this.ui.actionContainer.show();
         }
 
         this.action.active = true;
@@ -210,11 +253,11 @@ export class UIManager {
 
     updateAction(): void {
         const amount = this.action.time - (Date.now() - this.action.start) / 1000;
-        if (amount > 0) $("#action-time").text(amount.toFixed(1));
+        if (amount > 0) this.ui.actionTime.text(amount.toFixed(1));
     }
 
     cancelAction(): void {
-        $("#action-container")
+        this.ui.actionContainer
             .hide()
             .stop();
         this.action.active = false;
@@ -225,28 +268,38 @@ export class UIManager {
     showGameOverScreen(packet: GameOverPacket): void {
         const game = this.game;
 
-        $("#interact-message").hide();
-        $("#spectating-container").hide();
+        this.ui.interactMsg.hide();
+        this.ui.spectatingContainer.hide();
 
         game.activePlayer?.actionSound?.stop();
 
-        $("#gas-msg").fadeOut(500);
+        this.ui.gasMsg.fadeOut(500);
 
         // Disable joysticks div so you can click on players to spectate
-        $("#joysticks-containers").hide();
+        this.ui.joystickContainer.hide();
 
-        const gameOverScreen = $("#game-over-overlay");
+        const {
+            gameOverOverlay,
+            chickenDinner,
+            gameOverText,
+            gameOverRank,
+            gameOverPlayerName,
+            gameOverKills,
+            gameOverDamageDone,
+            gameOverDamageTaken,
+            gameOverTime
+        } = this.ui;
 
         game.gameOver = true;
 
         if (!packet.won) {
-            $("#btn-spectate").removeClass("btn-disabled").show();
+            this.ui.btnSpectate.removeClass("btn-disabled").show();
             game.map.indicator.setFrame("player_indicator_dead");
         } else {
-            $("#btn-spectate").hide();
+            this.ui.btnSpectate.hide();
         }
 
-        $("#chicken-dinner").toggle(packet.won);
+        chickenDinner.toggle(packet.won);
 
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
@@ -254,25 +307,25 @@ export class UIManager {
             ? html`<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
-        $("#game-over-text").html(
+        gameOverText.html(
             packet.won
                 ? "Winner winner chicken dinner!"
                 : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
         );
 
-        $("#game-over-player-name").html(playerName + playerBadgeText);
+        gameOverPlayerName.html(playerName + playerBadgeText);
 
-        $("#game-over-kills").text(packet.kills);
-        $("#game-over-damage-done").text(packet.damageDone);
-        $("#game-over-damage-taken").text(packet.damageTaken);
-        $("#game-over-time").text(formatDate(packet.timeAlive));
+        gameOverKills.text(packet.kills);
+        gameOverDamageDone.text(packet.damageDone);
+        gameOverDamageTaken.text(packet.damageTaken);
+        gameOverTime.text(formatDate(packet.timeAlive));
 
         if (packet.won) void game.music.play();
 
-        this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
+        this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
 
         // Player rank
-        $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
+        gameOverRank.text(`#${packet.rank}`).toggleClass("won", packet.won);
     }
 
     // I'd rewrite this as MapPings.filter(…), but it's not really clear how
@@ -305,30 +358,31 @@ export class UIManager {
         this._teammateDataCache.clear();
     }
 
-    lastHealthBarAnimTime = 0;
-    oldHealth = 0;
+    private _lastHealthBarAnimTime = 0;
+    private _oldHealth = 0;
 
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
 
         if (data.dirty.id) {
-            this.game.spectating = data.spectating;
-            if (data.spectating) {
+            const spectating = data.spectating;
+            this.game.spectating = spectating;
+
+            if (spectating) {
                 const badge = this.getPlayerBadge(data.id);
                 const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
-                $("#game-over-overlay").fadeOut();
-
-                $("#spectating-msg-player").html(this.getPlayerName(data.id) + badgeText);
+                this.ui.gameOverOverlay.fadeOut();
+                this.ui.spectatingMsgPlayer.html(this.getPlayerName(data.id) + badgeText);
             }
-            $("#spectating-container").toggle(data.spectating);
-            $("#spectating-msg").toggle(data.spectating);
+            this.ui.spectatingContainer.toggle(spectating);
+            this.ui.spectatingMsg.toggle(spectating);
             this.clearTeammateCache();
 
             if (this.game.inputManager.isMobile) {
-                $("#btn-emotes").toggle(!data.spectating);
-                $("#btn-toggle-ping").toggle(!data.spectating);
-                $("#btn-game-menu").toggle(!data.spectating);
+                this.ui.emoteButton.toggle(!spectating);
+                this.ui.pingToggle.toggle(!spectating);
+                this.ui.menuButton.toggle(!spectating);
             }
         }
 
@@ -432,13 +486,13 @@ export class UIManager {
                 this.ui.healthAnim
                     .stop()
                     .width(0);
-            } else if (Date.now() - this.lastHealthBarAnimTime > 500) {
+            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
                 this.ui.healthAnim
                     .stop()
-                    .width(`${this.oldHealth}%`)
+                    .width(`${this._oldHealth}%`)
                     .animate({ width: `${realPercentage}%` }, 500);
-                this.oldHealth = realPercentage;
-                this.lastHealthBarAnimTime = Date.now();
+                this._oldHealth = realPercentage;
+                this._lastHealthBarAnimTime = Date.now();
             }
 
             this.ui.healthBarAmount
@@ -452,7 +506,7 @@ export class UIManager {
 
             this.ui.adrenalineBar.width(`${percentage}%`);
 
-            this.ui.adrenalineBarPercentage
+            this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
@@ -548,7 +602,7 @@ export class UIManager {
 
         const max = GameConstants.player.maxWeapons;
         for (let i = 0; i < max; i++) {
-            const container = $(`#weapon-slot-${i + 1}`);
+            const container = this._weaponSlotCache[i] ??= $(`#weapon-slot-${i + 1}`);
 
             const weapon = inventory.weapons[i];
             const isActive = this.inventory.activeWeaponIndex === i;
@@ -635,11 +689,10 @@ export class UIManager {
     updateItems(): void {
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
-            // TODO cache these somewhere lol
-            const countElem = $(`#${item}-count`);
+            const countElem = this._itemCountCache[item] ??= $(`#${item}-count`);
+            const itemSlot = this._itemSlotCache[item] ??= $(`#${item}-slot`);
 
             const itemDef = Loots.fromString(item);
-            const itemSlot = $(`#${item}-slot`);
 
             if (+countElem.text() < count && itemSlot.length) {
                 this._playSlotAnimation(itemSlot);
@@ -664,19 +717,12 @@ export class UIManager {
             }
         }
 
-        $(`#${this.inventory.scope.idString}-slot`).addClass("active");
+        (
+            this._scopeSlotCache[this.inventory.scope.idString] ??= $(`#${this.inventory.scope.idString}-slot`)
+        ).addClass("active");
     }
 
     private _killMessageTimeoutID?: number;
-
-    private readonly _killMessageUICache: {
-        header?: JQuery<HTMLDivElement>
-        killCounter?: JQuery<HTMLDivElement>
-        severity?: JQuery<HTMLSpanElement>
-        streak?: JQuery<HTMLSpanElement>
-        victimName?: JQuery<HTMLSpanElement>
-        weaponUsed?: JQuery<HTMLSpanElement>
-    } = {};
 
     private _addKillMessage(
         message: (
@@ -695,18 +741,26 @@ export class UIManager {
     ): void {
         const { severity, victimName, weaponUsed, type } = message;
 
+        const {
+            killMsgHeader: headerUi,
+            killMsgCounter: killCounterUi,
+            killMsgSeverity: severityUi,
+            killMsgVictimName: victimNameUi,
+            killMsgWeaponUsed: weaponUsedUi
+        } = this.ui;
+
         let streakText = "";
         switch (severity) {
             case KillfeedEventSeverity.Kill: {
                 const { streak, kills } = message;
-                (this._killMessageUICache.header ??= $("#kill-msg-kills")).text(`Kills: ${kills}`);
-                (this._killMessageUICache.killCounter ??= $("#ui-kills")).text(kills);
+                headerUi.text(`Kills: ${kills}`);
+                killCounterUi.text(kills);
                 streakText = streak ? ` (streak: ${streak})` : "";
                 break;
             }
             case KillfeedEventSeverity.Down: {
                 // Do not show kills counter in the down message.
-                $("#kill-msg-kills").text("");
+                headerUi.text("");
             }
         }
 
@@ -714,10 +768,10 @@ export class UIManager {
         // some of these yield nonsensical sentences, but those that do are occur if
         // `type` takes on bogus values like "Gas" or "Airdrop"
 
-        (this._killMessageUICache.severity ??= $("#kill-msg-severity")).text(eventText);
+        severityUi.text(eventText);
 
-        (this._killMessageUICache.victimName ??= $("#kill-msg-player-name")).html(victimName);
-        (this._killMessageUICache.weaponUsed ??= $("#kill-msg-weapon-used")).text(
+        victimNameUi.html(victimName);
+        weaponUsedUi.text(
             ` ${weaponUsed !== undefined ? `with ${weaponUsed}` : ""}${streakText}`
         );
 
@@ -733,7 +787,7 @@ export class UIManager {
     }
 
     private _addKillFeedMessage(text: string, classes: string[]): void {
-        const killFeedItem = $('<div class="kill-feed-item">');
+        const killFeedItem = $<HTMLDivElement>('<div class="kill-feed-item">');
 
         killFeedItem.html(text);
         killFeedItem.addClass(classes);
@@ -1002,11 +1056,15 @@ export class UIManager {
 
                     return id === this.game.activePlayerID || (
                         id !== undefined
-                        && (target = this.game.objects.get(id))
-                        && target instanceof Player
-                        && target.teamID === this.game.teamID
-                    ) || (
-                        this._teammateDataCache.has(id)
+                        && (
+                            (
+                                (target = this.game.objects.get(id))
+                                && target instanceof Player
+                                && target.teamID === this.game.teamID
+                            ) || (
+                                this._teammateDataCache.has(id)
+                            )
+                        )
                     );
                 };
 
@@ -1049,31 +1107,45 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderAssigned: {
+                const {
+                    killLeaderLeader: leader,
+                    killLeaderCount: count,
+                    spectateKillLeader: spectateLeader
+                } = this.ui;
+
                 classes.push(
                     victimId === this.game.activePlayerID
                         ? "kill-feed-item-killer"
                         : "kill-feed-kill-leader"
                 );
 
-                $("#kill-leader-leader").html(`${victimName}${victimBadgeText}`);
-                $("#kill-leader-kills-counter").text(attackerKills);
+                leader.html(`${victimName}${victimBadgeText}`);
+                count.text(attackerKills);
 
                 if (!hideFromKillfeed) {
                     messageText = html`<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
-                $("#btn-spectate-kill-leader").removeClass("btn-disabled");
+
+                spectateLeader.removeClass("btn-disabled");
                 break;
             }
 
             case KillfeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(attackerKills);
+                this.ui.killLeaderCount.text(attackerKills);
                 break;
             }
 
             case KillfeedMessageType.KillLeaderDead: {
-                $("#kill-leader-leader").text("Waiting for leader");
-                $("#kill-leader-kills-counter").text("0");
+                const {
+                    killLeaderLeader: leader,
+                    killLeaderCount: count,
+                    spectateKillLeader: spectateLeader
+                } = this.ui;
+
+                leader.text("Waiting for leader");
+                count.text("0");
+
                 // noinspection HtmlUnknownTarget
                 messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
                     ? attackerId !== victimId
@@ -1098,7 +1170,7 @@ export class UIManager {
                 }
 
                 this.game.soundManager.play("kill_leader_dead");
-                $("#btn-spectate-kill-leader").addClass("btn-disabled");
+                spectateLeader.addClass("btn-disabled");
                 break;
             }
         }
