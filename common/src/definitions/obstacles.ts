@@ -70,41 +70,47 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly tint?: number
     readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
     readonly additionalDestroySounds: string[]
-} & (({
-    readonly role: ObstacleSpecialRoles.Door
-    readonly locked?: boolean
-    readonly openOnce?: boolean
-    readonly animationDuration?: number
-    readonly doorSound?: string
-} & ({
-    readonly operationStyle?: "swivel"
-    readonly hingeOffset: Vector
-} | {
-    readonly operationStyle: "slide"
-    /**
-     * Determines how much the door slides. 1 means it'll be displaced by its entire width,
-     * 0.5 means it'll be displaced by half its width, etc
-     */
-    readonly slideFactor?: number
-})) | {
-    readonly role: ObstacleSpecialRoles.Activatable
-    readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
-        readonly maxRange?: number
-        readonly falloff?: number
+} & (
+    (
+        {
+            readonly role: ObstacleSpecialRoles.Door
+            readonly locked?: boolean
+            readonly openOnce?: boolean
+            readonly animationDuration?: number
+            readonly doorSound?: string
+        } & (
+            {
+                readonly operationStyle?: "swivel"
+                readonly hingeOffset: Vector
+            } | {
+                readonly operationStyle: "slide"
+                /**
+                 * Determines how much the door slides. 1 means it'll be displaced by its entire width,
+                 * 0.5 means it'll be displaced by half its width, etc
+                 */
+                readonly slideFactor?: number
+            }
+        )
+    ) | {
+        readonly role: ObstacleSpecialRoles.Activatable
+        readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
+            readonly maxRange?: number
+            readonly falloff?: number
+        }
+        readonly requiredItem?: ReferenceTo<LootDefinition>
+        readonly interactText?: string
+        readonly emitParticles?: boolean
+        readonly replaceWith?: {
+            readonly idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
+            readonly delay: number
+        }
+    } | {
+        readonly role: ObstacleSpecialRoles.Window
+        readonly noCollisionAfterDestroyed?: boolean
+    } | {
+        readonly role?: ObstacleSpecialRoles.Wall
     }
-    readonly requiredItem?: ReferenceTo<LootDefinition>
-    readonly interactText?: string
-    readonly emitParticles?: boolean
-    readonly replaceWith?: {
-        readonly idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
-        readonly delay: number
-    }
-} | {
-    readonly role: ObstacleSpecialRoles.Window
-    readonly noCollisionAfterDestroyed?: boolean
-} | {
-    readonly role?: ObstacleSpecialRoles.Wall
-});
+);
 
 export const Materials = [
     "tree",
