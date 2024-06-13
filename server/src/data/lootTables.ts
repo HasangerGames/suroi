@@ -177,6 +177,21 @@ export const LootTables: Record<string, LootTable> = {
             { item: "mosin", weight: 1 }
         ]
     },
+    loot_tree: {
+        min: 1,
+        max: 1,
+        loot: [
+            [
+                {item: "model_37", weight: 1},
+                {item: "m3k", weight: 1},
+                {item: "vepr12", weight: 0.2},
+            ],
+            [{item: "kbar", weight: 1}], // placeholder for hatchet
+            [{item: "basic_helmet", weight: 1}],
+            [{item: "basic_pack", weight: 1}],
+            [{item: "12g", count: 15, weight: 1}],
+        ]
+    },
     pumpkin: {
         min: 1,
         max: 1,

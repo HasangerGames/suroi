@@ -810,6 +810,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true
         },
         {
+            idString: "loot_tree",
+            name: "Loot Tree",
+            material: "stone",
+            hideOnMap: true,
+            health: 180,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(5.5),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never,
+            hasLoot: true,
+            frames: {
+                // Placeholders
+                particle: "oak_tree_particle",
+                residue: "oak_tree_residue"
+            }
+        },
+        {
             idString: "warehouse_walls",
             name: "Warehouse Wall",
             material: "metal",

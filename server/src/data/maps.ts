@@ -115,6 +115,7 @@ const maps = {
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
+            loot_tree: 1,
             flint_stone: 1
         },
         obstacleClumps: [
