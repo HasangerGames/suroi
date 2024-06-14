@@ -187,6 +187,7 @@ export const LootTables: Record<string, LootTable> = {
                 {item: "vepr12", weight: 0.2},
             ],
             [{item: "hatchet", weight: 1}],
+            [{item: "lumberjack", weight: 1}],
             [{item: "basic_helmet", weight: 1}],
             [{item: "basic_pack", weight: 1}],
             [{item: "12g", count: 15, weight: 1}],
