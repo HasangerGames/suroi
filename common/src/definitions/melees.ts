@@ -98,8 +98,8 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             name: "Hatchet",
             damage: 25,
             obstacleMultiplier: 2.5,
-            piercingMultiplier: 0.05, // trolley
-            radius: 2.7,
+            piercingMultiplier: 0.5,
+            radius: 2,
             offset: Vec.create(5.4, -0.5),
             cooldown: 350,
             fists: {
@@ -110,11 +110,11 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 useRight: Vec.create(75, -20)
             },
             image: {
-                position: Vec.create(40, 20),
+                position: Vec.create(42, 20),
                 usePosition: Vec.create(80, -25),
                 angle: 135,
                 useAngle: 65,
-                lootScale: 0.8
+                lootScale: 0.6
             }
         },
         {

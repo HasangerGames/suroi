@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 29.104166 29.104166"
+   width="116.71979"
+   height="120"
+   viewBox="0 0 30.88211 31.749999"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
      inkscape:zoom="5.656854"
-     inkscape:cx="69.738409"
-     inkscape:cy="59.573748"
+     inkscape:cx="77.958526"
+     inkscape:cy="18.738331"
      inkscape:window-width="1920"
      inkscape:window-height="1008"
      inkscape:window-x="0"
@@ -34,19 +34,19 @@
      inkscape:current-layer="layer1"
      showguides="true"
      showgrid="false"><sodipodi:guide
-       position="-1234.4313,-1283.0678"
+       position="-1234.8731,-1283.0225"
        orientation="0,-1"
        id="guide3"
        inkscape:locked="false" /><sodipodi:guide
-       position="-1791.2072,-947.80489"
+       position="-1791.649,-947.75961"
        orientation="1,0"
        id="guide1"
        inkscape:locked="false" /><sodipodi:guide
-       position="1446.5362,1241.9012"
+       position="1446.0944,1241.9465"
        orientation="0,-1"
        id="guide153"
        inkscape:locked="false" /><sodipodi:guide
-       position="1024.1031,984.44692"
+       position="1023.6613,984.4922"
        orientation="0,-1"
        id="guide288"
        inkscape:locked="false" /></sodipodi:namedview><defs
@@ -1118,9 +1118,9 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-824.333,490.46339)"><g
+     transform="translate(-824.77482,490.41811)"><g
        id="g182-6"
-       transform="matrix(0.59835366,0.59835366,-0.59835366,0.59835366,78.556656,-830.52131)"><path
+       transform="matrix(0.65478672,0.65478672,-0.65478672,0.65478672,8.1779186,-862.59777)"><path
          id="rect164-7"
          style="fill:#805d42;stroke:#34261b;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;paint-order:fill markers stroke"
          d="m 934.5155,-352.09793 c 0,0 0.30491,1.65845 -0.54092,3.6813 -0.84584,2.02285 -0.29799,16.26452 -0.62839,23.5401 -0.33844,5.5774 -1.05971,8.69962 -1.05971,8.69962 0,0 -0.58302,-0.0164 -1.60866,-1.042 -1.02563,-1.02563 -1.10689,-1.90464 -1.10689,-1.90464 0,0 1.15237,-2.41949 1.5201,-5.54861 0.36773,-3.12911 0.0935,-27.42577 0.0935,-27.42577 z"
