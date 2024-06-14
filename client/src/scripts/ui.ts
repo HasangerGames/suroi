@@ -1195,21 +1195,34 @@ Video evidence is required.`)) {
             return;
         }
 
+        let ignore = false;
+
         element.addEventListener("input", () => {
+            if (ignore) return;
+
             const value = +element.value;
+            ignore = true;
             game.console.setBuiltInCVar(settingName, value);
+            ignore = false;
             callback?.(value);
         });
 
         game.console.variables.addChangeListener(settingName, (game, newValue) => {
+            if (ignore) return;
+
             const casted = +newValue;
 
             callback?.(casted);
+
+            ignore = true;
             element.value = `${casted}`;
             element.dispatchEvent(new InputEvent("input"));
+            ignore = false;
         });
 
-        element.value = (game.console.getBuiltInCVar(settingName) as number).toString();
+        const value = game.console.getBuiltInCVar(settingName) as number;
+        callback?.(value);
+        element.value = value.toString();
     }
 
     function addCheckboxListener(
@@ -1575,31 +1588,8 @@ Video evidence is required.`)) {
     });
 
     // Switch weapon slots by clicking
-    const maxWeapons = GameConstants.player.maxWeapons;
     const step = 1; // Define the step for cycling
     const inventorySlotTypings = GameConstants.player.inventorySlotTypings;
-
-    for (let slot = 0; slot < maxWeapons; slot++) {
-        const slotElement = $<HTMLDivElement>(`#weapon-slot-${slot + 1}`);
-        const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
-
-        slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
-            if (!slotElement.hasClass("has-item")) return;
-
-            e.stopImmediatePropagation();
-            if (
-                isGrenadeSlot
-                && game.activePlayer?.activeItem.itemType === ItemType.Throwable
-            ) {
-                inputManager.cycleThrowable(step);
-            }
-
-            inputManager.addAction({
-                type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
-                slot
-            });
-        });
-    }
 
     const slotListener = (element: JQuery<HTMLDivElement>, listener: (button: number) => void): void => {
         element[0].addEventListener("pointerdown", (e: PointerEvent): void => {
@@ -1608,7 +1598,46 @@ Video evidence is required.`)) {
         });
     };
 
-    // Generate the UI for scopes, healing items and ammos
+    // Generate the UI for scopes, healing items, weapons, and ammos
+    $<HTMLDivElement>("#weapons-container").append(
+        ...Array.from(
+            { length: GameConstants.player.maxWeapons },
+            (_, slot) => {
+                const ele = $<HTMLDivElement>(
+                    `<div class="inventory-slot" id="weapon-slot-${slot + 1}">\
+                        <div class="main-container">\
+                            <span class="slot-number">${slot + 1}</span>\
+                            <span class="item-ammo"></span>\
+                            <img class="item-image" draggable="false" />\
+                            <span class="item-name"></span>\
+                        </div>\
+                        <img class="lock-icon" src="./img/misc/lock.svg"></span>\
+                    </div>`
+                );
+
+                const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
+
+                ele[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+                    if (!ele.hasClass("has-item")) return;
+
+                    e.stopImmediatePropagation();
+                    if (
+                        isGrenadeSlot
+                        && game.activePlayer?.activeItem.itemType === ItemType.Throwable
+                    ) {
+                        inputManager.cycleThrowable(step);
+                    }
+
+                    inputManager.addAction({
+                        type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
+                        slot
+                    });
+                });
+                return ele;
+            }
+        )
+    );
+
     $<HTMLDivElement>("#scopes-container").append(
         Scopes.definitions.map(scope => {
             const ele = $<HTMLDivElement>(

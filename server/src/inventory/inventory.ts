@@ -31,8 +31,6 @@ export const InventoryItemMapping = {
     [ItemType.Throwable]: ThrowableItem
 };
 
-// eslint try not to be braindamaged challenge (impossible)
-
 /**
  * A class representing a player's inventory
  */
@@ -85,6 +83,57 @@ export class Inventory {
             {} as Record<ItemType, undefined | number[]>
         )
     );
+
+    private _lockedSlots = 0;
+    get lockedSlots(): number { return this._lockedSlots; }
+
+    private readonly _maskCache = Array.from({ length: GameConstants.player.maxWeapons }, (_, i) => 1 << i);
+
+    isLocked(slot: number): boolean {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to query lock state of invalid slot '${slot}'`);
+
+        return !!(this._lockedSlots & this._maskCache[slot]);
+    }
+
+    /**
+     * @returns Whether the lock state was changed
+     */
+    lock(slot: number): boolean {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to lock invalid slot '${slot}'`);
+
+        const mask = this._maskCache[slot];
+        const oldState = !!(this._lockedSlots & mask);
+        this._lockedSlots |= mask;
+
+        this.owner.dirty.slotLocks ||= !oldState;
+
+        return oldState;
+    }
+
+    /**
+     * @returns Whether the lock state was changed
+     */
+    unlock(slot: number): boolean {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to unlock invalid slot '${slot}'`);
+
+        const mask = this._maskCache[slot];
+        const oldState = !!(this._lockedSlots & mask);
+        this._lockedSlots &= ~mask;
+
+        this.owner.dirty.slotLocks ||= oldState;
+
+        return oldState;
+    }
+
+    lockAll(): void {
+        this._lockedSlots = ~0;
+        this.owner.dirty.slotLocks = true;
+    }
+
+    unlockAll(): void {
+        this._lockedSlots = 0;
+        this.owner.dirty.slotLocks = true;
+    }
 
     /**
      * Private variable storing the index pointing to the last active weapon
@@ -221,14 +270,13 @@ export class Inventory {
     }
 
     /**
-     * Determines whether a given index is valid. For an index to be valid, it must be an integer between 0 and `Inventory.MAX_SIZE - 1` (inclusive)
+     * Determines whether a given index is valid. For an index to be valid, it must be an
+     * integer between 0 and `Inventory.MAX_SIZE - 1` (inclusive)
      * @param slot The number to test
      * @returns Whether the number is a valid slot
      */
     static isValidWeaponSlot(slot: number): boolean {
-        return slot % 0 !== 0 // If it's not an integer
-            || slot < 0 // Or it's negative
-            || slot > GameConstants.player.maxWeapons - 1; // Or it's beyond the max slot number
+        return slot % 1 === 0 && 0 <= slot && slot <= GameConstants.player.maxWeapons - 1;
     }
 
     /**
@@ -260,28 +308,39 @@ export class Inventory {
      * Swaps the items in the gun slots
      */
     swapGunSlots(): void {
-        [this.weapons[0], this.weapons[1]]
-            = [this.weapons[1], this.weapons[0]];
+        [this.weapons[0], this.weapons[1]] = [this.weapons[1], this.weapons[0]];
+
+        if (this.isLocked(0) !== this.isLocked(1)) {
+            const current = this._lockedSlots;
+            this._lockedSlots = (current & ~0b11) | ((current & 0b10) >> 1) | ((current & 0b01) << 1);
+
+            this.owner.dirty.slotLocks = true;
+        }
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
     }
 
-    replaceWeapon(slot: number, item: ReifiableItem): void {
+    replaceWeapon(slot: number, item: ReifiableItem): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
+        if (this.isLocked(slot)) return false;
+
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
         this._setWeapon(slot, this._reifyItem(item));
+        return true;
     }
 
     /**
      * Puts a weapon in a certain slot, replacing the old weapon if one was there. If an item is replaced, it is dropped into the game world
      * @param slot The slot in which to insert the item
      * @param item The item to add
+     * @returns Whether the weapon was set in the given slot
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
-    addOrReplaceWeapon(slot: number, item: ReifiableItem): void {
+    addOrReplaceWeapon(slot: number, item: ReifiableItem): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
+        if (this.isLocked(slot)) return false;
 
         /**
          * `dropWeapon` changes the active item index to something potentially undesirable,
@@ -307,6 +366,8 @@ export class Inventory {
         if (index !== undefined) {
             this.setActiveWeaponIndex(index);
         }
+
+        return true;
     }
 
     /**
@@ -354,7 +415,8 @@ export class Inventory {
         }
         this.items.decrementItem(definition.idString, removalAmount);
 
-        if (itemAmount === removalAmount) { // Everything's been dropped, we need to a) discard the ThrowableItem instance b) equip a new one, if any
+        if (itemAmount === removalAmount) {
+            // Everything's been dropped, we need to a) discard the ThrowableItem instance b) equip a new one, if any
             this.throwableItemMap.delete(definition.idString);
 
             // now we gotta find a new throwable to equip
@@ -372,7 +434,10 @@ export class Inventory {
 
                 // if we get here, there's hopefully a throwable slot
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.weapons[this.slotsByItemType[ItemType.Throwable]![0]] = undefined;
+                const slot = this.slotsByItemType[ItemType.Throwable]![0];
+
+                this.unlock(slot);
+                this.weapons[slot] = undefined;
                 this.setActiveWeaponIndex(this._findNextPopulatedSlot());
             }
         } else {
@@ -389,6 +454,9 @@ export class Inventory {
      * @returns The item that was dropped, if any
      */
     dropWeapon(slot: number, pushVel = -0.03): InventoryItem | undefined {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to drop item from invalid slot '${slot}'`);
+        if (this.isLocked(slot)) return;
+
         const item = this.weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
@@ -552,7 +620,11 @@ export class Inventory {
 
     upgradeToDual(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to upgrade to dual weapon in invalid slot '${slot}'`);
-        if (!this.hasWeapon(slot) || !(this.weapons[slot] instanceof GunItem)) return false;
+        if (
+            !this.hasWeapon(slot)
+            || !(this.weapons[slot] instanceof GunItem)
+            || this.isLocked(slot)
+        ) return false;
 
         const gun = this.weapons[slot] as GunItem;
 
@@ -574,9 +646,9 @@ export class Inventory {
     }
 
     /**
-     * Forcefully sets a weapon in a given slot. Note that this operation will never leave the inventory empty:
-     * in the case of the attempted removal of this inventory's only item, the operation will be cancelled, and fists will be put in
-     * the melee slot
+     * Forcefully sets a weapon in a given slot, ignoring slot locks. Note that this operation will never leave
+     * the inventory empty: in the case of the attempted removal of this inventory's only item, the operation
+     * will be cancelled, and fists will be put in the melee slot
      *
      * If the only item was fists and an item is added in slots 0 or 1, it will be swapped to
      * @param slot The slot to place the item in
@@ -607,6 +679,8 @@ export class Inventory {
             } else if (slot === this._activeWeaponIndex) {
                 this.setActiveWeaponIndex(this._findNextPopulatedSlot());
             }
+
+            this.unlock(slot);
         }
 
         /*

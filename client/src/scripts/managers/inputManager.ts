@@ -502,8 +502,10 @@ export class InputManager {
         "toggle_minimap": "Toggle Minimap",
         "toggle_hud": "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
-        "+map_ping_wheel": "Map Ping Wheel",
-        "toggle_console": "Toggle Console"
+        "+map_ping_wheel": "Switch to Map Ping",
+        "+map_ping": "Map Ping Wheel",
+        "toggle_console": "Toggle Console",
+        "toggle_slot_lock": "Toggle Slot Lock"
     };
 
     cycleScope(offset: number): void {

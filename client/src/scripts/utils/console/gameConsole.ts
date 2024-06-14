@@ -25,7 +25,7 @@ interface ConsoleData {
     }
 }
 export type Stringable = string | number | boolean | bigint | undefined | null;
-export type PossibleError<E = never> = undefined | { readonly err: E };
+export type PossibleError<E> = undefined | { readonly err: E };
 
 export interface GameSettings {
     readonly variables: Record<string, Stringable | { value: Stringable, flags?: number }>
@@ -473,14 +473,14 @@ export class GameConsole {
         const addChangeListener = this.variables.addChangeListener.bind(this.variables);
         addChangeListener(
             "cv_console_left",
-            (game, value) => {
+            (_, value) => {
                 this._position.left = value;
             }
         );
 
         addChangeListener(
             "cv_console_top",
-            (game, value) => {
+            (_, value) => {
                 this._position.top = value;
             }
         );
@@ -488,7 +488,7 @@ export class GameConsole {
         const { container, autocomplete } = this._ui;
         addChangeListener(
             "cv_console_width",
-            (game, value) => {
+            (_, value) => {
                 if (!noWidthAdjust) {
                     container.css("width", value);
                 }
@@ -499,7 +499,7 @@ export class GameConsole {
 
         addChangeListener(
             "cv_console_height",
-            (game, value) => {
+            (_, value) => {
                 if (!noHeightAdjust) {
                     container.css("height", value);
                 }

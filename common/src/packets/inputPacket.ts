@@ -17,13 +17,24 @@ const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 /**
  * {@linkcode InputAction}s requiring no additional parameter
  */
-export type SimpleInputActions = Exclude<InputActions, InputActions.EquipItem | InputActions.DropWeapon | InputActions.DropItem | InputActions.UseItem | InputActions.Emote | InputActions.MapPing>;
+export type SimpleInputActions = Exclude<
+    InputActions,
+    InputActions.EquipItem
+    | InputActions.DropWeapon
+    | InputActions.DropItem
+    | InputActions.UseItem
+    | InputActions.Emote
+    | InputActions.MapPing
+    | InputActions.LockSlot
+    | InputActions.UnlockSlot
+    | InputActions.ToggleSlotLock
+>;
 
 export type InputAction = {
     readonly type: InputActions.UseItem | InputActions.DropItem
     readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
 } | {
-    readonly type: InputActions.EquipItem | InputActions.DropWeapon
+    readonly type: InputActions.EquipItem | InputActions.DropWeapon | InputActions.LockSlot | InputActions.UnlockSlot | InputActions.ToggleSlotLock
     readonly slot: number
 } | {
     readonly type: InputActions.Emote
@@ -84,6 +95,9 @@ export class InputPacket implements Packet {
             switch (action.type) {
                 case InputActions.EquipItem:
                 case InputActions.DropWeapon:
+                case InputActions.LockSlot:
+                case InputActions.UnlockSlot:
+                case InputActions.ToggleSlotLock:
                     stream.writeBits(action.slot, 2);
                     break;
                 case InputActions.DropItem:
@@ -142,6 +156,9 @@ export class InputPacket implements Packet {
             switch (type) {
                 case InputActions.EquipItem:
                 case InputActions.DropWeapon:
+                case InputActions.LockSlot:
+                case InputActions.UnlockSlot:
+                case InputActions.ToggleSlotLock:
                     slot = stream.readBits(2);
                     break;
                 case InputActions.DropItem:

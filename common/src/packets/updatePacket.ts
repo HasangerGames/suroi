@@ -29,6 +29,7 @@ export interface PlayerData {
         health: boolean
         adrenaline: boolean
         weapons: boolean
+        slotLocks: boolean
         items: boolean
         id: boolean
         teammates: boolean
@@ -57,6 +58,7 @@ export interface PlayerData {
 
     inventory: {
         activeWeaponIndex: number
+        lockedSlots: number
         weapons?: Array<undefined | {
             definition: WeaponDefinition
             count?: number
@@ -138,6 +140,11 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         }
     }
 
+    stream.writeBoolean(dirty.slotLocks);
+    if (dirty.slotLocks) {
+        stream.writeBits(inventory.lockedSlots, GameConstants.player.maxWeapons);
+    }
+
     stream.writeBoolean(dirty.items);
     if (dirty.items) {
         for (const item in DEFAULT_INVENTORY) {
@@ -194,10 +201,10 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
         });
     }
 
+    const maxWeapons = GameConstants.player.maxWeapons;
+
     if (dirty.weapons = stream.readBoolean()) {
         inventory.activeWeaponIndex = stream.readBits(2);
-
-        const maxWeapons = GameConstants.player.maxWeapons;
 
         inventory.weapons = Array.from({ length: maxWeapons }, () => undefined);
         for (let i = 0; i < maxWeapons; i++) {
@@ -213,6 +220,10 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
                 };
             }
         }
+    }
+
+    if (dirty.slotLocks = stream.readBoolean()) {
+        inventory.lockedSlots = stream.readBits(maxWeapons);
     }
 
     if (dirty.items = stream.readBoolean()) {

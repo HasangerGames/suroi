@@ -12,7 +12,7 @@ import { type GameOverPacket } from "../../../../common/src/packets/gameOverPack
 import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
-import { freezeDeep } from "../../../../common/src/utils/misc";
+import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -41,11 +41,13 @@ export class UIManager {
     readonly inventory: {
         activeWeaponIndex: number
         weapons: PlayerData["inventory"]["weapons"] & object
+        lockedSlots: number
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
     } = {
             activeWeaponIndex: 0,
             weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
+            lockedSlots: 0,
             items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
             scope: DEFAULT_SCOPE
         };
@@ -249,7 +251,41 @@ export class UIManager {
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team")
     });
 
-    private readonly _weaponSlotCache: Array<JQuery<HTMLDivElement>> = [];
+    private readonly _weaponSlotCache = new ExtendedMap<
+        number,
+        {
+            readonly container: JQuery<HTMLDivElement>
+            readonly inner: JQuery<HTMLDivElement>
+            readonly name: JQuery<HTMLSpanElement>
+            readonly image: JQuery<HTMLImageElement>
+            readonly ammo: JQuery<HTMLSpanElement>
+        }
+    >();
+
+    private _getSlotUI(slot: number): {
+        readonly container: JQuery<HTMLDivElement>
+        readonly inner: JQuery<HTMLDivElement>
+        readonly name: JQuery<HTMLSpanElement>
+        readonly image: JQuery<HTMLImageElement>
+        readonly ammo: JQuery<HTMLSpanElement>
+    } {
+        return this._weaponSlotCache.getAndGetDefaultIfAbsent(
+            slot,
+            () => {
+                const container = $<HTMLDivElement>(`#weapon-slot-${slot}`);
+                const inner = container.children(".main-container") as JQuery<HTMLDivElement>;
+
+                return {
+                    container,
+                    inner,
+                    name: inner.children(".item-name") as JQuery<HTMLSpanElement>,
+                    image: inner.children(".item-image") as JQuery<HTMLImageElement>,
+                    ammo: inner.children(".item-ammo") as JQuery<HTMLSpanElement>
+                };
+            }
+        );
+    }
+
     private readonly _itemCountCache: Record<string, JQuery<HTMLSpanElement>> = {};
     private readonly _itemSlotCache: Record<string, JQuery<HTMLDivElement>> = {};
     private readonly _scopeSlotCache: Record<ReferenceTo<ScopeDefinition>, JQuery<HTMLDivElement>> = {};
@@ -563,6 +599,11 @@ export class UIManager {
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
         }
 
+        if (inventory.lockedSlots !== undefined) {
+            this.inventory.lockedSlots = inventory.lockedSlots;
+            this.updateSlotLocks();
+        }
+
         if (inventory.items) {
             this.inventory.items = inventory.items;
             this.inventory.scope = inventory.scope;
@@ -626,6 +667,18 @@ export class UIManager {
         this.updateWeaponSlots();
     }
 
+    updateSlotLocks(): void {
+        const max = GameConstants.player.maxWeapons;
+        for (
+            let i = 0;
+            i < max;
+            this._getSlotUI(i + 1).container.toggleClass(
+                "locked",
+                !!(this.inventory.lockedSlots & (1 << i))
+            ), i++
+        );
+    }
+
     /*
         TODO proper caching would require keeping a copy of the inventory currently being shown,
              so that we can compare it to what it should now be showing (in other words, a kind
@@ -639,20 +692,18 @@ export class UIManager {
             IsActive = "active"
         }
 
-        const enum Selectors {
-            ItemName = ".item-name",
-            ItemImage = ".item-image",
-            ItemAmmo = ".item-ammo"
-        }
-
         const max = GameConstants.player.maxWeapons;
         for (let i = 0; i < max; i++) {
-            const container = this._weaponSlotCache[i] ??= $(`#weapon-slot-${i + 1}`);
+            const {
+                container,
+                image: itemImage,
+                ammo: ammoCounter,
+                name: itemName
+            } = this._getSlotUI(i + 1);
 
             const weapon = inventory.weapons[i];
             const isActive = this.inventory.activeWeaponIndex === i;
 
-            const ammoCounter = container.children(Selectors.ItemAmmo);
             const ammoText = ammoCounter.text();
             const ammoDirty = !ammoText.length
                 ? weapon?.count !== undefined
@@ -681,12 +732,11 @@ export class UIManager {
                         "outline-color": "",
                         "background-color": "",
                         "color": ""
-                    })
-                    .children(Selectors.ItemName)
-                    .text(weapon.definition.name);
+                    });
+
+                itemName.text(weapon.definition.name);
 
                 const isFists = weapon.definition.idString === "fists";
-                const itemImage = container.children(Selectors.ItemImage);
                 const oldSrc = itemImage.attr("src");
                 const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
                 if (oldSrc !== newSrc) {
@@ -709,18 +759,20 @@ export class UIManager {
                 if (ammoDirty && count !== undefined) {
                     ammoCounter
                         .text(count)
-                        .css("color", count > 0 ? "inherit" : "red");
+                        .css("color", count > 0 ? "unset" : "red");
                 }
             } else {
-                container.removeClass(ClassNames.HasItem).removeClass(ClassNames.IsActive)
+                container.removeClass(ClassNames.HasItem)
+                    .removeClass(ClassNames.IsActive)
                     .css({
                         "outline-color": "",
                         "background-color": "",
                         "color": ""
                     });
-                container.children(Selectors.ItemName).css("color", "").text("");
-                container.children(Selectors.ItemImage).removeAttr("src").hide();
-                container.children(Selectors.ItemAmmo).text("");
+
+                itemName.css("color", "").text("");
+                itemImage.removeAttr("src").hide();
+                ammoCounter.text("");
             }
         }
     }

@@ -237,6 +237,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         maxMinStats: true,
         adrenaline: true,
         weapons: true,
+        slotLocks: true,
         items: true,
         zoom: true
     };
@@ -861,6 +862,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             dirty: player.dirty,
             inventory: {
                 activeWeaponIndex: inventory.activeWeaponIndex,
+                lockedSlots: inventory.lockedSlots,
                 scope: inventory.scope,
                 weapons: inventory.weapons.map(slot => {
                     const item = slot;
@@ -1450,6 +1452,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         //
 
         // Drop weapons
+        this.inventory.unlockAll();
         this.inventory.dropWeapons();
 
         // Drop inventory items
@@ -1630,14 +1633,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         const inventory = this.inventory;
         for (const action of packet.actions) {
-            switch (action.type) {
+            const type = action.type;
+
+            switch (type) {
                 case InputActions.UseItem: {
                     inventory.useItem(action.item);
                     break;
                 }
                 case InputActions.EquipLastItem:
                 case InputActions.EquipItem: {
-                    const target = action.type === InputActions.EquipItem
+                    const target = type === InputActions.EquipItem
                         ? action.slot
                         : inventory.lastWeaponIndex;
 
@@ -1662,6 +1667,22 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
                 case InputActions.SwapGunSlots: {
                     inventory.swapGunSlots();
+                    break;
+                }
+                case InputActions.LockSlot: {
+                    inventory.lock(action.slot);
+                    break;
+                }
+                case InputActions.UnlockSlot: {
+                    inventory.unlock(action.slot);
+                    break;
+                }
+                case InputActions.ToggleSlotLock: {
+                    const slot = action.slot;
+
+                    inventory.isLocked(slot)
+                        ? inventory.unlock(slot)
+                        : inventory.lock(slot);
                     break;
                 }
                 case InputActions.Loot: {

@@ -1153,6 +1153,14 @@
             width: 110px;
         }
 
+        .main-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         .slot-number, .item-name {
             right: 8px !important;
         }
@@ -1166,6 +1174,23 @@
                 hsla(0, 0%, 77%, 0.45) 25%,
                 hsla(0, 0%, 9%, 0.5) 100%
             );
+        }
+
+        &.locked {
+            .main-container {
+                opacity: 0.6;
+                filter: saturate(0.5);
+            }
+
+            img.lock-icon {
+                display: unset;
+            }
+        }
+
+        & img.lock-icon {
+            display: none;
+            position: absolute;
+            width: 45px;
         }
 
         &.active {
