@@ -70,6 +70,10 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly tint?: number
     readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
     readonly additionalDestroySounds: string[]
+    readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
+        readonly maxRange?: number
+        readonly falloff?: number
+    }
 } & (
     (
         {
@@ -826,6 +830,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer4,
             allowFlyover: FlyoverPref.Never,
             hasLoot: true,
+            sound: {
+                name: "emote",
+                maxRange: 200,
+                falloff: 5
+            }
         },
         {
             idString: "warehouse_walls",
