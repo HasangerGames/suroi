@@ -22,19 +22,29 @@ export class Gas {
 
     lastUpdateTime = Date.now();
 
-    game: Game;
-
-    private readonly _ui = {
-        msgText: $("#gas-msg-info"),
-        msgContainer: $("#gas-msg"),
-
-        timer: $("#gas-timer"),
-        timerText: $("#gas-timer-text"),
-        timerImg: $("#gas-timer-image")
+    private readonly _ui: {
+        readonly msgText: JQuery<HTMLDivElement>
+        readonly msgContainer: JQuery<HTMLDivElement>
+        readonly timer: JQuery<HTMLDivElement>
+        readonly timerText: JQuery<HTMLSpanElement>
+        readonly timerImg: JQuery<HTMLImageElement>
     };
 
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (Gas._instantiated) {
+            throw new Error("Class 'Gas' has already been instantiated");
+        }
+        Gas._instantiated = true;
+
+        this._ui = {
+            msgText: this.game.uiManager.ui.gasMsgInfo,
+            msgContainer: this.game.uiManager.ui.gasMsg,
+
+            timer: $<HTMLDivElement>("#gas-timer"),
+            timerText: $<HTMLSpanElement>("#gas-timer-text"),
+            timerImg: $<HTMLImageElement>("#gas-timer-image")
+        };
     }
 
     updateFrom(data: UpdatePacket): void {

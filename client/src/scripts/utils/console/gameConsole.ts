@@ -280,8 +280,6 @@ export class GameConsole {
         });
     }
 
-    readonly game: Game;
-
     readonly commands = (() => {
         const map = new Map<string, Command<boolean, Stringable>>();
 
@@ -409,8 +407,12 @@ export class GameConsole {
         this.variables.set.builtIn(name, value);
     }
 
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (GameConsole._instantiated) {
+            throw new Error("Class 'GameConsole' has already been instantiated");
+        }
+        GameConsole._instantiated = true;
 
         this._attachListeners();
 

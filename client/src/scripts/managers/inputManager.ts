@@ -15,8 +15,7 @@ import { type GameSettings } from "../utils/console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
 
 export class InputManager {
-    readonly game: Game;
-    readonly binds: InputMapper;
+    readonly binds = new InputMapper();
 
     readonly isMobile!: boolean;
 
@@ -163,9 +162,12 @@ export class InputManager {
         this.actions.length = 0;
     }
 
-    constructor(game: Game) {
-        this.game = game;
-        this.binds = new InputMapper();
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (InputManager._instantiated) {
+            throw new Error("Class 'InputManager' has already been instantiated");
+        }
+        InputManager._instantiated = true;
     }
 
     private mWheelStopTimer: number | undefined;

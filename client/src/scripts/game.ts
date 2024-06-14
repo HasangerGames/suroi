@@ -117,12 +117,12 @@ export class Game {
 
     readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
-    readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map = new Minimap(this);
     readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
+    readonly soundManager = new SoundManager(this);
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
@@ -139,7 +139,13 @@ export class Game {
         return timeout;
     }
 
+    private static _instantiated = false;
     constructor() {
+        if (Game._instantiated) {
+            throw new Error("Class 'Game' has already been instantiated.");
+        }
+        Game._instantiated = true;
+
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
@@ -217,7 +223,6 @@ export class Game {
         });
 
         setUpCommands(this);
-        this.soundManager = new SoundManager(this);
         this.inputManager.generateBindsConfigScreen();
 
         this.music = sound.add("menu_music", {

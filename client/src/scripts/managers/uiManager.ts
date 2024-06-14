@@ -31,14 +31,12 @@ function safeRound(value: number): number {
  * This class manages the game UI
  */
 export class UIManager {
-    readonly game: Game;
+    private maxHealth = GameConstants.player.defaultHealth;
+    private health = GameConstants.player.defaultHealth;
 
-    maxHealth = GameConstants.player.defaultHealth;
-    health = GameConstants.player.defaultHealth;
-
-    maxAdrenaline = GameConstants.player.maxAdrenaline;
-    minAdrenaline = 0;
-    adrenaline = 0;
+    private maxAdrenaline = GameConstants.player.maxAdrenaline;
+    private minAdrenaline = 0;
+    private adrenaline = 0;
 
     readonly inventory: {
         activeWeaponIndex: number
@@ -62,8 +60,12 @@ export class UIManager {
         pos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (UIManager._instantiated) {
+            throw new Error("Class 'UIManager' has already been instantiated");
+        }
+        UIManager._instantiated = true;
     }
 
     getRawPlayerNameNullish(id: number): string | undefined {

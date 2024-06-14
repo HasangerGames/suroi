@@ -74,7 +74,13 @@ export class Minimap {
 
     readonly debugGraphics = new Graphics();
 
-    constructor(public readonly game: Game) {
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (Minimap._instantiated) {
+            throw new Error("Class 'Minimap' has already been instantiated");
+        }
+        Minimap._instantiated = true;
+
         this._objectsContainer.mask = this.mask;
 
         this.container.addChild(this._objectsContainer);

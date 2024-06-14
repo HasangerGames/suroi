@@ -104,14 +104,18 @@ export class GameSound {
 }
 
 export class SoundManager {
-    readonly game: Game;
     readonly dynamicSounds = new Set<GameSound>();
 
     volume: number;
     position = Vec.create(0, 0);
 
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (SoundManager._instantiated) {
+            throw new Error("Class 'SoundManager' has already been instantiated");
+        }
+        SoundManager._instantiated = true;
+
         this.volume = game.console.getBuiltInCVar("cv_sfx_volume");
         this.loadSounds();
     }

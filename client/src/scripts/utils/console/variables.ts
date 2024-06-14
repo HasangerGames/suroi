@@ -166,9 +166,13 @@ export class ConsoleVariables {
     private readonly _userCVars = new Map<string, ConVar<Stringable>>();
     private readonly _builtInCVars: CVarTypeMapping = {} as unknown as CVarTypeMapping;
 
-    readonly console: GameConsole;
+    private static _instantiated = false;
+    constructor(readonly console: GameConsole) {
+        if (ConsoleVariables._instantiated) {
+            throw new Error("Class 'ConsoleVariables' has already been instantiated");
+        }
+        ConsoleVariables._instantiated = true;
 
-    constructor(console: GameConsole) {
         const varExists = this.has.bind(this);
         this.console = console;
 

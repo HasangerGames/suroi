@@ -8,9 +8,8 @@ import { PIXI_SCALE } from "../utils/constants";
 import { type Tween } from "../utils/tween";
 
 export class Camera {
-    pixi: Application;
-    container: Container;
-    game: Game;
+    readonly pixi: Application;
+    readonly container: Container;
 
     position = Vec.create(0, 0);
 
@@ -31,8 +30,13 @@ export class Camera {
     width = 1;
     height = 1;
 
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (Camera._instantiated) {
+            throw new Error("Class 'Camera' has already been instantiated");
+        }
+        Camera._instantiated = true;
+
         this.pixi = game.pixi;
         this.container = new Container({
             isRenderGroup: true,

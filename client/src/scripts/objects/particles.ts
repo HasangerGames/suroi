@@ -8,10 +8,12 @@ export class ParticleManager {
     readonly particles = new Set<Particle>();
     readonly emitters = new Set<ParticleEmitter>();
 
-    readonly game: Game;
-
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (ParticleManager._instantiated) {
+            throw new Error("Class 'ParticleManager' has already been instantiated");
+        }
+        ParticleManager._instantiated = true;
     }
 
     update(delta: number): void {
