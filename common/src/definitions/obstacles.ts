@@ -831,9 +831,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Never,
             hasLoot: true,
             sound: {
-                name: "emote",
-                maxRange: 200,
-                falloff: 5
+                name: "frag_grenade", // placeholder
+                maxRange: 100,
+                falloff: 0.1,
+                loop: true
             }
         },
         {

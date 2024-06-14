@@ -104,7 +104,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 });
             }
 
-            if (definition.sound && !definition.role && !isNew && !this.destroyed) {
+            if (definition.sound && !definition.role && !this.destroyed) {
                 if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
                 else this.playSound(definition.sound.name, definition.sound);
             }
