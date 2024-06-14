@@ -32,7 +32,7 @@ export interface MapDefinition {
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
-    readonly obstacleClumps?: ObstacleClump[]
+    readonly obstacleClumps?: readonly ObstacleClump[]
     readonly loots?: Record<keyof typeof LootTables, number>
 
     readonly places?: Array<{
@@ -43,6 +43,26 @@ export interface MapDefinition {
     // Custom callback to generate stuff
     readonly genCallback?: (map: GameMap) => void
 }
+
+export type ObstacleClump = {
+    /**
+     * How many of these clumps per map
+     */
+    readonly clumpAmount: number
+    /**
+     * Data for any given clump
+     */
+    readonly clump: {
+        /**
+         * Id's of obstacles that may appear in the clump
+         */
+        readonly obstacles: ReadonlyArray<ReferenceTo<ObstacleDefinition>>
+        readonly minAmount: number
+        readonly maxAmount: number
+        readonly radius: number
+        readonly jitter: number
+    }
+};
 
 const maps = {
     main: {
@@ -119,7 +139,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 10,
+                clumpAmount: 100,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -129,7 +149,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 5,
+                clumpAmount: 25,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -139,7 +159,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 2,
+                clumpAmount: 4,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -540,14 +560,3 @@ const maps = {
 } satisfies Record<string, MapDefinition>;
 
 export const Maps: Record<keyof typeof maps, MapDefinition> = maps;
-
-export type ObstacleClump = {
-    clumpAmount: number
-    clump: {
-        obstacles: Array<ReferenceTo<ObstacleDefinition>>
-        minAmount: number
-        maxAmount: number
-        radius: number
-        jitter: number
-    }
-};
