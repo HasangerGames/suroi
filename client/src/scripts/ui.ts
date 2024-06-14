@@ -3,15 +3,15 @@ import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
-import { Badges } from "../../../common/src/definitions/badges";
-import { EmoteCategory, Emotes } from "../../../common/src/definitions/emotes";
+import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
+import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { Skins } from "../../../common/src/definitions/skins";
+import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
 import { ExtendedMap } from "../../../common/src/utils/misc";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec } from "../../../common/src/utils/vector";
 import { Config } from "./config";
@@ -869,30 +869,45 @@ Video evidence is required.`)) {
     updateSplashCustomize(currentSkin);
     const skinList = $<HTMLDivElement>("#skins-list");
 
+    const skinUiCache: Record<ReferenceTo<SkinDefinition>, JQuery<HTMLDivElement>> = {};
+
+    function selectSkin(idString: ReferenceTo<SkinDefinition>): void {
+        skinUiCache[idString].addClass("selected")
+            .siblings()
+            .removeClass("selected");
+
+        updateSplashCustomize(idString);
+    }
+
     for (const { idString, name, hideFromLoadout, roleRequired } of Skins) {
         if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
 
         // noinspection CssUnknownTarget
-        const skinItem
-            = $<HTMLDivElement>(`<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
-  <div class="skin">
-    <div class="skin-base" style="background-image: url('./img/game/skins/${idString}_base.svg')"></div>
-    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
-    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
-  </div>
-  <span class="skin-name">${name}</span>
-</div>`);
+        const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
+            `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
+                <div class="skin">
+                    <div class="skin-base" style="background-image: url('./img/game/skins/${idString}_base.svg')"></div>
+                    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
+                    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
+                </div>
+                <span class="skin-name">${name}</span>
+            </div>`
+        );
+
         skinItem.on("click", () => {
             game.console.setBuiltInCVar("cv_loadout_skin", idString);
-
-            skinItem.addClass("selected")
-                .siblings()
-                .removeClass("selected");
-
-            updateSplashCustomize(idString);
+            selectSkin(idString);
         });
+
         skinList.append(skinItem);
     }
+
+    game.console.variables.addChangeListener(
+        "cv_loadout_skin",
+        (_, newSkin) => {
+            selectSkin(newSkin);
+        }
+    );
 
     // Load emotes
     function handleEmote(slot: "win" | "death"): void { // eipi can you improve this so that it uses `emoteSlots` items with index >3
@@ -937,11 +952,12 @@ Video evidence is required.`)) {
             }
 
             // noinspection CssUnknownTarget
-            const emoteItem
-                = $<HTMLDivElement>(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
-    ${emote.idString !== "" ? `<div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>` : ""}
-    <span class="emote-name">${emote.name}</span>
-    </div>`);
+            const emoteItem = $<HTMLDivElement>(
+                `<div id="emote-${emote.idString}" class="emotes-list-item-container">
+                    <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
+                    <span class="emote-name">${emote.name}</span>
+                </div>`
+            );
 
             emoteItem.on("click", () => {
                 if (selectedEmoteSlot === undefined) return;
@@ -974,14 +990,24 @@ Video evidence is required.`)) {
     const customizeEmote = $<HTMLDivElement>("#emote-customize-wheel");
     const emoteListItemContainer = $<HTMLDivElement>(".emotes-list-item-container");
 
+    function changeEmoteSlotImage(slot: typeof emoteSlots[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
+        return (
+            emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+        ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
+    }
+
     for (const slot of emoteSlots) {
         const cvar = `cv_loadout_${slot}_emote` as const;
         const emote = game.console.getBuiltInCVar(cvar);
 
-        (
-            emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        )
-            .css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none")
+        game.console.variables.addChangeListener(
+            cvar,
+            (_, newEmote) => {
+                changeEmoteSlotImage(slot, newEmote);
+            }
+        );
+
+        changeEmoteSlotImage(slot, emote)
             .on("click", () => {
                 if (selectedEmoteSlot === slot) return;
 
@@ -1159,28 +1185,39 @@ Video evidence is required.`)) {
 
         const activeBadge = game.console.getBuiltInCVar("cv_loadout_badge");
 
+        const badgeUiCache: Record<ReferenceTo<BadgeDefinition>, JQuery<HTMLDivElement>> = { [""]: noBadgeItem };
+
+        function selectBadge(idString: ReferenceTo<BadgeDefinition>): void {
+            badgeUiCache[idString].addClass("selected")
+                .siblings()
+                .removeClass("selected");
+        }
+
         $("#badges-list").append(
             noBadgeItem,
             ...allowedBadges.map(({ idString, name }) => {
                 // noinspection CssUnknownTarget
-                const badgeItem = $(
+                const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
-                    <div class="badges-list-item">\
-                        <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
-                    </div>\
-                    <span class="badge-name">${name}</span>\
+                        <div class="badges-list-item">\
+                            <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
+                        </div>\
+                        <span class="badge-name">${name}</span>\
                     </div>`
                 );
 
                 badgeItem.on("click", () => {
                     game.console.setBuiltInCVar("cv_loadout_badge", idString);
-                    badgeItem.addClass("selected")
-                        .siblings()
-                        .removeClass("selected");
+                    selectBadge(idString);
                 });
 
                 return badgeItem;
             })
+        );
+
+        game.console.variables.addChangeListener(
+            "cv_loadout_badge",
+            (_, newBadge) => { selectBadge(newBadge); }
         );
     }
 
