@@ -498,7 +498,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "mosin",
+            idString: "mosin_nagant",
             name: "Mosin-Nagant",
             ammoType: "762mm",
             ammoSpawnAmount: 20,
@@ -614,7 +614,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "barrett",
+            idString: "barrett_m95",
             name: "Barrett M95",
             ammoType: "127mm",
             ammoSpawnAmount: 20,
@@ -1622,7 +1622,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "s_g17",
+            idString: "g17_s",
             name: "G17 (scoped)",
             ammoType: "bb",
             fireDelay: 35,
@@ -1710,7 +1710,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "arena_closer",
+            idString: "destroyer_of_worlds",
             name: "Destroyer Of Worlds",
             ammoType: "127mm",
             ammoSpawnAmount: 255,
