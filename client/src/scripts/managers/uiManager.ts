@@ -1395,6 +1395,9 @@ class PlayerHealthUI {
         if (this._disconnected.dirty) {
             this.container.toggleClass("disconnected", this._disconnected.value);
 
+            const teammateIndicator = this.game.map.teammateIndicators.get(id);
+
+            teammateIndicator?.setAlpha(this._disconnected.value ? 0.5 : 1);
             recalcIndicatorFrame = true;
         }
 
