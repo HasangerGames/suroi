@@ -6,6 +6,7 @@ import { type ThrowableDefinition } from "./throwables";
 export interface BackpackDefinition extends ItemDefinition {
     readonly itemType: ItemType.Backpack
     readonly level: number
+    readonly defaultTint: number
     readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
 }
 
@@ -13,7 +14,8 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
     defaultTemplate => ({
         [defaultTemplate]: () => ({
             itemType: ItemType.Backpack,
-            noDrop: false
+            noDrop: false,
+            defaultTint: 0xffffff
         }),
         backpack_factory: (name: string) => ({
             idString: `${name.toLowerCase()}_pack`,
@@ -65,7 +67,8 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "frag_grenade": 6,
                     "smoke_grenade": 6,
                     "confetti_grenade": 9
-                }
+                },
+                defaultTint: 0xeeeeee
             },
             "Basic"
         ),
@@ -89,7 +92,8 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "frag_grenade": 9,
                     "smoke_grenade": 9,
                     "confetti_grenade": 12
-                }
+                },
+                defaultTint: 0x63754b
             },
             "Regular"
         ),
@@ -113,7 +117,8 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "frag_grenade": 12,
                     "smoke_grenade": 12,
                     "confetti_grenade": 16
-                }
+                },
+                defaultTint: 0x3f3f3f
             },
             "Tactical"
         )

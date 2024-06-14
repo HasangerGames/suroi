@@ -4,6 +4,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
     readonly hideFromLoadout: boolean
     readonly grassTint: boolean
+    readonly backpackTint?: number
     readonly hideEquipment: boolean
     readonly roleRequired?: string
 }
@@ -17,8 +18,9 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             grassTint: false,
             hideEquipment: false
         }),
-        skin_factory: (name: string) => ({
+        skin_factory: (name: string, backpackTint?: number) => ({
             idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+            backpackTint,
             name
         }),
         hidden_skin: {
@@ -36,7 +38,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
     })
 )(
     ({ apply, simple }) => [
-        simple("with_role", ["hasanger"], ["Hasanger"]),
+        simple("with_role", ["hasanger"], ["Hasanger", 0x640000]),
         simple("with_role", ["leia"], ["Leia"]),
         simple("with_role", ["limenade"], ["LimeNade"]),
         simple("with_role", ["katie"], ["Katie"]),
@@ -48,68 +50,68 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         simple("with_role", ["developr"], ["Developr Swag"]),
         simple("with_role", ["designr"], ["Designr Swag"]),
         simple("with_role", ["composr"], ["Composr Swag"]),
-        ...[
-            "HAZEL Jumpsuit",
-            "The Amateur",
-            "The Pro",
-            "Forest Camo",
-            "Desert Camo",
-            "Arctic Camo",
-            "Bloodlust",
-            "Tomato",
-            "Greenhorn",
-            "Blue Blood",
-            "Silver Lining",
-            "Pot o' Gold",
-            "Gunmetal",
-            "Algae",
-            "Twilight Zone",
-            "Bubblegum",
-            "Sunrise",
-            "Sunset",
-            "Stratosphere",
-            "Mango",
-            "Snow Cone",
-            "Aquatic",
-            "Floral",
-            "Sunny",
-            "Volcanic",
-            "Ashfall",
-            "Solar Flare",
-            "Beacon",
-            "Wave Jumpsuit",
-            "Toadstool",
-            "Full Moon",
-            "Swiss Cheese",
-            "Target Practice",
-            "Zebra",
-            "Tiger",
-            "Bee",
-            "Armadillo",
-            "Printer",
-            "Distant Shores",
-            "Watermelon"
-        ].map(name => simple("skin_factory", name)),
-        ...[
-            "Lemon",
-            "Flamingo",
-            "Peachy Breeze",
-            "Deep Sea",
-            "Basic Outfit",
-            "Peppermint",
-            "Spearmint",
-            "Coal",
-            "Henry's Little Helper",
-            "Candy Cane",
-            "Christmas Tree",
-            "Gingerbread",
-            "Verified",
-            "no kil pls",
-            "Stardust",
-            "Aurora",
-            "Nebula",
-            "1st Birthday"
-        ].map(name => simple("hidden_skin", [], [name])),
+        ...([
+            ["HAZEL Jumpsuit"],
+            ["The Amateur"],
+            ["The Pro"],
+            ["Forest Camo"],
+            ["Desert Camo"],
+            ["Arctic Camo"],
+            ["Bloodlust"],
+            ["Tomato", 0xff0000],
+            ["Greenhorn", 0x00ff00],
+            ["Blue Blood", 0x0000ff],
+            ["Silver Lining"],
+            ["Pot o' Gold"],
+            ["Gunmetal"],
+            ["Algae"],
+            ["Twilight Zone"],
+            ["Bubblegum"],
+            ["Sunrise"],
+            ["Sunset"],
+            ["Stratosphere"],
+            ["Mango"],
+            ["Snow Cone"],
+            ["Aquatic"],
+            ["Floral"],
+            ["Sunny"],
+            ["Volcanic"],
+            ["Ashfall"],
+            ["Solar Flare"],
+            ["Beacon"],
+            ["Wave Jumpsuit"],
+            ["Toadstool"],
+            ["Full Moon"],
+            ["Swiss Cheese"],
+            ["Target Practice"],
+            ["Zebra"],
+            ["Tiger"],
+            ["Bee"],
+            ["Armadillo"],
+            ["Printer"],
+            ["Distant Shores"],
+            ["Watermelon"]
+        ] as ReadonlyArray<readonly [string, number | undefined]>).map(([name, tint]) => simple("skin_factory", name, tint)),
+        ...([
+            ["Lemon", 0xebe092],
+            ["Flamingo", 0xf1847d],
+            ["Peachy Breeze", 0xf2a263],
+            ["Deep Sea", 0x284553],
+            ["Basic Outfit", 0xdd9b0a],
+            ["Peppermint", undefined],
+            ["Spearmint", undefined],
+            ["Coal", undefined],
+            ["Henry's Little Helper", undefined],
+            ["Candy Cane", undefined],
+            ["Christmas Tree", undefined],
+            ["Gingerbread", undefined],
+            ["Verified", undefined],
+            ["no kil pls", undefined],
+            ["Stardust", undefined],
+            ["Aurora", undefined],
+            ["Nebula", undefined],
+            ["1st Birthday", undefined]
+        ] as ReadonlyArray<readonly [string, number | undefined]>).map(([name, tint]) => simple("hidden_skin", [], [name, tint])),
         apply(
             "hidden_skin",
             {
@@ -117,7 +119,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
                 hideEquipment: true
             },
             [],
-            ["Ghillie Suit"]
+            ["Ghillie Suit", 0xffffff]
         )
     ]
 );
