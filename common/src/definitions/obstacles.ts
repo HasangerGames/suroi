@@ -829,13 +829,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Full,
             zIndex: ZIndexes.ObstaclesLayer4,
             allowFlyover: FlyoverPref.Never,
-            hasLoot: true,
-            sound: {
-                name: "frag_grenade", // placeholder
-                maxRange: 100,
-                falloff: 0.1,
-                loop: true
-            }
+            hasLoot: true
         },
         {
             idString: "warehouse_walls",
