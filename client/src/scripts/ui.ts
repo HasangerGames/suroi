@@ -13,13 +13,13 @@ import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, 
 import { ExtendedMap } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
-import { Vec } from "../../../common/src/utils/vector";
+import { Vec, Vector } from "../../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 
@@ -1835,30 +1835,63 @@ Video evidence is required.`)) {
             .css("top", "50%")
             .css("left", "50%");
 
-        const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
-            $(`#emote-wheel .emote-${slot}`).on("click", () => {
-                ui.emoteWheel.hide();
-
-                if (inputManager.pingWheelActive) {
-                    const ping = game.uiManager.mapPings[emoteSlot];
-                    if (ping) {
-                        inputManager.addAction({
-                            type: InputActions.MapPing,
-                            ping,
-                            position: game.activePlayer?.position ?? Vec.create(0, 0)
-                        });
+            const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
+                $(`#emote-wheel .emote-${slot}`).on("click", () => {
+                    $("#emote-wheel").hide();
+                    let clicked = true;
+    
+                    if (game.inputManager.pingWheelActive) {
+                        const ping = game.uiManager.mapPings[emoteSlot];
+    
+                        setTimeout(() => {
+                            let gameMousePosition: Vector;
+    
+                            if(game.map.expanded) {
+                                $("#game").on("click", e => {
+                                    console.log("clicked");
+    
+                                    gameMousePosition = game.inputManager.pingWheelPosition;
+    
+                                    if (ping && game.inputManager.pingWheelActive && clicked) {
+                                        game.inputManager.addAction({
+                                            type: InputActions.MapPing,
+                                            ping,
+                                            position: gameMousePosition
+                                        });
+            
+                                        clicked = false;
+                                    }
+                                });
+                            } else {
+                                $("#game").on("click", (e: MouseEvent) => {
+                                        const globalPos = Vec.create(e.clientX, e.clientY);
+                                        const pixiPos = game.camera.container.toLocal(globalPos);
+                                        gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+                                        
+                                        if (ping && game.inputManager.pingWheelActive && clicked) {
+                                            game.inputManager.addAction({
+                                                type: InputActions.MapPing,
+                                                ping,
+                                                position: gameMousePosition
+                                            });
+                
+                                            clicked = false;
+                                        }
+                                })  
+                            }
+                        }, 100); // 0.1 second(to wait for the emote whe)
+                    } else {
+                        const emote = game.uiManager.emotes[emoteSlot];
+                        if (emote) {
+                            game.inputManager.addAction({
+                                type: InputActions.Emote,
+                                emote
+                            });
+                        }
                     }
-                } else {
-                    const emote = game.uiManager.emotes[emoteSlot];
-                    if (emote) {
-                        inputManager.addAction({
-                            type: InputActions.Emote,
-                            emote
-                        });
-                    }
-                }
-            });
-        };
+                });
+            };
+            
         createEmoteWheelListener("top", 0);
         createEmoteWheelListener("right", 1);
         createEmoteWheelListener("bottom", 2);
