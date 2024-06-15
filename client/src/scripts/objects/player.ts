@@ -12,11 +12,11 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/s
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
+import { Angle, EaseFunctions, Geometry, TAU } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -82,6 +82,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly altWeapon: SuroiSprite
         readonly muzzleFlash: SuroiSprite
         readonly waterOverlay: SuroiSprite
+        readonly blood: Container
         readonly badge?: SuroiSprite
     };
 
@@ -142,7 +143,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
+            blood: new Container()
         };
 
         this.container.addChild(
@@ -157,8 +159,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon,
             this.images.altWeapon,
             this.images.muzzleFlash,
-            this.images.waterOverlay
+            this.images.waterOverlay,
+            this.images.blood
         );
+
+        this.images.blood.zIndex = 4;
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence
@@ -1486,6 +1491,34 @@ export class Player extends GameObject<ObjectCategory.Player> {
             },
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+            this.game.particleManager.spawnParticle({
+                frames: "blood_particle",
+                zIndex: ZIndexes.Decals,
+                position: randomPointInsideCircle(position, 2.5),
+                lifetime: 60000,
+                scale: randomFloat(0.8, 1.6),
+                alpha: {
+                  start: 1,
+                  end: 0,
+                  ease: EaseFunctions.expoIn
+                },
+                speed: Vec.create(0, 0),
+                tint: 0xeeeeee
+            })
+
+            if (randomFloat(0, 1) > 0.6) return;
+
+            const bodyBlood = new SuroiSprite("blood_particle")
+
+            bodyBlood.position = randomPointInsideCircle(Vec.create(0, 0), 45)
+            bodyBlood.rotation = randomFloat(0, TAU)
+            bodyBlood.scale = randomFloat(0.4, 0.8)
+
+            this.images.blood.addChild(bodyBlood)
+
+            setTimeout(() => {bodyBlood.destroy()}, 30000)
+        }
     }
 
     destroy(): void {
@@ -1504,6 +1537,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         images.altWeapon.destroy();
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
+        images.blood.destroy();
 
         emote.image.destroy();
         emote.background.destroy();
