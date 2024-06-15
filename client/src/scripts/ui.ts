@@ -1462,6 +1462,7 @@ Video evidence is required.`)) {
     // High resolution toggle
     $("#toggle-high-res").parent().parent().toggle(!inputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
+    addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics");
 
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");

@@ -27,6 +27,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
+import { BloomFilter } from "pixi-filters";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -1186,7 +1187,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     yoyo: true
                 });
 
-                if (weaponDef.gasParticles) {
+                if (weaponDef.gasParticles && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
                     const gas = weaponDef.gasParticles
                     this.game.particleManager.spawnParticles(gas.amount, () => ({
                         frames: "small_gas",

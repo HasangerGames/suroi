@@ -34,7 +34,7 @@ export class Bullet extends BaseBullet {
         this.maxLength = this.image.width * this.tracerLength;
         this.image.scale.y = tracerStats.width;
         this.image.alpha = tracerStats.opacity / (this.reflectionCount + 1);
-        this.image.filters = new BloomFilter({
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) this.image.filters = new BloomFilter({
             strength: 5
         })
 
