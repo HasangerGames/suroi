@@ -59,6 +59,17 @@ type BaseGunDefinition = InventoryItemDefinition & {
         readonly on?: "fire" | "reload"
     }>
 
+    readonly gasParticles?: {
+        readonly amount: number
+        readonly minSize: number
+        readonly maxSize: number
+        readonly minLife: number
+        readonly maxLife: number
+        readonly spread: number
+        readonly minSpeed: number
+        readonly maxSpeed: number
+    }
+
     readonly image: {
         readonly angle: number
         // no relation to the ZIndexes enum
@@ -100,6 +111,49 @@ export type GunDefinition = BaseGunDefinition & {
 
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
+
+const gasParticlePresets: Record<"automatic" | "shotgun" | "pistol" | "rifle", BaseGunDefinition["gasParticles"]> = {
+  "automatic": {
+    amount: 2,
+    spread: 30,
+    minSize: 0.2,
+    maxSize: 0.3,
+    minLife: 1000,
+    maxLife: 2000,
+    minSpeed: 5,
+    maxSpeed: 15
+  },
+  "shotgun": {
+    amount: 12,
+    spread: 60,
+    minSize: 0.3,
+    maxSize: 0.5,
+    minLife: 2000,
+    maxLife: 5000,
+    minSpeed: 5,
+    maxSpeed: 10
+  },
+  "pistol": {
+    amount: 2,
+    spread: 60,
+    minSize: 0.2,
+    maxSize: 0.3,
+    minLife: 1000,
+    maxLife: 2000,
+    minSpeed: 5,
+    maxSpeed: 15
+  },
+  "rifle": {
+    amount: 3,
+    spread: 30,
+    minSize: 0.3,
+    maxSize: 0.5,
+    minLife: 1000,
+    maxLife: 3000,
+    minSpeed: 7,
+    maxSpeed: 14
+  }
+}
 
 type RawGunDefinition = BaseGunDefinition & {
     readonly isDual?: never
@@ -187,6 +241,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 frame: "casing_762x39mm",
                 position: Vec.create(4, 0.4)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 14,
                 obstacleMultiplier: 1.5,
@@ -220,6 +275,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 frame: "casing_762x39mm",
                 position: Vec.create(4, 0.4)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 12.25,
                 obstacleMultiplier: 1.5,
@@ -250,6 +306,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(2.5, 0.5)
             }],
+            gasParticles: gasParticlePresets.automatic,
             capacity: 30,
             reloadTime: 2.25,
             ballistics: {
@@ -322,6 +379,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4, 0.6)
             }],
+            gasParticles: gasParticlePresets.shotgun,
             singleReload: true,
             ballistics: {
                 damage: 9,
@@ -365,6 +423,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             }],
+            gasParticles: gasParticlePresets.shotgun,
             singleReload: true,
             ballistics: {
                 damage: 10,
@@ -404,6 +463,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4, 0.6)
             }],
+            gasParticles: gasParticlePresets.shotgun,
             ballistics: {
                 damage: 4,
                 obstacleMultiplier: 0.5,
@@ -450,6 +510,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 },
                 on: "reload"
             }],
+            gasParticles: gasParticlePresets.shotgun,
             ballistics: {
                 damage: 10,
                 obstacleMultiplier: 1,
@@ -487,6 +548,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4.3, 0.6)
             }],
+            gasParticles: gasParticlePresets.shotgun,
             ballistics: {
                 damage: 10,
                 obstacleMultiplier: 1,
@@ -526,6 +588,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(4, 0.6),
                 ejectionDelay: 700
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 70,
                 obstacleMultiplier: 1,
@@ -564,6 +627,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(4, 0.6),
                 ejectionDelay: 450
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 79,
                 obstacleMultiplier: 1,
@@ -602,6 +666,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(5, 0.4),
                 ejectionDelay: 250
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 55,
                 obstacleMultiplier: 1,
@@ -640,6 +705,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(2, 0.6),
                 ejectionDelay: 700
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 129,
                 obstacleMultiplier: 1,
@@ -689,6 +755,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 },
                 on: "reload"
             }],
+            gasParticles: gasParticlePresets.pistol,
             capacity: 7,
             reloadTime: 2.1,
             ballistics: {
@@ -736,6 +803,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             }],
+            gasParticles: gasParticlePresets.pistol,
             capacity: 15,
             reloadTime: 1.5,
             ballistics: {
@@ -827,6 +895,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             }],
+            gasParticles: gasParticlePresets.pistol,
             capacity: 16,
             reloadTime: 1.9,
             ballistics: {
@@ -873,6 +942,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4, 0.5)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 15.5,
                 obstacleMultiplier: 1,
@@ -909,6 +979,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4, 0.5)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 21,
                 obstacleMultiplier: 1.5,
@@ -940,6 +1011,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(3.5, 0.4)
             }],
+            gasParticles: gasParticlePresets.automatic,
             image: { position: Vec.create(80, 0) },
             ballistics: {
                 damage: 7.75,
@@ -972,6 +1044,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4.7, 0.3)
             }],
+            gasParticles: gasParticlePresets.automatic,
             image: { position: Vec.create(80, 0) },
             ballistics: {
                 damage: 6.75,
@@ -1041,6 +1114,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4, 0.6)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 11,
                 obstacleMultiplier: 1,
@@ -1073,6 +1147,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(5, 0.5)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 16,
                 obstacleMultiplier: 1.5,
@@ -1110,6 +1185,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 frame: "casing_30-06",
                 position: Vec.create(4.7, 1.6)
             }],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 16,
                 obstacleMultiplier: 2.5,
@@ -1169,6 +1245,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 14.25,
                 obstacleMultiplier: 2,
@@ -1222,6 +1299,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 16.5,
                 obstacleMultiplier: 2,
@@ -1275,6 +1353,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 12.5,
                 obstacleMultiplier: 2,
@@ -1313,6 +1392,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     position: Vec.create(4, 0.6)
                 }
             ],
+            gasParticles: gasParticlePresets.automatic,
             ballistics: {
                 damage: 11,
                 obstacleMultiplier: 2,
@@ -1371,6 +1451,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     on: "reload"
                 }
             ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 39,
                 obstacleMultiplier: 1.5,
@@ -1445,6 +1526,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4.2, 0.4)
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 28.5,
                 obstacleMultiplier: 1.5,
@@ -1486,6 +1568,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     }
                 }
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 25.5,
                 obstacleMultiplier: 1.5,
@@ -1524,6 +1607,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(5, 0.5),
                 ejectionDelay: 175
             }],
+            gasParticles: gasParticlePresets.rifle,
             ballistics: {
                 damage: 62.5,
                 obstacleMultiplier: 1.5,
@@ -1608,6 +1692,16 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             casingParticles: [{
                 position: Vec.create(4, 0.6)
             }],
+            gasParticles: {
+                spread: 360,
+                amount: 50,
+                minLife: 5000,
+                maxLife: 10000,
+                minSpeed: 2,
+                maxSpeed: 5,
+                minSize: 0.3,
+                maxSize: 0.5,
+            },
             ballistics: {
                 damage: 20,
                 obstacleMultiplier: 1,

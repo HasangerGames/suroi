@@ -77,6 +77,7 @@ export interface ParticleOptions {
     readonly scale?: ParticleProperty
     readonly alpha?: ParticleProperty
     readonly rotation?: ParticleProperty
+    readonly tint?: number
 }
 
 export class Particle {
@@ -103,6 +104,7 @@ export class Particle {
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
         this.image = new SuroiSprite(frame);
+        this.image.tint = options.tint ?? 0xffffff
         this.image.setZIndex(options.zIndex);
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;

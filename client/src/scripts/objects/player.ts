@@ -16,7 +16,7 @@ import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/mat
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -1185,6 +1185,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     duration: 50,
                     yoyo: true
                 });
+
+                if (weaponDef.gasParticles) {
+                    const gas = weaponDef.gasParticles
+                    this.game.particleManager.spawnParticles(gas.amount, () => ({
+                        frames: "small_gas",
+                        lifetime: random(gas.minLife, gas.maxSize),
+                        scale: {start: 0, end: randomFloat(gas.minSize, gas.maxSize)},
+                        position: Vec.add(randomPointInsideCircle(this.position, 2), Vec.fromPolar(this.rotation, weaponDef.length)),
+                        speed: Vec.fromPolar(this.rotation + Angle.degreesToRadians(
+                          randomFloat(-0.5 * gas.spread, 0.5 * gas.spread)
+                        ), randomFloat(gas.minSpeed, gas.maxSpeed)),
+                        zIndex: ZIndexes.Gas,
+                        alpha: {start: randomFloat(0.5, 1), end: 0},
+                        tint: 0x555555
+                    }))
+                }
 
                 if (!weaponDef.noMuzzleFlash) {
                     const muzzleFlash = this.images.muzzleFlash;
