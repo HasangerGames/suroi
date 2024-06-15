@@ -12,14 +12,14 @@ import { type GameOverPacket } from "../../../../common/src/packets/gameOverPack
 import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
-import { freezeDeep } from "../../../../common/src/utils/misc";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
+import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
-import { formatDate } from "../utils/misc";
+import { formatDate, html } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 function safeRound(value: number): number {
@@ -31,23 +31,23 @@ function safeRound(value: number): number {
  * This class manages the game UI
  */
 export class UIManager {
-    readonly game: Game;
+    private maxHealth = GameConstants.player.defaultHealth;
+    private health = GameConstants.player.defaultHealth;
 
-    maxHealth = GameConstants.player.defaultHealth;
-    health = GameConstants.player.defaultHealth;
-
-    maxAdrenaline = GameConstants.player.maxAdrenaline;
-    minAdrenaline = 0;
-    adrenaline = 0;
+    private maxAdrenaline = GameConstants.player.maxAdrenaline;
+    private minAdrenaline = 0;
+    private adrenaline = 0;
 
     readonly inventory: {
         activeWeaponIndex: number
         weapons: PlayerData["inventory"]["weapons"] & object
+        lockedSlots: number
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
     } = {
             activeWeaponIndex: 0,
             weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
+            lockedSlots: 0,
             items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
             scope: DEFAULT_SCOPE
         };
@@ -57,22 +57,25 @@ export class UIManager {
     teammates: (UpdatePacket["playerData"] & object)["teammates"] = [];
 
     readonly debugReadouts = Object.freeze({
-        fps: $("#fps-counter"),
-        ping: $("#ping-counter"),
-        pos: $("#coordinates-hud")
+        fps: $<HTMLSpanElement>("#fps-counter"),
+        ping: $<HTMLSpanElement>("#ping-counter"),
+        pos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
-    constructor(game: Game) {
-        this.game = game;
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (UIManager._instantiated) {
+            throw new Error("Class 'UIManager' has already been instantiated");
+        }
+        UIManager._instantiated = true;
     }
 
-    getRawPlayerName(id: number): string {
-        const player = this.game.playerNames.get(id);
-        let name: string;
+    getRawPlayerNameNullish(id: number): string | undefined {
+        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
+        let name: string | undefined;
 
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
-            name = "[Unknown Player]";
         } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
             name = `${GameConstants.player.defaultName}_${id}`;
         } else {
@@ -82,14 +85,18 @@ export class UIManager {
         return name;
     }
 
+    getRawPlayerName(id: number): string {
+        return this.getRawPlayerNameNullish(id) ?? "[Unknown Player]";
+    }
+
     getPlayerName(id: number): string {
-        const element = $("<span>");
-        const player = this.game.playerNames.get(id);
+        const element = $<HTMLSpanElement>("<span>");
+        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
         const name = this.getRawPlayerName(id);
 
         if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            element.css("color", player.nameColor.toHex());
+            element.css("color", player.nameColor?.toHex() ?? "");
         }
 
         element.text(name);
@@ -103,7 +110,7 @@ export class UIManager {
             return;
         }
 
-        const player = this.game.playerNames.get(id);
+        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
         switch (true) {
             case this.game.console.getBuiltInCVar("cv_anonymize_player_names"): {
@@ -132,36 +139,156 @@ export class UIManager {
         }
     }
 
-    readonly ui = {
-        ammoCounterContainer: $("#weapon-ammo-container"),
-        activeAmmo: $("#weapon-clip-ammo-count"),
-        reserveAmmo: $("#weapon-inventory-ammo"),
-        killStreakIndicator: $("#killstreak-indicator-container"),
-        killStreakCounter: $("#killstreak-indicator-counter"),
+    readonly ui = Object.freeze({
+        ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
+        activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
+        reserveAmmo: $<HTMLDivElement>("#weapon-inventory-ammo"),
+        killStreakIndicator: $<HTMLDivElement>("#killstreak-indicator-container"),
+        killStreakCounter: $<HTMLSpanElement>("#killstreak-indicator-counter"),
 
-        weaponsContainer: $("#weapons-container"),
+        weaponsContainer: $<HTMLDivElement>("#weapons-container"),
 
-        minMaxAdren: $("#adrenaline-bar-min-max"),
-        maxHealth: $("#health-bar-max"),
+        minMaxAdren: $<HTMLSpanElement>("#adrenaline-bar-min-max"),
+        maxHealth: $<HTMLSpanElement>("#health-bar-max"),
 
-        healthBar: $("#health-bar"),
-        healthBarAmount: $("#health-bar-percentage"),
-        healthAnim: $("#health-bar-animation"),
+        healthBar: $<HTMLDivElement>("#health-bar"),
+        healthBarAmount: $<HTMLSpanElement>("#health-bar-amount"),
+        healthAnim: $<HTMLDivElement>("#health-bar-animation"),
 
-        adrenalineBar: $("#adrenaline-bar"),
-        adrenalineBarPercentage: $("#adrenaline-bar-percentage"),
+        adrenalineBar: $<HTMLDivElement>("#adrenaline-bar"),
+        adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
-        killModal: $("#kill-msg"),
-        killFeed: $("#kill-feed"),
+        killFeed: $<HTMLDivElement>("#kill-feed"),
 
-        interactMsg: $("#interact-message"),
+        interactMsg: $<HTMLDivElement>("#interact-message"),
         interactKey: $("#interact-key"),
+        interactText: $<HTMLSpanElement>("#interact-text"),
 
-        teamContainer: $("#team-container"),
+        teamContainer: $<HTMLDivElement>("#team-container"),
+        createTeamMenu: $<HTMLDivElement>("#create-team-menu"),
 
+        emoteButton: $<HTMLButtonElement>("#btn-emotes"),
+        pingToggle: $<HTMLButtonElement>("#btn-toggle-ping"),
+        menuButton: $<HTMLButtonElement>("#btn-game-menu"),
+
+        emoteWheel: $<HTMLDivElement>("#emote-wheel"),
         emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
-            .map(selector => $(`#emote-wheel > ${selector}`))
-    };
+            .map(selector => $<HTMLDivElement>(`#emote-wheel > ${selector}`)),
+
+        actionContainer: $<HTMLDivElement>("#action-container"),
+        actionName: $<HTMLDivElement>("#action-name"),
+        actionTime: $<HTMLHeadingElement>("#action-time"),
+        actionTimer: $<SVGElement>("#action-timer-anim"),
+
+        spectatingContainer: $<HTMLDivElement>("#spectating-container"),
+        spectatingMsg: $<HTMLDivElement>("#spectating-msg"),
+        spectatingMsgPlayer: $<HTMLSpanElement>("#spectating-msg-player"),
+        btnSpectate: $<HTMLButtonElement>("#btn-spectate"),
+        spectatePrevious: $<HTMLButtonElement>("#btn-spectate-previous"),
+        spectateNext: $<HTMLButtonElement>("#btn-spectate-next"),
+
+        gasMsg: $<HTMLDivElement>("#gas-msg"),
+        gasMsgInfo: $<HTMLDivElement>("#gas-msg-info"),
+
+        joystickContainer: $<HTMLDivElement>("#joysticks-containers"),
+
+        gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
+        gameOverText: $<HTMLHeadingElement>("#game-over-text"),
+        gameOverPlayerName: $<HTMLHeadingElement>("#game-over-text"),
+        gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
+        gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
+        gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
+        gameOverTime: $<HTMLSpanElement>("#game-over-time"),
+        gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
+        chickenDinner: $<HTMLImageElement>("#chicken-dinner"),
+
+        killMsgModal: $<HTMLDivElement>("#kill-msg"),
+        killMsgHeader: $<HTMLDivElement>("#kill-msg-kills"),
+        killMsgCounter: $<HTMLDivElement>("#ui-kills"),
+        killMsgSeverity: $<HTMLSpanElement>("#kill-msg-severity"),
+        killMsgVictimName: $<HTMLSpanElement>("#kill-msg-player-name"),
+        killMsgWeaponUsed: $<HTMLSpanElement>("#kill-msg-weapon-used"),
+
+        killLeaderLeader: $<HTMLSpanElement>("#kill-leader-leader"),
+        killLeaderCount: $<HTMLSpanElement>("#kill-leader-kills-counter"),
+        spectateKillLeader: $<HTMLButtonElement>("#btn-spectate-kill-leader"),
+
+        splashMsgText: $<HTMLSpanElement>("#splash-server-message-text"),
+        splashMsg: $<HTMLDivElement>("#splash-server-message"),
+        splashUi: $<HTMLDivElement>("#splash-ui"),
+        splashOptions: $<HTMLDivElement>("#splash-options"),
+
+        btnReport: $<HTMLButtonElement>("#btn-report"),
+        reportingName: $<HTMLSpanElement>("#reporting-name"),
+        reportingId: $<HTMLSpanElement>("#report-name"),
+        reportingModal: $<HTMLDivElement>("#report-modal"),
+
+        gameMenu: $<HTMLDivElement>("#game-menu"),
+
+        canvas: $<HTMLCanvasElement>("canvas"),
+
+        playerAlive: $<HTMLDivElement>("#ui-players-alive"),
+
+        newsPosts: $<HTMLDivElement>("#news-posts"),
+
+        lockedInfo: $<HTMLButtonElement>("#locked-info"),
+        lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
+        lockedTime: $<HTMLSpanElement>("#locked-time"),
+
+        warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
+        warningText: $<HTMLParagraphElement>("#warning-modal-text"),
+        warningAgreeOpts: $<HTMLDivElement>("#warning-modal-agree-options"),
+        warningAgreeCheckbox: $<HTMLInputElement>("#warning-modal-agree-checkbox"),
+        warningModal: $<HTMLDivElement>("#warning-modal"),
+
+        btnStartGame: $<HTMLButtonElement>("#btn-start-game"),
+        createTeamToggles: $<HTMLDivElement>("#create-team-toggles"),
+
+        createTeamUrl: $<HTMLInputElement>("#create-team-url-field"),
+        createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
+        createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
+        createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
+        closeCreateTeam: $<HTMLButtonElement>("#close-create-team")
+    });
+
+    private readonly _weaponSlotCache = new ExtendedMap<
+        number,
+        {
+            readonly container: JQuery<HTMLDivElement>
+            readonly inner: JQuery<HTMLDivElement>
+            readonly name: JQuery<HTMLSpanElement>
+            readonly image: JQuery<HTMLImageElement>
+            readonly ammo: JQuery<HTMLSpanElement>
+        }
+    >();
+
+    private _getSlotUI(slot: number): {
+        readonly container: JQuery<HTMLDivElement>
+        readonly inner: JQuery<HTMLDivElement>
+        readonly name: JQuery<HTMLSpanElement>
+        readonly image: JQuery<HTMLImageElement>
+        readonly ammo: JQuery<HTMLSpanElement>
+    } {
+        return this._weaponSlotCache.getAndGetDefaultIfAbsent(
+            slot,
+            () => {
+                const container = $<HTMLDivElement>(`#weapon-slot-${slot}`);
+                const inner = container.children(".main-container") as JQuery<HTMLDivElement>;
+
+                return {
+                    container,
+                    inner,
+                    name: inner.children(".item-name") as JQuery<HTMLSpanElement>,
+                    image: inner.children(".item-image") as JQuery<HTMLImageElement>,
+                    ammo: inner.children(".item-ammo") as JQuery<HTMLSpanElement>
+                };
+            }
+        );
+    }
+
+    private readonly _itemCountCache: Record<string, JQuery<HTMLSpanElement>> = {};
+    private readonly _itemSlotCache: Record<string, JQuery<HTMLDivElement>> = {};
+    private readonly _scopeSlotCache: Record<ReferenceTo<ScopeDefinition>, JQuery<HTMLDivElement>> = {};
 
     readonly action = {
         active: false,
@@ -182,7 +309,7 @@ export class UIManager {
         this.action.fake = fake;
         if (time > 0) {
             this.action.start = Date.now();
-            $("#action-timer-anim")
+            this.ui.actionTimer
                 .stop()
                 .css({ "stroke-dashoffset": "226" })
                 .animate(
@@ -190,15 +317,15 @@ export class UIManager {
                     time * 1000,
                     "linear",
                     () => {
-                        $("#action-container").hide();
+                        this.ui.actionContainer.hide();
                         this.action.active = false;
                     }
                 );
         }
 
         if (name) {
-            $("#action-name").text(name);
-            $("#action-container").show();
+            this.ui.actionName.text(name);
+            this.ui.actionContainer.show();
         }
 
         this.action.active = true;
@@ -207,11 +334,11 @@ export class UIManager {
 
     updateAction(): void {
         const amount = this.action.time - (Date.now() - this.action.start) / 1000;
-        if (amount > 0) $("#action-time").text(amount.toFixed(1));
+        if (amount > 0) this.ui.actionTime.text(amount.toFixed(1));
     }
 
     cancelAction(): void {
-        $("#action-container")
+        this.ui.actionContainer
             .hide()
             .stop();
         this.action.active = false;
@@ -222,54 +349,64 @@ export class UIManager {
     showGameOverScreen(packet: GameOverPacket): void {
         const game = this.game;
 
-        $("#interact-message").hide();
-        $("#spectating-container").hide();
+        this.ui.interactMsg.hide();
+        this.ui.spectatingContainer.hide();
 
         game.activePlayer?.actionSound?.stop();
 
-        $("#gas-msg").fadeOut(500);
+        this.ui.gasMsg.fadeOut(500);
 
         // Disable joysticks div so you can click on players to spectate
-        $("#joysticks-containers").hide();
+        this.ui.joystickContainer.hide();
 
-        const gameOverScreen = $("#game-over-overlay");
+        const {
+            gameOverOverlay,
+            chickenDinner,
+            gameOverText,
+            gameOverRank,
+            gameOverPlayerName,
+            gameOverKills,
+            gameOverDamageDone,
+            gameOverDamageTaken,
+            gameOverTime
+        } = this.ui;
 
         game.gameOver = true;
 
         if (!packet.won) {
-            $("#btn-spectate").removeClass("btn-disabled").show();
+            this.ui.btnSpectate.removeClass("btn-disabled").show();
             game.map.indicator.setFrame("player_indicator_dead");
         } else {
-            $("#btn-spectate").hide();
+            this.ui.btnSpectate.hide();
         }
 
-        $("#chicken-dinner").toggle(packet.won);
+        chickenDinner.toggle(packet.won);
 
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
         const playerBadgeText = playerBadge
-            ? `<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            ? html`<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
-        $("#game-over-text").html(
+        gameOverText.html(
             packet.won
                 ? "Winner winner chicken dinner!"
                 : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
         );
 
-        $("#game-over-player-name").html(playerName + playerBadgeText);
+        gameOverPlayerName.html(playerName + playerBadgeText);
 
-        $("#game-over-kills").text(packet.kills);
-        $("#game-over-damage-done").text(packet.damageDone);
-        $("#game-over-damage-taken").text(packet.damageTaken);
-        $("#game-over-time").text(formatDate(packet.timeAlive));
+        gameOverKills.text(packet.kills);
+        gameOverDamageDone.text(packet.damageDone);
+        gameOverDamageTaken.text(packet.damageTaken);
+        gameOverTime.text(formatDate(packet.timeAlive));
 
         if (packet.won) void game.music.play();
 
-        this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
+        this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
 
         // Player rank
-        $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
+        gameOverRank.text(`#${packet.rank}`).toggleClass("won", packet.won);
     }
 
     // I'd rewrite this as MapPings.filter(…), but it's not really clear how
@@ -302,30 +439,31 @@ export class UIManager {
         this._teammateDataCache.clear();
     }
 
-    lastHealthBarAnimTime = 0;
-    oldHealth = 0;
+    private _lastHealthBarAnimTime = 0;
+    private _oldHealth = 0;
 
     updateUI(data: PlayerData): void {
         if (data.id !== undefined) this.game.activePlayerID = data.id;
 
         if (data.dirty.id) {
-            this.game.spectating = data.spectating;
-            if (data.spectating) {
+            const spectating = data.spectating;
+            this.game.spectating = spectating;
+
+            if (spectating) {
                 const badge = this.getPlayerBadge(data.id);
-                const badgeText = badge ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
-                $("#game-over-overlay").fadeOut();
-
-                $("#spectating-msg-player").html(this.getPlayerName(data.id) + badgeText);
+                this.ui.gameOverOverlay.fadeOut();
+                this.ui.spectatingMsgPlayer.html(this.getPlayerName(data.id) + badgeText);
             }
-            $("#spectating-container").toggle(data.spectating);
-            $("#spectating-msg").toggle(data.spectating);
+            this.ui.spectatingContainer.toggle(spectating);
+            this.ui.spectatingMsg.toggle(spectating);
             this.clearTeammateCache();
 
             if (this.game.inputManager.isMobile) {
-                $("#btn-emotes").toggle(!data.spectating);
-                $("#btn-toggle-ping").toggle(!data.spectating);
-                $("#btn-game-menu").toggle(!data.spectating);
+                this.ui.emoteButton.toggle(!spectating);
+                this.ui.pingToggle.toggle(!spectating);
+                this.ui.menuButton.toggle(!spectating);
             }
         }
 
@@ -349,15 +487,23 @@ export class UIManager {
                 notVisited.delete(id);
 
                 const cacheEntry = _teammateDataCache.get(id);
+                const nameData = this.game.playerNames.get(id);
+                const nameObj = {
+                    hasColor: nameData?.hasColor,
+                    nameColor: nameData?.hasColor ? nameData.nameColor : null,
+                    name: nameData?.name,
+                    badge: nameData?.badge ?? null
+                };
+
                 if (cacheEntry !== undefined) {
                     cacheEntry.update({
                         ...player,
+                        ...nameObj,
                         colorIndex: index
                     });
                     return;
                 }
 
-                const nameData = this.game.playerNames.get(id);
                 const ele = new PlayerHealthUI(
                     this.game,
                     {
@@ -366,10 +512,7 @@ export class UIManager {
                         downed: player.downed,
                         normalizedHealth: player.normalizedHealth,
                         position: player.position,
-                        hasColor: nameData?.hasColor,
-                        nameColor: nameData?.hasColor ? nameData.nameColor : null,
-                        name: nameData?.name,
-                        badge: nameData?.badge ?? null
+                        ...nameObj
                     }
                 );
                 _teammateDataCache.set(id, ele);
@@ -424,13 +567,13 @@ export class UIManager {
                 this.ui.healthAnim
                     .stop()
                     .width(0);
-            } else if (Date.now() - this.lastHealthBarAnimTime > 500) {
+            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
                 this.ui.healthAnim
                     .stop()
-                    .width(`${this.oldHealth}%`)
+                    .width(`${this._oldHealth}%`)
                     .animate({ width: `${realPercentage}%` }, 500);
-                this.oldHealth = realPercentage;
-                this.lastHealthBarAnimTime = Date.now();
+                this._oldHealth = realPercentage;
+                this._lastHealthBarAnimTime = Date.now();
             }
 
             this.ui.healthBarAmount
@@ -444,7 +587,7 @@ export class UIManager {
 
             this.ui.adrenalineBar.width(`${percentage}%`);
 
-            this.ui.adrenalineBarPercentage
+            this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
@@ -456,12 +599,16 @@ export class UIManager {
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
         }
 
+        if (inventory.lockedSlots !== undefined) {
+            this.inventory.lockedSlots = inventory.lockedSlots;
+            this.updateSlotLocks();
+        }
+
         if (inventory.items) {
             this.inventory.items = inventory.items;
             this.inventory.scope = inventory.scope;
             this.updateItems();
         }
-        // idiot
 
         if (inventory.weapons || inventory.items) {
             this.updateWeapons();
@@ -520,10 +667,22 @@ export class UIManager {
         this.updateWeaponSlots();
     }
 
+    updateSlotLocks(): void {
+        const max = GameConstants.player.maxWeapons;
+        for (
+            let i = 0;
+            i < max;
+            this._getSlotUI(i + 1).container.toggleClass(
+                "locked",
+                !!(this.inventory.lockedSlots & (1 << i))
+            ), i++
+        );
+    }
+
     /*
         TODO proper caching would require keeping a copy of the inventory currently being shown,
-        TODO so that we can compare it to what it should now be showing (in other words, a kind
-        TODO of "oldInventory—newInventory" thing).
+             so that we can compare it to what it should now be showing (in other words, a kind
+             of "oldInventory—newInventory" thing).
     */
     updateWeaponSlots(): void {
         const inventory = this.inventory;
@@ -533,20 +692,18 @@ export class UIManager {
             IsActive = "active"
         }
 
-        const enum Selectors {
-            ItemName = ".item-name",
-            ItemImage = ".item-image",
-            ItemAmmo = ".item-ammo"
-        }
-
         const max = GameConstants.player.maxWeapons;
         for (let i = 0; i < max; i++) {
-            const container = $(`#weapon-slot-${i + 1}`);
+            const {
+                container,
+                image: itemImage,
+                ammo: ammoCounter,
+                name: itemName
+            } = this._getSlotUI(i + 1);
 
             const weapon = inventory.weapons[i];
             const isActive = this.inventory.activeWeaponIndex === i;
 
-            const ammoCounter = container.children(Selectors.ItemAmmo);
             const ammoText = ammoCounter.text();
             const ammoDirty = !ammoText.length
                 ? weapon?.count !== undefined
@@ -575,12 +732,11 @@ export class UIManager {
                         "outline-color": "",
                         "background-color": "",
                         "color": ""
-                    })
-                    .children(Selectors.ItemName)
-                    .text(weapon.definition.name);
+                    });
+
+                itemName.text(weapon.definition.name);
 
                 const isFists = weapon.definition.idString === "fists";
-                const itemImage = container.children(Selectors.ItemImage);
                 const oldSrc = itemImage.attr("src");
                 const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
                 if (oldSrc !== newSrc) {
@@ -603,18 +759,20 @@ export class UIManager {
                 if (ammoDirty && count !== undefined) {
                     ammoCounter
                         .text(count)
-                        .css("color", count > 0 ? "inherit" : "red");
+                        .css("color", count > 0 ? "unset" : "red");
                 }
             } else {
-                container.removeClass(ClassNames.HasItem).removeClass(ClassNames.IsActive)
+                container.removeClass(ClassNames.HasItem)
+                    .removeClass(ClassNames.IsActive)
                     .css({
                         "outline-color": "",
                         "background-color": "",
                         "color": ""
                     });
-                container.children(Selectors.ItemName).css("color", "").text("");
-                container.children(Selectors.ItemImage).removeAttr("src").hide();
-                container.children(Selectors.ItemAmmo).text("");
+
+                itemName.css("color", "").text("");
+                itemImage.removeAttr("src").hide();
+                ammoCounter.text("");
             }
         }
     }
@@ -628,11 +786,10 @@ export class UIManager {
     updateItems(): void {
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
-            // TODO cache these somewhere lol
-            const countElem = $(`#${item}-count`);
+            const countElem = this._itemCountCache[item] ??= $(`#${item}-count`);
+            const itemSlot = this._itemSlotCache[item] ??= $(`#${item}-slot`);
 
             const itemDef = Loots.fromString(item);
-            const itemSlot = $(`#${item}-slot`);
 
             if (+countElem.text() < count && itemSlot.length) {
                 this._playSlotAnimation(itemSlot);
@@ -657,19 +814,12 @@ export class UIManager {
             }
         }
 
-        $(`#${this.inventory.scope.idString}-slot`).addClass("active");
+        (
+            this._scopeSlotCache[this.inventory.scope.idString] ??= $(`#${this.inventory.scope.idString}-slot`)
+        ).addClass("active");
     }
 
     private _killMessageTimeoutID?: number;
-
-    private readonly _killMessageUICache: {
-        header?: JQuery<HTMLDivElement>
-        killCounter?: JQuery<HTMLDivElement>
-        severity?: JQuery<HTMLSpanElement>
-        streak?: JQuery<HTMLSpanElement>
-        victimName?: JQuery<HTMLSpanElement>
-        weaponUsed?: JQuery<HTMLSpanElement>
-    } = {};
 
     private _addKillMessage(
         message: (
@@ -688,18 +838,26 @@ export class UIManager {
     ): void {
         const { severity, victimName, weaponUsed, type } = message;
 
+        const {
+            killMsgHeader: headerUi,
+            killMsgCounter: killCounterUi,
+            killMsgSeverity: severityUi,
+            killMsgVictimName: victimNameUi,
+            killMsgWeaponUsed: weaponUsedUi
+        } = this.ui;
+
         let streakText = "";
         switch (severity) {
             case KillfeedEventSeverity.Kill: {
                 const { streak, kills } = message;
-                (this._killMessageUICache.header ??= $("#kill-msg-kills")).text(`Kills: ${kills}`);
-                (this._killMessageUICache.killCounter ??= $("#ui-kills")).text(kills);
+                headerUi.text(`Kills: ${kills}`);
+                killCounterUi.text(kills);
                 streakText = streak ? ` (streak: ${streak})` : "";
                 break;
             }
             case KillfeedEventSeverity.Down: {
                 // Do not show kills counter in the down message.
-                $("#kill-msg-kills").text("");
+                headerUi.text("");
             }
         }
 
@@ -707,26 +865,26 @@ export class UIManager {
         // some of these yield nonsensical sentences, but those that do are occur if
         // `type` takes on bogus values like "Gas" or "Airdrop"
 
-        (this._killMessageUICache.severity ??= $("#kill-msg-severity")).text(eventText);
+        severityUi.text(eventText);
 
-        (this._killMessageUICache.victimName ??= $("#kill-msg-player-name")).html(victimName);
-        (this._killMessageUICache.weaponUsed ??= $("#kill-msg-weapon-used")).text(
+        victimNameUi.html(victimName);
+        weaponUsedUi.text(
             ` ${weaponUsed !== undefined ? `with ${weaponUsed}` : ""}${streakText}`
         );
 
-        this.ui.killModal.fadeIn(350, () => {
+        this.ui.killMsgModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
             // fast if the player makes more than one kill in a short time span
             clearTimeout(this._killMessageTimeoutID);
 
             this._killMessageTimeoutID = window.setTimeout(() => {
-                this.ui.killModal.fadeOut(350);
+                this.ui.killMsgModal.fadeOut(350);
             }, 3000);
         });
     }
 
     private _addKillFeedMessage(text: string, classes: string[]): void {
-        const killFeedItem = $('<div class="kill-feed-item">');
+        const killFeedItem = $<HTMLDivElement>('<div class="kill-feed-item">');
 
         killFeedItem.html(text);
         killFeedItem.addClass(classes);
@@ -812,7 +970,7 @@ export class UIManager {
             return {
                 name: hasId ? this.getPlayerName(id) : "",
                 badgeText: badge
-                    ? `<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                    ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
             };
         };
@@ -894,13 +1052,17 @@ export class UIManager {
                          * a library off of somewhere, this'll have to do
                          */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
-                        const weaponNameText = weaponPresent ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}` : "";
+
+                        const weaponNameText = weaponPresent
+                            ? ` with ${isGrenadeImpactKill ? `the impact of ${article} ` : ""}${fullyQualifiedName}`
+                            : "";
+
                         const icon = (() => {
                             switch (severity) {
                                 case KillfeedEventSeverity.Down:
-                                    return "<img class=\"kill-icon\" src=\"./img/misc/downed.svg\" alt=\"Downed\">";
+                                    return html`<img class="kill-icon" src="./img/misc/downed.svg" alt="Downed">`;
                                 case KillfeedEventSeverity.Kill:
-                                    return "<img class=\"kill-icon\" src=\"./img/misc/skull_icon.svg\" alt=\"Skull\">";
+                                    return html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">`;
                             }
                         })();
 
@@ -911,13 +1073,13 @@ export class UIManager {
                         break;
                     }
                     case "icon": {
-                        const downedIcon = "<img class=\"kill-icon\" src=\"./img/misc/downed.svg\" alt=\"Downed\">";
-                        const skullIcon = "<img class=\"kill-icon\" src=\"./img/misc/skull_icon.svg\" alt=\"Finished off\">";
-                        const bleedOutIcon = "<img class=\"kill-icon\" src=\"./img/misc/bleed_out.svg\" alt=\"Bleed out\">";
-                        const finallyKilledIcon = "<img class=\"kill-icon\" src=\"./img/misc/finally_killed.svg\" alt=\"Finally killed\">";
+                        const downedIcon = html`<img class="kill-icon" src="./img/misc/downed.svg" alt="Downed">`;
+                        const skullIcon = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Finished off">`;
+                        const bleedOutIcon = html`<img class="kill-icon" src="./img/misc/bleed_out.svg" alt="Bleed out">`;
+                        const finallyKilledIcon = html`<img class="kill-icon" src="./img/misc/finally_killed.svg" alt="Finally killed">`;
 
                         const killstreakText = hasKillstreak
-                            ? `
+                            ? html`
                             <span style="font-size: 80%">(${killstreak}
                                 <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull" height=12>)
                             </span>`
@@ -936,7 +1098,7 @@ export class UIManager {
                                 break;
                         }
                         const altText = weaponUsed ? weaponUsed.name : iconName;
-                        const weaponText = `<img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">`;
+                        const weaponText = html`<img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">`;
 
                         const severityIcon = (() => {
                             switch (severity) {
@@ -991,9 +1153,15 @@ export class UIManager {
 
                     return id === this.game.activePlayerID || (
                         id !== undefined
-                        && (target = this.game.objects.get(id))
-                        && target instanceof Player
-                        && target.teamID === this.game.teamID
+                        && (
+                            (
+                                (target = this.game.objects.get(id))
+                                && target instanceof Player
+                                && target.teamID === this.game.teamID
+                            ) || (
+                                this._teammateDataCache.has(id)
+                            )
+                        )
                     );
                 };
 
@@ -1036,38 +1204,69 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderAssigned: {
-                if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+                const {
+                    killLeaderLeader: leader,
+                    killLeaderCount: count,
+                    spectateKillLeader: spectateLeader
+                } = this.ui;
 
-                $("#kill-leader-leader").html(`${victimName}${victimBadgeText}`);
-                $("#kill-leader-kills-counter").text(attackerKills);
+                classes.push(
+                    victimId === this.game.activePlayerID
+                        ? "kill-feed-item-killer"
+                        : "kill-feed-kill-leader"
+                );
+
+                leader.html(`${victimName}${victimBadgeText}`);
+                count.text(attackerKills);
 
                 if (!hideFromKillfeed) {
-                    messageText = `<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
+                    messageText = html`<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
-                $("#btn-spectate-kill-leader").removeClass("btn-disabled");
+
+                spectateLeader.removeClass("btn-disabled");
                 break;
             }
 
             case KillfeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(attackerKills);
+                this.ui.killLeaderCount.text(attackerKills);
                 break;
             }
 
             case KillfeedMessageType.KillLeaderDead: {
-                $("#kill-leader-leader").text("Waiting for leader");
-                $("#kill-leader-kills-counter").text("0");
+                const {
+                    killLeaderLeader: leader,
+                    killLeaderCount: count,
+                    spectateKillLeader: spectateLeader
+                } = this.ui;
+
+                leader.text("Waiting for leader");
+                count.text("0");
+
                 // noinspection HtmlUnknownTarget
-                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
+                messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
                     ? attackerId !== victimId
                         ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
                         : "The Kill Leader is dead!"
                     : "The Kill Leader killed themselves!"
                 }`;
-                if (attackerId === this.game.activePlayerID) classes.push("kill-feed-item-killer");
-                else if (victimId === this.game.activePlayerID) classes.push("kill-feed-item-victim");
+                switch (this.game.activePlayerID) {
+                    case attackerId: {
+                        classes.push("kill-feed-item-killer");
+                        break;
+                    }
+                    case victimId: {
+                        classes.push("kill-feed-item-victim");
+                        break;
+                    }
+                    default: {
+                        classes.push("kill-feed-kill-leader");
+                        break;
+                    }
+                }
+
                 this.game.soundManager.play("kill_leader_dead");
-                $("#btn-spectate-kill-leader").addClass("btn-disabled");
+                spectateLeader.addClass("btn-disabled");
                 break;
             }
         }
@@ -1078,9 +1277,7 @@ export class UIManager {
 
 class Wrapper<T> {
     private _dirty = true;
-    get dirty(): boolean {
-        return this._dirty;
-    }
+    get dirty(): boolean { return this._dirty; }
 
     private _value: T;
     get value(): T { return this._value; }
@@ -1117,7 +1314,7 @@ interface UpdateDataType {
 class PlayerHealthUI {
     readonly game: Game;
 
-    readonly container: JQuery;
+    readonly container: JQuery<HTMLDivElement>;
 
     readonly svgContainer: JQuery<SVGElement>;
     readonly healthDisplay: JQuery<SVGCircleElement>;
@@ -1144,15 +1341,34 @@ class PlayerHealthUI {
     */
 
     private readonly _id = new Wrapper<number>(-1);
+    get id(): number { return this._id.value; }
+
     private readonly _normalizedHealth = new Wrapper<number>(1);
+    get normalizedHealth(): number { return this._normalizedHealth.value; }
+
     private readonly _downed = new Wrapper<boolean | undefined>(undefined);
+    get downed(): boolean | undefined { return this._downed.value; }
+
     private readonly _disconnected = new Wrapper<boolean>(false);
+    get disconnected(): boolean { return this._disconnected.value; }
+
     private readonly _position = new Wrapper<Vector | undefined>(undefined);
+    get position(): Vector | undefined { return this._position.value; }
+
     private readonly _colorIndex = new Wrapper<number>(0);
+    get colorIndex(): number { return this._colorIndex.value; }
+
     private readonly _name = new Wrapper<string>(GameConstants.player.defaultName);
+    get name(): string { return this._name.value; }
+
     private readonly _hasColor = new Wrapper<boolean>(false);
+    get hasColor(): boolean { return this._hasColor.value; }
+
     private readonly _nameColor = new Wrapper<Color | undefined>(undefined);
+    get nameColor(): Color | undefined { return this._nameColor.value; }
+
     private readonly _badge = new Wrapper<BadgeDefinition | undefined>(undefined);
+    get badge(): BadgeDefinition | undefined { return this._badge.value; }
 
     constructor(game: Game, data?: UpdateDataType) {
         this.game = game;
@@ -1173,10 +1389,18 @@ class PlayerHealthUI {
             this.badgeImage
         );
 
+        if (typeof data?.id === "number") {
+            this._id.value = data.id;
+            this._id.markClean();
+        }
+
         this.update(data);
     }
 
     update(data?: UpdateDataType): void {
+        const id = this._id.value;
+        const hadNoHealth = this._normalizedHealth.value <= 0;
+
         if (data !== undefined) {
             ([
                 "id",
@@ -1201,20 +1425,23 @@ class PlayerHealthUI {
 
         if (this._id.dirty) {
             // uh… no-op?
+            console.warn(`PlayerHealthUI id unexpectedly marked dirty (was ${id}, currently ${this._id.value}); ignoring change request.`);
         }
 
         let recalcIndicatorFrame = false;
 
         if (this._normalizedHealth.dirty) {
-            this.healthDisplay
-                .css("stroke", UIManager.getHealthColor(this._normalizedHealth.value, this._downed.value))
-                .css("stroke-dashoffset", 132 * (1 - this._normalizedHealth.value));
+            const normHp = this._normalizedHealth.value;
 
-            recalcIndicatorFrame = true;
+            this.healthDisplay
+                .css("stroke", UIManager.getHealthColor(normHp, this._downed.value))
+                .css("stroke-dashoffset", 132 * (1 - normHp));
+
+            recalcIndicatorFrame = hadNoHealth !== (normHp <= 0);
         }
 
         if (this._downed.dirty) {
-            this.container.toggleClass("downed", this._downed.value);
+            this.container.toggleClass("downed", this._downed.value === true);
 
             recalcIndicatorFrame = true;
         }
@@ -1222,6 +1449,9 @@ class PlayerHealthUI {
         if (this._disconnected.dirty) {
             this.container.toggleClass("disconnected", this._disconnected.value);
 
+            const teammateIndicator = this.game.map.teammateIndicators.get(id);
+
+            teammateIndicator?.setAlpha(this._disconnected.value ? 0.5 : 1);
             recalcIndicatorFrame = true;
         }
 
@@ -1253,7 +1483,10 @@ class PlayerHealthUI {
 
         if (recalcIndicatorFrame) {
             const frame = `player_indicator${this._normalizedHealth.value === 0 ? "_dead" : this._downed.value ? "_downed" : ""}`;
-            this.teammateIndicator.attr("src", `./img/game/player/${frame}.svg`);
+            const newSrc = `./img/game/player/${frame}.svg`;
+            if (this.teammateIndicator.attr("src") !== newSrc) {
+                this.teammateIndicator.attr("src", newSrc);
+            }
             indicator?.setFrame(frame);
         }
 
@@ -1265,7 +1498,7 @@ class PlayerHealthUI {
         }
 
         if (this._name.dirty) {
-            this.nameLabel.text(this._name.value);
+            this.nameLabel.text((this.game.uiManager.getRawPlayerNameNullish(this._id.value) ?? this._name.value) || "Loading…");
         }
 
         if (
@@ -1280,19 +1513,37 @@ class PlayerHealthUI {
         }
 
         if (this._badge.dirty) {
-            if (this._badge.value) {
-                this.badgeImage
-                    .attr(
-                        "src",
-                        `./img/game/badges/${this._badge.value.idString}.svg`
-                    )
-                    .css({ display: "", visibility: "" });
+            const teammate = this.game.playerNames.get(this._id.value);
+
+            if (teammate?.badge) {
+                const src = `./img/game/badges/${teammate.badge.idString}.svg`;
+
+                if (this.badgeImage.attr("src") !== src) {
+                    this.badgeImage
+                        .attr("src", src)
+                        .css({ display: "", visibility: "" });
+                }
             } else {
                 this.badgeImage
                     .attr("src", "")
                     .css({ display: "none", visibility: "none" });
             }
         }
+
+        ([
+            "id",
+            "colorIndex",
+            "downed",
+            "disconnected",
+            "normalizedHealth",
+            "position",
+            "name",
+            "hasColor",
+            "nameColor",
+            "badge"
+        ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
+            (this[`_${prop}`] as Wrapper<unknown>).markClean();
+        });
     }
 
     destroy(): void {

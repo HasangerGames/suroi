@@ -58,6 +58,7 @@
         flex-direction: column;
 
         width: inherit;
+        min-width: 644px;
         padding: 10px;
 
         #create-team-players {
@@ -109,6 +110,7 @@
         #create-team-url {
             display: flex;
             padding-top: 10px;
+            justify-content: center;
 
             #create-team-url-field {
                 color: black;

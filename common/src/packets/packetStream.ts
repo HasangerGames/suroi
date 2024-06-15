@@ -26,7 +26,7 @@ class PacketRegister {
         this.bits = Math.ceil(Math.log2(this._nextTypeId));
     }
 
-    private _register(packet: typeof Packet & (new () => Packet)): void {
+    private _register(packet: new () => Packet): void {
         let name: string;
         if ((name = packet.name) in this.typeToId) {
             console.warn(`Packet ${packet.name} registered multiple times`);

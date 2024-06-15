@@ -9,7 +9,7 @@ import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
 interface ObjectFullData {
     readonly id: number
@@ -29,6 +29,7 @@ export interface PlayerData {
         health: boolean
         adrenaline: boolean
         weapons: boolean
+        slotLocks: boolean
         items: boolean
         id: boolean
         teammates: boolean
@@ -57,6 +58,7 @@ export interface PlayerData {
 
     inventory: {
         activeWeaponIndex: number
+        lockedSlots: number
         weapons?: Array<undefined | {
             definition: WeaponDefinition
             count?: number
@@ -138,6 +140,11 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
         }
     }
 
+    stream.writeBoolean(dirty.slotLocks);
+    if (dirty.slotLocks) {
+        stream.writeBits(inventory.lockedSlots, GameConstants.player.maxWeapons);
+    }
+
     stream.writeBoolean(dirty.items);
     if (dirty.items) {
         for (const item in DEFAULT_INVENTORY) {
@@ -183,8 +190,7 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
     }
 
     if (dirty.teammates = stream.readBoolean()) {
-        data.teammates = [];
-        stream.readArray(data.teammates, 2, () => {
+        stream.readArray(data.teammates = [], 2, () => {
             return {
                 id: stream.readObjectID(),
                 position: stream.readPosition(),
@@ -195,10 +201,10 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
         });
     }
 
+    const maxWeapons = GameConstants.player.maxWeapons;
+
     if (dirty.weapons = stream.readBoolean()) {
         inventory.activeWeaponIndex = stream.readBits(2);
-
-        const maxWeapons = GameConstants.player.maxWeapons;
 
         inventory.weapons = Array.from({ length: maxWeapons }, () => undefined);
         for (let i = 0; i < maxWeapons; i++) {
@@ -214,6 +220,10 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
                 };
             }
         }
+    }
+
+    if (dirty.slotLocks = stream.readBoolean()) {
+        inventory.lockedSlots = stream.readBits(maxWeapons);
     }
 
     if (dirty.items = stream.readBoolean()) {
@@ -258,7 +268,7 @@ export type MapPingSerialization = {
     readonly playerId?: undefined
 });
 
-export class UpdatePacket extends Packet {
+export class UpdatePacket implements Packet {
     // obligatory on server, optional on client
     playerData?: Required<PlayerData>;
 
@@ -326,7 +336,7 @@ export class UpdatePacket extends Packet {
         readonly playerId?: number
     }> = [];
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         let flags = 0;
         // save the current index to write flags latter
         const flagsIdx = stream.index;
@@ -462,7 +472,7 @@ export class UpdatePacket extends Packet {
         stream.index = idx;
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         const flags = stream.readBits(UPDATE_FLAGS_BITS);
 
         if (flags & UpdateFlags.PlayerData) {

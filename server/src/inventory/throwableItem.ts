@@ -201,10 +201,11 @@ class GrenadeHandler {
          * For most ranges, the error is below 0.1%, and it behaves itself acceptably at different tickrates (low tickrates
          * go slightly further, high tickrates go very very slightly less far)
          *
-         * At very close range (the range most people would call "dropping at one's feet"), this prediction loses accuracy, but
-         * it's not a big deal because the affected range is when the desired distance is < 0.6 units
+         * At very close range (the range most people would call "dropping at one's feet"), this prediction loses accuracy,
+         * but it's not a big deal because the affected range is when the desired distance is < 1 unit, and the largest
+         * error is of about 0.8%
          */
-        const superStrangeMysteryConstant = 787.245;
+        const superStrangeMysteryConstant = 2.79 * Math.log(1.6) / 1000;
 
         projectile.velocity = Vec.add(
             Vec.fromPolar(
@@ -214,7 +215,7 @@ class GrenadeHandler {
                     : Math.min(
                         definition.maxThrowDistance,
                         this.owner.distanceToMouse
-                    ) / superStrangeMysteryConstant
+                    ) * superStrangeMysteryConstant
             ),
             this.owner.movementVector
         );

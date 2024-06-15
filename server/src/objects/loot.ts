@@ -8,10 +8,10 @@ import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/uti
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
-import { Config } from "../config";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Events } from "../pluginManager";
+import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -41,7 +41,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      *
      * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
      */
-    private static readonly _dragConstant = Math.exp(-3.69 / Config.tps);
+    private static readonly _dragConstant = dragConst(3.69);
 
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel = 0.003) {
         super(game, position);
@@ -152,9 +152,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
         switch (definition.itemType) {
             case ItemType.Gun: {
-                for (const slot of inventory.weapons) {
-                    const weapon = slot;
-
+                for (const weapon of inventory.weapons) {
                     if (
                         weapon instanceof GunItem
                         && !weapon.definition.isDual
@@ -165,19 +163,21 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                     }
                 }
 
-                return !inventory.hasWeapon(0)
-                    || !inventory.hasWeapon(1)
-                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition);
+                return (!inventory.hasWeapon(0) && !inventory.isLocked(0))
+                    || (!inventory.hasWeapon(1) && !inventory.isLocked(1))
+                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition && !inventory.isLocked(inventory.activeWeaponIndex));
             }
             case ItemType.Healing:
             case ItemType.Ammo:
             case ItemType.Throwable: {
                 const idString = definition.idString;
 
-                return inventory.items.getItem(idString) + 1 <= (inventory.backpack.maxCapacity[idString] ?? 0);
+                return (
+                    definition.itemType !== ItemType.Throwable || !inventory.isLocked(3)
+                ) && inventory.items.getItem(idString) + 1 <= (inventory.backpack.maxCapacity[idString] ?? 0);
             }
             case ItemType.Melee: {
-                return definition !== inventory.getWeapon(2)?.definition;
+                return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
             }
             case ItemType.Armor: {
                 let threshold = -Infinity;

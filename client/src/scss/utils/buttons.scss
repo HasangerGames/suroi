@@ -73,6 +73,12 @@
   box-shadow: inset 0 -2px $purple_bg;
 }
 
+.btn-success {
+  background: $grass_bg;
+  border-bottom: 2px solid $success;
+  box-shadow: inset 0 -2px $success;
+}
+
 // Socials
 .btn-social {
   display: inline-block;

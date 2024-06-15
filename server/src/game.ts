@@ -195,7 +195,7 @@ export class Game implements GameData {
     private _dt = Config.tps / 1000;
     get dt(): number { return this._dt; }
 
-    tickTimes: number[] = [];
+    private readonly _tickTimes: number[] = [];
 
     private readonly _idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
@@ -579,12 +579,12 @@ export class Game implements GameData {
         // THIS TICK COUNTER IS WORKING CORRECTLY!
         // It measures the time it takes to calculate a tick, not the time between ticks.
         const tickTime = Date.now() - this.now;
-        this.tickTimes.push(tickTime);
+        this._tickTimes.push(tickTime);
 
-        if (this.tickTimes.length >= 200) {
-            const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
+        if (this._tickTimes.length >= 200) {
+            const mspt = this._tickTimes.reduce((a, b) => a + b) / this._tickTimes.length;
             Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
-            this.tickTimes = [];
+            this._tickTimes.length = 0;
         }
 
         this.pluginManager.emit(Events.Game_Tick, this);

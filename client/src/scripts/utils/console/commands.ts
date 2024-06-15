@@ -13,16 +13,19 @@ import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/obje
 import { Vec } from "../../../../../common/src/utils/vector";
 import { Config } from "../../config";
 import { type Game } from "../../game";
-import { COLORS } from "../constants";
 import { type InputManager } from "../../managers/inputManager";
+import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
+import type { InputAction } from "../../../../../common/src/packets/inputPacket";
 
-type CommandExecutor<ErrorType = never> = (
+type CommandExecutor<ErrorType> = (
     this: Game,
     ...args: Array<string | undefined>
-) => PossibleError<ErrorType>;
+    // this a return type bruh
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+) => void | PossibleError<ErrorType>;
 
 interface CommandInfo {
     readonly short: string
@@ -49,7 +52,7 @@ export class Command<
 
     private readonly _executor: CommandExecutor<ErrorType>;
     run(args: Array<string | undefined> = []): PossibleError<ErrorType> {
-        return this._executor.call(this._game, ...args);
+        return this._executor.call(this._game, ...args) as PossibleError<ErrorType>;
     }
 
     private readonly _game: Game;
@@ -96,7 +99,7 @@ export class Command<
         minus._inverse = plus;
     }
 
-    static createCommand<ErrorType extends Stringable = never>(
+    static createCommand<ErrorType extends Stringable = undefined>(
         name: string,
         executor: CommandExecutor<ErrorType>,
         game: Game,
@@ -184,7 +187,7 @@ export function setUpCommands(game: Game): void {
         Command.createInvertiblePair(
             name,
             spectateAction
-                ? function(): undefined {
+                ? function() {
                     this.inputManager.movement[name] = true;
                     if (this.spectating) {
                         const packet = new SpectatePacket();
@@ -192,10 +195,10 @@ export function setUpCommands(game: Game): void {
                         this.sendPacket(packet);
                     }
                 }
-                : function(): undefined {
+                : function() {
                     this.inputManager.movement[name] = true;
                 },
-            function(): undefined {
+            function() {
                 this.inputManager.movement[name] = false;
             },
             game,
@@ -236,7 +239,7 @@ export function setUpCommands(game: Game): void {
         change back from an arrow function
     */
     /* eslint-disable prefer-arrow-callback */
-    Command.createCommand<string>(
+    Command.createCommand(
         "slot",
         function(slot) {
             const slotNumber = Casters.toInt(slot ?? "NaN");
@@ -271,7 +274,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "last_item",
-        function(): undefined {
+        function() {
             this.inputManager.addAction(InputActions.EquipLastItem);
         },
         game,
@@ -284,7 +287,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "other_weapon",
-        function(): undefined {
+        function() {
             let index
                 = this.uiManager.inventory.activeWeaponIndex === 0 || (
                     this.uiManager.inventory.weapons[0] === undefined
@@ -310,7 +313,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "swap_gun_slots",
-        function(): undefined {
+        function() {
             this.inputManager.addAction(InputActions.SwapGunSlots);
         },
         game,
@@ -323,7 +326,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "cycle_items",
         function(offset) {
             const step = Casters.toInt(offset ?? "NaN");
@@ -381,7 +384,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "interact",
-        function(): undefined {
+        function() {
             this.inputManager.addAction(InputActions.Interact);
         },
         game,
@@ -392,9 +395,92 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    for (const [cmdName, action, shortDesc, longDesc] of [
+        [
+            "lock_slot",
+            InputActions.LockSlot,
+            "Locks a slot, rendering it immutable",
+            "Locks a weapon slot. A locked weapon slot cannot have its weapon changed, neither by dropping it, "
+            + "nor by replacing the weapon with one on the ground. However, locked slots may still be swapped via"
+            + "<code>swap_gun_slots</code>, which will transfer the lock appropriately. Use <code>unlock_slot</code> "
+            + "to undo a lock."
+        ],
+        [
+            "unlock_slot",
+            InputActions.UnlockSlot,
+            "Unlocks a slot, rendering it mutable",
+            "Unlocks a weapon slot. A locked weapon slot cannot have its weapon changed, neither by dropping it, "
+            + "nor by replacing the weapon with one on the ground. However, locked slots may still be swapped via"
+            + "<code>swap_gun_slots</code>, which will transfer the lock appropriately. Use <code>lock_slot</code> "
+            + "to lock a slot."
+
+        ],
+        [
+            "toggle_slot_lock",
+            InputActions.ToggleSlotLock,
+            "Toggles the lock on a slot, either locking or unlocking it",
+            "Either locks or unlocks a weapon slot. Locked slots cannot have their contents changed."
+
+        ]
+    ] as ReadonlyArray<
+        readonly [
+            string,
+            (
+                InputAction extends infer I
+                    ? I extends { readonly slot: number }
+                        ? I
+                        : never
+                    : never
+            )["type"],
+            string,
+            string
+        ]
+    >) {
+        Command.createCommand(
+            cmdName,
+            function(slot) {
+                let target = this.uiManager.inventory.activeWeaponIndex;
+
+                if (slot) { // <- excludes explicit empty string
+                    const newTarget = Casters.toInt(slot ?? "NaN");
+
+                    if ("err" in newTarget) {
+                        return {
+                            err: `Cannot lock invalid slot '${slot}'`
+                        };
+                    }
+
+                    target = newTarget.res;
+                }
+
+                this.inputManager.addAction({
+                    type: action,
+                    slot: target
+                });
+            },
+            game,
+            {
+                short: shortDesc,
+                long: longDesc,
+                signatures: [
+                    {
+                        args: [
+                            {
+                                name: "target",
+                                type: ["integer"],
+                                optional: true
+                            }
+                        ],
+                        noexcept: false
+                    }
+                ]
+            }
+        );
+    }
+
     Command.createCommand(
         "loot",
-        function(): undefined {
+        function() {
             this.inputManager.addAction(InputActions.Loot);
         },
         game,
@@ -407,12 +493,12 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "attack",
-        function(): undefined {
+        function() {
             if (this.inputManager.attacking) return;
 
             this.inputManager.attacking = true;
         },
-        function(): undefined {
+        function() {
             if (!this.inputManager.attacking) return;
 
             this.inputManager.attacking = false;
@@ -432,7 +518,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "drop",
-        function(): undefined {
+        function() {
             this.inputManager.addAction({
                 type: InputActions.DropWeapon,
                 slot: this.uiManager.inventory.activeWeaponIndex
@@ -446,7 +532,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "cycle_scopes",
         function(offset) {
             const step = Casters.toInt(offset ?? "NaN");
@@ -479,7 +565,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "equip_or_cycle_throwables",
         function(offset) {
             // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
@@ -568,7 +654,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "cancel_action",
-        function(): undefined {
+        function() {
             game.inputManager.addAction(InputActions.Cancel);
         },
         game,
@@ -581,10 +667,10 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "view_map",
-        function(): undefined {
+        function() {
             game.map.switchToBigMap();
         },
-        function(): undefined {
+        function() {
             game.map.switchToSmallMap();
         },
         game,
@@ -602,7 +688,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "toggle_map",
-        function(): undefined {
+        function() {
             game.map.toggle();
         },
         game,
@@ -615,8 +701,8 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "toggle_minimap",
-        function(): undefined {
-            if (!$("canvas").hasClass("over-hud")) {
+        function() {
+            if (!this.uiManager.ui.canvas.hasClass("over-hud")) {
                 game.console.setBuiltInCVar("cv_minimap_minimized", !game.console.getBuiltInCVar("cv_minimap_minimized"));
             }
         },
@@ -629,7 +715,7 @@ export function setUpCommands(game: Game): void {
     );
     Command.createCommand(
         "toggle_hud",
-        function(): undefined {
+        function() {
             $("#game-ui").toggle();
             if (game.map.visible) { game.map.toggleMinimap(); }
         },
@@ -643,7 +729,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "reload",
-        function(): undefined {
+        function() {
             game.inputManager.addAction(InputActions.Reload);
         },
         game,
@@ -656,7 +742,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "toggle_console",
-        function(): undefined {
+        function() {
             gameConsole.toggle();
         },
         game,
@@ -669,7 +755,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "emote_wheel",
-        function(): undefined {
+        function() {
             if (
                 game.console.getBuiltInCVar("cv_hide_emotes")
                 || this.gameOver
@@ -683,7 +769,7 @@ export function setUpCommands(game: Game): void {
                 this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
             }
 
-            $("#emote-wheel")
+            this.uiManager.ui.emoteWheel
                 .css("left", `${mouseX / scale}px`)
                 .css("top", `${mouseY / scale}px`)
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
@@ -691,13 +777,13 @@ export function setUpCommands(game: Game): void {
             this.inputManager.emoteWheelActive = true;
             this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
         },
-        function(): undefined {
+        function() {
             if (!this.inputManager.emoteWheelActive) return;
 
             this.inputManager.emoteWheelActive = false;
             this.inputManager.pingWheelMinimap = false;
 
-            $("#emote-wheel").hide();
+            this.uiManager.ui.emoteWheel.hide();
 
             if (this.inputManager.selectedEmote === undefined) return;
 
@@ -731,11 +817,11 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "map_ping_wheel",
-        function(): undefined {
+        function() {
             this.inputManager.pingWheelActive = true;
             this.uiManager.updateEmoteWheel();
         },
-        function(): undefined {
+        function() {
             this.inputManager.pingWheelActive = false;
             this.uiManager.updateEmoteWheel();
         },
@@ -815,7 +901,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "disconnect",
-        function(): undefined {
+        function() {
             void this.endGame();
         },
         game,
@@ -828,7 +914,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "clear",
-        function(): undefined {
+        function() {
             gameConsole.clear();
         },
         game,
@@ -841,7 +927,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "clear_history",
-        function(): undefined {
+        function() {
             gameConsole.clearHistory();
         },
         game,
@@ -877,7 +963,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "bind",
         function(key, query) {
             if (key === undefined || query === undefined) {
@@ -927,7 +1013,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "unbind",
         function(key) {
             if (key === undefined) {
@@ -958,7 +1044,7 @@ export function setUpCommands(game: Game): void {
 
     Command.createCommand(
         "unbind_all",
-        function(): undefined {
+        function() {
             keybinds.unbindAll();
             gameConsole.writeToLocalStorage();
             this.inputManager.generateBindsConfigScreen();
@@ -971,7 +1057,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "alias",
         function(name, query) {
             if (name === undefined || query === undefined) {
@@ -1024,7 +1110,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "remove_alias",
         function(name, removeInverse) {
             if (name === undefined) {
@@ -1073,7 +1159,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "list_binds",
         function(key) {
             const logBinds = (
@@ -1131,7 +1217,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "list_cvars",
         (): undefined => {
             gameConsole.log.raw({
@@ -1160,7 +1246,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "let",
         (name, value, type, archive, readonly) => {
             if (name === undefined || value === undefined) {
@@ -1260,7 +1346,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "assign",
         (name, value) => {
             if (name === undefined || value === undefined) {
@@ -1302,7 +1388,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "toggle",
         (name, ...values) => {
             if (name === undefined) {
@@ -1351,6 +1437,7 @@ export function setUpCommands(game: Game): void {
                         {
                             name: "values",
                             type: ["string", "number", "boolean"],
+                            optional: true,
                             rest: true
                         }
                     ],
@@ -1360,7 +1447,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "delete",
         function(name) {
             if (name === undefined) {
@@ -1396,7 +1483,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "list_alias",
         function(name) {
             if (name === undefined) {
@@ -1429,7 +1516,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "help",
         function(name) {
             if (name === undefined) {
@@ -1517,7 +1604,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "throw",
         function(doThrow) {
             if (handleResult(Casters.toBoolean(doThrow ?? "false"), () => false)) {
@@ -1544,7 +1631,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand(
         "dump_client_info",
         function(raw): undefined {
             const data = {

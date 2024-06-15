@@ -115,19 +115,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private _health = this._maxHealth;
 
-    normalizedHealth = 0;
+    private _normalizedHealth = 0;
+    get normalizedHealth(): number { return this._normalizedHealth; }
 
     get health(): number { return this._health; }
     set health(health: number) {
         this._health = Math.min(health, this._maxHealth);
         this._team?.setDirty();
         this.dirty.health = true;
-        this.normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
+        this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
     }
 
     private _maxAdrenaline = GameConstants.player.maxAdrenaline;
 
-    normalizedAdrenaline = 0;
+    private _normalizedAdrenaline = 0;
+    get normalizedAdrenaline(): number { return this._normalizedAdrenaline; }
 
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
@@ -149,7 +151,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     set adrenaline(adrenaline: number) {
         this._adrenaline = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
         this.dirty.adrenaline = true;
-        this.normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
+        this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
     private _modifiers = {
@@ -235,6 +237,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         maxMinStats: true,
         adrenaline: true,
         weapons: true,
+        slotLocks: true,
         items: true,
         zoom: true
     };
@@ -348,7 +351,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
      */
     canDespawn = true;
 
-    lastSwitch = 0;
     lastFreeSwitch = 0;
     effectiveSwitchDelay = 0;
 
@@ -366,6 +368,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     set position(position: Vector) {
+        if (Vec.equals(position, this.position)) return;
+
         this.hitbox.position = position;
         this._team?.setDirty();
     }
@@ -846,8 +850,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // player data
         packet.playerData = {
-            normalizedHealth: player.normalizedHealth,
-            normalizedAdrenaline: player.normalizedAdrenaline,
+            normalizedHealth: player._normalizedHealth,
+            normalizedAdrenaline: player._normalizedAdrenaline,
             maxHealth: player.maxHealth,
             minAdrenaline: player.minAdrenaline,
             maxAdrenaline: player.maxAdrenaline,
@@ -858,6 +862,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             dirty: player.dirty,
             inventory: {
                 activeWeaponIndex: inventory.activeWeaponIndex,
+                lockedSlots: inventory.lockedSlots,
                 scope: inventory.scope,
                 weapons: inventory.weapons.map(slot => {
                     const item = slot;
@@ -1355,40 +1360,56 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             };
 
-            if (source === KillfeedEventType.FinallyKilled) {
+            const attributeToDowner = (): boolean => {
+                const downer = this.downedBy;
+                if (!downer) return false;
+
+                const { player, item } = downer;
+
+                ++player.kills;
+                if ((item instanceof GunItem || item instanceof MeleeItem)
+                    && player.inventory.weapons.includes(item)) {
+                    const kills = ++item.stats.kills;
+
+                    for (const entry of item.definition.wearerAttributes?.on?.kill ?? []) {
+                        if (kills >= (entry.limit ?? Infinity)) continue;
+
+                        player.health += entry.healthRestored ?? 0;
+                        player.adrenaline += entry.adrenalineRestored ?? 0;
+                    }
+                }
+
+                killFeedPacket.weaponUsed = item?.definition;
+                attributeToPlayer(player, item);
+
+                return true;
+            };
+
+            if (
+                (
+                    [
+                        KillfeedEventType.FinallyKilled,
+                        KillfeedEventType.Gas,
+                        KillfeedEventType.BleedOut
+                    ].includes as (arg: DamageParams["source"]) => arg is DamageParams["source"] & KillfeedEventType
+                )(source)
+            ) {
                 killFeedPacket.eventType = source;
 
-                const antecedent = this.downedBy;
-                if (antecedent) {
-                    const { player, item } = antecedent;
-
-                    ++player.kills;
-                    if (
-                        (item instanceof GunItem || item instanceof MeleeItem)
-                        && player.inventory.weapons.includes(item)
-                    ) {
-                        const kills = ++item.stats.kills;
-
-                        for (
-                            const entry of item.definition.wearerAttributes?.on?.kill ?? []
-                        ) {
-                            if (kills >= (entry.limit ?? Infinity)) continue;
-
-                            player.health += entry.healthRestored ?? 0;
-                            player.adrenaline += entry.adrenalineRestored ?? 0;
-                        }
-                    }
-
-                    killFeedPacket.weaponUsed = item?.definition;
-                    attributeToPlayer(player, item);
-                }
+                attributeToDowner();
             } else if (sourceIsPlayer) {
                 if (source !== this) {
                     killFeedPacket.eventType = wasDowned
                         ? KillfeedEventType.FinishedOff
                         : KillfeedEventType.NormalTwoParty;
 
-                    attributeToPlayer(source);
+                    if (
+                        this.teamID === undefined // if we're in solos…
+                        || source.teamID !== this.teamID // …or the killer is in a different team from the downer…
+                        || !attributeToDowner() // …or if the downer can't be found…
+                    ) {
+                        attributeToPlayer(source); // …then attribute to the killer
+                    }
                 }
             } else if (source instanceof BaseGameObject) {
                 console.warn(`Unexpected source of death for player '${this.name}' (id: ${this.id}); source is of category ${ObjectCategory[source.type]}`);
@@ -1431,6 +1452,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         //
 
         // Drop weapons
+        this.inventory.unlockAll();
         this.inventory.dropWeapons();
 
         // Drop inventory items
@@ -1611,14 +1633,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         const inventory = this.inventory;
         for (const action of packet.actions) {
-            switch (action.type) {
+            const type = action.type;
+
+            switch (type) {
                 case InputActions.UseItem: {
                     inventory.useItem(action.item);
                     break;
                 }
                 case InputActions.EquipLastItem:
                 case InputActions.EquipItem: {
-                    const target = action.type === InputActions.EquipItem
+                    const target = type === InputActions.EquipItem
                         ? action.slot
                         : inventory.lastWeaponIndex;
 
@@ -1643,6 +1667,22 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
                 case InputActions.SwapGunSlots: {
                     inventory.swapGunSlots();
+                    break;
+                }
+                case InputActions.LockSlot: {
+                    inventory.lock(action.slot);
+                    break;
+                }
+                case InputActions.UnlockSlot: {
+                    inventory.unlock(action.slot);
+                    break;
+                }
+                case InputActions.ToggleSlotLock: {
+                    const slot = action.slot;
+
+                    inventory.isLocked(slot)
+                        ? inventory.unlock(slot)
+                        : inventory.lock(slot);
                     break;
                 }
                 case InputActions.Loot: {

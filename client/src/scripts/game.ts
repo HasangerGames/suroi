@@ -98,7 +98,6 @@ export class Game {
     }>();
 
     activePlayerID = -1;
-
     teamID = -1;
 
     teamMode = false;
@@ -112,19 +111,18 @@ export class Game {
     spectating = false;
     error = false;
 
-    readonly uiManager = new UIManager(this);
-
     lastPingDate = 0;
 
     disconnectReason = "";
 
+    readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
-    readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map = new Minimap(this);
     readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
+    readonly soundManager = new SoundManager(this);
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
@@ -141,7 +139,13 @@ export class Game {
         return timeout;
     }
 
+    private static _instantiated = false;
     constructor() {
+        if (Game._instantiated) {
+            throw new Error("Class 'Game' has already been instantiated.");
+        }
+        Game._instantiated = true;
+
         this.console.readFromLocalStorage();
         this.inputManager.setupInputs();
 
@@ -219,7 +223,6 @@ export class Game {
         });
 
         setUpCommands(this);
-        this.soundManager = new SoundManager(this);
         this.inputManager.generateBindsConfigScreen();
 
         this.music = sound.add("menu_music", {
@@ -253,12 +256,14 @@ export class Game {
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(this.uiManager.gameOverScreenTimeout);
-                $("#game-over-overlay").hide();
-                $("#kill-msg").hide();
-                $("#ui-kills").text("0");
-                $("#kill-feed").html("");
-                $("#spectating-container").hide();
-                $("#joysticks-containers").show();
+                const ui = this.uiManager.ui;
+
+                ui.gameOverOverlay.hide();
+                ui.killMsgModal.hide();
+                ui.killMsgCounter.text("0");
+                ui.killFeed.html("");
+                ui.spectatingContainer.hide();
+                ui.joystickContainer.show();
             }
 
             this.sendPacket(new PingPacket());
@@ -306,10 +311,12 @@ export class Game {
             }
         };
 
+        const ui = this.uiManager.ui;
+
         this._socket.onerror = (): void => {
             this.error = true;
-            $("#splash-server-message-text").html("Error joining game.");
-            $("#splash-server-message").show();
+            ui.splashMsgText.html("Error joining game.");
+            ui.splashMsg.show();
             resetPlayButtons();
         };
 
@@ -320,11 +327,11 @@ export class Game {
 
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    $("#splash-ui").fadeIn(400);
-                    $("#splash-server-message-text").html(this.disconnectReason || "Connection lost.");
-                    $("#splash-server-message").show();
+                    ui.splashUi.fadeIn(400);
+                    ui.splashMsgText.html(this.disconnectReason || "Connection lost.");
+                    ui.splashMsg.show();
                 }
-                $("#btn-spectate").addClass("btn-disabled");
+                this.uiManager.ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
             }
 
@@ -363,9 +370,10 @@ export class Game {
                 break;
             }
             case packet instanceof ReportPacket: {
-                $("#reporting-name").text(packet.playerName);
-                $("#report-id").text(packet.reportID);
-                $("#report-modal").fadeIn(250);
+                const ui = this.uiManager.ui;
+                ui.reportingName.text(packet.playerName);
+                ui.reportingId.text(packet.reportID);
+                ui.reportingModal.fadeIn(250);
                 break;
             }
             case packet instanceof PickupPacket: {
@@ -412,35 +420,39 @@ export class Game {
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
+        const ui = this.uiManager.ui;
+
         this.teamID = packet.teamID;
         this.teamMode = packet.maxTeamSize > TeamSize.Solo;
 
-        $("canvas").addClass("active");
-        $("#splash-ui").fadeOut(400, resetPlayButtons);
+        ui.canvas.addClass("active");
+        ui.splashUi.fadeOut(400, resetPlayButtons);
 
-        $("#kill-leader-leader").html("Waiting for leader");
-        $("#kill-leader-kills-counter").text("0");
-        $("#btn-spectate-kill-leader").addClass("btn-disabled");
+        ui.killLeaderLeader.html("Waiting for leader");
+        ui.killLeaderCount.text("0");
+        ui.spectateKillLeader.addClass("btn-disabled");
 
-        this.uiManager.ui.teamContainer.toggle(this.teamMode);
+        ui.teamContainer.toggle(this.teamMode);
     }
 
     async endGame(): Promise<void> {
+        const ui = this.uiManager.ui;
+
         return await new Promise(resolve => {
-            $("#splash-options").addClass("loading");
+            ui.splashOptions.addClass("loading");
 
             this.soundManager.stopAll();
 
             void this.music.play();
 
-            $("#splash-ui").fadeIn(400, () => {
-                $("#team-container").html("");
-                $("#action-container").hide();
-                $("#game-menu").hide();
-                $("#game-over-overlay").hide();
-                $("canvas").removeClass("active");
-                $("#kill-leader-leader").text("Waiting for leader");
-                $("#kill-leader-kills-counter").text("0");
+            ui.splashUi.fadeIn(400, () => {
+                ui.teamContainer.html("");
+                ui.actionContainer.hide();
+                ui.gameMenu.hide();
+                ui.gameOverOverlay.hide();
+                ui.canvas.removeClass("active");
+                ui.killLeaderLeader.text("Waiting for leader");
+                ui.killLeaderCount.text("0");
 
                 this.gameStarted = false;
                 this._socket?.close();
@@ -468,17 +480,17 @@ export class Game {
 
                 this.camera.zoom = Scopes.definitions[0].zoomLevel;
                 resetPlayButtons();
-                if (teamSocket) $("#create-team-menu").fadeIn(250, resolve);
+                if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });
         });
     }
 
-    packetStream = new PacketStream(new ArrayBuffer(1024));
+    private readonly _packetStream = new PacketStream(new ArrayBuffer(1024));
     sendPacket(packet: Packet): void {
-        this.packetStream.stream.index = 0;
-        this.packetStream.serializeClientPacket(packet);
-        this.sendData(this.packetStream.getBuffer());
+        this._packetStream.stream.index = 0;
+        this._packetStream.serializeClientPacket(packet);
+        this.sendData(this._packetStream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
@@ -577,7 +589,6 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
-
         if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
@@ -589,23 +600,25 @@ export class Game {
 
             if (object === undefined || object.destroyed) {
                 type K = typeof type;
+
                 this.objects.add(
                     new (
                         ObjectClassMapping[type] as (new (game: Game, id: number, data: FullData<K>) => ObjectMapping[K])
                     )(this, id, data)
                 );
-            }
-
-            if (object) {
+            } else {
                 object.updateFromData(data, false);
             }
         }
 
         for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
-            if (object) {
-                (object as GameObject).updateFromData(data, false);
+            if (object === undefined) {
+                console.warn(`Trying to partially update non-existant object with ID ${id}`);
+                continue;
             }
+
+            (object as GameObject).updateFromData(data, false);
         }
 
         for (const id of updateData.deletedObjects) {
@@ -616,11 +629,7 @@ export class Game {
             }
 
             object.destroy();
-
-            // If it's a teammate, do NOT remove the object.
-            if (!(object instanceof Player && object.teamID === this.teamID)) {
-                this.objects.delete(object);
-            }
+            this.objects.delete(object);
         }
 
         for (const bullet of updateData.deserializedBullets) {
@@ -645,8 +654,9 @@ export class Game {
         this.gas.updateFrom(updateData);
 
         if (updateData.aliveCount !== undefined) {
-            $("#ui-players-alive").text(updateData.aliveCount);
-            $("#btn-spectate").toggle(updateData.aliveCount > 1);
+            const ui = this.uiManager.ui;
+            ui.playerAlive.text(updateData.aliveCount);
+            ui.btnSpectate.toggle(updateData.aliveCount > 1);
         }
 
         for (const plane of updateData.planes) {
@@ -784,41 +794,45 @@ export class Game {
                 cache.bind = bind;
                 cache.canInteract = canInteract;
 
-                const { interactKey, interactMsg } = this.uiManager.ui;
+                const {
+                    interactKey,
+                    interactMsg,
+                    interactText
+                } = this.uiManager.ui;
                 const type = object instanceof Loot ? object.definition.itemType : undefined;
 
                 // Update interact message
                 if (object !== undefined || (isAction && showCancel)) {
                     // If the loot object hasn't changed, we don't need to redo the text
                     if (differences.object || differences.offset || differences.isAction) {
-                        let interactText;
+                        let text;
                         switch (true) {
                             case object instanceof Obstacle: {
                                 switch (object.definition.role) {
                                     case ObstacleSpecialRoles.Door:
-                                        interactText = object.door?.offset === 0 ? "Open Door" : "Close Door";
+                                        text = object.door?.offset === 0 ? "Open Door" : "Close Door";
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
-                                        interactText = `${object.definition.interactText} ${object.definition.name}`;
+                                        text = `${object.definition.interactText} ${object.definition.name}`;
                                         break;
                                 }
                                 break;
                             }
                             case object instanceof Loot: {
-                                interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                text = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object instanceof Player: {
-                                interactText = `Revive ${this.uiManager.getRawPlayerName(object.id)}`;
+                                text = `Revive ${this.uiManager.getRawPlayerName(object.id)}`;
                                 break;
                             }
                             case isAction: {
-                                interactText = "Cancel";
+                                text = "Cancel";
                                 break;
                             }
                         }
 
-                        if (interactText) $("#interact-text").text(interactText);
+                        if (text) interactText.text(text);
                     }
 
                     if (!this.inputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {

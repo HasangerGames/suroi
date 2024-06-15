@@ -4,9 +4,16 @@ import { RectangleHitbox } from "./hitbox";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { Vec, type Vector } from "./vector";
 
-const π = Math.PI;
-const halfπ = π / 2;
-const τ = 2 * π;
+export const π = Math.PI;
+export const halfπ = π / 2;
+export const τ = 2 * π;
+
+// For accessibility
+
+export const PI = π;
+export const HALF_PI = π / 2;
+export const TAU = 2 * π;
+
 export const Angle = Object.freeze({
     /**
      * Draws a line between two points and returns that line's angle
@@ -613,8 +620,6 @@ export type CollisionResponse = {
 } | null;
 
 export function calculateDoorHitboxes<
-    // tf are you talking about
-
     U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
 >(
     definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },
@@ -636,7 +641,14 @@ export function calculateDoorHitboxes<
     switch (definition.operationStyle) {
         case "slide": {
             const openHitbox = Geometry.transformRectangle(
-                Vec.addAdjust(position, Vec.create((definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1), 0), rotation),
+                Vec.addAdjust(
+                    position,
+                    Vec.create(
+                        (definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1),
+                        0
+                    ),
+                    rotation
+                ),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,

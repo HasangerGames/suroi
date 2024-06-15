@@ -32,6 +32,7 @@ export interface MapDefinition {
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
+    readonly obstacleClumps?: readonly ObstacleClump[]
     readonly loots?: Record<keyof typeof LootTables, number>
 
     readonly places?: Array<{
@@ -42,6 +43,26 @@ export interface MapDefinition {
     // Custom callback to generate stuff
     readonly genCallback?: (map: GameMap) => void
 }
+
+export type ObstacleClump = {
+    /**
+     * How many of these clumps per map
+     */
+    readonly clumpAmount: number
+    /**
+     * Data for any given clump
+     */
+    readonly clump: {
+        /**
+         * Id's of obstacles that may appear in the clump
+         */
+        readonly obstacles: ReadonlyArray<ReferenceTo<ObstacleDefinition>>
+        readonly minAmount: number
+        readonly maxAmount: number
+        readonly radius: number
+        readonly jitter: number
+    }
+};
 
 const maps = {
     main: {
@@ -95,9 +116,9 @@ const maps = {
         obstacles: {
             oil_tank: 12,
             // christmas_tree: 1, // winter mode
-            oak_tree: 250,
-            birch_tree: 25,
-            pine_tree: 15,
+            oak_tree: 100,
+            birch_tree: 20,
+            pine_tree: 10,
             regular_crate: 160,
             flint_crate: 5,
             aegis_crate: 5,
@@ -116,6 +137,38 @@ const maps = {
             gold_rock: 1,
             flint_stone: 1
         },
+        obstacleClumps: [
+            {
+                clumpAmount: 100,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 25,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 4,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
         loots: {
             ground_loot: 60
         },

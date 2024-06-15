@@ -1,15 +1,15 @@
 import { TeamSize } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
-export class JoinedPacket extends Packet {
+export class JoinedPacket implements Packet {
     maxTeamSize!: TeamSize;
     teamID!: number;
 
     emotes: Array<EmoteDefinition | undefined> = [];
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeBits(this.maxTeamSize, 3);
         if (this.maxTeamSize > TeamSize.Solo) {
             stream.writeUint8(this.teamID);
@@ -20,7 +20,7 @@ export class JoinedPacket extends Packet {
         }
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         this.maxTeamSize = stream.readBits(3);
         if (this.maxTeamSize > TeamSize.Solo) {
             this.teamID = stream.readUint8();

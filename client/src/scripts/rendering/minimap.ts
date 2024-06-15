@@ -9,7 +9,6 @@ import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type Player } from "../objects/player";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
@@ -75,7 +74,13 @@ export class Minimap {
 
     readonly debugGraphics = new Graphics();
 
-    constructor(public readonly game: Game) {
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (Minimap._instantiated) {
+            throw new Error("Class 'Minimap' has already been instantiated");
+        }
+        Minimap._instantiated = true;
+
         this._objectsContainer.mask = this.mask;
 
         this.container.addChild(this._objectsContainer);
@@ -672,7 +677,8 @@ export class Minimap {
         const ping = new MapPing(
             position,
             definition,
-            playerId ? this.game.objects.get(playerId) as Player : undefined
+            this.game,
+            playerId
         );
 
         if (definition.sound !== undefined) this.game.soundManager.play(definition.sound);
@@ -685,7 +691,7 @@ export class Minimap {
             for (const otherPing of this.pings) {
                 if (
                     otherPing.definition !== ping.definition
-                    || otherPing.player?.id !== playerId
+                    || otherPing.playerId !== playerId
                 ) continue;
 
                 otherPing.destroy();
@@ -712,16 +718,17 @@ export class MapPing {
     constructor(
         readonly position: Vector,
         readonly definition: MapPingDefinition,
-        readonly player?: Player
+        readonly game: Game,
+        readonly playerId?: number
     ) {
         this.startTime = Date.now();
         this.endTime = this.startTime + this.definition.lifetime * 1000;
 
         this.color = definition.color;
 
-        if (definition.isPlayerPing && player) {
+        if (definition.isPlayerPing && playerId) {
             this.color = TEAMMATE_COLORS[
-                player.game.uiManager.teammates.findIndex(({ id }) => id === player.id) + 1
+                game.uiManager.teammates.findIndex(({ id }) => id === playerId) + 1
             ];
         }
 

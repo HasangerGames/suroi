@@ -10,20 +10,31 @@ import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
-import { Packet } from "./packet";
+import { type Packet } from "./packet";
 
 const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 
 /**
  * {@linkcode InputAction}s requiring no additional parameter
  */
-export type SimpleInputActions = Exclude<InputActions, InputActions.EquipItem | InputActions.DropWeapon | InputActions.DropItem | InputActions.UseItem | InputActions.Emote | InputActions.MapPing>;
+export type SimpleInputActions = Exclude<
+    InputActions,
+    InputActions.EquipItem
+    | InputActions.DropWeapon
+    | InputActions.DropItem
+    | InputActions.UseItem
+    | InputActions.Emote
+    | InputActions.MapPing
+    | InputActions.LockSlot
+    | InputActions.UnlockSlot
+    | InputActions.ToggleSlotLock
+>;
 
 export type InputAction = {
     readonly type: InputActions.UseItem | InputActions.DropItem
     readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
 } | {
-    readonly type: InputActions.EquipItem | InputActions.DropWeapon
+    readonly type: InputActions.EquipItem | InputActions.DropWeapon | InputActions.LockSlot | InputActions.UnlockSlot | InputActions.ToggleSlotLock
     readonly slot: number
 } | {
     readonly type: InputActions.Emote
@@ -34,7 +45,7 @@ export type InputAction = {
     readonly position: Vector
 } | { readonly type: SimpleInputActions };
 
-export class InputPacket extends Packet {
+export class InputPacket implements Packet {
     movement!: {
         up: boolean
         down: boolean
@@ -56,7 +67,7 @@ export class InputPacket extends Packet {
 
     actions: InputAction[] = [];
 
-    override serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeBoolean(this.movement.up);
         stream.writeBoolean(this.movement.down);
         stream.writeBoolean(this.movement.left);
@@ -84,6 +95,9 @@ export class InputPacket extends Packet {
             switch (action.type) {
                 case InputActions.EquipItem:
                 case InputActions.DropWeapon:
+                case InputActions.LockSlot:
+                case InputActions.UnlockSlot:
+                case InputActions.ToggleSlotLock:
                     stream.writeBits(action.slot, 2);
                     break;
                 case InputActions.DropItem:
@@ -103,7 +117,7 @@ export class InputPacket extends Packet {
         });
     }
 
-    override deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {
         this.movement = {
             up: stream.readBoolean(),
             down: stream.readBoolean(),
@@ -142,6 +156,9 @@ export class InputPacket extends Packet {
             switch (type) {
                 case InputActions.EquipItem:
                 case InputActions.DropWeapon:
+                case InputActions.LockSlot:
+                case InputActions.UnlockSlot:
+                case InputActions.ToggleSlotLock:
                     slot = stream.readBits(2);
                     break;
                 case InputActions.DropItem:

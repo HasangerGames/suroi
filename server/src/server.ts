@@ -24,7 +24,7 @@ export interface Punishment {
     readonly reason: string
     readonly reporter: string
     readonly expires?: number
-    readonly punishmentType: "warning" | "tempBan" | "permaBan"
+    readonly punishmentType: "warn" | "temp" | "perma"
 }
 
 let punishments: Punishment[] = [];
@@ -33,7 +33,13 @@ let ipBlocklist: string[] | undefined;
 
 function removePunishment(ip: string): void {
     punishments = punishments.filter(p => p.ip !== ip);
-    if (!Config.protection?.punishments?.url) {
+
+    if (Config.protection?.punishments?.url) {
+        fetch(
+            `${Config.protection.punishments.url}/punishments/${ip}`,
+            { method: "DELETE", headers: { "api-key": Config.protection.punishments.password } }
+        ).catch(err => console.error("Error removing punishment from server. Details:", err));
+    } else {
         writeFile(
             "punishments.json",
             JSON.stringify(punishments, null, 4),
@@ -76,8 +82,9 @@ if (isMainThread) {
         let response: GetGameResponse;
 
         const punishment = punishments.find(p => p.ip === ip);
+        console.log(`Punishment is ${punishment?.punishmentType}${punishment?.ip}${punishment?.reason} `);
         if (punishment) {
-            if (punishment.punishmentType === "warning") {
+            if (punishment.punishmentType === "warn") {
                 const protection = Config.protection;
                 if (protection?.punishments?.url) {
                     fetch(
@@ -89,7 +96,7 @@ if (isMainThread) {
             }
             response = { success: false, message: punishment.punishmentType };
         } else if (ipBlocklist?.includes(ip)) {
-            response = { success: false, message: "permaBan" };
+            response = { success: false, message: "perma" };
         } else {
             const teamID = new URLSearchParams(req.getQuery()).get("teamID");
             if (teamID) {
@@ -330,7 +337,7 @@ if (isMainThread) {
                         try {
                             // we also hope that this is safe
                             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                            punishments = data.trim().length ? JSON.parse(data) : {};
+                            punishments = data.trim().length ? JSON.parse(data) : [];
                         } catch (e) {
                             console.error("Error: Unable to parse punishment list. Details:", e);
                         }

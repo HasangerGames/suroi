@@ -160,7 +160,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         );
 
         if (game.teamMode) {
-            // teamMode guarantees these images' prescence
+            // teamMode guarantees these images' presence
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
@@ -319,6 +319,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
+        const { uiManager } = this.game;
+
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
@@ -337,7 +339,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (noMovementSmoothing) this.game.camera.position = toPixiCoords(this.position);
 
             if (this.game.console.getBuiltInCVar("pf_show_pos")) {
-                this.game.uiManager.debugReadouts.pos.text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
+                uiManager.debugReadouts.pos.text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
 
@@ -452,7 +454,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const name = this.game.playerNames.get(this.id);
                 this.teammateName = {
                     text: new Text({
-                        text: this.game.uiManager.getRawPlayerName(this.id),
+                        text: uiManager.getRawPlayerName(this.id),
                         style: {
                             fill: name?.hasColor ? name?.nameColor : "#00ffff",
                             fontSize: 36,
@@ -506,9 +508,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        this.game.uiManager.animateAction("Being revived...", GameConstants.player.reviveTime, true);
+                        uiManager.animateAction("Being revived...", GameConstants.player.reviveTime, true);
                     } else {
-                        this.game.uiManager.cancelAction();
+                        uiManager.cancelAction();
                     }
                 }
             }
@@ -532,8 +534,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             const skinID = full.skin.idString;
             if (this.isActivePlayer) {
-                this.game.uiManager.skinID = skinID;
-                this.game.uiManager.updateWeapons();
+                uiManager.skinID = skinID;
+                uiManager.updateWeapons();
             }
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
             const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
@@ -607,7 +609,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
 
                     if (this.isActivePlayer) {
-                        this.game.uiManager.cancelAction();
+                        uiManager.cancelAction();
                     }
                     break;
                 }
@@ -622,7 +624,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     actionSoundName = `${weaponDef.idString}_reload`;
                     if (this.isActivePlayer) {
-                        this.game.uiManager.animateAction("Reloading...", weaponDef.reloadTime);
+                        uiManager.animateAction("Reloading...", weaponDef.reloadTime);
                     }
 
                     break;
@@ -632,13 +634,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
+                        uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
                     }
                     break;
                 }
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
-                        this.game.uiManager.animateAction("Reviving...", GameConstants.player.reviveTime);
+                        uiManager.animateAction("Reviving...", GameConstants.player.reviveTime);
                     }
                     break;
                 }
@@ -913,23 +915,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    getEquipment(equipmentType: string): ArmorDefinition | BackpackDefinition {
-        const equipment: ArmorDefinition | BackpackDefinition = Loots.fromString("bag");
+    getEquipment<
+        const Type extends "helmet" | "vest" | "backpack"
+    >(equipmentType: Type): Type extends "backpack" ? BackpackDefinition : ArmorDefinition | undefined {
+        type Ret = Type extends "backpack" ? BackpackDefinition : ArmorDefinition | undefined;
+
         switch (equipmentType) {
-            case "helmet":
-                if (this.equipment.helmet) {
-                    return this.equipment.helmet;
-                }
-                break;
-            case "vest":
-                if (this.equipment.vest) {
-                    return this.equipment.vest;
-                }
-                break;
-            case "backpack":
-                return this.equipment.backpack;
+            case "helmet": return this.equipment.helmet as Ret;
+            case "vest": return this.equipment.vest as Ret;
+            case "backpack": return this.equipment.backpack as Ret;
         }
-        return equipment;
+
+        // never happens
+        return undefined as Ret;
     }
 
     canInteract(player: Player): boolean {
@@ -1085,7 +1083,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.Downed: {
                 this.updateFistsPosition(false);
 
-                if (this.images.rightLeg) {
+                if (this.images.rightLeg && !this.destroyed) {
                     this.anims.rightLeg = this.game.addTween({
                         target: this.images.rightLeg,
                         to: { x: this.images.rightLeg.x - 10, y: this.images.rightLeg.y },
@@ -1110,7 +1108,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 setTimeout(() => {
-                    if (this.images.leftLeg) {
+                    if (this.images.leftLeg && !this.destroyed) {
                         this.anims.leftLeg = this.game.addTween({
                             target: this.images.leftLeg,
                             to: { x: this.images.leftLeg.x - 10, y: this.images.leftLeg.y },

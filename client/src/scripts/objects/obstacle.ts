@@ -318,7 +318,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         switch (definition.operationStyle) {
             case "slide":
                 if (isNew) {
-                    const x = offset ? (definition.slideFactor ?? 1) * (backupHitbox.min.x - backupHitbox.max.x) * PIXI_SCALE : 0;
+                    const x = offset
+                        ? (definition.slideFactor ?? 1) * (
+                            this.orientation & 1
+                                ? backupHitbox.min.y - backupHitbox.max.y
+                                : backupHitbox.min.x - backupHitbox.max.x
+                        ) * PIXI_SCALE
+                        : 0;
                     this.image.setPos(x, 0);
                 }
                 break;
@@ -335,9 +341,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (isNew) {
             this._door.offset = offset;
-        }
-
-        if (offset !== this._door.offset && !isNew) {
+        } else if (offset !== this._door.offset) {
             this._door.offset = offset;
 
             const soundName = definition.doorSound ?? "door";
@@ -356,7 +360,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     duration: definition.animationDuration ?? 150
                 });
             } else {
-                const x = offset ? (definition.slideFactor ?? 1) * (backupHitbox.min.x - backupHitbox.max.x) * PIXI_SCALE : 0;
+                const x = offset
+                    ? (definition.slideFactor ?? 1) * (
+                        this.orientation & 1
+                            ? backupHitbox.min.y - backupHitbox.max.y
+                            : backupHitbox.min.x - backupHitbox.max.x
+                    ) * PIXI_SCALE
+                    : 0;
+
                 this.game.addTween({
                     target: this.image.position,
                     to: { x, y: 0 },

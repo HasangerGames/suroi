@@ -15,8 +15,7 @@ import { type GameSettings } from "../utils/console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
 
 export class InputManager {
-    readonly game: Game;
-    readonly binds: InputMapper;
+    readonly binds = new InputMapper();
 
     readonly isMobile!: boolean;
 
@@ -163,9 +162,12 @@ export class InputManager {
         this.actions.length = 0;
     }
 
-    constructor(game: Game) {
-        this.game = game;
-        this.binds = new InputMapper();
+    private static _instantiated = false;
+    constructor(readonly game: Game) {
+        if (InputManager._instantiated) {
+            throw new Error("Class 'InputManager' has already been instantiated");
+        }
+        InputManager._instantiated = true;
     }
 
     private mWheelStopTimer: number | undefined;
@@ -500,8 +502,10 @@ export class InputManager {
         "toggle_minimap": "Toggle Minimap",
         "toggle_hud": "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
-        "+map_ping_wheel": "Map Ping Wheel",
-        "toggle_console": "Toggle Console"
+        "+map_ping_wheel": "Switch to Map Ping",
+        "+map_ping": "Map Ping Wheel",
+        "toggle_console": "Toggle Console",
+        "toggle_slot_lock": "Toggle Slot Lock"
     };
 
     cycleScope(offset: number): void {

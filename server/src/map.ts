@@ -6,13 +6,13 @@ import { MapPacket } from "../../common/src/packets/mapPacket";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { Angle, Collision, Geometry, Numeric } from "../../common/src/utils/math";
+import { Angle, Collision, Geometry, Numeric, τ } from "../../common/src/utils/math";
 import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { Maps } from "./data/maps";
+import { Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
@@ -164,6 +164,10 @@ export class GameMap {
         );
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this.generateBuildings(building, count));
+
+        for (const clump of mapDef.obstacleClumps ?? []) {
+            this.generateObstacleClumps(clump);
+        };
 
         Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this.generateObstacles(obstacle, count));
 
@@ -516,6 +520,41 @@ export class GameMap {
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
         return obstacle;
+    }
+
+    generateObstacleClumps(clumpDef: ObstacleClump): void {
+        const clumpAmount = clumpDef.clumpAmount;
+        const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
+
+        const { clump: { obstacles, minAmount, maxAmount, radius, jitter } } = clumpDef;
+
+        for (let i = 0; i < clumpAmount; i++) {
+            const position = this.getRandomPosition(
+                new CircleHitbox(radius + jitter),
+                {
+                    spawnMode: firstObstacle.spawnMode
+                }
+            );
+
+            if (!position) {
+                Logger.warn("Spawn position cannot be found");
+                continue;
+            }
+
+            const amountOfObstacles = random(minAmount, maxAmount);
+            const offset = randomRotation();
+            const step = τ / amountOfObstacles;
+
+            for (let j = 0; j < amountOfObstacles; j++) {
+                this.generateObstacle(
+                    pickRandomInArray(obstacles),
+                    Vec.add(
+                        randomPointInsideCircle(position, jitter),
+                        Vec.fromPolar(j * step + offset, radius)
+                    )
+                );
+            }
+        }
     }
 
     generateLoots(table: keyof typeof LootTables, count: number): void {
