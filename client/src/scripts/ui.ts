@@ -1847,7 +1847,7 @@ Video evidence is required.`)) {
                         let gameMousePosition: Vector;
 
                         if (game.map.expanded) {
-                            ui.game.on("click", () => {
+                            ui.game.one("click", () => {
                                 gameMousePosition = inputManager.pingWheelPosition;
 
                                 if (ping && inputManager.pingWheelActive && clicked) {
@@ -1861,7 +1861,7 @@ Video evidence is required.`)) {
                                 }
                             });
                         } else {
-                            ui.game.on("click", e => {
+                            ui.game.one("click", e => {
                                 const globalPos = Vec.create(e.clientX, e.clientY);
                                 const pixiPos = game.camera.container.toLocal(globalPos);
                                 gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
