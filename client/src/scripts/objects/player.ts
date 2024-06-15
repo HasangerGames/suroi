@@ -3,7 +3,7 @@ import { Container, Text, TilingSprite } from "pixi.js";
 import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
-import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
+import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
@@ -136,7 +136,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             rightFist: new SuroiSprite(),
             leftLeg: game.teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
             rightLeg: game.teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
-            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
+            backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
@@ -565,6 +565,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.helmetLevel = (this.equipment.helmet = full.helmet)?.level ?? 0;
             this.vestLevel = (this.equipment.vest = full.vest)?.level ?? 0;
             this.backpackLevel = (this.equipment.backpack = full.backpack).level;
+
+            const backpack = Backpacks.definitions.find(pack => pack.level === this.backpackLevel);
+            const backpackTint = skinDef.backpackTint ?? backpack?.defaultTint ?? 0xffffff;
+
+            this.images.backpack.setTint(backpackTint);
 
             if (
                 hideEquipment !== this.hideEquipment
