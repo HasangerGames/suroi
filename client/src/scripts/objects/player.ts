@@ -12,11 +12,11 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/s
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
+import { Angle, EaseFunctions, Geometry, TAU } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -27,6 +27,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
+import { BloomFilter } from "pixi-filters";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -81,6 +82,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly altWeapon: SuroiSprite
         readonly muzzleFlash: SuroiSprite
         readonly waterOverlay: SuroiSprite
+        readonly blood: Container
         readonly badge?: SuroiSprite
     };
 
@@ -141,7 +143,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
+            blood: new Container()
         };
 
         this.container.addChild(
@@ -156,8 +159,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon,
             this.images.altWeapon,
             this.images.muzzleFlash,
-            this.images.waterOverlay
+            this.images.waterOverlay,
+            this.images.blood
         );
+
+        this.images.blood.zIndex = 4;
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence
@@ -1186,6 +1192,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     yoyo: true
                 });
 
+                if (weaponDef.gasParticles && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                    const gas = weaponDef.gasParticles
+                    this.game.particleManager.spawnParticles(gas.amount, () => ({
+                        frames: "small_gas",
+                        lifetime: random(gas.minLife, gas.maxSize),
+                        scale: {start: 0, end: randomFloat(gas.minSize, gas.maxSize)},
+                        position: Vec.add(randomPointInsideCircle(this.position, 2), Vec.fromPolar(this.rotation, weaponDef.length)),
+                        speed: Vec.fromPolar(this.rotation + Angle.degreesToRadians(
+                          randomFloat(-0.5 * gas.spread, 0.5 * gas.spread)
+                        ), randomFloat(gas.minSpeed, gas.maxSpeed)),
+                        zIndex: ZIndexes.Gas,
+                        alpha: {start: randomFloat(0.5, 1), end: 0},
+                        tint: 0x555555
+                    }))
+                }
+
                 if (!weaponDef.noMuzzleFlash) {
                     const muzzleFlash = this.images.muzzleFlash;
 
@@ -1469,6 +1491,34 @@ export class Player extends GameObject<ObjectCategory.Player> {
             },
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+            this.game.particleManager.spawnParticle({
+                frames: "blood_particle",
+                zIndex: ZIndexes.Decals,
+                position: randomPointInsideCircle(position, 2.5),
+                lifetime: 60000,
+                scale: randomFloat(0.8, 1.6),
+                alpha: {
+                  start: 1,
+                  end: 0,
+                  ease: EaseFunctions.expoIn
+                },
+                speed: Vec.create(0, 0),
+                tint: 0xeeeeee
+            })
+
+            if (randomFloat(0, 1) > 0.6) return;
+
+            const bodyBlood = new SuroiSprite("blood_particle")
+
+            bodyBlood.position = randomPointInsideCircle(Vec.create(0, 0), 45)
+            bodyBlood.rotation = randomFloat(0, TAU)
+            bodyBlood.scale = randomFloat(0.4, 0.8)
+
+            this.images.blood.addChild(bodyBlood)
+
+            setTimeout(() => {bodyBlood.destroy()}, 30000)
+        }
     }
 
     destroy(): void {
@@ -1487,6 +1537,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         images.altWeapon.destroy();
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
+        images.blood.destroy();
 
         emote.image.destroy();
         emote.background.destroy();

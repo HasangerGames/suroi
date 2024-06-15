@@ -44,7 +44,7 @@
     "@pixi/sound": "^6.0.0",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.2",
-    "pixi-filters": "^6.0.3",
+    "pixi-filters": "^6.0.4",
     "pixi.js": "^8.1.2"
   }
 }

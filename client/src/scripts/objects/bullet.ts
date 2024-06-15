@@ -8,6 +8,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
 import { random } from "../../../../common/src/utils/random";
+import { BloomFilter } from "pixi-filters";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -33,6 +34,9 @@ export class Bullet extends BaseBullet {
         this.maxLength = this.image.width * this.tracerLength;
         this.image.scale.y = tracerStats.width;
         this.image.alpha = tracerStats.opacity / (this.reflectionCount + 1);
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) this.image.filters = new BloomFilter({
+            strength: 5
+        })
 
         if (!tracerStats.particle) this.image.anchor.set(1, 0.5);
 

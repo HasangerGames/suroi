@@ -51,7 +51,7 @@ importers:
         specifier: ^0.10.2
         version: 0.10.2
       pixi-filters:
-        specifier: ^6.0.3
+        specifier: ^6.0.4
         version: 6.0.4(pixi.js@8.1.6)
       pixi.js:
         specifier: ^8.1.2
@@ -139,6 +139,9 @@ importers:
       croner:
         specifier: ^8.0.2
         version: 8.0.2
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.14.2)(typescript@5.4.5)
@@ -1609,6 +1612,10 @@ packages:
   dot-prop@6.0.1:
     resolution: {integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA==}
     engines: {node: '>=10'}
+
+  dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
 
   earcut@2.2.4:
     resolution: {integrity: sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==}
@@ -4593,6 +4600,8 @@ snapshots:
   dot-prop@6.0.1:
     dependencies:
       is-obj: 2.0.0
+
+  dotenv@16.4.5: {}
 
   earcut@2.2.4: {}
 
