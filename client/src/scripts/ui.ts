@@ -13,13 +13,13 @@ import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, 
 import { ExtendedMap } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
-import { Vec } from "../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 
@@ -709,7 +709,7 @@ export async function setUpUI(game: Game): Promise<void> {
     toggleRotateMessage();
     $(window).on("resize", toggleRotateMessage);
 
-    const gameMenu = $("#game-menu");
+    const gameMenu = ui.gameMenu;
     const settingsMenu = $("#settings-menu");
 
     usernameField.val(game.console.getBuiltInCVar("cv_player_name"));
@@ -1329,7 +1329,7 @@ Video evidence is required.`)) {
     );
 
     // Disable context menu
-    $("#game").on("contextmenu", e => { e.preventDefault(); });
+    ui.game.on("contextmenu", e => { e.preventDefault(); });
 
     // Scope looping toggle
     addCheckboxListener(
@@ -1828,26 +1828,56 @@ Video evidence is required.`)) {
 
         // Active weapon ammo button reloads
         $("#weapon-clip-reload-icon").show();
-        $("#weapon-clip-ammo").on("click", () => game.console.handleQuery("reload"));
+        ui.activeAmmo.on("click", () => game.console.handleQuery("reload"));
 
         // Emote button & wheel
         ui.emoteWheel
             .css("top", "50%")
             .css("left", "50%");
 
-        const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
+        const createEmoteWheelListener = (slot: typeof emoteSlots[number], emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 ui.emoteWheel.hide();
+                let clicked = true;
 
                 if (inputManager.pingWheelActive) {
                     const ping = game.uiManager.mapPings[emoteSlot];
-                    if (ping) {
-                        inputManager.addAction({
-                            type: InputActions.MapPing,
-                            ping,
-                            position: game.activePlayer?.position ?? Vec.create(0, 0)
-                        });
-                    }
+
+                    setTimeout(() => {
+                        let gameMousePosition: Vector;
+
+                        if (game.map.expanded) {
+                            ui.game.one("click", () => {
+                                gameMousePosition = inputManager.pingWheelPosition;
+
+                                if (ping && inputManager.pingWheelActive && clicked) {
+                                    inputManager.addAction({
+                                        type: InputActions.MapPing,
+                                        ping,
+                                        position: gameMousePosition
+                                    });
+
+                                    clicked = false;
+                                }
+                            });
+                        } else {
+                            ui.game.one("click", e => {
+                                const globalPos = Vec.create(e.clientX, e.clientY);
+                                const pixiPos = game.camera.container.toLocal(globalPos);
+                                gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+
+                                if (ping && inputManager.pingWheelActive && clicked) {
+                                    inputManager.addAction({
+                                        type: InputActions.MapPing,
+                                        ping,
+                                        position: gameMousePosition
+                                    });
+
+                                    clicked = false;
+                                }
+                            });
+                        }
+                    }, 100); // 0.1 second (to wait for the emote wheel)
                 } else {
                     const emote = game.uiManager.emotes[emoteSlot];
                     if (emote) {
@@ -1859,6 +1889,7 @@ Video evidence is required.`)) {
                 }
             });
         };
+
         createEmoteWheelListener("top", 0);
         createEmoteWheelListener("right", 1);
         createEmoteWheelListener("bottom", 2);
@@ -1866,7 +1897,7 @@ Video evidence is required.`)) {
 
         $("#mobile-options").show();
 
-        ui.menuButton.on("click", () => $("#game-menu").toggle());
+        ui.menuButton.on("click", () => ui.gameMenu.toggle());
         ui.emoteButton.on("click", () => ui.emoteWheel.show());
 
         ui.pingToggle.on("click", () => {

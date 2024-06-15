@@ -223,6 +223,7 @@ export class UIManager {
         reportingId: $<HTMLSpanElement>("#report-name"),
         reportingModal: $<HTMLDivElement>("#report-modal"),
 
+        game: $<HTMLDivElement>("#game"),
         gameMenu: $<HTMLDivElement>("#game-menu"),
 
         canvas: $<HTMLCanvasElement>("canvas"),
