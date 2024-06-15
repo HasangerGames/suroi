@@ -709,7 +709,7 @@ export async function setUpUI(game: Game): Promise<void> {
     toggleRotateMessage();
     $(window).on("resize", toggleRotateMessage);
 
-    const gameMenu = $("#game-menu");
+    const gameMenu = ui.gameMenu;
     const settingsMenu = $("#settings-menu");
 
     usernameField.val(game.console.getBuiltInCVar("cv_player_name"));
@@ -1329,7 +1329,7 @@ Video evidence is required.`)) {
     );
 
     // Disable context menu
-    $("#game").on("contextmenu", e => { e.preventDefault(); });
+    ui.game.on("contextmenu", e => { e.preventDefault(); });
 
     // Scope looping toggle
     addCheckboxListener(
@@ -1828,32 +1828,30 @@ Video evidence is required.`)) {
 
         // Active weapon ammo button reloads
         $("#weapon-clip-reload-icon").show();
-        $("#weapon-clip-ammo").on("click", () => game.console.handleQuery("reload"));
+        ui.activeAmmo.on("click", () => game.console.handleQuery("reload"));
 
         // Emote button & wheel
         ui.emoteWheel
             .css("top", "50%")
             .css("left", "50%");
 
-        const createEmoteWheelListener = (slot: string, emoteSlot: number): void => {
+        const createEmoteWheelListener = (slot: typeof emoteSlots[number], emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
-                $("#emote-wheel").hide();
+                ui.emoteWheel.hide();
                 let clicked = true;
 
-                if (game.inputManager.pingWheelActive) {
+                if (inputManager.pingWheelActive) {
                     const ping = game.uiManager.mapPings[emoteSlot];
 
                     setTimeout(() => {
                         let gameMousePosition: Vector;
 
                         if (game.map.expanded) {
-                            $("#game").on("click", e => {
-                                console.log("clicked");
+                            ui.game.on("click", () => {
+                                gameMousePosition = inputManager.pingWheelPosition;
 
-                                gameMousePosition = game.inputManager.pingWheelPosition;
-
-                                if (ping && game.inputManager.pingWheelActive && clicked) {
-                                    game.inputManager.addAction({
+                                if (ping && inputManager.pingWheelActive && clicked) {
+                                    inputManager.addAction({
                                         type: InputActions.MapPing,
                                         ping,
                                         position: gameMousePosition
@@ -1863,13 +1861,13 @@ Video evidence is required.`)) {
                                 }
                             });
                         } else {
-                            $("#game").on("click", (e: MouseEvent) => {
+                            ui.game.on("click", e => {
                                 const globalPos = Vec.create(e.clientX, e.clientY);
                                 const pixiPos = game.camera.container.toLocal(globalPos);
                                 gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
 
-                                if (ping && game.inputManager.pingWheelActive && clicked) {
-                                    game.inputManager.addAction({
+                                if (ping && inputManager.pingWheelActive && clicked) {
+                                    inputManager.addAction({
                                         type: InputActions.MapPing,
                                         ping,
                                         position: gameMousePosition
@@ -1879,11 +1877,11 @@ Video evidence is required.`)) {
                                 }
                             });
                         }
-                    }, 100); // 0.1 second(to wait for the emote whe)
+                    }, 100); // 0.1 second (to wait for the emote wheel)
                 } else {
                     const emote = game.uiManager.emotes[emoteSlot];
                     if (emote) {
-                        game.inputManager.addAction({
+                        inputManager.addAction({
                             type: InputActions.Emote,
                             emote
                         });
@@ -1899,7 +1897,7 @@ Video evidence is required.`)) {
 
         $("#mobile-options").show();
 
-        ui.menuButton.on("click", () => $("#game-menu").toggle());
+        ui.menuButton.on("click", () => ui.gameMenu.toggle());
         ui.emoteButton.on("click", () => ui.emoteWheel.show());
 
         ui.pingToggle.on("click", () => {
