@@ -1,14 +1,15 @@
 import { Color } from "pixi.js";
-import { ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { Geometry } from "../../../../common/src/utils/math";
+import { Geometry, TAU } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { random } from "../../../../common/src/utils/random";
+import { random, randomFloat } from "../../../../common/src/utils/random";
 import { BloomFilter } from "pixi-filters";
+import { Vec } from "../../../../common/src/utils/vector";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -18,6 +19,8 @@ export class Bullet extends BaseBullet {
 
     private _trailReachedMaxLength = false;
     private _trailTicks = 0;
+
+    private _lastParticleTrail = Date.now();
 
     constructor(game: Game, options: BulletOptions) {
         super(options);
@@ -109,9 +112,30 @@ export class Bullet extends BaseBullet {
 
         this.image.setVPos(toPixiCoords(this.position));
 
+        this.particleTrail()
+
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
         }
+    }
+
+    particleTrail(): void {
+        if (!this.definition.trail) return;
+        if (Date.now() - this._lastParticleTrail < this.definition.trail.interval) return;
+
+        const trail = this.definition.trail
+        this.game.particleManager.spawnParticles(trail.amount ?? 1, () => ({
+            frames: trail.frame,
+            speed: Vec.fromPolar(randomFloat(0, TAU), randomFloat(trail.spreadSpeed.min, trail.spreadSpeed.max)),
+            position: this.position,
+            lifetime: random(trail.lifetime.min, trail.lifetime.max),
+            zIndex: ZIndexes.Bullets - 1,
+            scale: randomFloat(trail.scale.min, trail.scale.max),
+            alpha: {start: randomFloat(trail.alpha.min, trail.alpha.max), end: 0},
+            tint: trail.tint
+        }))
+
+        this._lastParticleTrail = Date.now()
     }
 
     destroy(): void {

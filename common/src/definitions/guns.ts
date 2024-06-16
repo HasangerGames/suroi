@@ -1712,6 +1712,16 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 tracer: {
                     image: "firework_rocket_trail",
                     length: 1
+                },
+                trail: {
+                    frame: "small_gas",
+                    interval: 17,
+                    amount: 5,
+                    tint: 0x555555,
+                    alpha: {min: 0.6, max: 1.2},
+                    scale: {min: 0.1, max: 0.2},
+                    spreadSpeed: {min: 1, max: 3},
+                    lifetime: {min: 2500, max: 5000}
                 }
             }
         },
