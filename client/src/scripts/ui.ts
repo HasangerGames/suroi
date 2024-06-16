@@ -362,6 +362,7 @@ export async function setUpUI(game: Game): Promise<void> {
         lastPlayButtonClickTime = now;
 
         ui.splashOptions.addClass("loading");
+        ui.loadingText.text("Connecting");
 
         const params = new URLSearchParams();
 
