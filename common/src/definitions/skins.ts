@@ -113,7 +113,8 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             ["Stardust",              0x16448b],
             ["Aurora",                0x1d2f58],
             ["Nebula",                0x28a0b7],
-            ["1st Birthday",          0xed8080]
+            ["1st Birthday",          0xed8080],
+            ["Lumberjack",            0x924a24]
         ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => simple("hidden_skin", [], [name, tint])),
         apply(
             "hidden_skin",

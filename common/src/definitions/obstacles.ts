@@ -70,6 +70,10 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly tint?: number
     readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
     readonly additionalDestroySounds: string[]
+    readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
+        readonly maxRange?: number
+        readonly falloff?: number
+    }
 } & (
     (
         {
@@ -807,6 +811,24 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: RotationMode.Full,
+            hasLoot: true
+        },
+        {
+            idString: "loot_tree",
+            name: "Loot Tree",
+            material: "stone",
+            hideOnMap: true,
+            health: 250,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(5.5),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            zIndex: ZIndexes.ObstaclesLayer4,
+            allowFlyover: FlyoverPref.Never,
             hasLoot: true
         },
         {

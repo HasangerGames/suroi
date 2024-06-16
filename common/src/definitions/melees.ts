@@ -94,6 +94,30 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "hatchet",
+            name: "Hatchet",
+            damage: 25,
+            obstacleMultiplier: 2.5,
+            piercingMultiplier: 0.5,
+            radius: 2,
+            offset: Vec.create(5.4, -0.5),
+            cooldown: 350,
+            fists: {
+                animationDuration: 150,
+                left: Vec.create(40, -25),
+                right: Vec.create(40, 15),
+                useLeft: Vec.create(35, -35),
+                useRight: Vec.create(75, -20)
+            },
+            image: {
+                position: Vec.create(42, 20),
+                usePosition: Vec.create(80, -25),
+                angle: 135,
+                useAngle: 65,
+                lootScale: 0.6
+            }
+        },
+        {
             idString: "kbar",
             name: "K-bar",
             damage: 25,
