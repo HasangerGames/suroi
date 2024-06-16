@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
@@ -1463,6 +1463,27 @@ Video evidence is required.`)) {
     $("#toggle-high-res").parent().parent().toggle(!inputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
     addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics");
+
+    game.console.variables.addChangeListener(
+        "cv_cooler_graphics",
+        (_, newVal, oldVal) => {
+            if (newVal !== oldVal && !newVal) {
+                for (const player of game.objects.getCategory(ObjectCategory.Player)) {
+                    const { images: { blood: { children } }, bloodDecals } = player;
+
+                    for (const child of children) {
+                        child.destroy();
+                    }
+
+                    children.length = 0;
+
+                    for (const decal of bloodDecals) {
+                        decal.kill();
+                    }
+                }
+            }
+        }
+    );
 
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");

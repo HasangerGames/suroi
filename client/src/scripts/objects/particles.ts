@@ -23,6 +23,7 @@ export class ParticleManager {
             if (particle.dead) {
                 this.particles.delete(particle);
                 particle.image.destroy();
+                particle.options.onDeath?.(particle);
             }
         }
 
@@ -40,7 +41,7 @@ export class ParticleManager {
     }
 
     spawnParticle(options: ParticleOptions): Particle {
-        const particle = new Particle(options);
+        const particle = new Particle(this, options);
         this.particles.add(particle);
         this.game.camera.addObject(particle.image);
         return particle;
@@ -78,6 +79,7 @@ export interface ParticleOptions {
     readonly alpha?: ParticleProperty
     readonly rotation?: ParticleProperty
     readonly tint?: number
+    readonly onDeath?: (particle: Particle) => void
 }
 
 export class Particle {
@@ -90,7 +92,8 @@ export class Particle {
     private readonly _deathTime = Date.now();
     get deathTime(): number { return this._deathTime; }
 
-    dead = false;
+    private _dead = false;
+    get dead(): boolean { return this._dead; }
 
     readonly options: ParticleOptions;
 
@@ -98,7 +101,7 @@ export class Particle {
     alpha: number;
     rotation: number;
 
-    constructor(options: ParticleOptions) {
+    constructor(readonly manager: ParticleManager, options: ParticleOptions) {
         this._deathTime = this._spawnTime + options.lifetime;
         this.position = options.position;
         const frames = options.frames;
@@ -121,7 +124,7 @@ export class Particle {
         const now = Date.now();
         let interpFactor: number;
         if (now >= this._deathTime) {
-            this.dead = true;
+            this._dead = true;
             interpFactor = 1;
         } else {
             interpFactor = (now - this._spawnTime) / options.lifetime;
@@ -142,6 +145,12 @@ export class Particle {
         this.image.position.copyFrom(toPixiCoords(this.position));
         this.image.scale.set(this.scale);
         this.image.setRotation(this.rotation).setAlpha(this.alpha);
+    }
+
+    kill(): void {
+        this._dead = true;
+        this.manager.particles.delete(this);
+        this.image.destroy();
     }
 }
 
