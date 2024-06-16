@@ -305,18 +305,18 @@ export async function setUpUI(game: Game): Promise<void> {
                     switch (data.message) {
                         case "warn":
                             showWarningModal = true;
-                            title = "Teaming is against the rules!";
-                            message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
+                            title = "You have been warned!";
+                            message = `You have received a warning by the suroi game moderatrs. Case: ${data.reportID || "No report ID provided."}. Your official warn reason: ${data.reason || "No reason provided"}`;
                             break;
                         case "temp":
                             showWarningModal = true;
-                            title = "You have been banned for 1 day for teaming!";
-                            message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
+                            title = "You have been temporarily banned from playing suroi.";
+                            message = `Game moderatrs have banned you for: ${data.reason || "No reason provided"}. With case ID: ${data.reportID}<br><br>When your ban is up (usually 24h), reload the page to clear this message.`;
                             break;
                         case "perma":
                             showWarningModal = true;
-                            title = "You have been permanently banned for hacking!";
-                            message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
+                            title = "You have been permanently banned from playing suroi.io";
+                            message = `The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.<br><br>Ban reason: ${data.reason || "No reason provided"}. Case ID: ${data.reportID || "No report ID provided"}`;
                             break;
                         default:
                             message = "Error joining game.<br>Please try again.";

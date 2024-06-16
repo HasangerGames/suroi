@@ -82,7 +82,6 @@ if (isMainThread) {
         let response: GetGameResponse;
 
         const punishment = punishments.find(p => p.ip === ip);
-        console.log(`Punishment is ${punishment?.punishmentType}${punishment?.ip}${punishment?.reason} `);
         if (punishment) {
             if (punishment.punishmentType === "warn") {
                 const protection = Config.protection;
@@ -94,7 +93,7 @@ if (isMainThread) {
                 }
                 removePunishment(ip);
             }
-            response = { success: false, message: punishment.punishmentType };
+            response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
         } else if (ipBlocklist?.includes(ip)) {
             response = { success: false, message: "perma" };
         } else {
