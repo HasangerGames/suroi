@@ -113,47 +113,47 @@ export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
 
 const gasParticlePresets: Record<"automatic" | "shotgun" | "pistol" | "rifle", BaseGunDefinition["gasParticles"]> = {
-  "automatic": {
-    amount: 2,
-    spread: 30,
-    minSize: 0.2,
-    maxSize: 0.3,
-    minLife: 1000,
-    maxLife: 2000,
-    minSpeed: 5,
-    maxSpeed: 15
-  },
-  "shotgun": {
-    amount: 12,
-    spread: 60,
-    minSize: 0.3,
-    maxSize: 0.5,
-    minLife: 2000,
-    maxLife: 5000,
-    minSpeed: 5,
-    maxSpeed: 10
-  },
-  "pistol": {
-    amount: 2,
-    spread: 60,
-    minSize: 0.2,
-    maxSize: 0.3,
-    minLife: 1000,
-    maxLife: 2000,
-    minSpeed: 5,
-    maxSpeed: 15
-  },
-  "rifle": {
-    amount: 3,
-    spread: 30,
-    minSize: 0.3,
-    maxSize: 0.5,
-    minLife: 1000,
-    maxLife: 3000,
-    minSpeed: 7,
-    maxSpeed: 14
-  }
-}
+    automatic: {
+        amount: 2,
+        spread: 30,
+        minSize: 0.2,
+        maxSize: 0.3,
+        minLife: 1000,
+        maxLife: 2000,
+        minSpeed: 5,
+        maxSpeed: 15
+    },
+    shotgun: {
+        amount: 12,
+        spread: 60,
+        minSize: 0.3,
+        maxSize: 0.5,
+        minLife: 2000,
+        maxLife: 5000,
+        minSpeed: 5,
+        maxSpeed: 10
+    },
+    pistol: {
+        amount: 2,
+        spread: 60,
+        minSize: 0.2,
+        maxSize: 0.3,
+        minLife: 1000,
+        maxLife: 2000,
+        minSpeed: 5,
+        maxSpeed: 15
+    },
+    rifle: {
+        amount: 3,
+        spread: 30,
+        minSize: 0.3,
+        maxSize: 0.5,
+        minLife: 1000,
+        maxLife: 3000,
+        minSpeed: 7,
+        maxSpeed: 14
+    }
+};
 
 type RawGunDefinition = BaseGunDefinition & {
     readonly isDual?: never
@@ -1700,7 +1700,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 minSpeed: 2,
                 maxSpeed: 5,
                 minSize: 0.3,
-                maxSize: 0.5,
+                maxSize: 0.5
             },
             ballistics: {
                 damage: 20,
@@ -1718,10 +1718,10 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     interval: 17,
                     amount: 5,
                     tint: -1,
-                    alpha: {min: 0.4, max: 0.8},
-                    scale: {min: 0.1, max: 0.2},
-                    spreadSpeed: {min: 1, max: 3},
-                    lifetime: {min: 2500, max: 5000}
+                    alpha: { min: 0.4, max: 0.8 },
+                    scale: { min: 0.1, max: 0.2 },
+                    spreadSpeed: { min: 1, max: 3 },
+                    lifetime: { min: 2500, max: 5000 }
                 }
             }
         },

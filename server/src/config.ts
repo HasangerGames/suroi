@@ -250,11 +250,11 @@ export interface ConfigType {
     /**
      * Disables the lobbyClearing option if set to `true`
      */
-    readonly disableLobbyClearing?: boolean,
+    readonly disableLobbyClearing?: boolean
 
     /**
      * Options for the authentication server
-     * 
+     *
      * Optional; If not specified, the server will not use an authentication server
      */
     readonly authServer?: {

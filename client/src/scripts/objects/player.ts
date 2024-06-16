@@ -7,16 +7,16 @@ import { Backpacks, type BackpackDefinition } from "../../../../common/src/defin
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import { LootDefinitions, Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
+import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, EaseFunctions, Geometry, TAU } from "../../../../common/src/utils/math";
+import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -27,7 +27,6 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
-import { BloomFilter } from "pixi-filters";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -68,7 +67,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     beingRevived = false;
     bleedEffectInterval?: NodeJS.Timeout;
 
-    skin: string = "";
+    private _skin: ReferenceTo<SkinDefinition> = "";
 
     readonly images: {
         readonly aimTrail: TilingSprite
@@ -545,7 +544,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 uiManager.skinID = skinID;
                 uiManager.updateWeapons();
             }
-            this.skin = skinID;
+            this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
             const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
 
@@ -1196,19 +1195,32 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 });
 
                 if (weaponDef.gasParticles && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-                    const gas = weaponDef.gasParticles
+                    const gas = weaponDef.gasParticles;
+                    const halfSpread = 0.5 * gas.spread;
+
                     this.game.particleManager.spawnParticles(gas.amount, () => ({
                         frames: "small_gas",
                         lifetime: random(gas.minLife, gas.maxSize),
-                        scale: {start: 0, end: randomFloat(gas.minSize, gas.maxSize)},
-                        position: Vec.add(randomPointInsideCircle(this.position, 2), Vec.fromPolar(this.rotation, weaponDef.length)),
-                        speed: Vec.fromPolar(this.rotation + Angle.degreesToRadians(
-                          randomFloat(-0.5 * gas.spread, 0.5 * gas.spread)
-                        ), randomFloat(gas.minSpeed, gas.maxSpeed)),
+                        scale: {
+                            start: 0, end: randomFloat(gas.minSize, gas.maxSize)
+                        },
+                        position: Vec.add(
+                            randomPointInsideCircle(this.position, 2),
+                            Vec.fromPolar(this.rotation, weaponDef.length)
+                        ),
+                        speed: Vec.fromPolar(
+                            this.rotation + Angle.degreesToRadians(
+                                randomFloat(-halfSpread, halfSpread)
+                            ),
+                            randomFloat(gas.minSpeed, gas.maxSpeed)
+                        ),
                         zIndex: ZIndexes.Gas,
-                        alpha: {start: randomFloat(0.5, 1), end: 0},
+                        alpha: {
+                            start: randomFloat(0.5, 1),
+                            end: 0
+                        },
                         tint: 0x555555
-                    }))
+                    }));
                 }
 
                 if (!weaponDef.noMuzzleFlash) {
@@ -1502,26 +1514,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 lifetime: 60000,
                 scale: randomFloat(0.8, 1.6),
                 alpha: {
-                  start: 1,
-                  end: 0,
-                  ease: EaseFunctions.expoIn
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctions.expoIn
                 },
                 speed: Vec.create(0, 0),
                 tint: 0xeeeeee
-            })
+            });
 
-            if (Skins.reify(this.skin).hideBlood) return;
+            if (Skins.reify(this._skin).hideBlood) return;
             if (randomFloat(0, 1) > 0.6) return;
 
-            const bodyBlood = new SuroiSprite("blood_particle")
+            const bodyBlood = new SuroiSprite("blood_particle");
 
-            bodyBlood.position = randomPointInsideCircle(Vec.create(0, 0), 45)
-            bodyBlood.rotation = randomFloat(0, TAU)
-            bodyBlood.scale = randomFloat(0.4, 0.8)
+            bodyBlood.position = randomPointInsideCircle(Vec.create(0, 0), 45);
+            bodyBlood.rotation = randomRotation();
+            bodyBlood.scale = randomFloat(0.4, 0.8);
 
-            this.images.blood.addChild(bodyBlood)
+            this.images.blood.addChild(bodyBlood);
 
-            setTimeout(() => {bodyBlood.destroy()}, 30000)
+            setTimeout(() => { bodyBlood.destroy(); }, 30000);
         }
     }
 

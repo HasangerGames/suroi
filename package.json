@@ -17,6 +17,7 @@
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm stressTest",
     "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "lint:ci": "eslint . --max-warnings 0 --ext .js,.ts",
     "test": "jest",
     "validateDefinitions": "cd tests && tsc && pnpm validateDefinitions",

@@ -718,10 +718,22 @@ export type BaseBulletDefinition = {
         readonly interval: number
         readonly amount?: number
         readonly frame: string
-        readonly scale: {min: number, max: number}
-        readonly alpha: {min: number, max: number}
-        readonly spreadSpeed: {min: number, max: number}
-        readonly lifetime: {min: number, max: number}
+        readonly scale: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly alpha: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly spreadSpeed: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly lifetime: {
+            readonly min: number
+            readonly max: number
+        }
         readonly tint: number
     }
 

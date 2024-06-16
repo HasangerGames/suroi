@@ -4,19 +4,19 @@ import { Game } from "../game";
 
 /**
  * Attached to a Game instance
- * 
+ *
  * Handles auth and stats for the game
  */
-export default class AuthServer {
-    gameId?: string
-    
+export class AuthServer {
+    private _gameId?: string;
+
     // Non null is asserted in server.ts
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     private readonly _apiKey = process.env.AUTH_SERVER_API_KEY!;
 
-    constructor(public game: Game) {
-    }
+    constructor(public readonly game: Game) {}
 
-    async startGame() {
+    async startGame(): Promise<void> {
         if (!Config.authServer) return;
 
         // Notify auth server
@@ -37,20 +37,21 @@ export default class AuthServer {
             throw new Error("Failed to start game on auth server");
         }
 
-        const data = await res.json();
-
-        this.gameId = data.gameId;
+        this._gameId = (
+            await res.json() as { readonly gameId: string }
+            //              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsafe
+        ).gameId;
     }
 
-    async fetchUser(token: string) {
+    async fetchUser(token: string): Promise<{ readonly id: number, readonly role: string } | undefined | null> {
         if (!Config.authServer) return;
-        
+
         // Fetch user
         const res = await fetch(`${Config.authServer.address}/auth/server/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Api-Key": this._apiKey,
+                "Api-Key": this._apiKey
             },
             body: JSON.stringify({
                 cookie: token
@@ -59,11 +60,16 @@ export default class AuthServer {
 
         if (res.status !== 200) return null;
 
-        const data = await res.json()
+        const data = await res.json() as {
+            readonly user: {
+                readonly id: number
+                readonly role: string
+            }
+        };
+
         return {
             id: data.user.id,
-            role: data.user.role,
-        }
+            role: data.user.role
+        };
     }
 }
-

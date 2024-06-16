@@ -182,15 +182,15 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             [
-                {item: "model_37", weight: 1},
-                {item: "m3k", weight: 1},
-                {item: "vepr12", weight: 0.2},
+                { item: "model_37", weight: 1 },
+                { item: "m3k", weight: 1 },
+                { item: "vepr12", weight: 0.2 }
             ],
-            [{item: "hatchet", weight: 1}],
-            [{item: "lumberjack", weight: 1}],
-            [{item: "basic_helmet", weight: 1}],
-            [{item: "basic_pack", weight: 1}],
-            [{item: "12g", count: 15, weight: 1}],
+            [{ item: "hatchet", weight: 1 }],
+            [{ item: "lumberjack", weight: 1 }],
+            [{ item: "basic_helmet", weight: 1 }],
+            [{ item: "basic_pack", weight: 1 }],
+            [{ item: "12g", count: 15, weight: 1 }]
         ]
     },
     pumpkin: {

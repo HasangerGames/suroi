@@ -19,7 +19,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             hideFromLoadout: false,
             grassTint: false,
             hideEquipment: false,
-            hideBlood: false,
+            hideBlood: false
         }),
         skin_factory: (name: string, backpackTint?: number) => ({
             idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
@@ -121,7 +121,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             {
                 grassTint: true,
                 hideEquipment: true,
-                hideBlood: true,
+                hideBlood: true
             },
             [],
             ["Ghillie Suit", 0xffffff]
