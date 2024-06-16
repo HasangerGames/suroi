@@ -2,8 +2,11 @@ import { Assets, RendererType, Sprite, Spritesheet, type ColorSource, type Graph
 import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
+import $ from "jquery";
 
 const textures: Record<string, Texture> = {};
+
+const loadingText = $("#loading-text");
 
 export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
@@ -42,7 +45,13 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
                 return new Promise<void>(resolve => {
                     loader(spritesheet, image)
-                        .then(() => console.log(`Atlas ${image} loaded (${++resolved} / ${count})`))
+                        .then(() => {
+                            const resolvedCount = ++resolved;
+                            const progress = `(${resolvedCount} / ${count})`;
+
+                            console.log(`Atlas ${image} loaded ${progress}`);
+                            loadingText.text(`Loading Spritesheets ${progress}`);
+                        })
                         .catch(err => {
                             ++resolved;
                             console.error(`Atlas ${image} failed to load`);
