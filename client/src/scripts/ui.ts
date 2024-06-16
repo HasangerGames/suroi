@@ -51,6 +51,7 @@ export function resetPlayButtons(): void {
     if (buttonsLocked) return;
 
     $("#splash-options").removeClass("loading");
+    $("#loading-text").text("Connecting");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
     const isSolo = maxTeamSize === TeamSize.Solo;
@@ -260,7 +261,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
-        ui.loadingText.text("Connecting");
+        ui.loadingText.text("Pinging Servers");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
