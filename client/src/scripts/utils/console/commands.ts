@@ -6,6 +6,7 @@ import { HealingItems, type HealingItemDefinition } from "../../../../../common/
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
 import { Throwables } from "../../../../../common/src/definitions/throwables";
+import { type InputAction } from "../../../../../common/src/packets/inputPacket";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { Numeric } from "../../../../../common/src/utils/math";
 import { handleResult, type Result } from "../../../../../common/src/utils/misc";
@@ -18,7 +19,6 @@ import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
-import type { InputAction } from "../../../../../common/src/packets/inputPacket";
 
 type CommandExecutor<ErrorType> = (
     this: Game,
@@ -1416,7 +1416,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            return cvar.setValue(values[(index + 1) % values.length]);
+            return gameConsole.variables.set(cvar.name, values[(index + 1) % values.length]);
         },
         game,
         {
