@@ -8,6 +8,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly backpackTint?: number
     readonly hideEquipment: boolean
     readonly roleRequired?: string
+    readonly hideBlood?: boolean
 }
 
 export const Skins = ObjectDefinitions.create<SkinDefinition>()(
@@ -17,7 +18,8 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             noDrop: false,
             hideFromLoadout: false,
             grassTint: false,
-            hideEquipment: false
+            hideEquipment: false,
+            hideBlood: false,
         }),
         skin_factory: (name: string, backpackTint?: number) => ({
             idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
@@ -117,7 +119,8 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             "hidden_skin",
             {
                 grassTint: true,
-                hideEquipment: true
+                hideEquipment: true,
+                hideBlood: true,
             },
             [],
             ["Ghillie Suit", 0xffffff]

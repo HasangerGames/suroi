@@ -7,9 +7,9 @@ import { Backpacks, type BackpackDefinition } from "../../../../common/src/defin
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
+import { LootDefinitions, Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
-import { type SkinDefinition } from "../../../../common/src/definitions/skins";
+import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, EaseFunctions, Geometry, TAU } from "../../../../common/src/utils/math";
@@ -67,6 +67,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     downed = false;
     beingRevived = false;
     bleedEffectInterval?: NodeJS.Timeout;
+
+    skin: string = "";
 
     readonly images: {
         readonly aimTrail: TilingSprite
@@ -543,6 +545,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 uiManager.skinID = skinID;
                 uiManager.updateWeapons();
             }
+            this.skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
             const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
 
@@ -1507,6 +1510,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 tint: 0xeeeeee
             })
 
+            if (Skins.reify(this.skin).hideBlood) return;
             if (randomFloat(0, 1) > 0.6) return;
 
             const bodyBlood = new SuroiSprite("blood_particle")
