@@ -260,6 +260,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
+        ui.loadingText.text("Connecting");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
