@@ -49,15 +49,15 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly landCheckDist: number
     }
 
-    readonly obstacles: BuildingObstacle[]
-    readonly lootSpawners: LootSpawner[]
-    readonly subBuildings: SubBuilding[]
-    readonly decals: BuildingDecal[]
+    readonly obstacles: readonly BuildingObstacle[]
+    readonly lootSpawners: readonly LootSpawner[]
+    readonly subBuildings: readonly SubBuilding[]
+    readonly decals: readonly BuildingDecal[]
 
     readonly puzzle?: {
         readonly triggerInteractOn: ReferenceTo<ObstacleDefinition>
         readonly interactDelay: number
-        readonly order?: string[]
+        readonly order?: readonly string[]
         readonly solvedSound?: boolean
         /**
          * Don't wait for the interact delay before setting solved to true
@@ -73,7 +73,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly falloff: number
     }
 
-    readonly floorImages: Array<{
+    readonly floorImages: ReadonlyArray<{
         readonly key: string
         readonly position: Vector
         readonly rotation?: number
@@ -81,7 +81,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly tint?: number | `#${string}`
     }>
 
-    readonly ceilingImages: Array<{
+    readonly ceilingImages: ReadonlyArray<{
         readonly key: string
         readonly position: Vector
         readonly residue?: string
@@ -94,12 +94,12 @@ export interface BuildingDefinition extends ObjectDefinition {
      */
     readonly wallsToDestroy: number
 
-    readonly floors: Array<{
+    readonly floors: ReadonlyArray<{
         readonly type: keyof typeof FloorTypes
         readonly hitbox: Hitbox
     }>
 
-    readonly groundGraphics: Array<{
+    readonly groundGraphics: ReadonlyArray<{
         readonly color: number | `#${string}`
         readonly hitbox: Hitbox
     }>

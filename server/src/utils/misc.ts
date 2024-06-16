@@ -35,10 +35,10 @@ export class LootItem {
     ) {}
 }
 
-export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
+export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
     let loot: LootItem[] = [];
 
-    const items: Array<WeightedItem[] | WeightedItem> = [];
+    const items: Array<readonly WeightedItem[] | WeightedItem> = [];
     const weights: number[] = [];
     for (const item of loots) {
         items.push(
@@ -51,7 +51,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
         weights.push(item.weight);
     }
 
-    const selectedItem = weightedRandom<WeightedItem | WeightedItem[]>(items, weights);
+    const selectedItem = weightedRandom<WeightedItem | readonly WeightedItem[]>(items, weights);
 
     for (const selection of [selectedItem].flat()) {
         if ("tier" in selection) {

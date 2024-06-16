@@ -739,7 +739,6 @@ export type BaseBulletDefinition = {
 
     readonly rangeVariance?: number
     readonly shrapnel: boolean
-    readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
     readonly allowRangeOverride: boolean
     readonly lastShotFX: boolean
     readonly noCollision: boolean

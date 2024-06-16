@@ -185,7 +185,7 @@ export const tester = (() => {
     const errors: Array<readonly [string, string]> = [];
     const fatalErrors: Array<readonly [string, string]> = [];
 
-    function createPath(...components: string[]): string {
+    function createPath(...components: readonly string[]): string {
         return components.join(" -> ");
     }
 
@@ -275,7 +275,13 @@ export const tester = (() => {
         otherParams: {
             readonly min: number
             readonly max: number
+            /**
+             * `false` by default
+             */
             readonly includeMin?: boolean
+            /**
+             * `false` by default
+             */
             readonly includeMax?: boolean
         }
     ) => {
@@ -625,6 +631,97 @@ export const validators = Object.freeze({
                 collectionName: "Explosions",
                 baseErrorPath
             });
+
+            tester.assertNoPointlessValue({
+                obj: ballistics,
+                field: "explodeOnImpact",
+                defaultValue: false,
+                baseErrorPath
+            });
+        }
+
+        const trail = ballistics.trail;
+        if (trail) {
+            logger.indent("Validating trail", () => {
+                const errorPath = tester.createPath(baseErrorPath, "trail");
+
+                tester.assertIsPositiveFiniteReal({
+                    obj: trail,
+                    field: "interval",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertValidOrNPV({
+                    obj: trail,
+                    field: "amount",
+                    defaultValue: 1,
+                    validatorIfPresent: amount => {
+                        tester.assertIsNaturalFiniteNumber({
+                            value: amount,
+                            errorPath
+                        });
+                    },
+                    baseErrorPath: errorPath
+                });
+
+                validators.minMax(
+                    tester.createPath(errorPath, "scale"),
+                    trail.scale,
+                    (errorPath, scale) => {
+                        tester.assertIsFiniteRealNumber({
+                            value: scale,
+                            errorPath
+                        });
+                    }
+                );
+
+                validators.minMax(
+                    tester.createPath(errorPath, "alpha"),
+                    trail.alpha,
+                    (errorPath, alpha) => {
+                        tester.assertInBounds({
+                            value: alpha,
+                            min: 0,
+                            max: 1,
+                            includeMin: true,
+                            includeMax: true,
+                            errorPath
+                        });
+                    }
+                );
+
+                validators.minMax(
+                    tester.createPath(errorPath, "spreadSpeed"),
+                    trail.spreadSpeed,
+                    (errorPath, spreadSpeed) => {
+                        tester.assertIsFiniteRealNumber({
+                            value: spreadSpeed,
+                            errorPath
+                        });
+                    }
+                );
+
+                validators.minMax(
+                    tester.createPath(errorPath, "lifetime"),
+                    trail.lifetime,
+                    (errorPath, lifetime) => {
+                        tester.assertIsPositiveReal({
+                            value: lifetime,
+                            errorPath
+                        });
+                    }
+                );
+
+                tester.assertIntAndInBounds({
+                    obj: trail,
+                    field: "tint",
+                    min: -1, // <- random color
+                    max: 0xFFFFFF,
+                    baseErrorPath: errorPath,
+                    includeMin: true,
+                    includeMax: true
+                });
+            });
         }
     },
     vector(
@@ -719,24 +816,22 @@ export const validators = Object.freeze({
         }
     },
     weightedItem(baseErrorPath: string, weightedItem: WeightedItem): void {
-        tester.assertNoPointlessValue({
+        tester.assertValidOrNPV({
             obj: weightedItem,
             field: "count",
             defaultValue: 1,
+            validatorIfPresent: count => {
+                tester.assertIntAndInBounds({
+                    value: count,
+                    min: 1,
+                    max: Infinity,
+                    includeMin: true,
+                    includeMax: true,
+                    errorPath: baseErrorPath
+                });
+            },
             baseErrorPath
         });
-
-        if (weightedItem.count !== undefined) {
-            tester.assertIntAndInBounds({
-                obj: weightedItem,
-                field: "count",
-                min: 1,
-                max: Infinity,
-                includeMin: true,
-                includeMax: true,
-                baseErrorPath
-            });
-        }
 
         tester.assertNoPointlessValue({
             obj: weightedItem,
@@ -774,11 +869,11 @@ export const validators = Object.freeze({
                     break;
                 }
                 default: {
-                    tester.assertReferenceExistsArray({
+                    tester.assertReferenceExists({
                         obj: weightedItem,
                         field: "item",
                         baseErrorPath,
-                        collection: Loots.definitions,
+                        collection: Loots,
                         collectionName: "Loots"
                     });
                     break;

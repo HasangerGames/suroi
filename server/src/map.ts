@@ -26,7 +26,7 @@ export class GameMap {
     private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
     private readonly quadBuildingCounts: Array<Record<string, number>> = [];
 
-    private readonly majorBuildings: string[];
+    private readonly majorBuildings: readonly string[];
     private readonly occupiedQuadrants: number[] = [];
 
     private readonly occupiedBridgePositions: Vector[] = [];

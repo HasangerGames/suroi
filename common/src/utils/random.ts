@@ -3,17 +3,17 @@ import { type Vector } from "./vector";
 
 /**
  * Generate a random floating-point value.
- * @param min The minimum value that can be generated.
- * @param max The maximum value that can be generated.
+ * @param min The minimum value that can be generated. (inclusive)
+ * @param max The maximum value that can be generated. (exclusive)
  */
 export function randomFloat(min: number, max: number): number {
-    return (Math.random() * (max - min) + min);
+    return Math.random() * (max - min) + min;
 }
 
 /**
  * Generate a random integer.
- * @param min The minimum value that can be generated.
- * @param max The maximum value that can be generated.
+ * @param min The minimum value that can be generated. (inclusive)
+ * @param max The maximum value that can be generated. (inclusive)
  * @returns A random integer between `min` and `max`
  */
 export function random(min: number, max: number): number {
@@ -90,18 +90,26 @@ export function pickRandomInArray<T>(items: readonly T[]): T {
 }
 
 export class SeededRandom {
-    rng = 0;
+    private _rng = 0;
 
     constructor(seed: number) {
-        this.rng = seed;
+        this._rng = seed;
     }
 
+    /**
+     * @param [min = 0] min value (included)
+     * @param [max = 1] max value (excluded)
+     */
     get(min = 0, max = 1): number {
-        this.rng = this.rng * 16807 % 2147483647;
-        return Numeric.lerp(min, max, (this.rng / 2147483647));
+        this._rng = this._rng * 16807 % 2147483647;
+        return Numeric.lerp(min, max, this._rng / 2147483647);
     }
 
-    getInt(min?: number, max?: number): number {
+    /**
+     * @param [min = 0] min value (included)
+     * @param [max = 1] max value (excluded)
+     */
+    getInt(min = 0, max = 1): number {
         return Math.round(this.get(min, max));
     }
 }

@@ -127,27 +127,172 @@ logger.indent("Validating map definitions", () => {
         logger.indent(`Validating map '${name}'`, () => {
             const errorPath = tester.createPath("maps", `map '${name}'`);
 
-            tester.assertIsPositiveFiniteReal({
+            const dimLimit = 2 ** 16 - 1;
+            //                    ^^ mapPacket uses 16 bits for dimensions
+
+            tester.assertIntAndInBounds({
                 obj: definition,
                 field: "width",
+                min: 0,
+                max: dimLimit,
+                includeMin: true,
                 baseErrorPath: errorPath
             });
 
-            tester.assertIsPositiveFiniteReal({
+            tester.assertIntAndInBounds({
                 obj: definition,
                 field: "height",
+                min: 0,
+                max: dimLimit,
+                includeMin: true,
                 baseErrorPath: errorPath
             });
 
-            tester.assertIsPositiveFiniteReal({
+            tester.assertIntAndInBounds({
                 obj: definition,
                 field: "oceanSize",
+                min: 0,
+                max: dimLimit,
+                includeMin: true,
                 baseErrorPath: errorPath
             });
 
-            tester.assertIsPositiveFiniteReal({
+            tester.assertIntAndInBounds({
                 obj: definition,
                 field: "beachSize",
+                min: 0,
+                max: dimLimit,
+                includeMin: true,
+                baseErrorPath: errorPath
+            });
+
+            const rivers = definition.rivers;
+            if (rivers !== undefined) {
+                logger.indent(
+                    "Validating rivers",
+                    () => {
+                        const errorPath2 = tester.createPath(errorPath, "river");
+
+                        const maxRivers = 2 ** 4 - 1;
+                        //                     ^ mapPacket uses 4 bits for river count
+
+                        validators.minMax(
+                            errorPath2,
+                            {
+                                min: rivers.minAmount,
+                                max: rivers.maxAmount
+                            },
+                            (errorPath, amount) => {
+                                tester.assertIntAndInBounds({
+                                    value: amount,
+                                    min: 0,
+                                    max: maxRivers,
+                                    includeMin: true,
+                                    errorPath
+                                });
+                            }
+                        );
+
+                        tester.assertInBounds({
+                            obj: rivers,
+                            field: "wideChance",
+                            min: 0,
+                            max: 1,
+                            includeMin: true,
+                            includeMax: true,
+                            baseErrorPath: errorPath2
+                        });
+
+                        const maxRiverWidth = 2 ** 8 - 1;
+                        //                         ^ mapPacket uses 8 bits for river width
+
+                        validators.minMax(
+                            errorPath2,
+                            {
+                                min: rivers.minWidth,
+                                max: rivers.maxWidth
+                            },
+                            (errorPath, amount) => {
+                                tester.assertIntAndInBounds({
+                                    value: amount,
+                                    min: 0,
+                                    max: maxRiverWidth,
+                                    errorPath
+                                });
+                            }
+                        );
+
+                        validators.minMax(
+                            errorPath2,
+                            {
+                                min: rivers.minWideWidth,
+                                max: rivers.maxWideWidth
+                            },
+                            (errorPath, amount) => {
+                                tester.assertIntAndInBounds({
+                                    value: amount,
+                                    min: 0,
+                                    max: maxRiverWidth,
+                                    errorPath
+                                });
+                            }
+                        );
+                    }
+                );
+            }
+
+            tester.assertValidOrNPV({
+                obj: definition,
+                field: "bridges",
+                defaultValue: [],
+                equalityFunction: a => a.length === 0,
+                validatorIfPresent: bridges => {
+                    const errorPath2 = tester.createPath(errorPath, "bridges");
+
+                    logger.indent("Validating bridges", () => {
+                        // this field is never actually used so lol
+
+                        tester.runTestOnArray(bridges, (bridge, errorPath) => {
+                            tester.assertReferenceExists({
+                                value: bridge,
+                                collection: Buildings,
+                                collectionName: "Buildings",
+                                errorPath
+                            });
+
+                            const def = Buildings.fromStringSafe(bridge);
+                            if (def) {
+                                tester.assert(
+                                    def.bridgeSpawnOptions !== undefined,
+                                    `Map '${name}' specified building '${def.idString}' in its bridges, but said building is not a bridge`,
+                                    errorPath2
+                                );
+                            }
+                        }, errorPath2);
+                    });
+                },
+                baseErrorPath: errorPath
+            });
+
+            tester.assertValidOrNPV({
+                obj: definition,
+                field: "majorBuildings",
+                defaultValue: [],
+                equalityFunction: a => a.length === 0,
+                validatorIfPresent: majorBuildings => {
+                    const errorPath2 = tester.createPath(errorPath, "majorBuildings");
+
+                    logger.indent("Validating major buildings", () => {
+                        tester.runTestOnArray(majorBuildings, (majorBuilding, errorPath) => {
+                            tester.assertReferenceExists({
+                                value: majorBuilding,
+                                collection: Buildings,
+                                collectionName: "Buildings",
+                                errorPath
+                            });
+                        }, errorPath2);
+                    });
+                },
                 baseErrorPath: errorPath
             });
 
@@ -199,6 +344,35 @@ logger.indent("Validating map definitions", () => {
 
             tester.assertValidOrNPV({
                 obj: definition,
+                field: "quadBuildingLimit",
+                defaultValue: {},
+                equalityFunction: a => Object.keys(a).length === 0,
+                validatorIfPresent: limits => {
+                    const errorPath2 = tester.createPath(errorPath, "quad building limit");
+
+                    logger.indent("Validating quadrant building limits", () => {
+                        for (const [building, limit] of Object.entries(limits)) {
+                            const errorPath3 = tester.createPath(errorPath2, `building '${building}'`);
+
+                            tester.assertReferenceExists({
+                                value: building,
+                                collection: Buildings,
+                                collectionName: "Buildings",
+                                errorPath: errorPath3
+                            });
+
+                            tester.assertIsNaturalNumber({
+                                value: limit,
+                                errorPath: errorPath3
+                            });
+                        }
+                    });
+                },
+                baseErrorPath: errorPath
+            });
+
+            tester.assertValidOrNPV({
+                obj: definition,
                 field: "obstacles",
                 defaultValue: {},
                 equalityFunction: a => Object.keys(a).length === 0,
@@ -227,6 +401,77 @@ logger.indent("Validating map definitions", () => {
 
             tester.assertValidOrNPV({
                 obj: definition,
+                field: "obstacleClumps",
+                defaultValue: [],
+                equalityFunction: a => a.length === 0,
+                validatorIfPresent: clumps => {
+                    const errorPath2 = tester.createPath(errorPath, "clumps");
+
+                    logger.indent("Validating obstacle clumps", () => {
+                        tester.runTestOnArray(clumps, (clump, errorPath) => {
+                            tester.assertIsNaturalFiniteNumber({
+                                obj: clump,
+                                field: "clumpAmount",
+                                baseErrorPath: errorPath
+                            });
+
+                            const actualClumpDataWhyIsThisEvenWrapped = clump.clump;
+
+                            tester.assertValidOrNPV({
+                                obj: actualClumpDataWhyIsThisEvenWrapped,
+                                field: "obstacles",
+                                defaultValue: [],
+                                equalityFunction: a => a.length === 0,
+                                validatorIfPresent: obstacles => {
+                                    const errorPath2 = tester.createPath(errorPath, "obstacles");
+
+                                    logger.indent("Validating clump obstacles", () => {
+                                        tester.runTestOnArray(obstacles, (obstacle, errorPath) => {
+                                            tester.assertReferenceExists({
+                                                value: obstacle,
+                                                collection: Obstacles,
+                                                collectionName: "Obstacles",
+                                                errorPath
+                                            });
+                                        }, errorPath2);
+                                    });
+                                },
+                                baseErrorPath: errorPath
+                            });
+
+                            validators.minMax(
+                                errorPath,
+                                {
+                                    min: actualClumpDataWhyIsThisEvenWrapped.minAmount,
+                                    max: actualClumpDataWhyIsThisEvenWrapped.maxAmount
+                                },
+                                (errorPath, value) => {
+                                    tester.assertIsNaturalFiniteNumber({
+                                        value,
+                                        errorPath
+                                    });
+                                }
+                            );
+
+                            tester.assertIsPositiveFiniteReal({
+                                obj: actualClumpDataWhyIsThisEvenWrapped,
+                                field: "radius",
+                                baseErrorPath: errorPath
+                            });
+
+                            tester.assertIsPositiveFiniteReal({
+                                obj: actualClumpDataWhyIsThisEvenWrapped,
+                                field: "jitter",
+                                baseErrorPath: errorPath
+                            });
+                        }, errorPath2);
+                    });
+                },
+                baseErrorPath: errorPath
+            });
+
+            tester.assertValidOrNPV({
+                obj: definition,
                 field: "loots",
                 defaultValue: {},
                 equalityFunction: a => Object.keys(a).length === 0,
@@ -242,7 +487,7 @@ logger.indent("Validating map definitions", () => {
                                 collectionName: "LootTables"
                             });
 
-                            tester.assertIsNaturalNumber({
+                            tester.assertIsNaturalFiniteNumber({
                                 obj: loots,
                                 field: loot,
                                 baseErrorPath: errorPath2
@@ -380,6 +625,8 @@ logger.indent("Validating backpack definitions", () => {
                 baseErrorPath: errorPath
             });
 
+            validators.color(tester.createPath(errorPath, "field defaultTint"), backpack.defaultTint);
+
             logger.indent("Validating maximum capacities", () => {
                 const errorPath2 = tester.createPath(errorPath, "maximum capacities");
 
@@ -442,17 +689,17 @@ logger.indent("Validating building definitions", () => {
                 building.spawnHitbox
             );
 
-            if (building.ceilingHitbox) {
-                validators.hitbox(
-                    tester.createPath(errorPath, "ceiling hitbox"),
-                    building.ceilingHitbox
-                );
-            }
-
             if (building.scopeHitbox) {
                 validators.hitbox(
                     tester.createPath(errorPath, "scope hitbox"),
                     building.scopeHitbox
+                );
+            }
+
+            if (building.ceilingHitbox) {
+                validators.hitbox(
+                    tester.createPath(errorPath, "ceiling hitbox"),
+                    building.ceilingHitbox
                 );
             }
 
@@ -462,17 +709,19 @@ logger.indent("Validating building definitions", () => {
                 logger.indent("Validating bride spawn options", () => {
                     const errorPath2 = tester.createPath(errorPath, "bridge spawn options");
 
-                    tester.assertIsRealNumber({
-                        obj: bridgeSpawnOptions,
-                        field: "maxRiverWidth",
-                        baseErrorPath: errorPath2
-                    });
-
-                    tester.assertIsRealNumber({
-                        obj: bridgeSpawnOptions,
-                        field: "landCheckDist",
-                        baseErrorPath: errorPath2
-                    });
+                    validators.minMax(
+                        errorPath2,
+                        {
+                            min: bridgeSpawnOptions.minRiverWidth,
+                            max: bridgeSpawnOptions.maxRiverWidth
+                        },
+                        (errorPath, value) => {
+                            tester.assertIsRealNumber({
+                                value,
+                                errorPath
+                            });
+                        }
+                    );
                 });
             }
 
@@ -538,8 +787,6 @@ logger.indent("Validating building definitions", () => {
 
                                                 if (value !== undefined) {
                                                     tester.assert(
-                                                        // math takes precedence over whatever idiocy this rule is
-
                                                         value % 1 === 0 && (0 <= value && value < 4),
                                                         `RotationMode.Limited only allows integers in the range [0, 3] (received ${safeString(value)})`,
                                                         errorPath2
@@ -601,20 +848,19 @@ logger.indent("Validating building definitions", () => {
                                     }
                                 }
 
-                                tester.assertNoPointlessValue({
+                                tester.assertValidOrNPV({
+
                                     obj: obstacle,
                                     field: "scale",
                                     defaultValue: 1,
+                                    validatorIfPresent: scale => {
+                                        tester.assertIsPositiveFiniteReal({
+                                            value: scale,
+                                            errorPath
+                                        });
+                                    },
                                     baseErrorPath: errorPath
                                 });
-
-                                if (obstacle.scale) {
-                                    tester.assertIsPositiveFiniteReal({
-                                        obj: obstacle,
-                                        field: "scale",
-                                        baseErrorPath: errorPath
-                                    });
-                                }
 
                                 if (obstacle.lootSpawnOffset) {
                                     validators.vector(tester.createPath(errorPath, "loot spawn offset"), obstacle.lootSpawnOffset);
@@ -820,7 +1066,7 @@ logger.indent("Validating building definitions", () => {
                     );
 
                     if (puzzle.order !== undefined) {
-                        const errorPath3 = tester.createPath(errorPath2, "puzzle");
+                        const errorPath3 = tester.createPath(errorPath2, "order");
                         const order = puzzle.order;
 
                         logger.indent("Validating puzzle order soundness", () => {
@@ -944,21 +1190,18 @@ logger.indent("Validating building definitions", () => {
 
             const wallsToDestroy = building.wallsToDestroy;
             const definiteMatches = building.obstacles?.filter(
-                o => {
-                    return Obstacles.definitions.find(
-                        ob => (typeof o.idString === "string" && o.idString === ob.idString)
-                        || (Object.keys(o.idString).length === 1 && ob.idString in (o.idString as object))
-                    )?.role === ObstacleSpecialRoles.Wall;
-                }
+                ({ idString: self }) => Obstacles.definitions.find(
+                    ({ idString: other }) => typeof self === "string"
+                        ? self === other
+                        : Object.keys(self).length === 1 && other in self
+                )?.role === ObstacleSpecialRoles.Wall
             ).length ?? Infinity;
 
             const maxPossibleMatches = (
                 building.obstacles?.filter(
-                    o => {
-                        return Obstacles.definitions.find(
-                            ob => typeof o.idString === "object" && Object.keys(o.idString).length > 1 && Object.keys(o.idString).includes(ob.idString)
-                        )?.role === ObstacleSpecialRoles.Wall;
-                    }
+                    ({ idString: self }) => Obstacles.definitions.find(
+                        ({ idString: other }) => typeof self === "object" && Object.keys(self).length > 1 && Object.keys(self).includes(other)
+                    )?.role === ObstacleSpecialRoles.Wall
                 ).length ?? Infinity
             ) + definiteMatches;
 
@@ -1448,6 +1691,67 @@ logger.indent("Validating guns", () => {
                         tester.createPath(errorPath, "casings")
                     );
                 });
+
+                const gasParticles = gun.gasParticles;
+                if (gasParticles) {
+                    logger.indent("Validating gas particles", () => {
+                        const errorPath2 = tester.createPath(errorPath, "gas particles");
+
+                        tester.assertIsNaturalFiniteNumber({
+                            obj: gasParticles,
+                            field: "amount",
+                            baseErrorPath: errorPath2
+                        });
+
+                        validators.minMax(
+                            errorPath2,
+                            {
+                                min: gasParticles.minSize,
+                                max: gasParticles.maxSize
+                            },
+                            (errorPath, value) => {
+                                tester.assertIsFiniteRealNumber({
+                                    value,
+                                    errorPath
+                                });
+                            }
+                        );
+
+                        validators.minMax(
+                            errorPath2,
+                            {
+                                min: gasParticles.minLife,
+                                max: gasParticles.maxLife
+                            },
+                            (errorPath, value) => {
+                                tester.assertIsFiniteRealNumber({
+                                    value,
+                                    errorPath
+                                });
+                            }
+                        );
+
+                        tester.assertIsFiniteRealNumber({
+                            obj: gasParticles,
+                            field: "spread",
+                            baseErrorPath: errorPath
+                        });
+
+                        validators.minMax(
+                            errorPath2,
+                            {
+                                min: gasParticles.minSpeed,
+                                max: gasParticles.maxSpeed
+                            },
+                            (errorPath, value) => {
+                                tester.assertIsFiniteRealNumber({
+                                    value,
+                                    errorPath
+                                });
+                            }
+                        );
+                    });
+                }
             }
 
             if (gun.dualVariant) {

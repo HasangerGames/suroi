@@ -15,7 +15,7 @@ export type WeightedItem =
 export interface LootTable {
     readonly min: number
     readonly max: number
-    readonly loot: WeightedItem[] | WeightedItem[][]
+    readonly loot: ReadonlyArray<WeightedItem | readonly WeightedItem[]>
 }
 
 // TODO Refactor loot table system
@@ -553,7 +553,7 @@ export const LootTables: Record<string, LootTable> = {
     }
 };
 
-export const LootTiers: Record<string, WeightedItem[]> = {
+export const LootTiers: Record<string, readonly WeightedItem[]> = {
     guns: [
         { item: "g19", weight: 2 },
         { item: "m1895", weight: 1.75 },

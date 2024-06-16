@@ -27,15 +27,15 @@ export interface MapDefinition {
         readonly maxWideWidth: number
     }
 
-    readonly bridges?: Array<ReferenceTo<BuildingDefinition>>
-    readonly majorBuildings?: Array<ReferenceTo<BuildingDefinition>>
+    readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
+    readonly majorBuildings?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly obstacleClumps?: readonly ObstacleClump[]
     readonly loots?: Record<keyof typeof LootTables, number>
 
-    readonly places?: Array<{
+    readonly places?: ReadonlyArray<{
         readonly name: string
         readonly position: Vector
     }>
