@@ -76,16 +76,17 @@
         border-radius: 5px;
     }
 }
+
 #debug-hud {
-    //margin-top: -10px;
+    // margin-top: -10px;
     text-shadow: 1px 1px 2px black;
     font-family: monospace;
-    width: 175px;
 
     @media screen and (max-width: $screen_large) {
         font-size: 14px;
     }
 }
+
 #gas-timer {
     width: 80px;
     height: 30px;
