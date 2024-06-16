@@ -194,7 +194,7 @@ export class UIManager {
 
         gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
-        gameOverPlayerName: $<HTMLHeadingElement>("#game-over-text"),
+        gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
         gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
         gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
         gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
