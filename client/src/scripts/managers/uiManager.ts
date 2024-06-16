@@ -160,6 +160,8 @@ export class UIManager {
 
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
+        gameUi: $<HTMLDivElement>("#game-ui"),
+
         interactMsg: $<HTMLDivElement>("#interact-message"),
         interactKey: $("#interact-key"),
         interactText: $<HTMLSpanElement>("#interact-text"),

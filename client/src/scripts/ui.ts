@@ -1485,6 +1485,17 @@ Video evidence is required.`)) {
         }
     );
 
+    const { gameUi } = game.uiManager.ui;
+
+    game.console.variables.addChangeListener(
+        "cv_draw_hud",
+        (_, newVal) => {
+            gameUi.toggle(newVal);
+            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized") && newVal;
+        }
+    );
+    addCheckboxListener("#toggle-draw-hud", "cv_draw_hud");
+
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");
 
@@ -1500,7 +1511,6 @@ Video evidence is required.`)) {
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
 
-    const gameUi = $<HTMLDivElement>("#game-ui");
     function updateUiScale(): void {
         const scale = game.console.getBuiltInCVar("cv_ui_scale");
 
@@ -1545,12 +1555,14 @@ Video evidence is required.`)) {
         "#toggle-hide-minimap",
         "cv_minimap_minimized",
         value => {
-            // HACK minimap code is hacky and it scares me too much
-            //      for me to add a "setVisible" method or smth
-            let iterationCount = 0;
-            while (game.map.visible === value && ++iterationCount < 100) {
-                game.map.toggleMinimap();
-            }
+            game.map.visible = !value;
+        }
+    );
+
+    game.console.variables.addChangeListener(
+        "cv_map_expanded",
+        (_, newValue) => {
+            game.map.expanded = newValue;
         }
     );
 

@@ -1,5 +1,4 @@
 import { sound, type Sound } from "@pixi/sound";
-import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
 import { InputActions, ObjectCategory, PlayerActions, TeamSize } from "../../../common/src/constants";
@@ -173,8 +172,9 @@ export class Game {
                 }
             });
 
+            const pixi = this.pixi;
             await loadTextures(
-                this.pixi.renderer,
+                pixi.renderer,
                 this.inputManager.isMobile
                     ? this.console.getBuiltInCVar("mb_high_res_textures")
                     : this.console.getBuiltInCVar("cv_high_res_textures")
@@ -182,8 +182,8 @@ export class Game {
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            $("#game-ui")[0].addEventListener("pointerdown", e => {
-                this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
+            this.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
+                pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
                     clientX: e.clientX,
@@ -193,18 +193,17 @@ export class Game {
                 }));
             });
 
-            this.pixi.ticker.add(this.render.bind(this));
-            this.pixi.stage.addChild(
+            pixi.ticker.add(this.render.bind(this));
+            pixi.stage.addChild(
                 this.camera.container,
                 this.map.container,
                 this.map.mask
             );
 
-            if (this.console.getBuiltInCVar("cv_minimap_minimized")) {
-                this.map.toggleMinimap();
-            }
+            this.map.visible = !this.console.getBuiltInCVar("cv_minimap_minimized");
+            this.map.expanded = this.console.getBuiltInCVar("cv_map_expanded");
 
-            this.pixi.renderer.on("resize", () => this.resize());
+            pixi.renderer.on("resize", () => this.resize());
             this.resize();
 
             setInterval(() => {

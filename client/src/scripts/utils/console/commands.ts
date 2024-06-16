@@ -1,5 +1,4 @@
 // noinspection JSConstantReassignment
-import $ from "jquery";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
@@ -682,47 +681,6 @@ export function setUpCommands(game: Game): void {
         {
             short: "Hides the game map",
             long: "When invoked, the fullscreen map will be hidden",
-            signatures: [{ args: [], noexcept: true }]
-        }
-    );
-
-    Command.createCommand(
-        "toggle_map",
-        function() {
-            game.map.toggle();
-        },
-        game,
-        {
-            short: "Toggles the game map",
-            long: "When invoked, the fullscreen map will be toggled",
-            signatures: [{ args: [], noexcept: true }]
-        }
-    );
-
-    Command.createCommand(
-        "toggle_minimap",
-        function() {
-            if (!this.uiManager.ui.canvas.hasClass("over-hud")) {
-                game.console.setBuiltInCVar("cv_minimap_minimized", !game.console.getBuiltInCVar("cv_minimap_minimized"));
-            }
-        },
-        game,
-        {
-            short: "Toggles the game minimap",
-            long: "When invoked, the minimap will be toggled",
-            signatures: [{ args: [], noexcept: true }]
-        }
-    );
-    Command.createCommand(
-        "toggle_hud",
-        function() {
-            $("#game-ui").toggle();
-            if (game.map.visible) { game.map.toggleMinimap(); }
-        },
-        game,
-        {
-            short: "Toggles the game HUD",
-            long: "When invoked, the Heads Up Display will be toggled",
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -1698,12 +1656,10 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    /*
-        few reasons for this:
-        a) expanding out these console commands and making a proper implementation of `map_ping` leads to duplicated code
-        b) i'm lazy and don't wanna write help text, so i made it an alias lol (feel free to convert this to a proper
-           command with help text if you want tho)
-        c) the whole "hold key to switch to ping mode" thing is annoying
-    */
-    gameConsole.handleQuery("alias +map_ping \"+emote_wheel; +map_ping_wheel\" & alias -map_ping \"-emote_wheel; -map_ping_wheel\"");
+    gameConsole.handleQuery(`
+        alias +map_ping "+emote_wheel; +map_ping_wheel" & alias -map_ping "-emote_wheel; -map_ping_wheel";\
+        alias toggle_minimap "toggle cv_minimap_minimized";\
+        alias toggle_hud "toggle cv_draw_hud";\
+        alias toggle_map "toggle cv_map_expanded"
+    `);
 }

@@ -44,6 +44,7 @@ export const CVarCasters = Object.freeze({
     cv_cooler_graphics: Casters.toBoolean,
     cv_blur_splash: Casters.toBoolean,
     cv_minimap_minimized: Casters.toBoolean,
+    cv_map_expanded: Casters.toBoolean,
     cv_leave_warning: Casters.toBoolean,
     cv_ui_scale: Casters.toNumber,
     cv_minimap_transparency: Casters.toNumber,
@@ -129,7 +130,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_hide_rules_button: false,
     cv_leave_warning: true,
     cv_ui_scale: 1,
+    cv_draw_hud: true,
 
+    cv_map_expanded: false,
     cv_minimap_minimized: false,
     cv_minimap_transparency: 0.8,
     cv_map_transparency: 0.9,
@@ -148,7 +151,6 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_autopickup_dual_guns: true,
 
     // unused for now
-    cv_draw_hud: true,
     cv_language: "en",
     cv_mute_audio: false,
     //

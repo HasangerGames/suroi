@@ -136,11 +136,11 @@ export class ConVar<Value = string> {
                 return { err: `Cannot set value of readonly CVar '${this.name}'` };
             }
             case this.flags.replicated: {
-                // todo allow server operators to modify replicated cvars
+                // TODO allow server operators to modify replicated cvars
                 return { err: `Value of replicated CVar '${this.name}' can only be modified by server operators` };
             }
             case this.flags.cheat: {
-                // todo allow modification of value when cheats are enabled
+                // TODO allow modification of value when cheats are enabled
                 return { err: `Cannot set value of cheat CVar '${this.name}' because cheats are disabled` };
             }
         }
