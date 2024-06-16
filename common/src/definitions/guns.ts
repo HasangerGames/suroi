@@ -1717,8 +1717,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     frame: "small_gas",
                     interval: 17,
                     amount: 5,
-                    tint: 0x555555,
-                    alpha: {min: 0.6, max: 1.2},
+                    tint: -1,
+                    alpha: {min: 0.4, max: 0.8},
                     scale: {min: 0.1, max: 0.2},
                     spreadSpeed: {min: 1, max: 3},
                     lifetime: {min: 2500, max: 5000}

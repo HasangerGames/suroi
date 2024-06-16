@@ -121,6 +121,7 @@ export class Bullet extends BaseBullet {
 
     particleTrail(): void {
         if (!this.definition.trail) return;
+        if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
         if (Date.now() - this._lastParticleTrail < this.definition.trail.interval) return;
 
         const trail = this.definition.trail
@@ -132,7 +133,7 @@ export class Bullet extends BaseBullet {
             zIndex: ZIndexes.Bullets - 1,
             scale: randomFloat(trail.scale.min, trail.scale.max),
             alpha: {start: randomFloat(trail.alpha.min, trail.alpha.max), end: 0},
-            tint: trail.tint
+            tint: trail.tint === -1 ? new Color({h: random(0, 60) * 60, s: 60, l: 70}).toNumber() : trail.tint
         }))
 
         this._lastParticleTrail = Date.now()
