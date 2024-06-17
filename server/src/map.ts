@@ -515,7 +515,7 @@ export class GameMap {
             puzzlePiece
         );
 
-        if (!definition.hideOnMap) this.packet.objects.push(obstacle);
+        if (!definition.hideOnMap && !definition.invisible) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
