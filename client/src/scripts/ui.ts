@@ -74,8 +74,7 @@ export async function setUpUI(game: Game): Promise<void> {
     if (UI_DEBUG_MODE) {
         // Kill message
         ui.killMsgHeader.text("Kills: 7");
-        ui.killMsgVictimName.html("Player");
-        ui.killMsgWeaponUsed.text(" with Mosin-Nagant (streak: 255)");
+        ui.killMsgContainer.text("Player  with Mosin-Nagant (streak: 255)");
         ui.killMsgModal.show();
 
         // Spectating message

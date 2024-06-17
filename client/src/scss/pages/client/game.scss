@@ -882,7 +882,7 @@
         }
     }
 
-    #kill-msg-player-name {
+    #kill-msg-cont .kill-msg-player-name {
         font-weight: bold;
         color: $orange;
         @include text-shadow;

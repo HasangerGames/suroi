@@ -1367,8 +1367,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 const { player, item } = downer;
 
                 ++player.kills;
-                if ((item instanceof GunItem || item instanceof MeleeItem)
-                    && player.inventory.weapons.includes(item)) {
+                if (
+                    (item instanceof GunItem || item instanceof MeleeItem)
+                    && player.inventory.weapons.includes(item)
+                ) {
                     const kills = ++item.stats.kills;
 
                     for (const entry of item.definition.wearerAttributes?.on?.kill ?? []) {
@@ -1406,7 +1408,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (
                         this.teamID === undefined // if we're in solos…
                         || source.teamID !== this.teamID // …or the killer is in a different team from the downer…
-                        || !attributeToDowner() // …or if the downer can't be found…
+                        || !attributeToDowner() // …or if attributing to the downer fails (because they can't be found)…
                     ) {
                         attributeToPlayer(source); // …then attribute to the killer
                     }

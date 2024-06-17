@@ -207,9 +207,7 @@ export class UIManager {
         killMsgModal: $<HTMLDivElement>("#kill-msg"),
         killMsgHeader: $<HTMLDivElement>("#kill-msg-kills"),
         killMsgCounter: $<HTMLDivElement>("#ui-kills"),
-        killMsgSeverity: $<HTMLSpanElement>("#kill-msg-severity"),
-        killMsgVictimName: $<HTMLSpanElement>("#kill-msg-player-name"),
-        killMsgWeaponUsed: $<HTMLSpanElement>("#kill-msg-weapon-used"),
+        killMsgContainer: $<HTMLDivElement>("#kill-msg-cont"),
 
         killLeaderLeader: $<HTMLSpanElement>("#kill-leader-leader"),
         killLeaderCount: $<HTMLSpanElement>("#kill-leader-kills-counter"),
@@ -843,10 +841,7 @@ export class UIManager {
 
         const {
             killMsgHeader: headerUi,
-            killMsgCounter: killCounterUi,
-            killMsgSeverity: severityUi,
-            killMsgVictimName: victimNameUi,
-            killMsgWeaponUsed: weaponUsedUi
+            killMsgCounter: killCounterUi
         } = this.ui;
 
         let streakText = "";
@@ -864,15 +859,12 @@ export class UIManager {
             }
         }
 
-        const eventText = `You ${UIManager._eventDescriptionMap[type][severity]} `;
-        // some of these yield nonsensical sentences, but those that do are occur if
-        // `type` takes on bogus values like "Gas" or "Airdrop"
-
-        severityUi.text(eventText);
-
-        victimNameUi.html(victimName);
-        weaponUsedUi.text(
-            ` ${weaponUsed !== undefined ? `with ${weaponUsed}` : ""}${streakText}`
+        this.ui.killMsgContainer.html(
+            `${
+                UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML)
+            } ${
+                weaponUsed !== undefined ? ` with ${weaponUsed}` : ""
+            }${streakText}`
         );
 
         this.ui.killMsgModal.fadeIn(350, () => {
@@ -912,7 +904,7 @@ export class UIManager {
         );
     }
 
-    private static readonly _eventDescriptionMap: Record<KillfeedEventType, Record<KillfeedEventSeverity, string>> = freezeDeep({
+    private static readonly _killfeedEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, string>>>({
         [KillfeedEventType.Suicide]: {
             [KillfeedEventSeverity.Kill]: "committed suicide",
             [KillfeedEventSeverity.Down]: "knocked themselves out"
@@ -940,6 +932,37 @@ export class UIManager {
         [KillfeedEventType.Airdrop]: {
             [KillfeedEventSeverity.Kill]: "was fatally crushed",
             [KillfeedEventSeverity.Down]: "was knocked out"
+        }
+    });
+
+    private static readonly _killModalEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, (victim: string) => string>>>({
+        [KillfeedEventType.Suicide]: {
+            [KillfeedEventSeverity.Kill]: _ => "You committed suicide",
+            [KillfeedEventSeverity.Down]: _ => "You knocked yourself out"
+        },
+        [KillfeedEventType.NormalTwoParty]: {
+            [KillfeedEventSeverity.Kill]: name => `You killed ${name}`,
+            [KillfeedEventSeverity.Down]: name => `You knocked out ${name}`
+        },
+        [KillfeedEventType.BleedOut]: {
+            [KillfeedEventSeverity.Kill]: name => `${name} bled out`,
+            [KillfeedEventSeverity.Down]: name => `${name} bled out non-lethally` // should be impossible
+        },
+        [KillfeedEventType.FinishedOff]: {
+            [KillfeedEventSeverity.Kill]: name => `${name} was finished off`,
+            [KillfeedEventSeverity.Down]: name => `${name} was gently finished off` // should be impossible
+        },
+        [KillfeedEventType.FinallyKilled]: {
+            [KillfeedEventSeverity.Kill]: name => `${name} was finally killed`,
+            [KillfeedEventSeverity.Down]: name => `${name} was finally knocked out` // should be impossible
+        },
+        [KillfeedEventType.Gas]: {
+            [KillfeedEventSeverity.Kill]: name => `${name} died to the gas`,
+            [KillfeedEventSeverity.Down]: name => `${name} was knocked out by the gas`
+        },
+        [KillfeedEventType.Airdrop]: {
+            [KillfeedEventSeverity.Kill]: name => `${name} was fatally crushed by an airdrop`,
+            [KillfeedEventSeverity.Down]: name => `${name} was knocked out by an airdrop`
         }
     });
 
@@ -1004,7 +1027,7 @@ export class UIManager {
                     case "text": {
                         let killMessage = "";
 
-                        const description = UIManager._eventDescriptionMap[eventType][severity];
+                        const description = UIManager._killfeedEventDescription[eventType][severity];
 
                         outer:
                         switch (eventType) {
@@ -1179,7 +1202,7 @@ export class UIManager {
                         if (attackerId === this.game.activePlayerID) {
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponUsed?.name ?? "",
+                                weaponUsed: weaponUsed?.name,
                                 type: eventType
                             };
 

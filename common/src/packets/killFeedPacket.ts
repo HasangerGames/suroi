@@ -71,7 +71,12 @@ export class KillFeedPacket implements Packet, KillFeedMessageOptions {
                     [
                         KillfeedEventType.NormalTwoParty,
                         KillfeedEventType.FinishedOff,
-                        KillfeedEventType.FinallyKilled
+                        KillfeedEventType.FinallyKilled,
+
+                        KillfeedEventType.Gas,
+                        KillfeedEventType.BleedOut,
+                        KillfeedEventType.Airdrop
+                        // ^^ for these three, attackerId corresponds to the player who downed
                     ].includes(type)
                 ) {
                     const hasAttacker = this.attackerId !== undefined;
@@ -130,7 +135,12 @@ export class KillFeedPacket implements Packet, KillFeedMessageOptions {
                     [
                         KillfeedEventType.NormalTwoParty,
                         KillfeedEventType.FinishedOff,
-                        KillfeedEventType.FinallyKilled
+                        KillfeedEventType.FinallyKilled,
+
+                        KillfeedEventType.Gas,
+                        KillfeedEventType.BleedOut,
+                        KillfeedEventType.Airdrop
+                        // ^^ attackerId is whoever downed
                     ].includes(type)
                     && stream.readBoolean() // attacker present
                 ) {
