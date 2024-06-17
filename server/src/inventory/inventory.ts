@@ -741,8 +741,6 @@ export class Inventory {
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
 
-                if (this.owner.downed) return;
-
                 // Let's hope there's only one throwable slot…
                 if (slot !== undefined) {
                     const old = this.weapons[slot];
