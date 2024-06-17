@@ -709,6 +709,11 @@ export async function setUpUI(game: Game): Promise<void> {
     toggleRotateMessage();
     $(window).on("resize", toggleRotateMessage);
 
+    game.console.variables.addChangeListener(
+        "cv_console_open",
+        (_, val) => game.console.isOpen = val
+    );
+
     const gameMenu = ui.gameMenu;
     const settingsMenu = $("#settings-menu");
 

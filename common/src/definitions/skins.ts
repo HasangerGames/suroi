@@ -1,5 +1,12 @@
-/* eslint-disable @stylistic/no-multi-spaces */
 import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+
+/*
+    eslint-disable @stylistic/no-multi-spaces
+*/
+
+/*
+    `@stylistic/no-multi-spaces`: Disabled to allow nicer alignment
+*/
 
 export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin

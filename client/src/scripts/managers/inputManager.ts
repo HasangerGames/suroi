@@ -400,14 +400,21 @@ export class InputManager {
             */
             clearTimeout(this.mWheelStopTimer);
             this.mWheelStopTimer = window.setTimeout(() => {
-                actionsFired = this.fireAllEventsAtKey(input, false);
+                actionsFired = this.fireAllEventsAtKey(input as string, false);
             }, 50);
 
-            actionsFired = this.fireAllEventsAtKey(input, true);
+            actionsFired = this.fireAllEventsAtKey(input as string, true);
             return;
         }
 
-        actionsFired = this.fireAllEventsAtKey(input, type === "keydown" || type === "pointerdown");
+        const isDown = type === "keydown" || type === "pointerdown";
+        if (Array.isArray(input)) {
+            for (const inp of input) {
+                actionsFired += this.fireAllEventsAtKey(inp, isDown);
+            }
+        } else {
+            actionsFired = this.fireAllEventsAtKey(input, isDown);
+        }
 
         if (actionsFired > 0 && this.game.gameStarted) {
             event.preventDefault();
@@ -428,6 +435,7 @@ export class InputManager {
                     query = query.replace("+", "-");
                 } else query = ""; // If the action isn't invertible, then we do nothing
             }
+
             // little exception for those without the loot bind bound
             this.game.console.handleQuery(query);
             if (this.binds.getInputsBoundToAction("loot").length === 0 && query === "interact") {
@@ -438,37 +446,51 @@ export class InputManager {
         return actions.length;
     }
 
-    private getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
-        let key = "";
+    private getKeyFromInputEvent<
+        const Ev extends KeyboardEvent | MouseEvent | WheelEvent
+    >(event: Ev): Ev extends KeyboardEvent ? string | string[] : string {
+        type Ret = typeof event extends KeyboardEvent ? string[] : string;
+
+        let input = "";
         if (event instanceof KeyboardEvent) {
-            key = event.key.length > 1 ? event.key : event.key.toUpperCase();
-            if (key === " ") {
-                key = "Space";
+            const { key, code, location } = event;
+
+            input = key.length > 1
+                ? key
+                : code.match(/^(Key|Digit)/)
+                    ? code.slice(-1)
+                    : code;
+
+            switch (location) {
+                case 1: return [input, `Left${input}`] as Ret;
+                case 2: return [input, `Right${input}`] as Ret;
+                case 0:
+                default: return input as Ret;
             }
         }
 
         if (event instanceof WheelEvent) {
             switch (true) {
-                case event.deltaX > 0: { key = "MWheelRight"; break; }
-                case event.deltaX < 0: { key = "MWheelLeft"; break; }
-                case event.deltaY > 0: { key = "MWheelDown"; break; }
-                case event.deltaY < 0: { key = "MWheelUp"; break; }
-                case event.deltaZ > 0: { key = "MWheelForwards"; break; }
-                case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
+                case event.deltaX > 0: { input = "MWheelRight"; break; }
+                case event.deltaX < 0: { input = "MWheelLeft"; break; }
+                case event.deltaY > 0: { input = "MWheelDown"; break; }
+                case event.deltaY < 0: { input = "MWheelUp"; break; }
+                case event.deltaZ > 0: { input = "MWheelForwards"; break; }
+                case event.deltaZ < 0: { input = "MWheelBackwards"; break; }
             }
 
-            if (key === "") {
+            if (input === "") {
                 console.error("An unrecognized scroll wheel event was received: ", event);
             }
 
-            return key;
+            return input as Ret;
         }
 
         if (event instanceof MouseEvent) {
-            key = `Mouse${event.button}`;
+            input = `Mouse${event.button}`;
         }
 
-        return key;
+        return input as Ret;
     }
 
     private readonly actionsNames: Record<keyof typeof defaultBinds, string> = {
@@ -572,9 +594,9 @@ export class InputManager {
         }
     }
 
+    private readonly _keybindsContainer = $<HTMLDivElement>("#tab-keybinds-content");
     generateBindsConfigScreen(): void {
-        const keybindsContainer = $("#tab-keybinds-content");
-        keybindsContainer.html("").append(
+        this._keybindsContainer.html("").append(
             $("<div>",
                 {
                     class: "modal-item",
@@ -591,7 +613,7 @@ export class InputManager {
 
         let activeButton: HTMLButtonElement | undefined;
         for (const action in defaultBinds) {
-            const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
+            const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(this._keybindsContainer);
 
             $("<div/>", {
                 class: "setting-title",
@@ -630,7 +652,9 @@ export class InputManager {
 
                     if (bindButton.classList.contains("active")) {
                         event.preventDefault();
-                        const key = this.getKeyFromInputEvent(event);
+                        const keyRaw = this.getKeyFromInputEvent(event);
+                        // use console if you want to bind specifically to a left/right variant
+                        const key = Array.isArray(keyRaw) ? keyRaw[0] : keyRaw;
 
                         if (bind) {
                             this.binds.remove(bind, action);
@@ -672,7 +696,7 @@ export class InputManager {
 
             this.generateBindsConfigScreen();
             this.game.console.writeToLocalStorage();
-        })).appendTo(keybindsContainer);
+        })).appendTo(this._keybindsContainer);
 
         // Change the weapons slots keybind text
         for (let i = 0, maxWeapons = GameConstants.player.maxWeapons; i < maxWeapons; i++) {

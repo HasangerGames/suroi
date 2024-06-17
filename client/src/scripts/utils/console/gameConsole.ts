@@ -52,7 +52,11 @@ export class GameConsole {
     private _isOpen = false;
     get isOpen(): boolean { return this._isOpen; }
     set isOpen(value: boolean) {
+        if (this._isOpen === value) return;
+
         this._isOpen = value;
+
+        this.variables.get.builtIn("cv_console_open").setValue(value);
 
         if (this._isOpen) {
             this._ui.globalContainer.show();
@@ -149,7 +153,7 @@ export class GameConsole {
 
     private readonly _entries: ConsoleData[] = [];
 
-    private readonly localStorageKey = "suroi_config";
+    private readonly _localStorageKey = "suroi_config";
 
     private readonly _history = new (class HistoryManager<T> {
         private readonly _backingSet = new Set<T>();
@@ -181,18 +185,26 @@ export class GameConsole {
         this._history.clear();
     }
 
-    writeToLocalStorage(): void {
+    writeToLocalStorage(
+        {
+            includeDefaults = false,
+            includeNoArchive = false
+        }: {
+            readonly includeDefaults?: boolean
+            readonly includeNoArchive?: boolean
+        } = {}
+    ): void {
         const settings: GameSettings = {
-            variables: this.variables.getAll(true),
+            variables: this.variables.getAll({ defaults: !includeDefaults, noArchive: !includeNoArchive }),
             aliases: Object.fromEntries(this.aliases),
             binds: this.game.inputManager.binds.getAll()
         };
 
-        localStorage.setItem(this.localStorageKey, JSON.stringify(settings));
+        localStorage.setItem(this._localStorageKey, JSON.stringify(settings));
     }
 
     readFromLocalStorage(): void {
-        const storedConfig = localStorage.getItem(this.localStorageKey);
+        const storedConfig = localStorage.getItem(this._localStorageKey);
 
         const binds = JSON.parse(JSON.stringify(defaultBinds)) as GameSettings["binds"];
         let rewriteToLS = false;
@@ -278,6 +290,8 @@ export class GameConsole {
                 top: this.getBuiltInCVar("cv_console_top")
             }
         });
+
+        this.isOpen = this.getBuiltInCVar("cv_console_open");
     }
 
     readonly commands = (() => {
@@ -516,7 +530,9 @@ export class GameConsole {
         // Close button
         {
             this._ui.closeButton.on("click", e => {
-                if (e.button === 0) this.close();
+                if (e.button !== 0) return;
+
+                this.close();
             });
         }
 
@@ -593,7 +609,7 @@ export class GameConsole {
                         navigatingAutocmp = false;
 
                         this._history.add(input);
-                        this.log(`> ${input}`);
+                        this.log.raw(`> ${sanitizeHTML(input, { strict: true, escapeNewLines: true, escapeSpaces: true })}`);
                         this.handleQuery(input);
                         this._updateAutocmp();
                         break;
@@ -710,7 +726,7 @@ export class GameConsole {
         const isEmpty = inputValue.length === 0;
 
         const findMatches = (name: string): string[] => {
-            if (name.includes(inputValue)) return [inputValue];
+            if (name.includes(inputValue)) return isEmpty ? [] : [inputValue];
 
             const tokens = primaryEntity.split("_");
             if (tokens.filter(s => s.length).length === 1) return [];
@@ -771,17 +787,20 @@ export class GameConsole {
         const generateAutocompleteNode = (text: string): JQuery<HTMLDivElement> => {
             const matches = findMatches(text);
 
-            const node = $<HTMLDivElement>("<div tabindex=\"0\" class=\"console-input-autocomplete-entry\"></div>")
-                .append(
-                    sanitizeHTML(text, { strict: true, escapeSpaces: true })
-                        .replace(
-                            new RegExp(
-                                matches.map(m => this._sanitizeRegExp(m)).join("|"),
-                                "g"
-                            ),
-                            r => `<b>${sanitizeHTML(r, { strict: true, escapeSpaces: true })}</b>`
-                        )
+            let sanitized = sanitizeHTML(text, { strict: true, escapeSpaces: true });
+
+            if (matches.length) {
+                sanitized = sanitized.replace(
+                    new RegExp(
+                        matches.map(m => this._sanitizeRegExp(m)).join("|"),
+                        "g"
+                    ),
+                    r => `<b>${sanitizeHTML(r, { strict: true, escapeSpaces: true })}</b>`
                 );
+            }
+
+            const node = $<HTMLDivElement>("<div tabindex=\"0\" class=\"console-input-autocomplete-entry\"></div>")
+                .append(sanitized);
 
             node.on("mousedown", ev => {
                 if (ev.button) return;
@@ -1020,16 +1039,19 @@ export class GameConsole {
              * referred to as "`cmd` mode" and "`args` mode"
              */
             let parserPhase = "cmd" as "cmd" | "args";
+
             /**
              * Only relevant in `args` mode, indicates if the parser is currently traversing a string (and should thus
              * treat characters like spaces differently than usual)
              */
             let inString = false;
+
             /**
              * Only applicable when in a string, determines whether special characters like `"` and `\` should
              * be treated as literal characters or if they should fulfill their special functions
              */
             let escaping = false;
+
             /**
              * A stack of parser nodes, each one corresponding to where a group "begins".
              *
@@ -1046,6 +1068,7 @@ export class GameConsole {
              * node to ensure that the linked list is constructed correctly
              */
             const groupAnchors = new Stack<ParserNode>();
+
             /**
              * After a group is closed with `)`, we expect either another `)` (if closing multiple groups) or a chaining
              * character. This variable encodes this expectation
@@ -1053,10 +1076,23 @@ export class GameConsole {
             let expectingEndOfGroup = 0;
 
             /**
+             * Whether the console is currently processing a comment. Comments are completely ignored, not even
+             * being added any parser nodes, and are usually used as clarification/explanation in configuration
+             * files, which are then pasted into the console
+             *
+             * A comment starts with an #, and all characters up to and including the next new line (\n) are
+             * ignored
+             */
+            let commenting = false;
+
+            /**
              * An alias for `current.args`, maintained to reduce property access spam
              */
             let args = current.args;
 
+            /**
+             * Used to provide a snippet of the original query when reporting syntax errors
+             */
             let charIndex = 0;
             const throwCSE = (msg: string, mod = 0, length = 1): void => { throw new CommandSyntaxError(msg, charIndex + mod, length); };
 
@@ -1092,13 +1128,21 @@ export class GameConsole {
             };
 
             /**
-             * Benchmarks show that chunking actually hurts performance except in specific contrived examples,
-             * the detection of which would also lead to an overall loss in performance
+             * Benchmarks show that chunking (parsing an input such as "abcdefg" as one large block instead of
+             * 7 individual characters) actually hurts performance except in specific contrived examples, the
+             * detection of which also leads to an overall loss in performance
              */
             for (const char of input) {
                 switch (char) {
                     case " ":
                     case "\n": {
+                        const isNewLine = char === "\n";
+
+                        if (isNewLine && commenting) {
+                            commenting = false;
+                            break;
+                        }
+
                         /*
                             Ignore whitespace if there's currently no command
                             and if we're not expecting any groups to be closed
@@ -1122,17 +1166,39 @@ export class GameConsole {
                             break;
                         }
 
-                        if (inString || char === "\n") {
+                        if (inString) {
                             addCharToLast(char);
                             break;
                         }
 
+                        /*
+                            This ensures that a query like `cmd a  b` will only parse as
+                            two arguments and not three (more generally, this ensures that
+                            multiple consecutive spaces, line breaks, or combinations thereof
+                            are treated as if only one had been given)
+                        */
+                        if (args.at(-1)?.arg.length === 0) break;
+
                         args.push({ arg: "", startIndex: charIndex });
+                        break;
+                    }
+                    case "#": {
+                        if (commenting) break;
+
+                        if (inString) {
+                            addCharToLast(char);
+                            break;
+                        }
+
+                        commenting = true;
+
                         break;
                     }
                     case ";":
                     case "&":
                     case "|": {
+                        if (commenting) break;
+
                         // Error messages explain what this is for
                         if (parserPhase === "cmd") {
                             if (!current.name) {
@@ -1175,6 +1241,8 @@ export class GameConsole {
                         break;
                     }
                     case "(": {
+                        if (commenting) break;
+
                         if (parserPhase === "cmd") {
                             if (current.name) {
                                 // `ab(d` is complete nonsense
@@ -1197,6 +1265,8 @@ export class GameConsole {
                     // you're stupid
                     // eslint-disable-next-line no-fallthrough
                     case ")": {
+                        if (commenting) break;
+
                         if (parserPhase === "args") {
                             if (inString) {
                                 addCharToLast(char);
@@ -1239,7 +1309,7 @@ export class GameConsole {
                         break;
                     }
                     case "\"": {
-                        if (parserPhase === "cmd") break;
+                        if (commenting || parserPhase === "cmd") break;
 
                         if (inString) {
                             if (escaping) {
@@ -1259,12 +1329,14 @@ export class GameConsole {
                         break;
                     }
                     case "\\": {
-                        if (parserPhase === "cmd" || !inString || (escaping = !escaping)) break;
+                        if (commenting || parserPhase === "cmd" || !inString || (escaping = !escaping)) break;
 
                         addCharToLast(char);
                         break;
                     }
                     default: {
+                        if (commenting) break;
+
                         if (parserPhase === "cmd") {
                             if (expectingEndOfGroup) {
                                 // Prevent `a & (b; c) d`
@@ -1467,12 +1539,13 @@ export class GameConsole {
                         the same way that commands ignore extraneous arguments
 
                         But my justification for doing this is to prevent people from thinking that
-                        variables assignments work like they do in the valve console (aka `var val`)
+                        variables assignments work like they do in the Valve console (aka `var val`)
 
                         CVars are in this weird place where they look like commands and act like commands
-                        when getting their value, and it might be something to change later on
+                        when getting their value (and sometimes when setting them too), and it might be
+                        something to change later on
 
-                        Making a "get_value" command is pretty dumb, so maybe the valve-style assignments
+                        Making a "get_value" command is pretty dumb, so maybe the Valve-style assignments
                         will return, but I also personally find them kinda ugly and misleading
 
                         Although someone could rightfully complain that the `assign` command is ugly and unergonomic
@@ -1589,15 +1662,44 @@ export class GameConsole {
             ];
 
         if (typeof entry.content === "string") {
-            message.content[propertyToModify](sanitizer(entry.content, { strict: false }));
+            message.content[propertyToModify](
+                sanitizer(
+                    entry.content,
+                    {
+                        strict: false,
+                        escapeSpaces: true,
+                        escapeNewLines: true
+                    }
+                )
+            );
         } else {
             message.content.append(
                 $("<details>").append(
-                    $("<summary>")[propertyToModify](sanitizer(entry.content.main, { strict: false })),
+                    $("<summary>")[propertyToModify](
+                        sanitizer(
+                            entry.content.main,
+                            {
+                                strict: false,
+                                escapeSpaces: true,
+                                escapeNewLines: true
+                            }
+                        )
+                    ),
                     Array.isArray(entry.content.detail)
                         ? $("<ul>").append(
                             entry.content.detail.map(
-                                e => ($("<li>")[propertyToModify](sanitizer(e, { strict: false })) as JQuery<JQuery.Node>)
+                                e => (
+                                    $<HTMLLIElement>("<li>")[propertyToModify](
+                                        sanitizer(
+                                            e,
+                                            {
+                                                strict: false,
+                                                escapeSpaces: true,
+                                                escapeNewLines: true
+                                            }
+                                        )
+                                    ) as JQuery<JQuery.Node>
+                                )
                             )
                         )
                         : $("<span>")[propertyToModify](entry.content.detail)

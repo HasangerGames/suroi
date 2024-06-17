@@ -272,15 +272,13 @@ export class Game {
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
 
-            // why are you enforcing this here and not in the giant file filled from top-to-bottom with snake case
-
-            let cv_loadout_skin: typeof defaultClientCVars["cv_loadout_skin"];
+            let skin: typeof defaultClientCVars["cv_loadout_skin"];
             joinPacket.skin = Loots.fromStringSafe(
                 this.console.getBuiltInCVar("cv_loadout_skin")
             ) ?? Loots.fromString(
-                typeof (cv_loadout_skin = defaultClientCVars.cv_loadout_skin) === "object"
-                    ? cv_loadout_skin.value
-                    : cv_loadout_skin
+                typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
+                    ? skin.value
+                    : skin
             );
 
             joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));

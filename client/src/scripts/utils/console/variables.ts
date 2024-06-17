@@ -4,8 +4,8 @@ import { stringify } from "../misc";
 import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 
-// todo figure out what flags we're gonna actually use and how we're gonna use them kekw
-// todo expect breaking changes to this api (again)
+// TODO figure out what flags we're gonna actually use and how we're gonna use them kekw
+//       expect breaking changes to this api (again)
 // Basically, use a bitfield when all flags are known,
 // and use the `Partial`-ized interface when "unset" is a possibility
 
@@ -187,9 +187,12 @@ export class ConsoleVariables {
 
             const defaultVar = defaultClientCVars[name];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
-            const changeListeners = typeof defaultVar === "object"
+            const changeListeners = typeof defaultVar === "object" && defaultVar.changeListeners
                 ? [defaultVar.changeListeners].flat() as unknown as Array<CVarChangeListener<Stringable>>
                 : [];
+            const flags = typeof defaultVar === "object" && defaultVar.flags
+                ? defaultVar.flags
+                : {};
 
             vars[name] = new ConVar(
                 name,
@@ -199,7 +202,8 @@ export class ConsoleVariables {
                 {
                     archive: true,
                     readonly: false,
-                    cheat: false
+                    cheat: false,
+                    ...flags
                 }
             );
 
@@ -279,8 +283,6 @@ export class ConsoleVariables {
     })();
 
     readonly has = (() => {
-        // There's a way to do overloading while using function properties, but it's fugly
-
         type HasChecker = (<K extends string>(key: K) => boolean) & {
             builtIn(key: keyof CVarTypeMapping): true
             builtIn(key: string): boolean
@@ -352,7 +354,15 @@ export class ConsoleVariables {
         }
     }
 
-    getAll(omitDefaults = false): GameSettings["variables"] {
+    getAll(
+        {
+            defaults = false,
+            noArchive = false
+        }: {
+            readonly defaults?: boolean
+            readonly noArchive?: boolean
+        } = {}
+    ): GameSettings["variables"] {
         const variables: GameSettings["variables"] = {};
 
         for (const [varName, cvar] of this._userCVars.entries()) {
@@ -363,10 +373,16 @@ export class ConsoleVariables {
             const cvarName = varName as keyof CVarTypeMapping;
             const cvar = this._builtInCVars[cvarName];
 
-            const defaultVar = defaultClientCVars[cvarName];
-            const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
+            let defaultVar: (typeof defaultClientCVars)[keyof CVarTypeMapping];
 
-            if (!omitDefaults || cvar.value !== defaultValue) {
+            if (
+                (
+                    !defaults
+                    || cvar.value !== (typeof (defaultVar = defaultClientCVars[cvarName]) === "object" ? defaultVar.value : defaultVar)
+                ) && (
+                    cvar.flags.archive || !noArchive
+                )
+            ) {
                 variables[varName] = cvar.value;
             }
         }
@@ -376,13 +392,13 @@ export class ConsoleVariables {
 
     dump(): string {
         return [...Object.entries(this._builtInCVars), ...this._userCVars.entries()]
-            .map(([key, cvar]) =>
+            .map(([key, { flags, value }]) =>
                 `<li><code>${key}</code> ${[
-                    cvar.flags.archive ? "<span class=\"cvar-detail-archived\" title=\"Archived CVar\">A</span>" : "",
-                    cvar.flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : "",
-                    cvar.flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : "",
-                    cvar.flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""
-                ].join(" ")} &rightarrow;&nbsp;<code class="cvar-value-${cvar.value === null ? "null" : typeof cvar.value}">${stringify(cvar.value)}</code></li>`
+                    flags.archive ? "<span class=\"cvar-detail-archived\" title=\"Archived CVar\">A</span>" : "",
+                    flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : "",
+                    flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : "",
+                    flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""
+                ].join(" ")} &rightarrow;&nbsp;<code class="cvar-value-${value === null ? "null" : typeof value}">${stringify(value)}</code></li>`
             ).join("");
     }
 }
