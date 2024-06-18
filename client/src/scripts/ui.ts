@@ -310,7 +310,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         case "temp":
                             showWarningModal = true;
                             title = "You have been temporarily banned from playing suroi.";
-                            message = `Game moderatrs have banned you for: ${data.reason || "No reason provided"}. With case ID: ${data.reportID}<br><br>When your ban is up (usually 24h), reload the page to clear this message.`;
+                            message = `Game moderatrs have banned you for: ${data.reason || "No reason provided"}. With case ID: ${data.reportID || "No report ID provided"}<br><br>When your ban is up (usually 24h), reload the page to clear this message.`;
                             break;
                         case "perma":
                             showWarningModal = true;
