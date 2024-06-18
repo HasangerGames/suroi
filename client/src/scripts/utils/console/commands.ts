@@ -1280,9 +1280,30 @@ export function setUpCommands(game: Game): void {
                     };
                 }
             } else {
-                for (const input of keybinds.listBoundInputs()) {
-                    logBinds(input, keybinds.getActionsBoundToInput(input));
-                }
+                const ul = document.createElement("ul");
+
+                ul.append(
+                    ...keybinds.listBoundInputs()
+                        .map(
+                            input => {
+                                const ul = document.createElement("ul");
+                                ul.append(
+                                    ...keybinds.getActionsBoundToInput(input)
+                                        .map(e => {
+                                            const li = document.createElement("li");
+                                            li.innerText = e;
+                                            return li;
+                                        })
+                                );
+
+                                const wrapper = document.createElement("li");
+                                wrapper.append(input, ul);
+                                return wrapper;
+                            }
+                        )
+                );
+
+                gameConsole.log.raw(ul.outerHTML);
             }
         },
         game,

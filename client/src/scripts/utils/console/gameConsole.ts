@@ -1511,11 +1511,11 @@ export class GameConsole {
                     console.warn("1000 iterations of query parsing; possible infinite loop");
                 }
                 error = false;
-                const entity = currentNode.cmd;
+                const { name, args } = currentNode.cmd;
 
-                const cmd = this.commands.get(entity.name);
+                const cmd = this.commands.get(name);
                 if (cmd) {
-                    const result = cmd.run(entity.args.map(e => e.arg));
+                    const result = cmd.run(args.map(e => e.arg));
 
                     if (typeof result === "object") {
                         error = true;
@@ -1525,44 +1525,27 @@ export class GameConsole {
                     continue;
                 }
 
-                const alias = this.aliases.get(entity.name);
+                const alias = this.aliases.get(name);
                 if (alias !== undefined) {
                     error = !this.handleQuery(alias);
                     stepForward();
                     continue;
                 }
 
-                const cvar = this.variables.get(entity.name);
+                const cvar = this.variables.get(name);
                 if (cvar) {
-                    /*
-                        This is slightly dubious, because we could totally ignore the "arguments", in
-                        the same way that commands ignore extraneous arguments
-
-                        But my justification for doing this is to prevent people from thinking that
-                        variables assignments work like they do in the Valve console (aka `var val`)
-
-                        CVars are in this weird place where they look like commands and act like commands
-                        when getting their value (and sometimes when setting them too), and it might be
-                        something to change later on
-
-                        Making a "get_value" command is pretty dumb, so maybe the Valve-style assignments
-                        will return, but I also personally find them kinda ugly and misleading
-
-                        Although someone could rightfully complain that the `assign` command is ugly and unergonomic
-                    */
-                    if (entity.args.length) {
-                        error = true;
-                        const [{ arg, startIndex }] = entity.args;
-                        throw new CommandSyntaxError(`Unexpected token '${arg}'`, startIndex, arg.length);
+                    if (args.length) {
+                        this.handleQuery(`assign ${name} ${args.map(v => v.arg).join(" ")}`);
+                    } else {
+                        this.log(`${cvar.name} = ${cvar.value}`);
                     }
 
-                    this.log(`${cvar.name} = ${cvar.value}`);
                     stepForward();
                     continue;
                 }
 
                 error = true;
-                this.error(`Unknown console entity '${entity.name}'`);
+                this.error(`Unknown console entity '${name}'`);
                 stepForward();
             }
         } catch (e) {
