@@ -20,7 +20,7 @@ import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite } from "../utils/pixi";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -1483,25 +1483,24 @@ class PlayerHealthUI {
 
         let indicator: SuroiSprite | undefined;
 
-        if (this._id.value === this.game.activePlayerID) {
+        if (id === this.game.activePlayerID) {
             indicator = this.game.map.indicator;
         } else {
             const { teammateIndicators } = this.game.map;
-            const id = this._id.value;
 
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
                     teammateIndicators.set(
                         id,
                         indicator = new SuroiSprite("player_indicator")
-                            .setVPos(toPixiCoords(this._position.value))
                             .setTint(TEAMMATE_COLORS[this._colorIndex.value])
-                            .setScale(this.game.map.expanded ? 1 : 0.75)
                     );
                     this.game.map.teammateIndicatorContainer.addChild(indicator);
-                } else {
-                    indicator.setVPos(this._position.value);
                 }
+
+                indicator
+                    .setVPos(this._position.value)
+                    .setScale(this.game.map.expanded ? 1 : 0.75);
             }
 
             indicator ??= teammateIndicators.get(id);
@@ -1517,14 +1516,18 @@ class PlayerHealthUI {
         }
 
         if (this._colorIndex.dirty) {
+            const color = TEAMMATE_COLORS[this._colorIndex.value];
+
             this.indicatorContainer.css(
                 "background-color",
-                TEAMMATE_COLORS[this._colorIndex.value]?.toHex() ?? ""
+                color.toHex()
             );
+            indicator?.setTint(color);
         }
 
+        console.log(this._name, this.game.uiManager.getRawPlayerNameNullish(this._id.value));
         if (this._name.dirty) {
-            this.nameLabel.text((this.game.uiManager.getRawPlayerNameNullish(this._id.value) ?? this._name.value) || "Loading…");
+            this.nameLabel.text((this.game.uiManager.getRawPlayerNameNullish(id) ?? this._name.value) || "Loading…");
         }
 
         if (
@@ -1539,7 +1542,7 @@ class PlayerHealthUI {
         }
 
         if (this._badge.dirty) {
-            const teammate = this.game.playerNames.get(this._id.value);
+            const teammate = this.game.playerNames.get(id);
 
             if (teammate?.badge) {
                 const src = `./img/game/badges/${teammate.badge.idString}.svg`;

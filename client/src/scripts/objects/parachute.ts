@@ -19,7 +19,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
     private fallSound?: GameSound;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Parachute]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Parachute]) {
         super(game, id);
 
         this.container.addChild(this.image);

@@ -33,7 +33,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
     sound?: GameSound;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Building]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
 
         this.container.zIndex = ZIndexes.BuildingsFloor;

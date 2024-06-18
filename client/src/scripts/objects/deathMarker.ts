@@ -22,7 +22,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.DeathMarker]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.DeathMarker]) {
         super(game, id);
 
         this.image = new SuroiSprite("death_marker");

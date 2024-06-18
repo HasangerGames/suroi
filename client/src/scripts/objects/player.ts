@@ -128,7 +128,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     floorType: keyof typeof FloorTypes = "grass";
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Player]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
 
         this.images = {

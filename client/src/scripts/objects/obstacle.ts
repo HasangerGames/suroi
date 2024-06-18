@@ -58,7 +58,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     hitSound?: GameSound;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Obstacle]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
         super(game, id);
 
         this.image = new SuroiSprite();

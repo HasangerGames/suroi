@@ -318,6 +318,7 @@ export class UpdatePacket implements Packet {
         readonly loadout: { readonly badge?: BadgeDefinition }
         readonly hasColor: boolean
         readonly nameColor: number
+        readonly teamID?: number
     }> = [];
 
     deletedPlayers: number[] = [];

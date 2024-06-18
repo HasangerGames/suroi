@@ -25,7 +25,7 @@ import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { InputManager } from "./managers/inputManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -54,7 +54,9 @@ import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/con
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
-interface ObjectClassMapping {
+/* eslint-disable @stylistic/indent */
+
+type ObjectClassMapping = {
     readonly [ObjectCategory.Player]: typeof Player
     readonly [ObjectCategory.Obstacle]: typeof Obstacle
     readonly [ObjectCategory.DeathMarker]: typeof DeathMarker
@@ -64,9 +66,11 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.Parachute]: typeof Parachute
     readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
-}
+};
 
-const ObjectClassMapping: ObjectClassMapping = {
+const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
+    readonly [K in ObjectCategory]: new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+}>({
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
     [ObjectCategory.DeathMarker]: DeathMarker,
@@ -76,7 +80,7 @@ const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Parachute]: Parachute,
     [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
-};
+});
 
 type ObjectMapping = {
     readonly [Cat in keyof ObjectClassMapping]: InstanceType<ObjectClassMapping[Cat]>
@@ -600,7 +604,7 @@ export class Game {
 
                 this.objects.add(
                     new (
-                        ObjectClassMapping[type] as (new (game: Game, id: number, data: FullData<K>) => ObjectMapping[K])
+                        ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
                     )(this, id, data)
                 );
             } else {
