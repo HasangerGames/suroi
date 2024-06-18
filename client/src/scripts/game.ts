@@ -206,6 +206,7 @@ export class Game {
 
             this.map.visible = !this.console.getBuiltInCVar("cv_minimap_minimized");
             this.map.expanded = this.console.getBuiltInCVar("cv_map_expanded");
+            this.uiManager.ui.gameUi.toggle(this.console.getBuiltInCVar("cv_draw_hud"));
 
             pixi.renderer.on("resize", () => this.resize());
             this.resize();
