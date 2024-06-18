@@ -14,7 +14,7 @@ import { type PlayerData, type UpdatePacket } from "../../../../common/src/packe
 import { Numeric } from "../../../../common/src/utils/math";
 import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
@@ -294,13 +294,13 @@ export class UIManager {
     readonly action = {
         active: false,
         /*
-            whether this timer corresponds to an actual action being carried
-            out by this player (like reloading), or if it corresponds to some
-            other timed event that just so happens to piggyback off this timer
-            system (getting revived). pretty much only exists for the
-            aforementioned case of being revived, and prevents the "cancel" popup
-            from appearing
-        */
+        whether this timer corresponds to an actual action being carried
+        out by this player (like reloading), or if it corresponds to some
+        other timed event that just so happens to piggyback off this timer
+        system (getting revived). pretty much only exists for the
+        aforementioned case of being revived, and prevents the "cancel" popup
+        from appearing
+    */
         fake: false,
         start: -1,
         time: 0
@@ -681,10 +681,10 @@ export class UIManager {
     }
 
     /*
-        TODO proper caching would require keeping a copy of the inventory currently being shown,
-             so that we can compare it to what it should now be showing (in other words, a kind
-             of "oldInventory—newInventory" thing).
-    */
+      TODO proper caching would require keeping a copy of the inventory currently being shown,
+           so that we can compare it to what it should now be showing (in other words, a kind
+           of "oldInventory—newInventory" thing).
+  */
     updateWeaponSlots(): void {
         const inventory = this.inventory;
 
@@ -824,18 +824,18 @@ export class UIManager {
 
     private _addKillMessage(
         message: (
-            {
-                readonly severity: KillfeedEventSeverity.Down
-            } | {
-                readonly severity: KillfeedEventSeverity.Kill
-                readonly kills: number
-                readonly streak?: number
-            }
-        ) & {
-            readonly type: KillfeedEventType
-            readonly victimName: string
-            readonly weaponUsed?: string
-        }
+      {
+          readonly severity: KillfeedEventSeverity.Down
+      } | {
+          readonly severity: KillfeedEventSeverity.Kill
+          readonly kills: number
+          readonly streak?: number
+      }
+    ) & {
+        readonly type: KillfeedEventType
+        readonly victimName: string
+        readonly weaponUsed?: string
+    }
     ): void {
         const { severity, victimName, weaponUsed, type } = message;
 
@@ -860,10 +860,8 @@ export class UIManager {
         }
 
         this.ui.killMsgContainer.html(
-            `${
-                UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML)
-            } ${
-                weaponUsed !== undefined ? ` with ${weaponUsed}` : ""
+            `${UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML)
+            } ${weaponUsed !== undefined ? ` with ${weaponUsed}` : ""
             }${streakText}`
         );
 
@@ -884,7 +882,35 @@ export class UIManager {
         killFeedItem.html(text);
         killFeedItem.addClass(classes);
 
+        const others = this._getKillFeedElements();
+
         this.ui.killFeed.prepend(killFeedItem);
+
+        killFeedItem.css("opacity", 0);
+
+        others.forEach(otherKillFeedItem => {
+            const newPosition = otherKillFeedItem.element.getBoundingClientRect();
+            if (newPosition.y === otherKillFeedItem.position.y) return;
+
+            otherKillFeedItem.element.animate([
+                { transform: `translateY(${otherKillFeedItem.position.y - newPosition.y}px)` },
+                { transform: "translateY(0px)" }
+            ], {
+                duration: 500,
+                iterations: 1,
+                easing: "ease-in"
+            });
+        });
+        killFeedItem.css("opacity", "");
+        killFeedItem.get(0)?.animate([
+            { opacity: 0 },
+            { opacity: 1 }
+        ], {
+            duration: 500,
+            iterations: 1,
+            easing: "ease-in"
+        });
+
         if (!UI_DEBUG_MODE) {
             let iterationCount = 0;
             while (this.ui.killFeed.children().length > 5) {
@@ -898,10 +924,41 @@ export class UIManager {
             }
         }
 
-        setTimeout(
-            () => killFeedItem.fadeOut(1000, killFeedItem.remove.bind(killFeedItem)),
-            7000
-        );
+        setTimeout(() => {
+            const removeAnimation = killFeedItem.get(0)?.animate([
+                {
+                    opacity: 1,
+                    transform: "translateX(0%)"
+                },
+                {
+                    opacity: 0,
+                    transform: "translateX(100%)"
+                }
+            ], {
+                duration: 500,
+                fill: "backwards",
+                easing: "ease-out"
+            });
+
+            if (!removeAnimation) return;
+
+            removeAnimation.onfinish = () => {
+                killFeedItem.remove();
+            };
+        }, 7000);
+    }
+
+    private _getKillFeedElements(): Array<{
+        element: HTMLDivElement
+        position: Vector
+    }> {
+        return this.ui.killFeed.children().toArray().map(child => {
+            const boundingRects = child.getBoundingClientRect();
+            return {
+                element: child as HTMLDivElement,
+                position: Vec.create(boundingRects.x, boundingRects.y)
+            };
+        });
     }
 
     private static readonly _killfeedEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, string>>>({
@@ -1035,21 +1092,21 @@ export class UIManager {
                                 switch (attackerId) {
                                     case undefined:
                                         /*
-                                            this can happen if the player is knocked out by a non-player
-                                            entity (like gas or airdrop) if their team is then wiped,
-                                            then no one "finally" killed them, they just… finally died
-                                        */
+                        this can happen if the player is knocked out by a non-player
+                        entity (like gas or airdrop) if their team is then wiped,
+                        then no one "finally" killed them, they just… finally died
+                    */
                                         killMessage = `${victimText} finally died`;
 
                                         break outer;
                                     case victimId:
                                         /*
-                                            usually, a case where attacker and victim are the same would be
-                                            counted under the "suicide" event type, but there was no easy
-                                            way to route the event through the "suicide" type whilst having
-                                            it retain the "finally killed" part; this is the best option
-                                            until someone comes up with another
-                                        */
+                        usually, a case where attacker and victim are the same would be
+                        counted under the "suicide" event type, but there was no easy
+                        way to route the event through the "suicide" type whilst having
+                        it retain the "finally killed" part; this is the best option
+                        until someone comes up with another
+                    */
                                         killMessage = `${victimText} finally ended themselves`;
 
                                         break outer;
@@ -1073,10 +1130,10 @@ export class UIManager {
 
                         const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
-                         * English being complicated means that this will sometimes return bad results
-                         * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
-                         * a library off of somewhere, this'll have to do
-                         */
+             * English being complicated means that this will sometimes return bad results
+             * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
+             * a library off of somewhere, this'll have to do
+             */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
 
                         const weaponNameText = weaponPresent
@@ -1172,8 +1229,8 @@ export class UIManager {
                 }
 
                 /**
-                 * Whether the player pointed to by the given id is on the active player's team
-                 */
+         * Whether the player pointed to by the given id is on the active player's team
+         */
                 const playerIsOnThisTeam = (id?: number): boolean | undefined => {
                     let target: GameObject | undefined;
 
@@ -1352,19 +1409,19 @@ class PlayerHealthUI {
     readonly badgeImage: JQuery<HTMLImageElement>;
 
     /*
-        hierarchy:
+      hierarchy:
 
-        container
-        |
-        |-> svgContainer
-        |   |-> healthAmount
-        |
-        |-> indicatorContainer
-        |   |-> teammateIndicator
-        |
-        |-> nameLabel
-        |-> badgeImage
-    */
+      container
+      |
+      |-> svgContainer
+      |   |-> healthAmount
+      |
+      |-> indicatorContainer
+      |   |-> teammateIndicator
+      |
+      |-> nameLabel
+      |-> badgeImage
+  */
 
     private readonly _id = new Wrapper<number>(-1);
     get id(): number { return this._id.value; }
@@ -1442,9 +1499,9 @@ class PlayerHealthUI {
             ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
                 const value = data[prop];
                 if (prop in data && value !== null) {
-                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+          type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
 
-                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+          (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
                 }
             });
         }
