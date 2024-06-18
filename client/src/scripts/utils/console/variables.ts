@@ -269,8 +269,7 @@ export class ConsoleVariables {
         };
         const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLs = false): PossibleError<string> => {
             if (key in this._builtInCVars) {
-                setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLs);
-                return;
+                return setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLs);
             }
 
             return setCustom(key, value);

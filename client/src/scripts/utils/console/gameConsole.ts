@@ -1535,7 +1535,7 @@ export class GameConsole {
                 const cvar = this.variables.get(name);
                 if (cvar) {
                     if (args.length) {
-                        this.handleQuery(`assign ${name} ${args.map(v => v.arg).join(" ")}`);
+                        error = !this.handleQuery(`assign ${name} ${args.map(v => v.arg).join(" ")}`);
                     } else {
                         this.log(`${cvar.name} = ${cvar.value}`);
                     }
