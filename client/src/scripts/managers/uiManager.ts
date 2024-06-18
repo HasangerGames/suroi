@@ -1582,7 +1582,6 @@ class PlayerHealthUI {
             indicator?.setTint(color);
         }
 
-        console.log(this._name, this.game.uiManager.getRawPlayerNameNullish(this._id.value));
         if (this._name.dirty) {
             this.nameLabel.text((this.game.uiManager.getRawPlayerNameNullish(id) ?? this._name.value) || "Loading…");
         }
