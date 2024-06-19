@@ -2545,11 +2545,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // South End of the Bridge
                 { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
 
-                { idString: "sandbags", position: Vec.create(-25, 80), rotation: 0 },
-                { idString: "sandbags", position: Vec.create(-36, 82.5), rotation: 1 },
-                { idString: "sandbags", position: Vec.create(-36, 96.5), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(-25, 77), rotation: 0 },
+                { idString: "sandbags", position: Vec.create(-36, 79.5), rotation: 1 },
+                { idString: "sandbags", position: Vec.create(-36, 93.5), rotation: 1 },
 
-                { idString: "grenade_crate", position: Vec.create(-27.5, 88.5) }
+                { idString: "grenade_crate", position: Vec.create(-27.5, 85.5) }
             ],
             lootSpawners: [
 
