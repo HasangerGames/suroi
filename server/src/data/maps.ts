@@ -428,7 +428,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("bunker_entrance_door", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("test_wall", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleGun: {

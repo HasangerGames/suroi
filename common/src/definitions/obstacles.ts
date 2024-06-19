@@ -65,6 +65,10 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly activated?: string
     }
 
+    readonly wall?: {
+        readonly color: number
+    }
+
     readonly imageAnchor?: Vector
     readonly spawnMode: MapObjectSpawnMode
     readonly tint?: number
@@ -2990,6 +2994,17 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "metal_particle"
             },
             rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "test_wall",
+            name: "Test Wall",
+            material: "wood",
+            health: 200,
+            hitbox: RectangleHitbox.fromRect(20, 2),
+            rotationMode: RotationMode.Limited,
+            wall: {
+                color: 0xffaa00
+            }
         }
     ]
 );

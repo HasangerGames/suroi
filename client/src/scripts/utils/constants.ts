@@ -41,6 +41,8 @@ export const TEAMMATE_COLORS = [
 
 export const PIXI_SCALE = 20;
 
+export const WALL_STROKE_WIDTH = 9;
+
 export const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
 export const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
 export const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);

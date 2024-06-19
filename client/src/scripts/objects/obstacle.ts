@@ -1,7 +1,8 @@
+import { Color, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
-import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -10,7 +11,7 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
@@ -255,6 +256,32 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (!definition.invisible) this.image.setFrame(texture);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
+
+        if (definition.wall && !this.dead && definition.hitbox instanceof RectangleHitbox) {
+            this.container.removeChildren();
+
+            const dimensions = definition.hitbox.clone();
+            dimensions.scale(PIXI_SCALE);
+
+            const wallGraphics = new Graphics();
+
+            const x = dimensions.min.x;
+            const y = dimensions.min.y;
+            const w = dimensions.max.x - dimensions.min.x;
+            const h = dimensions.max.y - dimensions.min.y;
+
+            wallGraphics
+                .rect(x, y, w, h)
+                .fill({ color: new Color(definition.wall.color).multiply(new Color({ h: 0, s: 0, l: 70 })) })
+                .roundRect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2, WALL_STROKE_WIDTH)
+                .fill({ color: definition.wall.color });
+
+            this.container.addChild(wallGraphics);
+        }
+        if (definition.wall && this.dead) {
+            this.container.removeChildren();
+            if (!definition.noResidue) this.container.addChild(this.image);
+        }
 
         this.container.rotation = this.rotation;
 
