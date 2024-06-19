@@ -889,9 +889,6 @@ export class Game {
                                     // Don't pick up skins
                                     && type !== ItemType.Skin
                                 )
-
-                                // Don't autopickup if currently reloading gun
-                                && this.activePlayer.action?.type !== PlayerActions.Reload
                             ) || (
                                 type === ItemType.Gun
                                     && weapons?.some(
@@ -903,6 +900,7 @@ export class Game {
                                                     (
                                                         object?.definition === definition
                                                         && !definition.isDual
+                                                        && definition.dualVariant
                                                     ) // Picking up a single pistol when inventory has single pistol
                                                     || (
                                                         (
