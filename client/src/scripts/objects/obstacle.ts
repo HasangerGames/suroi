@@ -272,7 +272,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             wallGraphics
                 .rect(x, y, w, h)
-                .fill({ color: new Color(definition.wall.color).multiply(new Color({ h: 0, s: 0, l: 70 })) })
+                .fill({ color: definition.wall.borderColor })
                 .roundRect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2, WALL_STROKE_WIDTH)
                 .fill({ color: definition.wall.color });
 

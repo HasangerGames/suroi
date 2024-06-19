@@ -67,6 +67,7 @@ export type ObstacleDefinition = ObjectDefinition & {
 
     readonly wall?: {
         readonly color: number
+        readonly borderColor: number
     }
 
     readonly imageAnchor?: Vector
@@ -205,6 +206,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "wall_particle"
+            },
+            wall: {
+                borderColor: 0x4a4134,
+                color: 0xafa08c
             },
             role: ObstacleSpecialRoles.Wall
         }),
@@ -3003,7 +3008,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(20, 2),
             rotationMode: RotationMode.Limited,
             wall: {
-                color: 0xffaa00
+                color: 0xffaa00,
+                borderColor: 0xff0000
             }
         }
     ]
