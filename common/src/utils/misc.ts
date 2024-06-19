@@ -18,9 +18,9 @@ export function isObject(item: unknown): item is Record<string, unknown> {
 
 // presumably because of variance, using unknown[] causes issues
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Fn = (...args: any[]) => unknown;
+type Fn = (...args: any[]) => any;
 
-export type DeepPartial<T> = (T extends Fn ? T : unknown) & {
+export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;
 };
 
