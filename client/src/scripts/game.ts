@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, ObjectCategory, PlayerActions, TeamSize } from "../../../common/src/constants";
+import { InputActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
