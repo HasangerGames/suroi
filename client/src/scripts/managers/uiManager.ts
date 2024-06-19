@@ -1038,8 +1038,7 @@ export class UIManager {
             case KillfeedMessageType.KillLeaderAssigned: {
                 if (victimId === this.game.activePlayerID) {
                     classes.push("kill-feed-item-killer");
-                }
-                else {
+                } else {
                     classes.push("kill-feed-kill-leader");
                 }
 
@@ -1071,11 +1070,9 @@ export class UIManager {
                 }`;
                 if (attackerId === this.game.activePlayerID) {
                     classes.push("kill-feed-item-killer");
-                }
-                else if (victimId === this.game.activePlayerID) {
+                } else if (victimId === this.game.activePlayerID) {
                     classes.push("kill-feed-item-victim");
-                }
-                else {
+                } else {
                     classes.push("kill-feed-kill-leader");
                 }
                 this.game.soundManager.play("kill_leader_dead");
@@ -1281,8 +1278,7 @@ class PlayerHealthUI {
 
             if (teammate) {
                 this.nameLabel.text(teammate.name);
-            }
-            else {
+            } else {
                 this.nameLabel.text("Loading..");
             }
         }
