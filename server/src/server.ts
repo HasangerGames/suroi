@@ -37,7 +37,7 @@ function removePunishment(ip: string): void {
     if (Config.protection?.punishments?.url) {
         fetch(
             `${Config.protection.punishments.url}/punishments/${ip}`,
-            { method: 'DELETE', headers: { "api-key": Config.protection.punishments.password } }
+            { method: "DELETE", headers: { "api-key": Config.protection.punishments.password } }
         ).catch(err => console.error("Error removing punishment from server. Details:", err));
     } else {
         writeFile(
@@ -50,7 +50,6 @@ function removePunishment(ip: string): void {
         );
     }
 }
-
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
@@ -83,7 +82,7 @@ if (isMainThread) {
         let response: GetGameResponse;
 
         const punishment = punishments.find(p => p.ip === ip);
-        console.log(`Punishment is ${punishment?.punishmentType}${punishment?.ip}${punishment?.reason} `)
+        console.log(`Punishment is ${punishment?.punishmentType}${punishment?.ip}${punishment?.reason} `);
         if (punishment) {
             if (punishment.punishmentType === "warn") {
                 const protection = Config.protection;

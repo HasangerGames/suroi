@@ -380,8 +380,8 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.game.addLoot("vector", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("9mm", Vec.create(this.width / 2, this.height / 2 - 10), { count: Infinity });
+            map.game.addLoot("radio", Vec.create(this.width / 2, this.height / 2 - 10));
+            map.game.addLoot("curadell", Vec.create(this.width / 2, this.height / 2 - 10), { count: Infinity });
         }
     },
     gunsTest: (() => {
