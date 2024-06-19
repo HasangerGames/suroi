@@ -166,6 +166,7 @@
 
         .console-entry-content {
             * {
+                font-family: monospace;
                 word-break: break-word;
             }
 
@@ -284,6 +285,14 @@
                 code.cvar-value-object {
                     color: hsl(201, 98%, 80%);
                 }
+            }
+
+            table,
+            thead,
+            tbody,
+            tr,
+            td {
+                border: 1px solid #888;
             }
         }
 

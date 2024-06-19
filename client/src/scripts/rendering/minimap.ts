@@ -16,9 +16,28 @@ import { GasRender } from "./gas";
 export class Minimap {
     private _expanded = false;
     get expanded(): boolean { return this._expanded; }
+    set expanded(expand: boolean) {
+        if (this._expanded === expand) return;
+
+        if (this._expanded = expand) this.switchToBigMap();
+        else this.switchToSmallMap();
+    }
+
+    toggle(): void { this.expanded = !this._expanded; }
 
     private _visible = true;
     get visible(): boolean { return this._visible; }
+    set visible(visible: boolean) {
+        if (this._visible === visible) return;
+
+        this._visible = visible;
+
+        this.switchToSmallMap();
+        this.container.visible = visible;
+        this._borderContainer.toggle(visible);
+    }
+
+    toggleMinimap(): void { this.visible = !this._visible; }
 
     private _position = Vec.create(0, 0);
     private _lastPosition = Vec.create(0, 0);
@@ -592,11 +611,6 @@ export class Minimap {
         }
     }
 
-    toggle(): void {
-        if (this._expanded) this.switchToSmallMap();
-        else this.switchToBigMap();
-    }
-
     setPosition(pos: Vector): void {
         this._position = Vec.clone(pos);
         this.indicator.setVPos(pos);
@@ -617,38 +631,48 @@ export class Minimap {
         this._objectsContainer.position.copyFrom(Vec.scale(pos, -1));
     }
 
+    private readonly _uiCache = Object.freeze({
+        scopes: $<HTMLDivElement>("#scopes-container"),
+        closeMinimap: $<HTMLButtonElement>("#btn-close-minimap"),
+        killLeader: $<HTMLDivElement>("#ui-kill-leader"),
+        centerBottom: $<HTMLDivElement>("#center-bottom-container"),
+        killCounter: $<HTMLDivElement>("#kill-counter")
+    });
+
     switchToBigMap(): void {
         this._expanded = true;
+
+        const ui = this.game.uiManager.ui;
         this.container.visible = true;
         this._borderContainer.hide();
-        $("#scopes-container").hide();
-        $("#spectating-container").hide();
-        $("#gas-msg-info").hide();
-        $("#btn-close-minimap").show();
-        $("#ui-kill-leader").hide();
-        $("#center-bottom-container").hide();
-        $("#kill-counter").show();
 
-        // Bug Fix: "Killfeed shifts down with big map open"
-        $("#kill-feed").hide();
+        this._uiCache.scopes.hide();
+        ui.spectatingContainer.hide();
+        ui.gasMsgInfo.hide();
+        this._uiCache.closeMinimap.show();
+        this._uiCache.killLeader.hide();
+        this._uiCache.centerBottom.hide();
+        this._uiCache.killCounter.show();
+        ui.killFeed.hide();
 
         this.resize();
     }
 
     switchToSmallMap(): void {
         this._expanded = false;
-        $("#btn-close-minimap").hide();
-        $("#center-bottom-container").show();
-        $("#gas-msg-info").show();
-        $("#scopes-container").show();
 
-        // Bug Fix: "Killfeed shifts down with big map open"
-        $("#kill-feed").show();
+        const ui = this.game.uiManager.ui;
 
-        if (this.game.spectating) $("#spectating-container").show();
-        const width = $(window).width();
-        if (width && width > 768) $("#ui-kill-leader").show();
-        $("#kill-counter").hide();
+        this._uiCache.closeMinimap.hide();
+        this._uiCache.centerBottom.show();
+        ui.gasMsgInfo.show();
+        this._uiCache.scopes.show();
+        ui.killFeed.show();
+
+        if (this.game.spectating) ui.spectatingContainer.show();
+        const width = window.innerWidth;
+        if (width > 768) this._uiCache.killLeader.show();
+        this._uiCache.killCounter.hide();
         if (!this._visible) {
             this.container.visible = false;
             return;
@@ -663,14 +687,6 @@ export class Minimap {
                 ? "cv_map_transparency"
                 : "cv_minimap_transparency"
         );
-    }
-
-    toggleMinimap(): void {
-        this._visible = !this._visible;
-
-        this.switchToSmallMap();
-        this.container.visible = this._visible;
-        this._borderContainer.toggle(this._visible);
     }
 
     addMapPing(position: Vector, definition: MapPingDefinition, playerId?: number): void {

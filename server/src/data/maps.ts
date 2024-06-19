@@ -111,7 +111,10 @@ const maps = {
             green_house: 1,
             mobile_home: 3,
             porta_potty: 3,
-            construction_site: 1
+            construction_site: 1,
+            armory: 1,
+            port_complex: 1,
+            refinery: 1
         },
         obstacles: {
             oil_tank: 12,

@@ -794,7 +794,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private _firstPacket = true;
 
-    packetStream = new PacketStream(SuroiBitStream.alloc(1 << 16));
+    private readonly _packetStream = new PacketStream(SuroiBitStream.alloc(1 << 16));
 
     /**
      * Calculate visible objects, check team, and send packets
@@ -811,9 +811,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
+            const dim = player.zoom * 2 + 8;
             this.screenHitbox = RectangleHitbox.fromRect(
-                player.zoom * 2 + 8,
-                player.zoom * 2 + 8,
+                dim,
+                dim,
                 player.position
             );
 
@@ -926,12 +927,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             value: gas.completionRatio
         };
 
-        // new and deleted players
-        packet.newPlayers = this._firstPacket
+        const newPlayers = this._firstPacket
             ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
             : game.newPlayers;
 
-        for (const teammate of (packet.newPlayers as Player[]).filter(p => p.teamID === player.teamID)) {
+        // new and deleted players
+        packet.newPlayers = newPlayers;
+
+        for (const teammate of newPlayers.filter(p => p.teamID === player.teamID)) {
             packet.fullObjectsCache.push(teammate);
         }
 
@@ -961,17 +964,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.sendPacket(packet);
         this._firstPacket = false;
 
-        this.packetStream.stream.index = 0;
+        this._packetStream.stream.index = 0;
         for (const packet of this.packets) {
-            this.packetStream.serializeServerPacket(packet);
+            this._packetStream.serializeServerPacket(packet);
         }
 
         for (const packet of this.game.packets) {
-            this.packetStream.serializeServerPacket(packet);
+            this._packetStream.serializeServerPacket(packet);
         }
 
         this.packets.length = 0;
-        this.sendData(this.packetStream.getBuffer());
+        this.sendData(this._packetStream.getBuffer());
     }
 
     /**
@@ -1367,8 +1370,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 const { player, item } = downer;
 
                 ++player.kills;
-                if ((item instanceof GunItem || item instanceof MeleeItem)
-                    && player.inventory.weapons.includes(item)) {
+                if (
+                    (item instanceof GunItem || item instanceof MeleeItem)
+                    && player.inventory.weapons.includes(item)
+                ) {
                     const kills = ++item.stats.kills;
 
                     for (const entry of item.definition.wearerAttributes?.on?.kill ?? []) {
@@ -1406,7 +1411,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (
                         this.teamID === undefined // if we're in solos…
                         || source.teamID !== this.teamID // …or the killer is in a different team from the downer…
-                        || !attributeToDowner() // …or if the downer can't be found…
+                        || !attributeToDowner() // …or if attributing to the downer fails (because they can't be found)…
                     ) {
                         attributeToPlayer(source); // …then attribute to the killer
                     }

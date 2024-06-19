@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
@@ -74,8 +74,7 @@ export async function setUpUI(game: Game): Promise<void> {
     if (UI_DEBUG_MODE) {
         // Kill message
         ui.killMsgHeader.text("Kills: 7");
-        ui.killMsgVictimName.html("Player");
-        ui.killMsgWeaponUsed.text(" with Mosin-Nagant (streak: 255)");
+        ui.killMsgContainer.text("Player  with Mosin-Nagant (streak: 255)");
         ui.killMsgModal.show();
 
         // Spectating message
@@ -305,18 +304,18 @@ export async function setUpUI(game: Game): Promise<void> {
                     switch (data.message) {
                         case "warn":
                             showWarningModal = true;
-                            title = "Teaming is against the rules!";
-                            message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
+                            title = "You have been warned!";
+                            message = `You have received a warning by the suroi game moderatrs. Case: ${data.reportID || "No report ID provided."}. Your official warn reason: ${data.reason || "No reason provided"}`;
                             break;
                         case "temp":
                             showWarningModal = true;
-                            title = "You have been banned for 1 day for teaming!";
-                            message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
+                            title = "You have been temporarily banned from playing suroi.";
+                            message = `Game moderatrs have banned you for: ${data.reason || "No reason provided"}. With case ID: ${data.reportID || "No report ID provided"}<br><br>When your ban is up (usually 24h), reload the page to clear this message.`;
                             break;
                         case "perma":
                             showWarningModal = true;
-                            title = "You have been permanently banned for hacking!";
-                            message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
+                            title = "You have been permanently banned from playing suroi.io";
+                            message = `The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.<br><br>Ban reason: ${data.reason || "No reason provided"}. Case ID: ${data.reportID || "No report ID provided"}`;
                             break;
                         default:
                             message = "Error joining game.<br>Please try again.";
@@ -708,6 +707,11 @@ export async function setUpUI(game: Game): Promise<void> {
         );
     toggleRotateMessage();
     $(window).on("resize", toggleRotateMessage);
+
+    game.console.variables.addChangeListener(
+        "cv_console_open",
+        (_, val) => game.console.isOpen = val
+    );
 
     const gameMenu = ui.gameMenu;
     const settingsMenu = $("#settings-menu");
@@ -1464,6 +1468,38 @@ Video evidence is required.`)) {
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
     addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics");
 
+    game.console.variables.addChangeListener(
+        "cv_cooler_graphics",
+        (_, newVal, oldVal) => {
+            if (newVal !== oldVal && !newVal) {
+                for (const player of game.objects.getCategory(ObjectCategory.Player)) {
+                    const { images: { blood: { children } }, bloodDecals } = player;
+
+                    for (const child of children) {
+                        child.destroy();
+                    }
+
+                    children.length = 0;
+
+                    for (const decal of bloodDecals) {
+                        decal.kill();
+                    }
+                }
+            }
+        }
+    );
+
+    const { gameUi } = game.uiManager.ui;
+
+    game.console.variables.addChangeListener(
+        "cv_draw_hud",
+        (_, newVal) => {
+            gameUi.toggle(newVal);
+            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized") && newVal;
+        }
+    );
+    addCheckboxListener("#toggle-draw-hud", "cv_draw_hud");
+
     // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");
 
@@ -1479,7 +1515,6 @@ Video evidence is required.`)) {
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
 
-    const gameUi = $<HTMLDivElement>("#game-ui");
     function updateUiScale(): void {
         const scale = game.console.getBuiltInCVar("cv_ui_scale");
 
@@ -1524,12 +1559,14 @@ Video evidence is required.`)) {
         "#toggle-hide-minimap",
         "cv_minimap_minimized",
         value => {
-            // HACK minimap code is hacky and it scares me too much
-            //      for me to add a "setVisible" method or smth
-            let iterationCount = 0;
-            while (game.map.visible === value && ++iterationCount < 100) {
-                game.map.toggleMinimap();
-            }
+            game.map.visible = !value;
+        }
+    );
+
+    game.console.variables.addChangeListener(
+        "cv_map_expanded",
+        (_, newValue) => {
+            game.map.expanded = newValue;
         }
     );
 

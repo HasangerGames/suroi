@@ -13,7 +13,7 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
 
     readonly image: SuroiSprite;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Decal]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Decal]) {
         super(game, id);
 
         this.image = new SuroiSprite();

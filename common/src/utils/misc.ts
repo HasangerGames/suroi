@@ -16,21 +16,27 @@ export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
+// presumably because of variance, using unknown[] causes issues
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Fn = (...args: any[]) => any;
+
 export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;
 };
 
-export type DeepRequired<T> = T extends Array<infer R>
-    ? Array<DeepRequired<NonNullable<R>>>
-    : {
-        [K in keyof T]-?: DeepRequired<NonNullable<T[K]>>;
-    };
+export type DeepRequired<T> = (T extends Fn ? T : unknown) & (
+    T extends Array<infer R>
+        ? Array<DeepRequired<NonNullable<R>>>
+        : {
+            [K in keyof T]-?: DeepRequired<NonNullable<T[K]>>;
+        }
+);
 
-export type DeepReadonly<T> = {
+export type DeepReadonly<T> = (T extends Fn ? T : unknown) & {
     readonly [K in keyof T]: DeepReadonly<T[K]>;
 };
 
-export type Mutable<T> = {
+export type Mutable<T> = (T extends Fn ? T : unknown) & {
     -readonly [K in keyof T]: T[K];
 };
 
@@ -223,7 +229,7 @@ export function freezeDeep<T>(object: T): DeepReadonly<T> {
         }
     }
 
-    return object;
+    return object as DeepReadonly<T>;
 }
 
 export class Timeout {

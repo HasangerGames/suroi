@@ -26,7 +26,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { type ParticleEmitter } from "./particles";
+import { type Particle, type ParticleEmitter } from "./particles";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -128,7 +128,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     floorType: keyof typeof FloorTypes = "grass";
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Player]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
 
         this.images = {
@@ -1482,6 +1482,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
+    private readonly _bloodDecals = new Set<Particle>();
+    get bloodDecals(): Set<Particle> { return this._bloodDecals; }
+
     hitEffect(position: Vector, angle: number, sound?: string): void {
         this.game.soundManager.play(
             sound ?? (randomBoolean() ? "player_hit_1" : "player_hit_2"),
@@ -1506,24 +1509,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
             },
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
-        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-            this.game.particleManager.spawnParticle({
-                frames: "blood_particle",
-                zIndex: ZIndexes.Decals,
-                position: randomPointInsideCircle(position, 2.5),
-                lifetime: 60000,
-                scale: randomFloat(0.8, 1.6),
-                alpha: {
-                    start: 1,
-                    end: 0,
-                    ease: EaseFunctions.expoIn
-                },
-                speed: Vec.create(0, 0),
-                tint: 0xeeeeee
-            });
 
-            if (Skins.reify(this._skin).hideBlood) return;
-            if (randomFloat(0, 1) > 0.6) return;
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+            this._bloodDecals.add(
+                this.game.particleManager.spawnParticle({
+                    frames: "blood_particle",
+                    zIndex: ZIndexes.Decals,
+                    position: randomPointInsideCircle(position, 2.5),
+                    lifetime: 60000,
+                    scale: randomFloat(0.8, 1.6),
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctions.expoIn
+                    },
+                    speed: Vec.create(0, 0),
+                    tint: 0xeeeeee,
+                    onDeath: self => {
+                        this._bloodDecals.delete(self);
+                    }
+                })
+            );
+
+            if (Skins.reify(this._skin).hideBlood || Math.random() > 0.6) return;
 
             const bodyBlood = new SuroiSprite("blood_particle");
 
@@ -1533,7 +1541,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.images.blood.addChild(bodyBlood);
 
-            setTimeout(() => { bodyBlood.destroy(); }, 30000);
+            setTimeout(() => { bodyBlood.destroyed || bodyBlood.destroy(); }, 30000);
         }
     }
 

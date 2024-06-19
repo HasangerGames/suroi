@@ -64,26 +64,40 @@ export const allowedTags = Object.freeze([
     "kbd", "mark", "q", "s", "samp", "small", "span", "strong",
     "sub", "sup", "time", "u", "var",
 
+    // Detail & summary
+    "details", "summary",
+
     // Table stuff
     "caption", "col", "colgroup", "table", "tbody", "td", "tfoot",
     "th", "thead", "tr"
 ]);
 
-export function sanitizeHTML(message: string, opts?: { readonly strict: boolean, readonly escapeSpaces?: boolean }): string {
+export function sanitizeHTML(
+    message: string,
+    opts?: {
+        readonly strict: boolean
+        readonly escapeSpaces?: boolean
+        readonly escapeNewLines?: boolean
+    }
+): string {
     return message.replace(
         /<\/?.*?>/g,
-        match => {
-            const tag = match.replace(/<\/?|>/g, "").split(" ")[0];
-
-            let str = !opts?.strict && allowedTags.includes(tag)
-                ? match
-                : match
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;");
-
-            opts?.escapeSpaces && (str = str.replace(/ /g, "&nbsp;"));
-
-            return str;
-        }
+        match => !opts?.strict && allowedTags.includes(
+            match.replace(/<\/?|>/g, "").split(" ")[0]
+        )
+            ? match
+            : match
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+    ).replace(
+        / {2,}/g,
+        match => opts?.escapeSpaces
+            ? match.replace(/ /g, "&nbsp;")
+            : match
+    ).replace(
+        /\n/g,
+        match => opts?.escapeNewLines
+            ? "<br>"
+            : match
     );
 }

@@ -1668,7 +1668,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "pallet", position: Vec.create(-50, -55), rotation: 1 },
 
                 { idString: { flint_crate: 1, regular_crate: 1 }, position: Vec.create(-75, -45) },
-                { idString: "flint_crate", position: Vec.create(-50, -55.38) },
+                { idString: "flint_crate", position: Vec.create(-50, -55) },
 
                 // Top right corner above crane of the port
                 { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(108, -110) },

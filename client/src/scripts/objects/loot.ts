@@ -30,7 +30,7 @@ export class Loot extends GameObject {
 
     animation?: Tween<Vector>;
 
-    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Loot]>) {
+    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
         super(game, id);
 
         this.images = {

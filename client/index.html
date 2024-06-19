@@ -495,9 +495,7 @@
 
         <div id="kill-msg" style="display: none">
           <div id="kill-msg-kills"></div>
-          <span id="kill-msg-severity"></span>
-          <span id="kill-msg-player-name"></span>
-          <span id="kill-msg-weapon-used"></span>
+          <div id="kill-msg-cont"></div>
         </div>
 
         <div class="inventory-container items-container" id="healing-items-container"></div>
@@ -635,7 +633,7 @@
       <div id="warning-modal-agree-options" style="display: none">
         <br>
         <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
-        <label for="warning-modal-agree-checkbox">I agree not to team</label>
+        <label for="warning-modal-agree-checkbox">I acknowledge this warning and will not repeat the offense.</label>
         <br><br>
         <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-btn-play-solo" style="width: 100%">Play <strong>Solo</strong></button>
       </div>
@@ -719,7 +717,7 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Cooler Graphics<i>*</i></span>
+              <span class="setting-title">Cooler Graphics</span>
               <input type="checkbox" id="toggle-cooler-graphics">
             </label>
           </div>
@@ -759,14 +757,14 @@
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Minimap transparency</span>
+              <span class="setting-title">Minimap opacity</span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Fullscreen map transparency</span>
+              <span class="setting-title">Fullscreen map opacity</span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
             </label>
@@ -841,6 +839,12 @@
             <label>
               <span class="setting-title">Loop scope selection</span>
               <input type="checkbox" id="toggle-scope-looping">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Draw HUD</span>
+              <input type="checkbox" id="toggle-draw-hud">
             </label>
           </div>
           <div class="modal-item checkbox-setting">

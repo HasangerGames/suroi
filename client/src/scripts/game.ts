@@ -1,5 +1,4 @@
 import { sound, type Sound } from "@pixi/sound";
-import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
 import { InputActions, ObjectCategory, PlayerActions, TeamSize } from "../../../common/src/constants";
@@ -26,7 +25,7 @@ import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { InputManager } from "./managers/inputManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -55,7 +54,9 @@ import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/con
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
-interface ObjectClassMapping {
+/* eslint-disable @stylistic/indent */
+
+type ObjectClassMapping = {
     readonly [ObjectCategory.Player]: typeof Player
     readonly [ObjectCategory.Obstacle]: typeof Obstacle
     readonly [ObjectCategory.DeathMarker]: typeof DeathMarker
@@ -65,9 +66,11 @@ interface ObjectClassMapping {
     readonly [ObjectCategory.Parachute]: typeof Parachute
     readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
-}
+};
 
-const ObjectClassMapping: ObjectClassMapping = {
+const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
+    readonly [K in ObjectCategory]: new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+}>({
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
     [ObjectCategory.DeathMarker]: DeathMarker,
@@ -77,7 +80,7 @@ const ObjectClassMapping: ObjectClassMapping = {
     [ObjectCategory.Parachute]: Parachute,
     [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
-};
+});
 
 type ObjectMapping = {
     readonly [Cat in keyof ObjectClassMapping]: InstanceType<ObjectClassMapping[Cat]>
@@ -173,8 +176,9 @@ export class Game {
                 }
             });
 
+            const pixi = this.pixi;
             await loadTextures(
-                this.pixi.renderer,
+                pixi.renderer,
                 this.inputManager.isMobile
                     ? this.console.getBuiltInCVar("mb_high_res_textures")
                     : this.console.getBuiltInCVar("cv_high_res_textures")
@@ -182,8 +186,8 @@ export class Game {
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            $("#game-ui")[0].addEventListener("pointerdown", e => {
-                this.pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
+            this.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
+                pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
                     clientX: e.clientX,
@@ -193,18 +197,18 @@ export class Game {
                 }));
             });
 
-            this.pixi.ticker.add(this.render.bind(this));
-            this.pixi.stage.addChild(
+            pixi.ticker.add(this.render.bind(this));
+            pixi.stage.addChild(
                 this.camera.container,
                 this.map.container,
                 this.map.mask
             );
 
-            if (this.console.getBuiltInCVar("cv_minimap_minimized")) {
-                this.map.toggleMinimap();
-            }
+            this.map.visible = !this.console.getBuiltInCVar("cv_minimap_minimized");
+            this.map.expanded = this.console.getBuiltInCVar("cv_map_expanded");
+            this.uiManager.ui.gameUi.toggle(this.console.getBuiltInCVar("cv_draw_hud"));
 
-            this.pixi.renderer.on("resize", () => this.resize());
+            pixi.renderer.on("resize", () => this.resize());
             this.resize();
 
             setInterval(() => {
@@ -273,15 +277,13 @@ export class Game {
             joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
 
-            // why are you enforcing this here and not in the giant file filled from top-to-bottom with snake case
-
-            let cv_loadout_skin: typeof defaultClientCVars["cv_loadout_skin"];
+            let skin: typeof defaultClientCVars["cv_loadout_skin"];
             joinPacket.skin = Loots.fromStringSafe(
                 this.console.getBuiltInCVar("cv_loadout_skin")
             ) ?? Loots.fromString(
-                typeof (cv_loadout_skin = defaultClientCVars.cv_loadout_skin) === "object"
-                    ? cv_loadout_skin.value
-                    : cv_loadout_skin
+                typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
+                    ? skin.value
+                    : skin
             );
 
             joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));
@@ -603,7 +605,7 @@ export class Game {
 
                 this.objects.add(
                     new (
-                        ObjectClassMapping[type] as (new (game: Game, id: number, data: FullData<K>) => ObjectMapping[K])
+                        ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
                     )(this, id, data)
                 );
             } else {
