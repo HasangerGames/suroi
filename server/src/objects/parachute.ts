@@ -1,10 +1,13 @@
+import { create } from "domain";
 import { GameConstants, KillfeedEventType, ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../common/src/utils/vector";
+import { randomVector } from "../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { Events } from "../pluginManager";
+import { Logger } from "../utils/misc";
 import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
 import { Loot } from "./loot";
@@ -70,6 +73,26 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                                 amount: Infinity,
                                 source: crate
                             });
+                            if (object.definition.idString == "airdrop_crate_locked" && object != crate){
+                                var xDif = crate.position.x - object.position.x
+                                if (xDif <= 0){
+                                    xDif = xDif + 10
+                                }
+                                else{
+                                    xDif = xDif - 10
+                                }
+                                var yDif = crate.position.y - object.position.y
+                                if (yDif <= 0){
+                                    yDif = yDif + 10
+                                }
+                                else{
+                                    yDif = yDif - 10
+                                }
+                                var position = Vec.create(xDif, yDif);
+                                crate.hitbox = object.hitbox.transform(position);
+                                crate.position = crate.hitbox.getCenter()
+                            }
+
                             break;
                         }
                         case object instanceof Building && object.scopeHitbox?.collidesWith(crate.hitbox): {
