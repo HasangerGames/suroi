@@ -75,7 +75,7 @@ export class GameMap {
             2: [],
             3: [],
             4: []
-        }
+        };
 
         // + 8 to account for the jagged points
         const beachPadding = this._beachPadding = mapDef.oceanSize + mapDef.beachSize + 8;
@@ -280,17 +280,17 @@ export class GameMap {
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
-    
+
         if (!definition.bridgeSpawnOptions) {
             const { idString, rotationMode } = definition;
             let attempts = 0;
-    
+
             for (let i = 0; i < count; i++) {
                 let validPositionFound = false;
-    
+
                 while (!validPositionFound && attempts < 100) {
                     let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
-    
+
                     const position = this.getRandomPosition(definition.spawnHitbox, {
                         orientation,
                         spawnMode: definition.spawnMode,
@@ -299,33 +299,33 @@ export class GameMap {
                         },
                         maxAttempts: 400
                     });
-    
+
                     if (!position) {
                         Logger.warn(`Failed to find valid position for building ${idString}`);
                         continue;
                     }
-    
+
                     const quad = this.getQuadrant(position.x, position.y, this.width, this.height) as 1 | 2 | 3 | 4;
-    
+
                     if (idString in this.quadBuildingLimit) {
                         const limit = this.quadBuildingLimit[idString];
                         const count = this.quadBuildings[quad].filter((b: string) => b === idString).length;
-    
+
                         if (count >= limit) {
                             attempts++;
                             continue;  // Try to find a different position
                         }
                     }
-    
+
                     this.generateBuilding(definition, position, orientation);
                     this.addBuildingToQuad(quad, idString);
                     validPositionFound = true;
                 }
-    
+
                 if (!validPositionFound) {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
-    
+
                 attempts = 0; // Reset attempts counter for the next building
             }
         } else {
@@ -334,11 +334,11 @@ export class GameMap {
                 Logger.warn("Attempting to spawn non-bridge building as a bridge");
                 return;
             }
-    
+
             const { minRiverWidth, maxRiverWidth, landCheckDist } = bridgeSpawnOptions;
-    
+
             let spawnedCount = 0;
-    
+
             const generateBridge = (river: River) => (start: number, end: number): void => {
                 if (spawnedCount >= count) return;
                 let shortestDistance = Number.MAX_VALUE;
@@ -357,7 +357,7 @@ export class GameMap {
                     }
                 }
                 const position = river.getPosition(bestPosition);
-    
+
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
                     // Make sure there's dry land on either side of the bridge
@@ -370,13 +370,12 @@ export class GameMap {
                 if (this.occupiedBridgePositions.some(pos => Math.sqrt((pos.x - position.x) ** 2 + (pos.y - position.y) ** 2) < bridgeSpawnOptions.minRiverWidth)) {
                     return;
                 }
-                
-    
+
                 this.occupiedBridgePositions.push(position);
                 this.generateBuilding(definition, position, bestOrientation);
                 spawnedCount++;
             };
-    
+
             this.terrain.rivers.filter(
                 ({ width }) => minRiverWidth <= width && width <= maxRiverWidth
             )
@@ -386,7 +385,7 @@ export class GameMap {
                     generator(0.6, 0.8);
                 });
         }
-    }    
+    }
 
     generateBuilding(
         definition: ReifiableDef<BuildingDefinition>,
