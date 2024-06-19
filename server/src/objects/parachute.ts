@@ -1,3 +1,4 @@
+import { create } from "domain";
 import { GameConstants, KillfeedEventType, ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../common/src/utils/math";
@@ -5,6 +6,7 @@ import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { Events } from "../pluginManager";
+import { Logger } from "../utils/misc";
 import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
 import { Loot } from "./loot";
