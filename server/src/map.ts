@@ -312,7 +312,6 @@ export class GameMap {
                         const count = this.quadBuildings[quad].filter((b: string) => b === idString).length;
     
                         if (count >= limit) {
-                            console.log(`Count is ${count} limit is ${limit} for ${idString} incrementing back to find different quad. Current quad ${quad}`);
                             attempts++;
                             continue;  // Try to find a different position
                         }
@@ -367,6 +366,11 @@ export class GameMap {
                         Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
                     ].some(point => this.terrain.getFloor(point) === "water")
                 ) return;
+                // checks if the distance between this position and the new bridge's position is less than bridgeSpawnOptions.minRiverWidth HOPEFULLY fixing the spawn problems
+                if (this.occupiedBridgePositions.some(pos => Math.sqrt((pos.x - position.x) ** 2 + (pos.y - position.y) ** 2) < bridgeSpawnOptions.minRiverWidth)) {
+                    return;
+                }
+                
     
                 this.occupiedBridgePositions.push(position);
                 this.generateBuilding(definition, position, bestOrientation);
