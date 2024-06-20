@@ -749,7 +749,7 @@ export class Game implements GameData {
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
         if (packet.protocolVersion !== GameConstants.protocolVersion) {
-            player.disconnect("Invalid game version");
+            player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
             return;
         }
 

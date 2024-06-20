@@ -337,7 +337,7 @@ export class Game {
                 if (!this.error) void this.endGame();
             }
 
-            if (reason === "Invalid game version") {
+            if (reason.startsWith("Invalid game version")) {
                 alert(reason);
                 // reload the page with a time stamp to try clearing cache
                 location.search = `t=${Date.now()}`;

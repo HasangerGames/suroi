@@ -203,16 +203,16 @@ export async function setUpUI(game: Game): Promise<void> {
 
             const ping = Date.now() - pingStartTime;
 
-            if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
-                continue;
-            }
-
             regionInfo[regionID] = {
                 ...region,
                 ...serverInfo,
                 ping
             };
+
+            if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
+                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
+                continue;
+            }
 
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
