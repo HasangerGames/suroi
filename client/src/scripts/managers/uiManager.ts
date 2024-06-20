@@ -898,7 +898,7 @@ export class UIManager {
                 { transform: `translateY(${otherKillFeedItem.position.y - newPosition.y}px)` },
                 { transform: "translateY(0px)" }
             ], {
-                duration: 500,
+                duration: 300,
                 iterations: 1,
                 easing: "ease-in"
             });
@@ -908,7 +908,7 @@ export class UIManager {
             { opacity: 0 },
             { opacity: 1 }
         ], {
-            duration: 500,
+            duration: 300,
             iterations: 1,
             easing: "ease-in"
         });
@@ -934,10 +934,10 @@ export class UIManager {
                 },
                 {
                     opacity: 0,
-                    transform: "translateX(100%)"
+                    transform: "translateY(100%)"
                 }
             ], {
-                duration: 500,
+                duration: 300,
                 fill: "backwards",
                 easing: "ease-out"
             });
