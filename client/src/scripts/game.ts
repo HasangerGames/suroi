@@ -770,7 +770,7 @@ export class Game {
             const offset = object instanceof Obstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
 
-            const bind = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
+            const bind: string | undefined = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 
             const differences = {
                 object: cache.object?.id !== object?.id,
@@ -840,10 +840,10 @@ export class Game {
                     if (!this.inputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {
                         bindChangeAcknowledged = true;
 
-                        const icon = InputManager.getIconFromInputName(bind);
+                        const icon = bind === undefined ? undefined : InputManager.getIconFromInputName(bind);
 
                         if (icon === undefined) {
-                            interactKey.text(bind);
+                            interactKey.text(bind ?? "");
                         } else {
                             interactKey.html(`<img src="${icon}" alt="${bind}"/>`);
                         }
@@ -917,8 +917,7 @@ export class Game {
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
-                        this.console.getBuiltInCVar("cv_autopickup_dual_guns")
-                        && object instanceof Obstacle
+                        object instanceof Obstacle
                         && object.canInteract(player)
                         && object.definition.role === ObstacleSpecialRoles.Door
                         && object.door?.offset === 0
