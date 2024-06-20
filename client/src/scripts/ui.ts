@@ -51,6 +51,7 @@ export function resetPlayButtons(): void {
     if (buttonsLocked) return;
 
     $("#splash-options").removeClass("loading");
+    $("#loading-text").text("Connecting");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
     const isSolo = maxTeamSize === TeamSize.Solo;
@@ -185,6 +186,8 @@ export async function setUpUI(game: Game): Promise<void> {
         const listItem = regionUICache[regionID];
 
         try {
+            ui.loadingText.text(`Fetching server data...`);
+
             const pingStartTime = Date.now();
 
             interface ServerInfo {
@@ -259,6 +262,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
+        ui.loadingText.text("Pinging Servers");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
@@ -360,6 +364,7 @@ export async function setUpUI(game: Game): Promise<void> {
         lastPlayButtonClickTime = now;
 
         ui.splashOptions.addClass("loading");
+        ui.loadingText.text("Connecting");
 
         const params = new URLSearchParams();
 

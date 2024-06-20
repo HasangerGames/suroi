@@ -140,6 +140,8 @@ export class UIManager {
     }
 
     readonly ui = Object.freeze({
+        loadingText: $<HTMLDivElement>("#loading-text"),
+
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
         reserveAmmo: $<HTMLDivElement>("#weapon-inventory-ammo"),

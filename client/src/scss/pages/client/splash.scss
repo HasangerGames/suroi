@@ -359,7 +359,8 @@
         transition: filter 0.5s;
     }
 
-    .loading-logo {
+    .loading-logo,
+    #loading-text {
         opacity: 0;
         transition: opacity 0.5s;
     }
@@ -367,7 +368,8 @@
     &.loading {
         pointer-events: none;
 
-        .loading-logo {
+        .loading-logo,
+        #loading-text {
             opacity: 1;
         }
 
