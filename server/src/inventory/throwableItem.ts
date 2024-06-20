@@ -128,6 +128,7 @@ class GrenadeHandler {
             this._timer = this.game.addTimeout(
                 () => {
                     if (!this._thrown) {
+                        this.detach();
                         recoil.active = false;
                         this._resetAnimAndRemoveFromInv();
                     }
