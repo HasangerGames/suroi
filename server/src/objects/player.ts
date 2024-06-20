@@ -50,6 +50,7 @@ import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
+import { HealingItems } from "../../../common/src/definitions/healingItems";
 export interface PlayerContainer {
     readonly teamID?: string
     readonly autoFill: boolean
@@ -439,10 +440,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 kills?: string
             ): void => {
                 const weaponDef = Loots.fromStringSafe<GunDefinition | MeleeDefinition>(weaponName);
-                //                                                ^ ok because undefined is ignored
+                let itemType: ItemType;
+
                 if (
                     weaponDef === undefined // no such item
-                    || ![ItemType.Gun, ItemType.Melee].includes(weaponDef.itemType) // neither gun nor melee
+                    || ![ItemType.Gun, ItemType.Melee].includes(itemType = weaponDef.itemType) // neither gun nor melee
+                    || GameConstants.player.inventorySlotTypings[slot] !== itemType // invalid type
                 ) return;
 
                 this.inventory.addOrReplaceWeapon(slot, weaponDef);
@@ -464,18 +467,19 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 this.inventory.items.setItem(ammoPtr, backpack.maxCapacity[ammoPtr]);
             };
 
-            determinePreset(0, weaponA, killsA);
-            determinePreset(1, weaponB, killB);
-            determinePreset(2, melee, killsM);
-
-            this.inventory.items.setItem("2x_scope", 1);
-            this.inventory.items.setItem("4x_scope", 1);
-            this.inventory.items.setItem("8x_scope", 1);
-            this.inventory.items.setItem("15x_scope", 1);
-            this.inventory.scope = "8x_scope";
             this.inventory.backpack = Loots.fromString("tactical_pack");
             this.inventory.vest = Loots.fromString("tactical_vest");
             this.inventory.helmet = Loots.fromString("tactical_helmet");
+
+            for (const { idString: item } of [...HealingItems, ...Scopes]) {
+                this.inventory.items.setItem(item, backpack.maxCapacity[item]);
+            }
+
+            this.inventory.scope = "8x_scope";
+
+            determinePreset(0, weaponA, killsA);
+            determinePreset(1, weaponB, killB);
+            determinePreset(2, melee, killsM);
         }
 
         this.updateAndApplyModifiers();
