@@ -90,7 +90,7 @@ const maps = {
             armory: 1,
             refinery: 1,
             warehouse: 5,
-            firework_warehouse: 1, // 1y bday building
+            // firework_warehouse: 1, // birthday mode
             green_house: 2,
             red_house: 6,
             construction_site: 1,
@@ -130,7 +130,7 @@ const maps = {
             river_chest: 1,
             river_rock: 45,
             bush: 110,
-            birthday_cake: 100,
+            // birthday_cake: 100, // birthday mode
             lily_pad: 20,
             blueberry_bush: 30,
             barrel: 80,

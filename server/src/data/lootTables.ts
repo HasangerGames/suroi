@@ -580,7 +580,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "stoner_63", weight: 0.005 },
         { item: "radio", weight: 0.005 },
         { item: "mosin", weight: 0.005 },
-        { item: "firework_launcher", weight: 0.005 }, // ! temporary
+        // { item: "firework_launcher", weight: 0.005 }, // birthday mode
         { item: "vector", weight: 0.004 },
         { item: "negev", weight: 0.003 },
         { item: "mg5", weight: 0.003 },
@@ -615,13 +615,13 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "12g", count: 10, weight: 0.75 },
         { item: "556mm", count: 60, weight: 1 },
         { item: "762mm", count: 60, weight: 1 },
-        { item: "firework_rocket", count: 5, weight: 0.5 }, // ! temporary
+        // { item: "firework_rocket", count: 5, weight: 0.5 }, // birthday mode
         { item: "9mm", count: 60, weight: 1 }
     ],
     throwables: [
         { item: "frag_grenade", count: 2, weight: 1 },
         { item: "smoke_grenade", count: 2, weight: 1 },
-        { item: "confetti_grenade", count: 3, weight: 0.1 } // ! temporary
+        // { item: "confetti_grenade", count: 3, weight: 0.1 } // birthday mode
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },
@@ -652,7 +652,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "vector", weight: 0.008 },
         { item: "negev", weight: 0.005 },
         { item: "mg5", weight: 0.005 },
-        { item: "firework_launcher", weight: 0.005 }, // ! temporary
+        // { item: "firework_launcher", weight: 0.005 }, // birthday mode
         { item: "tango_51", weight: 0.004 }
     ],
     special_healing_items: [
@@ -721,13 +721,13 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "cz600", weight: 1 },
         { item: "mcx_spear", weight: 0.95 },
         { item: "mosin", weight: 0.95 },
-        { item: "firework_launcher", weight: 0.9 }, // ! temporary
+        // { item: "firework_launcher", weight: 0.9 }, // birthday mode
         { item: "tango_51", weight: 0.9 },
         { item: "stoner_63", weight: 0.9 },
         { item: "radio", weight: 0.1 }
     ],
     gold_airdrop_guns: [
-        { item: "firework_launcher", weight: 1.2 }, // ! temporary
+        // { item: "firework_launcher", weight: 1.2 }, // birthday mode
         { item: "m1_garand", weight: 1.1 },
         { item: "acr", weight: 1 },
         { item: "pp19", weight: 1 },
@@ -759,7 +759,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "mcx_spear", weight: 0.75 },
         { item: "mg36", weight: 0.725 },
         { item: "cz600", weight: 0.7 },
-        { item: "firework_launcher", weight: 0.7 }, // ! temporary
+        // { item: "firework_launcher", weight: 0.7 }, // birthday mode
         { item: "vepr12", weight: 0.6 },
         { item: "lewis_gun", weight: 0.6 },
         { item: "mosin", weight: 0.5 },
@@ -774,7 +774,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "m16a4", weight: 1 },
         { item: "cz600", weight: 0.75 },
         { item: "mini14", weight: 0.75 },
-        { item: "firework_launcher", weight: 0.6 }, // ! temporary
+        // { item: "firework_launcher", weight: 0.6 }, // birthday mode
         { item: "mcx_spear", weight: 0.55 },
         { item: "sr25", weight: 0.5 },
         { item: "vss", weight: 0.5 },
