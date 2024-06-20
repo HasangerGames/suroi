@@ -31,7 +31,10 @@ export type SimpleInputActions = Exclude<
 >;
 
 export type InputAction = {
-    readonly type: InputActions.UseItem | InputActions.DropItem
+    readonly type: InputActions.UseItem
+    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
+} | {
+    readonly type: InputActions.DropItem
     readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
 } | {
     readonly type: InputActions.EquipItem | InputActions.DropWeapon | InputActions.LockSlot | InputActions.UnlockSlot | InputActions.ToggleSlotLock

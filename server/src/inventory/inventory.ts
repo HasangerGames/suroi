@@ -53,12 +53,6 @@ export class Inventory {
         this.owner.dirty.items = true;
     }
 
-    private _throwable?: ThrowableDefinition;
-    get throwable(): ThrowableDefinition | undefined { return this._throwable; }
-    set throwable(throwable: ReifiableDef<ThrowableDefinition>) {
-        this._throwable = Loots.reify<ThrowableDefinition>(throwable);
-    }
-
     /**
      * Each {@link ThrowableItem} instance represents a *type* of throwable, and they need to be
      * cycled through. It'd be wasteful to re-instantiate them every time the user swaps
@@ -705,7 +699,11 @@ export class Inventory {
      * Attempts to use a consumable item or a scope with the given `idString`
      * @param itemString The `idString` of the consumable or scope to use
      */
-    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition>): void {
+    useItem(
+        itemString: ReifiableDef<
+            HealingItemDefinition | ScopeDefinition | ThrowableDefinition
+        >
+    ): void {
         const definition = Loots.reify(itemString);
         const idString = definition.idString;
 
@@ -736,7 +734,6 @@ export class Inventory {
                 break;
             }
             case ItemType.Throwable: {
-                this.throwable = idString;
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
