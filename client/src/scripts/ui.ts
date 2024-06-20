@@ -186,7 +186,7 @@ export async function setUpUI(game: Game): Promise<void> {
         const listItem = regionUICache[regionID];
 
         try {
-            ui.loadingText.text(`Fetching server data...`);
+            ui.loadingText.text("Fetching server data...");
 
             const pingStartTime = Date.now();
 
