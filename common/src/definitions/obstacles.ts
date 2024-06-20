@@ -195,6 +195,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: `house_wall_${lengthNumber}`,
             name: `House Wall ${lengthNumber}`,
             material: "wood",
+            hideOnMap: true,
             noResidue: true,
             health: 170,
             scale: {
