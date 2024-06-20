@@ -435,7 +435,7 @@ export class Minimap {
 
     updateFromPacket(mapPacket: MapPacket): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        this.game.uiManager.ui.loadingText.text(`Joining Seed: ${mapPacket.seed}`);
+        this.game.uiManager.ui.loadingText.text("Joining Game");
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;
