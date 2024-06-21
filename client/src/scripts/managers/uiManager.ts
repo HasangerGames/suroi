@@ -222,7 +222,7 @@ export class UIManager {
 
         btnReport: $<HTMLButtonElement>("#btn-report"),
         reportingName: $<HTMLSpanElement>("#reporting-name"),
-        reportingId: $<HTMLSpanElement>("#report-name"),
+        reportingId: $<HTMLSpanElement>("#report-id"),
         reportingModal: $<HTMLDivElement>("#report-modal"),
 
         game: $<HTMLDivElement>("#game"),
