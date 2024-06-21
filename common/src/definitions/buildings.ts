@@ -420,21 +420,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "regular_crate", position: Vec.create(-14, -28.5) },
                 { idString: "regular_crate", position: Vec.create(14, 28.5) },
                 { idString: warehouseObstacle, position: Vec.create(-14, 28.5) },
-
-                { idString: "ammo_crate", position: Vec.create(-14, 0) },
-                { idString: "ammo_crate", position: Vec.create(14, 0) },
-
-                { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
-                { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
-                { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
-                { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
-                { idString: { box: 9, grenade_box: 1 }, get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
+                { idString: "ammo_crate", position: Vec.create(-9, 0) },
+                { idString: "ammo_crate", position: Vec.create(9, 0) }
             ],
             lootSpawners: [
-                {
-                    position: Vec.create(0, 0),
-                    table: "warehouse"
-                }
+                    {
+                        position: Vec.create(0, 15), 
+                        table: "regular_crate"
+                    },
+
+                    {
+                        position: Vec.create(0, -15),
+                        table: "regular_crate"
+                    }
             ]
         },
         {
