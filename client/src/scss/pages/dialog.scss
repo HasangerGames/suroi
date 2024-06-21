@@ -171,6 +171,49 @@
     }
 }
 
+#select-language-menu {
+    background-color: $bg;
+    width: fit-content;
+    max-width: unset;
+    display: flex;
+
+    #select-language-container {
+        display: flex;
+        flex-direction: column;
+
+        width: inherit;
+        min-width: 644px;
+        padding: 10px;
+
+        fieldset {
+            border: none;
+            outline: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: inherit;
+
+            div {
+                width: inherit;
+
+                input {
+                    display: none;
+                }
+
+                input:checked + label {
+                    background-color: $primary;
+                }
+
+                label {
+                    width: 100%;
+                    padding: 10px;
+                    border-radius: 10px;
+                }
+            }
+        }
+    }
+}
+
 // TODO Refactor this, make classes
 .dialog {
     user-select: none;

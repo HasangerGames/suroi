@@ -338,7 +338,6 @@
         </div>
         <div id="splash-settings">
           <button
-            style="display: none"
             class="btn btn-darken btn-secondary"
             id="btn-language"
           >
@@ -1083,6 +1082,24 @@
         </div>
         <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">Start Game</button>
       </div>
+    </div>
+  </div>
+  <div class="modal dialog" id="select-language-menu">
+    <div class="dialog-header">
+      <h3 translation="languages"></h3>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-select-language"></span>
+    </div>
+    <div id="select-language-container">
+      <fieldset>
+        <div>
+          <input type="radio" name="selected-language" id="language-en" value="en">
+          <label for="language-en">English</label>
+        </div>
+        <div>
+          <input type="radio" name="selected-language" id="language-fr" value="fr">
+          <label for="language-fr">French</label>
+        </div>
+      </fieldset>
     </div>
   </div>
   <script src="./src/index.ts" type="module"></script>

@@ -35,7 +35,9 @@ export const TRANSLATIONS = {
             go_kills: "Kills:",
             go_damage_done: "Damage Done:",
             go_damage_taken: "Damage Taken:",
-            go_time_alive: "Time Alive:"
+            go_time_alive: "Time Alive:",
+
+            languages: "Languages"
         },
         hp18: {
             name: "HP-18",
