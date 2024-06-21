@@ -66,7 +66,8 @@ export function resetPlayButtons(): void {
         )
     ) btn.toggleClass("locked", maxTeamSize !== size);
 
-    $("#locked-msg").css("top", isSolo ? "204px" : "153px").show();
+    $("#team-option-btns").toggleClass("locked", isSolo);
+    $("#locked-msg").css("top", isSolo ? "225px" : "153px").show();
 }
 
 export async function setUpUI(game: Game): Promise<void> {
