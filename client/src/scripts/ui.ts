@@ -21,7 +21,8 @@ import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { requestFullscreen } from "./utils/misc";
+import { html, requestFullscreen } from "./utils/misc";
+import { TRANSLATIONS } from "../translations";
 
 interface RegionInfo {
     readonly name: string
@@ -102,6 +103,27 @@ export async function setUpUI(game: Game): Promise<void> {
             );
             killFeed.prepend(killFeedItem);
         }
+    }
+
+    $("#btn-language").on("click", () => {
+        $("#select-language-menu").css("display", "")
+    })
+    $("#close-select-language").on("click", () => {
+        $("#select-language-menu").css("display", "none")
+        location.reload()
+    })
+    const languageFieldset = $("#select-language-container fieldset")
+    for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
+        languageFieldset.append(html`
+            <div>
+              <input type="radio" name="selected-language" id="language-${language}" value="${language}">
+              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name}</label>
+            </div>
+        `)
+        $<HTMLInputElement>(`#language-${language}`).on("click", () => {
+            game.console.setBuiltInCVar("cv_language", language)
+            console.log(game.console.getBuiltInCVar("cv_language"))
+        }).prop("checked", game.console.getBuiltInCVar("cv_language") === language)
     }
 
     const params = new URLSearchParams(window.location.search);

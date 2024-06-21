@@ -6,6 +6,8 @@ export const TRANSLATIONS = {
     translations: {
         en: {
             name: "English",
+            flag: "🇬🇧",
+
             msg_rotate: "For a better experience, please rotate your device to landscape.",
             msg_loading: "Connecting",
 
@@ -39,15 +41,19 @@ export const TRANSLATIONS = {
 
             languages: "Languages"
         },
-        hp18: {
-            name: "HP-18",
-            model_37: "HP-18",
-            msg_rotate: "HP-18"
+        fr: {
+            name: "Français",
+            flag: "🇫🇷",
+
+            loadout: "Loadout",
+            settings: "Réglages",
+
+            languages: "Langues"
         },
     }
 } as {
     readonly defaultLanguage: string,
-    readonly translations: Record<string, Record<string, string> & {name: string}>
+    readonly translations: Record<string, Record<string, string> & {name: string, flag: string}>
 }
 
 const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}")
