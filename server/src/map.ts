@@ -7,7 +7,7 @@ import { PacketStream } from "../../common/src/packets/packetStream";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric, τ } from "../../common/src/utils/math";
-import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
@@ -30,6 +30,8 @@ export class GameMap {
     private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] };
 
     private readonly occupiedBridgePositions: Vector[] = [];
+    private readonly occupiedBigBridgePositions: Vector[] = [];
+    private readonly occupiedBigBridgeOrientations: Orientation[] = []
 
     readonly width: number;
     readonly height: number;
@@ -371,7 +373,45 @@ export class GameMap {
                     return;
                 }
 
+                //HACK solution to fixing bridge overlap
+                let i = 0;
+
+                while (i < this.occupiedBigBridgePositions.length){
+                    if (definition.idString == "large_bridge"){
+                        break;
+                    }     
+                    const dif = Vec.sub(this.occupiedBigBridgePositions[i], position);
+                    dif.x = Math.abs(dif.x);
+                    dif.y = Math.abs(dif.y);
+                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && bestOrientation % 2 == 0){
+                        if (dif.x < (104/2 + 20/2) && dif.y < (230/2 + 62/2)){
+                            return;
+                        }
+                    }
+                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && bestOrientation % 2 == 0){
+                        if (dif.x < (230/2 + 20/2) && dif.y < (104/2 + 62/2)){
+                            return;
+                        }
+                    }
+                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && !(bestOrientation % 2 == 0)){
+                        if (dif.x < (104/2 + 62/2) && dif.y < (230/2 + 20/2)){
+                            return;
+                        }
+                    }
+                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && !(bestOrientation % 2 == 0)){
+                        if (dif.y < (104/2 + 20/2) && dif.x < (230/2 + 62/2)){
+                            return;
+                        }
+                    }
+                    i++;
+                }
+
                 this.occupiedBridgePositions.push(position);
+                if (definition.idString == "large_bridge"){
+                    this.occupiedBigBridgePositions.push(position);
+                    this.occupiedBigBridgeOrientations.push(bestOrientation)
+                }
+
                 this.generateBuilding(definition, position, bestOrientation);
                 spawnedCount++;
             };
