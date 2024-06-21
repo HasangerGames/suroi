@@ -99,8 +99,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             ["Bee",             0x4a4a4a],
             ["Armadillo",       0xa68c5e],
             ["Printer",         0xffffff],
-            ["Distant Shores",  0x7eca83],
-            ["Watermelon",      0xc02c2c]
+            ["Distant Shores",  0x7eca83]
         ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => simple("skin_factory", name, tint)),
         ...([
             ["Lemon",                 0xebe092],
