@@ -181,14 +181,14 @@
                 <ul class="dropdown-content" id="server-list"></ul>
               </div>
 
-              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo" translation="play_solo">Play Solo</button>
+              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo" translation="play_solo"></button>
               <div class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo" translation="play_duo">Play Duo</button>
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad" translation="play_squad">Play Squad</button>
+                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo" translation="play_duo"></button>
+                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad" translation="play_squad"></button>
               </div>
               <div id="team-option-btns" class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team" translation="join_team">Join Team</button>
-                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team">Create Team</button>
+                <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team" translation="join_team"></button>
+                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
               </div>
 
               <span id="locked-msg" style="display: none">
@@ -197,9 +197,7 @@
                 <button id="locked-info">
                   <i class="fa-solid fa-info-circle"></i>
                 </button>
-                <div id="locked-tooltip" style="display: none" translation="msg_locked_tooltip">
-                  The game switches between solos and duos every 24 hours, as there aren't enough players for both.
-</div>
+                <div id="locked-tooltip" style="display: none" translation="msg_locked_tooltip"></div>
               </span>
 
               <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none">
@@ -207,7 +205,7 @@
               </button>
               <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
                 <div class="pulsating-circle" style="display: none"></div>
-                <span>Rules &amp; Tutorial</span>
+                <span translation="rules_and_tutorial"></span>
               </button>
             </div>
           </div>
@@ -262,20 +260,20 @@
               id="btn-customize"
             >
               <i class="fa-solid fa-shirt"></i>
-              Loadout
+              <span translation="loadout"></span>
             </button>
             <button
               class="btn btn-lg btn-darken btn-secondary"
               id="btn-settings"
             >
               <i class="fa-solid fa-gear"></i>
-              Settings
+              <span translation="settings"></span>
             </button>
           </div>
         </div>
         <div id="splash-featured-people">
           <div class="featured-container">
-            <p class="featured-heading">Featured YouTubr</p>
+            <p class="featured-heading" translation="featured_youtubr"></p>
             <a
               class="featured-content"
               id="youtube-featured-content"
@@ -291,7 +289,7 @@
             </a>
           </div>
           <div class="featured-container">
-            <p class="featured-heading">Featured Streamr</p>
+            <p class="featured-heading" translation="featured_streamr"></p>
             <a
               class="featured-content"
               id="twitch-featured-content"
@@ -394,20 +392,16 @@
             <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-left"></i>
             </button>
-            <button id="btn-report" class="btn btn-lg btn-danger">
-              Report
+            <button id="btn-report" class="btn btn-lg btn-danger" translation="btn_report">
             </button>
             <button id="btn-spectate-next" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">
-              Spectate Kill Leader
+            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader">
             </button>
-            <button id="btn-spectate-replay" class="btn btn-lg btn-primary">
-              Play Again
+            <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again">
             </button>
-            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary">
-              Menu
+            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu">
             </button>
           </div>
         </div>
@@ -418,7 +412,7 @@
         <div class="ui-leaderboard">
           <div id="ui-kill-leader">
             <div id="kill-leader-leader-container">
-              <span id="kill-leader-leader">Waiting for leader</span>
+              <span id="kill-leader-leader" translation="msg_waiting_for_leader"></span>
               <i
                 class="fa-solid fa-crown"
                 style="margin-left: 5px; margin-right: 5px"
@@ -543,9 +537,9 @@
         <div id="game-over-overlay" style="display: none">
           <div id="game-over-top-screen">
             <img id="chicken-dinner" src="./img/game/emotes/chicken_dinner.svg" />
-            <h1 id="game-over-text" class="modal-item">You died.</h1>
+            <h1 id="game-over-text" class="modal-item" translation="msg_you_died"></h1>
             <div id="game-over-rank-container">
-              <span>Rank</span>
+              <span translation="msg_your_rank"></span>
               <span id="game-over-rank" class="modal-item"></span>
             </div>
           </div>
@@ -553,19 +547,19 @@
             <h1 id="game-over-player-name" class="modal-item">Player</h1>
             <div class="modal-item" id="game-over-stats">
               <div class="stat">
-                <span class="stat-name">Kills:</span>
+                <span class="stat-name" translation="go_kills">Kills:</span>
                 <span class="stat-value" id="game-over-kills"></span>
               </div>
               <div class="stat">
-                <span class="stat-name">Damage done:</span>
+                <span class="stat-name" translation="go_damage_done">Damage done:</span>
                 <span class="stat-value" id="game-over-damage-done"></span>
               </div>
               <div class="stat">
-                <span class="stat-name">Damage taken:</span>
+                <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
                 <span class="stat-value" id="game-over-damage-taken"></span>
               </div>
               <div class="stat">
-                <span class="stat-name">Time alive:</span>
+                <span class="stat-name" translation="go_time_alive">Time alive:</span>
                 <span class="stat-value" id="game-over-time"></span>
               </div>
             </div>
@@ -573,21 +567,21 @@
               <button
                 class="btn btn-lg btn-darken btn-primary"
                 id="btn-play-again"
+                translation="btn_play_again"
               >
-                Play Again
               </button>
               <div style="display: flex; gap: 8px">
                 <button
                   class="btn btn-lg btn-darken btn-primary"
                   id="btn-spectate"
+                  translation="btn_spectate"
                 >
-                  Spectate
                 </button>
                 <button
                   class="btn btn-lg btn-darken btn-secondary"
                   id="btn-menu"
+                  translation="btn_menu"
                 >
-                  Menu
                 </button>
               </div>
             </div>
