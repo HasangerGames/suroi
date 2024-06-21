@@ -31,7 +31,7 @@ export class GameMap {
 
     private readonly occupiedBridgePositions: Vector[] = [];
     private readonly occupiedBigBridgePositions: Vector[] = [];
-    private readonly occupiedBigBridgeOrientations: Orientation[] = []
+    private readonly occupiedBigBridgeOrientations: Orientation[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -373,33 +373,33 @@ export class GameMap {
                     return;
                 }
 
-                //HACK solution to fixing bridge overlap
+                // HACK solution to fixing bridge overlap
                 let i = 0;
 
-                while (i < this.occupiedBigBridgePositions.length){
-                    if (definition.idString == "large_bridge"){
+                while (i < this.occupiedBigBridgePositions.length) {
+                    if (definition.idString == "large_bridge") {
                         break;
-                    }     
+                    }
                     const dif = Vec.sub(this.occupiedBigBridgePositions[i], position);
                     dif.x = Math.abs(dif.x);
                     dif.y = Math.abs(dif.y);
-                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && bestOrientation % 2 == 0){
-                        if (dif.x < (104/2 + 20/2) && dif.y < (230/2 + 62/2)){
+                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && bestOrientation % 2 == 0) {
+                        if (dif.x < (104 / 2 + 20 / 2) && dif.y < (230 / 2 + 62 / 2)) {
                             return;
                         }
                     }
-                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && bestOrientation % 2 == 0){
-                        if (dif.x < (230/2 + 20/2) && dif.y < (104/2 + 62/2)){
+                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && bestOrientation % 2 == 0) {
+                        if (dif.x < (230 / 2 + 20 / 2) && dif.y < (104 / 2 + 62 / 2)) {
                             return;
                         }
                     }
-                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && !(bestOrientation % 2 == 0)){
-                        if (dif.x < (104/2 + 62/2) && dif.y < (230/2 + 20/2)){
+                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && !(bestOrientation % 2 == 0)) {
+                        if (dif.x < (104 / 2 + 62 / 2) && dif.y < (230 / 2 + 20 / 2)) {
                             return;
                         }
                     }
-                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && !(bestOrientation % 2 == 0)){
-                        if (dif.y < (104/2 + 20/2) && dif.x < (230/2 + 62/2)){
+                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && !(bestOrientation % 2 == 0)) {
+                        if (dif.y < (104 / 2 + 20 / 2) && dif.x < (230 / 2 + 62 / 2)) {
                             return;
                         }
                     }
@@ -407,9 +407,9 @@ export class GameMap {
                 }
 
                 this.occupiedBridgePositions.push(position);
-                if (definition.idString == "large_bridge"){
+                if (definition.idString == "large_bridge") {
                     this.occupiedBigBridgePositions.push(position);
-                    this.occupiedBigBridgeOrientations.push(bestOrientation)
+                    this.occupiedBigBridgeOrientations.push(bestOrientation);
                 }
 
                 this.generateBuilding(definition, position, bestOrientation);
