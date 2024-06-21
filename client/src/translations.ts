@@ -32,7 +32,26 @@ export const TRANSLATIONS = {
 
             msg_waiting_for_leader: "Waiting for leader",
             msg_you_died: "You died.",
+            msg_player_died: "<player> died.",
+            msg_win: "Winner Winner Chicken Dinner!",
             msg_your_rank: "Rank",
+
+            msg_kills: "Kills: <kills>",
+
+            kf_suicide_kill: "<player> commited suicide",
+            kf_suicide_downed: "<player> knocked themselves out",
+            kf_two_party_kill: "<player> killed <victim>",
+            kf_two_party_downed: "<player> knocked out <victim>",
+            kf_bleed_out_kill: "<player> bled out",
+            kf_bleed_out_downed: "<player bled out non-lethally",
+            kf_finished_off_kill: "<player> finished off <victim>",
+            kf_finished_off_downed: "<player> gently finished off <victim>",
+            kf_finally_killed: "<player> was finally killed",
+            kf_finally_downed: "<player> was finally knocked out",
+            kf_gas_kill: "<player> died to the gas",
+            kf_gas_downed: "<player> was knocked out by the gas",
+            kf_airdrop_kill: "<player> was fatally crushed by an airdrop",
+            kf_airdrop_downed: "<player> was knocked out by an airdrop",
 
             go_kills: "Kills:",
             go_damage_done: "Damage Done:",

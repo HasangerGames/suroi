@@ -21,6 +21,7 @@ import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
+import { getTranslatedString } from "../../translations";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -393,8 +394,12 @@ export class UIManager {
 
         gameOverText.html(
             packet.won
-                ? "Winner winner chicken dinner!"
-                : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
+                ? getTranslatedString("msg_win")
+                : (this.game.spectating
+                    ? getTranslatedString("msg_player_died", {
+                        player: this.getPlayerName(packet.playerID)
+                    })
+                    : getTranslatedString("msg_you_died"))
         );
 
         gameOverPlayerName.html(playerName + playerBadgeText);
@@ -737,7 +742,7 @@ export class UIManager {
                         "color": ""
                     });
 
-                itemName.text(weapon.definition.name);
+                itemName.text(getTranslatedString(weapon.definition.name));
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
@@ -850,7 +855,7 @@ export class UIManager {
         switch (severity) {
             case KillfeedEventSeverity.Kill: {
                 const { streak, kills } = message;
-                headerUi.text(`Kills: ${kills}`);
+                headerUi.text(getTranslatedString("msg_kills", {kills: kills.toString()}));
                 killCounterUi.text(kills);
                 streakText = streak ? ` (streak: ${streak})` : "";
                 break;
