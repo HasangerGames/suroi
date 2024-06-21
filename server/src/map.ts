@@ -7,7 +7,7 @@ import { PacketStream } from "../../common/src/packets/packetStream";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric, τ } from "../../common/src/utils/math";
-import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
