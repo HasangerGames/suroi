@@ -124,7 +124,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             ["Battle Dress",          0x676f4f],
             ["The Arrowhead",         0x4a4a4a],
             ["Lily Lurker",           0x5b6642],
-            ["Hazardous Materials",   0xe1d248],
+            ["Hazardous Materials",   0x4a4a4a],
             ["Field Gray",            0x6d5038],
             ["Heavy Cargo",           0x32354d],
             ["AEGIS Jumpsuit",        0x4984aa],
