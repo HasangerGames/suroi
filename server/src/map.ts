@@ -380,26 +380,33 @@ export class GameMap {
                     if (definition.idString == "large_bridge") {
                         break;
                     }
+
+                    const bigBridge = Buildings.reify("large_bridge");
+                    const bigBridgeHeight = bigBridge.spawnHitbox.toRectangle().max.y * 2;
+                    const bigBridgeWidth = bigBridge.spawnHitbox.toRectangle().max.x * 2;
+                    const smallBridgeHeight = definition.spawnHitbox.toRectangle().max.y * 2;
+                    const smallBridgeWidth = definition.spawnHitbox.toRectangle().max.x * 2;
+
                     const dif = Vec.sub(this.occupiedBigBridgePositions[i], position);
                     dif.x = Math.abs(dif.x);
                     dif.y = Math.abs(dif.y);
                     if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && bestOrientation % 2 == 0) {
-                        if (dif.x < (104 / 2 + 20 / 2) && dif.y < (230 / 2 + 62 / 2)) {
+                        if (dif.x < (bigBridgeWidth / 2 + smallBridgeWidth / 2) && dif.y < (bigBridgeHeight / 2 + smallBridgeHeight / 2)) {
                             return;
                         }
                     }
                     if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && bestOrientation % 2 == 0) {
-                        if (dif.x < (230 / 2 + 20 / 2) && dif.y < (104 / 2 + 62 / 2)) {
+                        if (dif.x < (bigBridgeHeight / 2 + smallBridgeWidth / 2) && dif.y < (bigBridgeWidth / 2 + smallBridgeHeight / 2)) {
                             return;
                         }
                     }
                     if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && !(bestOrientation % 2 == 0)) {
-                        if (dif.x < (104 / 2 + 62 / 2) && dif.y < (230 / 2 + 20 / 2)) {
+                        if (dif.x < (bigBridgeWidth / 2 + smallBridgeWidth / 2) && dif.y < (bigBridgeHeight / 2 + smallBridgeWidth / 2)) {
                             return;
                         }
                     }
                     if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && !(bestOrientation % 2 == 0)) {
-                        if (dif.y < (104 / 2 + 20 / 2) && dif.x < (230 / 2 + 62 / 2)) {
+                        if (dif.y < (bigBridgeWidth / 2 + smallBridgeWidth / 2) && dif.x < (bigBridgeHeight / 2 + smallBridgeHeight / 2)) {
                             return;
                         }
                     }
