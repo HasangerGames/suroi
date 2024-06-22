@@ -535,6 +535,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             if (this.dead && this.teammateName) this.teammateName.container.visible = false;
 
+            if (this.dead && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                this.game.particleManager.spawnParticles(random(15, 30), () => ({
+                    frames: "blood_particle",
+                    lifetime: random(1000, 3000),
+                    position: this.position,
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                    },
+                    scale: {
+                        start: randomFloat(0.8, 1.6),
+                        end: 0
+                    },
+                    speed: randomPointInsideCircle(Vec.create(0, 0), 4),
+                    zIndex: ZIndexes.Players + 1,
+                }));
+            }
+
             this._oldItem = this.activeItem;
             const itemDirty = this.activeItem !== full.activeItem;
             this.activeItem = full.activeItem;
@@ -1510,21 +1528,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
 
-        if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics") || !this.downed) {
             this._bloodDecals.add(
                 this.game.particleManager.spawnParticle({
                     frames: "blood_particle",
                     zIndex: ZIndexes.Decals,
                     position: randomPointInsideCircle(position, 2.5),
-                    lifetime: 60000,
+                    lifetime: 60000 * (this.floorType === "water" ? 0.1 : 1),
                     scale: randomFloat(0.8, 1.6),
                     alpha: {
-                        start: 1,
+                        start: this.floorType !== "water" ? 1 : 0.5,
                         end: 0,
                         ease: EaseFunctions.expoIn
                     },
                     speed: Vec.create(0, 0),
-                    tint: 0xeeeeee,
+                    tint: this.floorType !== "water" ? 0xeeeeee : 0xaaffff,
                     onDeath: self => {
                         this._bloodDecals.delete(self);
                     }
