@@ -439,7 +439,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
-                    { count: item.count }
+                    { count: item.count, jitterSpawn: false }
                 );
             }
         }
@@ -594,7 +594,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     position,
-                    { count: item.count }
+                    { count: item.count, jitterSpawn: false }
                 );
             }
         }
