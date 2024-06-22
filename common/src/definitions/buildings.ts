@@ -710,7 +710,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     idString: "chair",
-                    position: Vec.create(-26, 28),
+                    position: Vec.create(-29, 28),
                     rotation: 3
                 },
                 {
@@ -926,6 +926,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: "porta_potty",
                     position: Vec.create(59.75, -27.6)
                 }
+            ],
+            lootSpawners: [
+                { table: "refinery_office_floor", position: Vec.create(-21, 28) }
             ]
         },
         {
@@ -1422,7 +1425,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [{
                 key: "oil_tanker_ship_vault_ceiling",
                 position: Vec.create(0, 0)
-            }]
+            }],
+            lootSpawners: [
+                { table: "oil_tanker_ship_vault_floor", position: Vec.create(0, 0) }
+            ]
         },
         {
             idString: "port",
@@ -2014,6 +2020,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "barrel", position: Vec.create(-30.9, 11.3) },
                 { idString: "briefcase", position: Vec.create(-20.7, 10.85), rotation: 0 },
                 { idString: "vault_door", position: Vec.create(-14.1, -3.22), rotation: 3 }
+            ],
+            lootSpawners: [
+                { table: "armory_vault_floor", position: Vec.create(-20.7, -3.22) }
             ]
         },
         {
