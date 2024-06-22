@@ -31,7 +31,6 @@ export class GameMap {
 
     private readonly occupiedBridgePositions: Vector[] = [];
     private readonly occupiedBigBridgePositions: Vector[] = [];
-    private readonly occupiedBigBridgeOrientations: Orientation[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -390,22 +389,11 @@ export class GameMap {
                     const dif = Vec.sub(this.occupiedBigBridgePositions[i], position);
                     dif.x = Math.abs(dif.x);
                     dif.y = Math.abs(dif.y);
-                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && bestOrientation % 2 == 0) {
+                    if (bestOrientation % 2 == 0) {
                         if (dif.x < (bigBridgeWidth / 2 + smallBridgeWidth / 2) && dif.y < (bigBridgeHeight / 2 + smallBridgeHeight / 2)) {
                             return;
                         }
-                    }
-                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && bestOrientation % 2 == 0) {
-                        if (dif.x < (bigBridgeHeight / 2 + smallBridgeWidth / 2) && dif.y < (bigBridgeWidth / 2 + smallBridgeHeight / 2)) {
-                            return;
-                        }
-                    }
-                    if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && !(bestOrientation % 2 == 0)) {
-                        if (dif.x < (bigBridgeWidth / 2 + smallBridgeHeight / 2) && dif.y < (bigBridgeHeight / 2 + smallBridgeWidth / 2)) {
-                            return;
-                        }
-                    }
-                    if (!(this.occupiedBigBridgeOrientations[i] % 2 == 0) && !(bestOrientation % 2 == 0)) {
+                    } else {
                         if (dif.y < (bigBridgeWidth / 2 + smallBridgeWidth / 2) && dif.x < (bigBridgeHeight / 2 + smallBridgeHeight / 2)) {
                             return;
                         }
@@ -416,7 +404,6 @@ export class GameMap {
                 this.occupiedBridgePositions.push(position);
                 if (definition.idString == "large_bridge") {
                     this.occupiedBigBridgePositions.push(position);
-                    this.occupiedBigBridgeOrientations.push(bestOrientation);
                 }
 
                 this.generateBuilding(definition, position, bestOrientation);
