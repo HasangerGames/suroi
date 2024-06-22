@@ -401,7 +401,7 @@ export class GameMap {
                         }
                     }
                     if (this.occupiedBigBridgeOrientations[i] % 2 == 0 && !(bestOrientation % 2 == 0)) {
-                        if (dif.x < (bigBridgeWidth / 2 + smallBridgeWidth / 2) && dif.y < (bigBridgeHeight / 2 + smallBridgeWidth / 2)) {
+                        if (dif.x < (bigBridgeWidth / 2 + smallBridgeHeight / 2) && dif.y < (bigBridgeHeight / 2 + smallBridgeWidth / 2)) {
                             return;
                         }
                     }
