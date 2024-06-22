@@ -42,7 +42,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "scopes", weight: 0.3 },
             // { tier: "winter_skins", weight: 0.4 }, // winter mode
             { tier: "throwables", weight: 0.3 },
-            { tier: "melee", weight: 0.04 }
+            { tier: "melee", weight: 0.04 },
+            { tier: "rare_world_skins", weight: 0,04}
         ]
     },
     hazel_crate: {
@@ -82,6 +83,9 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             [
+                { item: "lily_lurker", weight: 1}
+            ],
+            [
                 { tier: "river_chest_guns", weight: 1 }
             ],
             [
@@ -105,7 +109,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_guns", weight: 1 },
             { tier: "special_healing_items", weight: 0.15 },
             { tier: "special_equipment", weight: 0.65 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { item: "aegis_jumpsuit", weight: 0.08, count: 1 }
         ]
     },
     flint_crate: {
@@ -115,7 +120,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_guns", weight: 1 },
             { tier: "special_equipment", weight: 0.65 },
             { tier: "special_healing_items", weight: 0.15 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { item: "the_arrowhead", weight: 0.08, count: 1 }
         ]
     },
     grenade_box: {
@@ -155,6 +161,9 @@ export const LootTables: Record<string, LootTable> = {
                 { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
                 { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
                 { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
+            ],
+            [
+                { item: "heavy_cargo", weight: .8 }
             ]
         ]
     },
@@ -784,5 +793,8 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "stoner_63", weight: 0.08 },
         { item: "tango_51", weight: 0.08 },
         { item: "g19", weight: 0.08 }
+    ],
+    rare_world_skins: [
+        { item: "field_gray", weight: 1}
     ]
 };
