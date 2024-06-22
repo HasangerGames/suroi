@@ -43,7 +43,7 @@ export const LootTables: Record<string, LootTable> = {
             // { tier: "winter_skins", weight: 0.4 }, // winter mode
             { tier: "throwables", weight: 0.3 },
             { tier: "melee", weight: 0.04 },
-            { tier: "rare_world_skins", weight: 0,04}
+            { tier: "rare_world_skins", weight: 0.04}
         ]
     },
     hazel_crate: {
