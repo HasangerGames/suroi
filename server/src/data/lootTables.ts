@@ -559,6 +559,29 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 0.5 },
             { tier: "equipment", weight: 0.3 }
         ]
+    },
+    refinery_office_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "hazardous_materials", weight: .3 }
+        ]
+    },
+    armory_vault_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "battle_dress", spawnSeparately: true, count: 1, weight: 3.5 },
+            { item: "battle_dress", spawnSeparately: true, count: 2, weight: 0.8 },
+            { item: "battle_dress", spawnSeparately: true, count: 4, weight: 0.05 }
+        ]
+    },
+    oil_tanker_ship_vault_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "oil_dweller", weight: 1 }
+        ]
     }
 };
 
