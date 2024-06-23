@@ -8,6 +8,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
+    readonly canPierceMaterials?: string[]
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -98,7 +99,8 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             name: "Hatchet",
             damage: 25,
             obstacleMultiplier: 2.5,
-            piercingMultiplier: 0.5,
+            piercingMultiplier: 1.5,
+            canPierceMaterials: ["cardboard"], // because ammo crate has "cardboard" material
             radius: 2,
             offset: Vec.create(5.4, -0.5),
             cooldown: 350,
@@ -169,6 +171,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 54,
             obstacleMultiplier: 2,
             piercingMultiplier: 1,
+            canPierceMaterials: ["cardboard", "stone"],
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),
             cooldown: 450,
