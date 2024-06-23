@@ -72,7 +72,10 @@ export const TRANSLATIONS = {
     }
 } as {
     readonly defaultLanguage: string,
-    readonly translations: Record<string, Record<string, string> & {name: string, flag: string}>
+    readonly translations: Record<string, Record<
+        string,
+        (string | ((replacements: Record<string, string>) => string))
+    > & {name: string, flag: string}>
 }
 
 const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}")
@@ -85,6 +88,10 @@ export function getTranslatedString(id: string, replacements?: Record<string, st
         ?? Loots.reify(id).name;
 
     if (!foundTranslation) return "";
+
+    if (foundTranslation instanceof Function) {
+        return foundTranslation(replacements ?? {})
+    }
 
     if (!replacements) {
         return foundTranslation;
