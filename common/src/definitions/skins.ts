@@ -128,7 +128,8 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
             ["Field Gray",            0x6d5038],
             ["Heavy Cargo",           0x32354d],
             ["AEGIS Jumpsuit",        0x4984aa],
-            ["Oil Dweller",           0x6e2f2b]
+            ["Oil Dweller",           0x6e2f2b],
+            ["Tattered Rags",         0x6e4627]
         ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => simple("hidden_skin", [], [name, tint])),
         apply(
             "hidden_skin",
