@@ -110,7 +110,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_healing_items", weight: 0.15 },
             { tier: "special_equipment", weight: 0.65 },
             { tier: "special_scopes", weight: 0.3 },
-            { item: "aegis_jumpsuit", weight: 0.08, count: 1 }
+            { item: "aegis_jumpsuit", weight: 0.08 }
         ]
     },
     flint_crate: {
@@ -121,7 +121,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_equipment", weight: 0.65 },
             { tier: "special_healing_items", weight: 0.15 },
             { tier: "special_scopes", weight: 0.3 },
-            { item: "the_arrowhead", weight: 0.08, count: 1 }
+            { item: "the_arrowhead", weight: 0.08, }
         ]
     },
     grenade_box: {
