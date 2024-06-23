@@ -193,6 +193,23 @@ export const LootTables: Record<string, LootTable> = {
             [{ item: "12g", count: 15, weight: 1 }]
         ]
     },
+    loot_barrel: {
+        min: 1,
+        max: 1,
+        loot: [
+            [{ item: "crowbar", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [
+                { item: "frag_grenade", weight: 1, count: 3 },
+                { item: "smoke_grenade", weight: 1, count: 3 }
+            ],
+            [
+                { tier: "equipment", weight: 1 },
+                { tier: "scopes", weight: 1 },
+                { tier: "healing_items", weight: 1 }
+            ]
+        ]
+    },
     pumpkin: {
         min: 1,
         max: 1,
