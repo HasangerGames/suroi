@@ -124,6 +124,8 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             name: "Crowbar",
             damage: 45,
             obstacleMultiplier: 2,
+            piercingMultiplier: 1.8,
+            canPierceMaterials: ["cardboard"], // ammo crate moment
             radius: 2.55,
             offset: Vec.create(6.5, 2),
             cooldown: 660,
