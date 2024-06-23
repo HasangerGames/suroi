@@ -306,6 +306,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { item: "lemon", weight: 1 },
             { item: "flamingo", weight: 1 },
+            { item: "tattered_rags", weight: 0.6 },
             { item: "verified", weight: 0.5 },
             { item: "no_kil_pls", weight: 0.5 },
             { item: "basic_outfit", weight: 0.001 }
