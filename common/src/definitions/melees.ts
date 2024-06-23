@@ -118,6 +118,29 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "crowbar",
+            name: "Crowbar",
+            damage: 45,
+            obstacleMultiplier: 2,
+            radius: 2.55,
+            offset: Vec.create(6.5, 2),
+            cooldown: 660,
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(38, -35),
+                right: Vec.create(38, 35),
+                useLeft: Vec.create(38, -35),
+                useRight: Vec.create(100, 35)
+            },
+            image: {
+                position: Vec.create(31, 41),
+                usePosition: Vec.create(110, 33),
+                angle: 190,
+                useAngle: 40,
+                lootScale: 0.65
+            }
+        },
+        {
             idString: "kbar",
             name: "K-bar",
             damage: 25,
