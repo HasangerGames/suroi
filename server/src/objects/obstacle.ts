@@ -152,9 +152,9 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             && !(
                 (
                     weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined
-                    && weaponDef.canPierceMaterials !== undefined && weaponDef.canPierceMaterials.includes(this.definition.material))
-
-                    || source instanceof Obstacle
+                    && weaponDef.canPierceMaterials !== undefined && weaponDef.canPierceMaterials.includes(this.definition.material)
+                )
+                || source instanceof Obstacle
             )
         ) {
             return;
