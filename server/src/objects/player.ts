@@ -941,7 +941,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         if (this.game.teamMode) {
             for (const teammate of newPlayers.filter(p => p.teamID === player.teamID)) {
                 packet.fullObjectsCache.push(teammate);
-                Logger.log(typeof teammate);
             }
         }
 
