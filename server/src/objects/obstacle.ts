@@ -149,13 +149,13 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
 
         if (
-            definition.impenetrable &&
-            !(
-              weaponDef?.itemType === ItemType.Melee &&
-              (weaponDef.piercingMultiplier !== undefined && weaponDef.canPierceMaterials !== undefined && weaponDef.canPierceMaterials.includes(this.definition.material)) ||
-              source instanceof Obstacle
+            definition.impenetrable
+            && !(
+                weaponDef?.itemType === ItemType.Melee
+                && (weaponDef.piercingMultiplier !== undefined && weaponDef.canPierceMaterials !== undefined && weaponDef.canPierceMaterials.includes(this.definition.material))
+                || source instanceof Obstacle
             )
-          ) {
+        ) {
             return;
         }
 
