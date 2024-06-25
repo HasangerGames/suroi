@@ -670,9 +670,7 @@ export class Game {
         }
 
         if (updateData.playerData?.dirty.layer) {
-            if (updateData.playerData.layer === Layer.Basement) {
-                this.pixi.renderer.background.color = COLORS.dirt;
-            }
+            console.log(updateData.playerData.layer);
         }
 
         this.tick();
