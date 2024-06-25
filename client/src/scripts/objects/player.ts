@@ -542,14 +542,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     position: this.position,
                     alpha: {
                         start: 1,
-                        end: 0,
+                        end: 0
                     },
                     scale: {
                         start: randomFloat(0.8, 1.6),
                         end: 0
                     },
                     speed: randomPointInsideCircle(Vec.create(0, 0), 4),
-                    zIndex: ZIndexes.Players + 1,
+                    zIndex: ZIndexes.Players + 1
                 }));
             }
 
