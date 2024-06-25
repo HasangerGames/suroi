@@ -56,7 +56,7 @@ export interface PlayerData {
     maxAdrenaline: number
 
     zoom: number
-    layer: Layer
+    layer: number
 
     inventory: {
         activeWeaponIndex: number
@@ -100,7 +100,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 
     stream.writeBoolean(dirty.layer);
     if (dirty.layer) {
-        stream.writeUint8(data.layer);
+        stream.writeInt8(data.layer);
     }
 
     stream.writeBoolean(dirty.id);
@@ -192,7 +192,7 @@ function deserializePlayerData(stream: SuroiBitStream): PlayerData {
     }
 
     if (dirty.layer = stream.readBoolean()) {
-        data.layer = stream.readUint8();
+        data.layer = stream.readInt8();
     }
 
     if (dirty.id = stream.readBoolean()) {

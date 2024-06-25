@@ -241,7 +241,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         slotLocks: true,
         items: true,
         zoom: true,
-        layer: true,
+        layer: true
     };
 
     readonly inventory = new Inventory(this);
@@ -396,8 +396,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             team.setDirty();
         }
 
-        this.layer = Layer.Floor1;
-
         const userData = socket.getUserData();
         this.socket = socket;
         this.name = GameConstants.player.defaultName;
@@ -406,6 +404,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
+
+        setTimeout(() => {
+            this.changeLayer(Layer.Basement);
+        }, 5000);
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -520,6 +522,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // we hope `throwableItemMap` is correctly sync'd
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
+    }
+
+    changeLayer(layer: Layer): void {
+        this.layer = layer;
+        this.dirty.layer = true;
+
+        switch (layer) {
+            case Layer.Basement: {
+                break;
+            }
+            case Layer.Floor1: {
+                break;
+            }
+        }
     }
 
     fillInventory(): void {
@@ -694,7 +710,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.disableInvulnerability();
             this.setPartialDirty();
 
-            if (this.isMoving) {
+            if (this.isMoving && this.layer >= Layer.Floor1) {
                 this.floor = this.game.map.terrain.getFloor(this.position);
             }
         }

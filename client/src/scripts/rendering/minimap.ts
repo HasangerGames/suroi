@@ -86,7 +86,7 @@ export class Minimap {
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
 
-    private readonly _terrainGraphics = new Graphics();
+    readonly terrainGraphics = new Graphics();
 
     private _objects: MapPacket["objects"] = [];
     private _places: MapPacket["places"] = [];
@@ -261,7 +261,7 @@ export class Minimap {
 
     renderMap(): void {
         // Draw the terrain graphics
-        const terrainGraphics = this._terrainGraphics;
+        const terrainGraphics = this.terrainGraphics;
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
 

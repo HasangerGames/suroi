@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Container, Text, TilingSprite } from "pixi.js";
-import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -352,7 +352,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         const floorType = this.game.map.terrain.getFloor(this.position);
 
-        const doOverlay = FloorTypes[floorType].overlay;
+        const doOverlay = FloorTypes[floorType].overlay && this.game.layer >= Layer.Floor1;
         let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
 
         if (floorType !== this.floorType) {

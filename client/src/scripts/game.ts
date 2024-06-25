@@ -104,6 +104,7 @@ export class Game {
     teamID = -1;
 
     teamMode = false;
+    layer: Layer = 0;
 
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
@@ -670,10 +671,30 @@ export class Game {
         }
 
         if (updateData.playerData?.dirty.layer) {
-            console.log(updateData.playerData.layer);
+            this.changeLayer(updateData.playerData.layer);
         }
 
         this.tick();
+    }
+
+    changeLayer(layer: Layer): void {
+        this.layer = layer;
+        console.log(this.layer);
+
+        switch (layer) {
+            case Layer.Basement: {
+                this.pixi.renderer.background.color = COLORS.dirt;
+                console.log("Switched to underground");
+
+                this.map.terrainGraphics.visible = false;
+                break;
+            }
+            case Layer.Floor1: {
+                this.pixi.renderer.background.color = COLORS.grass;
+                console.log("Switched to aboveground");
+                break;
+            }
+        }
     }
 
     addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
