@@ -114,10 +114,11 @@ export async function setUpUI(game: Game): Promise<void> {
     })
     const languageFieldset = $("#select-language-container fieldset")
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
+        const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
         languageFieldset.append(html`
             <div>
               <input type="radio" name="selected-language" id="language-${language}" value="${language}">
-              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name}</label>
+              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${Math.ceil(percentage * 100)}%)</label>
             </div>
         `)
         $<HTMLInputElement>(`#language-${language}`).on("click", () => {
