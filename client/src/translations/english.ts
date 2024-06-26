@@ -6,12 +6,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     msg_rotate: "For a better experience, please rotate your device to landscape.",
     msg_loading: "Connecting",
+    msg_err_joining: "Error joining game.",
 
     play_solo: "Play Solo",
     play_duo: "Play Duos",
     play_squad: "Play Squads",
     join_team: "Join Team",
-    create_team: "Create Team",
     msg_locked_tooltip: "The game switches between solos and duos every 24 hours, as there aren't enough players for both.",
     rules_and_tutorial: "Rules & Tutorial",
     loadout: "Loadout",
@@ -20,6 +20,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     resume: "Resume",
     quit: "Quit",
     none: "None",
+    copy: "Copy",
 
     health: "health",
     adrenaline: "adrenaline",
@@ -193,6 +194,11 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     go_damage_done: "Damage Done:",
     go_damage_taken: "Damage Taken:",
     go_time_alive: "Time Alive:",
+
+    create_team: "Create Team",
+    create_team_autofill: "Auto Fill",
+    create_team_lock: "Lock Team",
+    create_team_play: "Start Game",
 
     languages: "Languages"
 }
