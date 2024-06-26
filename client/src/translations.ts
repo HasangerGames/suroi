@@ -22,7 +22,7 @@ export const TRANSLATIONS = {
         },
         hp18: {
             name: "HP-18",
-            flag: ""
+            flag: `<img height="20" src="./img/game/weapons/hp18.svg" />`
         }
     }
 } as {
