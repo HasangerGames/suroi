@@ -141,7 +141,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_region: "",
     cv_camera_shake_fx: true,
     cv_killfeed_style: "text",
-    cv_weapon_slot_style: "simple", // change to "colored"?
+    cv_weapon_slot_style: "colored",
     cv_movement_smoothing: true,
     cv_responsive_rotation: true,
 
