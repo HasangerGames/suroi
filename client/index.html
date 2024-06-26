@@ -649,50 +649,50 @@
     </div>
     <div id="settings-tabs-container">
       <div class="tab-bar" id="settings-tab-bar">
-        <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i>Volume</button>
-        <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i>Keybinds</button>
-        <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i>Graphics</button>
-        <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i>Interface</button>
-        <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i>Save/Load</button>
-        <button class="tab" id="tab-mobile"><i class="fa-solid fa-mobile"></i>Mobile</button>
+        <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
+        <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
+        <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
+        <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface"></span></button>
+        <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
+        <button class="tab" id="tab-mobile"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
       </div>
       <div id="settings-tabs" class="persistent-scrollbar">
         <div class="tab-content active" id="tab-volume-content">
           <div class="modal-item">
             <label>
-              <span class="setting-title">Master volume</span>
+              <span class="setting-title" translation="settings_master_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">SFX volume</span>
+              <span class="setting-title" translation="settings_sfx_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Music volume</span>
+              <span class="setting-title" translation="settings_music_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Old menu music<i>*</i></span>
+              <span class="setting-title"><span translation="settings_old_menu_music"></span><i>*</i></span>
               <input type="checkbox" id="toggle-old-music">
             </label>
           </div>
-          <p style="color: red"><i>* Requires reload to apply</i></p>
+          <p style="color: red"><i translation="settings_require_reload"></i></p>
         </div>
         <div class="tab-content" id="tab-keybinds-content" style="display: none">
         </div>
         <div class="tab-content" id="tab-graphics-content" style="display: none">
           <div class="modal-item select-setting">
             <label>
-              <span class="setting-title">Render mode<i>*</i></span>
+              <span class="setting-title"><span translation="settings_render_mode"></span><i>*</i></span>
               <select id="render-mode-select">
                 <option value="webgl1">WebGL 1</option>
                 <option value="webgl2">WebGL 2</option>
@@ -702,9 +702,9 @@
           </div>
           <div class="modal-item select-setting">
             <label>
-              <span class="setting-title">Render resolution<i>*</i></span>
+              <span class="setting-title"><span translation="settings_render_resolution"></span><i>*</i></span>
               <select id="render-res-select">
-                <option value="auto">auto</option>
+                <option value="auto" translation="settings_render_resolution_auto">auto</option>
                 <option value="0.5">0.5</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -714,151 +714,151 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">High resolution textures<i>*</i></span>
+              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
               <input type="checkbox" id="toggle-high-res">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Cooler Graphics</span>
+              <span class="setting-title" translation="settings_cooler_graphics"></span>
               <input type="checkbox" id="toggle-cooler-graphics">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Anti-aliasing<i>*</i></span>
+              <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
               <input type="checkbox" id="toggle-antialias">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Movement smoothing</span>
+              <span class="setting-title" translation="settings_movement_smoothing">Movement smoothing</span>
               <input type="checkbox" id="toggle-movement-smoothing">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Responsive rotation</span>
+              <span class="setting-title" translation="settings_responsive_rotation">Responsive rotation</span>
               <input type="checkbox" id="toggle-responsive-rotation">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Camera shake</span>
+              <span class="setting-title" translation="settings_camera_shake"></span>
               <input type="checkbox" id="toggle-camera-shake">
             </label>
           </div>
-          <p style="color: red"><i>* Requires reload to apply</i></p>
+          <p style="color: red"><i translation="settings_require_reload"></i></p>
         </div>
         <div class="tab-content" id="tab-interface-content" style="display: none">
           <div class="modal-item" id="ui-scale-container">
             <label>
-              <span class="setting-title">Interface scale</span>
+              <span class="setting-title" translation="settings_interface_scale">Interface scale</span>
               <span class="range-input-value"></span>
               <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Minimap opacity</span>
+              <span class="setting-title" translation="settings_minimap_opacity">Minimap opacity</span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Fullscreen map opacity</span>
+              <span class="setting-title" translation="settings_fs_map_opacity">Fullscreen map opacity</span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Hide minimap</span>
+              <span class="setting-title" translation="settings_hide_minimap">Hide minimap</span>
               <input type="checkbox" id="toggle-hide-minimap">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Blur splash screen</span>
+              <span class="setting-title" translation="settings_blur_splash">Blur splash screen</span>
               <input type="checkbox" id="toggle-blur-splash">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Hide rules button</span>
+              <span class="setting-title" translation="settings_hide_rules">Hide rules button</span>
               <input type="checkbox" id="toggle-hide-rules">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Warn before leaving</span>
+              <span class="setting-title" translation="settings_warn_before_leaving">Warn before leaving</span>
               <input type="checkbox" id="toggle-leave-warning">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Show FPS</span>
+              <span class="setting-title" translation="settings_show_fps">Show FPS</span>
               <input type="checkbox" id="toggle-fps">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Show ping</span>
+              <span class="setting-title" translation="settings_show_ping">Show ping</span>
               <input type="checkbox" id="toggle-ping">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Show coordinates</span>
+              <span class="setting-title" translation="settings_show_coordinates">Show coordinates</span>
               <input type="checkbox" id="toggle-pos">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Anonymous player names</span>
+              <span class="setting-title" translation="settings_anon_names">Anonymous player names</span>
               <input type="checkbox" id="toggle-anonymous-player">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Hide emotes</span>
+              <span class="setting-title" translation="settings_hide_emotes">Hide emotes</span>
               <input type="checkbox" id="toggle-hide-emote">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Text-based killfeed</span>
+              <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
               <input type="checkbox" id="toggle-text-kill-feed">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Colored weapon slots</span>
+              <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
               <input type="checkbox" id="toggle-colored-slots">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Loop scope selection</span>
+              <span class="setting-title" translation="settings_scope_looping">Loop scope selection</span>
               <input type="checkbox" id="toggle-scope-looping">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Draw HUD</span>
+              <span class="setting-title" translation="settings_draw_hud">Draw HUD</span>
               <input type="checkbox" id="toggle-draw-hud">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Enable Autopickup</span>
+              <span class="setting-title" translation="settings_autopickup">Enable Autopickup</span>
               <input type="checkbox" id="toggle-autopickup">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Autopickup Dual Guns</span>
+              <span class="setting-title" translation="settings_autopickup_dual_guns">Autopickup Dual Guns</span>
               <input type="checkbox" id="toggle-autopickup-dual-guns">
             </label>
           </div>
@@ -867,61 +867,61 @@
           <div class="modal-item">
             <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
               <i class="fa-solid fa-file-import"></i>
-              Load settings
+              <span translation="settings_load_settings"></span>
             </button>
           </div>
           <div class="modal-item">
             <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
               <i class="fa-solid fa-file-export"></i>
-              Copy settings to clipboard
+              <span translation="settings_copy_settings"></span>
             </button>
           </div>
           <div class="modal-item">
             <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
               <i class="fa-solid fa-trash"></i>
-              Reset settings
+              <span translation="settings_reset_settings"></span>
             </button>
           </div>
         </div>
         <div class="tab-content" id="tab-mobile-content" style="display: none">
-          <i>Changing these settings requires reloading the page</i>
+          <i translation="settings_require_reload"></i>
           <div class="modal-item">
             <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
-              onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Reload</button>
+              onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i><span translation="settings_reload"></span></button>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Enable mobile controls</span>
+              <span class="setting-title" translation="settings_mobile_controls"></span>
               <input type="checkbox" id="toggle-mobile-controls">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Joystick size</span>
+              <span class="setting-title" translation="settings_joystick_size"></span>
               <span class="range-input-value"></span>
               <input type="range" max="400" min="25" id="slider-joystick-size" step="25">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Joystick transparency</span>
+              <span class="setting-title" translation="settings_joystick_opacity"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Auto pickup items</span>
+              <span class="setting-title" translation="settings_autopickup"></span>
               <input type="checkbox" id="toggle-auto-pickup">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">High resolution textures<i>*</i></span>
+              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
               <input type="checkbox" id="toggle-high-res-mobile">
             </label>
           </div>
-          <p style="color: red"><i>* This setting can cause issues on some devices. Disable if you're unable to join the game.</i></p>
+          <p style="color: red"><i translation="settings_performance_warning"></i></p>
         </div>
       </div>
     </div>
