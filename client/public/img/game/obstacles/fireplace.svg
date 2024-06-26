@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="55.9515mm"
+   height="92.275063mm"
+   viewBox="0 0 55.9515 92.275062"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   sodipodi:docname="riverside-house.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.25"
+     inkscape:cx="6196"
+     inkscape:cy="702"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showguides="false"><sodipodi:guide
+       position="-1554.8965,518.08235"
+       orientation="0,-1"
+       id="guide3"
+       inkscape:locked="false" /><sodipodi:guide
+       position="-1346.1996,403.43163"
+       orientation="1,0"
+       id="guide1"
+       inkscape:locked="false" /></sodipodi:namedview><defs
+     id="defs1"><linearGradient
+       id="swatch68"
+       inkscape:swatch="solid"><stop
+         style="stop-color:#2a291d;stop-opacity:1;"
+         offset="0"
+         id="stop68" /></linearGradient><style
+       type="text/css"
+       id="style1">&#10;   <![CDATA[
+    .fil5 {fill:#1F1A17}
+    .fil3 {fill:#72706F}
+    .fil2 {fill:#838281}
+    .fil0 {fill:#AAA9A9}
+    .fil1 {fill:#C2C1C1}
+    .fil4 {fill:black}
+   ]]>&#10;  </style><style
+       id="style1-6">&#10;      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        fill: none;&#10;      }&#10;&#10;      .cls-8 {&#10;        fill: #31343a;&#10;      }&#10;&#10;      .cls-8, .cls-9, .cls-10 {&#10;        stroke: #2e3036;&#10;      }&#10;&#10;      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {&#10;        stroke-width: 8px;&#10;      }&#10;&#10;      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {&#10;        stroke-linecap: round;&#10;      }&#10;&#10;      .cls-9 {&#10;        fill: #3d424a;&#10;      }&#10;&#10;      .cls-10 {&#10;        fill: #33363d;&#10;      }&#10;&#10;      .cls-11 {&#10;        fill: #323438;&#10;        stroke: #2e2f33;&#10;      }&#10;&#10;      .cls-12 {&#10;        fill: #32343b;&#10;        stroke: #2b2d33;&#10;      }&#10;&#10;      .cls-13, .cls-20 {&#10;        fill: #43444c;&#10;      }&#10;&#10;      .cls-13, .cls-17, .cls-4, .cls-7 {&#10;        stroke: #303035;&#10;      }&#10;&#10;      .cls-21 {&#10;        clip-path: url(#clippath);&#10;      }&#10;&#10;      .cls-22 {&#10;        fill: #6b6c6d;&#10;      }&#10;&#10;      .cls-23 {&#10;        fill: #8a8a86;&#10;      }&#10;&#10;      .cls-24 {&#10;        fill: #303035;&#10;      }&#10;&#10;      .cls-25 {&#10;        fill: #cfcfcc;&#10;      }&#10;&#10;      .cls-26 {&#10;        fill: #242424;&#10;      }&#10;&#10;      .cls-27 {&#10;        fill: #1e1e1f;&#10;      }&#10;&#10;      .cls-28 {&#10;        fill: #232429;&#10;      }&#10;&#10;      .cls-29 {&#10;        fill: #262624;&#10;      }&#10;&#10;      .cls-30 {&#10;        fill: #2e2e31;&#10;      }&#10;&#10;      .cls-31 {&#10;        fill: #656565;&#10;        stroke: #333;&#10;      }&#10;&#10;      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        stroke-miterlimit: 10;&#10;      }&#10;&#10;      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {&#10;        stroke-width: 4px;&#10;      }&#10;&#10;      .cls-14 {&#10;        stroke-linejoin: round;&#10;      }&#10;&#10;      .cls-14, .cls-18 {&#10;        fill: #39393d;&#10;      }&#10;&#10;      .cls-14, .cls-18, .cls-5 {&#10;        stroke: #2e2e30;&#10;      }&#10;&#10;      .cls-32 {&#10;        fill: #4a4a4f;&#10;        stroke: #3d3d40;&#10;      }&#10;&#10;      .cls-15 {&#10;        fill: #2b2b2e;&#10;        stroke: #292929;&#10;      }&#10;&#10;      .cls-16 {&#10;        fill: #353a3b;&#10;      }&#10;&#10;      .cls-16, .cls-6 {&#10;        stroke: #2c3030;&#10;      }&#10;&#10;      .cls-17 {&#10;        fill: #333332;&#10;      }&#10;&#10;      .cls-19 {&#10;        fill: #888c9e;&#10;        stroke: #2e2f36;&#10;      }&#10;&#10;      .cls-2 {&#10;        stroke: #515159;&#10;      }&#10;&#10;      .cls-3 {&#10;        stroke: #cfcfcc;&#10;      }&#10;    </style><style
+       id="style1-4">&#10;      .cls-1 {&#10;        fill: #171717;&#10;      }&#10;&#10;      .cls-2 {&#10;        fill: #1a1a1a;&#10;      }&#10;&#10;      .cls-3 {&#10;        fill: #505050;&#10;        stroke-width: 1.5px;&#10;      }&#10;&#10;      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        stroke-linecap: round;&#10;        stroke-linejoin: round;&#10;      }&#10;&#10;      .cls-3, .cls-4, .cls-5, .cls-7 {&#10;        stroke: #171717;&#10;      }&#10;&#10;      .cls-4 {&#10;        fill: #3c3c3c;&#10;      }&#10;&#10;      .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-5 {&#10;        fill: #434343;&#10;      }&#10;&#10;      .cls-6 {&#10;        fill: #7d521b;&#10;        stroke: #261a08;&#10;      }&#10;&#10;      .cls-7 {&#10;        fill: none;&#10;      }&#10;    </style><style
+       type="text/css"
+       id="style1-9">&#10;   <![CDATA[
+    .fil5 {fill:#1F1A17}
+    .fil3 {fill:#72706F}
+    .fil2 {fill:#838281}
+    .fil0 {fill:#AAA9A9}
+    .fil1 {fill:#C2C1C1}
+    .fil4 {fill:black}
+   ]]>&#10;  </style><style
+       id="style1-6-8">&#10;      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        fill: none;&#10;      }&#10;&#10;      .cls-8 {&#10;        fill: #31343a;&#10;      }&#10;&#10;      .cls-8, .cls-9, .cls-10 {&#10;        stroke: #2e3036;&#10;      }&#10;&#10;      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {&#10;        stroke-width: 8px;&#10;      }&#10;&#10;      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {&#10;        stroke-linecap: round;&#10;      }&#10;&#10;      .cls-9 {&#10;        fill: #3d424a;&#10;      }&#10;&#10;      .cls-10 {&#10;        fill: #33363d;&#10;      }&#10;&#10;      .cls-11 {&#10;        fill: #323438;&#10;        stroke: #2e2f33;&#10;      }&#10;&#10;      .cls-12 {&#10;        fill: #32343b;&#10;        stroke: #2b2d33;&#10;      }&#10;&#10;      .cls-13, .cls-20 {&#10;        fill: #43444c;&#10;      }&#10;&#10;      .cls-13, .cls-17, .cls-4, .cls-7 {&#10;        stroke: #303035;&#10;      }&#10;&#10;      .cls-21 {&#10;        clip-path: url(#clippath);&#10;      }&#10;&#10;      .cls-22 {&#10;        fill: #6b6c6d;&#10;      }&#10;&#10;      .cls-23 {&#10;        fill: #8a8a86;&#10;      }&#10;&#10;      .cls-24 {&#10;        fill: #303035;&#10;      }&#10;&#10;      .cls-25 {&#10;        fill: #cfcfcc;&#10;      }&#10;&#10;      .cls-26 {&#10;        fill: #242424;&#10;      }&#10;&#10;      .cls-27 {&#10;        fill: #1e1e1f;&#10;      }&#10;&#10;      .cls-28 {&#10;        fill: #232429;&#10;      }&#10;&#10;      .cls-29 {&#10;        fill: #262624;&#10;      }&#10;&#10;      .cls-30 {&#10;        fill: #2e2e31;&#10;      }&#10;&#10;      .cls-31 {&#10;        fill: #656565;&#10;        stroke: #333;&#10;      }&#10;&#10;      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        stroke-miterlimit: 10;&#10;      }&#10;&#10;      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {&#10;        stroke-width: 4px;&#10;      }&#10;&#10;      .cls-14 {&#10;        stroke-linejoin: round;&#10;      }&#10;&#10;      .cls-14, .cls-18 {&#10;        fill: #39393d;&#10;      }&#10;&#10;      .cls-14, .cls-18, .cls-5 {&#10;        stroke: #2e2e30;&#10;      }&#10;&#10;      .cls-32 {&#10;        fill: #4a4a4f;&#10;        stroke: #3d3d40;&#10;      }&#10;&#10;      .cls-15 {&#10;        fill: #2b2b2e;&#10;        stroke: #292929;&#10;      }&#10;&#10;      .cls-16 {&#10;        fill: #353a3b;&#10;      }&#10;&#10;      .cls-16, .cls-6 {&#10;        stroke: #2c3030;&#10;      }&#10;&#10;      .cls-17 {&#10;        fill: #333332;&#10;      }&#10;&#10;      .cls-19 {&#10;        fill: #888c9e;&#10;        stroke: #2e2f36;&#10;      }&#10;&#10;      .cls-2 {&#10;        stroke: #515159;&#10;      }&#10;&#10;      .cls-3 {&#10;        stroke: #cfcfcc;&#10;      }&#10;    </style><style
+       id="style1-4-4">&#10;      .cls-1 {&#10;        fill: #171717;&#10;      }&#10;&#10;      .cls-2 {&#10;        fill: #1a1a1a;&#10;      }&#10;&#10;      .cls-3 {&#10;        fill: #505050;&#10;        stroke-width: 1.5px;&#10;      }&#10;&#10;      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        stroke-linecap: round;&#10;        stroke-linejoin: round;&#10;      }&#10;&#10;      .cls-3, .cls-4, .cls-5, .cls-7 {&#10;        stroke: #171717;&#10;      }&#10;&#10;      .cls-4 {&#10;        fill: #3c3c3c;&#10;      }&#10;&#10;      .cls-4, .cls-5, .cls-6, .cls-7 {&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-5 {&#10;        fill: #434343;&#10;      }&#10;&#10;      .cls-6 {&#10;        fill: #7d521b;&#10;        stroke: #261a08;&#10;      }&#10;&#10;      .cls-7 {&#10;        fill: none;&#10;      }&#10;    </style></defs><g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-1763.8998,-375.27995)"><g
+       id="g220"
+       transform="rotate(90,968.98904,458.62188)"><path
+         id="rect198-4"
+         style="fill:#2c2c2c;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-opacity:1;paint-order:fill markers stroke"
+         d="m 955.57617,-381.86689 h 9.7649 c 0,0 11.6001,-0.6061 11.6001,17.60228 0,18.20838 -11.6001,17.60228 -11.6001,17.60228 h -9.7649 z"
+         sodipodi:nodetypes="cczccc" /><g
+         id="g216"><rect
+           style="fill:#2c2c2c;fill-opacity:1;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect197-0"
+           width="9.3924236"
+           height="9.3924541"
+           x="1703.3099"
+           y="-355.84695"
+           ry="0"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#2c2c2c;fill-opacity:1;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect197-6-2"
+           width="9.3924236"
+           height="9.3924541"
+           x="1703.3101"
+           y="-400.444"
+           ry="0"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#2c2c2c;fill-opacity:1;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect197-6-7-33"
+           width="9.3924236"
+           height="9.3924541"
+           x="1772.2581"
+           y="-400.444"
+           ry="0"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#2c2c2c;fill-opacity:1;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect197-6-7-3-1"
+           width="9.3924236"
+           height="9.3924541"
+           x="1772.2581"
+           y="-355.84698"
+           ry="0"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#191919;fill-opacity:1;stroke:none;stroke-width:2.50406;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect199-0-5"
+           width="3.1954377"
+           height="21.411041"
+           x="1777.8524"
+           y="-384.17935"
+           ry="1.5977188"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#272727;fill-opacity:1;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect195-3"
+           width="72.052124"
+           height="47.963123"
+           x="1706.4187"
+           y="-397.45538"
+           ry="5.5191159"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#383838;fill-opacity:1;stroke:#191919;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect196-2"
+           width="60.845882"
+           height="37.604824"
+           x="1712.0219"
+           y="-392.27621"
+           ry="3.534729"
+           transform="translate(-816.68183,9.184653)" /><circle
+           style="fill:#1b1b1b;fill-opacity:1;stroke:#121212;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="path196-35"
+           cx="1723.8927"
+           cy="-380.20624"
+           r="8.3343744"
+           transform="translate(-816.68183,9.184653)" /><circle
+           style="fill:#2c2c2c;fill-opacity:1;stroke:none;stroke-width:1.68587;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="path197-4"
+           cx="1753.526"
+           cy="-373.47382"
+           r="15.345834"
+           transform="translate(-816.68183,9.184653)" /><rect
+           style="fill:#181818;fill-opacity:1;stroke:none;stroke-width:2.50406;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect199-6"
+           width="3.1954377"
+           height="21.411041"
+           x="1784.1261"
+           y="-384.15479"
+           ry="1.5977188"
+           transform="translate(-816.68183,9.184653)" /></g></g></g></svg>
