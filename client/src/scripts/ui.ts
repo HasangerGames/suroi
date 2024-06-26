@@ -912,7 +912,7 @@ Video evidence is required.`)) {
         updateSplashCustomize(idString);
     }
 
-    for (const { idString, name, hideFromLoadout, roleRequired } of Skins) {
+    for (const { idString, hideFromLoadout, roleRequired } of Skins) {
         if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
 
         // noinspection CssUnknownTarget
@@ -923,7 +923,7 @@ Video evidence is required.`)) {
                     <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
                     <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
                 </div>
-                <span class="skin-name">${name}</span>
+                <span class="skin-name">${getTranslatedString(idString)}</span>
             </div>`
         );
 
@@ -979,7 +979,7 @@ Video evidence is required.`)) {
             if (emote.isTeamEmote) continue;
 
             if (emote.category as number !== lastCategory) {
-                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}`)}</div>`);
                 emoteList.append(categoryHeader);
                 lastCategory = emote.category;
             }
@@ -988,7 +988,7 @@ Video evidence is required.`)) {
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
-                    <span class="emote-name">${emote.name}</span>
+                    <span class="emote-name">${getTranslatedString(`emote_${emote.idString}`)}</span>
                 </div>`
             );
 
@@ -1205,10 +1205,10 @@ Video evidence is required.`)) {
         $("#tab-badges").show();
 
         const noBadgeItem = $<HTMLDivElement>(
-            "<div id=\"badge-\" class=\"badges-list-item-container\">\
-                <div class=\"badges-list-item\"> </div>\
-                <span class=\"badge-name\">None</span>\
-            </div>"
+            html`<div id="badge-" class="badges-list-item-container">\
+                <div class="badges-list-item"> </div>\
+                <span class="badge-name">${getTranslatedString("none")}</span>\
+            </div>`
         );
 
         noBadgeItem.on("click", () => {
@@ -1235,7 +1235,7 @@ Video evidence is required.`)) {
                         <div class="badges-list-item">\
                             <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
                         </div>\
-                        <span class="badge-name">${name}</span>\
+                        <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
                     </div>`
                 );
 

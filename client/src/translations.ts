@@ -1,3 +1,5 @@
+import { Badges } from "../../common/src/definitions/badges";
+import { Emotes } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
@@ -38,9 +40,22 @@ export function getTranslatedString(id: string, replacements?: Record<string, st
     // Easter egg language
     if (language === "hp18") return "HP-18"
 
-    let foundTranslation = TRANSLATIONS["translations"][language][id]
-        ?? TRANSLATIONS["translations"][TRANSLATIONS.defaultLanguage][id]
-        ?? Loots.reify(id).name;
+    if (id.startsWith("emote_")) {
+        return Emotes.reify(id.slice("emote_".length)).name
+    }
+
+    if (id.startsWith("badge_")) {
+        return Badges.reify(id.slice("badge_".length)).name
+    }
+
+    let foundTranslation
+    try {
+        foundTranslation = TRANSLATIONS["translations"][language][id]
+            ?? TRANSLATIONS["translations"][TRANSLATIONS.defaultLanguage][id]
+            ?? Loots.reify(id).name;
+    } catch(_) {
+        foundTranslation = ""
+    }
 
     if (!foundTranslation) return "";
 

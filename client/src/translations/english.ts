@@ -19,6 +19,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     fullscreen: "Fullscreen",
     resume: "Resume",
     quit: "Quit",
+    none: "None",
 
     health: "health",
     adrenaline: "adrenaline",
@@ -85,6 +86,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     loadout_crosshairs_color: "Color:",
     loadout_crosshairs_stroke_size: "Stroke Size:",
     loadout_crosshairs_stroke_color: "Stroke Color:",
+
+    "emotes_category_People": "People",
+    "emotes_category_Text": "Text",
+    "emotes_category_Memes": "Memes",
+    "emotes_category_Icons": "Icons",
+    "emotes_category_Misc": "Misc",
 
     featured_youtubr: "Featured Youtubr",
     featured_streamr: "Featured Streamr",
