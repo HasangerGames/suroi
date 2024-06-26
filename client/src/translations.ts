@@ -20,6 +20,10 @@ export const TRANSLATIONS = {
 
             languages: "Langues"
         },
+        hp18: {
+            name: "HP-18",
+            flag: ""
+        }
     }
 } as {
     readonly defaultLanguage: string,
@@ -30,6 +34,9 @@ const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "
 
 export function getTranslatedString(id: string, replacements?: Record<string, string>) {
     const language = localStorage["variables"]["cv_language"] ?? defaultClientCVars["cv_language"]
+
+    // Easter egg language
+    if (language === "hp18") return "HP-18"
 
     let foundTranslation = TRANSLATIONS["translations"][language][id]
         ?? TRANSLATIONS["translations"][TRANSLATIONS.defaultLanguage][id]
