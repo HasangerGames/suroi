@@ -679,7 +679,6 @@ export class Game {
 
     changeLayer(layer: Layer): void {
         this.layer = layer;
-        console.log(this.layer);
 
         switch (layer) {
             case Layer.Basement: {
@@ -692,6 +691,8 @@ export class Game {
             case Layer.Floor1: {
                 this.pixi.renderer.background.color = COLORS.grass;
                 console.log("Switched to aboveground");
+
+                this.map.terrainGraphics.visible = true;
                 break;
             }
         }

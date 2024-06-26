@@ -407,7 +407,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         setTimeout(() => {
             this.changeLayer(Layer.Basement);
-        }, 5000);
+            setTimeout(() => {
+                this.changeLayer(Layer.Floor1);
+            }, 5000);
+        }, 10000);
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -710,7 +713,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.disableInvulnerability();
             this.setPartialDirty();
 
-            if (this.isMoving && this.layer >= Layer.Floor1) {
+            if (this.isMoving) {
                 this.floor = this.game.map.terrain.getFloor(this.position);
             }
         }

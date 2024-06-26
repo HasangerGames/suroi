@@ -397,7 +397,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles) {
+                if (FloorTypes[floorType].particles && this.game.layer >= Layer.Floor1) {
                     const options = {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,

@@ -75,7 +75,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         this.scale = this.maxScale = scale;
         this.variation = variation;
 
-        this.layer = Layer.Basement;
+        this.layer = Layer.Floor1;
         
         this.lootSpawnOffset = lootSpawnOffset;
 
