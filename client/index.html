@@ -593,19 +593,24 @@
   <div class="modal" id="game-menu" style="display: none">
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i>
-        Settings</button>
+        <span translation="settings"></span>
+      </button>
     </div>
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-secondary" id="btn-fullscreen"><i class="fa-solid fa-expand"></i>
-        Fullscreen</button>
+        <span translation="fullscreen"></span>
+      </button>
     </div>
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i>
-        Resume</button>
+        <span translation="resume"></span>
+      </button>
     </div>
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i
-          class="fa-solid fa-arrow-right-from-bracket"></i> Quit</button>
+          class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span translation="quit"></span>
+      </button>
     </div>
   </div>
   <div class="modal dialog" id="report-modal" style="display: none">
@@ -644,7 +649,7 @@
   </div>
   <div class="modal dialog" id="settings-menu" style="display: none">
     <div class="dialog-header">
-      <h3>Settings</h3>
+      <h3 translation="settings"></h3>
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
     </div>
     <div id="settings-tabs-container">
@@ -928,16 +933,16 @@
   </div>
   <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
     <div class="dialog-header">
-      <h3>Loadout</h3>
+      <h3 translation="loadout"></h3>
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i>Skins</button>
-        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg">Emotes</button>
-        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg">Crosshairs</button>
-        <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i>Badges</button>
-        <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i>Special</button>
+        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
+        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
+        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
+        <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
+        <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
       </div>
       <div id="customize-tabs">
         <div class="tab-content active" id="tab-skins-content">
@@ -970,30 +975,30 @@
               <div id="crosshair-image"></div>
             </div>
             <div id="crosshair-controls">
-              <span id="crosshair-controls-disabled" style="display: none">System default</span>
+              <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Size:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_size"></span>
                   <span class="range-input-value"></span>
                   <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
                 </label>
               </div>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Color:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_color"></span>
                   <input type="color" id="crosshair-color-picker" value="#000000">
                 </label>
               </div>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Stroke Size:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
                   <span class="range-input-value"></span>
                   <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
                 </label>
               </div>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Stroke Color:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
                   <input type="color" id="crosshair-stroke-picker" value="#000000">
                 </label>
               </div>

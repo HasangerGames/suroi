@@ -12,6 +12,7 @@ import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
+import { getTranslatedString } from "../../translations";
 
 export class Minimap {
     private _expanded = false;
@@ -435,7 +436,7 @@ export class Minimap {
 
     updateFromPacket(mapPacket: MapPacket): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        this.game.uiManager.ui.loadingText.text("Joining Game");
+        this.game.uiManager.ui.loadingText.text(getTranslatedString("loading_joining_game"));
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;

@@ -742,7 +742,7 @@ export class UIManager {
                         "color": ""
                     });
 
-                itemName.text(getTranslatedString(weapon.definition.name));
+                itemName.text(getTranslatedString(weapon.definition.idString));
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
