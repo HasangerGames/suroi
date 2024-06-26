@@ -42,7 +42,6 @@ export const HealingItems = ObjectDefinitions.create<HealingItemDefinition>()(
             {
                 restoreAmount: 15,
                 useTime: 3,
-                useText: "Applying"
             },
             [],
             ["Gauze"]
@@ -52,7 +51,6 @@ export const HealingItems = ObjectDefinitions.create<HealingItemDefinition>()(
             {
                 restoreAmount: 100,
                 useTime: 6,
-                useText: "Using"
             },
             [],
             ["Medikit"]
@@ -62,7 +60,6 @@ export const HealingItems = ObjectDefinitions.create<HealingItemDefinition>()(
             {
                 restoreAmount: 25,
                 useTime: 3,
-                useText: "Drinking"
             },
             [],
             ["Cola"]
@@ -72,7 +69,6 @@ export const HealingItems = ObjectDefinitions.create<HealingItemDefinition>()(
             {
                 restoreAmount: 50,
                 useTime: 5,
-                useText: "Taking"
             },
             [],
             ["Tablets"]

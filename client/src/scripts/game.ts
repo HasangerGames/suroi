@@ -53,6 +53,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { getTranslatedString } from "../translations";
 
 /* eslint-disable @stylistic/indent */
 
@@ -430,7 +431,7 @@ export class Game {
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, resetPlayButtons);
 
-        ui.killLeaderLeader.html("Waiting for leader");
+        ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
@@ -453,7 +454,7 @@ export class Game {
                 ui.gameMenu.hide();
                 ui.gameOverOverlay.hide();
                 ui.canvas.removeClass("active");
-                ui.killLeaderLeader.text("Waiting for leader");
+                ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
                 ui.killLeaderCount.text("0");
 
                 this.gameStarted = false;
@@ -812,7 +813,7 @@ export class Game {
                             case object instanceof Obstacle: {
                                 switch (object.definition.role) {
                                     case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0 ? "Open Door" : "Close Door";
+                                        text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
                                         text = `${object.definition.interactText} ${object.definition.name}`;
@@ -821,15 +822,15 @@ export class Game {
                                 break;
                             }
                             case object instanceof Loot: {
-                                text = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                text = `${getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object instanceof Player: {
-                                text = `Revive ${this.uiManager.getRawPlayerName(object.id)}`;
+                                text = getTranslatedString("action_revive", {player: this.uiManager.getRawPlayerName(object.id)})
                                 break;
                             }
                             case isAction: {
-                                text = "Cancel";
+                                text = getTranslatedString("action_cancel")
                                 break;
                             }
                         }

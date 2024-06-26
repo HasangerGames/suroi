@@ -1330,7 +1330,7 @@ export class UIManager {
                     spectateKillLeader: spectateLeader
                 } = this.ui;
 
-                leader.text("Waiting for leader");
+                leader.text(getTranslatedString("msg_waiting_for_leader"));
                 count.text("0");
 
                 // noinspection HtmlUnknownTarget

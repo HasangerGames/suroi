@@ -7,6 +7,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
+import { getTranslatedString } from "../../translations";
 
 export class Gas {
     state = GasState.Inactive;
@@ -70,15 +71,15 @@ export class Gas {
             let gasMessage = "";
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = `Toxic gas advances in ${formatDate(time)}`;
+                    gasMessage = getTranslatedString("gas_waiting", {time: formatDate(time)})
                     break;
                 }
                 case GasState.Advancing: {
-                    gasMessage = "Toxic gas is advancing! Move to the safe zone";
+                    gasMessage = getTranslatedString("gas_advancing");
                     break;
                 }
                 case GasState.Inactive: {
-                    gasMessage = "Waiting for players...";
+                    gasMessage = getTranslatedString("gas_inactive");
                     break;
                 }
             }

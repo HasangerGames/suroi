@@ -27,6 +27,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import { getTranslatedString } from "../../translations";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -515,7 +516,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        uiManager.animateAction("Being revived...", GameConstants.player.reviveTime, true);
+                        uiManager.animateAction(getTranslatedString("action_being_revived"), GameConstants.player.reviveTime, true);
                     } else {
                         uiManager.cancelAction();
                     }
@@ -655,7 +656,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     actionSoundName = `${weaponDef.idString}_reload`;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction("Reloading...", weaponDef.reloadTime);
+                        uiManager.animateAction(getTranslatedString("action_reloading"), weaponDef.reloadTime);
                     }
 
                     break;
@@ -665,13 +666,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
+                        uiManager.animateAction(getTranslatedString(`action_${itemDef.idString}_use`, {item: itemDef.name}), itemDef.useTime);
                     }
                     break;
                 }
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
-                        uiManager.animateAction("Reviving...", GameConstants.player.reviveTime);
+                        uiManager.animateAction(getTranslatedString("action_reviving"), GameConstants.player.reviveTime);
                     }
                     break;
                 }
@@ -919,9 +920,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
 
-            let itemTooltip = def.name;
+            let itemTooltip = getTranslatedString(def.idString);
             if (def.itemType === ItemType.Armor) {
                 itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
+                itemTooltip = getTranslatedString("tt_reduces", {
+                    item: def.name,
+                    percent: (def.damageReduction * 100).toString()
+                })
             }
             container.children(".item-tooltip").html(itemTooltip);
         }

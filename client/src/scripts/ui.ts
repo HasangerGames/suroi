@@ -22,7 +22,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { TRANSLATIONS } from "../translations";
+import { TRANSLATIONS, getTranslatedString } from "../translations";
 
 interface RegionInfo {
     readonly name: string
@@ -1776,13 +1776,17 @@ Video evidence is required.`)) {
     $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
             const ele = $<HTMLDivElement>(
-                `<div class="inventory-slot item-slot active" id="${item.idString}-slot">
+                html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
                     <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
-                        ${item.name}
-                        <br>
-                        Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
+                        ${getTranslatedString("tt_restores", {
+                            item: item.name,
+                            amount: item.restoreAmount.toString(),
+                            type: item.healType === HealType.Adrenaline
+                                ? getTranslatedString("adrenaline")
+                                : getTranslatedString("health")
+                        })}
                     </div>
                 </div>`
             );

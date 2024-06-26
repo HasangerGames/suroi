@@ -17,6 +17,9 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     loadout: "Loadout",
     settings: "Settings",
 
+    health: "health",
+    adrenaline: "adrenaline",
+
     settings_volume: "Volume",
     settings_keybinds: "Keybinds",
     settings_graphics: "Graphics",
@@ -86,6 +89,22 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     msg_kills: "Kills: <kills>",
 
+    gas_waiting: "Toxic gas advances in <time>",
+    gas_advancing: "Toxic gas is advancing! Move to the safe zone",
+    gas_inactive: "Waiting for players...",
+
+    action_open_door: "Open Door",
+    action_close_door: "Close Door",
+    action_revive: "Revive <player>",
+    action_cancel: "Cancel",
+    action_reloading: "Reloading...",
+    action_reviving: "Reviving...",
+    action_being_revived: "Being revived...",
+    action_gauze_use: "Applying <item>",
+    action_medikit_use: "Using <item>",
+    action_cola_use: "Drinking <item>",
+    action_tablets_use: "Taking <item>",
+
     kf_suicide_kill: "<player> commited suicide",
     kf_suicide_down: "<player> knocked themselves out",
     kf_two_party_kill: "<player> killed <victim>",
@@ -102,6 +121,9 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     kf_gas_down: "<player> was knocked out by the gas",
     kf_airdrop_kill: "<player> was fatally crushed by an airdrop",
     kf_airdrop_down: "<player> was knocked out by an airdrop",
+
+    tt_restores: "<item> restores <amount> <type>",
+    tt_reduces: "<item> reduces <percent>% damage",
 
     go_kills: "Kills:",
     go_damage_done: "Damage Done:",
