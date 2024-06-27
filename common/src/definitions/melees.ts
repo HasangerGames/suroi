@@ -182,7 +182,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             radius: 2.7,
             offset: Vec.create(4, 0),
             cooldown: 400,
-          //  fireMode: FireMode.Auto, - todo
+            //  fireMode: FireMode.Auto, - todo
             fists: {
                 animationDuration: 200,
                 left: Vec.create(38, -35),
