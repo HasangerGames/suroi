@@ -1528,7 +1528,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
 
-        if (this.game.console.getBuiltInCVar("cv_cooler_graphics") || !this.downed) {
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
             this._bloodDecals.add(
                 this.game.particleManager.spawnParticle({
                     frames: "blood_particle",
