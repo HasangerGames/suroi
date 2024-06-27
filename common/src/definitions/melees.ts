@@ -76,6 +76,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "baseball_bat",
             name: "Baseball Bat",
+            swingSound: "heavy_swing",
             damage: 34,
             obstacleMultiplier: 1.5,
             radius: 3.8,
@@ -307,6 +308,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "ice_pick",
             name: "Ice Pick",
+            swingSound: "heavy_swing",
             damage: 35,
             obstacleMultiplier: 1.9,
             piercingMultiplier: 1,
