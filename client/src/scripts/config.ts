@@ -1,5 +1,10 @@
 export const Config = {
     regions: {
+        dev: {
+            name: "Local Server",
+            mainAddress: "http://127.0.0.1:8000",
+            gameAddress: "ws://127.0.0.1:800<ID>"
+        },
         na: {
             name: "North America",
             mainAddress: "https://na.suroi.io",
