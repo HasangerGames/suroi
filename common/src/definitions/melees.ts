@@ -173,6 +173,31 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "sickle",
+            name: "Sickle",
+            damage: 28,
+            swingSound: "soft_swing",
+            obstacleMultiplier: 1.4,
+            radius: 2.7,
+            offset: Vec.create(4, 0),
+            cooldown: 400,
+          //  fireMode: FireMode.Auto, - todo
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(38, -35),
+                right: Vec.create(45, 35),
+                useLeft: Vec.create(38, -35),
+                useRight: Vec.create(70, 20)
+            },
+            image: {
+                position: Vec.create(61, 67),
+                usePosition: Vec.create(99, -5),
+                angle: 120,
+                useAngle: 5,
+                lootScale: 0.78
+            }
+        },
+        {
             idString: "maul",
             name: "Maul",
             damage: 54,
