@@ -938,8 +938,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // new and deleted players
         packet.newPlayers = newPlayers;
 
-        for (const teammate of newPlayers.filter(p => p.teamID === player.teamID)) {
-            packet.fullObjectsCache.push(teammate);
+        if (this.game.teamMode) {
+            for (const teammate of newPlayers.filter(p => p.teamID === player.teamID)) {
+                packet.fullObjectsCache.push(teammate);
+            }
         }
 
         packet.deletedPlayers = game.deletedPlayers;

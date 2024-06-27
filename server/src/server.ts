@@ -53,8 +53,7 @@ function removePunishment(ip: string): void {
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
-let _maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
-export const maxTeamSize = _maxTeamSize;
+export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
 let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
@@ -67,7 +66,7 @@ if (isMainThread) {
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
                 playerCount: games.reduce((a, b) => (a + (b?.data.aliveCount ?? 0)), 0),
-                maxTeamSize: _maxTeamSize,
+                maxTeamSize,
 
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
@@ -155,7 +154,7 @@ if (isMainThread) {
             let team!: CustomTeam;
             const noTeamIdGiven = teamID !== null;
             if (
-                _maxTeamSize === TeamSize.Solo
+                maxTeamSize === TeamSize.Solo
                 || (
                     noTeamIdGiven
                     // @ts-expect-error cleanest overall way to do this (`undefined` gets filtered out anyways)
@@ -169,7 +168,7 @@ if (isMainThread) {
             let isLeader: boolean;
             if (noTeamIdGiven) {
                 isLeader = false;
-                if (team.locked || team.players.length >= (_maxTeamSize as number)) {
+                if (team.locked || team.players.length >= (maxTeamSize as number)) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
@@ -301,10 +300,10 @@ if (isMainThread) {
         const teamSize = Config.maxTeamSize;
         if (typeof teamSize === "object") {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
-                _maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
+                maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
-                Logger.log(`Switching to ${humanReadableTeamSizes[_maxTeamSize] ?? `team size ${_maxTeamSize}`}`);
+                Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
             });
         }
 

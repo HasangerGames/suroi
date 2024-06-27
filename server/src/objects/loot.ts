@@ -215,7 +215,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             } = { type: this.definition, count: this._count }
         ): void => {
             this.game
-                .addLoot(type, this.position, { count })
+                .addLoot(type, this.position, { count, jitterSpawn: false })
                 .push(player.rotation + Math.PI, 0.0007);
         };
 

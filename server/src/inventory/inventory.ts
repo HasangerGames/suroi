@@ -393,7 +393,7 @@ export class Inventory {
         toDrop: ReifiableDef<LootDefinition>,
         options?: Parameters<Game["addLoot"]>[2] & { readonly position?: Vector }
     ): void {
-        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, options);
+        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, { ...options, jitterSpawn: false });
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
