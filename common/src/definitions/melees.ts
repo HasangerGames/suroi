@@ -9,6 +9,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly canPierceMaterials?: string[]
+    readonly swingSound: string
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -44,6 +45,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             noDrop: false,
             killstreak: false,
             speedMultiplier: 1,
+            swingSound: "swing",
             maxTargets: 1,
             image: {
                 zIndex: 1
@@ -102,6 +104,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             piercingMultiplier: 1.5,
             canPierceMaterials: ["cardboard"], // because ammo crate has "cardboard" material
             radius: 2,
+            swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
             cooldown: 350,
             fists: {
@@ -122,6 +125,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "crowbar",
             name: "Crowbar",
+            swingSound: "heavy_swing",
             damage: 45,
             obstacleMultiplier: 2,
             piercingMultiplier: 1.8,
@@ -147,6 +151,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "kbar",
             name: "K-bar",
+            swingSound: "soft_swing",
             damage: 25,
             obstacleMultiplier: 1.25,
             radius: 2.7,
@@ -171,6 +176,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             idString: "maul",
             name: "Maul",
             damage: 54,
+            swingSound: "heavy_swing",
             obstacleMultiplier: 2,
             piercingMultiplier: 1,
             canPierceMaterials: ["cardboard", "stone"],

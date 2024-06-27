@@ -1081,7 +1081,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 this.playSound(
-                    "swing",
+                    weaponDef.swingSound,
                     {
                         falloff: 0.4,
                         maxRange: 96
