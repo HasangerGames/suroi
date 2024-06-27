@@ -7,6 +7,15 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     msg_rotate: "For a better experience, please rotate your device to landscape.",
     msg_loading: "Connecting",
     msg_err_joining: "Error joining game.",
+    msg_err_finding: "Error finding game.",
+    msg_try_again: "Please try again.",
+    msg_warning: "You have been warned!",
+    msg_warning_msg: "You have received a warning by the moderators for reason: <reason>",
+    msg_temp_ban: "You have been temporarily banned!",
+    msg_temp_ban_msg: "You have been banned for reason: <reason>",
+    msg_perma_ban: "You have been permanently banned!",
+    msg_perma_ban_msg: "You have been banned for reason: <reason>",
+    msg_no_reason: "No reason provided.",
 
     play_solo: "Play Solo",
     play_duo: "Play Duos",
@@ -199,6 +208,19 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     create_team_autofill: "Auto Fill",
     create_team_lock: "Lock Team",
     create_team_play: "Start Game",
+
+    report_reporting: "Reporting",
+    report_id: "Report ID:",
+    report_instructions: `
+      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>
+      <h4>How to Submit a Report</h4>
+      <ol>
+        <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
+        <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+            channel.</a></li>
+        <li>Read the report guidelines in the pinned post.</li>
+        <li>Submit your report as a post.</li>
+      </ol>`,
 
     languages: "Languages"
 }

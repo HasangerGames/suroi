@@ -332,21 +332,25 @@ export async function setUpUI(game: Game): Promise<void> {
                     switch (data.message) {
                         case "warn":
                             showWarningModal = true;
-                            title = "You have been warned!";
-                            message = `You have received a warning by the suroi game moderatrs. Case: ${data.reportID || "No report ID provided."}. Your official warn reason: ${data.reason || "No reason provided"}`;
+                            title = getTranslatedString("msg_warning");
+                            message = getTranslatedString("msg_warning_msg", {reason: data.reason ?? getTranslatedString("msg_no_reason")});
                             break;
                         case "temp":
                             showWarningModal = true;
-                            title = "You have been temporarily banned from playing suroi.";
-                            message = `Game moderatrs have banned you for: ${data.reason || "No reason provided"}. With case ID: ${data.reportID || "No report ID provided"}<br><br>When your ban is up (usually 24h), reload the page to clear this message.`;
+                            title = getTranslatedString("msg_temp_ban");
+                            message = getTranslatedString("msg_temp_ban_msg", {reason: data.reason ?? getTranslatedString("msg_no_reason")});
                             break;
                         case "perma":
                             showWarningModal = true;
-                            title = "You have been permanently banned from playing suroi.io";
-                            message = `The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.<br><br>Ban reason: ${data.reason || "No reason provided"}. Case ID: ${data.reportID || "No report ID provided"}`;
+                            title = getTranslatedString("msg_perma_ban");
+                            message = getTranslatedString("msg_perma_ban_msg", {reason: data.reason ?? getTranslatedString("msg_no_reason")});
                             break;
                         default:
-                            message = "Error joining game.<br>Please try again.";
+                            message = html`
+                                ${getTranslatedString("msg_err_joining")}
+                                <br>
+                                ${getTranslatedString("msg_try_again")}
+                            `;
                             break;
                     }
 
@@ -365,7 +369,11 @@ export async function setUpUI(game: Game): Promise<void> {
                 }
             }
         ).fail(() => {
-            ui.splashMsgText.html("Error finding game.<br>Please try again.");
+            ui.splashMsgText.html(html`
+                ${getTranslatedString("msg_err_finding")}
+                <br>
+                ${getTranslatedString("msg_try_again")}
+            `);
             ui.splashMsg.show();
             resetPlayButtons();
         });

@@ -318,7 +318,7 @@ export class Game {
 
         this._socket.onerror = (): void => {
             this.error = true;
-            ui.splashMsgText.html("Error joining game.");
+            ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
             resetPlayButtons();
         };

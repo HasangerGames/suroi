@@ -77,9 +77,14 @@ let debugTranslationCounter = 0
 
 document.querySelectorAll("body *").forEach((element) => {
     const requestedTranslation = element.getAttribute("translation")
+    const useHtml = element.getAttribute("use-html")
     if (!requestedTranslation) return;
 
-    (element as HTMLDivElement).innerText = getTranslatedString(requestedTranslation)
+    if (useHtml === null) {
+        (element as HTMLDivElement).innerText = getTranslatedString(requestedTranslation)
+    } else {
+        element.innerHTML = getTranslatedString(requestedTranslation)
+    }
     debugTranslationCounter++
 })
 
