@@ -200,6 +200,8 @@ export class UIManager {
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
         gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
         gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
+        gameOverTeamKills: $<HTMLSpanElement>("#game-over-team-kills"),
+        teamKillsDisplay: $<HTMLSpanElement>("#teamKills"),
         gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
         gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
         gameOverTime: $<HTMLSpanElement>("#game-over-time"),
@@ -369,6 +371,7 @@ export class UIManager {
             gameOverRank,
             gameOverPlayerName,
             gameOverKills,
+            gameOverTeamKills,
             gameOverDamageDone,
             gameOverDamageTaken,
             gameOverTime
@@ -400,6 +403,7 @@ export class UIManager {
         gameOverPlayerName.html(playerName + playerBadgeText);
 
         gameOverKills.text(packet.kills);
+        gameOverTeamKills.text(packet.teamKills);
         gameOverDamageDone.text(packet.damageDone);
         gameOverDamageTaken.text(packet.damageTaken);
         gameOverTime.text(formatDate(packet.timeAlive));
@@ -410,6 +414,10 @@ export class UIManager {
 
         // Player rank
         gameOverRank.text(`#${packet.rank}`).toggleClass("won", packet.won);
+
+        if (game.teamID === undefined) {
+            this.ui.teamKillsDisplay.hide();
+        }
     }
 
     // I'd rewrite this as MapPings.filter(…), but it's not really clear how

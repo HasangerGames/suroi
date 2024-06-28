@@ -75,6 +75,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     readonly ip?: string;
 
     teamID?: number;
+    teamKills = 0;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -1367,6 +1368,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 if (item.definition.killstreak) {
                     killFeedPacket.killstreak = item.stats.kills;
                 }
+
+                ++player.teamKills;
+                for (const p of this.game.livingPlayers) {
+                    if (p.teamID == player.teamID) {
+                        p.teamKills = player.teamKills;
+                    }
+                }
             };
 
             const attributeToDowner = (): boolean => {
@@ -1612,6 +1620,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.won = won;
         packet.playerID = this.id;
         packet.kills = this.kills;
+        packet.teamKills = this.teamKills;
         packet.damageDone = this.damageDone;
         packet.damageTaken = this.damageTaken;
         packet.timeAlive = (this.game.now - this.joinTime) / 1000;
