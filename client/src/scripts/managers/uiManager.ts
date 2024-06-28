@@ -1312,7 +1312,7 @@ export class UIManager {
                 count.text(attackerKills);
 
                 if (!hideFromKillfeed) {
-                    messageText = html`<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
+                    messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", {player: victimText})}`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
 
@@ -1338,9 +1338,9 @@ export class UIManager {
                 // noinspection HtmlUnknownTarget
                 messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
                     ? attackerId !== victimId
-                        ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
-                        : "The Kill Leader is dead!"
-                    : "The Kill Leader killed themselves!"
+                        ? getTranslatedString("kf_kl_killed", {player: attackerText})
+                        : getTranslatedString("kf_kl_dead")
+                    : getTranslatedString("kf_kl_suicide")
                 }`;
                 switch (this.game.activePlayerID) {
                     case attackerId: {

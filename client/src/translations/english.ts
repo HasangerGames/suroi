@@ -200,6 +200,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     kf_gas_down: "<player> was knocked out by the gas",
     kf_airdrop_kill: "<player> was fatally crushed by an airdrop",
     kf_airdrop_down: "<player> was knocked out by an airdrop",
+    kf_kl_promotion: "<player> is promoted to the Kill Leader!",
+    kf_kl_killed: "<player> killed the Kill Leader",
+    kf_kl_dead: "The Kill Leader is dead!",
+    kf_kl_suicide: "The Kill Leader killed themselves!",
 
     tt_restores: "<item> restores <amount> <type>",
     tt_reduces: "<item> reduces <percent>% damage",
