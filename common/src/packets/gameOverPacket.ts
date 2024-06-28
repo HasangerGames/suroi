@@ -5,6 +5,7 @@ export class GameOverPacket implements Packet {
     won!: boolean;
     playerID!: number;
     kills!: number;
+    teamKills!: number;
     damageDone!: number;
     damageTaken!: number;
     timeAlive!: number;
@@ -14,6 +15,7 @@ export class GameOverPacket implements Packet {
         stream.writeBoolean(this.won);
         stream.writeObjectID(this.playerID);
         stream.writeUint8(this.kills);
+        stream.writeUint8(this.teamKills);
         stream.writeUint16(this.damageDone);
         stream.writeUint16(this.damageTaken);
         stream.writeUint16(this.timeAlive);
@@ -24,6 +26,7 @@ export class GameOverPacket implements Packet {
         this.won = stream.readBoolean();
         this.playerID = stream.readObjectID();
         this.kills = stream.readUint8();
+        this.teamKills = stream.readUint8();
         this.damageDone = stream.readUint16();
         this.damageTaken = stream.readUint16();
         this.timeAlive = stream.readUint16();
