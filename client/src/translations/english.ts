@@ -270,6 +270,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     ice_pick: "Ice Pick",
     seax: "Seax",
 
+    frag_grenade: "Frag Grenade",
+    smoke_grenade: "Smoke Grenade",
+    confetti_grenade: "Confetti Grenade",
+
     radio: "Radio",
     deathray: "Deathray",
 
