@@ -23,6 +23,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     join_team: "Join Team",
     msg_locked_tooltip: "The game switches between solos and duos every 24 hours, as there aren't enough players for both.",
     rules_and_tutorial: "Rules & Tutorial",
+    news: "News",
     loadout: "Loadout",
     settings: "Settings",
     fullscreen: "Fullscreen",
@@ -216,6 +217,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     create_team: "Create Team",
     create_team_autofill: "Auto Fill",
     create_team_lock: "Lock Team",
+    create_team_waiting: "Waiting...",
     create_team_play: "Start Game",
 
     report_reporting: "Reporting",

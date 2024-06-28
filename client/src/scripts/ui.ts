@@ -402,7 +402,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const joiningTeam = this.id === "btn-join-team";
         if (joiningTeam) {
-            ui.btnStartGame.addClass("btn-disabled").text("Waiting...");
+            ui.btnStartGame.addClass("btn-disabled").text(getTranslatedString("create_team_waiting"));
             ui.createTeamToggles.addClass("disabled");
 
             // also rejects the empty string, but like who cares
@@ -430,7 +430,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
             params.set("teamID", teamID);
         } else {
-            ui.btnStartGame.removeClass("btn-disabled").text("Start Game");
+            ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
             ui.createTeamToggles.removeClass("disabled");
         }
 
