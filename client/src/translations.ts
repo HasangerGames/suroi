@@ -4,6 +4,7 @@ import { Loots } from "../../common/src/definitions/loots";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
+import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
 import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 
@@ -19,6 +20,7 @@ export const TRANSLATIONS = {
         zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
         hu: HUNGARIAN_TRANSLATIONS,
         ta: TAMIL_TRANSLATIONS,
+        et: ESTONIAN_TRANSLATIONS,
         fr: {
             name: "Français",
             flag: "🇫🇷",
