@@ -2,7 +2,9 @@ import { Badges } from "../../common/src/definitions/badges";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
+import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
+import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 
 export type TranslationMap = Record<
         string,
@@ -13,6 +15,8 @@ export const TRANSLATIONS = {
     defaultLanguage: "en",
     translations: {
         en: ENGLISH_TRANSLATIONS,
+        zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
+        ta: TAMIL_TRANSLATIONS,
         fr: {
             name: "Français",
             flag: "🇫🇷",

@@ -816,13 +816,15 @@ export class Game {
                                         text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
-                                        text = `${object.definition.interactText} ${object.definition.name}`;
+                                        text = getTranslatedString(`interact_${object.definition.idString}`)
                                         break;
                                 }
                                 break;
                             }
                             case object instanceof Loot: {
-                                text = `${getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                text = `${object.definition.idString.startsWith("dual_")
+                                    ? getTranslatedString("dual_template", {gun: getTranslatedString(object.definition.idString.slice("dual_".length))})
+                                    : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object instanceof Player: {

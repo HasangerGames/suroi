@@ -742,7 +742,9 @@ export class UIManager {
                         "color": ""
                     });
 
-                itemName.text(getTranslatedString(weapon.definition.idString));
+                itemName.text(weapon.definition.idString.startsWith("dual_")
+                    ? getTranslatedString("dual_template", {gun: getTranslatedString(weapon.definition.idString.slice("dual_".length))})
+                    : getTranslatedString(weapon.definition.idString));
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");

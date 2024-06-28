@@ -136,6 +136,11 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     action_cola_use: "Drinking <item>",
     action_tablets_use: "Taking <item>",
 
+    interact_airdrop_crate_locked: "Open Airdrop",
+    interact_control_panel: "Activate Control Panel",
+    interact_generator: "Activate Generator",
+    interact_button: "Press Button",
+
     loading_spritesheets: "Loading Spritesheets <progress>",
     loading_connecting: "Connecting",
     loading_joining_game: "Joining Game",
@@ -222,5 +227,46 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
         <li>Submit your report as a post.</li>
       </ol>`,
 
-    languages: "Languages"
+    languages: "Languages",
+
+    // loot
+
+    gauze: "Gauze",
+    medikit: "Medikit",
+    cola: "Cola",
+    tablets: "Tablets",
+
+    basic_vest: "Basic Vest",
+    regular_vest: "Regular Vest",
+    tactical_vest: "Tactical Vest",
+    basic_helmet: "Basic Helmet",
+    regular_helmet: "Regular Helmet",
+    tactical_helmet: "Tactical Helmet",
+    bag: "Bag", // This shouldn't show up in game
+    basic_pack: "Basic Pack",
+    regular_pack: "Regular Pack",
+    tactical_pack: "Tactical Pack",
+
+    "1x_scope": "1x Scope", // This shouldn't show up in game
+    "2x_scope": "2x Scope",
+    "4x_scope": "4x Scope",
+    "8x_scope": "8x Scope",
+    "15x_scope": "15x Scope",
+
+    fists: "Fists",
+    baseball_bat: "Baseball Bat",
+    hatchet: "Hatchet",
+    kbar: "K-bar",
+    maul: "Maul",
+    gas_can: "Gas Can",
+    heap_sword: "HE-AP Sword",
+    steelfang: "Steelfang",
+    ice_pick: "Ice Pick",
+    seax: "Seax",
+
+    radio: "Radio",
+    deathray: "Deathray",
+
+    // For dual guns
+    dual_template: "Dual <gun>"
 }

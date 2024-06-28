@@ -1789,7 +1789,7 @@ Video evidence is required.`)) {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-                            item: item.name,
+                            item: getTranslatedString(item.idString),
                             amount: item.restoreAmount.toString(),
                             type: item.healType === HealType.Adrenaline
                                 ? getTranslatedString("adrenaline")
