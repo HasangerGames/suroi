@@ -176,9 +176,9 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "sickle",
             name: "Sickle",
-            damage: 28,
+            damage: 33,
             swingSound: "soft_swing",
-            obstacleMultiplier: 1.4,
+            obstacleMultiplier: 1.15,
             radius: 2.7,
             offset: Vec.create(4, 0),
             cooldown: 400,
