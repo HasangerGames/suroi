@@ -270,12 +270,14 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     ice_pick: "Ice Pick",
     seax: "Seax",
 
+    mosin: "Mosin-Nagant",
+    radio: "Radio",
+    lewis_gun: "Lewis Gun",
+    deathray: "Deathray",
+
     frag_grenade: "Frag Grenade",
     smoke_grenade: "Smoke Grenade",
     confetti_grenade: "Confetti Grenade",
-
-    radio: "Radio",
-    deathray: "Deathray",
 
     // For dual guns
     dual_template: "Dual <gun>"

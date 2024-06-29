@@ -132,10 +132,10 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     action_reloading: "Relva laadimine...",
     action_reviving: "Elustamine...",
     action_being_revived: "Teid elustatakse...",
-    action_gauze_use: "<item>i Peale Kandma",
-    action_medikit_use: "<item>i Kasutama",
-    action_cola_use: "<item>i Jooma",
-    action_tablets_use: "<item> Võtma",
+    action_gauze_use: "<Tarlataani Kasutamine",
+    action_medikit_use: "Esmaabipaki Kasutamine",
+    action_cola_use: "Energiajoogi Joomine",
+    action_tablets_use: "Tablette Võtma",
 
     interact_airdrop_crate_locked: "Ava Õhudessant",
     interact_control_panel: "Aktiveeri Juhtpaneel",
@@ -266,7 +266,7 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     maul: "Palginui",
     gas_can: "Bensiinikanister",
     heap_sword: "HE-AP Mõõk",
-    steelfang: "Teraskivhad",
+    steelfang: "Teraskihv",
     ice_pick: "Jääork",
     seax: "Võitlusnuga",
 
@@ -274,8 +274,11 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     smoke_grenade: "Suitsugranaat",
     confetti_grenade: "Ilutulestiku Granaat",
 
+    mosin: "Mossin-Nagant",
     radio: "Raadio",
+    lewis_gun: "Lewise Kuulipilduja",
     deathray: "Surmakiir",
+    
 
     // For dual guns
     dual_template: "Topelt <gun>"

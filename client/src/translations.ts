@@ -5,6 +5,7 @@ import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
 import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
+import { GERMAN_TRANSLATIONS } from "./translations/german";
 import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
@@ -27,6 +28,7 @@ export const TRANSLATIONS = {
 
             languages: "Langues"
         },
+        de: GERMAN_TRANSLATIONS,
         zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
         vi: VIETNAMESE_TRANSLATIONS,
         ta: TAMIL_TRANSLATIONS,
