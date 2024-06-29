@@ -370,8 +370,22 @@ export class GameMap {
                 if (this.occupiedBridgePositions.some(pos => Math.sqrt((pos.x - position.x) ** 2 + (pos.y - position.y) ** 2) < bridgeSpawnOptions.minRiverWidth)) {
                     return;
                 }
-                const hitbox = definition.spawnHitbox.transform(position);
 
+                const spawnHitbox = definition.spawnHitbox.toRectangle();
+
+                // if the bridge is sideways it rotates the hitbox accordingly
+                if (!(bestOrientation % 2 == 0) && spawnHitbox.min.x > spawnHitbox.min.y) {
+                    const newMinX = spawnHitbox.min.y;
+                    spawnHitbox.min.y = spawnHitbox.min.x;
+                    spawnHitbox.min.x = newMinX;
+                    const newMaxX = spawnHitbox.max.y;
+                    spawnHitbox.max.y = spawnHitbox.max.x;
+                    spawnHitbox.max.x = newMaxX;
+                }
+
+                const hitbox = spawnHitbox.transform(position);
+
+                // checks if the bridge hitbox collides with another object and if so does not spawn it
                 const objects = this.game.grid.intersectsHitbox(hitbox);
                 for (const object of objects) {
                     let objectHitbox: Hitbox | undefined;
