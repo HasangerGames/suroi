@@ -274,6 +274,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "radio": "Radio",
     "lewis_gun": "Lewis Gun",
     "deathray": "Deathray",
+    "firework_launcher": "Firework Launcher",
+    "arena_closer": "Destroyer of Worlds",
+    "revitalizer": "Revitalizer",
+    "s_g17": "G17 (Scoped)",
 
     "frag_grenade": "Frag Grenade",
     "smoke_grenade": "Smoke Grenade",
