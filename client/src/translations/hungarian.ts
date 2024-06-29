@@ -121,8 +121,8 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
 
     msg_kills: "Ölések: <kills>",
 
-    gas_waiting: "Toxikus gáz szűkül <time> múlva",
-    gas_advancing: "Toxikus gáz szűkül! Mozogj a biztonságos zónába",
+    gas_waiting: "Mérgező gáz szűkül <time> múlva",
+    gas_advancing: "Mérgező gáz szűkül! Mozogj a biztonságos zónába",
     gas_inactive: "Várakozás játékosokra...",
 
     action_open_door: "Ajtó nyitása",
@@ -276,6 +276,10 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
 
     radio: "Rádió",
     deathray: "Halálsugár",
+    arena_closer: "Világok elpusztítója",
+    firework_launcher: "Tüzijáték kilövő",
+    revitalizer: "Revitalizáló",
+    s_g17: "G17 (távcsővel)",
 
     // For dual guns
     dual_template: "Dupla <gun>"
