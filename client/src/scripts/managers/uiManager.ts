@@ -743,7 +743,7 @@ export class UIManager {
                     });
 
                 itemName.text(weapon.definition.idString.startsWith("dual_")
-                    ? getTranslatedString("dual_template", {gun: getTranslatedString(weapon.definition.idString.slice("dual_".length))})
+                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length)) })
                     : getTranslatedString(weapon.definition.idString));
 
                 const isFists = weapon.definition.idString === "fists";
@@ -857,7 +857,7 @@ export class UIManager {
         switch (severity) {
             case KillfeedEventSeverity.Kill: {
                 const { streak, kills } = message;
-                headerUi.text(getTranslatedString("msg_kills", {kills: kills.toString()}));
+                headerUi.text(getTranslatedString("msg_kills", { kills: kills.toString() }));
                 killCounterUi.text(kills);
                 streakText = streak ? ` (streak: ${streak})` : "";
                 break;
@@ -1312,7 +1312,7 @@ export class UIManager {
                 count.text(attackerKills);
 
                 if (!hideFromKillfeed) {
-                    messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", {player: victimText})}`;
+                    messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", { player: victimText })}`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
 
@@ -1338,7 +1338,7 @@ export class UIManager {
                 // noinspection HtmlUnknownTarget
                 messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
                     ? attackerId !== victimId
-                        ? getTranslatedString("kf_kl_killed", {player: attackerText})
+                        ? getTranslatedString("kf_kl_killed", { player: attackerText })
                         : getTranslatedString("kf_kl_dead")
                     : getTranslatedString("kf_kl_suicide")
                 }`;

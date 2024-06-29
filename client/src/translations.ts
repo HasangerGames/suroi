@@ -11,9 +11,9 @@ import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 
 export type TranslationMap = Record<
-        string,
-        (string | ((replacements: Record<string, string>) => string))
-    > & {name: string, flag: string}
+    string,
+    (string | ((replacements: Record<string, string>) => string))
+> & { name: string, flag: string };
 
 export const TRANSLATIONS = {
     defaultLanguage: "en",
@@ -36,43 +36,43 @@ export const TRANSLATIONS = {
         et: ESTONIAN_TRANSLATIONS,
         hp18: {
             name: "HP-18",
-            flag: `<img height="20" src="./img/game/weapons/hp18.svg" />`
+            flag: "<img height=\"20\" src=\"./img/game/weapons/hp18.svg\" />"
         }
     }
 } as {
-    readonly defaultLanguage: string,
+    readonly defaultLanguage: string
     readonly translations: Record<string, TranslationMap>
-}
+};
 
-const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}")
+const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}");
 
 export function getTranslatedString(id: string, replacements?: Record<string, string>) {
-    const language = localStorage["variables"]["cv_language"] ?? defaultClientCVars["cv_language"]
+    const language = localStorage.variables.cv_language ?? defaultClientCVars.cv_language;
 
     // Easter egg language
-    if (language === "hp18") return "HP-18"
+    if (language === "hp18") return "HP-18";
 
     if (id.startsWith("emote_")) {
-        return Emotes.reify(id.slice("emote_".length)).name
+        return Emotes.reify(id.slice("emote_".length)).name;
     }
 
     if (id.startsWith("badge_")) {
-        return Badges.reify(id.slice("badge_".length)).name
+        return Badges.reify(id.slice("badge_".length)).name;
     }
 
-    let foundTranslation
+    let foundTranslation;
     try {
-        foundTranslation = TRANSLATIONS["translations"][language][id]
-            ?? TRANSLATIONS["translations"][TRANSLATIONS.defaultLanguage][id]
-            ?? Loots.reify(id).name;
-    } catch(_) {
-        foundTranslation = ""
+        foundTranslation = TRANSLATIONS.translations[language][id]
+        ?? TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][id]
+        ?? Loots.reify(id).name;
+    } catch (_) {
+        foundTranslation = "";
     }
 
     if (!foundTranslation) return "";
 
     if (foundTranslation instanceof Function) {
-        return foundTranslation(replacements ?? {})
+        return foundTranslation(replacements ?? {});
     }
 
     if (!replacements) {
@@ -85,27 +85,27 @@ export function getTranslatedString(id: string, replacements?: Record<string, st
     return foundTranslation;
 }
 
-let debugTranslationCounter = 0
+let debugTranslationCounter = 0;
 
-document.querySelectorAll("body *").forEach((element) => {
-    const requestedTranslation = element.getAttribute("translation")
-    const useHtml = element.getAttribute("use-html")
+document.querySelectorAll("body *").forEach(element => {
+    const requestedTranslation = element.getAttribute("translation");
+    const useHtml = element.getAttribute("use-html");
     if (!requestedTranslation) return;
 
-    const translatedString = getTranslatedString(requestedTranslation)
+    const translatedString = getTranslatedString(requestedTranslation);
 
     if (useHtml === null) {
-        (element as HTMLDivElement).innerText = translatedString
+        (element as HTMLDivElement).innerText = translatedString;
     } else {
-        element.innerHTML = translatedString
+        element.innerHTML = translatedString;
     }
 
     // Decrease font size for those languages have have really long stuff in buttons
     if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 10) {
-        (element as HTMLDivElement).style.fontSize = "70%"
+        (element as HTMLDivElement).style.fontSize = "70%";
     }
 
-    debugTranslationCounter++
-})
+    debugTranslationCounter++;
+});
 
-console.log("Translated", debugTranslationCounter, "strings")
+console.log("Translated", debugTranslationCounter, "strings");

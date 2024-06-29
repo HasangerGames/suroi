@@ -816,23 +816,23 @@ export class Game {
                                         text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}`)
+                                        text = getTranslatedString(`interact_${object.definition.idString}`);
                                         break;
                                 }
                                 break;
                             }
                             case object instanceof Loot: {
                                 text = `${object.definition.idString.startsWith("dual_")
-                                    ? getTranslatedString("dual_template", {gun: getTranslatedString(object.definition.idString.slice("dual_".length))})
+                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length)) })
                                     : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object instanceof Player: {
-                                text = getTranslatedString("action_revive", {player: this.uiManager.getRawPlayerName(object.id)})
+                                text = getTranslatedString("action_revive", { player: this.uiManager.getRawPlayerName(object.id) });
                                 break;
                             }
                             case isAction: {
-                                text = getTranslatedString("action_cancel")
+                                text = getTranslatedString("action_cancel");
                                 break;
                             }
                         }

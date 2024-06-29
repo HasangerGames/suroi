@@ -106,13 +106,13 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     $("#btn-language").on("click", () => {
-        $("#select-language-menu").css("display", "")
-    })
+        $("#select-language-menu").css("display", "");
+    });
     $("#close-select-language").on("click", () => {
-        $("#select-language-menu").css("display", "none")
-        location.reload()
-    })
-    const languageFieldset = $("#select-language-container fieldset")
+        $("#select-language-menu").css("display", "none");
+        location.reload();
+    });
+    const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
         const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
         languageFieldset.append(html`
@@ -120,11 +120,11 @@ export async function setUpUI(game: Game): Promise<void> {
               <input type="radio" name="selected-language" id="language-${language}" value="${language}">
               <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${Math.ceil(percentage * 100)}%)</label>
             </div>
-        `)
+        `);
         $<HTMLInputElement>(`#language-${language}`).on("click", () => {
-            game.console.setBuiltInCVar("cv_language", language)
-            console.log(game.console.getBuiltInCVar("cv_language"))
-        }).prop("checked", game.console.getBuiltInCVar("cv_language") === language)
+            game.console.setBuiltInCVar("cv_language", language);
+            console.log(game.console.getBuiltInCVar("cv_language"));
+        }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -333,17 +333,17 @@ export async function setUpUI(game: Game): Promise<void> {
                         case "warn":
                             showWarningModal = true;
                             title = getTranslatedString("msg_warning");
-                            message = getTranslatedString("msg_warning_msg", {reason: data.reason ?? getTranslatedString("msg_no_reason")});
+                            message = getTranslatedString("msg_warning_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
                             break;
                         case "temp":
                             showWarningModal = true;
                             title = getTranslatedString("msg_temp_ban");
-                            message = getTranslatedString("msg_temp_ban_msg", {reason: data.reason ?? getTranslatedString("msg_no_reason")});
+                            message = getTranslatedString("msg_temp_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
                             break;
                         case "perma":
                             showWarningModal = true;
                             title = getTranslatedString("msg_perma_ban");
-                            message = getTranslatedString("msg_perma_ban_msg", {reason: data.reason ?? getTranslatedString("msg_no_reason")});
+                            message = getTranslatedString("msg_perma_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
                             break;
                         default:
                             message = html`
@@ -1789,12 +1789,12 @@ Video evidence is required.`)) {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-                            item: getTranslatedString(item.idString),
-                            amount: item.restoreAmount.toString(),
-                            type: item.healType === HealType.Adrenaline
-                                ? getTranslatedString("adrenaline")
-                                : getTranslatedString("health")
-                        })}
+        item: getTranslatedString(item.idString),
+        amount: item.restoreAmount.toString(),
+        type: item.healType === HealType.Adrenaline
+            ? getTranslatedString("adrenaline")
+            : getTranslatedString("health")
+    })}
                     </div>
                 </div>`
             );

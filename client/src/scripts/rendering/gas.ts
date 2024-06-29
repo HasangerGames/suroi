@@ -71,7 +71,7 @@ export class Gas {
             let gasMessage = "";
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = getTranslatedString("gas_waiting", {time: formatDate(time)})
+                    gasMessage = getTranslatedString("gas_waiting", { time: formatDate(time) });
                     break;
                 }
                 case GasState.Advancing: {

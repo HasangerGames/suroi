@@ -666,7 +666,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString(`action_${itemDef.idString}_use`, {item: getTranslatedString(itemDef.idString)}), itemDef.useTime);
+                        uiManager.animateAction(getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }), itemDef.useTime);
                     }
                     break;
                 }
@@ -926,7 +926,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 itemTooltip = getTranslatedString("tt_reduces", {
                     item: getTranslatedString(def.idString),
                     percent: (def.damageReduction * 100).toString()
-                })
+                });
             }
             container.children(".item-tooltip").html(itemTooltip);
         }
