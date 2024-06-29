@@ -190,7 +190,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "kf_two_party_kill": "<player> killed <victim>",
     "kf_two_party_down": "<player> knocked out <victim>",
     "kf_bleed_out_kill": "<player> bled out",
-    "kf_bleed_out_down": "<player bled out non-lethally",
+    "kf_bleed_out_down": "<player> bled out non-lethally",
     "kf_finished_off_kill": "<player> finished off <victim>",
     "kf_finished_off_down": "<player> gently finished off <victim>",
     "kf_finally_died": "<player> finally died",
