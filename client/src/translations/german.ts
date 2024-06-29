@@ -108,7 +108,7 @@ export const GERMAN_TRANSLATIONS: TranslationMap = {
     featured_streamr: "Vorgestellter Streamr",
 
     btn_report: "Melden",
-    btn_spectate_kill_leader: "Kill-Leader zuschauen",
+    btn_spectate_kill_leader: "Anführer zuschauen",
     btn_spectate: "Zuschauen",
     btn_play_again: "Nochmal spielen",
     btn_menu: "Menü",
@@ -201,10 +201,10 @@ export const GERMAN_TRANSLATIONS: TranslationMap = {
     kf_gas_down: "<player> wurde durch das Gas ausgeknockt",
     kf_airdrop_kill: "<player> wurde tödlich von einem Luftabwurf getroffen",
     kf_airdrop_down: "<player> wurde von einem Luftabwurf ausgeknockt",
-    kf_kl_promotion: "<player> wird zum Kill-Leader befördert!",
-    kf_kl_killed: "<player> hat den Kill-Leader getötet",
-    kf_kl_dead: "Der Kill-Leader ist tot!",
-    kf_kl_suicide: "Der Kill-Leader hat Selbstmord begangen!",
+    kf_kl_promotion: "<player> wird zum Anführer befördert!",
+    kf_kl_killed: "<player> hat den Anführer getötet",
+    kf_kl_dead: "Der Anführer ist tot!",
+    kf_kl_suicide: "Der Anführer hat Selbstmord begangen!",
 
     tt_restores: "<item> stellt <amount> <type> wieder her",
     tt_reduces: "<item> reduziert <percent>% Schaden",
