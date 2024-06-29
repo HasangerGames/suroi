@@ -405,12 +405,8 @@ export class GameMap {
 
                 // if the bridge is sideways it rotates the hitbox accordingly
                 if (!(bestOrientation % 2 == 0) && spawnHitbox.min.x > spawnHitbox.min.y) {
-                    const newMinX = spawnHitbox.min.y;
-                    spawnHitbox.min.y = spawnHitbox.min.x;
-                    spawnHitbox.min.x = newMinX;
-                    const newMaxX = spawnHitbox.max.y;
-                    spawnHitbox.max.y = spawnHitbox.max.x;
-                    spawnHitbox.max.x = newMaxX;
+                    spawnHitbox.min.y = [spawnHitbox.min.x, spawnHitbox.min.x = spawnHitbox.min.y][0];
+                    spawnHitbox.max.y = [spawnHitbox.max.x, spawnHitbox.max.x = spawnHitbox.max.y][0];
                 }
 
                 const hitbox = spawnHitbox.transform(position);
