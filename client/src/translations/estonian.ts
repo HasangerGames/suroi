@@ -132,10 +132,10 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     action_reloading: "Relva laadimine...",
     action_reviving: "Elustamine...",
     action_being_revived: "Teid elustatakse...",
-    action_gauze_use: "<Tarlataani Kasutamine",
+    action_gauze_use: "Tarlataani Kasutamine",
     action_medikit_use: "Esmaabipaki Kasutamine",
     action_cola_use: "Energiajoogi Joomine",
-    action_tablets_use: "Tablette Võtma",
+    action_tablets_use: "Tablettide Võtmine",
 
     interact_airdrop_crate_locked: "Ava Õhudessant",
     interact_control_panel: "Aktiveeri Juhtpaneel",
