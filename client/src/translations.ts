@@ -92,11 +92,19 @@ document.querySelectorAll("body *").forEach((element) => {
     const useHtml = element.getAttribute("use-html")
     if (!requestedTranslation) return;
 
+    const translatedString = getTranslatedString(requestedTranslation)
+
     if (useHtml === null) {
-        (element as HTMLDivElement).innerText = getTranslatedString(requestedTranslation)
+        (element as HTMLDivElement).innerText = translatedString
     } else {
-        element.innerHTML = getTranslatedString(requestedTranslation)
+        element.innerHTML = translatedString
     }
+
+    // Decrease font size for those languages have have really long stuff in buttons
+    if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 10) {
+        (element as HTMLDivElement).style.fontSize = "70%"
+    }
+
     debugTranslationCounter++
 })
 
