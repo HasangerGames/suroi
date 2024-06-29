@@ -23,10 +23,11 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     join_team: "加入队伍",
     msg_locked_tooltip: "游戏每24小时在单人游戏和双人游戏之间切换，因为没有足够的玩家同时进行两种游戏。",
     rules_and_tutorial: "规则与教程",
+    news: "新闻",
     loadout: "装饰",
     settings: "设置",
     fullscreen: "全屏",
-    resume: "恢复",
+    resume: "继续",
     quit: "退出",
     none: "无",
     copy: "复制",
@@ -75,7 +76,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     settings_scope_looping: "循环选择倍镜",
     settings_draw_hud: "平视显示器",
     settings_autopickup: "自动拾取",
-    settings_autopickup_dual_guns: "自动拾取双持枪械",
+    settings_autopickup_dual_guns: "自动拾取双枪",
 
     settings_load_settings: "加载设置",
     settings_copy_settings: "复制设置到剪贴板",
@@ -99,7 +100,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
 
     "emotes_category_People": "人物",
     "emotes_category_Text": "文字",
-    "emotes_category_Memes": "梗",
+    "emotes_category_Memes": "模因",
     "emotes_category_Icons": "图标",
     "emotes_category_Misc": "杂项",
 
@@ -107,12 +108,12 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     featured_streamr: "精选主播",
 
     btn_report: "举报",
-    btn_spectate_kill_leader: "观战击杀之王",
+    btn_spectate_kill_leader: "观战击杀领袖",
     btn_spectate: "观战",
     btn_play_again: "再玩一局",
     btn_menu: "菜单",
 
-    msg_waiting_for_leader: "等待击杀之王",
+    msg_waiting_for_leader: "等待击杀领袖",
     msg_you_died: "你死了。",
     msg_player_died: "<player>死了。",
     msg_win: "大吉大利，今晚吃鸡！",
@@ -124,17 +125,22 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     gas_advancing: "毒气正在扩散！向安全区撤离",
     gas_inactive: "等待玩家中…",
 
-    action_open_door: "打开门",
-    action_close_door: "关闭门",
-    action_revive: "拯救<player>",
+    action_open_door: "开门",
+    action_close_door: "关门",
+    action_revive: "救援<player>",
     action_cancel: "取消",
-    action_reloading: "装填中…",
-    action_reviving: "拯救中…",
-    action_being_revived: "正在被拯救…",
+    action_reloading: "装弹中…",
+    action_reviving: "救援中…",
+    action_being_revived: "正在被救援…",
     action_gauze_use: "应用<item>中",
     action_medikit_use: "使用<item>中",
     action_cola_use: "饮用<item>中",
     action_tablets_use: "服用<item>中",
+
+    interact_airdrop_crate_locked: "解锁空投",
+    interact_control_panel: "激活控制台",
+    interact_generator: "启动发电机",
+    interact_button: "按下按钮",
 
     loading_spritesheets: "加载图像中<progress>",
     loading_connecting: "连接中",
@@ -142,8 +148,8 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     loading_fetching_data: "获取服务器数据中…",
     loading_finding_game: "查找游戏中",
 
-    keybind_clear_tooltip: "要移除键位，请点击键位然后按下<kbd>Escape键</kbd>或<kbd>Backspace键</kbd>。",
-    keybind_reset: "重置为默认",
+    keybind_clear_tooltip: "要移除键位，请点击选择该键位然后按下<kbd>Escape键</kbd>或<kbd>Backspace键</kbd>。",
+    keybind_reset: "重置全部",
     "bindings_+up": "向上移动",
     "bindings_+down": "向下移动",
     "bindings_+left": "向左移动",
@@ -160,7 +166,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "bindings_cycle_items -1": "装备上一武器",
     "bindings_cycle_items 1": "装备下一武器",
     "bindings_+attack": "使用武器",
-    "bindings_drop": "丢弃当前武器",
+    "bindings_drop": "丢弃武器",
     "bindings_reload": "装填弹药",
     "bindings_cycle_scopes -1": "前一倍镜",
     "bindings_cycle_scopes 1": "后一倍镜",
@@ -172,9 +178,9 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "bindings_+view_map": "查看地图",
     "bindings_toggle_map": "开关大地图",
     "bindings_toggle_minimap": "开关小地图",
-    "bindings_toggle_hud": "开关平视监视器",
+    "bindings_toggle_hud": "开关平视显示器",
     "bindings_+emote_wheel": "表情轮盘",
-    "bindings_+map_ping_wheel": "切换至地图标记",
+    "bindings_+map_ping_wheel": "改用地图标记",
     "bindings_+map_ping": "地图标记轮盘",
     "bindings_toggle_console": "开关控制台",
     "bindings_toggle_slot_lock": "锁定武器槽",
@@ -195,6 +201,10 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     kf_gas_down: "<player>被毒气晕倒了",
     kf_airdrop_kill: "<player>被空投压死了",
     kf_airdrop_down: "<player>被空投压倒了",
+    kf_kl_promotion: "<player>晋升为击杀领袖！",
+    kf_kl_killed: "<player>击杀了击杀领袖",
+    kf_kl_dead: "击杀领袖死了！",
+    kf_kl_suicide: "击杀领袖自杀了！",
 
     tt_restores: "<item>恢复<amount><type>",
     tt_reduces: "<item>减少<percent>%受到伤害",
@@ -207,6 +217,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     create_team: "创建队伍",
     create_team_autofill: "自动填充",
     create_team_lock: "锁定队伍",
+    create_team_waiting: "等待中…",
     create_team_play: "开始游戏",
 
     report_reporting: "举报",
@@ -216,11 +227,56 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
       <h4>如何提交举报</h4>
       <ol>
         <li>加入<a href="https://discord.suroi.io">Discord服务器。</a></li>
-        <li>前往<a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+        <li>前往<a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
             频道。</a></li>
         <li>阅读置顶帖中的举报方针。</li>
-        <li>以帖子的形式提交您的报告。</li>
+        <li>以帖子的形式提交您的举报。</li>
       </ol>`,
 
-    languages: "语言"
+    languages: "语言",
+
+    // 战利品
+
+    gauze: "纱布",
+    medikit: "医疗包",
+    cola: "可乐",
+    tablets: "药片",
+
+    basic_vest: "基础护甲",
+    regular_vest: "常规护甲",
+    tactical_vest: "战术护甲",
+    basic_helmet: "基础头盔",
+    regular_helmet: "常规头盔",
+    tactical_helmet: "战术头盔",
+    bag: "包", // 这不应该出现在游戏中
+    basic_pack: "基础背包",
+    regular_pack: "常规背包",
+    tactical_pack: "战术背包",
+
+    "1x_scope": "一倍镜", // 这不应该出现在游戏中
+    "2x_scope": "二倍镜",
+    "4x_scope": "四倍镜",
+    "8x_scope": "八倍镜",
+    "15x_scope": "十五倍镜",
+
+    fists: "拳头",
+    baseball_bat: "棒球棒",
+    hatchet: "斧头",
+    kbar: "卡巴刀",
+    maul: "槌子",
+    gas_can: "汽油桶",
+    heap_sword: "HE-AP剑",
+    steelfang: "钢牙刀",
+    ice_pick: "冰镐",
+    seax: "西克斯剑",
+
+    frag_grenade: "破片手榴弹",
+    smoke_grenade: "烟雾弹",
+    confetti_grenade: "彩色纸屑手榴弹",
+
+    radio: "无线电通话机",
+    deathray: "死亡射线",
+
+    // 对于双持枪械来说
+    dual_template: "双持<gun>"
 }

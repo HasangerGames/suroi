@@ -7,6 +7,7 @@ import { ENGLISH_TRANSLATIONS } from "./translations/english";
 import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
 import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
+import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 
 export type TranslationMap = Record<
         string,
@@ -17,10 +18,6 @@ export const TRANSLATIONS = {
     defaultLanguage: "en",
     translations: {
         en: ENGLISH_TRANSLATIONS,
-        zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
-        hu: HUNGARIAN_TRANSLATIONS,
-        ta: TAMIL_TRANSLATIONS,
-        et: ESTONIAN_TRANSLATIONS,
         fr: {
             name: "Français",
             flag: "🇫🇷",
@@ -30,6 +27,11 @@ export const TRANSLATIONS = {
 
             languages: "Langues"
         },
+        zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
+        vi: VIETNAMESE_TRANSLATIONS,
+        ta: TAMIL_TRANSLATIONS,
+        hu: HUNGARIAN_TRANSLATIONS,
+        et: ESTONIAN_TRANSLATIONS,
         hp18: {
             name: "HP-18",
             flag: `<img height="20" src="./img/game/weapons/hp18.svg" />`
