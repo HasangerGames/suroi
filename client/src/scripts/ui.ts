@@ -1715,6 +1715,8 @@ Video evidence is required.`)) {
         });
     };
 
+    let divMouseDown: NodeJS.Timeout;
+
     // Generate the UI for scopes, healing items, weapons, and ammos
     $<HTMLDivElement>("#weapons-container").append(
         ...Array.from(
@@ -1733,6 +1735,21 @@ Video evidence is required.`)) {
                 );
 
                 const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
+
+                ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+                    clearTimeout(divMouseDown);
+                });
+
+                ele[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+                    divMouseDown = setTimeout(() => {
+                        if (e.button === 0) {
+                            inputManager.addAction({
+                                type: InputActions.DropWeapon,
+                                slot
+                            });
+                        }
+                    }, 600);
+                });
 
                 ele[0].addEventListener("pointerdown", (e: PointerEvent): void => {
                     if (!ele.hasClass("has-item")) return;
@@ -1764,6 +1781,10 @@ Video evidence is required.`)) {
                 </div>`
             );
 
+            ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+                clearTimeout(divMouseDown);
+            });
+
             slotListener(ele, button => {
                 if (button === 0) {
                     inputManager.addAction({
@@ -1778,6 +1799,15 @@ Video evidence is required.`)) {
                         item: scope
                     });
                 }
+
+                divMouseDown = setTimeout(() => {
+                    if (button === 0 && game.teamMode) {
+                        inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: scope
+                        });
+                    }
+                }, 600);
             });
 
             if (UI_DEBUG_MODE) ele.show();
@@ -1804,6 +1834,10 @@ Video evidence is required.`)) {
                 </div>`
             );
 
+            ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+                clearTimeout(divMouseDown);
+            });
+
             slotListener(ele, button => {
                 if (button === 0) {
                     if (inputManager.pingWheelActive) {
@@ -1825,6 +1859,15 @@ Video evidence is required.`)) {
                         item
                     });
                 }
+
+                divMouseDown = setTimeout(() => {
+                    if (button === 0 && game.teamMode) {
+                        inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item
+                        });
+                    }
+                }, 600);
             });
 
             return ele;
@@ -1848,6 +1891,10 @@ Video evidence is required.`)) {
 
         ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
 
+        ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+            clearTimeout(divMouseDown);
+        });
+
         slotListener(ele, button => {
             if (button === 0 && inputManager.pingWheelActive) {
                 inputManager.addAction({
@@ -1862,6 +1909,15 @@ Video evidence is required.`)) {
                     item: ammo
                 });
             }
+
+            divMouseDown = setTimeout(() => {
+                if (button === 0 && game.teamMode) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: ammo
+                    });
+                }
+            }, 600);
         });
     }
 
@@ -1871,6 +1927,10 @@ Video evidence is required.`)) {
             [$<HTMLDivElement>("#vest-slot"), "vest"]
         ] as const
     ) {
+        ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+            clearTimeout(divMouseDown);
+        });
+
         slotListener(ele, button => {
             if (button === 2 && game.activePlayer && game.teamMode) {
                 inputManager.addAction({
@@ -1880,6 +1940,17 @@ Video evidence is required.`)) {
                     item: game.activePlayer.getEquipment(type)!
                 });
             }
+
+            divMouseDown = setTimeout(() => {
+                if (button === 0 && game.activePlayer && game.teamMode) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        // clicking on the slot necessitates the presence of an item
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        item: game.activePlayer.getEquipment(type)!
+                    });
+                }
+            }, 600);
         });
     }
 
