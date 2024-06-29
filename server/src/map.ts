@@ -401,10 +401,10 @@ export class GameMap {
                     return;
                 }
 
-                const spawnHitbox = definition.spawnHitbox.toRectangle();
+                const spawnHitbox = definition.spawnHitbox.toRectangle().clone();
 
                 // if the bridge is sideways it rotates the hitbox accordingly
-                if (!(bestOrientation % 2 == 0) && spawnHitbox.min.x > spawnHitbox.min.y) {
+                if (!(bestOrientation % 2 == 0)) {
                     spawnHitbox.min.y = [spawnHitbox.min.x, spawnHitbox.min.x = spawnHitbox.min.y][0];
                     spawnHitbox.max.y = [spawnHitbox.max.x, spawnHitbox.max.x = spawnHitbox.max.y][0];
                 }
