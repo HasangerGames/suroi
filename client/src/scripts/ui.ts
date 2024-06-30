@@ -184,7 +184,7 @@ export async function setUpUI(game: Game): Promise<void> {
     // Load server list
     const regionUICache: Record<string, JQuery<HTMLLIElement>> = {};
 
-    for (const [regionID, region] of regionMap) {
+    for (const [regionID] of regionMap) {
         /* <span style="margin-left: 5px">
           <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
           <span class="server-ping">-</span>
@@ -192,7 +192,7 @@ export async function setUpUI(game: Game): Promise<void> {
         serverList.append(
             regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
-                    <span class="server-name">${region.name}</span>
+                    <span class="server-name">${getTranslatedString(`region_${regionID}`)}</span>
                     <span style="margin-left: auto">
                       <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
@@ -256,7 +256,7 @@ export async function setUpUI(game: Game): Promise<void> {
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", "");
         }
-        serverName.text(selectedRegion.name);
+        serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();

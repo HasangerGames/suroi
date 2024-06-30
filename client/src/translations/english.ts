@@ -284,5 +284,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "confetti_grenade": "Confetti Grenade",
 
     // For dual guns
-    "dual_template": "Dual <gun>"
+    "dual_template": "Dual <gun>",
+
+    // regions
+    "region_dev": "Localhost Server",
+    "region_na": "North America",
+    "region_eu": "Europe",
+    "region_sa": "South America",
+    "region_as": "Asia"
 };

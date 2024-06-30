@@ -278,5 +278,12 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "deathray": "死亡射线",
 
     // 对于双持枪械来说
-    "dual_template": "双持<gun>"
+    "dual_template": "双持<gun>",
+
+    // 地区
+    "region_dev": "本地",
+    "region_na": "北美",
+    "region_eu": "欧洲",
+    "region_sa": "南美",
+    "region_as": "亚洲"
 };
