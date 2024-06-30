@@ -190,7 +190,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "kf_two_party_kill": "<player> megölte <victim>-t",
     "kf_two_party_down": "<player> kiütötte <victim>-t",
     "kf_bleed_out_kill": "<player> kivérzett",
-    "kf_bleed_out_down": "<player kivérzett nem halálosan",
+    "kf_bleed_out_down": "<player> kivérzett nem halálosan",
     "kf_finished_off_kill": "<player> kivégezte <victim>-t",
     "kf_finished_off_down": "<player> finoman kivégezte <victim>-t",
     "kf_finally_died": "<player> végleg meghalt",

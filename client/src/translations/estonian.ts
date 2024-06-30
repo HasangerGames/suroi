@@ -190,7 +190,7 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "kf_two_party_kill": "<player> tappis <victim>",
     "kf_two_party_down": "<player> lõi <victim> maha",
     "kf_bleed_out_kill": "<player> jooksis verest tühjaks",
-    "kf_bleed_out_down": "<player jooksis mittesurmavalt verest tühjaks",
+    "kf_bleed_out_down": "<player> jooksis mittesurmavalt verest tühjaks",
     "kf_finished_off_kill": "<player> lõpetas <victim> elu",
     "kf_finished_off_down": "<player> lõpetas õrnalt <victim> elu",
     "kf_finally_died": "<player> lõpuks suri",

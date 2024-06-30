@@ -189,7 +189,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "kf_two_party_kill": "<player> öldürdü <victim>",
     "kf_two_party_down": "<player> bayılttı <victim>",
     "kf_bleed_out_kill": "<player> kanayarak öldü",
-    "kf_bleed_out_down": "<player kanayarak bayıldı",
+    "kf_bleed_out_down": "<player> kanayarak bayıldı",
     "kf_finished_off_kill": "<player> işini bitirdi <victim>",
     "kf_finished_off_down": "<player> yavaşça işini bitirdi <victim>",
     "kf_finally_died": "<player> sonunda öldü",
