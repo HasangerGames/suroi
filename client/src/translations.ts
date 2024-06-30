@@ -45,9 +45,9 @@ export const TRANSLATIONS = {
 
 const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}") as LocalStorage;
 
-export function getTranslatedString(id: string, replacements?: Record<string, string>): string {
-    const language = localStorage.variables.cv_language ?? defaultClientCVars.cv_language;
+export const language = localStorage.variables.cv_language ?? defaultClientCVars.cv_language;
 
+export function getTranslatedString(id: string, replacements?: Record<string, string>): string {
     // Easter egg language
     if (language === "hp18") return "HP-18";
 
@@ -100,7 +100,7 @@ document.querySelectorAll("body *").forEach(element => {
     }
 
     // Decrease font size for those languages have have really long stuff in buttons
-    if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 12) {
+    if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 12 && language !== "en") {
         (element as HTMLDivElement).style.fontSize = "70%";
     }
 

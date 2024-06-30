@@ -22,7 +22,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { TRANSLATIONS, getTranslatedString } from "../translations";
+import { TRANSLATIONS, getTranslatedString, language } from "../translations";
 
 interface RegionInfo {
     readonly name: string
@@ -110,7 +110,7 @@ export async function setUpUI(game: Game): Promise<void> {
     });
     $("#close-select-language").on("click", () => {
         $("#select-language-menu").css("display", "none");
-        location.reload();
+        if (language !== game.console.getBuiltInCVar("cv_language")) location.reload();
     });
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
@@ -123,7 +123,6 @@ export async function setUpUI(game: Game): Promise<void> {
         `);
         $<HTMLInputElement>(`#language-${language}`).on("click", () => {
             game.console.setBuiltInCVar("cv_language", language);
-            console.log(game.console.getBuiltInCVar("cv_language"));
         }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
     }
 
