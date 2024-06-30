@@ -282,5 +282,12 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "s_g17": "G17 (távcsővel)",
 
     // For dual guns
-    "dual_template": "Dupla <gun>"
+    "dual_template": "Dupla <gun>",
+
+    // regions
+    "region_dev": "Helyi szerver",
+    "region_na": "Észak-Amerika",
+    "region_eu": "Európa",
+    "region_sa": "Dél-Amerika",
+    "region_as": "Ázsia"
 };
