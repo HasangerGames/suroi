@@ -1026,12 +1026,22 @@ export class Game implements GameData {
             for (const airdrop of this.airdrops) {
                 thisHitbox = crateHitbox.transform(position);
                 const thatHitbox = (airdrop.type.spawnHitbox ?? airdrop.type.hitbox).transform(airdrop.position);
+                const unchangedHitbox = thisHitbox.clone();
 
                 if (thisHitbox.collidesWith(thatHitbox)) {
                     collided = true;
                     thisHitbox.resolveCollision(thatHitbox);
+
+                    position = thisHitbox.getCenter();
+
+                    if (unchangedHitbox.toRectangle().min.x == thisHitbox.toRectangle().min.x && unchangedHitbox.toRectangle().min.y == thisHitbox.toRectangle().min.y) {
+                        const crateLength = airdrop.type.spawnHitbox!.toRectangle().max.x - airdrop.type.spawnHitbox!.toRectangle().min.x;
+                        const random = Math.floor(Math.random() * 2);
+
+                        if (random == 0) position.x = position.x + crateLength;
+                        else position.x = position.x - crateLength;
+                    }
                 }
-                position = thisHitbox.getCenter();
                 if (collided) break;
             }
 
