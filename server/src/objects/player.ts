@@ -484,8 +484,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             determinePreset(2, melee, killsM);
         }
 
-        this.fillInventory();
-
         this.updateAndApplyModifiers();
 
         // good chance that if these were changed, they're meant to be applied

@@ -177,7 +177,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (!definition.infiniteAmmo) {
-            // --this.ammo;
+            --this.ammo;
         }
 
         if (this.ammo <= 0) {
