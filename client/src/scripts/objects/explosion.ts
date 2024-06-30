@@ -54,6 +54,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
     }
 
     game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+    game.camera.shockwave(10000, position, 300, 100000, 1);
 
     if (definition.sound !== undefined) {
         game.soundManager.play(

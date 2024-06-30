@@ -1,4 +1,4 @@
-import { Container, type Application } from "pixi.js";
+import { Container, Filter, type Application } from "pixi.js";
 import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 import { randomFloat } from "../../../../common/src/utils/random";
@@ -6,6 +6,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { type Tween } from "../utils/tween";
+import { ShockwaveFilter } from "pixi-filters";
 
 export class Camera {
     readonly pixi: Application;
@@ -27,6 +28,8 @@ export class Camera {
     shakeDuration!: number;
     shakeIntensity!: number;
 
+    shockwaves: Array<Shockwave> = [];
+
     width = 1;
     height = 1;
 
@@ -40,7 +43,8 @@ export class Camera {
         this.pixi = game.pixi;
         this.container = new Container({
             isRenderGroup: true,
-            sortableChildren: true
+            sortableChildren: true,
+            filters: []
         });
     }
 
@@ -81,6 +85,12 @@ export class Camera {
             if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
         }
 
+        if (this.shockwaves.length > 0) {
+            for (const shockwave of this.shockwaves) {
+                shockwave.update();
+            }
+        }
+
         const cameraPos = Vec.add(
             Vec.scale(position, this.container.scale.x),
             Vec.create(-this.width / 2, -this.height / 2)
@@ -97,7 +107,74 @@ export class Camera {
         this.shakeIntensity = intensity;
     }
 
+    shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number) {
+        if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
+        this.shockwaves.push(new Shockwave(this.game, duration, position, amplitude, wavelength, speed))
+    }
+
     addObject(...objects: Container[]): void {
         this.container.addChild(...objects);
+    }
+}
+
+export class Shockwave {
+    game: Game;
+    position: Vector;
+    wavelength: number;
+    speed: number;
+    lifeStart: number;
+    lifeEnd: number;
+    filter: ShockwaveFilter;
+
+    constructor(game: Game, lifetime: number, position: Vector, amplitude: number, wavelength: number, speed: number) {
+        this.game = game;
+        this.lifeStart = Date.now()
+        this.lifeEnd = this.lifeStart + lifetime;
+        this.position = position;
+        this.wavelength = wavelength;
+        this.speed = speed;
+
+        const renderedPositionAndScale = this.calculatePositionAndScale()
+
+        this.filter = new ShockwaveFilter({
+            center: renderedPositionAndScale.position,
+            amplitude,
+            speed: this.speed * renderedPositionAndScale.scale,
+            wavelength: this.wavelength * renderedPositionAndScale.scale
+        });
+
+
+        // TODO: figure out why this doesn't work
+        this.game.camera.container.filters.push(this.filter)
+        console.log(this.game.camera.container.filters)
+    }
+
+    update(): void {
+        const now = Date.now();
+        if (now > this.lifeEnd) {
+            this.destroy();
+            return;
+        }
+
+        const {position, scale} = this.calculatePositionAndScale();
+
+        this.filter.center = position;
+
+        this.filter.wavelength = this.wavelength * scale
+
+        this.filter.speed = this.speed * scale
+
+        this.filter.time = now - this.lifeStart;
+    }
+
+    calculatePositionAndScale(): {position: Vector, scale: number} {
+        return {
+            position: Vec.sub(this.position, this.game.camera.position),
+            scale: 1 / this.game.camera.zoom
+        }
+    }
+
+    destroy(): void {
+        this.filter.destroy();
     }
 }
