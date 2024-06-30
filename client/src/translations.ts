@@ -94,7 +94,7 @@ document.querySelectorAll("body *").forEach(element => {
     }
 
     // Decrease font size for those languages have have really long stuff in buttons
-    if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 10) {
+    if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 12) {
         (element as HTMLDivElement).style.fontSize = "70%";
     }
 
