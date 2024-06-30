@@ -273,9 +273,9 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "mosin": "Mosin-Nagant",
     "radio": "Radio",
     "lewis_gun": "Lewis Gun",
-    "deathray": "Deathray",
+    "deathray": "Death Ray",
     "firework_launcher": "Firework Launcher",
-    "arena_closer": "Destroyer of Worlds",
+    "arena_closer": "Destroyer Of Worlds",
     "revitalizer": "Revitalizer",
     "s_g17": "G17 (Scoped)",
 

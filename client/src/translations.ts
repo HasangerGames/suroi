@@ -11,6 +11,12 @@ import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 
+interface LocalStorage {
+    variables: {
+        cv_language: string
+    }
+}
+
 export type TranslationMap = Record<
     string,
     (string | ((replacements: Record<string, string>) => string))
@@ -37,9 +43,9 @@ export const TRANSLATIONS = {
     readonly translations: Record<string, TranslationMap>
 };
 
-const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}");
+const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}") as LocalStorage;
 
-export function getTranslatedString(id: string, replacements?: Record<string, string>) {
+export function getTranslatedString(id: string, replacements?: Record<string, string>): string {
     const language = localStorage.variables.cv_language ?? defaultClientCVars.cv_language;
 
     // Easter egg language
