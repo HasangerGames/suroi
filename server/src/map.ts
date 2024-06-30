@@ -396,33 +396,38 @@ export class GameMap {
                         Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
                     ].some(point => this.terrain.getFloor(point) === "water")
                 ) return;
-                // checks if the distance between this position and the new bridge's position is less than bridgeSpawnOptions.minRiverWidth HOPEFULLY fixing the spawn problems
-                if (this.occupiedBridgePositions.some(pos => Math.sqrt((pos.x - position.x) ** 2 + (pos.y - position.y) ** 2) < bridgeSpawnOptions.minRiverWidth)) {
-                    return;
-                }
 
-                const spawnHitbox = definition.spawnHitbox.toRectangle().clone();
+                // checks if the distance between this position and the new bridge's position is less than
+                // bridgeSpawnOptions.minRiverWidth HOPEFULLY fixes the spawn problems
+                if (
+                    this.occupiedBridgePositions.some(
+                        pos => (pos.x - position.x) ** 2 + (pos.y - position.y) ** 2 < bridgeSpawnOptions.minRiverWidth ** 2
+                    )
+                ) return;
+
+                const spawnHitbox = definition.spawnHitbox.toRectangle();
 
                 // if the bridge is sideways it rotates the hitbox accordingly
-                if (!(bestOrientation % 2 == 0)) {
-                    spawnHitbox.min.y = [spawnHitbox.min.x, spawnHitbox.min.x = spawnHitbox.min.y][0];
-                    spawnHitbox.max.y = [spawnHitbox.max.x, spawnHitbox.max.x = spawnHitbox.max.y][0];
+                if (bestOrientation % 2) {
+                    const { min, max } = spawnHitbox;
+
+                    [
+                        min.y, min.x,
+                        max.y, max.x
+                    ] = [
+                        min.x, min.y,
+                        max.x, max.y
+                    ];
                 }
 
                 const hitbox = spawnHitbox.transform(position);
 
                 // checks if the bridge hitbox collides with another object and if so does not spawn it
-                const objects = this.game.grid.intersectsHitbox(hitbox);
-                for (const object of objects) {
-                    let objectHitbox: Hitbox | undefined;
-                    if ("spawnHitbox" in object) {
-                        objectHitbox = object.spawnHitbox;
-                    }
-                    if (objectHitbox === undefined) continue;
+                for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                    const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
 
-                    if (hitbox.collidesWith(objectHitbox)) {
-                        return;
-                    }
+                    if (!objectHitbox) continue;
+                    if (hitbox.collidesWith(objectHitbox)) return;
                 }
 
                 this.occupiedBridgePositions.push(position);
