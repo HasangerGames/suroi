@@ -811,10 +811,12 @@ export async function setUpUI(game: Game): Promise<void> {
         else joinGame();
     });
 
-    const sendSpectatePacket = (action: SpectateActions): void => {
-        const packet = new SpectatePacket();
-        packet.spectateAction = action;
-        game.sendPacket(packet);
+    const sendSpectatePacket = (action: Exclude<SpectateActions, SpectateActions.SpectateSpecific>): void => {
+        game.sendPacket(
+            SpectatePacket.create({
+                spectateAction: action
+            })
+        );
     };
 
     ui.btnSpectate.on("click", () => {

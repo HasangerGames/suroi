@@ -1,15 +1,23 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { InputActions } from "../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
-import { Skins } from "../../common/src/definitions/skins";
+import { Skins, type SkinDefinition } from "../../common/src/definitions/skins";
 import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
-import { InputPacket, type InputAction } from "../../common/src/packets/inputPacket";
+import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { type Packet } from "../../common/src/packets/packet";
+import { type InputPacket, type OutputPacket } from "../../common/src/packets/packet";
 import { PacketStream } from "../../common/src/packets/packetStream";
+import { UpdatePacket } from "../../common/src/packets/updatePacket";
 import { type GetGameResponse } from "../../common/src/typings";
-import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
+import { Geometry, π } from "../../common/src/utils/math";
+import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
+import { type FullData } from "../../common/src/utils/objectsSerializations";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
+import { Vec, type Vector } from "../../common/src/utils/vector";
+import { removeFrom } from "../../server/src/utils/misc";
+
+console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
@@ -18,68 +26,76 @@ const config = {
     joinDelay: 100
 };
 
-const skins: string[] = [];
+const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
+    .filter(({ hideFromLoadout, roleRequired }) => !hideFromLoadout && !roleRequired)
+    .map(({ idString }) => idString);
 
-for (const skin of Skins) {
-    if (!skin.hideFromLoadout && !skin.roleRequired) skins.push(skin.idString);
-}
-
-const bots = new Set<Bot>();
+const bots: Bot[] = [];
+const objects = new Map<number, Bot | undefined>();
 
 let allBotsJoined = false;
 
 class Bot {
-    moving = {
+    private _moving = {
         up: false,
         down: false,
         left: false,
         right: false
     };
 
-    shootStart = false;
+    private _serverId?: number;
 
-    interact = false;
+    position = Vec.create(0, 0);
 
-    emotes: EmoteDefinition[];
+    private _shootStart = false;
 
-    emote = false;
+    private _interact = false;
 
-    angle = random(-Math.PI, Math.PI);
-    angularSpeed = random(0, 0.1);
+    private _swap = false;
 
-    distanceToMouse = 50;
+    private _slot = -1;
 
-    connected = false;
+    private readonly _emotes: readonly EmoteDefinition[];
 
-    disconnect = false;
+    private _emote = false;
 
-    id: number;
+    private _angle = random(-Math.PI, Math.PI);
 
-    ws: WebSocket;
+    private ["admin he doing it sideways"] = false;
 
-    lastInputPacket?: InputPacket;
+    private readonly _angularSpeed = random(0.02, 0.1) * randomSign();
 
-    constructor(id: number, gameID: number) {
-        this.id = id;
+    private readonly _distanceToMouse = random(30, 80);
 
-        this.ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
+    private _connected = false;
+    get connected(): boolean { return this._connected; }
 
-        this.ws.addEventListener("error", console.error);
+    private _disconnected = false;
+    get disconnected(): boolean { return this._disconnected; }
 
-        this.ws.addEventListener("open", this.join.bind(this));
+    private readonly _ws: WebSocket;
 
-        this.ws.addEventListener("close", () => {
-            this.disconnect = true;
-            this.connected = false;
+    private _lastInputPacket?: InputPacket<PlayerInputData>;
+
+    constructor(readonly id: number, gameID: number) {
+        this._ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
+
+        this._ws.addEventListener("error", console.error);
+
+        this._ws.addEventListener("open", this.join.bind(this));
+
+        this._ws.addEventListener("close", () => {
+            this._disconnected = true;
+            this._connected = false;
         });
 
-        this.ws.binaryType = "arraybuffer";
+        this._ws.binaryType = "arraybuffer";
 
         const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
 
-        this.emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
+        this._emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
 
-        this.ws.onmessage = (message: MessageEvent): void => {
+        this._ws.onmessage = (message: MessageEvent): void => {
             const stream = new PacketStream(message.data as ArrayBuffer);
             while (true) {
                 const packet = stream.deserializeServerPacket();
@@ -89,123 +105,217 @@ class Bot {
         };
     }
 
-    onPacket(packet: Packet): void {
+    onPacket(packet: OutputPacket): void {
+        const updatePosition = (data: FullData<ObjectCategory>, object: Bot, id: number): void => {
+            const { position } = data as FullData<ObjectCategory.Player>;
+
+            object.position.x = position.x;
+            object.position.y = position.y;
+
+            if (id === this._serverId) {
+                this.position.x = position.x;
+                this.position.y = position.y;
+            }
+        };
+
         switch (true) {
             case packet instanceof GameOverPacket: {
-                console.log(`Bot ${this.id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
-                this.disconnect = true;
-                this.connected = false;
-                this.ws.close();
+                const { output } = packet;
+                console.log(`Bot ${this.id} ${output.won ? "won" : "died"} | kills: ${output.kills} | rank: ${output.rank}`);
+                this._disconnected = true;
+                this._connected = false;
+                this._ws.close();
+                break;
+            }
+            case packet instanceof UpdatePacket: {
+                const { output } = packet;
+
+                this._serverId ??= output.playerData?.id?.id;
+                this._slot = output.playerData?.inventory?.activeWeaponIndex ?? this._slot;
+
+                for (const { id } of output.newPlayers ?? []) {
+                    objects.set(id, bots.find(({ _serverId }) => _serverId === id));
+                }
+
+                for (const { id, type, data } of output.fullDirtyObjects ?? []) {
+                    if (type !== ObjectCategory.Player) continue;
+
+                    const object: Bot | undefined = objects.get(id);
+
+                    if (object === undefined) {
+                        objects.set(id, bots.find(({ _serverId }) => _serverId === id));
+                    } else {
+                        updatePosition(data, object, id);
+                    }
+                }
+
+                for (const { id, data } of output.partialDirtyObjects ?? []) {
+                    const object = objects.get(id);
+                    if (object === undefined) continue;
+
+                    updatePosition(data, object, id);
+                }
+
+                for (const id of output.deletedObjects ?? []) {
+                    objects.delete(id);
+                }
+
+                for (const id of output.deletedPlayers ?? []) {
+                    objects.delete(id);
+                }
+
                 break;
             }
         }
     }
 
-    stream = new PacketStream(new ArrayBuffer(1024));
+    private readonly _stream = new PacketStream(new ArrayBuffer(1024));
 
     join(): void {
-        this.connected = true;
+        this._connected = true;
 
-        const joinPacket = new JoinPacket();
-
-        joinPacket.name = `BOT_${this.id}`;
-        joinPacket.isMobile = false;
-
-        joinPacket.skin = Loots.reify(pickRandomInArray(skins));
-        joinPacket.emotes = this.emotes;
-        this.sendPacket(joinPacket);
+        this.sendPacket(
+            JoinPacket.create({
+                name: `BOT_${this.id}`,
+                isMobile: false,
+                skin: Loots.reify(pickRandomInArray(skins)),
+                emotes: this._emotes
+            })
+        );
     }
 
-    sendPacket(packet: Packet): void {
-        this.stream.stream.index = 0;
-        this.stream.serializeClientPacket(packet);
+    sendPacket(packet: InputPacket): void {
+        this._stream.stream.index = 0;
+        this._stream.serializeClientPacket(packet);
 
-        this.ws.send(this.stream.getBuffer());
+        this._ws.send(this._stream.getBuffer());
     }
+
+    private _dontCommitGrenadeSuicideTimer?: NodeJS.Timeout;
+    private _grenadeSuicidePrevention = false;
 
     sendInputs(): void {
-        if (!this.connected) return;
+        if (!this._connected) return;
 
-        const inputPacket = new InputPacket();
+        let target: Vector | undefined;
+        let aimhax = false;
+        if (
+            this["admin he doing it sideways"]
+            && (
+                target = [...objects.entries()]
+                    .filter((([id, bot]) => id !== this._serverId && bot !== undefined) as (entry: [number, Bot | undefined]) => entry is [number, Bot])
+                    .sort(
+                        ([, a], [, b]) => Geometry.distanceSquared(this.position, a.position) - Geometry.distanceSquared(this.position, b.position)
+                    )[0]?.[1].position
+            )
+        ) {
+            const diff = Vec.sub(target, this.position);
+            aimhax = !Number.isNaN(this._angle = Math.atan2(diff.y, diff.x));
+        } else {
+            this._angle += this._angularSpeed;
+        }
 
-        inputPacket.movement = {
-            ...this.moving
-        };
-        inputPacket.attacking = this.shootStart;
-        inputPacket.turning = true;
-        inputPacket.rotation = this.angle;
-        inputPacket.distanceToMouse = this.distanceToMouse;
+        if (this._angle > π) this._angle = -π + (this._angle - π);
 
-        this.angle += this.angularSpeed;
-        if (this.angle > Math.PI) this.angle = -Math.PI;
+        const actions: InputAction[] = [];
+        if (this._emote) {
+            this._emote = false;
 
-        let action: InputAction | undefined;
-        if (this.emote) {
-            this.emote = false;
-
-            action = {
+            actions.push({
                 type: InputActions.Emote,
-                emote: pickRandomInArray(this.emotes)
-            };
-        } else if (this.interact) {
-            action = { type: InputActions.Interact };
+                emote: pickRandomInArray(this._emotes)
+            });
         }
 
-        if (action) inputPacket.actions = [action];
+        if (this._interact) {
+            actions.push({ type: InputActions.Interact });
+        }
 
-        if (!this.lastInputPacket || inputPacket.didChange(this.lastInputPacket)) {
+        if (this._swap) {
+            this._swap = false;
+            const slot = aimhax ? random(0, 1) : random(0, GameConstants.player.maxWeapons - 1);
+            actions.push({ type: InputActions.EquipItem, slot });
+
+            if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable && this._shootStart) {
+                this._dontCommitGrenadeSuicideTimer ??= setTimeout(() => {
+                    this._grenadeSuicidePrevention = true;
+                    this._dontCommitGrenadeSuicideTimer = undefined;
+                }, randomFloat(0, 4000));
+            }
+        } else if (aimhax && this._slot >= 2) {
+            actions.push({ type: InputActions.EquipItem, slot: random(0, 1) });
+        }
+
+        const inputPacket = PlayerInputPacket.create({
+            movement: { ...this._moving },
+            attacking: (this._shootStart || aimhax) && !this._grenadeSuicidePrevention,
+            isMobile: false,
+            turning: true,
+            rotation: this._angle,
+            distanceToMouse: this._distanceToMouse,
+            actions: actions
+        });
+
+        if (!this._lastInputPacket || areDifferent(inputPacket, this._lastInputPacket)) {
             this.sendPacket(inputPacket);
-            this.lastInputPacket = inputPacket;
+            this._lastInputPacket = inputPacket;
         }
+
+        if (this._grenadeSuicidePrevention) this._grenadeSuicidePrevention = false;
     }
 
     updateInputs(): void {
-        this.moving = {
+        this._moving = {
             up: false,
             down: false,
             left: false,
             right: false
         };
 
-        this.shootStart = randomBoolean();
-        this.interact = randomBoolean();
-        this.emote = randomBoolean();
+        this._shootStart = randomBoolean();
+        this._interact = randomBoolean();
+        this._swap = randomBoolean();
+        this._emote = randomBoolean();
+        this["admin he doing it sideways"] = randomBoolean();
 
         switch (random(1, 8)) {
             case 1:
-                this.moving.up = true;
+                this._moving.up = true;
                 break;
             case 2:
-                this.moving.down = true;
+                this._moving.down = true;
                 break;
             case 3:
-                this.moving.left = true;
+                this._moving.left = true;
                 break;
             case 4:
-                this.moving.right = true;
+                this._moving.right = true;
                 break;
             case 5:
-                this.moving.up = true;
-                this.moving.left = true;
+                this._moving.up = true;
+                this._moving.left = true;
                 break;
             case 6:
-                this.moving.up = true;
-                this.moving.right = true;
+                this._moving.up = true;
+                this._moving.right = true;
                 break;
             case 7:
-                this.moving.down = true;
-                this.moving.left = true;
+                this._moving.down = true;
+                this._moving.left = true;
                 break;
             case 8:
-                this.moving.down = true;
-                this.moving.right = true;
+                this._moving.down = true;
+                this._moving.right = true;
                 break;
         }
     }
 }
 
 void (async() => {
-    for (let i = 1; i <= config.botCount; i++) {
+    const { botCount, joinDelay } = config;
+    console.log("scheduling joins");
+
+    for (let i = 1; i <= botCount; i++) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setTimeout(async() => {
             const gameData = await (await fetch(`${config.mainAddress}/api/getGame`)).json() as GetGameResponse;
@@ -215,24 +325,26 @@ void (async() => {
                 return;
             }
 
-            bots.add(new Bot(i, gameData.gameID));
-            if (i === config.botCount) allBotsJoined = true;
-        }, i * config.joinDelay);
+            bots.push(new Bot(i, gameData.gameID));
+            if (i === botCount) allBotsJoined = true;
+            if (i === 1) console.log("here we go");
+        }, i * joinDelay);
     }
 })();
 
+console.log("setting up loop");
 setInterval(() => {
     for (const bot of bots) {
         if (Math.random() < 0.02) bot.updateInputs();
 
         bot.sendInputs();
 
-        if (bot.disconnect) {
-            bots.delete(bot);
+        if (bot.disconnected) {
+            removeFrom(bots, bot);
         }
     }
 
-    if (bots.size === 0 && allBotsJoined) {
+    if (bots.length === 0 && allBotsJoined) {
         console.log("All bots died or disconnected, exiting.");
         process.exit();
     }

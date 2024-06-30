@@ -224,10 +224,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.body.eventMode = "static";
         this.images.body.on("pointerdown", (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
-            const packet = new SpectatePacket();
-            packet.spectateAction = SpectateActions.SpectateSpecific;
-            packet.playerID = this.id;
-            this.game.sendPacket(packet);
+            this.game.sendPacket(
+                SpectatePacket.create({
+                    spectateAction: SpectateActions.SpectateSpecific,
+                    playerID: this.id
+                })
+            );
         });
 
         this.updateFromData(data, true);
@@ -534,24 +536,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.bleedEffectInterval = undefined;
             }
 
-            if (this.dead && this.teammateName) this.teammateName.container.visible = false;
+            if (this.dead) {
+                if (this.teammateName) this.teammateName.container.visible = false;
 
-            if (this.dead && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-                this.game.particleManager.spawnParticles(random(15, 30), () => ({
-                    frames: "blood_particle",
-                    lifetime: random(1000, 3000),
-                    position: this.position,
-                    alpha: {
-                        start: 1,
-                        end: 0
-                    },
-                    scale: {
-                        start: randomFloat(0.8, 1.6),
-                        end: 0
-                    },
-                    speed: randomPointInsideCircle(Vec.create(0, 0), 4),
-                    zIndex: ZIndexes.Players + 1
-                }));
+                if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                    this.game.particleManager.spawnParticles(random(15, 30), () => ({
+                        frames: "blood_particle",
+                        lifetime: random(1000, 3000),
+                        position: this.position,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: randomFloat(0.8, 1.6),
+                            end: 0
+                        },
+                        speed: randomPointInsideCircle(Vec.create(0, 0), 4),
+                        zIndex: ZIndexes.Players + 1
+                    }));
+                }
             }
 
             this._oldItem = this.activeItem;

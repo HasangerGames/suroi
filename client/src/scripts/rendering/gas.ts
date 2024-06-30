@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { GasState, ZIndexes } from "../../../../common/src/constants";
-import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
+import type { UpdatePacketDataOut } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -48,10 +48,10 @@ export class Gas {
         };
     }
 
-    updateFrom(data: UpdatePacket): void {
+    updateFrom(data: UpdatePacketDataOut): void {
         const gas = data.gas;
 
-        const gasProgress = data.gasProgress?.value;
+        const gasProgress = data.gasProgress;
 
         if (gas) {
             this.state = gas.state;

@@ -304,12 +304,14 @@ export class SuroiBitStream extends BitStream {
      * @param bits The maximum length of bits to read
      * @see {@link SuroiBitStream.readAndCreateArray()}
      */
-    readArray<T>(out: T[], bits: number, deserializeFn: () => T): void {
+    readArray<T, U extends T[]>(out: U, bits: number, deserializeFn: () => T): U {
         const size = this.readBits(bits);
 
         for (let i = 0; i < size; i++) {
             out.push(deserializeFn());
         }
+
+        return out;
     }
 
     /**

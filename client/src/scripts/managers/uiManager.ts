@@ -8,20 +8,20 @@ import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
-import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
-import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
+import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
+import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
+import { type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { getTranslatedString } from "../../translations";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -41,7 +41,7 @@ export class UIManager {
 
     readonly inventory: {
         activeWeaponIndex: number
-        weapons: PlayerData["inventory"]["weapons"] & object
+        weapons: (PlayerData["inventory"] & object)["weapons"] & object
         lockedSlots: number
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
@@ -53,9 +53,9 @@ export class UIManager {
             scope: DEFAULT_SCOPE
         };
 
-    emotes: Array<EmoteDefinition | undefined> = [];
+    emotes: ReadonlyArray<EmoteDefinition | undefined> = [];
 
-    teammates: (UpdatePacket["playerData"] & object)["teammates"] = [];
+    teammates: PlayerData["teammates"] & object = [];
 
     readonly debugReadouts = Object.freeze({
         fps: $<HTMLSpanElement>("#fps-counter"),
@@ -350,7 +350,7 @@ export class UIManager {
 
     gameOverScreenTimeout: number | undefined;
 
-    showGameOverScreen(packet: GameOverPacket): void {
+    showGameOverScreen(packet: GameOverData): void {
         const game = this.game;
 
         this.ui.interactMsg.hide();
@@ -451,18 +451,30 @@ export class UIManager {
     private _oldHealth = 0;
 
     updateUI(data: PlayerData): void {
-        if (data.id !== undefined) this.game.activePlayerID = data.id;
+        const {
+            minMax,
+            health,
+            adrenaline,
+            zoom,
+            id,
+            teammates,
+            inventory,
+            lockedSlots,
+            items
+        } = data;
 
-        if (data.dirty.id) {
-            const spectating = data.spectating;
+        if (id !== undefined) this.game.activePlayerID = id.id;
+
+        if (id) {
+            const spectating = id.spectating;
             this.game.spectating = spectating;
 
             if (spectating) {
-                const badge = this.getPlayerBadge(data.id);
+                const badge = this.getPlayerBadge(id.id);
                 const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
-                this.ui.spectatingMsgPlayer.html(this.getPlayerName(data.id) + badgeText);
+                this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
             }
             this.ui.spectatingContainer.toggle(spectating);
             this.ui.spectatingMsg.toggle(spectating);
@@ -475,8 +487,8 @@ export class UIManager {
             }
         }
 
-        if (data.dirty.teammates && this.game.teamMode) {
-            this.teammates = data.teammates;
+        if (teammates && this.game.teamMode) {
+            this.teammates = teammates;
 
             const _teammateDataCache = this._teammateDataCache;
             const notVisited = new Set(_teammateDataCache.keys());
@@ -489,7 +501,7 @@ export class UIManager {
                     disconnected: false,
                     position: undefined
                 },
-                ...data.teammates
+                ...teammates
             ].forEach((player, index) => {
                 const { id } = player;
                 notVisited.delete(id);
@@ -536,12 +548,12 @@ export class UIManager {
             }
         }
 
-        if (data.zoom) this.game.camera.zoom = data.zoom;
+        if (zoom) this.game.camera.zoom = zoom;
 
-        if (data.dirty.maxMinStats) {
-            this.maxHealth = data.maxHealth;
-            this.minAdrenaline = data.minAdrenaline;
-            this.maxAdrenaline = data.maxAdrenaline;
+        if (minMax) {
+            this.maxHealth = minMax.maxHealth;
+            this.minAdrenaline = minMax.minAdrenaline;
+            this.maxAdrenaline = minMax.maxAdrenaline;
 
             if (this.maxHealth === GameConstants.player.defaultHealth) {
                 this.ui.maxHealth.text("").hide();
@@ -559,8 +571,8 @@ export class UIManager {
             }
         }
 
-        if (data.dirty.health) {
-            this.health = Numeric.remap(data.normalizedHealth, 0, 1, 0, this.maxHealth);
+        if (health !== undefined) {
+            this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
 
             const normalizedHealth = this.health / this.maxHealth;
             const realPercentage = 100 * normalizedHealth;
@@ -589,8 +601,8 @@ export class UIManager {
                 .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
-        if (data.dirty.adrenaline) {
-            this.adrenaline = Numeric.remap(data.normalizedAdrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
+        if (adrenaline !== undefined) {
+            this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
             const percentage = 100 * this.adrenaline / this.maxAdrenaline;
 
             this.ui.adrenalineBar.width(`${percentage}%`);
@@ -600,25 +612,23 @@ export class UIManager {
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
-        const inventory = data.inventory;
-
-        if (inventory.weapons) {
+        if (inventory?.weapons) {
             this.inventory.weapons = inventory.weapons;
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
         }
 
-        if (inventory.lockedSlots !== undefined) {
-            this.inventory.lockedSlots = inventory.lockedSlots;
+        if (lockedSlots !== undefined) {
+            this.inventory.lockedSlots = lockedSlots;
             this.updateSlotLocks();
         }
 
-        if (inventory.items) {
-            this.inventory.items = inventory.items;
-            this.inventory.scope = inventory.scope;
+        if (items) {
+            this.inventory.items = items.items;
+            this.inventory.scope = items.scope;
             this.updateItems();
         }
 
-        if (inventory.weapons || inventory.items) {
+        if (inventory?.weapons || items) {
             this.updateWeapons();
         }
     }
@@ -833,18 +843,18 @@ export class UIManager {
 
     private _addKillMessage(
         message: (
-      {
-          readonly severity: KillfeedEventSeverity.Down
-      } | {
-          readonly severity: KillfeedEventSeverity.Kill
-          readonly kills: number
-          readonly streak?: number
-      }
-    ) & {
-        readonly type: KillfeedEventType
-        readonly victimName: string
-        readonly weaponUsed?: string
-    }
+            {
+                readonly severity: KillfeedEventSeverity.Down
+            } | {
+                readonly severity: KillfeedEventSeverity.Kill
+                readonly kills: number
+                readonly streak?: number
+            }
+        ) & {
+            readonly type: KillfeedEventType
+            readonly victimName: string
+            readonly weaponUsed?: string
+        }
     ): void {
         const { severity, victimName, weaponUsed, type } = message;
 
@@ -1032,28 +1042,8 @@ export class UIManager {
         }
     });
 
-    processKillFeedPacket(message: KillFeedPacket): void {
-        const {
-            messageType,
-            victimId,
-
-            eventType,
-            severity,
-
-            attackerId,
-            attackerKills = 0, // HACK this is mostly to get tooling to be quiet, the entire packet api's typings suck and need to be redone
-            weaponUsed,
-            killstreak,
-
-            hideFromKillfeed
-        } = {
-            eventType: KillfeedEventType.Suicide,
-            severity: KillfeedEventSeverity.Kill,
-            ...message
-        };
-
-        const weaponPresent = weaponUsed !== undefined;
-        const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
+    processKillFeedPacket(message: KillFeedPacketData): void {
+        const { messageType } = message;
 
         const getNameAndBadge = (id?: number): { readonly name: string, readonly badgeText: string } => {
             const hasId = id !== undefined;
@@ -1067,27 +1057,38 @@ export class UIManager {
             };
         };
 
-        const {
-            name: victimName,
-            badgeText: victimBadgeText
-        } = getNameAndBadge(victimId);
-
-        const {
-            name: attackerName,
-            badgeText: attackerBadgeText
-        } = getNameAndBadge(attackerId);
-
-        const victimText = victimName + victimBadgeText;
-        const attackerText = attackerName + attackerBadgeText;
-
         let messageText: string | undefined;
         const classes: string[] = [];
 
         switch (messageType) {
             case KillfeedMessageType.DeathOrDown: {
-                // `undefined > 1` returns `false` anyways
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const hasKillstreak = killstreak! > 1;
+                const {
+                    victimId,
+                    severity,
+                    eventType,
+                    weaponUsed
+                } = message;
+
+                const weaponPresent = weaponUsed !== undefined;
+                const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
+
+                const attackerId = "attackerId" in message ? message.attackerId : undefined;
+
+                const {
+                    name: victimName,
+                    badgeText: victimBadgeText
+                } = getNameAndBadge(victimId);
+
+                const {
+                    name: attackerName,
+                    badgeText: attackerBadgeText
+                } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
+
+                const victimText = victimName + victimBadgeText;
+                const attackerText = attackerName + attackerBadgeText;
+
+                const killstreak = "killstreak" in message ? message.killstreak : undefined;
+                const hasKillstreak = !!killstreak;
 
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
@@ -1101,21 +1102,21 @@ export class UIManager {
                                 switch (attackerId) {
                                     case undefined:
                                         /*
-                        this can happen if the player is knocked out by a non-player
-                        entity (like gas or airdrop) if their team is then wiped,
-                        then no one "finally" killed them, they just… finally died
-                    */
+                                            this can happen if the player is knocked out by a non-player
+                                            entity (like gas or airdrop) if their team is then wiped,
+                                            then no one "finally" killed them, they just… finally died
+                                        */
                                         killMessage = `${victimText} finally died`;
 
                                         break outer;
                                     case victimId:
                                         /*
-                        usually, a case where attacker and victim are the same would be
-                        counted under the "suicide" event type, but there was no easy
-                        way to route the event through the "suicide" type whilst having
-                        it retain the "finally killed" part; this is the best option
-                        until someone comes up with another
-                    */
+                                            usually, a case where attacker and victim are the same would be
+                                            counted under the "suicide" event type, but there was no easy
+                                            way to route the event through the "suicide" type whilst having
+                                            it retain the "finally killed" part; this is the best option
+                                            until someone comes up with another
+                                        */
                                         killMessage = `${victimText} finally ended themselves`;
 
                                         break outer;
@@ -1139,10 +1140,10 @@ export class UIManager {
 
                         const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
-             * English being complicated means that this will sometimes return bad results
-             * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
-             * a library off of somewhere, this'll have to do
-             */
+                         * English being complicated means that this will sometimes return bad results
+                         * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
+                         * a library off of somewhere, this'll have to do
+                         */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
 
                         const weaponNameText = weaponPresent
@@ -1238,8 +1239,8 @@ export class UIManager {
                 }
 
                 /**
-         * Whether the player pointed to by the given id is on the active player's team
-         */
+                 * Whether the player pointed to by the given id is on the active player's team
+                 */
                 const playerIsOnThisTeam = (id?: number): boolean | undefined => {
                     let target: GameObject | undefined;
 
@@ -1280,7 +1281,7 @@ export class UIManager {
                                         weaponUsed: eventType !== KillfeedEventType.FinallyKilled
                                             ? base.weaponUsed
                                             : undefined,
-                                        kills: attackerKills,
+                                        kills: "attackerKills" in message ? message.attackerKills : 0,
                                         streak: killstreak
                                     }
                                     : {
@@ -1302,13 +1303,26 @@ export class UIManager {
                     spectateKillLeader: spectateLeader
                 } = this.ui;
 
+                const {
+                    victimId,
+                    attackerKills,
+                    hideFromKillfeed
+                } = message;
+
+                const {
+                    name: victimName,
+                    badgeText: victimBadgeText
+                } = getNameAndBadge(victimId);
+
+                const victimText = victimName + victimBadgeText;
+
                 classes.push(
                     victimId === this.game.activePlayerID
                         ? "kill-feed-item-killer"
                         : "kill-feed-kill-leader"
                 );
 
-                leader.html(`${victimName}${victimBadgeText}`);
+                leader.html(victimText);
                 count.text(attackerKills);
 
                 if (!hideFromKillfeed) {
@@ -1321,6 +1335,8 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderUpdated: {
+                const { attackerKills } = message;
+
                 this.ui.killLeaderCount.text(attackerKills);
                 break;
             }
@@ -1332,6 +1348,18 @@ export class UIManager {
                     spectateKillLeader: spectateLeader
                 } = this.ui;
 
+                const {
+                    attackerId,
+                    victimId
+                } = message;
+
+                const {
+                    name: attackerName,
+                    badgeText: attackerBadgeText
+                } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
+
+                const attackerText = attackerName + attackerBadgeText;
+
                 leader.text(getTranslatedString("msg_waiting_for_leader"));
                 count.text("0");
 
@@ -1342,6 +1370,7 @@ export class UIManager {
                         : getTranslatedString("kf_kl_dead")
                     : getTranslatedString("kf_kl_suicide")
                 }`;
+
                 switch (this.game.activePlayerID) {
                     case attackerId: {
                         classes.push("kill-feed-item-killer");
@@ -1508,9 +1537,9 @@ class PlayerHealthUI {
             ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
                 const value = data[prop];
                 if (prop in data && value !== null) {
-          type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
 
-          (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
                 }
             });
         }

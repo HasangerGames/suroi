@@ -1,15 +1,17 @@
+import { type BitStream } from "@damienvesper/bit-buffer";
 import { DEFAULT_INVENTORY, GameConstants, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
-import { MapPings, type MapPing, type MapPingDefinition, type PlayerPing } from "../definitions/mapPings";
+import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
+import { type Mutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
-import { type Packet } from "./packet";
+import { createPacket } from "./packet";
 
 interface ObjectFullData {
     readonly id: number
@@ -23,221 +25,192 @@ interface ObjectPartialData {
     readonly data: ObjectsNetData[ObjectCategory]
 }
 
-export interface PlayerData {
-    dirty: {
-        maxMinStats: boolean
-        health: boolean
-        adrenaline: boolean
-        weapons: boolean
-        slotLocks: boolean
-        items: boolean
-        id: boolean
-        teammates: boolean
-        zoom: boolean
-    }
+const [serializePlayerData, deserializePlayerData] = (() => {
+    const generateReadWritePair = <T, Stream extends BitStream = BitStream>(
+        writer: (val: Exclude<T, undefined>, stream: Stream) => void,
+        reader: (stream: Stream) => T
+    ): {
+        readonly write: (stream: Stream, val: T | undefined) => void
+        readonly read: (stream: Stream) => T | undefined
+    } => ({
+        write: (stream: Stream, val: T | undefined): void => {
+            const present = val !== undefined;
+            stream.writeBoolean(present);
 
-    id: number
-    spectating: boolean
-
-    teammates: Array<{
-        id: number
-        position: Vector
-        normalizedHealth: number
-        downed: boolean
-        disconnected: boolean
-    }>
-
-    normalizedHealth: number
-    normalizedAdrenaline: number
-
-    maxHealth: number
-    minAdrenaline: number
-    maxAdrenaline: number
-
-    zoom: number
-
-    inventory: {
-        activeWeaponIndex: number
-        lockedSlots: number
-        weapons?: Array<undefined | {
-            definition: WeaponDefinition
-            count?: number
-            stats?: {
-                kills?: number
+            if (present) {
+                writer(val as Exclude<T, undefined>, stream);
             }
-        }>
-        items: typeof DEFAULT_INVENTORY
-        scope: ScopeDefinition
-    }
-}
-
-function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>): void {
-    const dirty = data.dirty;
-
-    stream.writeBoolean(dirty.maxMinStats);
-    if (dirty.maxMinStats) {
-        stream.writeFloat32(data.maxHealth);
-        stream.writeFloat32(data.minAdrenaline);
-        stream.writeFloat32(data.maxAdrenaline);
-    }
-
-    stream.writeBoolean(dirty.health);
-    if (dirty.health) {
-        stream.writeFloat(data.normalizedHealth, 0, 1, 12);
-    }
-
-    stream.writeBoolean(dirty.adrenaline);
-    if (dirty.adrenaline) {
-        stream.writeFloat(data.normalizedAdrenaline, 0, 1, 12);
-    }
-
-    stream.writeBoolean(dirty.zoom);
-    if (dirty.zoom) {
-        stream.writeUint8(data.zoom);
-    }
-
-    stream.writeBoolean(dirty.id);
-    if (dirty.id) {
-        stream.writeObjectID(data.id);
-        stream.writeBoolean(data.spectating);
-    }
-
-    stream.writeBoolean(dirty.teammates);
-    if (dirty.teammates) {
-        stream.writeArray(data.teammates, 2, player => {
-            stream.writeObjectID(player.id);
-            stream.writePosition(player.position ?? Vec.create(0, 0));
-            stream.writeFloat(player.normalizedHealth, 0, 1, 8);
-            stream.writeBoolean(player.downed);
-            stream.writeBoolean(player.disconnected);
-        });
-    }
-
-    const inventory = data.inventory;
-    stream.writeBoolean(dirty.weapons);
-    if (dirty.weapons) {
-        stream.writeBits(inventory.activeWeaponIndex, 2);
-
-        for (const weapon of inventory.weapons ?? []) {
-            stream.writeBoolean(weapon !== undefined);
-
-            if (weapon !== undefined) {
-                const { definition, count, stats } = weapon;
-                Loots.writeToStream(stream, definition);
-
-                const hasCount = count !== undefined;
-                stream.writeBoolean(hasCount);
-                if (hasCount) {
-                    stream.writeUint8(count);
-                }
-
-                if (definition.killstreak) {
-                    // we pray that these nna's are correct at runtime
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    stream.writeUint8(stats!.kills!);
-                }
-            }
+        },
+        read: stream => {
+            if (stream.readBoolean()) return reader(stream);
         }
-    }
+    });
 
-    stream.writeBoolean(dirty.slotLocks);
-    if (dirty.slotLocks) {
-        stream.writeBits(inventory.lockedSlots, GameConstants.player.maxWeapons);
-    }
+    const minMax = generateReadWritePair<PlayerData["minMax"]>(
+        ({ maxHealth, minAdrenaline, maxAdrenaline }, stream) => {
+            stream.writeFloat32(maxHealth);
+            stream.writeFloat32(minAdrenaline);
+            stream.writeFloat32(maxAdrenaline);
+        },
+        stream => ({
+            maxHealth: stream.readFloat32(),
+            minAdrenaline: stream.readFloat32(),
+            maxAdrenaline: stream.readFloat32()
+        })
+    );
 
-    stream.writeBoolean(dirty.items);
-    if (dirty.items) {
-        for (const item in DEFAULT_INVENTORY) {
-            const count = inventory.items[item];
+    const health = generateReadWritePair<PlayerData["health"], SuroiBitStream>(
+        (health, stream) => stream.writeFloat(health, 0, 1, 12),
+        stream => stream.readFloat(0, 1, 12)
+    );
 
-            stream.writeBoolean(count > 0);
+    const adrenaline = generateReadWritePair<PlayerData["adrenaline"], SuroiBitStream>(
+        (adrenaline, stream) => stream.writeFloat(adrenaline, 0, 1, 12),
+        stream => stream.readFloat(0, 1, 12)
+    );
 
-            if (count > 0) {
-                stream.writeBits(count, 9);
-            }
-        }
+    const zoom = generateReadWritePair<PlayerData["zoom"]>(
+        (zoom, stream) => stream.writeUint8(zoom),
+        stream => stream.readUint8()
+    );
 
-        Scopes.writeToStream(stream, inventory.scope);
-    }
-}
+    const id = generateReadWritePair<PlayerData["id"], SuroiBitStream>(
+        ({ id, spectating }, stream) => {
+            stream.writeObjectID(id);
+            stream.writeBoolean(spectating);
+        },
+        stream => ({
+            id: stream.readObjectID(),
+            spectating: stream.readBoolean()
+        })
+    );
 
-function deserializePlayerData(stream: SuroiBitStream): PlayerData {
-    const dirty = {} as PlayerData["dirty"];
-    const inventory = {} as PlayerData["inventory"];
-    const data = { dirty, inventory } as PlayerData;
+    const teammates = generateReadWritePair<PlayerData["teammates"], SuroiBitStream>(
+        (teammates, stream) => {
+            stream.writeArray(teammates, 2, player => {
+                stream.writeObjectID(player.id);
+                stream.writePosition(player.position ?? Vec.create(0, 0));
+                stream.writeFloat(player.normalizedHealth, 0, 1, 8);
+                stream.writeBoolean(player.downed);
+                stream.writeBoolean(player.disconnected);
+            });
+        },
+        stream => stream.readAndCreateArray(2, () => ({
+            id: stream.readObjectID(),
+            position: stream.readPosition(),
+            normalizedHealth: stream.readFloat(0, 1, 8),
+            downed: stream.readBoolean(),
+            disconnected: stream.readBoolean()
+        }))
+    );
 
-    if (dirty.maxMinStats = stream.readBoolean()) {
-        data.maxHealth = stream.readFloat32();
-        data.minAdrenaline = stream.readFloat32();
-        data.maxAdrenaline = stream.readFloat32();
-    }
+    const inventory = generateReadWritePair<PlayerData["inventory"]>(
+        ({ activeWeaponIndex, weapons }, stream) => {
+            stream.writeBits(activeWeaponIndex, 2);
 
-    if (dirty.health = stream.readBoolean()) {
-        data.normalizedHealth = stream.readFloat(0, 1, 12);
-    }
+            for (const weapon of weapons ?? []) {
+                stream.writeBoolean(weapon !== undefined);
 
-    if (dirty.adrenaline = stream.readBoolean()) {
-        data.normalizedAdrenaline = stream.readFloat(0, 1, 12);
-    }
+                if (weapon !== undefined) {
+                    const { definition, count, stats } = weapon;
+                    Loots.writeToStream(stream, definition);
 
-    if (dirty.zoom = stream.readBoolean()) {
-        data.zoom = stream.readUint8();
-    }
-
-    if (dirty.id = stream.readBoolean()) {
-        data.id = stream.readObjectID();
-        data.spectating = stream.readBoolean();
-    }
-
-    if (dirty.teammates = stream.readBoolean()) {
-        stream.readArray(data.teammates = [], 2, () => {
-            return {
-                id: stream.readObjectID(),
-                position: stream.readPosition(),
-                normalizedHealth: stream.readFloat(0, 1, 8),
-                downed: stream.readBoolean(),
-                disconnected: stream.readBoolean()
-            };
-        });
-    }
-
-    const maxWeapons = GameConstants.player.maxWeapons;
-
-    if (dirty.weapons = stream.readBoolean()) {
-        inventory.activeWeaponIndex = stream.readBits(2);
-
-        inventory.weapons = Array.from({ length: maxWeapons }, () => undefined);
-        for (let i = 0; i < maxWeapons; i++) {
-            if (stream.readBoolean()) { // has item
-                const definition = Loots.readFromStream<WeaponDefinition>(stream);
-
-                inventory.weapons[i] = {
-                    definition,
-                    count: stream.readBoolean() ? stream.readUint8() : undefined,
-                    stats: {
-                        kills: definition.killstreak ? stream.readUint8() : undefined
+                    const hasCount = count !== undefined;
+                    stream.writeBoolean(hasCount);
+                    if (hasCount) {
+                        stream.writeUint8(count);
                     }
-                };
+
+                    if (definition.killstreak) {
+                        // we pray that these nna's are correct at runtime
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        stream.writeUint8(stats!.kills!);
+                    }
+                }
             }
+        },
+        stream => ({
+            activeWeaponIndex: stream.readBits(2),
+            weapons: Array.from(
+                { length: GameConstants.player.maxWeapons },
+                () => {
+                    if (!stream.readBoolean()) return;
+
+                    const definition = Loots.readFromStream<WeaponDefinition>(stream);
+
+                    return ({
+                        definition,
+                        count: stream.readBoolean() ? stream.readUint8() : undefined,
+                        stats: {
+                            kills: definition.killstreak ? stream.readUint8() : undefined
+                        }
+                    });
+                }
+            )
+        })
+    );
+
+    const slotLocks = generateReadWritePair<PlayerData["lockedSlots"]>(
+        (lockedSlots, stream) => stream.writeBits(lockedSlots, GameConstants.player.maxWeapons),
+        stream => stream.readBits(GameConstants.player.maxWeapons)
+    );
+
+    const items = generateReadWritePair<PlayerData["items"]>(
+        ({ items, scope }, stream) => {
+            for (const item in DEFAULT_INVENTORY) {
+                const count = items[item];
+
+                stream.writeBoolean(count > 0);
+
+                if (count > 0) {
+                    stream.writeBits(count, 9);
+                }
+            }
+
+            Scopes.writeToStream(stream, scope);
+        },
+        stream => {
+            const items: typeof DEFAULT_INVENTORY = {};
+
+            for (const item in DEFAULT_INVENTORY) {
+                items[item] = stream.readBoolean() ? stream.readBits(9) : 0;
+            }
+
+            return {
+                items,
+                scope: Scopes.readFromStream(stream)
+            };
         }
-    }
+    );
 
-    if (dirty.slotLocks = stream.readBoolean()) {
-        inventory.lockedSlots = stream.readBits(maxWeapons);
-    }
+    return [
+        (stream: SuroiBitStream, data: PlayerData): void => {
+            minMax.write(stream, data.minMax);
+            health.write(stream, data.health);
+            adrenaline.write(stream, data.adrenaline);
+            zoom.write(stream, data.zoom);
+            id.write(stream, data.id);
+            teammates.write(stream, data.teammates);
+            inventory.write(stream, data.inventory);
+            slotLocks.write(stream, data.lockedSlots);
+            items.write(stream, data.items);
+        },
 
-    if (dirty.items = stream.readBoolean()) {
-        inventory.items = {};
-
-        for (const item in DEFAULT_INVENTORY) {
-            inventory.items[item] = stream.readBoolean() ? stream.readBits(9) : 0;
+        (stream: SuroiBitStream): PlayerData => {
+            return {
+                minMax: minMax.read(stream),
+                health: health.read(stream),
+                adrenaline: adrenaline.read(stream),
+                zoom: zoom.read(stream),
+                id: id.read(stream),
+                teammates: teammates.read(stream),
+                inventory: inventory.read(stream),
+                lockedSlots: slotLocks.read(stream),
+                items: items.read(stream)
+            };
         }
-
-        inventory.scope = Scopes.readFromStream(stream);
-    }
-
-    return data;
-}
+    ];
+})();
 
 const UpdateFlags = Object.freeze({
     PlayerData: 1 << 0,
@@ -260,145 +233,189 @@ const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
 export type MapPingSerialization = {
     readonly position: Vector
-} & ({
+    readonly definition: MapPing
+};
+
+export type PlayerPingSerialization = {
+    readonly position: Vector
     readonly definition: PlayerPing
     readonly playerId: number
-} | {
-    readonly definition: MapPing
-    readonly playerId?: undefined
-});
+};
 
-export class UpdatePacket implements Packet {
-    // obligatory on server, optional on client
-    playerData?: Required<PlayerData>;
+export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
 
-    deletedObjects: number[] = [];
+export type ExplosionSerialization = {
+    readonly definition: ExplosionDefinition
+    readonly position: Vector
+};
 
-    fullDirtyObjects: ObjectFullData[] = [];
+export type EmoteSerialization = {
+    readonly definition: EmoteDefinition
+    readonly playerID: number
+};
 
-    partialDirtyObjects: ObjectPartialData[] = [];
+export type PlayerData = {
+    readonly minMax?: {
+        readonly maxHealth: number
+        readonly minAdrenaline: number
+        readonly maxAdrenaline: number
+    }
+    readonly health?: number
+    readonly adrenaline?: number
+    readonly zoom?: number
+    readonly id?: {
+        readonly id: number
+        readonly spectating: boolean
+    }
+    readonly teammates?: ReadonlyArray<{
+        readonly id: number
+        readonly position: Vector
+        readonly normalizedHealth: number
+        readonly downed: boolean
+        readonly disconnected: boolean
+    }>
+    readonly inventory?: {
+        readonly activeWeaponIndex: number
+        readonly weapons?: ReadonlyArray<undefined | {
+            readonly definition: WeaponDefinition
+            readonly count?: number
+            readonly stats?: {
+                readonly kills?: number
+            }
+        }>
+    }
+    readonly lockedSlots?: number
+    readonly items?: {
+        readonly items: typeof DEFAULT_INVENTORY
+        readonly scope: ScopeDefinition
+    }
+};
 
-    // server side only
-
-    fullObjectsCache: Array<{
-        get partialStream(): SuroiBitStream
-        get fullStream(): SuroiBitStream
-    }> = [];
-
-    partialObjectsCache: Array<{
-        get partialStream(): SuroiBitStream
-    }> = [];
-
-    bullets: BaseBullet[] = [];
-
-    deserializedBullets: BulletOptions[] = [];
-
-    explosions: Array<{ readonly definition: ExplosionDefinition, readonly position: Vector }> = [];
-
-    emotes: Array<{ readonly definition: EmoteDefinition, readonly playerID: number }> = [];
-
-    gas?: {
+export type UpdatePacketDataCommon = {
+    readonly flags: number
+    readonly playerData?: PlayerData
+    readonly deletedObjects?: readonly number[]
+    readonly explosions?: readonly ExplosionSerialization[]
+    readonly emotes?: readonly EmoteSerialization[]
+    readonly gas?: {
         readonly state: GasState
         readonly currentDuration: number
         readonly oldPosition: Vector
         readonly newPosition: Vector
         readonly oldRadius: number
         readonly newRadius: number
-        readonly dirty: boolean
-    };
-
-    gasProgress?: {
-        readonly dirty: boolean
-        readonly value: number
-    };
-
-    newPlayers: Array<{
+    }
+    readonly gasProgress?: number
+    readonly newPlayers?: ReadonlyArray<{
         readonly id: number
         readonly name: string
-        readonly loadout: { readonly badge?: BadgeDefinition }
-        readonly hasColor: boolean
+        readonly badge?: BadgeDefinition
+    } & ({
+        readonly hasColor: false
+        readonly nameColor?: undefined
+    } | {
+        readonly hasColor: true
         readonly nameColor: number
-        readonly teamID?: number
-    }> = [];
-
-    deletedPlayers: number[] = [];
-
-    aliveCountDirty?: boolean;
-    aliveCount?: number;
-
-    planes: Array<{
+    })>
+    readonly deletedPlayers?: readonly number[]
+    readonly aliveCount?: number
+    readonly planes?: ReadonlyArray<{
         readonly position: Vector
         readonly direction: number
-    }> = [];
+    }>
+    readonly mapPings?: readonly PingSerialization[]
+};
 
-    mapPings: Array<{
-        readonly position: Vector
-        readonly definition: MapPingDefinition
-        readonly playerId?: number
-    }> = [];
+export type ServerOnly = {
+    readonly bullets?: readonly BaseBullet[]
+    readonly fullObjectsCache: ReadonlyArray<{
+        get partialStream(): SuroiBitStream
+        get fullStream(): SuroiBitStream
+    }>
 
-    serialize(stream: SuroiBitStream): void {
+    readonly partialObjectsCache: ReadonlyArray<{
+        get partialStream(): SuroiBitStream
+    }>
+};
+
+export type ClientOnly = {
+    readonly deserializedBullets?: readonly BulletOptions[]
+    readonly fullDirtyObjects?: readonly ObjectFullData[]
+    readonly partialDirtyObjects?: readonly ObjectPartialData[]
+};
+
+/**
+ * For server use
+ */
+export type UpdatePacketDataIn = UpdatePacketDataCommon & ServerOnly;
+/**
+ * For client use
+ */
+export type UpdatePacketDataOut = UpdatePacketDataCommon & ClientOnly;
+
+export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, UpdatePacketDataOut>({
+    serialize(stream, data) {
         let flags = 0;
         // save the current index to write flags latter
         const flagsIdx = stream.index;
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
-        if (this.playerData) {
-            if (Object.keys(this.playerData).length > 0) {
-                serializePlayerData(stream, this.playerData);
+        if (data.playerData) {
+            if (Object.keys(data.playerData).length > 0) {
+                serializePlayerData(stream, data.playerData);
                 flags |= UpdateFlags.PlayerData;
             }
         }
 
-        if (this.deletedObjects.length) {
-            stream.writeArray(this.deletedObjects, OBJECT_ID_BITS, id => {
+        if (data.deletedObjects?.length) {
+            stream.writeArray(data.deletedObjects, OBJECT_ID_BITS, id => {
                 stream.writeObjectID(id);
             });
             flags |= UpdateFlags.DeletedObjects;
         }
 
-        if (this.fullObjectsCache.length) {
+        if (data.fullObjectsCache?.length) {
             stream.writeAlignToNextByte();
-            stream.writeArray(this.fullObjectsCache, 16, object => {
+            stream.writeArray(data.fullObjectsCache, 16, object => {
                 stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
                 stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
             });
             flags |= UpdateFlags.FullObjects;
         }
 
-        if (this.partialObjectsCache.length) {
+        if (data.partialObjectsCache?.length) {
             stream.writeAlignToNextByte();
-            stream.writeArray(this.partialObjectsCache, 16, object => {
+            stream.writeArray(data.partialObjectsCache, 16, object => {
                 stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
             });
             flags |= UpdateFlags.PartialObjects;
         }
 
-        if (this.bullets.length) {
-            stream.writeArray(this.bullets, 8, bullet => {
+        if (data.bullets?.length) {
+            stream.writeArray(data.bullets, 8, bullet => {
                 bullet.serialize(stream);
             });
             flags |= UpdateFlags.Bullets;
         }
 
-        if (this.explosions.length) {
-            stream.writeArray(this.explosions, 8, explosion => {
+        if (data.explosions?.length) {
+            stream.writeArray(data.explosions, 8, explosion => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             });
             flags |= UpdateFlags.Explosions;
         }
 
-        if (this.emotes.length) {
-            stream.writeArray(this.emotes, 8, emote => {
+        if (data.emotes?.length) {
+            stream.writeArray(data.emotes, 8, emote => {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerID);
             });
             flags |= UpdateFlags.Emotes;
         }
 
-        if (this.gas?.dirty) {
-            const gas = this.gas;
+        if (data.gas) {
+            const gas = data.gas;
             stream.writeBits(gas.state, 2);
             stream.writeBits(gas.currentDuration, 7);
             stream.writePosition(gas.oldPosition);
@@ -408,39 +425,37 @@ export class UpdatePacket implements Packet {
             flags |= UpdateFlags.Gas;
         }
 
-        if (this.gasProgress?.dirty) {
-            stream.writeFloat(this.gasProgress.value, 0, 1, 16);
+        if (data.gasProgress !== undefined) {
+            stream.writeFloat(data.gasProgress, 0, 1, 16);
             flags |= UpdateFlags.GasPercentage;
         }
 
-        if (this.newPlayers.length) {
-            stream.writeArray(this.newPlayers, 8, player => {
+        if (data.newPlayers?.length) {
+            stream.writeArray(data.newPlayers, 8, player => {
                 stream.writeObjectID(player.id);
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
                 if (player.hasColor) stream.writeBits(player.nameColor, 24);
 
-                Badges.writeOptional(stream, player.loadout.badge);
+                Badges.writeOptional(stream, player.badge);
             });
             flags |= UpdateFlags.NewPlayers;
         }
 
-        if (this.deletedPlayers.length) {
-            stream.writeArray(this.deletedPlayers, 8, id => {
+        if (data.deletedPlayers?.length) {
+            stream.writeArray(data.deletedPlayers, 8, id => {
                 stream.writeObjectID(id);
             });
             flags |= UpdateFlags.DeletedPlayers;
         }
 
-        if (this.aliveCountDirty) {
-            // the troubles of loosely-typing packets
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            stream.writeUint8(this.aliveCount!);
+        if (data.aliveCount !== undefined) {
+            stream.writeUint8(data.aliveCount);
             flags |= UpdateFlags.AliveCount;
         }
 
-        if (this.planes.length) {
-            stream.writeArray(this.planes, 4, plane => {
+        if (data.planes?.length) {
+            stream.writeArray(data.planes, 4, plane => {
                 stream.writeVector(
                     plane.position,
                     -GameConstants.maxPosition,
@@ -453,14 +468,12 @@ export class UpdatePacket implements Packet {
             flags |= UpdateFlags.Planes;
         }
 
-        if (this.mapPings.length) {
-            stream.writeArray(this.mapPings, 4, ping => {
+        if (data.mapPings?.length) {
+            stream.writeArray(data.mapPings, 4, ping => {
                 MapPings.writeToStream(stream, ping.definition);
                 stream.writePosition(ping.position);
                 if (ping.definition.isPlayerPing) {
-                    // the troubles of loosely-typing packets
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    stream.writeObjectID(ping.playerId!);
+                    stream.writeObjectID((ping as PlayerPingSerialization).playerId);
                 }
             });
             flags |= UpdateFlags.MapPings;
@@ -471,25 +484,25 @@ export class UpdatePacket implements Packet {
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
         // restore steam index
         stream.index = idx;
-    }
+    },
 
-    deserialize(stream: SuroiBitStream): void {
+    deserialize(stream) {
+        const data = {} as Mutable<UpdatePacketDataOut>;
+
         const flags = stream.readBits(UPDATE_FLAGS_BITS);
 
         if (flags & UpdateFlags.PlayerData) {
-            this.playerData = deserializePlayerData(stream);
+            data.playerData = deserializePlayerData(stream);
         }
 
         if (flags & UpdateFlags.DeletedObjects) {
-            stream.readArray(this.deletedObjects, OBJECT_ID_BITS, () => {
-                return stream.readObjectID();
-            });
+            data.deletedObjects = stream.readAndCreateArray(OBJECT_ID_BITS, () => stream.readObjectID());
         }
 
         if (flags & UpdateFlags.FullObjects) {
             stream.readAlignToNextByte();
 
-            stream.readArray(this.fullDirtyObjects, 16, () => {
+            data.fullDirtyObjects = stream.readAndCreateArray(16, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
 
@@ -497,6 +510,7 @@ export class UpdatePacket implements Packet {
                 stream.readAlignToNextByte();
                 const fullData = ObjectSerializations[type].deserializeFull(stream);
                 stream.readAlignToNextByte();
+
                 return {
                     id,
                     type,
@@ -511,42 +525,36 @@ export class UpdatePacket implements Packet {
         if (flags & UpdateFlags.PartialObjects) {
             stream.readAlignToNextByte();
 
-            stream.readArray(this.partialDirtyObjects, 16, () => {
+            data.partialDirtyObjects = stream.readAndCreateArray(16, () => {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializePartial(stream);
                 stream.readAlignToNextByte();
+
                 return { id, type, data };
             });
         }
 
         if (flags & UpdateFlags.Bullets) {
-            stream.readArray(this.deserializedBullets, 8, () => {
-                return BaseBullet.deserialize(stream);
-            });
+            data.deserializedBullets = stream.readAndCreateArray(8, () => BaseBullet.deserialize(stream));
         }
 
         if (flags & UpdateFlags.Explosions) {
-            stream.readArray(this.explosions, 8, () => {
-                return {
-                    definition: Explosions.readFromStream(stream),
-                    position: stream.readPosition()
-                };
-            });
+            data.explosions = stream.readAndCreateArray(8, () => ({
+                definition: Explosions.readFromStream(stream),
+                position: stream.readPosition()
+            }));
         }
 
         if (flags & UpdateFlags.Emotes) {
-            stream.readArray(this.emotes, 8, () => {
-                return {
-                    definition: Emotes.readFromStream(stream),
-                    playerID: stream.readObjectID()
-                };
-            });
+            data.emotes = stream.readAndCreateArray(8, () => ({
+                definition: Emotes.readFromStream(stream),
+                playerID: stream.readObjectID()
+            }));
         }
 
         if (flags & UpdateFlags.Gas) {
-            this.gas = {
-                dirty: true,
+            data.gas = {
                 state: stream.readBits(2),
                 currentDuration: stream.readBits(7),
                 oldPosition: stream.readPosition(),
@@ -557,14 +565,11 @@ export class UpdatePacket implements Packet {
         }
 
         if (flags & UpdateFlags.GasPercentage) {
-            this.gasProgress = {
-                dirty: true,
-                value: stream.readFloat(0, 1, 16)
-            };
+            data.gasProgress = stream.readFloat(0, 1, 16);
         }
 
         if (flags & UpdateFlags.NewPlayers) {
-            stream.readArray(this.newPlayers, 8, () => {
+            data.newPlayers = stream.readAndCreateArray(8, () => {
                 const id = stream.readObjectID();
                 const name = stream.readPlayerName();
                 const hasColor = stream.readBoolean();
@@ -573,27 +578,24 @@ export class UpdatePacket implements Packet {
                     id,
                     name,
                     hasColor,
-                    nameColor: hasColor ? stream.readBits(24) : 0,
-                    loadout: {
-                        badge: Badges.readOptional(stream)
-                    }
-                };
+                    nameColor: hasColor ? stream.readBits(24) : undefined,
+                    badge: Badges.readOptional(stream)
+                } as (UpdatePacketDataCommon["newPlayers"] & object)[number];
             });
         }
 
         if (flags & UpdateFlags.DeletedPlayers) {
-            stream.readArray(this.deletedPlayers, 8, () => {
+            data.deletedPlayers = stream.readAndCreateArray(8, () => {
                 return stream.readObjectID();
             });
         }
 
         if (flags & UpdateFlags.AliveCount) {
-            this.aliveCountDirty = true;
-            this.aliveCount = stream.readUint8();
+            data.aliveCount = stream.readUint8();
         }
 
         if (flags & UpdateFlags.Planes) {
-            stream.readArray(this.planes, 4, () => {
+            data.planes = stream.readAndCreateArray(4, () => {
                 const position = stream.readVector(
                     -GameConstants.maxPosition,
                     -GameConstants.maxPosition,
@@ -608,7 +610,7 @@ export class UpdatePacket implements Packet {
         }
 
         if (flags & UpdateFlags.MapPings) {
-            stream.readArray(this.mapPings, 4, () => {
+            data.mapPings = stream.readAndCreateArray(4, () => {
                 const definition = MapPings.readFromStream(stream);
 
                 return {
@@ -618,5 +620,7 @@ export class UpdatePacket implements Packet {
                 } as MapPingSerialization;
             });
         }
+
+        return data as UpdatePacketDataOut;
     }
-}
+});

@@ -5,7 +5,7 @@ import { GameConstants, InputActions } from "../../../../common/src/constants";
 import { type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import { InputPacket, type InputAction, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
+import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -109,54 +109,50 @@ export class InputManager {
     // Initialize an array to store focus state for keypresses
     private readonly _focusController = new Set<string>();
 
-    private _lastInputPacket: InputPacket | undefined;
+    private _lastInputPacket: PlayerInputData | undefined;
     private _inputPacketTimer = 0;
 
     update(): void {
         if (this.game.gameOver) return;
-        const packet = new InputPacket();
+        const packet = {
+            movement: { ...this.movement },
+            attacking: this.attacking,
+            turning: this.turning,
+            ...(
+                this.turning
+                    ? {
+                        rotation: this.resetAttacking ? this.shootOnReleaseAngle : this.rotation,
+                        distanceToMouse: this.distanceToMouse
+                    }
+                    : {}
+            ),
+            isMobile: this.isMobile,
+            ...(
+                this.isMobile
+                    ? {
+                        angle: this.movementAngle,
+                        moving: this.movement.moving
+                    }
+                    : {}
+            ),
+            actions: this.actions
+        } as PlayerInputData;
 
-        // assigning it directly breaks comparing last and current input packet
-        // since javascript will pass it by reference
-        // TODO will spread syntax work? packet.movement = { ...this.movement };
-        packet.movement = {
-            up: this.movement.up,
-            down: this.movement.down,
-            left: this.movement.left,
-            right: this.movement.right
-        };
-
-        packet.attacking = this.attacking;
-
-        packet.turning = this.turning;
-        if (this.turning) {
-            packet.rotation = this.resetAttacking ? this.shootOnReleaseAngle : this.rotation;
-            packet.distanceToMouse = this.distanceToMouse;
-            this.turning = false;
-        }
-
-        packet.isMobile = this.isMobile;
-        if (this.isMobile) {
-            packet.mobile = {
-                angle: this.movementAngle,
-                moving: this.movement.moving
-            };
-        }
+        this.turning = false;
 
         if (this.resetAttacking) {
             this.attacking = false;
             this.resetAttacking = false;
         }
-        packet.actions = this.actions;
 
         this._inputPacketTimer += this.game.serverDt;
 
         if (
             !this._lastInputPacket
-            || packet.didChange(this._lastInputPacket)
+            || areDifferent(this._lastInputPacket, packet)
             || this._inputPacketTimer >= 100
         ) {
-            this.game.sendPacket(packet);
+            this.game.sendPacket(PlayerInputPacket.create(packet));
             this._lastInputPacket = packet;
             this._inputPacketTimer = 0;
         }

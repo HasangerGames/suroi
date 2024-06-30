@@ -1,6 +1,6 @@
 import { EmoteDefinition } from "../../common/src/definitions/emotes";
 import { type PlayerPing } from "../../common/src/definitions/mapPings";
-import { InputPacket } from "../../common/src/packets/inputPacket";
+import { type PlayerInputData } from "../../common/src/packets/inputPacket";
 import { ExtendedMap } from "../../common/src/utils/misc";
 import { Vector } from "../../common/src/utils/vector";
 import { Config } from "./config";
@@ -278,7 +278,7 @@ export interface EventDataMap {
     [Events.Player_StopAttacking]: Player
     [Events.Player_Input]: {
         readonly player: Player
-        readonly packet: InputPacket
+        readonly packet: PlayerInputData
     }
     [Events.Player_Emote]: {
         readonly player: Player
