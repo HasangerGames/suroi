@@ -1,6 +1,7 @@
 import { Badges } from "../../common/src/definitions/badges";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
+import type { Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
@@ -11,19 +12,22 @@ import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 
-interface LocalStorage {
-    variables: {
-        cv_language: string
-    }
-}
-
 export type TranslationMap = Record<
     string,
     (string | ((replacements: Record<string, string>) => string))
-> & { name: string, flag: string };
+> & { readonly name: string, readonly flag: string };
+
+let defaultLanguage: string;
+let language: string;
 
 export const TRANSLATIONS = {
-    defaultLanguage: "en",
+    get defaultLanguage(): string {
+        if (!setup) {
+            throw new Error("Translation API not yet setup");
+        }
+
+        return defaultLanguage;
+    },
     translations: {
         en: ENGLISH_TRANSLATIONS,
         fr: FRENCH_TRANSLATIONS,
@@ -39,36 +43,55 @@ export const TRANSLATIONS = {
         }
     }
 } as {
-    readonly defaultLanguage: string
+    get defaultLanguage(): string
     readonly translations: Record<string, TranslationMap>
 };
 
-const localStorage = JSON.parse(window.localStorage.getItem("suroi_config") ?? "{}") as LocalStorage;
+let setup = false;
+export function initTranslation(game: Game): void {
+    if (setup) {
+        console.error("Translation API already setup");
+        return;
+    }
 
-export const language = localStorage.variables.cv_language ?? defaultClientCVars.cv_language;
+    setup = true;
 
-export function getTranslatedString(id: string, replacements?: Record<string, string>): string {
+    defaultLanguage = typeof defaultClientCVars.cv_language === "object"
+        ? defaultClientCVars.cv_language.value
+        : defaultClientCVars.cv_language;
+
+    language = game.console.getBuiltInCVar("cv_language");
+
+    translateCurrentDOM();
+}
+
+export function getTranslatedString(key: string, replacements?: Record<string, string>): string {
+    if (!setup) {
+        console.error("Translation API not yet setup");
+        return key;
+    }
+
     // Easter egg language
     if (language === "hp18") return "HP-18";
 
-    if (id.startsWith("emote_")) {
-        return Emotes.reify(id.slice("emote_".length)).name;
+    if (key.startsWith("emote_")) {
+        return Emotes.reify(key.slice("emote_".length)).name;
     }
 
-    if (id.startsWith("badge_")) {
-        return Badges.reify(id.slice("badge_".length)).name;
+    if (key.startsWith("badge_")) {
+        return Badges.reify(key.slice("badge_".length)).name;
     }
 
-    let foundTranslation;
+    let foundTranslation: TranslationMap[string];
     try {
-        foundTranslation = TRANSLATIONS.translations[language][id]
-        ?? TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][id]
-        ?? Loots.reify(id).name;
+        foundTranslation = TRANSLATIONS.translations[language]?.[key]
+        ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
+        ?? Loots.reify(key).name;
     } catch (_) {
         foundTranslation = "";
     }
 
-    if (!foundTranslation) return "";
+    if (!foundTranslation) return key;
 
     if (foundTranslation instanceof Function) {
         return foundTranslation(replacements ?? {});
@@ -81,30 +104,70 @@ export function getTranslatedString(id: string, replacements?: Record<string, st
     for (const [search, replace] of Object.entries(replacements)) {
         foundTranslation = foundTranslation.replaceAll(`<${search}>`, replace);
     }
+
     return foundTranslation;
 }
 
-let debugTranslationCounter = 0;
+const printTranslationDebug = true;
 
-document.querySelectorAll("body *").forEach(element => {
-    const requestedTranslation = element.getAttribute("translation");
-    const useHtml = element.getAttribute("use-html");
-    if (!requestedTranslation) return;
+function translateCurrentDOM(): void {
+    let debugTranslationCounter = 0;
 
-    const translatedString = getTranslatedString(requestedTranslation);
+    document.querySelectorAll("body *").forEach(element => {
+        if (!(element instanceof HTMLElement)) return; // ignore non-html elements (like svg and mathml)
 
-    if (useHtml === null) {
-        (element as HTMLDivElement).innerText = translatedString;
-    } else {
-        element.innerHTML = translatedString;
+        const requestedTranslation = element.getAttribute("translation");
+        if (!requestedTranslation) return;
+
+        const translatedString = getTranslatedString(requestedTranslation);
+
+        element[
+            element.getAttribute("use-html") === null
+                ? "innerText"
+                : "innerHTML"
+        ] = translatedString;
+
+        // Decrease font size for those languages have have really long stuff in buttons
+        if (
+            (element.classList.contains("btn") || element.parentElement?.classList.contains("btn"))
+            && translatedString.length >= 12
+            && language !== "en" // <- why?
+        ) {
+            element.style.fontSize = "70%"; // <- extract to css class?
+        }
+
+        debugTranslationCounter++;
+    });
+
+    if (printTranslationDebug) {
+        console.log("Translated", debugTranslationCounter, "strings");
+        console.log("With language as", language, "and default as", defaultLanguage);
+
+        const reference = new Set(Object.keys(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]));
+
+        console.table(
+            [...Object.entries(TRANSLATIONS.translations)].reduce<{
+                [K in keyof typeof TRANSLATIONS.translations]: {
+                    readonly "translation coverage (%)": number
+                    readonly "missing keys": readonly string[]
+                }
+            }>(
+                (acc, [language, languageInfo]) => {
+                    const copy = new Set(reference);
+
+                    for (const key of Object.keys(languageInfo)) {
+                        copy.delete(key);
+                    }
+
+                    acc[language] = {
+                        "translation coverage (%)": 100 * (1 - copy.size / reference.size),
+                        "missing keys": [...copy]
+                    };
+
+                    return acc;
+                },
+                {}
+            )
+        );
     }
-
-    // Decrease font size for those languages have have really long stuff in buttons
-    if ((element.classList.contains("btn") || element.parentElement?.classList.contains("btn")) && translatedString.length >= 12 && language !== "en") {
-        (element as HTMLDivElement).style.fontSize = "70%";
-    }
-
-    debugTranslationCounter++;
-});
-
-console.log("Translated", debugTranslationCounter, "strings");
+}

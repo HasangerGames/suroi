@@ -185,7 +185,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "bindings_toggle_console": "Toggle Console",
     "bindings_toggle_slot_lock": "Toggle Slot Lock",
 
-    "kf_suicide_kill": "<player> commited suicide",
+    "kf_suicide_kill": "<player> committed suicide",
     "kf_suicide_down": "<player> knocked themselves out",
     "kf_two_party_kill": "<player> killed <victim>",
     "kf_two_party_down": "<player> knocked out <victim>",

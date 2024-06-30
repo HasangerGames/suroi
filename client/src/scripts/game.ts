@@ -26,6 +26,7 @@ import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { getTranslatedString, initTranslation } from "../translations";
 import { InputManager } from "./managers/inputManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -53,7 +54,6 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { getTranslatedString } from "../translations";
 
 /* eslint-disable @stylistic/indent */
 
@@ -151,6 +151,7 @@ export class Game {
         Game._instantiated = true;
 
         this.console.readFromLocalStorage();
+        initTranslation(this);
         this.inputManager.setupInputs();
 
         const initPixi = async(): Promise<void> => {

@@ -14,6 +14,7 @@ import { ExtendedMap } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { TRANSLATIONS, getTranslatedString } from "../translations";
 import { Config } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
@@ -22,7 +23,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { TRANSLATIONS, getTranslatedString, language } from "../translations";
 
 interface RegionInfo {
     readonly name: string
@@ -108,10 +108,7 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#btn-language").on("click", () => {
         $("#select-language-menu").css("display", "");
     });
-    $("#close-select-language").on("click", () => {
-        $("#select-language-menu").css("display", "none");
-        if (language !== game.console.getBuiltInCVar("cv_language")) location.reload();
-    });
+
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
         const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
@@ -121,10 +118,13 @@ export async function setUpUI(game: Game): Promise<void> {
               <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
             </div>
         `);
+
         $<HTMLInputElement>(`#language-${language}`).on("click", () => {
             game.console.setBuiltInCVar("cv_language", language);
         }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
     }
+
+    game.console.variables.addChangeListener("cv_language", () => location.reload());
 
     const params = new URLSearchParams(window.location.search);
 
