@@ -1,6 +1,7 @@
 import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
+import { type Materials } from "./obstacles";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
@@ -8,7 +9,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
-    readonly canPierceMaterials?: string[]
+    readonly canPierceMaterials?: ReadonlyArray<typeof Materials[number]>
     readonly swingSound: string
     readonly radius: number
     readonly offset: Vector
