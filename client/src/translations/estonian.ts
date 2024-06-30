@@ -280,5 +280,12 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "deathray": "Surmakiir",
 
     // For dual guns
-    "dual_template": "Topelt <gun>"
+    "dual_template": "Topelt <gun>",
+
+    // Regions
+    "region_dev": "Lokaalne Server",
+    "region_na": "Põhja-Ameerika",
+    "region_eu": "Euroopa",
+    "region_sa": "Lõuna-Ameerika",
+    "region_as": "Aasia"
 };
