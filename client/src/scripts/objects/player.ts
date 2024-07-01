@@ -1339,6 +1339,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 pinImage.setPos(35, 0);
                 pinImage.setZIndex(ZIndexes.Players + 1);
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
+                this.updateFistsPosition(false);
 
                 this.anims.leftFist = this.game.addTween({
                     target: this.images.leftFist,
