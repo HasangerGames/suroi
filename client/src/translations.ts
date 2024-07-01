@@ -112,6 +112,17 @@ export function getTranslatedString(key: string, replacements?: Record<string, s
 
 const printTranslationDebug = true;
 
+function adjustFontSize(element: HTMLElement): void {
+    if (element.textContent) {
+        const buttonText = element.textContent.trim();
+        const textWidth = buttonText.length * 10;
+        const buttonWidth = element.getBoundingClientRect().width;
+        const fontSize = `${Math.max(65, Math.min(1, (buttonWidth / textWidth) * 100))}%`; // womp womp
+
+        element.style.fontSize = fontSize;
+    }
+}
+
 function translateCurrentDOM(): void {
     let debugTranslationCounter = 0;
 
@@ -131,11 +142,11 @@ function translateCurrentDOM(): void {
 
         // Decrease font size for those languages have have really long stuff in buttons
         if (
-            (element.classList.contains("btn") || element.parentElement?.classList.contains("btn"))
-            && translatedString.length >= 12
-            && language !== "en" // <- why?
+            (element.classList.contains("btn") || element.parentElement?.classList.contains("btn") || element.parentElement?.classList.contains("tab"))
+            && translatedString.length >= 10
+            && !["en", "hp18"].includes(language) // <- why? (because we do not want text measurements on English or HP-18)
         ) {
-            element.style.fontSize = "70%"; // <- extract to css class?
+            adjustFontSize(element);
         }
 
         debugTranslationCounter++;
