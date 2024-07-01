@@ -721,7 +721,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const youtuber = pickRandomInArray(youtubers);
     $("#youtube-featured-name").text(youtuber.name);
-    $("#youtube-featured-content").attr("href", youtuber.link);
+    $("#youtube-featured-content").attr("href", youtuber.link).removeAttr("target");
 
     const streamers = [
         {
@@ -739,7 +739,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
-    $("#twitch-featured-content").attr("href", streamer.link);
+    $("#twitch-featured-content").attr("data-href", streamer.link).removeAttr("target");
 
     const toggleRotateMessage = (): JQuery =>
         $("#splash-rotate-message").toggle(
