@@ -4,6 +4,7 @@ import { Loots } from "../../common/src/definitions/loots";
 import type { Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
+import { CZECH_TRANSLATIONS } from "./translations/czech";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
 import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
 import { FRENCH_TRANSLATIONS } from "./translations/french";
@@ -37,6 +38,7 @@ export const TRANSLATIONS = {
         ta: TAMIL_TRANSLATIONS,
         hu: HUNGARIAN_TRANSLATIONS,
         et: ESTONIAN_TRANSLATIONS,
+        cz: CZECH_TRANSLATIONS,
         hp18: {
             name: "HP-18",
             flag: "<img height=\"20\" src=\"./img/game/weapons/hp18.svg\" />"
