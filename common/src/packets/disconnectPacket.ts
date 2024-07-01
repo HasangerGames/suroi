@@ -1,14 +1,17 @@
-import { SuroiBitStream } from "../utils/suroiBitStream";
-import { type Packet } from "./packet";
+import { createPacket } from "./packet";
 
-export class DisconnectPacket implements Packet {
-    reason = "";
+export type DisconnectData = {
+    readonly reason: string
+};
 
-    serialize(stream: SuroiBitStream): void {
-        stream.writeASCIIString(this.reason);
+export const DisconnectPacket = createPacket("DisconnectPacket")<DisconnectData>({
+    serialize(stream, data) {
+        stream.writeASCIIString(data.reason);
+    },
+
+    deserialize(stream) {
+        return {
+            reason: stream.readASCIIString()
+        };
     }
-
-    deserialize(stream: SuroiBitStream): void {
-        this.reason = stream.readASCIIString();
-    }
-}
+});

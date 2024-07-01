@@ -1,31 +1,33 @@
 import { TeamSize } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Packet } from "./packet";
+import { createPacket } from "./packet";
 
-export class JoinedPacket implements Packet {
-    maxTeamSize!: TeamSize;
-    teamID!: number;
+export type JoinedPacketData = {
+    readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
+} & ({
+    readonly maxTeamSize: TeamSize.Solo
+} | {
+    readonly maxTeamSize: Exclude<TeamSize, TeamSize.Solo>
+    readonly teamID: number
+});
 
-    emotes: Array<EmoteDefinition | undefined> = [];
-
-    serialize(stream: SuroiBitStream): void {
-        stream.writeBits(this.maxTeamSize, 3);
-        if (this.maxTeamSize > TeamSize.Solo) {
-            stream.writeUint8(this.teamID);
+export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
+    serialize(stream, data) {
+        stream.writeBits(data.maxTeamSize, 3);
+        if (data.maxTeamSize !== TeamSize.Solo) {
+            stream.writeUint8(data.teamID);
         }
 
-        for (const emote of this.emotes) {
+        for (const emote of data.emotes) {
             Emotes.writeOptional(stream, emote);
         }
+    },
+    deserialize(stream) {
+        const maxTeamSize: TeamSize = stream.readBits(3);
+        return {
+            maxTeamSize,
+            ...(maxTeamSize !== TeamSize.Solo ? { teamID: stream.readUint8() } : {}),
+            emotes: Array.from({ length: 6 }, () => Emotes.readOptional(stream))
+        } as JoinedPacketData;
     }
-
-    deserialize(stream: SuroiBitStream): void {
-        this.maxTeamSize = stream.readBits(3);
-        if (this.maxTeamSize > TeamSize.Solo) {
-            this.teamID = stream.readUint8();
-        }
-
-        this.emotes = Array.from({ length: 6 }, () => Emotes.readOptional(stream));
-    }
-}
+});

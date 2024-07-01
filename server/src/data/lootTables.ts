@@ -193,6 +193,23 @@ export const LootTables: Record<string, LootTable> = {
             [{ item: "12g", count: 15, weight: 1 }]
         ]
     },
+    loot_barrel: {
+        min: 1,
+        max: 1,
+        loot: [
+            [{ item: "crowbar", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [
+                { item: "frag_grenade", weight: 1, count: 3 },
+                { item: "smoke_grenade", weight: 1, count: 3 }
+            ],
+            [
+                { tier: "equipment", weight: 1 },
+                { tier: "scopes", weight: 1 },
+                { tier: "healing_items", weight: 1 }
+            ]
+        ]
+    },
     pumpkin: {
         min: 1,
         max: 1,
@@ -681,7 +698,8 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "tactical_pack", weight: 0.03 }
     ],
     melee: [
-        { item: "baseball_bat", weight: 4 },
+        { item: "baseball_bat", weight: 3 },
+        { item: "sickle", weight: 0.5 },
         { item: "kbar", weight: 2 }
     ],
     airdrop_equipment: [
@@ -710,6 +728,9 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
     ],
     airdrop_melee: [
         { item: null, weight: 1 },
+        { item: "crowbar", weight: 0.1 },
+        { item: "hatchet", weight: 0.1 },
+        { item: "sickle", weight: 0.1 },
         { item: "kbar", weight: 0.1 }
     ],
     airdrop_guns: [

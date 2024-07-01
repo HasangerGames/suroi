@@ -1,21 +1,21 @@
 import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
-import { GameConstants, KillfeedEventType, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
+import { GameConstants, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
-import { MapPings } from "../../common/src/definitions/mapPings";
+import { MapPings, type MapPing } from "../../common/src/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
 import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { InputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { PlayerInputPacket } from "../../common/src/packets/inputPacket";
+import { JoinPacket, type JoinPacketData } from "../../common/src/packets/joinPacket";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
-import { KillFeedPacket } from "../../common/src/packets/killFeedPacket";
-import { Packet } from "../../common/src/packets/packet";
+import { KillFeedPacket, type KillFeedPacketData } from "../../common/src/packets/killFeedPacket";
+import { type InputPacket, type OutputPacket } from "../../common/src/packets/packet";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
-import { type MapPingSerialization } from "../../common/src/packets/updatePacket";
+import { type PingSerialization } from "../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
@@ -49,6 +49,15 @@ import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 
+/*
+    eslint-disable
+
+    @stylistic/indent-binary-ops
+*/
+
+/*
+    `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
+ */
 export class Game implements GameData {
     readonly _id: number;
     get id(): number { return this._id; }
@@ -78,14 +87,16 @@ export class Game implements GameData {
      * New players created this tick
      */
     readonly newPlayers: Player[] = [];
+
     /**
     * Players deleted this tick
     */
     readonly deletedPlayers: number[] = [];
+
     /**
      * Packets created this tick that will be sent to all players
      */
-    readonly packets: Packet[] = [];
+    readonly packets: InputPacket[] = [];
 
     readonly maxTeamSize: TeamSize;
 
@@ -155,7 +166,7 @@ export class Game implements GameData {
     /**
      * All map pings this tick
      */
-    readonly mapPings: MapPingSerialization[] = [];
+    readonly mapPings: PingSerialization[] = [];
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -402,24 +413,24 @@ export class Game implements GameData {
         }
     }
 
-    onPacket(packet: Packet, player: Player): void {
+    onPacket(packet: OutputPacket, player: Player): void {
         switch (true) {
             case packet instanceof JoinPacket:
-                this.activatePlayer(player, packet);
+                this.activatePlayer(player, packet.output);
                 break;
-            case packet instanceof InputPacket:
+            case packet instanceof PlayerInputPacket:
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
-                player.processInputs(packet);
+                player.processInputs(packet.output);
                 break;
             case packet instanceof SpectatePacket:
-                player.spectate(packet);
+                player.spectate(packet.output);
                 break;
             case packet instanceof PingPacket: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
                 const stream = new PacketStream(new ArrayBuffer(8));
-                stream.serializeServerPacket(new PingPacket());
+                stream.serializeServerPacket(PingPacket.create());
                 player.sendData(stream.getBuffer());
                 break;
             }
@@ -616,15 +627,15 @@ export class Game implements GameData {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
-                this._sendKillFeedPacket(KillfeedMessageType.KillLeaderAssigned);
+                this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
             }
         } else if (player === oldKillLeader) {
-            this._sendKillFeedPacket(KillfeedMessageType.KillLeaderUpdated);
+            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderUpdated);
         }
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillFeedPacket(KillfeedMessageType.KillLeaderDead, { eventType: KillfeedEventType.NormalTwoParty, attackerId: killer?.id });
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDead, { attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -632,17 +643,28 @@ export class Game implements GameData {
             }
         }
         this._killLeader = newKillLeader;
-        this._sendKillFeedPacket(KillfeedMessageType.KillLeaderAssigned);
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedPacket(messageType: KillfeedMessageType, options?: Partial<Omit<KillFeedPacket, "messageType" | "playerID" | "kills">>): void {
+    private _sendKillLeaderKFPacket<
+        Message extends
+            | KillfeedMessageType.KillLeaderAssigned
+            | KillfeedMessageType.KillLeaderDead
+            | KillfeedMessageType.KillLeaderUpdated
+    >(
+        messageType: Message,
+        options?: Partial<Omit<KillFeedPacketData & { readonly messageType: NoInfer<Message> }, "messageType" | "playerID" | "attackerKills">>
+    ): void {
         if (this._killLeader === undefined) return;
-        this.packets.push(KillFeedPacket.create({
-            messageType,
-            victimId: this._killLeader.id,
-            attackerKills: this._killLeader.kills,
-            ...options
-        }));
+
+        this.packets.push(
+            KillFeedPacket.create({
+                messageType,
+                victimId: this._killLeader.id,
+                attackerKills: this._killLeader.kills,
+                ...options
+            } as KillFeedPacketData & { readonly messageType: Message })
+        );
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
@@ -747,7 +769,7 @@ export class Game implements GameData {
     }
 
     // Called when a JoinPacket is sent by the client
-    activatePlayer(player: Player, packet: JoinPacket): void {
+    activatePlayer(player: Player, packet: JoinPacketData): void {
         if (packet.protocolVersion !== GameConstants.protocolVersion) {
             player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
             return;
@@ -783,11 +805,15 @@ export class Game implements GameData {
 
         player.joined = true;
 
-        const joinedPacket = new JoinedPacket();
-        joinedPacket.maxTeamSize = this.maxTeamSize;
-        joinedPacket.teamID = player.teamID ?? 0;
-        joinedPacket.emotes = player.loadout.emotes;
-        player.sendPacket(joinedPacket);
+        player.sendPacket(
+            JoinedPacket.create(
+                {
+                    maxTeamSize: this.maxTeamSize,
+                    teamID: player.teamID ?? 0,
+                    emotes: player.loadout.emotes
+                }
+            )
+        );
 
         player.sendData(this.map.buffer);
 
@@ -1092,7 +1118,7 @@ export class Game implements GameData {
             const parachute = new Parachute(this, position, airdrop);
             this.grid.addObject(parachute);
             this.mapPings.push({
-                definition: MapPings.fromString("airdrop_ping"),
+                definition: MapPings.fromString<MapPing>("airdrop_ping"),
                 position
             });
         }, GameConstants.airdrop.flyTime);

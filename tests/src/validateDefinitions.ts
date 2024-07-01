@@ -15,7 +15,7 @@ import { Loots } from "../../common/src/definitions/loots";
 import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
 import { Modes } from "../../common/src/definitions/modes";
-import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
+import { Materials, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
@@ -1883,6 +1883,23 @@ logger.indent("Validating melees", () => {
                 });
             }
 
+            tester.assertValidOrNPV({
+                obj: melee,
+                field: "canPierceMaterials",
+                defaultValue: [],
+                equalityFunction: a => a.length === 0,
+                validatorIfPresent: (pierce, errorPath) => {
+                    tester.runTestOnArray(
+                        pierce,
+                        (material, errorPath) => {
+                            tester.assert(Materials.includes(material), `Material '${material}' does not exist.`, errorPath);
+                        },
+                        errorPath
+                    );
+                },
+                baseErrorPath: errorPath
+            });
+
             tester.assertIsPositiveReal({
                 obj: melee,
                 field: "radius",
@@ -2124,6 +2141,11 @@ logger.indent("Validating obstacles", () => {
                 `Obstacle '${obstacle.idString}' specified a base image, but also specified the 'invisible' attribute.`,
                 errorPath
             );
+
+            if (obstacle.wall !== undefined) {
+                validators.color(tester.createPath(errorPath, "wall color"), obstacle.wall.color);
+                validators.color(tester.createPath(errorPath, "wall border color"), obstacle.wall.borderColor);
+            }
 
             if (obstacle.imageAnchor !== undefined) {
                 validators.vector(tester.createPath(errorPath, "field imageAnchor"), obstacle.imageAnchor);

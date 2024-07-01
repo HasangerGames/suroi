@@ -699,6 +699,28 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
+            idString: "loot_barrel",
+            name: "Loot Barrel",
+            material: "metal",
+            hideOnMap: true,
+            health: 160,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hasLoot: true,
+            hitbox: new CircleHitbox(3.65),
+            rotationMode: RotationMode.Full,
+            explosion: "barrel_explosion",
+            reflectBullets: true,
+            frames: {
+                particle: "barrel_particle",
+                residue: "barrel_residue"
+            }
+        },
+        {
             idString: "super_barrel",
             name: "Super Barrel",
             material: "metal",

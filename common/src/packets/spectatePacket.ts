@@ -1,25 +1,31 @@
 import { SpectateActions } from "../constants";
-import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Packet } from "./packet";
+import { calculateEnumPacketBits } from "../utils/suroiBitStream";
+import { createPacket } from "./packet";
 
 const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 
-export class SpectatePacket implements Packet {
-    spectateAction!: SpectateActions;
-    playerID?: number;
+export type SpectatePacketData = {
+    readonly spectateAction: SpectateActions.SpectateSpecific
+    readonly playerID: number
+} | {
+    readonly spectateAction: Exclude<SpectateActions, SpectateActions.SpectateSpecific>
+};
 
-    serialize(stream: SuroiBitStream): void {
-        stream.writeBits(this.spectateAction, SPECTATE_ACTIONS_BITS);
-        if (this.playerID !== undefined && this.spectateAction === SpectateActions.SpectateSpecific) {
-            stream.writeObjectID(this.playerID);
+export const SpectatePacket = createPacket("SpectatePacket")<SpectatePacketData>({
+    serialize(stream, data) {
+        stream.writeBits(data.spectateAction, SPECTATE_ACTIONS_BITS);
+
+        if (data.spectateAction === SpectateActions.SpectateSpecific) {
+            stream.writeObjectID(data.playerID);
         }
-    }
+    },
 
-    deserialize(stream: SuroiBitStream): void {
-        this.spectateAction = stream.readBits(SPECTATE_ACTIONS_BITS);
+    deserialize(stream) {
+        const spectateAction: SpectateActions = stream.readBits(SPECTATE_ACTIONS_BITS);
 
-        if (this.spectateAction === SpectateActions.SpectateSpecific) {
-            this.playerID = stream.readObjectID();
-        }
+        return {
+            spectateAction,
+            ...(spectateAction === SpectateActions.SpectateSpecific ? { playerID: stream.readObjectID() } : {})
+        } as SpectatePacketData;
     }
-}
+});

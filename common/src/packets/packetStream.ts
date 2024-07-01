@@ -1,12 +1,12 @@
 import { SuroiBitStream } from "../utils/suroiBitStream";
 import { DisconnectPacket } from "./disconnectPacket";
 import { GameOverPacket } from "./gameOverPacket";
-import { InputPacket } from "./inputPacket";
+import { PlayerInputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
-import { type Packet } from "./packet";
+import { type InputPacket, type OutputPacket, type PacketTemplate } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { PingPacket } from "./pingPacket";
 import { ReportPacket } from "./reportPacket";
@@ -14,33 +14,33 @@ import { SpectatePacket } from "./spectatePacket";
 import { UpdatePacket } from "./updatePacket";
 
 class PacketRegister {
-    private _nextTypeId = 1;
-    readonly typeToId: Record<string, number> = {};
-    readonly idToCtor: Array<new () => Packet> = [];
+    private _nextTypeId = 0;
+    readonly typeToId = new Map<PacketTemplate, number>();
+    readonly idToTemplate: PacketTemplate[] = [];
     readonly bits: number;
 
-    constructor(...packets: Array<new () => Packet>) {
+    constructor(...packets: PacketTemplate[]) {
         for (const packet of packets) {
             this._register(packet);
         }
         this.bits = Math.ceil(Math.log2(this._nextTypeId));
     }
 
-    private _register(packet: new () => Packet): void {
+    private _register(packet: PacketTemplate): void {
         let name: string;
         if ((name = packet.name) in this.typeToId) {
-            console.warn(`Packet ${packet.name} registered multiple times`);
+            console.warn(`Packet ${name} registered multiple times`);
             return;
         }
 
         const id = this._nextTypeId++;
-        this.typeToId[name] = id;
-        this.idToCtor[id] = packet;
+        this.typeToId.set(packet, id);
+        this.idToTemplate[id] = packet;
     }
 }
 
 export const ClientToServerPackets = new PacketRegister(
-    InputPacket,
+    PlayerInputPacket,
     PingPacket,
     JoinPacket,
     SpectatePacket
@@ -69,40 +69,39 @@ export class PacketStream {
         }
     }
 
-    serializeServerPacket(packet: Packet): void {
+    serializeServerPacket(packet: InputPacket): void {
         this._serializePacket(packet, ServerToClientPackets);
     }
 
-    deserializeServerPacket(): Packet | undefined {
+    deserializeServerPacket(): OutputPacket | undefined {
         return this._deserializePacket(ServerToClientPackets);
     }
 
-    serializeClientPacket(packet: Packet): void {
+    serializeClientPacket(packet: InputPacket): void {
         this._serializePacket(packet, ClientToServerPackets);
     }
 
-    deserializeClientPacket(): Packet | undefined {
+    deserializeClientPacket(): OutputPacket | undefined {
         return this._deserializePacket(ClientToServerPackets);
     }
 
-    private _deserializePacket(register: PacketRegister): Packet | undefined {
+    private _deserializePacket(register: PacketRegister): OutputPacket | undefined {
         if (this.stream.length - this.stream.byteIndex * 8 >= 1) {
             const id = this.stream.readBits(register.bits);
-            const packet = new register.idToCtor[id]();
-            packet.deserialize(this.stream);
+            const packet = register.idToTemplate[id].read(this.stream);
             this.stream.readAlignToNextByte();
             return packet;
         }
         return undefined;
     }
 
-    private _serializePacket(packet: Packet, register: PacketRegister): void {
+    private _serializePacket(packet: InputPacket, register: PacketRegister): void {
         const name = packet.constructor.name;
-        if (!(name in register.typeToId)) {
+        const type = register.typeToId.get(packet.constructor as PacketTemplate);
+        if (type === undefined) {
             throw new Error(`Unknown packet type: ${name}, did you forget to register it?`);
         }
 
-        const type = register.typeToId[name];
         this.stream.writeBits(type, register.bits);
         packet.serialize(this.stream);
         this.stream.writeAlignToNextByte();
