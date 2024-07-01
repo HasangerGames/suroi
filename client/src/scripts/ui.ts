@@ -109,6 +109,10 @@ export async function setUpUI(game: Game): Promise<void> {
         $("#select-language-menu").css("display", "");
     });
 
+    $("#close-select-language").on("click", () => {
+        $("#select-language-menu").css("display", "none");
+    });
+
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
         const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
