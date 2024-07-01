@@ -851,14 +851,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => !newVisibleObjects.has(object) && (this.visibleObjects.delete(object), true)
+                    object => (!newVisibleObjects.has(object) && (this.visibleObjects.delete(object), true)) || (object.layer !== this.layer)
                 )
                 .map(({ id }) => id);
 
             newVisibleObjects
                 .forEach(
                     object => {
-                        if (this.visibleObjects.has(object)) return;
+                        if (this.visibleObjects.has(object) || object.layer !== this.layer) return;
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);
