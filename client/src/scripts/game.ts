@@ -671,7 +671,7 @@ export class Game {
             this.map.addMapPing(ping);
         }
 
-        if (updateData.playerData?.dirty.layer) {
+        if (updateData.playerData?.layer) {
             this.changeLayer(updateData.playerData.layer);
         }
 

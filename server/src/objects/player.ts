@@ -44,7 +44,7 @@ import { ThrowableItem } from "../inventory/throwableItem";
 import { Events } from "../pluginManager";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
-import { removeFrom } from "../utils/misc";
+import { Logger, removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -88,6 +88,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     disconnected = false;
 
     private _team?: Team;
+    private _layer: number = 0;
     get team(): Team | undefined { return this._team; }
 
     set team(value: Team) {
@@ -304,6 +305,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     get zoom(): number { return this._scope.zoomLevel; }
 
+    get layer(): number { return this._layer }
+
+    set layer(target: Layer) {
+        this._layer = target
+        this.dirty.layer = true;
+        this.updateObjects = true;
+    }
+
     readonly socket: WebSocket<PlayerContainer>;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
@@ -408,11 +417,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hasColor = userData.nameColor !== undefined;
 
         setTimeout(() => {
-            this.changeLayer(Layer.Basement);
-            setTimeout(() => {
-                this.changeLayer(Layer.Floor1);
-            }, 5000);
-        }, 10000);
+            this.layer = Layer.Basement;
+        }, 2000)
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -529,25 +535,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-<<<<<<< HEAD
-    changeLayer(layer: Layer): void {
-        this.layer = layer;
-        this.dirty.layer = true;
-
-        switch (layer) {
-            case Layer.Basement: {
-                break;
-            }
-            case Layer.Floor1: {
-                break;
-            }
-        }
-    }
-
-    fillInventory(): void {
-=======
     fillInventory(max = false): void {
->>>>>>> ddd291dee1f219e66911eede69966438fb329e79
         const { inventory } = this;
 
         inventory.scope = "4x_scope";
@@ -735,7 +723,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.setPartialDirty();
 
             if (this.isMoving) {
-                this.floor = this.game.map.terrain.getFloor(this.position);
+                this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
             }
         }
 
@@ -895,59 +883,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
             );
 
-<<<<<<< HEAD
-            for (const object of newVisibleObjects) {
-                if (!this.visibleObjects.has(object) && this.layer === object.layer) {
-                    this.visibleObjects.add(object);
-                    packet.fullObjectsCache.push(object);
-=======
         packet.partialObjectsCache = [...game.partialDirtyObjects]
             .filter(
                 object => {
                     return this.visibleObjects.has(object as GameObject) && !fullObjects.has(object);
->>>>>>> ddd291dee1f219e66911eede69966438fb329e79
                 }
             );
 
         const inventory = player.inventory;
-<<<<<<< HEAD
-
-        // player data
-        packet.playerData = {
-            normalizedHealth: player._normalizedHealth,
-            normalizedAdrenaline: player._normalizedAdrenaline,
-            maxHealth: player.maxHealth,
-            minAdrenaline: player.minAdrenaline,
-            maxAdrenaline: player.maxAdrenaline,
-            zoom: player._scope.zoomLevel,
-            layer: player.layer,
-            id: player.id,
-            teammates: player._team?.players.filter(p => p.id !== player.id) ?? [],
-            spectating: this.spectating !== undefined,
-            dirty: player.dirty,
-            inventory: {
-                activeWeaponIndex: inventory.activeWeaponIndex,
-                lockedSlots: inventory.lockedSlots,
-                scope: inventory.scope,
-                weapons: inventory.weapons.map(slot => {
-                    const item = slot;
-
-                    return (item && {
-                        definition: item.definition,
-                        count: item instanceof GunItem
-                            ? item.ammo
-                            : item instanceof CountableInventoryItem
-                                ? item.count
-                                : undefined,
-                        stats: item.stats
-                    }) satisfies (PlayerData["inventory"]["weapons"] & object)[number];
-                }),
-                items: inventory.items.asRecord()
-            }
-        };
-=======
         let forceInclude = false;
->>>>>>> ddd291dee1f219e66911eede69966438fb329e79
 
         if (this.startedSpectating && this.spectating) {
             forceInclude = true;
@@ -980,6 +924,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             ...(
                 player.dirty.zoom || forceInclude
                     ? { zoom: player._scope.zoomLevel }
+                    : {}
+            ),
+            ...(
+                player.dirty.layer || forceInclude
+                    ? { layer: player._layer }
                     : {}
             ),
             ...(

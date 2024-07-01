@@ -74,6 +74,11 @@ const [serializePlayerData, deserializePlayerData] = (() => {
         stream => stream.readUint8()
     );
 
+    const layer = generateReadWritePair<PlayerData["layer"]>(
+        (layer, stream) => stream.writeUint8(layer),
+        stream => stream.readUint8()
+    );
+
     const id = generateReadWritePair<PlayerData["id"], SuroiBitStream>(
         ({ id, spectating }, stream) => {
             stream.writeObjectID(id);
@@ -189,6 +194,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
             health.write(stream, data.health);
             adrenaline.write(stream, data.adrenaline);
             zoom.write(stream, data.zoom);
+            layer.write(stream, data.layer)
             id.write(stream, data.id);
             teammates.write(stream, data.teammates);
             inventory.write(stream, data.inventory);
@@ -202,6 +208,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
                 health: health.read(stream),
                 adrenaline: adrenaline.read(stream),
                 zoom: zoom.read(stream),
+                layer: layer.read(stream),
                 id: id.read(stream),
                 teammates: teammates.read(stream),
                 inventory: inventory.read(stream),
@@ -263,6 +270,7 @@ export type PlayerData = {
     readonly health?: number
     readonly adrenaline?: number
     readonly zoom?: number
+    readonly layer?: number
     readonly id?: {
         readonly id: number
         readonly spectating: boolean
