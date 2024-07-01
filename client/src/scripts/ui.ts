@@ -24,6 +24,16 @@ import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 
+/*
+    eslint-disable
+
+    @stylistic/indent
+*/
+
+/*
+    `@stylistic/indent`: can eslint stop [expletive redacted] at indenting stuff
+*/
+
 interface RegionInfo {
     readonly name: string
     readonly mainAddress: string
@@ -105,8 +115,9 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     }
 
+    const languageMenu = $("#select-language-menu");
     $("#btn-language").on("click", () => {
-        $("#select-language-menu").css("display", "");
+        languageMenu.css("display", "");
     });
 
     $("#close-select-language").on("click", () => {
@@ -593,7 +604,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     );
 
                 // After some seconds, reset the copy button's css
-                setTimeout(() => {
+                window.setTimeout(() => {
                     copyUrl
                         .removeClass("btn-success")
                         .css("pointer-events", "")
@@ -1715,7 +1726,7 @@ Video evidence is required.`)) {
         });
     };
 
-    let divMouseDown: NodeJS.Timeout;
+    let dropTimer: number | undefined;
 
     // Generate the UI for scopes, healing items, weapons, and ammos
     $<HTMLDivElement>("#weapons-container").append(
@@ -1736,22 +1747,23 @@ Video evidence is required.`)) {
 
                 const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
 
-                ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
-                    clearTimeout(divMouseDown);
-                });
+                const element = ele[0];
 
-                ele[0].addEventListener("pointerdown", (e: PointerEvent): void => {
-                    divMouseDown = setTimeout(() => {
-                        if (e.button === 0) {
-                            inputManager.addAction({
-                                type: InputActions.DropWeapon,
-                                slot
-                            });
-                        }
+                element.addEventListener("pointerup", () => clearTimeout(dropTimer));
+
+                element.addEventListener("pointerdown", e => {
+                    if (e.button !== 0) return;
+
+                    clearTimeout(dropTimer);
+                    dropTimer = window.setTimeout(() => {
+                        inputManager.addAction({
+                            type: InputActions.DropWeapon,
+                            slot
+                        });
                     }, 600);
                 });
 
-                ele[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+                element.addEventListener("pointerdown", e => {
                     if (!ele.hasClass("has-item")) return;
 
                     e.stopImmediatePropagation();
@@ -1781,33 +1793,36 @@ Video evidence is required.`)) {
                 </div>`
             );
 
-            ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
-                clearTimeout(divMouseDown);
-            });
+            ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
             slotListener(ele, button => {
-                if (button === 0) {
+                const isPrimary = button === 0;
+                const isSecondary = button === 2;
+                const isTeamMode = game.teamMode;
+
+                if (isPrimary) {
                     inputManager.addAction({
                         type: InputActions.UseItem,
                         item: scope
                     });
+
+                    if (isTeamMode) {
+                        clearTimeout(dropTimer);
+                        dropTimer = window.setTimeout(() => {
+                            inputManager.addAction({
+                                type: InputActions.DropItem,
+                                item: scope
+                            });
+                        }, 600);
+                    }
                 }
 
-                if (button === 2 && game.teamMode) {
+                if (isSecondary && isTeamMode) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
                         item: scope
                     });
                 }
-
-                divMouseDown = setTimeout(() => {
-                    if (button === 0 && game.teamMode) {
-                        inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: scope
-                        });
-                    }
-                }, 600);
             });
 
             if (UI_DEBUG_MODE) ele.show();
@@ -1824,22 +1839,24 @@ Video evidence is required.`)) {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-        item: getTranslatedString(item.idString),
-        amount: item.restoreAmount.toString(),
-        type: item.healType === HealType.Adrenaline
-            ? getTranslatedString("adrenaline")
-            : getTranslatedString("health")
-    })}
+                            item: getTranslatedString(item.idString),
+                            amount: item.restoreAmount.toString(),
+                            type: item.healType === HealType.Adrenaline
+                                ? getTranslatedString("adrenaline")
+                                : getTranslatedString("health")
+                        })}
                     </div>
                 </div>`
             );
 
-            ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
-                clearTimeout(divMouseDown);
-            });
+            ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
             slotListener(ele, button => {
-                if (button === 0) {
+                const isPrimary = button === 0;
+                const isSecondary = button === 2;
+                const isTeamMode = game.teamMode;
+
+                if (isPrimary) {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
@@ -1851,23 +1868,24 @@ Video evidence is required.`)) {
                             item
                         });
                     }
+
+                    if (isTeamMode) {
+                        clearTimeout(dropTimer);
+                        dropTimer = window.setTimeout(() => {
+                            inputManager.addAction({
+                                type: InputActions.DropItem,
+                                item
+                            });
+                        }, 600);
+                    }
                 }
 
-                if (button === 2 && game.teamMode) {
+                if (isSecondary && isTeamMode) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
                         item
                     });
                 }
-
-                divMouseDown = setTimeout(() => {
-                    if (button === 0 && game.teamMode) {
-                        inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item
-                        });
-                    }
-                }, 600);
             });
 
             return ele;
@@ -1892,32 +1910,38 @@ Video evidence is required.`)) {
         ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
 
         ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
-            clearTimeout(divMouseDown);
+            clearTimeout(dropTimer);
         });
 
         slotListener(ele, button => {
-            if (button === 0 && inputManager.pingWheelActive) {
-                inputManager.addAction({
-                    type: InputActions.Emote,
-                    emote: Emotes.fromString(ammo.idString)
-                });
+            const isPrimary = button === 0;
+            const isSecondary = button === 2;
+            const isTeamMode = game.teamMode;
+
+            if (isPrimary) {
+                if (inputManager.pingWheelActive) {
+                    inputManager.addAction({
+                        type: InputActions.Emote,
+                        emote: Emotes.fromString(ammo.idString)
+                    });
+                }
+
+                if (isTeamMode) {
+                    window.setTimeout(() => {
+                        inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: ammo
+                        });
+                    }, 600);
+                }
             }
 
-            if (button === 2 && game.teamMode) {
+            if (isSecondary && isTeamMode) {
                 inputManager.addAction({
                     type: InputActions.DropItem,
                     item: ammo
                 });
             }
-
-            divMouseDown = setTimeout(() => {
-                if (button === 0 && game.teamMode) {
-                    inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: ammo
-                    });
-                }
-            }, 600);
         });
     }
 
@@ -1927,30 +1951,35 @@ Video evidence is required.`)) {
             [$<HTMLDivElement>("#vest-slot"), "vest"]
         ] as const
     ) {
-        ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
-            clearTimeout(divMouseDown);
-        });
+        ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
         slotListener(ele, button => {
-            if (button === 2 && game.activePlayer && game.teamMode) {
-                inputManager.addAction({
-                    type: InputActions.DropItem,
-                    // clicking on the slot necessitates the presence of an item
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    item: game.activePlayer.getEquipment(type)!
-                });
-            }
+            const isPrimary = button === 0;
+            const isSecondary = button === 2;
+            const shouldDrop = game.activePlayer && game.teamMode;
 
-            divMouseDown = setTimeout(() => {
-                if (button === 0 && game.activePlayer && game.teamMode) {
+            if (isSecondary && shouldDrop) {
+                const item = game.activePlayer.getEquipment(type);
+                if (item) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
-                        // clicking on the slot necessitates the presence of an item
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        item: game.activePlayer.getEquipment(type)!
+                        item
                     });
                 }
-            }, 600);
+            }
+
+            if (isPrimary && shouldDrop) {
+                clearTimeout(dropTimer);
+                dropTimer = window.setTimeout(() => {
+                    const item = game.activePlayer?.getEquipment(type);
+                    if (!item || !game.teamMode) return;
+
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item
+                    });
+                }, 600);
+            }
         });
     }
 

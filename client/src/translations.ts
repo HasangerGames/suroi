@@ -1,7 +1,7 @@
 import { Badges } from "../../common/src/definitions/badges";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
-import type { Game } from "./scripts/game";
+import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
 import { CZECH_TRANSLATIONS } from "./translations/czech";
