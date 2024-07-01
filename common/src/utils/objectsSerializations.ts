@@ -1,4 +1,4 @@
-import { AnimationType, ObjectCategory, PlayerActions } from "../constants";
+import { AnimationType, Layer, ObjectCategory, PlayerActions } from "../constants";
 import { Armors, type ArmorDefinition } from "../definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
@@ -37,6 +37,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.Player]: {
         readonly position: Vector
         readonly rotation: number
+        readonly layer: Layer
         readonly animation?: AnimationType
         readonly action?: ({
             readonly type: Exclude<PlayerActions, PlayerActions.UseItem>
@@ -67,6 +68,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: ObstacleDefinition
             readonly position: Vector
+            readonly layer: Layer
             readonly rotation: {
                 readonly orientation: Orientation
                 readonly rotation: number
@@ -83,6 +85,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     //
     readonly [ObjectCategory.Loot]: {
         readonly position: Vector
+        readonly layer: Layer
         readonly full?: {
             readonly definition: LootDefinition
             readonly count: number
@@ -94,6 +97,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     //
     readonly [ObjectCategory.DeathMarker]: {
         readonly position: Vector
+        readonly layer: Layer
         readonly playerID: number
         readonly isNew: boolean
     }
@@ -109,6 +113,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: BuildingDefinition
             readonly position: Vector
+            readonly layer: Layer
             readonly rotation: Orientation
         }
     }
@@ -118,6 +123,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.Decal]: {
         readonly position: Vector
         readonly rotation: number
+        readonly layer: Layer
         readonly definition: DecalDefinition
     }
     //
@@ -135,6 +141,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.ThrowableProjectile]: {
         readonly position: Vector
         readonly rotation: number
+        readonly layer: Layer
         readonly airborne: boolean
         readonly full?: {
             readonly definition: ThrowableDefinition
@@ -146,6 +153,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.SyncedParticle]: {
         readonly position: Vector
         readonly rotation: number
+        readonly layer: Layer
         readonly scale?: number
         readonly alpha?: number
         readonly full?: {
@@ -168,10 +176,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Player]: {
         serializePartial(stream, data): void {
-            const { position, rotation, animation, action } = data;
+            const { position, rotation, layer, animation, action } = data;
 
             stream.writePosition(position);
             stream.writeRotation(rotation, 16);
+            stream.writeInt8(layer);
 
             const animationDirty = animation !== undefined;
             stream.writeBoolean(animationDirty);
@@ -224,6 +233,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
+                layer: stream.readInt8(),
                 animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
 
@@ -279,6 +289,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             stream.writePosition(full.position);
             stream.writeObstacleRotation(full.rotation.rotation, full.definition.rotationMode);
+            stream.writeInt8(full.layer);
             if (full.definition.variations !== undefined && full.variation !== undefined) {
                 stream.writeVariation(full.variation);
             }
@@ -302,6 +313,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition,
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
+                layer: stream.readInt8(),
                 variation: definition.variations ? stream.readVariation() : undefined
             };
 
@@ -319,6 +331,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Loot]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
+            stream.writeInt8(data.layer);
         },
         serializeFull(stream, data): void {
             Loots.writeToStream(stream, data.full.definition);
@@ -327,7 +340,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             return {
-                position: stream.readPosition()
+                position: stream.readPosition(),
+                layer: stream.readInt8()
             };
         },
         deserializeFull(stream) {
@@ -344,17 +358,20 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.DeathMarker]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
+            stream.writeInt8(data.layer);
             stream.writeBoolean(data.isNew);
             stream.writeObjectID(data.playerID);
         },
         serializeFull(): void { /* death markers have no full serialization */ },
         deserializePartial(stream) {
             const position = stream.readPosition();
+            const layer = stream.readInt8();
             const isNew = stream.readBoolean();
             const playerID = stream.readObjectID();
 
             return {
                 position,
+                layer,
                 isNew,
                 playerID
             };
@@ -377,6 +394,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Buildings.writeToStream(stream, data.full.definition);
             stream.writePosition(data.full.position);
             stream.writeBits(data.full.rotation, 2);
+            stream.writeInt8(data.full.layer);
         },
         deserializePartial(stream) {
             return {
@@ -393,7 +411,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition: Buildings.readFromStream(stream),
                 position: stream.readPosition(),
-                rotation: stream.readBits(2) as Orientation
+                rotation: stream.readBits(2) as Orientation,
+                layer: stream.readInt8()
 
             };
         }
@@ -406,6 +425,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Decals.writeToStream(stream, data.definition);
             stream.writePosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
+            stream.writeInt8(data.layer);
         },
         serializeFull(): void { /* decals have no full serialization */ },
         deserializePartial(stream) {
@@ -413,7 +433,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition,
                 position: stream.readPosition(),
-                rotation: stream.readObstacleRotation(definition.rotationMode).rotation
+                rotation: stream.readObstacleRotation(definition.rotationMode).rotation,
+                layer: stream.readInt8()
             };
         },
         deserializeFull() { /* decals have no full serialization */ }
@@ -442,6 +463,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             stream.writePosition(data.position);
             stream.writeRotation(data.rotation, 16);
+            stream.writeInt8(data.layer);
             stream.writeBoolean(data.airborne);
         },
         serializeFull(stream, data) {
@@ -451,6 +473,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
+                layer: stream.readInt8(),
                 airborne: stream.readBoolean()
             };
         },
@@ -463,10 +486,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     },
     [ObjectCategory.SyncedParticle]: {
         serializePartial(stream, data) {
-            const { position, rotation, scale, alpha } = data;
+            const { position, rotation, layer, scale, alpha } = data;
 
             stream.writePosition(position);
             stream.writeRotation(rotation, 8);
+            stream.writeInt8(layer);
 
             const writeScale = scale !== undefined;
             stream.writeBoolean(writeScale);
@@ -493,7 +517,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(8)
+                rotation: stream.readRotation(8),
+                layer: stream.readInt8()
             };
 
             if (stream.readBoolean()) { // scale

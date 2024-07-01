@@ -456,7 +456,6 @@ export class UIManager {
             health,
             adrenaline,
             zoom,
-            layer,
             id,
             teammates,
             inventory,
@@ -550,7 +549,6 @@ export class UIManager {
         }
 
         if (zoom) this.game.camera.zoom = zoom;
-        if (layer) this.game.changeLayer(layer);
 
         if (minMax) {
             this.maxHealth = minMax.maxHealth;

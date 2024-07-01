@@ -88,7 +88,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     disconnected = false;
 
     private _team?: Team;
-    private _layer: number = 0;
     get team(): Team | undefined { return this._team; }
 
     set team(value: Team) {
@@ -304,14 +303,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     }
 
     get zoom(): number { return this._scope.zoomLevel; }
-
-    get layer(): number { return this._layer }
-
-    set layer(target: Layer) {
-        this._layer = target
-        this.dirty.layer = true;
-        this.updateObjects = true;
-    }
 
     readonly socket: WebSocket<PlayerContainer>;
 
@@ -723,7 +714,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.setPartialDirty();
 
             if (this.isMoving) {
-                this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
+                this.floor = this.game.map.terrain.getFloor(this.position);
             }
         }
 
@@ -924,11 +915,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             ...(
                 player.dirty.zoom || forceInclude
                     ? { zoom: player._scope.zoomLevel }
-                    : {}
-            ),
-            ...(
-                player.dirty.layer || forceInclude
-                    ? { layer: player._layer }
                     : {}
             ),
             ...(
@@ -1952,6 +1938,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const data: SDeepMutable<FullData<ObjectCategory.Player>> = {
             position: this.position,
             rotation: this.rotation,
+            layer: this.layer,
             full: {
                 dead: this.dead,
                 downed: this.downed,

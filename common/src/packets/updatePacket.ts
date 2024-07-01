@@ -194,7 +194,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
             health.write(stream, data.health);
             adrenaline.write(stream, data.adrenaline);
             zoom.write(stream, data.zoom);
-            layer.write(stream, data.layer)
+            layer.write(stream, data.layer);
             id.write(stream, data.id);
             teammates.write(stream, data.teammates);
             inventory.write(stream, data.inventory);

@@ -47,6 +47,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         };
 
     distTraveled = 0;
+    layer: Layer = 0;
 
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
@@ -338,6 +339,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
+        this.changeLayer(data.layer);
+
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
@@ -355,7 +358,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         const floorType = this.game.map.terrain.getFloor(this.position);
 
-        const doOverlay = FloorTypes[floorType].overlay && this.game.layer >= Layer.Floor1;
+        const doOverlay = FloorTypes[floorType].overlay && this.layer >= Layer.Floor1;
         let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
 
         if (floorType !== this.floorType) {
@@ -400,7 +403,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles && this.game.layer >= Layer.Floor1) {
+                if (FloorTypes[floorType].particles && this.layer >= Layer.Floor1) {
                     const options = {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,
@@ -453,6 +456,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.container.visible = !full.dead;
             this.dead = full.dead;
+
+            this.layer = data.layer;
 
             this.teamID = data.full.teamID;
             if (
@@ -893,6 +898,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             if (this.isActivePlayer) {
                 this.updateEquipmentSlot(item, this.equipment[item]);
+            }
+        }
+    }
+
+    changeLayer(layer: Layer): void {
+        switch (layer) {
+            case Layer.Basement: {
+                this.game.pixi.renderer.background.color = COLORS.dirt;
+                console.log("Switched to underground");
+
+                this.game.map.terrainGraphics.visible = false;
+                break;
+            }
+            case Layer.Floor1: {
+                this.game.pixi.renderer.background.color = COLORS.grass;
+                console.log("Switched to aboveground");
+
+                this.game.map.terrainGraphics.visible = true;
+                break;
             }
         }
     }
