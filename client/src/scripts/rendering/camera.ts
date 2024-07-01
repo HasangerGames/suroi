@@ -7,6 +7,7 @@ import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { type Tween } from "../utils/tween";
 import { ShockwaveFilter } from "pixi-filters";
+import { SuroiSprite } from "../utils/pixi";
 
 export class Camera {
     readonly pixi: Application;
@@ -28,7 +29,7 @@ export class Camera {
     shakeDuration!: number;
     shakeIntensity!: number;
 
-    shockwaves: Array<Shockwave> = [];
+    shockwaves: Shockwave[] = [];
 
     width = 1;
     height = 1;
@@ -107,9 +108,9 @@ export class Camera {
         this.shakeIntensity = intensity;
     }
 
-    shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number) {
+    shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number): void {
         if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
-        this.shockwaves.push(new Shockwave(this.game, duration, position, amplitude, wavelength, speed))
+        this.shockwaves.push(new Shockwave(this.game, duration, position, amplitude, wavelength, speed));
     }
 
     addObject(...objects: Container[]): void {
@@ -119,34 +120,31 @@ export class Camera {
 
 export class Shockwave {
     game: Game;
-    position: Vector;
     wavelength: number;
+    amplitude: number;
     speed: number;
     lifeStart: number;
     lifeEnd: number;
     filter: ShockwaveFilter;
+    anchorContainer: SuroiSprite;
 
     constructor(game: Game, lifetime: number, position: Vector, amplitude: number, wavelength: number, speed: number) {
         this.game = game;
-        this.lifeStart = Date.now()
+        this.lifeStart = Date.now();
         this.lifeEnd = this.lifeStart + lifetime;
-        this.position = position;
+        this.anchorContainer = new SuroiSprite();
         this.wavelength = wavelength;
+        this.amplitude = amplitude;
         this.speed = speed;
 
-        const renderedPositionAndScale = this.calculatePositionAndScale()
+        this.game.camera.addObject(this.anchorContainer);
+        this.anchorContainer.setVPos(position);
 
-        this.filter = new ShockwaveFilter({
-            center: renderedPositionAndScale.position,
-            amplitude,
-            speed: this.speed * renderedPositionAndScale.scale,
-            wavelength: this.wavelength * renderedPositionAndScale.scale
-        });
+        this.filter = new ShockwaveFilter();
 
+        this.update();
 
-        // TODO: figure out why this doesn't work
-        this.game.camera.container.filters.push(this.filter)
-        console.log(this.game.camera.container.filters)
+        this.game.camera.container.filters = [...(this.game.camera.container.filters as Filter[]), this.filter];
     }
 
     update(): void {
@@ -156,25 +154,30 @@ export class Shockwave {
             return;
         }
 
-        const {position, scale} = this.calculatePositionAndScale();
+        const scale = this.scale();
 
-        this.filter.center = position;
+        const position = this.anchorContainer.getGlobalPosition();
 
-        this.filter.wavelength = this.wavelength * scale
+        this.filter.centerX = position.x;
+        this.filter.centerY = position.y;
 
-        this.filter.speed = this.speed * scale
+        this.filter.wavelength = this.wavelength * scale;
+
+        this.filter.speed = this.speed * scale;
 
         this.filter.time = now - this.lifeStart;
+
+        this.filter.amplitude = this.amplitude * EaseFunctions.linear(1 - ((now - this.lifeStart) / (this.lifeEnd - this.lifeStart)));
     }
 
-    calculatePositionAndScale(): {position: Vector, scale: number} {
-        return {
-            position: Vec.sub(this.position, this.game.camera.position),
-            scale: 1 / this.game.camera.zoom
-        }
+    scale(): number {
+        return PIXI_SCALE / this.game.camera.zoom;
     }
 
     destroy(): void {
+        this.game.camera.container.filters = (this.game.camera.container.filters as Filter[]).filter(filter => !Object.is(this.filter, filter));
+        this.game.camera.shockwaves = this.game.camera.shockwaves.filter(shockwave => !Object.is(this, shockwave));
+        this.anchorContainer.destroy();
         this.filter.destroy();
     }
 }
