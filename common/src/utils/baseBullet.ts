@@ -1,4 +1,4 @@
-import { ObjectCategory } from "../constants";
+import { Layer, ObjectCategory } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Hitbox } from "./hitbox";
@@ -10,6 +10,7 @@ import { Vec, type Vector } from "./vector";
 export interface BulletOptions {
     readonly position: Vector
     readonly rotation: number
+    readonly layer: number
     readonly source: ReifiableDef<BulletDefinition>
     readonly sourceID: number
     readonly reflectionCount?: number
@@ -19,6 +20,7 @@ export interface BulletOptions {
 
 type GameObject = {
     readonly position: Vector
+    readonly layer: Layer
     readonly hitbox?: Hitbox
     readonly dead: boolean
     readonly damageable: boolean
@@ -43,6 +45,7 @@ export class BaseBullet {
     readonly initialPosition: Vector;
 
     readonly rotation: number;
+    readonly layer: number;
     readonly velocity: Vector;
     readonly direction: Vector;
 
@@ -67,6 +70,7 @@ export class BaseBullet {
         this.initialPosition = Vec.clone(options.position);
         this.position = options.position;
         this.rotation = options.rotation;
+        this.layer = options.layer;
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
         this.rangeVariance = options.variance ?? 0;
@@ -141,6 +145,7 @@ export class BaseBullet {
         Bullets.writeToStream(stream, this.definition);
         stream.writePosition(this.initialPosition);
         stream.writeRotation(this.rotation, 16);
+        stream.writeUint8(this.layer)
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeBits(this.reflectionCount, 2);
         stream.writeObjectID(this.sourceID);
@@ -154,6 +159,7 @@ export class BaseBullet {
         const source = Bullets.readFromStream(stream);
         const position = stream.readPosition();
         const rotation = stream.readRotation(16);
+        const layer = stream.readUint8();
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readBits(2);
         const sourceID = stream.readObjectID();
@@ -163,6 +169,7 @@ export class BaseBullet {
             source,
             position,
             rotation,
+            layer,
             variance,
             reflectionCount,
             sourceID,

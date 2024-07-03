@@ -231,6 +231,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         const data: SDeepMutable<FullData<ObjectCategory.SyncedParticle>> = {
             position: this.position,
             rotation: this.rotation,
+            layer: this.layer,
             full: {
                 definition: this.definition
             }

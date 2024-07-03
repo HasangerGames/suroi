@@ -270,6 +270,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         return {
             position: this.position,
             rotation: this.rotation,
+            layer: this.layer,
             airborne: this.airborne,
             full: {
                 definition: this.definition
