@@ -244,5 +244,11 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "deathray": "கொடிய கதிர்",
 
     // For dual guns
-    "dual_template": "இரட்டை <gun>"
+    "dual_template": "இரட்டை <gun>",
+
+    "region_dev": "உங்கள் வீட்டு சர்வர்",
+    "region_na": "வட அமேரிக்கா",
+    "region_eu": "ஐரோப்பா",
+    "region_sa": "தென் அமேரிக்கா",
+    "region_as": "ஆசியா"
 };

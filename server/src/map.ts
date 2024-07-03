@@ -396,9 +396,38 @@ export class GameMap {
                         Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
                     ].some(point => this.terrain.getFloor(point) === "water")
                 ) return;
-                // checks if the distance between this position and the new bridge's position is less than bridgeSpawnOptions.minRiverWidth HOPEFULLY fixing the spawn problems
-                if (this.occupiedBridgePositions.some(pos => Math.sqrt((pos.x - position.x) ** 2 + (pos.y - position.y) ** 2) < bridgeSpawnOptions.minRiverWidth)) {
-                    return;
+
+                // checks if the distance between this position and the new bridge's position is less than
+                // bridgeSpawnOptions.minRiverWidth HOPEFULLY fixes the spawn problems
+                if (
+                    this.occupiedBridgePositions.some(
+                        pos => (pos.x - position.x) ** 2 + (pos.y - position.y) ** 2 < bridgeSpawnOptions.minRiverWidth ** 2
+                    )
+                ) return;
+
+                const spawnHitbox = definition.spawnHitbox.toRectangle();
+
+                // if the bridge is sideways it rotates the hitbox accordingly
+                if (bestOrientation % 2) {
+                    const { min, max } = spawnHitbox;
+
+                    [
+                        min.y, min.x,
+                        max.y, max.x
+                    ] = [
+                        min.x, min.y,
+                        max.x, max.y
+                    ];
+                }
+
+                const hitbox = spawnHitbox.transform(position);
+
+                // checks if the bridge hitbox collides with another object and if so does not spawn it
+                for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                    const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
+
+                    if (!objectHitbox) continue;
+                    if (hitbox.collidesWith(objectHitbox)) return;
                 }
 
                 this.occupiedBridgePositions.push(position);
@@ -469,7 +498,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
-                    { count: item.count, jitterSpawn: false }
+                    { count: item.count, pushVel: 0, jitterSpawn: false }
                 );
             }
         }
@@ -624,7 +653,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     position,
-                    { count: item.count, jitterSpawn: false }
+                    { count: item.count, pushVel: 0, jitterSpawn: false }
                 );
             }
         }

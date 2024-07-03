@@ -50,7 +50,7 @@ export const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
 
 export const emoteSlots = ["top", "right", "bottom", "left", "win", "death"] as const;
 
-export const SHOCKWAVE_EXPLOSION_MULTIPLYERS = Object.freeze({
+export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,
     amplitude: 1,
     wavelength: 1,

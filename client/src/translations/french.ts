@@ -277,5 +277,11 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "deathray": "Super Laser",
 
     // For dual guns
-    "dual_template": "Double <gun>"
+    "dual_template": "Double <gun>",
+
+    "region_dev": "Serveur Localhost",
+    "region_na": "Amérique du Nord",
+    "region_eu": "Europe",
+    "region_sa": "Amérique du Sud",
+    "region_as": "Asie"
 };
