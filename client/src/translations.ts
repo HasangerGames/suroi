@@ -9,6 +9,7 @@ import { ENGLISH_TRANSLATIONS } from "./translations/english";
 import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
 import { FRENCH_TRANSLATIONS } from "./translations/french";
 import { GERMAN_TRANSLATIONS } from "./translations/german";
+import { GREEK_TRANSLATIONS } from "./translations/greek";
 import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
@@ -31,6 +32,7 @@ export const TRANSLATIONS = {
     },
     translations: {
         en: ENGLISH_TRANSLATIONS,
+        gr: GREEK_TRANSLATIONS,
         fr: FRENCH_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
         zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
