@@ -1,7 +1,7 @@
 import type { TranslationMap } from "../translations";
 
-export const ENGLISH_TRANSLATIONS: TranslationMap = {
-    "name": "Turkısh",
+export const TURKISH_TRANSLATIONS: TranslationMap = {
+    "name": "Türkçe",
     "flag": "🇹🇷",
 
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
