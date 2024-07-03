@@ -1823,7 +1823,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireDelay: 50,
             switchDelay: 250,
             speedMultiplier: 1,
-            recoilMultiplier: 0.95,
+            recoilMultiplier: 1.2,
             recoilDuration: 100,
             fireMode: FireMode.Auto,
             shotSpread: 0.5,
