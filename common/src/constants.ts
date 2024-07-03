@@ -14,7 +14,7 @@ export enum TeamSize {
 
 export enum Layer {
     Basement = -2,
-    StairsToBasement= -1,
+    StairsToBasement = -1,
     Floor1 = 0,
     StairsToFloor1 = 1,
     Floor2 = 2

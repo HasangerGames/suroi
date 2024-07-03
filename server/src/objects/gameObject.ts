@@ -61,7 +61,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     damageable = false;
     dead = false;
-    
+
     private _layer: Layer = Layer.Floor1;
     public get layer(): Layer {
         return this._layer;
@@ -70,6 +70,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     public set layer(value: Layer) {
         this._layer = value;
     }
+
     hitbox?: Hitbox;
 
     private _fullStream?: SuroiBitStream | undefined;

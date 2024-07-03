@@ -76,7 +76,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         this.variation = variation;
 
         this.layer = Layer.Floor1;
-        
+
         this.lootSpawnOffset = lootSpawnOffset;
 
         this.parentBuilding = parentBuilding;

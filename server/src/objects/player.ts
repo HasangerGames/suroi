@@ -44,7 +44,7 @@ import { ThrowableItem } from "../inventory/throwableItem";
 import { Events } from "../pluginManager";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
-import { Logger, removeFrom } from "../utils/misc";
+import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -409,7 +409,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         setTimeout(() => {
             this.layer = Layer.Basement;
-        }, 2000)
+        }, 2000);
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),

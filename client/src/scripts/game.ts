@@ -106,7 +106,7 @@ export class Game {
 
     teamMode = false;
 
-    get layer(): Layer | undefined{
+    get layer(): Layer | undefined {
         return this.activePlayer?.layer;
     }
 
