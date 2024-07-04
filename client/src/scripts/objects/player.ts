@@ -926,9 +926,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             let itemTooltip = getTranslatedString(def.idString);
             if (def.itemType === ItemType.Armor) {
-                itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
+                // itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
                 itemTooltip = getTranslatedString("tt_reduces", {
-                    item: getTranslatedString(def.idString),
+                    item: `${getTranslatedString(def.idString)}<br>`,
                     percent: (def.damageReduction * 100).toString()
                 });
             }
