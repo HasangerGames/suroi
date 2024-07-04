@@ -191,6 +191,8 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "kf_two_party_down": "<player>击倒了<victim>",
     "kf_bleed_out_kill": "<player>失血过多",
     "kf_bleed_out_down": "<player>非致命地失血过多",
+    "kf_finished_off_kill": "<player>解决了<victim>",
+    "kf_finished_off_down": "<player>温柔地解决了<victim>",
     "kf_finally_died": "<player>最终死了",
     "kf_finally_ended_themselves": "<player>最终解决了自己",
     "kf_finally_killed": "<player>最终被击杀了",
@@ -203,24 +205,6 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player>击杀了击杀领袖",
     "kf_kl_dead": "击杀领袖死了！",
     "kf_kl_suicide": "击杀领袖自杀了！",
-
-    // -----------------------------------------------------
-    // Killfeed stuff (New strings)
-    // -----------------------------------------------------
-    "kf_with": "使用",
-    "kf_killed": "击杀了",
-    "kf_knocked_out": "击倒了",
-    "kf_finished_off_kill": "解决了",
-    "kf_finished_off_down": "温柔地解决了",
-
-    // kill modal only
-    "kf_you": "你",
-    "kf_you_finally_killed": "最终击杀了",
-    "kf_you_finally_down": "最终击倒了",
-
-    "kf_message": "<player><with><gun><event><victim>", // adjust these in your language's order
-    "kill_modal_message": "<you><with><gun><event><victim>", // adjust these in your language's order
-    // -----------------------------------------------------
 
     "tt_restores": "<item>恢复<amount><type>",
     "tt_reduces": "<item>减少<percent>%受到伤害",
