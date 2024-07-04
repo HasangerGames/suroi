@@ -124,6 +124,12 @@ export async function setUpUI(game: Game): Promise<void> {
         $("#select-language-menu").css("display", "none");
     });
 
+    // temporary until we translate killfeed
+    if (game.console.getBuiltInCVar("cv_language") !== "en") {
+        $("#toggle-text-kill-feed-option").addClass("modal-locked");
+        game.console.setBuiltInCVar("cv_killfeed_style", "icon");
+    }
+
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
         const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
