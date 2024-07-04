@@ -206,9 +206,6 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "The Kill Leader is dead!",
     "kf_kl_suicide": "The Kill Leader killed themselves!",
 
-    "kf_finished_off_kill_2": "<player> was finished off", // TODO
-    "kf_finished_off_down_2": "<player> was gently finished off", // TODO
-
     "tt_restores": "<item> restores <amount> <type>",
     "tt_reduces": "<item> reduces <percent>% damage",
 
