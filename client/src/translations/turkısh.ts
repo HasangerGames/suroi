@@ -1,7 +1,7 @@
 import type { TranslationMap } from "../translations";
 
-export const ENGLISH_TRANSLATIONS: TranslationMap = {
-    "name": "Turkısh",
+export const TURKISH_TRANSLATIONS: TranslationMap = {
+    "name": "Türkçe",
     "flag": "🇹🇷",
 
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
@@ -277,6 +277,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "deathray": "Ölüm Işını",
 
     // For dual guns
-    "dual_template": "Çift <gun>"
+    "dual_template": "Çift <gun>",
+
+    "region_dev": "Yerel ana bilgisayar sunucusu",
+    "region_na": "Kuzey Amerika",
+    "region_eu": "Avrupa",
+    "region_sa": "Güney Amerika",
+    "region_as": "Asya"
 
 };
