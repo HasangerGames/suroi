@@ -356,9 +356,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        const floorType = this.game.map.terrain.getFloor(this.position);
+        const isOnGround = (this.layer === 0) ? true : false
+        const floorType = isOnGround ? "grass" : this.game.map.terrain.getFloor(this.position);
 
-        const doOverlay = FloorTypes[floorType].overlay && this.layer >= Layer.Floor1;
+        const doOverlay = FloorTypes[floorType].overlay;
         let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
 
         if (floorType !== this.floorType) {

@@ -27,6 +27,7 @@ export interface DamageRecord {
 export interface ServerBulletOptions {
     readonly position: Vector
     readonly rotation: number
+    readonly layer: number
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
@@ -93,7 +94,7 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player) {
+            if (object.type === ObjectCategory.Player && this.layer === object.layer) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -109,7 +110,7 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle) {
+            if (object.type === ObjectCategory.Obstacle && this.layer === object.layer) {
                 this.damagedIDs.add(object.id);
 
                 records.push({
@@ -162,6 +163,7 @@ export class Bullet extends BaseBullet {
             {
                 position: Vec.clone(this.position),
                 rotation: direction,
+                layer: this.layer,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance

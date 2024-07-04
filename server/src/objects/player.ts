@@ -409,7 +409,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         setTimeout(() => {
             this.layer = Layer.Basement;
-        }, 2000);
+        }, 7000);
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -428,6 +428,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
+        this.inventory.addOrReplaceWeapon(1, "m3k");
 
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
@@ -713,7 +714,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.disableInvulnerability();
             this.setPartialDirty();
 
-            if (this.isMoving) {
+            if (this.isMoving && this.layer === Layer.Floor1) {
                 this.floor = this.game.map.terrain.getFloor(this.position);
             }
         }
@@ -967,12 +968,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         // Cull bullets
         packet.bullets = game.newBullets.filter(
-            ({ initialPosition, finalPosition }) => Collision.lineIntersectsRectTest(
+            ({ initialPosition, finalPosition, layer }) => Collision.lineIntersectsRectTest(
                 initialPosition,
                 finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max
-            )
+            ) && layer === this.layer
         );
 
         /**

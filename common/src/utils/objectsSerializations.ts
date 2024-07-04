@@ -113,7 +113,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: BuildingDefinition
             readonly position: Vector
-            readonly layer: Layer
             readonly rotation: Orientation
         }
     }
@@ -394,7 +393,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Buildings.writeToStream(stream, data.full.definition);
             stream.writePosition(data.full.position);
             stream.writeBits(data.full.rotation, 2);
-            stream.writeInt8(data.full.layer);
         },
         deserializePartial(stream) {
             return {
@@ -412,8 +410,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition: Buildings.readFromStream(stream),
                 position: stream.readPosition(),
                 rotation: stream.readBits(2) as Orientation,
-                layer: stream.readInt8()
-
             };
         }
     },
