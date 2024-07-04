@@ -4,7 +4,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "name": "中文（简体）",
     "flag": "🇨🇳",
 
-    "msg_rotate": "为了更好的游戏体验，请将设备旋转至横向。",
+    "msg_rotate": "请将设备旋转至横向来获取更好的游戏体验。",
     "msg_loading": "连接中",
     "msg_err_joining": "加入游戏时出错。",
     "msg_err_finding": "查找游戏时出错。",
@@ -21,7 +21,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "play_duo": "双人游戏",
     "play_squad": "小队游戏",
     "join_team": "加入队伍",
-    "msg_locked_tooltip": "游戏每24小时在单人游戏和双人游戏之间切换，因为没有足够的玩家同时进行两种游戏。",
+    "msg_locked_tooltip": "因为没有足够的玩家同时进行两种游戏，游戏每24小时在单人游戏和双人游戏之间切换。",
     "rules_and_tutorial": "规则与教程",
     "news": "新闻",
     "loadout": "装饰",
@@ -191,8 +191,6 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "kf_two_party_down": "<player>击倒了<victim>",
     "kf_bleed_out_kill": "<player>失血过多",
     "kf_bleed_out_down": "<player>非致命地失血过多",
-    "kf_finished_off_kill": "<player>解决了<victim>",
-    "kf_finished_off_down": "<player>温柔地解决了<victim>",
     "kf_finally_died": "<player>最终死了",
     "kf_finally_ended_themselves": "<player>最终解决了自己",
     "kf_finally_killed": "<player>最终被击杀了",
@@ -205,6 +203,24 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player>击杀了击杀领袖",
     "kf_kl_dead": "击杀领袖死了！",
     "kf_kl_suicide": "击杀领袖自杀了！",
+
+    // -----------------------------------------------------
+    // Killfeed stuff (New strings)
+    // -----------------------------------------------------
+    "kf_with": "使用",
+    "kf_killed": "击杀了",
+    "kf_knocked_out": "击倒了",
+    "kf_finished_off_kill": "解决了",
+    "kf_finished_off_down": "温柔地解决了",
+
+    // kill modal only
+    "kf_you": "你",
+    "kf_you_finally_killed": "最终击杀了",
+    "kf_you_finally_down": "最终击倒了",
+
+    "kf_message": "<player><with><gun><event><victim>", // adjust these in your language's order
+    "kill_modal_message": "<you><with><gun><event><victim>", // adjust these in your language's order
+    // -----------------------------------------------------
 
     "tt_restores": "<item>恢复<amount><type>",
     "tt_reduces": "<item>减少<percent>%受到伤害",
@@ -235,7 +251,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
 
     "languages": "语言",
 
-    // 战利品
+    // 物品
 
     "gauze": "纱布",
     "medikit": "医疗包",
@@ -259,7 +275,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "8x_scope": "八倍镜",
     "15x_scope": "十五倍镜",
 
-    "fists": "拳头",
+    "fists": "拳头", // 近战武器
     "baseball_bat": "棒球棒",
     "hatchet": "斧头",
     "kbar": "卡巴刀",
@@ -270,14 +286,16 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "ice_pick": "冰镐",
     "seax": "西克斯剑",
 
-    "frag_grenade": "破片手榴弹",
+    "mosin": "莫辛纳甘", // 枪械
+    "radio": "无线电通话机",
+    "lewis_gun": "路易士机枪",
+    "deathray": "死亡射线",
+
+    "frag_grenade": "破片手榴弹", // 投掷物
     "smoke_grenade": "烟雾弹",
     "confetti_grenade": "彩色纸屑手榴弹",
 
-    "radio": "无线电通话机",
-    "deathray": "死亡射线",
-
-    // 对于双持枪械来说
+    // 双持枪械
     "dual_template": "双持<gun>",
 
     // 地区
@@ -285,5 +303,27 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "region_na": "北美",
     "region_eu": "欧洲",
     "region_sa": "南美",
-    "region_as": "亚洲"
+    "region_as": "亚洲",
+
+    /* 增补翻译 */
+
+    // 枪械
+    "model_37": "37式",
+    "flues": "弗鲁斯",
+    "vepr12": "维普尔12",
+    "tango_51": "探戈51",
+    "barrett": "巴雷特95式",
+    "m1895": "1895式",
+    "g19": "格洛克19",
+    "micro_uzi": "微型乌兹",
+    "vector": "维克托",
+    "stoner_63": "斯通纳63",
+    "negev": "内格夫",
+    "m1_garand": "1式加兰德",
+    "mini14": "迷你14",
+    "model_89": "89式",
+    "firework_launcher": "烟花火箭筒",
+    "s_g17": "格洛克17（倍镜）",
+    "arena_closer": "世界毁灭者",
+    "revitalizer": "复兴者"
 };
