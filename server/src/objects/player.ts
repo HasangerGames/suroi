@@ -1597,13 +1597,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
                     do {
                         left -= subtractAmount = Math.min(left, def.maxStackSize);
-                        this.game.addLoot(item, this.position, { count: subtractAmount });
+                        this.game.addLoot(item, this.position, this.layer, { count: subtractAmount });
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, this.position, { count });
+                this.game.addLoot(item, this.position, this.layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -1612,7 +1612,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
-                this.game.addLoot(item, this.position);
+                this.game.addLoot(item, this.position, this.layer);
             }
         }
 
@@ -1621,7 +1621,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Drop skin
         const { skin } = this.loadout;
         if (skin.hideFromLoadout && !skin.noDrop) {
-            this.game.addLoot(skin, this.position);
+            this.game.addLoot(skin, this.position, this.layer);
         }
 
         // Create death marker
@@ -1836,6 +1836,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         if (
                             (object instanceof Loot)
                             && object.hitbox.collidesWith(detectionHitbox)
+                            && object.layer === this.layer
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (

@@ -1,6 +1,6 @@
 import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
-import { GameConstants, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
+import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "../../common/src/constants";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { MapPings, type MapPing } from "../../common/src/definitions/mapPings";
@@ -900,6 +900,7 @@ export class Game implements GameData {
     addLoot(
         definition: ReifiableDef<LootDefinition>,
         position: Vector,
+        layer: Layer,
         { count, pushVel, jitterSpawn = true }: {
             readonly count?: number
             readonly pushVel?: number
@@ -918,9 +919,11 @@ export class Game implements GameData {
                     randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnDistance)
                 )
                 : position,
+            layer,
             count,
             pushVel
         );
+        Logger.log(`${layer}`)
         this.grid.addObject(loot);
         this.pluginManager.emit(Events.Loot_Generated, loot);
         return loot;

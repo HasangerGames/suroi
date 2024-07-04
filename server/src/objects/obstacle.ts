@@ -117,6 +117,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 this.game.addLoot(
                     item.idString,
                     this.position,
+                    this.layer,
                     { count: item.count, pushVel: 0, jitterSpawn: false }
                 );
             }
@@ -199,13 +200,12 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             for (const item of this.loot) {
                 this.game.addLoot(
                     item.idString,
-
                     this.lootSpawnOffset
                         ? Vec.add(this.position, this.lootSpawnOffset)
                         : this.loot.length > 1
                             ? this.hitbox.randomPoint()
                             : this.position,
-
+                    this.layer,
                     { count: item.count }
                 ).push(
                     Angle.betweenPoints(this.position, lootSpawnPosition),
@@ -380,6 +380,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 definition: this.definition,
                 door: this.door,
                 position: this.position,
+                layer: this.layer,
                 variation: this.variation,
                 rotation: {
                     rotation: this.rotation,

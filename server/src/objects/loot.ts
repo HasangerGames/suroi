@@ -43,11 +43,12 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      */
     private static readonly _dragConstant = dragConst(3.69);
 
-    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel = 0.003) {
+    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, layer:number, count?: number, pushVel = 0.003) {
         super(game, position);
 
         this.definition = Loots.reify(definition);
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
+        this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
@@ -215,7 +216,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             } = { type: this.definition, count: this._count }
         ): void => {
             this.game
-                .addLoot(type, this.position, { count, jitterSpawn: false })
+                .addLoot(type, this.position, this.layer, { count, jitterSpawn: false })
                 .push(player.rotation + Math.PI, 0.0007);
         };
 
@@ -428,6 +429,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     override get data(): FullData<ObjectCategory.Loot> {
         return {
             position: this.position,
+            layer: this.layer,
             full: {
                 definition: this.definition,
                 count: this._count,
