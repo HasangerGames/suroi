@@ -53,7 +53,6 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "settings_render_resolution": "Renderduse kvaliteet",
     "settings_render_resolution_auto": "Automaatne",
     "settings_hires_textures": "Kõrge kvaliteediga graafika",
-    "settings_cooler_graphics": "Lahedam Graafika",
     "settings_antialias": "Antialiasing",
     "settings_movement_smoothing": "Liikumiste silumine",
     "settings_responsive_rotation": "Reageeriv pöörlemisrežiim",
@@ -142,7 +141,7 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "interact_generator": "Aktiveeri Generaator",
     "interact_button": "Vajuta Nupule",
 
-    "loading_spritesheets": "<progress> Spraiditabelitest Laaditud",
+    "loading_spritesheets": "<progress> Spraiditabelit Laaditud",
     "loading_connecting": "Ühendumine",
     "loading_joining_game": "Mänguga Ühendumine",
     "loading_fetching_data": "Serveri Andmete Vastuvõtmine...",
@@ -212,7 +211,7 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "go_kills": "Tapmisi:",
     "go_damage_done": "Kahju Tehtud:",
     "go_damage_taken": "Kahju Saadud:",
-    "go_time_alive": "Time Alive:",
+    "go_time_alive": "Aeg elus:",
 
     "create_team": "Loo Tiim",
     "create_team_autofill": "Täida Automaatselt",
@@ -223,15 +222,15 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Raporteerite",
     "report_id": "Raporti ID:",
     "report_instructions": `
-      <p><strong>Palun jälgige allolevaid juhiseid!</strong> Kui teie raport ei vasta juhistele, ignoreeritakse seda.</p>
-      <h4>Kuidas Esitada Raporti</h4>
-      <ol>
-        <li>Liituge <a href="https://discord.suroi.io">Discordi serveriga.</a></li>
-        <li>Minge <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            kanalisse.</a></li>
-        <li>Lugege raporti esitamise juhendid kinnitatud postitusest läbi.</li>
-        <li>Esitage raport postitusena.</li>
-      </ol>`,
+    <p><strong>Palun jälgige allolevaid juhiseid!</strong> Kui teie raport ei vasta juhistele, ignoreeritakse seda.</p>
+    <h4>Kuidas Esitada Raporti</h4>
+    <ol>
+      <li>Liituge <a href="https://discord.suroi.io">Discordi serveriga.</a></li>
+      <li>Minge <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          kanalisse.</a></li>
+      <li>Lugege raporti esitamise juhendid kinnitatud postitusest läbi.</li>
+      <li>Esitage raport postitusena.</li>
+    </ol>`,
 
     "languages": "Keeled",
 
@@ -269,6 +268,8 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "steelfang": "Teraskihv",
     "ice_pick": "Jääork",
     "seax": "Võitlusnuga",
+    "crowbar": "Kang",
+    "sickle": "Sirp",
 
     "frag_grenade": "Käsigranaat",
     "smoke_grenade": "Suitsugranaat",
@@ -278,6 +279,9 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "radio": "Raadio",
     "lewis_gun": "Lewise Kuulipilduja",
     "deathray": "Surmakiir",
+    "firework_launcher": "Ilutulestiku Heitja",
+    "s_g17": "G17 (sihikuga)",
+    "arena_closer": "Maailmade Hävitaja",
 
     // For dual guns
     "dual_template": "Topelt <gun>",
