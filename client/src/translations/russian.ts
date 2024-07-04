@@ -22,9 +22,9 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "play_squad": "Отряд",
     "join_team": "Присоединиться к группе",
     "msg_locked_tooltip": "Режим игры переключается между Напарниками и Одиночным каждые 24 часа, потому-что недостаточно игроков для игры в оба режима.",
-    "rules_and_tutorial": "Правила и Обучение",
+    "rules_and_tutorial": "Правила&Обучение",
     "news": "Новости",
-    "loadout": "Снаряжение",
+    "loadout": "Снаряга",
     "settings": "Настройки",
     "fullscreen": "Полноэкранный режим",
     "resume": "Продолжить",
@@ -32,15 +32,15 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "none": "Никакой",
     "copy": "Копировать",
 
-    "health": "Здоровье",
-    "adrenaline": "Адреналин",
+    "health": "здоровья",
+    "adrenaline": "адреналина",
 
     "settings_volume": "Громкость",
     "settings_keybinds": "Управление",
     "settings_graphics": "Графика",
     "settings_interface": "Интерфейс",
     "settings_save_load": "Сохранение/Загрузка",
-    "settings_mobile": "Настройки мобильных устройств",
+    "settings_mobile": "Мобильные устройства",
     "settings_require_reload": "* Смена этих настроек требует перезагрузки страницы.",
     "settings_performance_warning": "* Эта настройка может вызвать некоторые проблемы на определенных устройствах. Отключите, если не получается зайти в игру.",
 
@@ -53,7 +53,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "settings_render_resolution": "Разрешение рендера",
     "settings_render_resolution_auto": "Авто",
     "settings_hires_textures": "Текстуры высокого разрешения",
-    "settings_cooler_graphics": "Графика круче",
+    "settings_cooler_graphics": "Графика, только лучше",
     "settings_antialias": "Сглаживание",
     "settings_movement_smoothing": "Сглаживание движений в матче",
     "settings_responsive_rotation": "Отзывчивые движения мышью",
@@ -79,7 +79,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "settings_autopickup_dual_guns": "Авто-подбор второго короткоствольного оружия",
 
     "settings_load_settings": "Загрузить настройки",
-    "settings_copy_settings": "Скопировать настройки в буфер обмена",
+    "settings_copy_settings": "Скопировать настройки в буфер",
     "settings_reset_settings": "Сбросить настройки",
 
     "settings_reload": "Перезарядка",
@@ -109,9 +109,9 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
 
     "btn_report": "Репорт/Жалоба",
     "btn_spectate_kill_leader": "Наблюдать за лидером по убийствам",
-    "btn_spectate": "Наблюдать за матчем",
+    "btn_spectate": "Наблюдать",
     "btn_play_again": "Сыграть снова",
-    "btn_menu": "Выйти в меню",
+    "btn_menu": "Выйти",
 
     "msg_waiting_for_leader": "Ожидание лидера",
     "msg_you_died": "Вы померли.",
@@ -128,7 +128,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "action_open_door": "Открыть дверь",
     "action_close_door": "Закрыть дверь",
     "action_revive": "Поднять <player>",
-    "action_cancel": "Отменить действие",
+    "action_cancel": "Отмена",
     "action_reloading": "Перезарядка...",
     "action_reviving": "Оживление...",
     "action_being_revived": "Оживляется...",
@@ -138,7 +138,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "action_tablets_use": "Вы выпиваете пару таблеток",
 
     "interact_airdrop_crate_locked": "Открыть груз",
-    "interact_control_panel": "Активировать контрольную панель",
+    "interact_control_panel": "Активировать панель",
     "interact_generator": "Включить генератор",
     "interact_button": "Нажать кнопку",
 
@@ -149,13 +149,13 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "loading_finding_game": "Поиск игры",
 
     "keybind_clear_tooltip": "Чтобы убрать горячую клавишу, нажмите <kbd>Escape</kbd> или <kbd>Backspace</kbd>.",
-    "keybind_reset": "Сброс до базовых настроек",
+    "keybind_reset": "Сброс настроек",
     "bindings_+up": "Движение вверх",
     "bindings_+down": "Движение вниз",
     "bindings_+left": "Движение влево",
     "bindings_+right": "Движение вправо",
     "bindings_interact": "Взаимодействие",
-    "bindings_loot": "Забрать",
+    "bindings_loot": "Взять предмет",
     "bindings_slot 0": "Вскинуть основное оружие",
     "bindings_slot 1": "Вскинуть вторичное оружие",
     "bindings_slot 2": "Достать холодное оружие",
@@ -174,7 +174,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "bindings_use_consumable medikit": "Использовать аптечку",
     "bindings_use_consumable cola": "Выпить колу",
     "bindings_use_consumable tablets": "Съесть таблеток",
-    "bindings_cancel_action": "Отменить действие",
+    "bindings_cancel_action": "Отмена",
     "bindings_+view_map": "Открыть карту",
     "bindings_toggle_map": "Выключить/Включить полную карту",
     "bindings_toggle_minimap": "Выключить/Включить мини-карту",
@@ -191,27 +191,50 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "kf_two_party_down": "<player> сбил с ног <victim>",
     "kf_bleed_out_kill": "<player> истек кровью",
     "kf_bleed_out_down": "<player истек кровью, но не потерял сознание",
-    "kf_finished_off_kill": "<player> завершил жизнь <victim>",
-    "kf_finished_off_down": "<player> элегантно покончил с <victim>",
     "kf_finally_died": "<player> наконец-то умер",
     "kf_finally_ended_themselves": "<player> наконец-то покончил с собой",
     "kf_finally_killed": "<player> был наконец-то убит",
     "kf_finally_down": "<player> был наконец-то сбит с ног",
     "kf_gas_kill": "<player> жалостливо умер в газе",
-    "kf_gas_down": "<player> был сбит с ног в газу",
+    "kf_gas_down": "<player> сбился с ног в газу",
     "kf_airdrop_kill": "<player> раздавило воздушным грузом",
-    "kf_airdrop_down": "<player> был сбит ног от воздушного груза",
+    "kf_airdrop_down": "<player> сбит с ног от воздушного груза",
     "kf_kl_promotion": "<player> стал лидером по убийствам!",
     "kf_kl_killed": "<player> убил лидера по убийствам",
     "kf_kl_dead": "Лидер по убийствам умер, какая досада!",
     "kf_kl_suicide": "Лидер по убийствам покончил с собой!",
+    "kf_you_killed": "Вы убили <player>",
+    "kf_you_downed": "Вы повалили на землю <player>",
+    "kf_finished_off_kill_2": "<player> был убит",
+    "kf_finished_off_down_2": "<player> был убит элегантно",
+    "kf_with_gun": "<player_killed_player> с помощью <gun>",
+    "kf_impact": "осколком от",
+    "kf_weapon_name": "<impact> <gun>",
+
+    // -----------------------------------------------------
+    // Killfeed stuff (New strings)
+    // -----------------------------------------------------
+    "kf_with": "с помощью",
+    "kf_killed": "убил",
+    "kf_knocked_out": "сбил с ног",
+    "kf_finished_off_kill": "замочил",
+    "kf_finished_off_down": "элегантно уничтожил",
+
+    // kill modal only
+    "kf_you": "Ты",
+    "kf_you_finally_killed": "наконец-то убил",
+    "kf_you_finally_down": "наконец-то сбил с ног",
+
+    "kf_message": "<player> <event> <victim> <with> <gun>", // adjust these in your language's order
+    "kill_modal_message": "<you> <event> <victim> <with> <gun>", // adjust these in your language's order
+    // -----------------------------------------------------
 
     "tt_restores": "<item> восстанавливает <amount> <type>",
-    "tt_reduces": "<item> уменьшает <percent>% урона",
+    "tt_reduces": "<item> уменьшает <percent>% входящего урона",
 
     "go_kills": "Убийства:",
-    "go_damage_done": "Всего урона нанесено:",
-    "go_damage_taken": "Всего урона принятно:",
+    "go_damage_done": "Урона нанесено:",
+    "go_damage_taken": "Урона принятно:",
     "go_time_alive": "Всего вы прожили:",
 
     "create_team": "Создать группу",
@@ -220,18 +243,18 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "create_team_waiting": "Ожидание...",
     "create_team_play": "Начать игру",
 
-    "report_reporting": "Репорт",
+    "report_reporting": "Оформление репорта на",
     "report_id": "ID репорта:",
     "report_instructions": `
-      <p><strong>Пожалуйста, следуйте инструкциям!</strong> Если вы не будете, то ваш репорт останется незамеченным.</p>
-      <h4>Как опубликовать репорт</h4>
-      <ol>
-        <li>Присоединитесь к <a href="https://discord.suroi.io">Discord server.</a></li>
-        <li>Зайдите в <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            channel.</a></li>
-        <li>Прочитайте инструкцию в закрепленном сообщении.</li>
-        <li>Оставьте ваш репорт как пост в канале.</li>
-      </ol>`,
+    <p><strong>Пожалуйста, следуйте инструкциям!</strong> Если вы не будете, то ваш репорт останется незамеченным.</p>
+    <h4>Как опубликовать репорт</h4>
+    <ol>
+      <li>Присоединитесь к <a href="https://discord.suroi.io">Discord server.</a></li>
+      <li>Зайдите в <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          channel.</a></li>
+      <li>Прочитайте инструкцию в закрепленном сообщении.</li>
+      <li>Оставьте ваш репорт как пост в канале.</li>
+    </ol>`,
 
     "languages": "Языки",
 
@@ -246,29 +269,29 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "regular_vest": "Бронежилет с плитами",
     "tactical_vest": "Тактический бронежилет",
     "basic_helmet": "Шлем-каска",
-    "regular_helmet": "Бронешлем",
+    "regular_helmet": "Военный шлем",
     "tactical_helmet": "Тактический шлем",
     "bag": "Мешок", // This shouldn't show up in game
-    "basic_pack": "Школьный рюкзак",
+    "basic_pack": "Обычный рюкзак",
     "regular_pack": "Охотничий рюкзак",
     "tactical_pack": "Тактический рюкзак",
 
-    "1x_scope": "Без прицелов", // This shouldn't show up in game
-    "2x_scope": "Оптика с 2x приближением",
-    "4x_scope": "Оптика с 4x приближением",
-    "8x_scope": "Оптика с 8x приближением",
-    "15x_scope": "Оптика с 15x приближением",
+    "1x_scope": "Без прицела", // This shouldn't show up in game
+    "2x_scope": "2x Оптика",
+    "4x_scope": "4x Оптика",
+    "8x_scope": "8x Оптика",
+    "15x_scope": "15x Оптика",
 
     "fists": "Кулаки",
     "baseball_bat": "Бейсбольная бита",
     "hatchet": "Топор",
-    "kbar": "Фомка",
+    "kbar": "Боевой нож",
     "maul": "Кувалда",
     "gas_can": "Канистра",
     "heap_sword": "HE-AP Меч",
     "steelfang": "Крутой керамбит",
     "ice_pick": "Ледоруб",
-    "seax": "Сабля",
+    "seax": "Пиратский меч",
 
     "radio": "Рация",
     "deathray": "Луч смерти",
