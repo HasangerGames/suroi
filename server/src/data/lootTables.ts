@@ -451,7 +451,8 @@ export const LootTables: Record<string, LootTable> = {
                 { tier: "gold_airdrop_guns", weight: 1 }
             ],
             [
-                { item: "frag_grenade", count: 3, weight: 1 }
+                // { item: "frag_grenade", count: 3, weight: 1 }
+                { item: "confetti_grenade", count: 4, weight: 1 } // temporary
             ]
         ]
     },
@@ -575,6 +576,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "g19", weight: 2 },
         { item: "m1895", weight: 1.75 },
         { item: "mp40", weight: 1.7 },
+        { item: "radio", weight: 1.5 }, // temporary
         { item: "saf_200", weight: 1.5 },
         { item: "cz75a", weight: 1.5 },
         { item: "hp18", weight: 1.25 },
@@ -595,7 +597,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "cz600", weight: 0.008 },
         { item: "vepr12", weight: 0.008 },
         { item: "stoner_63", weight: 0.005 },
-        { item: "radio", weight: 0.005 },
+        // { item: "radio", weight: 0.005 }, // temporary
         { item: "mosin", weight: 0.005 },
         // { item: "firework_launcher", weight: 0.005 }, // birthday mode
         { item: "vector", weight: 0.004 },
@@ -644,6 +646,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "micro_uzi", weight: 1.25 },
         { item: "ak47", weight: 1.1 },
         { item: "aug", weight: 1.05 },
+        { item: "radio", weight: 1 }, // temporary
         { item: "hp18", weight: 1 },
         { item: "mp40", weight: 1 },
         { item: "model_37", weight: 1 },
@@ -664,7 +667,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "vepr12", weight: 0.04 },
         { item: "cz600", weight: 0.03 },
         { item: "stoner_63", weight: 0.01 },
-        { item: "radio", weight: 0.01 },
+        // { item: "radio", weight: 0.01 }, // temporary
         { item: "mosin", weight: 0.01 },
         { item: "vector", weight: 0.008 },
         { item: "negev", weight: 0.005 },
@@ -748,7 +751,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "radio", weight: 0.1 }
     ],
     gold_airdrop_guns: [
-        // { item: "firework_launcher", weight: 1.2 }, // birthday mode
+        { item: "firework_launcher", weight: 1.2 }, // temporary
         { item: "m1_garand", weight: 1.1 },
         { item: "acr", weight: 1 },
         { item: "pp19", weight: 1 },
