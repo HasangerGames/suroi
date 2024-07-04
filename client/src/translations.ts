@@ -116,7 +116,7 @@ export function getTranslatedString(key: string, replacements?: Record<string, s
     return foundTranslation;
 }
 
-const printTranslationDebug = true;
+const printTranslationDebug = false;
 
 function adjustFontSize(element: HTMLElement): void {
     if (element.textContent) {
@@ -157,6 +157,11 @@ function translateCurrentDOM(): void {
 
         debugTranslationCounter++;
     });
+
+    if (language !== "en") { // temporary until we translate killfeed
+        const pepedls = document.getElementById("toggle-text-kill-feed-option")!.innerHTML;
+        document.getElementById("toggle-text-kill-feed-option")!.innerHTML = `<i class="fa-solid fa-lock"></i> ${pepedls}`;
+    }
 
     if (printTranslationDebug) {
         console.log("Translated", debugTranslationCounter, "strings");
