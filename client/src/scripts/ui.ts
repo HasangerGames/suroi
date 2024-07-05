@@ -2,11 +2,11 @@ import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
-import { Ammos } from "../../../common/src/definitions/ammos";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
-import { Scopes } from "../../../common/src/definitions/scopes";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
@@ -23,6 +23,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import type { ArmorDefinition } from "../../../common/src/definitions/armors";
 
 /*
     eslint-disable
@@ -1735,6 +1736,24 @@ Video evidence is required.`)) {
 
     let dropTimer: number | undefined;
 
+    function mobileDropItem(button: number, condition: boolean, item?: AmmoDefinition | ArmorDefinition | ScopeDefinition | HealingItemDefinition, slot?: number): void {
+        dropTimer = window.setTimeout(() => {
+            if (button === 0 && condition) {
+                if (slot !== undefined) {
+                    inputManager.addAction({
+                        type: InputActions.DropWeapon,
+                        slot
+                    });
+                } else if (item !== undefined) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item
+                    });
+                }
+            }
+        }, 600);
+    }
+
     // Generate the UI for scopes, healing items, weapons, and ammos
     $<HTMLDivElement>("#weapons-container").append(
         ...Array.from(
@@ -1759,18 +1778,6 @@ Video evidence is required.`)) {
                 element.addEventListener("pointerup", () => clearTimeout(dropTimer));
 
                 element.addEventListener("pointerdown", e => {
-                    if (e.button !== 0) return;
-
-                    clearTimeout(dropTimer);
-                    dropTimer = window.setTimeout(() => {
-                        inputManager.addAction({
-                            type: InputActions.DropWeapon,
-                            slot
-                        });
-                    }, 600);
-                });
-
-                element.addEventListener("pointerdown", e => {
                     if (!ele.hasClass("has-item")) return;
 
                     e.stopImmediatePropagation();
@@ -1785,6 +1792,8 @@ Video evidence is required.`)) {
                         type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
                         slot
                     });
+
+                    mobileDropItem(e.button, true, undefined, slot);
                 });
                 return ele;
             }
@@ -1813,15 +1822,7 @@ Video evidence is required.`)) {
                         item: scope
                     });
 
-                    if (isTeamMode) {
-                        clearTimeout(dropTimer);
-                        dropTimer = window.setTimeout(() => {
-                            inputManager.addAction({
-                                type: InputActions.DropItem,
-                                item: scope
-                            });
-                        }, 600);
-                    }
+                    mobileDropItem(button, true, scope);
                 }
 
                 if (isSecondary && isTeamMode) {
@@ -1876,15 +1877,7 @@ Video evidence is required.`)) {
                         });
                     }
 
-                    if (isTeamMode) {
-                        clearTimeout(dropTimer);
-                        dropTimer = window.setTimeout(() => {
-                            inputManager.addAction({
-                                type: InputActions.DropItem,
-                                item
-                            });
-                        }, 600);
-                    }
+                    mobileDropItem(button, true, item);
                 }
 
                 if (isSecondary && isTeamMode) {
@@ -1933,14 +1926,7 @@ Video evidence is required.`)) {
                     });
                 }
 
-                if (isTeamMode) {
-                    window.setTimeout(() => {
-                        inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: ammo
-                        });
-                    }, 600);
-                }
+                mobileDropItem(button, true, ammo);
             }
 
             if (isSecondary && isTeamMode) {
@@ -1961,7 +1947,6 @@ Video evidence is required.`)) {
         ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
         slotListener(ele, button => {
-            const isPrimary = button === 0;
             const isSecondary = button === 2;
             const shouldDrop = game.activePlayer && game.teamMode;
 
@@ -1975,17 +1960,8 @@ Video evidence is required.`)) {
                 }
             }
 
-            if (isPrimary && shouldDrop) {
-                clearTimeout(dropTimer);
-                dropTimer = window.setTimeout(() => {
-                    const item = game.activePlayer?.getEquipment(type);
-                    if (!item || !game.teamMode) return;
-
-                    inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item
-                    });
-                }, 600);
+            if (shouldDrop !== undefined) {
+                mobileDropItem(button, true, game.activePlayer?.getEquipment(type));
             }
         });
     }
