@@ -11,6 +11,7 @@ import { FRENCH_TRANSLATIONS } from "./translations/french";
 import { GERMAN_TRANSLATIONS } from "./translations/german";
 import { GREEK_TRANSLATIONS } from "./translations/greek";
 import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
+import { JAPANESE_TRANSLATIONS } from "./translations/japanese";
 import { RUSSIAN_TRANSLATIONS } from "./translations/russian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
@@ -40,6 +41,7 @@ export const TRANSLATIONS = {
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
         zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
+        jp: JAPANESE_TRANSLATIONS,
         vi: VIETNAMESE_TRANSLATIONS,
         ta: TAMIL_TRANSLATIONS,
         hu: HUNGARIAN_TRANSLATIONS,
