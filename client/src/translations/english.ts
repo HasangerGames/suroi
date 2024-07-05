@@ -281,7 +281,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "arena_closer": "Destroyer Of Worlds",
     "revitalizer": "Revitalizer",
     "s_g17": "G17 (Scoped)",
-    "vss": 'VSS"',
+    "vss": "VSS",
     "pp19": "PP-19",
     "vepr12": "Vepr-12",
     "flues": "Flues",
