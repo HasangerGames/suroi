@@ -269,6 +269,8 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Jégcsákány",
     "seax": "Seax",
+    "sickle": "Sarló",
+    "crowbar": "Feszítővas",
 
     "frag_grenade": "Repeszgránát",
     "smoke_grenade": "Füstgránát",
