@@ -3,6 +3,7 @@ import { Emotes } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
+import { ALBANIAN_TRANSLATIONS } from "./translations/albanian";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
 import { CZECH_TRANSLATIONS } from "./translations/czech";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
@@ -37,6 +38,7 @@ export const TRANSLATIONS = {
         en: ENGLISH_TRANSLATIONS,
         gr: GREEK_TRANSLATIONS,
         tr: TURKISH_TRANSLATIONS,
+        ab: ALBANIAN_TRANSLATIONS,
         fr: FRENCH_TRANSLATIONS,
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
@@ -121,16 +123,28 @@ export function getTranslatedString(key: string, replacements?: Record<string, s
 const printTranslationDebug = false;
 
 function adjustFontSize(element: HTMLElement): void {
-    if (element.textContent) {
-        const isTabElem = element.parentElement?.classList.contains("tab");
+    if (!element.textContent) return;
 
-        const buttonText = element.textContent.trim();
-        const textWidth = buttonText.length * 10;
-        const buttonWidth = element.getBoundingClientRect().width;
-        const fontSize = `${Math.max(isTabElem && language !== "ta" ? 85 : 65, Math.min(language === "ta" ? 65 : 80, (buttonWidth / textWidth) * 100))}%`; // womp womp
+    const MIN_FONT_SIZE = element.parentElement?.classList.contains("tab") ? 12.5 : 15;
+    const FONT_WIDTH_PER_CHARACTER = 10;
 
-        element.style.fontSize = fontSize;
+    // I love math
+    const buttonText = element.textContent.replace(/\s+/g, " ");
+    const textWidth = buttonText.length * FONT_WIDTH_PER_CHARACTER;
+    const buttonWidth = element.getBoundingClientRect().width;
+
+    let fontSize: number;
+
+    switch (language) {
+        case "ta": // has very long strings
+            fontSize = Math.max((MIN_FONT_SIZE - 2), Math.min(buttonWidth / textWidth * FONT_WIDTH_PER_CHARACTER, 13));
+            break;
+        default:
+            fontSize = Math.max(MIN_FONT_SIZE, Math.min(buttonWidth / textWidth * FONT_WIDTH_PER_CHARACTER, 20));
+            break;
     }
+
+    element.style.fontSize = `${fontSize}px`;
 }
 
 function translateCurrentDOM(): void {
