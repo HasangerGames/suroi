@@ -27,6 +27,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import { getTranslatedString } from "../../translations";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -223,10 +224,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.body.eventMode = "static";
         this.images.body.on("pointerdown", (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
-            const packet = new SpectatePacket();
-            packet.spectateAction = SpectateActions.SpectateSpecific;
-            packet.playerID = this.id;
-            this.game.sendPacket(packet);
+            this.game.sendPacket(
+                SpectatePacket.create({
+                    spectateAction: SpectateActions.SpectateSpecific,
+                    playerID: this.id
+                })
+            );
         });
 
         this.updateFromData(data, true);
@@ -515,7 +518,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        uiManager.animateAction("Being revived...", GameConstants.player.reviveTime, true);
+                        uiManager.animateAction(getTranslatedString("action_being_revived"), GameConstants.player.reviveTime, true);
                     } else {
                         uiManager.cancelAction();
                     }
@@ -533,24 +536,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.bleedEffectInterval = undefined;
             }
 
-            if (this.dead && this.teammateName) this.teammateName.container.visible = false;
+            if (this.dead) {
+                if (this.teammateName) this.teammateName.container.visible = false;
 
-            if (this.dead && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-                this.game.particleManager.spawnParticles(random(15, 30), () => ({
-                    frames: "blood_particle",
-                    lifetime: random(1000, 3000),
-                    position: this.position,
-                    alpha: {
-                        start: 1,
-                        end: 0
-                    },
-                    scale: {
-                        start: randomFloat(0.8, 1.6),
-                        end: 0
-                    },
-                    speed: randomPointInsideCircle(Vec.create(0, 0), 4),
-                    zIndex: ZIndexes.Players + 1
-                }));
+                if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                    this.game.particleManager.spawnParticles(random(15, 30), () => ({
+                        frames: "blood_particle",
+                        lifetime: random(1000, 3000),
+                        position: this.position,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: randomFloat(0.8, 1.6),
+                            end: 0
+                        },
+                        speed: randomPointInsideCircle(Vec.create(0, 0), 4),
+                        zIndex: ZIndexes.Players + 1
+                    }));
+                }
             }
 
             this._oldItem = this.activeItem;
@@ -655,7 +660,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     actionSoundName = `${weaponDef.idString}_reload`;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction("Reloading...", weaponDef.reloadTime);
+                        uiManager.animateAction(getTranslatedString("action_reloading"), weaponDef.reloadTime);
                     }
 
                     break;
@@ -665,13 +670,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
+                        uiManager.animateAction(getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }), itemDef.useTime);
                     }
                     break;
                 }
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
-                        uiManager.animateAction("Reviving...", GameConstants.player.reviveTime);
+                        uiManager.animateAction(getTranslatedString("action_reviving"), GameConstants.player.reviveTime);
                     }
                     break;
                 }
@@ -919,9 +924,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
 
-            let itemTooltip = def.name;
+            let itemTooltip = getTranslatedString(def.idString);
             if (def.itemType === ItemType.Armor) {
-                itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
+                // itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
+                itemTooltip = getTranslatedString("tt_reduces", {
+                    item: `${getTranslatedString(def.idString)}<br>`,
+                    percent: (def.damageReduction * 100).toString()
+                });
             }
             container.children(".item-tooltip").html(itemTooltip);
         }
@@ -1072,7 +1081,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 this.playSound(
-                    "swing",
+                    weaponDef.swingSound,
                     {
                         falloff: 0.4,
                         maxRange: 96
@@ -1232,7 +1241,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             ),
                             randomFloat(gas.minSpeed, gas.maxSpeed)
                         ),
-                        zIndex: ZIndexes.Gas,
+                        zIndex: ZIndexes.ObstaclesLayer5 - 2,
                         alpha: {
                             start: randomFloat(0.5, 1),
                             end: 0
@@ -1330,6 +1339,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 pinImage.setPos(35, 0);
                 pinImage.setZIndex(ZIndexes.Players + 1);
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
+                this.updateFistsPosition(false);
 
                 this.anims.leftFist = this.game.addTween({
                     target: this.images.leftFist,
@@ -1514,7 +1524,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
-            zIndex: ZIndexes.Players + 1,
+            zIndex: ZIndexes.Players + 0.5,
             position,
             lifetime: 1000,
             scale: {
@@ -1528,7 +1538,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
 
-        if (this.game.console.getBuiltInCVar("cv_cooler_graphics") || !this.downed) {
+        if (this.game.console.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
             this._bloodDecals.add(
                 this.game.particleManager.spawnParticle({
                     frames: "blood_particle",

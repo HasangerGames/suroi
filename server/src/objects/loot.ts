@@ -400,9 +400,11 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         this.game.removeLoot(this);
 
         // Send pickup packet
-        const packet = new PickupPacket();
-        packet.item = this.definition;
-        player.sendPacket(packet);
+        player.sendPacket(
+            PickupPacket.create({
+                item: this.definition
+            })
+        );
 
         this.game.pluginManager.emit(Events.Loot_Interact, {
             loot: this,

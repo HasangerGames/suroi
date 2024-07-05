@@ -1,6 +1,7 @@
 import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
+import { type Materials } from "./obstacles";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
@@ -8,6 +9,8 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
+    readonly canPierceMaterials?: ReadonlyArray<typeof Materials[number]>
+    readonly swingSound: string
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -43,6 +46,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             noDrop: false,
             killstreak: false,
             speedMultiplier: 1,
+            swingSound: "swing",
             maxTargets: 1,
             image: {
                 zIndex: 1
@@ -73,6 +77,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "baseball_bat",
             name: "Baseball Bat",
+            swingSound: "heavy_swing",
             damage: 34,
             obstacleMultiplier: 1.5,
             radius: 3.8,
@@ -98,8 +103,10 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             name: "Hatchet",
             damage: 25,
             obstacleMultiplier: 2.5,
-            piercingMultiplier: 0.5,
+            piercingMultiplier: 1.5,
+            canPierceMaterials: ["cardboard"], // because ammo crate has "cardboard" material
             radius: 2,
+            swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
             cooldown: 350,
             fists: {
@@ -118,8 +125,35 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "crowbar",
+            name: "Crowbar",
+            swingSound: "heavy_swing",
+            damage: 40,
+            obstacleMultiplier: 2.2,
+            piercingMultiplier: 2,
+            canPierceMaterials: ["cardboard"], // ammo crate moment
+            radius: 2.55,
+            offset: Vec.create(6.5, 2),
+            cooldown: 560,
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(38, -35),
+                right: Vec.create(38, 35),
+                useLeft: Vec.create(38, -35),
+                useRight: Vec.create(100, 35)
+            },
+            image: {
+                position: Vec.create(31, 41),
+                usePosition: Vec.create(110, 33),
+                angle: 190,
+                useAngle: 40,
+                lootScale: 0.65
+            }
+        },
+        {
             idString: "kbar",
             name: "K-bar",
+            swingSound: "soft_swing",
             damage: 25,
             obstacleMultiplier: 1.25,
             radius: 2.7,
@@ -141,11 +175,38 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "sickle",
+            name: "Sickle",
+            damage: 33,
+            swingSound: "soft_swing",
+            obstacleMultiplier: 1.15,
+            radius: 2.7,
+            offset: Vec.create(4, 0),
+            cooldown: 400,
+            //  fireMode: FireMode.Auto, - todo
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(38, -35),
+                right: Vec.create(45, 35),
+                useLeft: Vec.create(38, -35),
+                useRight: Vec.create(70, 20)
+            },
+            image: {
+                position: Vec.create(61, 67),
+                usePosition: Vec.create(99, -5),
+                angle: 120,
+                useAngle: 5,
+                lootScale: 0.78
+            }
+        },
+        {
             idString: "maul",
             name: "Maul",
             damage: 54,
+            swingSound: "heavy_swing",
             obstacleMultiplier: 2,
             piercingMultiplier: 1,
+            canPierceMaterials: ["cardboard", "stone"],
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),
             cooldown: 450,
@@ -171,6 +232,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             noDrop: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
+            canPierceMaterials: ["cardboard", "stone"],
             radius: 2.7,
             offset: Vec.create(3.1, 0.9),
             cooldown: 200,
@@ -223,6 +285,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
+            canPierceMaterials: ["cardboard", "stone"],
             killstreak: true,
             radius: 4,
             offset: Vec.create(5, 0),
@@ -246,6 +309,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "ice_pick",
             name: "Ice Pick",
+            swingSound: "heavy_swing",
             damage: 35,
             obstacleMultiplier: 1.9,
             piercingMultiplier: 1,
@@ -271,6 +335,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             idString: "seax",
             name: "Seax",
             damage: 45,
+            swingSound: "heavy_swing",
             obstacleMultiplier: 1.5,
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),

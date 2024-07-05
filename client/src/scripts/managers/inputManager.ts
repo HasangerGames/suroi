@@ -5,7 +5,7 @@ import { GameConstants, InputActions } from "../../../../common/src/constants";
 import { type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import { InputPacket, type InputAction, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
+import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -13,6 +13,8 @@ import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings } from "../utils/console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
+import { getTranslatedString } from "../../translations";
+import { html } from "../utils/misc";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -107,54 +109,52 @@ export class InputManager {
     // Initialize an array to store focus state for keypresses
     private readonly _focusController = new Set<string>();
 
-    private _lastInputPacket: InputPacket | undefined;
+    private _lastInputPacket: PlayerInputData | undefined;
     private _inputPacketTimer = 0;
 
     update(): void {
         if (this.game.gameOver) return;
-        const packet = new InputPacket();
+        const packet = {
+            movement: { ...this.movement },
+            attacking: this.attacking,
+            turning: this.turning,
+            ...(
+                this.turning
+                    ? {
+                        rotation: this.resetAttacking ? this.shootOnReleaseAngle : this.rotation,
+                        distanceToMouse: this.distanceToMouse
+                    }
+                    : {}
+            ),
+            isMobile: this.isMobile,
+            ...(
+                this.isMobile
+                    ? {
+                        mobile: {
+                            angle: this.movementAngle,
+                            moving: this.movement.moving
+                        }
+                    }
+                    : {}
+            ),
+            actions: this.actions
+        } as PlayerInputData;
 
-        // assigning it directly breaks comparing last and current input packet
-        // since javascript will pass it by reference
-        // TODO will spread syntax work? packet.movement = { ...this.movement };
-        packet.movement = {
-            up: this.movement.up,
-            down: this.movement.down,
-            left: this.movement.left,
-            right: this.movement.right
-        };
-
-        packet.attacking = this.attacking;
-
-        packet.turning = this.turning;
-        if (this.turning) {
-            packet.rotation = this.resetAttacking ? this.shootOnReleaseAngle : this.rotation;
-            packet.distanceToMouse = this.distanceToMouse;
-            this.turning = false;
-        }
-
-        packet.isMobile = this.isMobile;
-        if (this.isMobile) {
-            packet.mobile = {
-                angle: this.movementAngle,
-                moving: this.movement.moving
-            };
-        }
+        this.turning = false;
 
         if (this.resetAttacking) {
             this.attacking = false;
             this.resetAttacking = false;
         }
-        packet.actions = this.actions;
 
         this._inputPacketTimer += this.game.serverDt;
 
         if (
             !this._lastInputPacket
-            || packet.didChange(this._lastInputPacket)
+            || areDifferent(this._lastInputPacket, packet)
             || this._inputPacketTimer >= 100
         ) {
-            this.game.sendPacket(packet);
+            this.game.sendPacket(PlayerInputPacket.create(packet));
             this._lastInputPacket = packet;
             this._inputPacketTimer = 0;
         }
@@ -493,43 +493,6 @@ export class InputManager {
         return input as Ret;
     }
 
-    private readonly actionsNames: Record<keyof typeof defaultBinds, string> = {
-        "+up": "Move Up",
-        "+down": "Move Down",
-        "+left": "Move Left",
-        "+right": "Move Right",
-        "interact": "Interact",
-        "loot": "Loot",
-        "slot 0": "Equip Primary",
-        "slot 1": "Equip Secondary",
-        "slot 2": "Equip Melee",
-        "equip_or_cycle_throwables 1": "Equip/Cycle Throwable",
-        "last_item": "Equip Last Weapon",
-        "other_weapon": "Equip Other Gun",
-        "swap_gun_slots": "Swap Gun Slots",
-        "cycle_items -1": "Equip Previous Weapon",
-        "cycle_items 1": "Equip Next Weapon",
-        "+attack": "Use Weapon",
-        "drop": "Drop Active Weapon",
-        "reload": "Reload",
-        "cycle_scopes -1": "Previous Scope",
-        "cycle_scopes 1": "Next Scope",
-        "use_consumable gauze": "Use Gauze",
-        "use_consumable medikit": "Use Medikit",
-        "use_consumable cola": "Use Cola",
-        "use_consumable tablets": "Use Tablets",
-        "cancel_action": "Cancel Action",
-        "+view_map": "View Map",
-        "toggle_map": "Toggle Fullscreen Map",
-        "toggle_minimap": "Toggle Minimap",
-        "toggle_hud": "Toggle HUD",
-        "+emote_wheel": "Emote Wheel",
-        "+map_ping_wheel": "Switch to Map Ping",
-        "+map_ping": "Map Ping Wheel",
-        "toggle_console": "Toggle Console",
-        "toggle_slot_lock": "Toggle Slot Lock"
-    };
-
     cycleScope(offset: number): void {
         const scope = this.game.uiManager.inventory.scope;
         const scopeIndex = Scopes.definitions.indexOf(scope);
@@ -596,20 +559,11 @@ export class InputManager {
 
     private readonly _keybindsContainer = $<HTMLDivElement>("#tab-keybinds-content");
     generateBindsConfigScreen(): void {
-        this._keybindsContainer.html("").append(
-            $("<div>",
-                {
-                    class: "modal-item",
-                    id: "keybind-clear-tooltip"
-                }
-            ).append(
-                "To remove a keybind, press the keybind and then press either ",
-                $("<kbd>").text("Escape"),
-                " or ",
-                $("<kbd>").text("Backspace"),
-                "."
-            )
-        );
+        this._keybindsContainer.html("").append(html`
+            <div class="modal-item" id="keybind-clear-tooltip">
+                ${getTranslatedString("keybind_clear_tooltip")}
+            </div>
+        `);
 
         let activeButton: HTMLButtonElement | undefined;
         for (const action in defaultBinds) {
@@ -617,7 +571,7 @@ export class InputManager {
 
             $("<div/>", {
                 class: "setting-title",
-                text: this.actionsNames[action]
+                text: getTranslatedString(`bindings_${action}`)
             }).appendTo(bindContainer);
 
             const actions = this.binds.getInputsBoundToAction(action);
@@ -686,7 +640,11 @@ export class InputManager {
         // Add the reset button
         $("<div/>", { class: "modal-item" }).append($("<button/>", {
             class: "btn btn-darken btn-lg btn-danger",
-            html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
+            html: html`
+                <span style="position: relative; top: -2px">
+                    <i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i>
+                    ${getTranslatedString("keybind_reset")}
+                </span>`
         }).on("click", () => {
             this.binds.unbindAll();
 

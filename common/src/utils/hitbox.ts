@@ -393,8 +393,8 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    override toRectangle(): this {
-        return this;
+    override toRectangle(): RectangleHitbox {
+        return this.clone();
     }
 
     override isPointInside(point: Vector): boolean {

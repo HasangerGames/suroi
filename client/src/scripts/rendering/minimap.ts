@@ -2,12 +2,14 @@ import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
-import { type MapPacket } from "../../../../common/src/packets/mapPacket";
+import { type MapPacketData } from "../../../../common/src/packets/mapPacket";
+import { type PingSerialization, type PlayerPingSerialization } from "../../../../common/src/packets/updatePacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
@@ -88,8 +90,8 @@ export class Minimap {
 
     private readonly _terrainGraphics = new Graphics();
 
-    private _objects: MapPacket["objects"] = [];
-    private _places: MapPacket["places"] = [];
+    private _objects: MapPacketData["objects"] = [];
+    private _places: MapPacketData["places"] = [];
 
     readonly debugGraphics = new Graphics();
 
@@ -433,9 +435,9 @@ export class Minimap {
         this.game.camera.addObject(debugGraphics);
     }
 
-    updateFromPacket(mapPacket: MapPacket): void {
+    updateFromPacket(mapPacket: MapPacketData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        this.game.uiManager.ui.loadingText.text("Joining Game");
+        this.game.uiManager.ui.loadingText.text(getTranslatedString("loading_joining_game"));
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;
@@ -448,9 +450,7 @@ export class Minimap {
         );
 
         const rivers: River[] = [];
-        for (const riverData of mapPacket.rivers) {
-            rivers.push(new River(riverData.width, riverData.points, rivers, mapBounds));
-        }
+        rivers.push(...mapPacket.rivers.map(({ width, points }) => new River(width, points, rivers, mapBounds)));
 
         this._terrain = new Terrain(
             width,
@@ -690,7 +690,10 @@ export class Minimap {
         );
     }
 
-    addMapPing(position: Vector, definition: MapPingDefinition, playerId?: number): void {
+    addMapPing(data: PingSerialization): void {
+        const { position, definition } = data;
+        const playerId = definition.isPlayerPing ? (data as PlayerPingSerialization).playerId : undefined;
+
         const ping = new MapPing(
             position,
             definition,

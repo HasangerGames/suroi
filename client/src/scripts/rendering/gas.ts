@@ -1,12 +1,13 @@
 import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { GasState, ZIndexes } from "../../../../common/src/constants";
-import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
+import type { UpdatePacketDataOut } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
+import { getTranslatedString } from "../../translations";
 
 export class Gas {
     state = GasState.Inactive;
@@ -47,10 +48,10 @@ export class Gas {
         };
     }
 
-    updateFrom(data: UpdatePacket): void {
+    updateFrom(data: UpdatePacketDataOut): void {
         const gas = data.gas;
 
-        const gasProgress = data.gasProgress?.value;
+        const gasProgress = data.gasProgress;
 
         if (gas) {
             this.state = gas.state;
@@ -70,15 +71,15 @@ export class Gas {
             let gasMessage = "";
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = `Toxic gas advances in ${formatDate(time)}`;
+                    gasMessage = getTranslatedString("gas_waiting", { time: formatDate(time) });
                     break;
                 }
                 case GasState.Advancing: {
-                    gasMessage = "Toxic gas is advancing! Move to the safe zone";
+                    gasMessage = getTranslatedString("gas_advancing");
                     break;
                 }
                 case GasState.Inactive: {
-                    gasMessage = "Waiting for players...";
+                    gasMessage = getTranslatedString("gas_inactive");
                     break;
                 }
             }

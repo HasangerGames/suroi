@@ -3,6 +3,7 @@ import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
 import $ from "jquery";
+import { getTranslatedString } from "../../translations";
 
 const textures: Record<string, Texture> = {};
 
@@ -50,7 +51,9 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                             const progress = `(${resolvedCount} / ${count})`;
 
                             console.log(`Atlas ${image} loaded ${progress}`);
-                            loadingText.text(`Loading Spritesheets ${progress}`);
+                            loadingText.text(getTranslatedString("loading_spritesheets", {
+                                progress
+                            }));
                         })
                         .catch(err => {
                             ++resolved;

@@ -14,6 +14,7 @@ import { ExtendedMap } from "../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { TRANSLATIONS, getTranslatedString } from "../translations";
 import { Config } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
@@ -21,7 +22,17 @@ import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { requestFullscreen } from "./utils/misc";
+import { html, requestFullscreen } from "./utils/misc";
+
+/*
+    eslint-disable
+
+    @stylistic/indent
+*/
+
+/*
+    `@stylistic/indent`: can eslint stop [expletive redacted] at indenting stuff
+*/
 
 interface RegionInfo {
     readonly name: string
@@ -51,7 +62,7 @@ export function resetPlayButtons(): void {
     if (buttonsLocked) return;
 
     $("#splash-options").removeClass("loading");
-    $("#loading-text").text("Connecting");
+    $("#loading-text").text(getTranslatedString("loading_connecting"));
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
     const isSolo = maxTeamSize === TeamSize.Solo;
@@ -103,6 +114,38 @@ export async function setUpUI(game: Game): Promise<void> {
             killFeed.prepend(killFeedItem);
         }
     }
+
+    const languageMenu = $("#select-language-menu");
+    $("#btn-language").on("click", () => {
+        languageMenu.css("display", "");
+    });
+
+    $("#close-select-language").on("click", () => {
+        $("#select-language-menu").css("display", "none");
+    });
+
+    // temporary until we translate killfeed
+    if (game.console.getBuiltInCVar("cv_language") !== "en") {
+        $("#toggle-text-kill-feed-option").addClass("modal-locked");
+        game.console.setBuiltInCVar("cv_killfeed_style", "icon");
+    }
+
+    const languageFieldset = $("#select-language-container fieldset");
+    for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
+        const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
+        languageFieldset.append(html`
+            <div>
+              <input type="radio" name="selected-language" id="language-${language}" value="${language}">
+              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
+            </div>
+        `);
+
+        $<HTMLInputElement>(`#language-${language}`).on("click", () => {
+            game.console.setBuiltInCVar("cv_language", language);
+        }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
+    }
+
+    game.console.variables.addChangeListener("cv_language", () => location.reload());
 
     const params = new URLSearchParams(window.location.search);
 
@@ -162,7 +205,7 @@ export async function setUpUI(game: Game): Promise<void> {
     // Load server list
     const regionUICache: Record<string, JQuery<HTMLLIElement>> = {};
 
-    for (const [regionID, region] of regionMap) {
+    for (const [regionID] of regionMap) {
         /* <span style="margin-left: 5px">
           <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
           <span class="server-ping">-</span>
@@ -170,7 +213,7 @@ export async function setUpUI(game: Game): Promise<void> {
         serverList.append(
             regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
-                    <span class="server-name">${region.name}</span>
+                    <span class="server-name">${getTranslatedString(`region_${regionID}`)}</span>
                     <span style="margin-left: auto">
                       <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
@@ -187,7 +230,7 @@ export async function setUpUI(game: Game): Promise<void> {
         const listItem = regionUICache[regionID];
 
         try {
-            ui.loadingText.text("Fetching server data...");
+            ui.loadingText.text(getTranslatedString("loading_fetching_data"));
 
             const pingStartTime = Date.now();
 
@@ -234,7 +277,7 @@ export async function setUpUI(game: Game): Promise<void> {
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", "");
         }
-        serverName.text(selectedRegion.name);
+        serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
@@ -263,7 +306,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
-        ui.loadingText.text("Finding Game");
+        ui.loadingText.text(getTranslatedString("loading_finding_game"));
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
@@ -309,21 +352,25 @@ export async function setUpUI(game: Game): Promise<void> {
                     switch (data.message) {
                         case "warn":
                             showWarningModal = true;
-                            title = "You have been warned!";
-                            message = `You have received a warning by the suroi game moderatrs. Case: ${data.reportID || "No report ID provided."}. Your official warn reason: ${data.reason || "No reason provided"}`;
+                            title = getTranslatedString("msg_warning");
+                            message = getTranslatedString("msg_warning_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
                             break;
                         case "temp":
                             showWarningModal = true;
-                            title = "You have been temporarily banned from playing suroi.";
-                            message = `Game moderatrs have banned you for: ${data.reason || "No reason provided"}. With case ID: ${data.reportID || "No report ID provided"}<br><br>When your ban is up (usually 24h), reload the page to clear this message.`;
+                            title = getTranslatedString("msg_temp_ban");
+                            message = getTranslatedString("msg_temp_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
                             break;
                         case "perma":
                             showWarningModal = true;
-                            title = "You have been permanently banned from playing suroi.io";
-                            message = `The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.<br><br>Ban reason: ${data.reason || "No reason provided"}. Case ID: ${data.reportID || "No report ID provided"}`;
+                            title = getTranslatedString("msg_perma_ban");
+                            message = getTranslatedString("msg_perma_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
                             break;
                         default:
-                            message = "Error joining game.<br>Please try again.";
+                            message = html`
+                                ${getTranslatedString("msg_err_joining")}
+                                <br>
+                                ${getTranslatedString("msg_try_again")}
+                            `;
                             break;
                     }
 
@@ -342,7 +389,11 @@ export async function setUpUI(game: Game): Promise<void> {
                 }
             }
         ).fail(() => {
-            ui.splashMsgText.html("Error finding game.<br>Please try again.");
+            ui.splashMsgText.html(html`
+                ${getTranslatedString("msg_err_finding")}
+                <br>
+                ${getTranslatedString("msg_try_again")}
+            `);
             ui.splashMsg.show();
             resetPlayButtons();
         });
@@ -365,13 +416,13 @@ export async function setUpUI(game: Game): Promise<void> {
         lastPlayButtonClickTime = now;
 
         ui.splashOptions.addClass("loading");
-        ui.loadingText.text("Connecting");
+        ui.loadingText.text(getTranslatedString("loading_connecting"));
 
         const params = new URLSearchParams();
 
         const joiningTeam = this.id === "btn-join-team";
         if (joiningTeam) {
-            ui.btnStartGame.addClass("btn-disabled").text("Waiting...");
+            ui.btnStartGame.addClass("btn-disabled").text(getTranslatedString("create_team_waiting"));
             ui.createTeamToggles.addClass("disabled");
 
             // also rejects the empty string, but like who cares
@@ -399,7 +450,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
             params.set("teamID", teamID);
         } else {
-            ui.btnStartGame.removeClass("btn-disabled").text("Start Game");
+            ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
             ui.createTeamToggles.removeClass("disabled");
         }
 
@@ -559,7 +610,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     );
 
                 // After some seconds, reset the copy button's css
-                setTimeout(() => {
+                window.setTimeout(() => {
                     copyUrl
                         .removeClass("btn-success")
                         .css("pointer-events", "")
@@ -687,7 +738,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const youtuber = pickRandomInArray(youtubers);
     $("#youtube-featured-name").text(youtuber.name);
-    $("#youtube-featured-content").attr("href", youtuber.link);
+    $("#youtube-featured-content").attr("href", youtuber.link).removeAttr("target");
 
     const streamers = [
         {
@@ -705,7 +756,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
-    $("#twitch-featured-content").attr("href", streamer.link);
+    $("#twitch-featured-content").attr("data-href", streamer.link).removeAttr("target");
 
     const toggleRotateMessage = (): JQuery =>
         $("#splash-rotate-message").toggle(
@@ -781,10 +832,12 @@ export async function setUpUI(game: Game): Promise<void> {
         else joinGame();
     });
 
-    const sendSpectatePacket = (action: SpectateActions): void => {
-        const packet = new SpectatePacket();
-        packet.spectateAction = action;
-        game.sendPacket(packet);
+    const sendSpectatePacket = (action: Exclude<SpectateActions, SpectateActions.SpectateSpecific>): void => {
+        game.sendPacket(
+            SpectatePacket.create({
+                spectateAction: action
+            })
+        );
     };
 
     ui.btnSpectate.on("click", () => {
@@ -889,7 +942,7 @@ Video evidence is required.`)) {
         updateSplashCustomize(idString);
     }
 
-    for (const { idString, name, hideFromLoadout, roleRequired } of Skins) {
+    for (const { idString, hideFromLoadout, roleRequired } of Skins) {
         if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
 
         // noinspection CssUnknownTarget
@@ -900,7 +953,7 @@ Video evidence is required.`)) {
                     <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
                     <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
                 </div>
-                <span class="skin-name">${name}</span>
+                <span class="skin-name">${getTranslatedString(idString)}</span>
             </div>`
         );
 
@@ -956,7 +1009,7 @@ Video evidence is required.`)) {
             if (emote.isTeamEmote) continue;
 
             if (emote.category as number !== lastCategory) {
-                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${EmoteCategory[emote.category]}</div>`);
+                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}`)}</div>`);
                 emoteList.append(categoryHeader);
                 lastCategory = emote.category;
             }
@@ -965,7 +1018,7 @@ Video evidence is required.`)) {
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
-                    <span class="emote-name">${emote.name}</span>
+                    <span class="emote-name">${getTranslatedString(`emote_${emote.idString}`)}</span>
                 </div>`
             );
 
@@ -1182,10 +1235,10 @@ Video evidence is required.`)) {
         $("#tab-badges").show();
 
         const noBadgeItem = $<HTMLDivElement>(
-            "<div id=\"badge-\" class=\"badges-list-item-container\">\
-                <div class=\"badges-list-item\"> </div>\
-                <span class=\"badge-name\">None</span>\
-            </div>"
+            html`<div id="badge-" class="badges-list-item-container">\
+                <div class="badges-list-item"> </div>\
+                <span class="badge-name">${getTranslatedString("none")}</span>\
+            </div>`
         );
 
         noBadgeItem.on("click", () => {
@@ -1212,7 +1265,7 @@ Video evidence is required.`)) {
                         <div class="badges-list-item">\
                             <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
                         </div>\
-                        <span class="badge-name">${name}</span>\
+                        <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
                     </div>`
                 );
 
@@ -1679,6 +1732,8 @@ Video evidence is required.`)) {
         });
     };
 
+    let dropTimer: number | undefined;
+
     // Generate the UI for scopes, healing items, weapons, and ammos
     $<HTMLDivElement>("#weapons-container").append(
         ...Array.from(
@@ -1698,7 +1753,23 @@ Video evidence is required.`)) {
 
                 const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
 
-                ele[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+                const element = ele[0];
+
+                element.addEventListener("pointerup", () => clearTimeout(dropTimer));
+
+                element.addEventListener("pointerdown", e => {
+                    if (e.button !== 0) return;
+
+                    clearTimeout(dropTimer);
+                    dropTimer = window.setTimeout(() => {
+                        inputManager.addAction({
+                            type: InputActions.DropWeapon,
+                            slot
+                        });
+                    }, 600);
+                });
+
+                element.addEventListener("pointerdown", e => {
                     if (!ele.hasClass("has-item")) return;
 
                     e.stopImmediatePropagation();
@@ -1728,15 +1799,31 @@ Video evidence is required.`)) {
                 </div>`
             );
 
+            ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
+
             slotListener(ele, button => {
-                if (button === 0) {
+                const isPrimary = button === 0;
+                const isSecondary = button === 2;
+                const isTeamMode = game.teamMode;
+
+                if (isPrimary) {
                     inputManager.addAction({
                         type: InputActions.UseItem,
                         item: scope
                     });
+
+                    if (isTeamMode) {
+                        clearTimeout(dropTimer);
+                        dropTimer = window.setTimeout(() => {
+                            inputManager.addAction({
+                                type: InputActions.DropItem,
+                                item: scope
+                            });
+                        }, 600);
+                    }
                 }
 
-                if (button === 2 && game.teamMode) {
+                if (isSecondary && isTeamMode) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
                         item: scope
@@ -1753,19 +1840,29 @@ Video evidence is required.`)) {
     $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
             const ele = $<HTMLDivElement>(
-                `<div class="inventory-slot item-slot active" id="${item.idString}-slot">
+                html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
                     <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
-                        ${item.name}
-                        <br>
-                        Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
+                        ${getTranslatedString("tt_restores", {
+                            item: getTranslatedString(item.idString),
+                            amount: item.restoreAmount.toString(),
+                            type: item.healType === HealType.Adrenaline
+                                ? getTranslatedString("adrenaline")
+                                : getTranslatedString("health")
+                        })}
                     </div>
                 </div>`
             );
 
+            ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
+
             slotListener(ele, button => {
-                if (button === 0) {
+                const isPrimary = button === 0;
+                const isSecondary = button === 2;
+                const isTeamMode = game.teamMode;
+
+                if (isPrimary) {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
@@ -1777,9 +1874,19 @@ Video evidence is required.`)) {
                             item
                         });
                     }
+
+                    if (isTeamMode) {
+                        clearTimeout(dropTimer);
+                        dropTimer = window.setTimeout(() => {
+                            inputManager.addAction({
+                                type: InputActions.DropItem,
+                                item
+                            });
+                        }, 600);
+                    }
                 }
 
-                if (button === 2 && game.teamMode) {
+                if (isSecondary && isTeamMode) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
                         item
@@ -1808,15 +1915,34 @@ Video evidence is required.`)) {
 
         ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
 
+        ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+            clearTimeout(dropTimer);
+        });
+
         slotListener(ele, button => {
-            if (button === 0 && inputManager.pingWheelActive) {
-                inputManager.addAction({
-                    type: InputActions.Emote,
-                    emote: Emotes.fromString(ammo.idString)
-                });
+            const isPrimary = button === 0;
+            const isSecondary = button === 2;
+            const isTeamMode = game.teamMode;
+
+            if (isPrimary) {
+                if (inputManager.pingWheelActive) {
+                    inputManager.addAction({
+                        type: InputActions.Emote,
+                        emote: Emotes.fromString(ammo.idString)
+                    });
+                }
+
+                if (isTeamMode) {
+                    window.setTimeout(() => {
+                        inputManager.addAction({
+                            type: InputActions.DropItem,
+                            item: ammo
+                        });
+                    }, 600);
+                }
             }
 
-            if (button === 2 && game.teamMode) {
+            if (isSecondary && isTeamMode) {
                 inputManager.addAction({
                     type: InputActions.DropItem,
                     item: ammo
@@ -1831,14 +1957,34 @@ Video evidence is required.`)) {
             [$<HTMLDivElement>("#vest-slot"), "vest"]
         ] as const
     ) {
+        ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
+
         slotListener(ele, button => {
-            if (button === 2 && game.activePlayer && game.teamMode) {
-                inputManager.addAction({
-                    type: InputActions.DropItem,
-                    // clicking on the slot necessitates the presence of an item
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    item: game.activePlayer.getEquipment(type)!
-                });
+            const isPrimary = button === 0;
+            const isSecondary = button === 2;
+            const shouldDrop = game.activePlayer && game.teamMode;
+
+            if (isSecondary && shouldDrop) {
+                const item = game.activePlayer.getEquipment(type);
+                if (item) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item
+                    });
+                }
+            }
+
+            if (isPrimary && shouldDrop) {
+                clearTimeout(dropTimer);
+                dropTimer = window.setTimeout(() => {
+                    const item = game.activePlayer?.getEquipment(type);
+                    if (!item || !game.teamMode) return;
+
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item
+                    });
+                }, 600);
             }
         });
     }

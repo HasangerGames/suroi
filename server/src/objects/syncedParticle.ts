@@ -3,6 +3,7 @@ import { type Animated, type NumericSpecifier, type SyncedParticleDefinition, ty
 import { type Variation } from "../../../common/src/typings";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle, EaseFunctions, Numeric, type EasingFunction } from "../../../common/src/utils/math";
+import { type SDeepMutable } from "../../../common/src/utils/misc";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
 import { random, randomFloat } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -227,7 +228,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
     }
 
     override get data(): FullData<ObjectCategory.SyncedParticle> {
-        const data: FullData<ObjectCategory.SyncedParticle> = {
+        const data: SDeepMutable<FullData<ObjectCategory.SyncedParticle>> = {
             position: this.position,
             rotation: this.rotation,
             full: {

@@ -1,3 +1,4 @@
+import { type BitStream } from "@damienvesper/bit-buffer";
 import { type ZIndexes } from "../constants";
 import { type ExplosionDefinition } from "../definitions/explosions";
 import { mergeDeep, type DeepPartial } from "./misc";
@@ -597,7 +598,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         return this.definitions[id] as U;
     }
 
-    writeToStream(stream: SuroiBitStream, type: ReifiableDef<Def>): void {
+    writeToStream(stream: BitStream, type: ReifiableDef<Def>): void {
         stream.writeBits(
             this.idStringToNumber[
                 typeof type === "string" ? type : type.idString
@@ -606,7 +607,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         );
     }
 
-    readFromStream<Specific extends Def = Def>(stream: SuroiBitStream): Specific {
+    readFromStream<Specific extends Def = Def>(stream: BitStream): Specific {
         const id = stream.readBits(this.bitCount);
         const max = this.definitions.length - 1;
         if (id > max) {
@@ -616,7 +617,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         return this.definitions[id] as Specific;
     }
 
-    writeOptional(stream: SuroiBitStream, type?: ReifiableDef<Def>): void {
+    writeOptional(stream: BitStream, type?: ReifiableDef<Def>): void {
         const isPresent = type !== undefined;
 
         stream.writeBoolean(isPresent);
