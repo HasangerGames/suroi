@@ -205,29 +205,6 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_suicide": "Лидер по убийствам покончил с собой!",
     "kf_you_killed": "Вы убили <player>",
     "kf_you_downed": "Вы повалили на землю <player>",
-    "kf_finished_off_kill_2": "<player> был убит",
-    "kf_finished_off_down_2": "<player> был убит элегантно",
-    "kf_with_gun": "<player_killed_player> с помощью <gun>",
-    "kf_impact": "осколком от",
-    "kf_weapon_name": "<impact> <gun>",
-
-    // -----------------------------------------------------
-    // Killfeed stuff (New strings)
-    // -----------------------------------------------------
-    "kf_with": "с помощью",
-    "kf_killed": "убил",
-    "kf_knocked_out": "сбил с ног",
-    "kf_finished_off_kill": "замочил",
-    "kf_finished_off_down": "элегантно уничтожил",
-
-    // kill modal only
-    "kf_you": "Ты",
-    "kf_you_finally_killed": "наконец-то убил",
-    "kf_you_finally_down": "наконец-то сбил с ног",
-
-    "kf_message": "<player> <event> <victim> <with> <gun>", // adjust these in your language's order
-    "kill_modal_message": "<you> <event> <victim> <with> <gun>", // adjust these in your language's order
-    // -----------------------------------------------------
 
     "tt_restores": "<item> восстанавливает <amount> <type>",
     "tt_reduces": "<item> уменьшает <percent>% входящего урона",
