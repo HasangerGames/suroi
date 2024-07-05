@@ -348,6 +348,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 } else {
                     let showWarningModal = false;
                     let title: string | undefined;
+                    const caseID = data.reportID || "No report ID provided.";
                     let message: string;
                     switch (data.message) {
                         case "warn":
@@ -376,7 +377,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
                     if (showWarningModal) {
                         ui.warningTitle.text(title ?? "");
-                        ui.warningText.html(message ?? "");
+                        ui.warningText.html(`<span style="font-size:20px">Case ID: ${caseID ?? ""}</span><br>${message ?? ""}`);
                         ui.warningAgreeOpts.toggle(data.message === "warn");
                         ui.warningAgreeCheckbox.prop("checked", false);
                         ui.warningModal.show();
