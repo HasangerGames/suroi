@@ -31,6 +31,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "quit": "Quit",
     "none": "None",
     "copy": "Copy",
+    "copied": "Copied",
 
     "health": "health",
     "adrenaline": "adrenaline",
@@ -269,6 +270,8 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Ice Pick",
     "seax": "Seax",
+    "crowbar": "Crowbar",
+    "sickle": "Sickle",
 
     "mosin": "Mosin-Nagant",
     "radio": "Radio",

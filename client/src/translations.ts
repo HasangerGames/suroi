@@ -122,10 +122,12 @@ const printTranslationDebug = false;
 
 function adjustFontSize(element: HTMLElement): void {
     if (element.textContent) {
+        const isTabElem = element.parentElement?.classList.contains("tab");
+
         const buttonText = element.textContent.trim();
         const textWidth = buttonText.length * 10;
         const buttonWidth = element.getBoundingClientRect().width;
-        const fontSize = `${Math.max(65, Math.min(1, (buttonWidth / textWidth) * 100))}%`; // womp womp
+        const fontSize = `${Math.max(isTabElem && language !== "ta" ? 85 : 65, Math.min(language === "ta" ? 65 : 80, (buttonWidth / textWidth) * 100))}%`; // womp womp
 
         element.style.fontSize = fontSize;
     }
