@@ -14,6 +14,7 @@ import { GREEK_TRANSLATIONS } from "./translations/greek";
 import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
 import { JAPANESE_TRANSLATIONS } from "./translations/japanese";
 import { LATVIAN_TRANSLATIONS } from "./translations/latvian";
+import { LITHUANIAN_TRANSLATIONS } from "./translations/lithuanian";
 import { RUSSIAN_TRANSLATIONS } from "./translations/russian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
@@ -51,6 +52,7 @@ export const TRANSLATIONS = {
         et: ESTONIAN_TRANSLATIONS,
         cz: CZECH_TRANSLATIONS,
         lv: LATVIAN_TRANSLATIONS,
+        lt: LITHUANIAN_TRANSLATIONS,
         hp18: {
             name: "HP-18",
             flag: "<img height=\"20\" src=\"./img/game/weapons/hp18.svg\" />"
