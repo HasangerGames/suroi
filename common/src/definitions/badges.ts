@@ -24,6 +24,7 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
         simple("badge_factory", "Trial Moderatr", ["trial_moderatr"]),
         simple("badge_factory", "Studio Managr", ["studio_managr"]),
         simple("badge_factory", "Boostr", ["boostr"]),
+        simple("badge_factory", "Translatr", ["translatr"]),
         simple("badge_factory", "Designr", ["designr"]),
         simple("badge_factory", "Ownr", ["hasanger"]),
         simple("badge_factory", "Contributr+", ["katie", "leia"]),

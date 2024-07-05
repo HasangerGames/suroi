@@ -51,6 +51,7 @@ export const Config = {
         "composr": { password: "composr" },
         "lead_composr": { password: "lead_composr" },
         "youtubr": { password: "youtubr" },
+        "translatr": { password: "translatr" },
         "boostr": { password: "boostr" },
 
         "hasanger": { password: "hasanger", isDev: true },
