@@ -1,14 +1,14 @@
 import type { TranslationMap } from "../translations";
 
 export const TURKISH_TRANSLATIONS: TranslationMap = {
-    "name": "Türkçe",
+    "name": "Turkısh",
     "flag": "🇹🇷",
 
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
     "msg_loading": "Bağlanılıyor",
     "msg_err_joining": "Oyuna katılma hatası.",
     "msg_err_finding": "Oyun bulma hatası.",
-    "msg_try_again": "Please try again.",
+    "msg_try_again": "Lütfen yeniden deneyin.",
     "msg_warning": "Uyarıldın!",
     "msg_warning_msg": "Moderatörler tarafından bir sebepten dolayı uyarı aldınız: <reason>",
     "msg_temp_ban": "Geçici olarak yasaklandınız!",
@@ -131,10 +131,10 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "action_reloading": "Yeniden dolduruluyor...",
     "action_reviving": "Hayata döndürülüyor...",
     "action_being_revived": "Hayata döndürülüyorsun...",
-    "action_gauze_use": "Uygulanıyor <item>",
-    "action_medikit_use": "Kullanılıyor <item>",
-    "action_cola_use": "İçiliyor <item>",
-    "action_tablets_use": "Alınılıyor <item>",
+    "action_gauze_use": "<item> Kullanılıyor",
+    "action_medikit_use": "<item> Kullanılıyor",
+    "action_cola_use": "<item> İçiliyor",
+    "action_tablets_use": "<item> Kullanılıyor",
 
     "interact_airdrop_crate_locked": "Hava Yardımını Aç",
     "interact_control_panel": "Kontrol Panelini Aktive Et",
@@ -189,7 +189,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "kf_two_party_kill": "<player> öldürdü <victim>",
     "kf_two_party_down": "<player> bayılttı <victim>",
     "kf_bleed_out_kill": "<player> kanayarak öldü",
-    "kf_bleed_out_down": "<player> kanayarak bayıldı",
+    "kf_bleed_out_down": "<player kanayarak bayıldı",
     "kf_finished_off_kill": "<player> işini bitirdi <victim>",
     "kf_finished_off_down": "<player> yavaşça işini bitirdi <victim>",
     "kf_finally_died": "<player> sonunda öldü",
@@ -222,15 +222,15 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Raporlanıyor",
     "report_id": "Raporlama Kimliği:",
     "report_instructions": `
-      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>
-      <h4>How to Submit a Report</h4>
-      <ol>
-        <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
-        <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            channel.</a></li>
-        <li>Read the report guidelines in the pinned post.</li>
-        <li>Submit your report as a post.</li>
-      </ol>`,
+    <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>
+    <h4>How to Submit a Report</h4>
+    <ol>
+      <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
+      <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          channel.</a></li>
+      <li>Read the report guidelines in the pinned post.</li>
+      <li>Submit your report as a post.</li>
+    </ol>`,
 
     "languages": "Diller",
 
@@ -279,10 +279,10 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     // For dual guns
     "dual_template": "Çift <gun>",
 
+    // regions
     "region_dev": "Yerel ana bilgisayar sunucusu",
     "region_na": "Kuzey Amerika",
     "region_eu": "Avrupa",
     "region_sa": "Güney Amerika",
     "region_as": "Asya"
-
 };
