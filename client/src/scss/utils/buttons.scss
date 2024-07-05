@@ -2,6 +2,7 @@
 
 .btn {
   display: block;
+  position: relative;
 
   color: #ffffff;
   cursor: pointer;
@@ -25,6 +26,14 @@
 .btn-darken {
   border: none;
   transition: filter 0.25s ease;
+}
+
+.btn-icon {
+  position: absolute;
+  top: calc((45px - 24px) / 2);
+  left: 2px;
+  height: 24px;
+  filter: drop-shadow(3px 3px 8px #00000064);
 }
 
 .link-darken:hover,
