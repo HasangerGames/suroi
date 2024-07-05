@@ -278,6 +278,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "arena_closer": "Destroyer Of Worlds",
     "revitalizer": "Revitalizer",
     "s_g17": "G17 (Scoped)",
+    "vss": 'VSS"',
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "m1895": "M1895",
+    "ak47": "AK-47",
 
     "frag_grenade": "Frag Grenade",
     "smoke_grenade": "Smoke Grenade",
