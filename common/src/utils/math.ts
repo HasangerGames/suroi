@@ -593,11 +593,11 @@ export const Collision = Object.freeze({
         return xo > 0 && yo > 0
             ? xo > yo
                 ? {
-                    dir: Vec.create(Math.sign(n.x), 0),
+                    dir: Vec.create(Math.sign(n.x) || 1, 0),
                     pen: xo
                 }
                 : {
-                    dir: Vec.create(0, Math.sign(n.y)),
+                    dir: Vec.create(0, Math.sign(n.y) || 1),
                     pen: yo
                 }
             : null;
