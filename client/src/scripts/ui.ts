@@ -1822,7 +1822,7 @@ Video evidence is required.`)) {
                         item: scope
                     });
 
-                    mobileDropItem(button, true, scope);
+                    mobileDropItem(button, isTeamMode, scope);
                 }
 
                 if (isSecondary && isTeamMode) {
@@ -1877,7 +1877,7 @@ Video evidence is required.`)) {
                         });
                     }
 
-                    mobileDropItem(button, true, item);
+                    mobileDropItem(button, isTeamMode, item);
                 }
 
                 if (isSecondary && isTeamMode) {
@@ -1926,7 +1926,7 @@ Video evidence is required.`)) {
                     });
                 }
 
-                mobileDropItem(button, true, ammo);
+                mobileDropItem(button, isTeamMode, ammo);
             }
 
             if (isSecondary && isTeamMode) {
@@ -1961,7 +1961,7 @@ Video evidence is required.`)) {
             }
 
             if (shouldDrop !== undefined) {
-                mobileDropItem(button, true, game.activePlayer?.getEquipment(type));
+                mobileDropItem(button, shouldDrop, game.activePlayer?.getEquipment(type));
             }
         });
     }
