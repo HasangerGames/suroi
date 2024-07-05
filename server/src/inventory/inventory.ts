@@ -13,6 +13,7 @@ import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/s
 import type { Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
+import { Logger } from "../utils/misc";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
@@ -393,7 +394,8 @@ export class Inventory {
         toDrop: ReifiableDef<LootDefinition>,
         options?: Parameters<Game["addLoot"]>[3] & { readonly position?: Vector }
     ): void {
-        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, 0 ?? this.owner.layer, { jitterSpawn: false, ...options });
+        Logger.log(`${this.owner.layer}`)
+        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, this.owner.layer, { jitterSpawn: false, ...options });
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {

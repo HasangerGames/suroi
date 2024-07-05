@@ -128,7 +128,8 @@ export class Loot extends GameObject {
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        const floorType = this.game.map.terrain.getFloor(this.position);
+        const isOnGround = (this.game.layer === 0)
+        const floorType = isOnGround ? "grass" : this.game.map.terrain.getFloor(this.position);
 
         this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderWaterLoot : ZIndexes.Loot;
 

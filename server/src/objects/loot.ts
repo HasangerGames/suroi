@@ -43,7 +43,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      */
     private static readonly _dragConstant = dragConst(3.69);
 
-    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, layer:number, count?: number, pushVel = 0.003) {
+    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, layer: number, count?: number, pushVel = 0.003) {
         super(game, position);
 
         this.definition = Loots.reify(definition);

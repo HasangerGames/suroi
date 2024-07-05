@@ -923,7 +923,6 @@ export class Game implements GameData {
             count,
             pushVel
         );
-        Logger.log(`${layer}`)
         this.grid.addObject(loot);
         this.pluginManager.emit(Events.Loot_Generated, loot);
         return loot;

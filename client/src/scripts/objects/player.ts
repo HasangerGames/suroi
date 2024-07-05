@@ -356,8 +356,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        const isOnGround = (this.layer === 0) ? true : false
-        const floorType = isOnGround ? "grass" : this.game.map.terrain.getFloor(this.position);
+        const isOnGround = (this.layer === 0)
+        console.log(isOnGround)
+
+        const floorType = isOnGround ? this.game.map.terrain.getFloor(this.position) : "grass";
 
         const doOverlay = FloorTypes[floorType].overlay;
         let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
@@ -907,16 +909,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         switch (layer) {
             case Layer.Basement: {
                 this.game.pixi.renderer.background.color = COLORS.dirt;
-                console.log("Switched to underground");
 
                 this.game.map.terrainGraphics.visible = false;
+
+                this.layer = layer;
                 break;
             }
             case Layer.Floor1: {
                 this.game.pixi.renderer.background.color = COLORS.grass;
-                console.log("Switched to aboveground");
 
                 this.game.map.terrainGraphics.visible = true;
+
+                this.layer = layer;
                 break;
             }
         }
