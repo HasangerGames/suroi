@@ -177,8 +177,12 @@ function translateCurrentDOM(): void {
     });
 
     if (language !== "en") { // temporary until we translate killfeed
-        const pepedls = document.getElementById("toggle-text-kill-feed-option")!.innerHTML;
-        document.getElementById("toggle-text-kill-feed-option")!.innerHTML = `<i class="fa-solid fa-lock"></i> ${pepedls}`;
+        const shutUpEsLint = document.getElementById("toggle-text-kill-feed-option");
+
+        if (shutUpEsLint) {
+            const pepedls = shutUpEsLint.innerHTML;
+            shutUpEsLint.innerHTML = `<i class="fa-solid fa-lock"></i> ${pepedls}`;
+        }
     }
 
     if (printTranslationDebug) {

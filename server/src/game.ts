@@ -16,7 +16,7 @@ import { PacketStream } from "../../common/src/packets/packetStream";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type PingSerialization } from "../../common/src/packets/updatePacket";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
