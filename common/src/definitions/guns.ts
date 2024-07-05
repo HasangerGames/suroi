@@ -1816,7 +1816,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "arena_closer",
             name: "Destroyer Of Worlds",
-            ammoType: "127mm",
+            ammoType: "power_cell",
             ammoSpawnAmount: 255,
             capacity: 255,
             reloadTime: 0.4,
