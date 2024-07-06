@@ -19,7 +19,7 @@ import { RUSSIAN_TRANSLATIONS } from "./translations/russian";
 import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
-import { CUTE_ENGLISHLMAOOO } from "./translations/cute_engwish";
+import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
 
 export type TranslationMap = Record<
     string,
@@ -58,7 +58,7 @@ export const TRANSLATIONS = {
             name: "HP-18",
             flag: "<img height=\"20\" src=\"./img/game/weapons/hp18.svg\" />"
         },
-        qen: CUTE_ENGLISHLMAOOO
+        qen: CUTE_ENGWISH_TRANSLATIONS
     }
 } as {
     get defaultLanguage(): string

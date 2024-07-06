@@ -1,6 +1,6 @@
 import type { TranslationMap } from "../translations";
 
-export const CUTE_ENGLISHLMAOOO: TranslationMap = {
+export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "name": "Cute Engwish",
     "flag": "🎀",
 
@@ -223,7 +223,7 @@ export const CUTE_ENGLISHLMAOOO: TranslationMap = {
     "report_reporting": "Weporting",
     "report_id": "Weport ID:",
     "report_instructions": `
-      <p><strong>Pwease follow da instwuctions bewow!</strong> If you dwon't, your report will be ignowed. \>_\< </p>
+      <p><strong>Pwease follow da instwuctions bewow!</strong> If you dwon't, your report will be ignowed. >_< </p>
       <h4>How to Submit a Weport</h4>
       <ol>
         <li>Join da <a href="https://discord.suroi.io">Discowd server.</a></li>
@@ -281,7 +281,7 @@ export const CUTE_ENGLISHLMAOOO: TranslationMap = {
 
     // For dual guns
     "dual_template": "Dual <gun>",
-    
+
     // Regions
     "region_dev": "Wocalhost Server",
     "region_na": "Nowth Amewica",
