@@ -356,8 +356,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        const isOnGround = (this.layer === 0)
-        console.log(isOnGround)
+        const isOnGround = (this.layer === Layer.Floor1);
+        console.log(isOnGround);
 
         const floorType = isOnGround ? this.game.map.terrain.getFloor(this.position) : "grass";
 
@@ -911,6 +911,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.game.pixi.renderer.background.color = COLORS.dirt;
 
                 this.game.map.terrainGraphics.visible = false;
+
+                this.layer = layer;
+                break;
+            }
+            case Layer.StairsToBasement: {
+                this.game.map.terrainGraphics.visible = true;
 
                 this.layer = layer;
                 break;

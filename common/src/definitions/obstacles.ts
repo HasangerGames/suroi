@@ -758,7 +758,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 falloff: 0.3
             },
             replaceWith: {
-                //idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
+                // idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
                 idString: { airdrop_crate: 0.85, gold_airdrop_crate: 0.15 }, // temporary
                 delay: 800
             },
@@ -3052,7 +3052,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             transportTo: -1,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0)),
+                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"
@@ -3069,7 +3069,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             transportTo: -2,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0)),
+                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"

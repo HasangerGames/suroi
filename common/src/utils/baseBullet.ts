@@ -10,7 +10,7 @@ import { Vec, type Vector } from "./vector";
 export interface BulletOptions {
     readonly position: Vector
     readonly rotation: number
-    readonly layer: number
+    readonly layer: Layer
     readonly source: ReifiableDef<BulletDefinition>
     readonly sourceID: number
     readonly reflectionCount?: number
@@ -45,7 +45,7 @@ export class BaseBullet {
     readonly initialPosition: Vector;
 
     readonly rotation: number;
-    readonly layer: number;
+    readonly layer: Layer;
     readonly velocity: Vector;
     readonly direction: Vector;
 
@@ -145,7 +145,7 @@ export class BaseBullet {
         Bullets.writeToStream(stream, this.definition);
         stream.writePosition(this.initialPosition);
         stream.writeRotation(this.rotation, 16);
-        stream.writeUint8(this.layer)
+        stream.writeUint8(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeBits(this.reflectionCount, 2);
         stream.writeObjectID(this.sourceID);

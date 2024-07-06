@@ -1,4 +1,4 @@
-import { Layer, ObjectCategory } from "../../../common/src/constants";
+import { ObjectCategory } from "../../../common/src/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
@@ -267,7 +267,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     }
 
     isStair(): boolean {
-        return this.definition.isStair ?? false
+        return this.definition.isStair ?? false;
     }
 
     interact(player?: Player): void {

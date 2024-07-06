@@ -690,7 +690,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     && this.hitbox.collidesWith(potential.hitbox)
                     && (potential.layer === this.layer || isAdjacent(potential.layer, this.layer))
                 ) {
-                    if(potential.definition.isStair && (isAdjacent(potential.definition.transportTo ?? potential.layer, this.layer) || potential.layer === this.layer)) {
+                    if (potential.definition.isStair && (isAdjacent(potential.definition.transportTo ?? potential.layer, this.layer) || potential.layer === this.layer)) {
                         this.layer = potential.definition.transportTo ?? 0;
                     } else {
                         collided = true;
@@ -852,7 +852,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => ((!newVisibleObjects.has(object) || ((object.layer === this.layer) && isAdjacent(object.layer, this.layer)) ) && (this.visibleObjects.delete(object), true))
+                    object => ((!newVisibleObjects.has(object) || ((object.layer === this.layer) && isAdjacent(object.layer, this.layer))) && (this.visibleObjects.delete(object), true))
                 )
                 .map(({ id }) => id);
 

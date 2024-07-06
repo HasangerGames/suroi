@@ -64,7 +64,6 @@ export function isAdjacent(num1: number, num2: number): boolean {
     return ((n1 == num2) || (n2 == num2));
 }
 
-
 /**
  * Generate a random point inside of a circle.
  * @param position The center of the circle.

@@ -394,7 +394,7 @@ export class Inventory {
         toDrop: ReifiableDef<LootDefinition>,
         options?: Parameters<Game["addLoot"]>[3] & { readonly position?: Vector }
     ): void {
-        Logger.log(`${this.owner.layer}`)
+        Logger.log(`${this.owner.layer}`);
         this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, this.owner.layer, { jitterSpawn: false, ...options });
     }
 

@@ -409,7 +409,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition: Buildings.readFromStream(stream),
                 position: stream.readPosition(),
-                rotation: stream.readBits(2) as Orientation,
+                rotation: stream.readBits(2) as Orientation
             };
         }
     },
