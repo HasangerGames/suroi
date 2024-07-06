@@ -1,7 +1,7 @@
 import type { TranslationMap } from "../translations";
 
 export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
-    "name": "Vietnamese",
+    "name": "Tiếng Việt",
     "flag": "🇻🇳",
 
     "msg_rotate": "Để có trải nghiệm game tốt hơn, vui lòng xoay thiết bị của bạn sang ngang.",
@@ -208,11 +208,6 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "kf_kl_suicide": "Kill Leader đã tự sát!",
     "kf_you_killed": "Bạn đã kết liễu <player>",
     "kf_you_downed": "Bạn đã hạ gục <player>",
-    "kf_finished_off_kill_2": "<player> cuối cùng đã bị kết liễu",
-    "kf_finished_off_down_2": "<player> cuối cùng đã bị hạ gục",
-    "kf_with_gun": "<player_killed_player> với <gun>",
-    "kf_impact": "sự nổ tung của <article>",
-    "kf_weapon_name": "<impact> <gun>",
 
     "tt_restores": "<item> hồi <amount> <type>",
     "tt_reduces": "<item> giảm <percent>% sát thương nhận",
@@ -288,7 +283,7 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "arena_closer": "Kẻ Hủy Diệt Thế Giới",
     "revitalizer": "Súng Hồi Sinh",
     "s_g17": "G17 (Ống Ngắm)",
-    "vss": 'VSS"',
+    /* "vss": 'VSS',
     "pp19": "PP-19",
     "vepr12": "Vepr-12",
     "flues": "Flues",
@@ -301,7 +296,7 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "tango_51": "Tango 51",
     "barrett": "Barrett M95",
     "stoner_63": "Stoner 63",
-    "m1_garand": "M1 Garand",
+    "m1_garand": "M1 Garand", */
 
     "frag_grenade": "Lựu Đạn",
     "smoke_grenade": "Bom Khói",
