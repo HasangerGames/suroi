@@ -2,12 +2,12 @@ import type { TranslationMap } from "../translations";
 
 export const CUTE_ENGLISHLMAOOO: TranslationMap = {
     "name": "Cute Engwish",
-    "flag": "🇬🇧",
+    "flag": "🎀",
 
     "msg_rotate": "Fow a bettew expewience, pwease wotate youw device to wandscape. UwU",
     "msg_loading": "Connectwing >w<",
-    "msg_err_joining": "Ewwow joining game.",
-    "msg_err_finding": "Ewwow finding game.",
+    "msg_err_joining": "Ewwow joining game. OwO",
+    "msg_err_finding": "Ewwow finding game. OwO",
     "msg_try_again": "Pwease twy again. *_*",
     "msg_warning": "You have been wawned owo!",
     "msg_warning_msg": "You hab weceived a wawning by da modewatows fow weason: <reason>",
@@ -41,8 +41,8 @@ export const CUTE_ENGLISHLMAOOO: TranslationMap = {
     "settings_interface": "Intewface",
     "settings_save_load": "Save/Lowd",
     "settings_mobile": "Mobiwle",
-    "settings_require_reload": "* Changing dese settwings wequiwes weloading da page. owo",
-    "settings_performance_warning": "* This setting can cawze issues on some dewices. Disabwe if you'we unabwe to join da game.",
+    "settings_require_reload": "* Changing dese settwings wequiwes weloading da page. OwO",
+    "settings_performance_warning": "* This setting can cawze issues on some dewices. Disabwe if you'we unabwe to join da game. > ~ <",
 
     "settings_master_volume": "Master vowume",
     "settings_sfx_volume": "SFX vowume",
