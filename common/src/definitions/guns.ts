@@ -437,7 +437,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         },
         {
             idString: "hp18",
-            name: "HP18",
+            name: "HP-18",
             ammoType: "12g",
             ammoSpawnAmount: 15,
             capacity: 5,
