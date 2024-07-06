@@ -47,7 +47,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } from "./ui";
+import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, autoPickup } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -875,6 +875,7 @@ export class Game {
                     if (
                         this.console.getBuiltInCVar("cv_autopickup")
                         && object instanceof Loot
+                        && autoPickup
                         && (
                             (
                                 (

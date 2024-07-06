@@ -54,6 +54,8 @@ let teamID: string | undefined | null;
 let joinedTeam = false;
 let autoFill = false;
 
+export let autoPickup = true;
+
 let buttonsLocked = true;
 export function lockPlayButtons(): void { buttonsLocked = true; }
 export function unlockPlayButtons(): void { buttonsLocked = false; }
@@ -1750,6 +1752,10 @@ Video evidence is required.`)) {
                         item
                     });
                 }
+                autoPickup = false;
+                window.setTimeout(() => {
+                    autoPickup = true;
+                }, 600);
             }
         }, 600);
     }
