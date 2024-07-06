@@ -12,6 +12,7 @@ interface BuildingObstacle {
     readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>
     readonly position: Vector
     readonly rotation?: number
+    readonly layer? : number
     readonly variation?: Variation
     readonly scale?: number
     readonly lootSpawnOffset?: Vector
@@ -41,6 +42,8 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap: boolean
+    readonly isStair?: boolean
+    readonly layer?: number
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
@@ -2599,6 +2602,26 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "roadblock", position: Vec.create(2.5, 27.5), rotation: 1 },
                 { idString: "roadblock", position: Vec.create(17.5, 27.5), rotation: 1 },
                 { idString: "roadblock", position: Vec.create(25, 15), rotation: 0 }
+            ],
+            lootSpawners: []
+        },
+        {
+            idString: "stairToBasement",
+            name: "Stairs to Basement",
+            isStair: true,
+            layer: -1,
+            spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
+            floorImages: [{
+                key: "stair_floor",
+                position: Vec.create(0, 0)
+            }],
+            floors: [
+                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 20, Vec.create(0, 0)) }
+            ],
+            obstacles: [
+                { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
+                { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0 },
             ],
             lootSpawners: []
         }

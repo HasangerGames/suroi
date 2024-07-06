@@ -29,7 +29,7 @@ import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type SDeepMutable, type SMutable, type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { pickRandomInArray } from "../../../common/src/utils/random";
+import { isAdjacent, pickRandomInArray } from "../../../common/src/utils/random";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -407,10 +407,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
 
-        setTimeout(() => {
-            this.layer = Layer.Basement;
-        }, 7000);
-
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
             emotes: [
@@ -692,10 +688,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     potential.type === ObjectCategory.Obstacle
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
-                    && potential.layer === this.layer
+                    && (potential.layer === this.layer || isAdjacent(potential.layer, this.layer))
                 ) {
-                    collided = true;
-                    this.hitbox.resolveCollision(potential.hitbox);
+                    if(potential.definition.isStair && (isAdjacent(potential.definition.transportTo ?? potential.layer, this.layer) || potential.layer === this.layer)) {
+                        this.layer = potential.definition.transportTo ?? 0;
+                    } else {
+                        collided = true;
+                        this.hitbox.resolveCollision(potential.hitbox);
+                    }
                 }
             }
             if (!collided) break;
@@ -852,14 +852,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => ((!newVisibleObjects.has(object) || (object.layer !== this.layer)) && (this.visibleObjects.delete(object), true))
+                    object => ((!newVisibleObjects.has(object) || ((object.layer === this.layer) && isAdjacent(object.layer, this.layer)) ) && (this.visibleObjects.delete(object), true))
                 )
                 .map(({ id }) => id);
 
             newVisibleObjects
                 .forEach(
                     object => {
-                        if (this.visibleObjects.has(object) || object.layer !== this.layer) return;
+                        if (this.visibleObjects.has(object) || ((object.layer === this.layer) && isAdjacent(object.layer, this.layer))) return;
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);

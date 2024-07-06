@@ -63,6 +63,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         type: ReifiableDef<ObstacleDefinition>,
         position: Vector,
         rotation = 0,
+        layer = 0,
         scale = 1,
         variation: Variation = 0,
         lootSpawnOffset?: Vector,
@@ -75,7 +76,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         this.scale = this.maxScale = scale;
         this.variation = variation;
 
-        this.layer = Layer.Floor1;
+        this.layer = layer;
 
         this.lootSpawnOffset = lootSpawnOffset;
 
@@ -263,6 +264,10 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 && !this.activated
             )
         );
+    }
+
+    isStair(): boolean {
+        return this.definition.isStair ?? false
     }
 
     interact(player?: Player): void {

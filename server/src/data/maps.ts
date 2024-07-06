@@ -420,17 +420,33 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
-        }
+            map.generateBuilding("stairToBasement", Vec.create(this.width / 2, this.height / 2 - 15), 0);
+        },
+        places: [
+            { name: "Pumpkin Patch", position: Vec.create(0.23, 0.2) },
+            { name: "Reaper", position: Vec.create(0.23, 0.8) },
+            { name: "Spøkelsesfelt", position: Vec.create(0.75, 0.2) },
+            { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
+            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+        ]
     },
     singleObstacle: {
         width: 256,
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        genCallback(map) {
-            map.generateObstacle("test_wall", Vec.create(this.width / 2, this.height / 2), 0);
-        }
+        genCallback: map => {
+            map.generateObstacle("stair", Vec.create(map.width / 2, map.height / 2), 0, 1);
+        },
+        places: [
+            { name: "Pumpkin Patch", position: Vec.create(0.23, 0.2) },
+            { name: "Reaper", position: Vec.create(0.23, 0.8) },
+            { name: "Spøkelsesfelt", position: Vec.create(0.75, 0.2) },
+            { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
+            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+        ]
     },
     singleGun: {
         width: 256,

@@ -30,6 +30,8 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible: boolean
+    readonly isStair?: boolean
+    readonly transportTo?: number
     readonly impenetrable: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
@@ -3018,6 +3020,56 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(19.5, 13.25, Vec.create(0, -3.25)),
                 RectangleHitbox.fromRect(1.75, 12.75, Vec.create(8.85, 3.8)),
                 RectangleHitbox.fromRect(1.75, 12.75, Vec.create(-8.85, 3.8))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "stair_walls",
+            name: "Stair Walls",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(0.1, 18.5, Vec.create(5, 0)),
+                RectangleHitbox.fromRect(0.1, 18.5, Vec.create(-5, 0))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "stair_top",
+            name: "Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            isStair: true,
+            transportTo: -1,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0)),
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "stair_bottom",
+            name: "Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            isStair: true,
+            transportTo: -2,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0)),
             ),
             frames: {
                 particle: "metal_particle"
