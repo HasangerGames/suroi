@@ -2416,7 +2416,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "sea_traffic_control_ceiling",
-                position: Vec.create(-0.25, -2.4)
+                position: Vec.create(-0.25, -2.4),
+                scale: Vec.create(2, 2)
             }],
             floors: [
                 { type: "wood", hitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)) },
