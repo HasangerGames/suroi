@@ -227,7 +227,7 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     ui.loadingText.text(getTranslatedString("loading_fetching_data"));
-    const regionPromises = Object.entries(regionMap).map(async ([_, [regionID, region]]) => {
+    const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
         const pingStartTime = Date.now();
@@ -260,7 +260,7 @@ export async function setUpUI(game: Game): Promise<void> {
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
         } catch (e) {
-            console.error(`Failed to load server info for region ${regionID}. Details: `, e)
+            console.error(`Failed to load server info for region ${regionID}. Details: `, e);
         }
     });
     await Promise.all(regionPromises);
