@@ -206,8 +206,8 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "Le Kill Leader est mort!",
     "kf_kl_suicide": "Le Kill Leader s'est suicidé!",
 
-    "tt_restores": "<item> restore <amount> <type>",
-    "tt_reduces": "<item> réduit <percent>% de dégâts",
+    "tt_restores": "<item> : restore <amount> <type>",
+    "tt_reduces": "<item> : nullifie <percent>% des dégâts",
 
     "go_kills": "Kills:",
     "go_damage_done": "Dégâts faits:",
@@ -265,20 +265,43 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "maul": "Masse",
     "gas_can": "Jerrycan",
     "heap_sword": "Épée HE-AP",
-    "steelfang": "Dent d'argent'",
+    "steelfang": "Dent d'argent",
     "ice_pick": "Pic à glace",
     "seax": "Scramasaxe",
+    "crowbar": "Pied de Biche",
+    "sickle": "Faucille",
+
+    "mosin": "Mosin-Nagant",
+    "radio": "Radio",
+    "lewis_gun": "Mitraillette Lewis",
+    "deathray": "Super Laser",
+    "firework_launcher": "Lance-Confetti",
+    "arena_closer": "Tueur rapide",
+    "revitalizer": "Revitalizer",
+    "s_g17": "G17 (à lunette)",
+    "vss": 'VSS"',
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_89": "Modèle 89",
+    "negev": "Negev",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
 
     "frag_grenade": "Grenade à frag",
     "smoke_grenade": "Fumigène",
     "confetti_grenade": "Grenade à confettis",
 
-    "radio": "Radio",
-    "deathray": "Super Laser",
-
     // For dual guns
     "dual_template": "Double <gun>",
 
+    // Regions
     "region_dev": "Serveur Localhost",
     "region_na": "Amérique du Nord",
     "region_eu": "Europe",
