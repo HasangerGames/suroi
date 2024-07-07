@@ -653,14 +653,22 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ),
             floorImages: [
                 {
-                    key: "refinery_floor",
-                    position: Vec.create(0, 0)
+                    key: "refinery_floor_1",
+                    position: Vec.create(0, -18.1)
+                },
+                {
+                    key: "refinery_floor_2",
+                    position: Vec.create(-32.85, 19)
                 }
             ],
             ceilingImages: [
                 {
-                    key: "refinery_ceiling",
-                    position: Vec.create(0, 0)
+                    key: "refinery_ceiling_1",
+                    position: Vec.create(0, -21.3)
+                },
+                {
+                    key: "refinery_ceiling_2",
+                    position: Vec.create(-32.85, 15.75)
                 }
             ],
             groundGraphics: [
