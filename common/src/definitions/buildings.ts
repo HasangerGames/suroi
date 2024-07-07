@@ -294,7 +294,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "green_house_ceiling",
-                position: Vec.create(-2, -1.1)
+                position: Vec.create(-2, -1.1),
+                scale: Vec.create(2, 2)
             }],
             floors: [
                 {
@@ -366,7 +367,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "firework_warehouse_ceiling",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, 0),
+                scale: Vec.create(2, 2)
             }],
             floors: [
                 {
@@ -406,7 +408,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "warehouse_ceiling",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, 0),
+                scale: Vec.create(2, 2)
             }],
             floors: [
                 {
@@ -951,7 +954,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "red_house_ceiling",
-                position: Vec.create(0, -0.25)
+                position: Vec.create(0, -0.25),
+                scale: Vec.create(2, 2)
             }],
             floors: [
                 {
@@ -1215,7 +1219,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "ship_cabin_roof",
-                    position: Vec.create(4, -68)
+                    position: Vec.create(4, -68),
+                    scale: Vec.create(2, 2)
                 },
                 {
                     key: "ship_tango_room_roof",
@@ -1348,7 +1353,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "oil_tanker_ship_ceiling",
-                    position: Vec.create(7, -99.5)
+                    position: Vec.create(7, -99.5),
+                    scale: Vec.create(2, 2)
                 },
                 {
                     key: "oil_tanker_ship_tank_ceiling",
@@ -1918,7 +1924,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "armory_barracks_ceiling",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, 0),
+                scale: Vec.create(2, 2)
             }],
             floors: [{
                 type: "wood",
@@ -1955,7 +1962,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "armory_center_ceiling",
-                position: Vec.create(1.25, 0)
+                position: Vec.create(1.25, 0),
+                scale: Vec.create(2, 2)
             }],
             floors: [{
                 type: "wood",
@@ -1991,7 +1999,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingImages: [{
                 key: "armory_vault_ceiling",
-                position: Vec.create(0, -2.5)
+                position: Vec.create(0, -2.5),
+                scale: Vec.create(2, 2)
             }],
             ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
             floors: [{

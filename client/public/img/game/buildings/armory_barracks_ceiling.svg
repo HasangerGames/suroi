@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1035.1511"
-   height="1717.9373"
-   viewBox="0 0 273.88374 454.53757"
+   width="517.5755"
+   height="858.96857"
+   viewBox="0 0 136.94185 227.26877"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    sodipodi:docname="armory_barracks_ceiling.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,11 +23,11 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.5313938"
-     inkscape:cx="492.10209"
-     inkscape:cy="755.56019"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
+     inkscape:zoom="0.18787608"
+     inkscape:cx="-675.97749"
+     inkscape:cy="1612.7652"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -38,10 +38,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(70.379155,46.566665)">
+     transform="translate(70.37916,46.56666)">
     <g
        id="g89510"
-       transform="translate(1683.5981,-754.32354)">
+       transform="matrix(0.49999999,0,0,0.49999999,806.60945,-400.44509)">
       <path
          id="path89470"
          style="opacity:1;fill:#405f3a;fill-opacity:1;stroke:#1f2d1a;stroke-width:2.00698;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
