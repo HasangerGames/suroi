@@ -226,17 +226,13 @@ export async function setUpUI(game: Game): Promise<void> {
         );
     }
 
-    // Get player counts + find server w/ best ping
-    let bestPing = Number.MAX_VALUE;
-    let bestRegion: string | undefined;
-    for (const [regionID, region] of regionMap) {
+    ui.loadingText.text(getTranslatedString("loading_fetching_data"));
+    const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
+        const pingStartTime = Date.now();
+
         try {
-            ui.loadingText.text(getTranslatedString("loading_fetching_data"));
-
-            const pingStartTime = Date.now();
-
             interface ServerInfo {
                 readonly protocolVersion: number
                 readonly playerCount: number
@@ -258,20 +254,16 @@ export async function setUpUI(game: Game): Promise<void> {
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
                 console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
-                continue;
+                return;
             }
 
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
-
-            if (ping < bestPing) {
-                bestPing = ping;
-                bestRegion = regionID;
-            }
         } catch (e) {
-            console.error(`Failed to load server info for region ${regionID}. Details:`, e);
+            console.error(`Failed to load server info for region ${regionID}. Details: `, e);
         }
-    }
+    });
+    await Promise.all(regionPromises);
 
     const serverName = $<HTMLSpanElement>("#server-name");
     const playerCount = $<HTMLSpanElement>("#server-player-count");
@@ -287,7 +279,7 @@ export async function setUpUI(game: Game): Promise<void> {
         resetPlayButtons();
     };
 
-    selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
+    selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
     updateServerSelectors();
 
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
