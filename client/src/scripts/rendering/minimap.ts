@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
+import { Container, Graphics, Point, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacketData } from "../../../../common/src/packets/mapPacket";
@@ -333,6 +333,8 @@ export class Minimap {
                             .setZIndex(definition.ceilingZIndex);
 
                         sprite.scale.set(1 / PIXI_SCALE);
+                        sprite.scale.x *= image.scale?.x ?? 1;
+                        sprite.scale.y *= image.scale?.y ?? 1;
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         mapRender.addChild(sprite);
                     }

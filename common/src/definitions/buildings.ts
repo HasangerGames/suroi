@@ -1109,7 +1109,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "crane_ceiling",
-                    position: Vec.create(55.5, -60)
+                    position: Vec.create(55.5, -60),
+                    scale: Vec.create(2, 2)
                 }
             ],
             ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
