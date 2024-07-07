@@ -84,6 +84,8 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingImages: ReadonlyArray<{
         readonly key: string
         readonly position: Vector
+        readonly rotation?: number
+        readonly scale?: Vector
         readonly residue?: string
         readonly tint?: number | `#${string}`
     }>
@@ -456,7 +458,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [{
                 key: "port_warehouse_ceiling",
                 position: Vec.create(0, 0),
-                tint: 0x813131
+                tint: 0x813131,
+                scale: Vec.create(2, 2)
             }],
             obstacles: [
                 {
@@ -559,7 +562,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [{
                 key: "port_warehouse_ceiling",
                 position: Vec.create(0, 0),
-                tint: 0x2e2e6a
+                tint: 0x2e2e6a,
+                scale: Vec.create(2, 2)
             }],
             obstacles: [
                 {
