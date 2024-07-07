@@ -2616,12 +2616,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(0, 0)
             }],
             floors: [
-                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 20, Vec.create(0, 0)) }
+                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
-                { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0 }
+                { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
         }

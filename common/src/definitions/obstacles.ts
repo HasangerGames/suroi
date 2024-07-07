@@ -32,6 +32,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly indestructible: boolean
     readonly isStair?: boolean
     readonly transportTo?: number
+    readonly returnTo?: number
     readonly impenetrable: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
@@ -3050,6 +3051,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             isStair: true,
             transportTo: -1,
+            returnTo: 0,
             invisible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
@@ -3067,6 +3069,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             isStair: true,
             transportTo: -2,
+            returnTo: -1,
             invisible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))

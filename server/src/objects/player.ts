@@ -29,7 +29,7 @@ import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { type SDeepMutable, type SMutable, type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { isAdjacent, pickRandomInArray } from "../../../common/src/utils/random";
+import { isAdjacent, pickRandomInArray, sameLayer } from "../../../common/src/utils/random";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { FloorTypes } from "../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
@@ -44,7 +44,7 @@ import { ThrowableItem } from "../inventory/throwableItem";
 import { Events } from "../pluginManager";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
-import { removeFrom } from "../utils/misc";
+import { Logger, removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -690,8 +690,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     && this.hitbox.collidesWith(potential.hitbox)
                     && (potential.layer === this.layer || isAdjacent(potential.layer, this.layer))
                 ) {
-                    if (potential.definition.isStair && (isAdjacent(potential.definition.transportTo ?? potential.layer, this.layer) || potential.layer === this.layer)) {
-                        this.layer = potential.definition.transportTo ?? 0;
+                    if (potential.definition.isStair && (sameLayer(potential.layer, this.layer))) {
+                        if(this.layer == potential.definition.transportTo) {
+                            this.layer = potential.definition.returnTo ?? 0;
+                        } else {
+                            this.layer = potential.definition.transportTo ?? 0;
+                        }
+                        Logger.log(`${this.layer}`)
                     } else {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
@@ -852,14 +857,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => ((!newVisibleObjects.has(object) || ((object.layer === this.layer) && isAdjacent(object.layer, this.layer))) && (this.visibleObjects.delete(object), true))
+                    object => ((!newVisibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && (this.visibleObjects.delete(object), true))
                 )
                 .map(({ id }) => id);
 
             newVisibleObjects
                 .forEach(
                     object => {
-                        if (this.visibleObjects.has(object) || ((object.layer === this.layer) && isAdjacent(object.layer, this.layer))) return;
+                        if (this.visibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) return;
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);

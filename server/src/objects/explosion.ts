@@ -104,7 +104,8 @@ export class Explosion {
                 this.source,
                 {
                     position: this.position,
-                    rotation: randomRotation()
+                    rotation: randomRotation(),
+                    layer: this.source.layer,
                 }
             );
         }
