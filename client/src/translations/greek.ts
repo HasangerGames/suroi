@@ -185,7 +185,7 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "bindings_toggle_console": "Εναλλαγή Κονσόλας",
     "bindings_toggle_slot_lock": "Toggle Slot Lock",
 
-    "kf_suicide_kill": "Ο/Η <player> αυτοκτόνησε",
+    "kf_suicide_kill": "<player> αυτοκτόνησε",
     "kf_suicide_down": "Ο/Η <player> έβγαλε νοκ άουτ τον ευατό του/της",
     "kf_two_party_kill": "Ο/Η <player> σκότωσε τον/την <victim>",
     "kf_two_party_down": "Ο/Η <player> έβγαλε νοκ άουτ τον/την <victim>",
@@ -209,14 +209,22 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     // ------------------------------------------------------------------
     "finally": "τελικά",
     "with": "με",
-    
+
     // Kill modal only
     "you": "Εσύ",
     "yourself": "τον εαυτό σου",
     "km_killed": "σκότωσες τον/την",
     "km_knocked": "έβγαλες νοκ άουτ τον/την",
-    
+
     "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "σκότωσε τον/την",
+    "kf_knocked": "έβγαλε νοκ άουτ τον/την",
+    "kf_finished_off": "αποτελείωσε τον/την",
+    "themselves": "τον εαυτό τους/της",
+
+    "kf_message": "Ο/Η <player> <finally> <event> <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
     "tt_restores": "<item> επαναφέρει <amount> <type>",

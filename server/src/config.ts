@@ -26,13 +26,13 @@ export const Config = {
 
     plugins: [],
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
     maxGames: 4,
     preventJoinAfter: 60000,
 
-    gas: { mode: GasMode.Disabled },
+    gas: { mode: GasMode.Normal },
 
     movementSpeed: 0.02655,
 

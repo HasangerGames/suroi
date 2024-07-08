@@ -222,6 +222,14 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "km_knocked": "knocked out",
 
     "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "killed",
+    "kf_knocked": "knocked out",
+    "kf_finished_off": "finished off",
+    "themselves": "themselves",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> το(ν) <weapon>",
     // ------------------------------------------------------------------
 
     // Kill Leader stuff

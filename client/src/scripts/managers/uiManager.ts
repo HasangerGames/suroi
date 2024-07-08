@@ -975,7 +975,7 @@ export class UIManager {
             };
         });
     }
-
+    /* Womp Womp
     private static readonly _killfeedEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, string>>>({
         [KillfeedEventType.Suicide]: {
             [KillfeedEventSeverity.Kill]: "committed suicide",
@@ -1005,7 +1005,7 @@ export class UIManager {
             [KillfeedEventSeverity.Kill]: "was fatally crushed",
             [KillfeedEventSeverity.Down]: "was knocked out"
         }
-    });
+    }); */
 
     private static readonly _killModalEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, (victim: string, weaponUsed: string) => string>>>({
         [KillfeedEventType.Suicide]: {
@@ -1126,7 +1126,11 @@ export class UIManager {
                     case "text": {
                         let killMessage = "";
 
-                        const description = UIManager._killfeedEventDescription[eventType][severity];
+                        let useSpecialSentence = false;
+
+                        // const description = UIManager._killfeedEventDescription[eventType][severity];
+
+                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString)) : "";
 
                         outer:
                         switch (eventType) {
@@ -1155,11 +1159,37 @@ export class UIManager {
                                 }
                                 // fallthrough
                             case KillfeedEventType.NormalTwoParty:
+                                killMessage = getTranslatedString("kf_message", {
+                                    player: attackerText,
+                                    finally: "",
+                                    event: getTranslatedString("kf_killed"),
+                                    victim: victimText,
+                                    with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
+                                    weapon: fullyQualifiedName
+                                });
+                                useSpecialSentence = true;
+                                break;
                             case KillfeedEventType.FinishedOff:
-                                killMessage = `${attackerText} ${description} ${victimText}`;
+                                killMessage = getTranslatedString("kf_message", {
+                                    player: attackerText,
+                                    finally: "",
+                                    event: getTranslatedString("kf_finished_off"),
+                                    victim: victimText,
+                                    with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
+                                    weapon: fullyQualifiedName
+                                });
+                                useSpecialSentence = true;
                                 break;
                             case KillfeedEventType.Suicide:
-                                killMessage = getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
+                                killMessage = getTranslatedString("kf_message", {
+                                    player: victimText,
+                                    finally: "",
+                                    event: getTranslatedString("kf_suicide_kill", { player: "" }),
+                                    victim: "",
+                                    with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
+                                    weapon: fullyQualifiedName
+                                });
+                                useSpecialSentence = true;
                                 break;
                             case KillfeedEventType.BleedOut:
                                 killMessage = getTranslatedString(`kf_bleed_out_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
@@ -1172,7 +1202,6 @@ export class UIManager {
                                 break;
                         }
 
-                        const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
                          * English being complicated means that this will sometimes return bad results
                          * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
@@ -1193,10 +1222,14 @@ export class UIManager {
                             }
                         })();
 
-                        messageText = `
-                        ${hasKillstreak && severity === KillfeedEventSeverity.Kill ? killstreak : ""}
-                        ${icon}
-                        ${killMessage}${weaponNameText}`;
+                        if (!useSpecialSentence) {
+                            messageText = `
+                            ${hasKillstreak && severity === KillfeedEventSeverity.Kill ? killstreak : ""}
+                            ${icon}
+                            ${killMessage}${weaponNameText}`;
+                        } else {
+                            messageText = killMessage;
+                        }
                         break;
                     }
                     case "icon": {
