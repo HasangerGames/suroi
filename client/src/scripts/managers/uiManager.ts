@@ -1106,7 +1106,7 @@ export class UIManager {
                                             entity (like gas or airdrop) if their team is then wiped,
                                             then no one "finally" killed them, they just… finally died
                                         */
-                                        killMessage = `${victimText} finally died`;
+                                        killMessage = getTranslatedString("kf_finally_died", { player: victimText });
 
                                         break outer;
                                     case victimId:
@@ -1117,7 +1117,7 @@ export class UIManager {
                                             it retain the "finally killed" part; this is the best option
                                             until someone comes up with another
                                         */
-                                        killMessage = `${victimText} finally ended themselves`;
+                                        killMessage = getTranslatedString("kf_finally_ended_themselves", { player: victimText });
 
                                         break outer;
                                 }
@@ -1127,14 +1127,16 @@ export class UIManager {
                                 killMessage = `${attackerText} ${description} ${victimText}`;
                                 break;
                             case KillfeedEventType.Suicide:
+                                killMessage = getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
+                                break;
                             case KillfeedEventType.BleedOut:
-                                killMessage = `${victimText} ${description}`;
+                                killMessage = getTranslatedString(`kf_bleed_out_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
                                 break;
                             case KillfeedEventType.Gas:
-                                killMessage = `${victimText} ${description} the gas`;
+                                killMessage = getTranslatedString(`kf_gas_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
                                 break;
                             case KillfeedEventType.Airdrop:
-                                killMessage = `${victimText} ${description} by an airdrop`;
+                                killMessage = getTranslatedString(`kf_airdrop_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
                                 break;
                         }
 
