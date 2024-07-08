@@ -883,12 +883,8 @@ export class UIManager {
         // special case for languages like hungarian and greek
         if (getTranslatedString("you") === "") {
             // Remove useless spaces at start (from blank "you")
-            const maxLoopCount = 100;
-            let loopCount = 0;
-
-            while (loopCount < maxLoopCount && (killModalMessage[0] === " " || killModalMessage[0] === "  ")) {
+            while (killModalMessage.startsWith(" ") || killModalMessage.startsWith("  ")) {
                 killModalMessage = killModalMessage.replace(killModalMessage[0], "");
-                loopCount++;
             }
 
             killModalMessage = killModalMessage.replace(killModalMessage[0], killModalMessage[0].toUpperCase());
