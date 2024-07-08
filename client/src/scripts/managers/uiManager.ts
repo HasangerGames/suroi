@@ -1085,6 +1085,7 @@ export class UIManager {
                 } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
 
                 const victimText = victimName + victimBadgeText;
+
                 const attackerText = attackerName + attackerBadgeText;
 
                 const killstreak = "killstreak" in message ? message.killstreak : undefined;
@@ -1392,6 +1393,11 @@ export class UIManager {
                 spectateLeader.addClass("btn-disabled");
                 break;
             }
+        }
+
+        // Disable spaces in chinese languages.
+        if (["zh", "tw", "hk_mo"].includes(this.game.console.getBuiltInCVar("cv_language"))) {
+            classes.push("no-spaces");
         }
 
         if (messageText) this._addKillFeedMessage(messageText, classes);
