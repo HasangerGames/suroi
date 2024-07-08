@@ -878,7 +878,7 @@ export class UIManager {
             }
         }
 
-        let killModalMessage = (UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "") as string);
+        let killModalMessage = UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "");
 
         // special case for languages like hungarian and greek
         if (getTranslatedString("you") === "") {
