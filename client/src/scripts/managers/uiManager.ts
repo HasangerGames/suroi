@@ -1353,7 +1353,7 @@ export class UIManager {
                         if (attackerId === this.game.activePlayerID) {
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponUsed?.name,
+                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString) : "",
                                 type: eventType
                             };
 
