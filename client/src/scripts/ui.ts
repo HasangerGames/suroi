@@ -602,7 +602,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     .css("pointer-events", "none")
                     .html(`
                         <i class="fa-solid fa-check" id="copy-team-btn-icon"></i>
-                        Copied`
+                        ${getTranslatedString("copied")}`
                     );
 
                 // After some seconds, reset the copy button's css
@@ -612,7 +612,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         .css("pointer-events", "")
                         .html(`
                             <i class="fa-solid fa-clipboard" id="copy-team-btn-icon"></i>
-                            Copy`
+                            ${getTranslatedString("copy")}`
                         );
                 }, 2000); // 2 sec
             })
