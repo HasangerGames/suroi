@@ -20,7 +20,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "arena",
 
     tps: 40,
 
@@ -38,7 +38,7 @@ export const Config = {
 
     censorUsernames: true,
 
-    maxTeamSize: TeamSize.Solo,
+    maxTeamSize: TeamSize.Squad,
 
     roles: {
         "developr": { password: "developr", isDev: true },

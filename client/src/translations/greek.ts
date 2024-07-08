@@ -211,7 +211,7 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "with": "με",
 
     // Kill modal only
-    "you": "Εσύ",
+    "you": "",
     "yourself": "τον εαυτό σου",
     "km_killed": "σκότωσες τον/την",
     "km_knocked": "έβγαλες νοκ άουτ τον/την",

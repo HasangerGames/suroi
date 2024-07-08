@@ -110,10 +110,10 @@ export function getTranslatedString(key: string, replacements?: Record<string, s
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
     } catch (_) {
-        foundTranslation = "";
+        foundTranslation = "no translation found";
     }
 
-    if (!foundTranslation) return key;
+    if (foundTranslation === "no translation found") return key;
 
     if (foundTranslation instanceof Function) {
         return foundTranslation(replacements ?? {});

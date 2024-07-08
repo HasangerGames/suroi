@@ -212,12 +212,12 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "with": "ezzel:",
 
     // Kill modal only
-    "you": "Te",
+    "you": "",
     "yourself": "magadat",
     "km_killed": "megölted",
     "km_knocked": "kiütötted",
 
-    "km_message": "<you> <finally> <event> <victim>-t <with> <weapon>",
+    "km_message": "<you><finally> <event> őt: <victim> <with> <weapon>",
 
     // Killfeed.
     "kf_killed": "megölte",
@@ -225,7 +225,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "kf_finished_off": "kivégezte",
     "themselves": "magát",
 
-    "kf_message": "<player> <finally> <event> <victim>-t <with> <weapon>",
+    "kf_message": "<player> <finally> <event> őt: <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
     "tt_restores": "<item> visszatölt <amount> <type>-t",

@@ -878,7 +878,22 @@ export class UIManager {
             }
         }
 
-        this.ui.killMsgContainer.html(`${UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "")}${streakText}`);
+        let killModalMessage = UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "");
+
+        // special case for hungarian and greek
+        if (["gr", "hu"].includes(this.game.console.getBuiltInCVar("cv_language"))) {
+            switch (this.game.console.getBuiltInCVar("cv_language")) {
+                case "gr":
+                    killModalMessage = killModalMessage.replace(killModalMessage[severity === KillfeedEventSeverity.Down ? 2 : 1], killModalMessage[severity === KillfeedEventSeverity.Down ? 2 : 1].toUpperCase());
+                    break;
+
+                case "hu":
+                    killModalMessage = killModalMessage.replace(killModalMessage[severity === KillfeedEventSeverity.Down ? 1 : 0], killModalMessage[severity === KillfeedEventSeverity.Down ? 1 : 0].toUpperCase());
+                    break;
+            }
+        }
+
+        this.ui.killMsgContainer.html(`${killModalMessage}${streakText}`);
 
         this.ui.killMsgModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
