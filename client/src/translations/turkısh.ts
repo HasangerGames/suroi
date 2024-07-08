@@ -97,7 +97,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "loadout_crosshairs_stroke_size": "Kontur Boyutu:",
     "loadout_crosshairs_stroke_color": "Kontur Rengi:",
 
-    "emotes_category_People": "İnsanlar",
+    "emotes_category_People": "Emojiler",
     "emotes_category_Text": "Metin",
     "emotes_category_Memes": "Mizah",
     "emotes_category_Icons": "Simgeler",
