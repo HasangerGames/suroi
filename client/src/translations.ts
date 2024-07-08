@@ -20,7 +20,8 @@ import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
-import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/cantonese";
+import { CANTONESE_TRANSLATIONS } from "./translations/cantonese";
+import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
 
 export type TranslationMap = Record<
     string,
@@ -47,7 +48,8 @@ export const TRANSLATIONS = {
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
         zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
-        hk_mo: CHINESE_TRADITIONAL_TRANSLATIONS,
+        tw: CHINESE_TRADITIONAL_TRANSLATIONS,
+        hk_mo: CANTONESE_TRANSLATIONS,
         jp: JAPANESE_TRANSLATIONS,
         vi: VIETNAMESE_TRANSLATIONS,
         ta: TAMIL_TRANSLATIONS,
