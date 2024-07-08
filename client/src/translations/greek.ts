@@ -206,6 +206,19 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "Ο/Η Αρχηγός των σκοτωμών είναι νεκρός!",
     "kf_kl_suicide": "Ο/Η Αρχηγός των σκοτωμών σκότωσε τον εαυτό του/της!",
 
+    // ------------------------------------------------------------------
+    "finally": "τελικά",
+    "with": "με",
+    
+    // Kill modal only
+    "you": "Εσύ",
+    "yourself": "τον εαυτό σου",
+    "km_killed": "σκότωσες τον/την",
+    "km_knocked": "έβγαλες νοκ άουτ τον/την",
+    
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
     "tt_restores": "<item> επαναφέρει <amount> <type>",
     "tt_reduces": "<item> μειώνει την ζημιά κατά <percent>%",
 
@@ -267,6 +280,8 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "gas_can": "Δοχείο Αερίου",
     "heap_sword": "Σπαθί HE-AP",
     "steelfang": "Ατσάλινοw Kυνόδοντας",
+    "crowbar": "Λοστός",
+    "sickle": "Δρεπάνι",
     "ice_pick": "Ice Pick",
     "seax": "Μεγάλο Μαχαίρι",
 

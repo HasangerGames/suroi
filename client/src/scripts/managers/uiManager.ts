@@ -878,13 +878,7 @@ export class UIManager {
             }
         }
 
-        console.log(weaponUsed);
-        this.ui.killMsgContainer.html(`
-            ${UIManager._killModalEventDescription[type][severity](
-        $<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML,
-        weaponUsed !== undefined ? weaponUsed : ""
-    )}
-            ${streakText}`);
+        this.ui.killMsgContainer.html(`${UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "")}${streakText}`);
 
         this.ui.killMsgModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too

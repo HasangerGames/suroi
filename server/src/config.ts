@@ -20,7 +20,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "arena",
+    mapName: "main",
 
     tps: 40,
 
@@ -30,7 +30,7 @@ export const Config = {
 
     maxPlayersPerGame: 80,
     maxGames: 4,
-    preventJoinAfter: 6960000,
+    preventJoinAfter: 60000,
 
     gas: { mode: GasMode.Disabled },
 
@@ -38,7 +38,7 @@ export const Config = {
 
     censorUsernames: true,
 
-    maxTeamSize: TeamSize.Squad,
+    maxTeamSize: TeamSize.Solo,
 
     roles: {
         "developr": { password: "developr", isDev: true },

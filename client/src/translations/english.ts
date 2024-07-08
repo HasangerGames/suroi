@@ -211,6 +211,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "kf_airdrop_kill": "<player> was fatally crushed by an airdrop",
     "kf_airdrop_down": "<player> was knocked out by an airdrop",
 
+    // ------------------------------------------------------------------
     "finally": "finally",
     "with": "with",
 
@@ -221,6 +222,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "km_knocked": "knocked out",
 
     "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
 
     // Kill Leader stuff
     "kf_kl_promotion": "<player> is promoted to the Kill Leader!",
