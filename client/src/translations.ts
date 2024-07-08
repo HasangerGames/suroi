@@ -20,7 +20,7 @@ import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
-import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
+import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/cantonese";
 
 export type TranslationMap = Record<
     string,
