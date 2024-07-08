@@ -229,7 +229,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "kf_finished_off": "finished off",
     "themselves": "themselves",
 
-    "kf_message": "<player> <finally> <event> <victim> <with> το(ν) <weapon>",
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
     // Kill Leader stuff
