@@ -207,6 +207,27 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "A Kill Leader halott!",
     "kf_kl_suicide": "A Kill Leader megölte magát!",
 
+    // ------------------------------------------------------------------
+    "finally": "végleg",
+    "with": "ezzel:",
+
+    // Kill modal only
+    "you": "Te",
+    "yourself": "magadat",
+    "km_killed": "megölted",
+    "km_knocked": "kiütötted",
+
+    "km_message": "<you> <finally> <event> <victim>-t <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "megölte",
+    "kf_knocked": "kiütötte",
+    "kf_finished_off": "kivégezte",
+    "themselves": "magát",
+
+    "kf_message": "<player> <finally> <event> <victim>-t <with> <weapon>",
+    // ------------------------------------------------------------------
+
     "tt_restores": "<item> visszatölt <amount> <type>-t",
     "tt_reduces": "<item> <percent>%-kal csökkenti a sérülést",
 

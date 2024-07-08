@@ -1115,7 +1115,7 @@ export class UIManager {
                     badgeText: attackerBadgeText
                 } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
 
-                const victimText = victimName + victimBadgeText;
+                let victimText = victimName + victimBadgeText;
 
                 const attackerText = attackerName + attackerBadgeText;
 
@@ -1131,6 +1131,11 @@ export class UIManager {
                         // const description = UIManager._killfeedEventDescription[eventType][severity];
 
                         const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString)) : "";
+
+                        // special case for turkish
+                        if (this.game.console.getBuiltInCVar("cv_language") === "tr") {
+                            victimText = victimText.replace("<span>", "<span style=\"display:contents;\">");
+                        }
 
                         outer:
                         switch (eventType) {
