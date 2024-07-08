@@ -878,19 +878,20 @@ export class UIManager {
             }
         }
 
-        let killModalMessage = UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "");
+        let killModalMessage = (UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "") as string);
 
-        // special case for hungarian and greek
-        if (["gr", "hu"].includes(this.game.console.getBuiltInCVar("cv_language"))) {
-            switch (this.game.console.getBuiltInCVar("cv_language")) {
-                case "gr":
-                    killModalMessage = killModalMessage.replace(killModalMessage[severity === KillfeedEventSeverity.Down ? 2 : 1], killModalMessage[severity === KillfeedEventSeverity.Down ? 2 : 1].toUpperCase());
-                    break;
+        // special case for languages like hungarian and greek
+        if (getTranslatedString("you") === "") {
+            // Remove useless spaces at start (from blank "you")
+            const maxLoopCount = 100;
+            let loopCount = 0;
 
-                case "hu":
-                    killModalMessage = killModalMessage.replace(killModalMessage[severity === KillfeedEventSeverity.Down ? 1 : 0], killModalMessage[severity === KillfeedEventSeverity.Down ? 1 : 0].toUpperCase());
-                    break;
+            while (loopCount < maxLoopCount && (killModalMessage[0] === " " || killModalMessage[0] === "  ")) {
+                killModalMessage = killModalMessage.replace(killModalMessage[0], "");
+                loopCount++;
             }
+
+            killModalMessage = killModalMessage.replace(killModalMessage[0], killModalMessage[0].toUpperCase());
         }
 
         this.ui.killMsgContainer.html(`${killModalMessage}${streakText}`);
