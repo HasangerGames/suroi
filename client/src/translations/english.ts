@@ -8,6 +8,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Connecting",
     "msg_err_joining": "Error joining game.",
     "msg_err_finding": "Error finding game.",
+    "msg_spectating": "Spectating",
+    "msg_enter_team_code": "Enter a team code:",
+    "msg_lost_team_connection": "Lost connection to team.",
+    "msg_error_joining_team": "Error joining team.<br>It may not exist or it is full.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Please try again.",
     "msg_warning": "You have been warned!",
     "msg_warning_msg": "You have received a warning by the moderators for reason: <reason>",

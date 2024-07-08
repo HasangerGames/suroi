@@ -423,7 +423,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
             // also rejects the empty string, but like who cares
             while (!teamID) {
-                teamID = prompt("Enter a team code:");
+                teamID = prompt(getTranslatedString("msg_enter_team_code"));
                 if (!teamID) {
                     resetPlayButtons();
                     return;
@@ -520,7 +520,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     ui.createTeamPlayers.find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
 
                     if (data.newLeaderID === playerID) {
-                        ui.btnStartGame.removeClass("btn-disabled").text("Start Game");
+                        ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
                         ui.createTeamToggles.removeClass("disabled");
                     }
                     break;
@@ -539,7 +539,7 @@ export async function setUpUI(game: Game): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            ui.splashMsgText.html("Error joining team.<br>It may not exist or it is full.");
+            ui.splashMsgText.html(getTranslatedString("msg_error_joining_team"));
             ui.splashMsg.show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
@@ -554,8 +554,8 @@ export async function setUpUI(game: Game): Promise<void> {
             if (teamSocket) {
                 ui.splashMsgText.html(
                     joinedTeam
-                        ? "Lost connection to team."
-                        : "Error joining team.<br>It may not exist or it is full."
+                        ? getTranslatedString("msg_lost_team_connection")
+                        : getTranslatedString("msg_error_joining_team")
                 );
                 ui.splashMsg.show();
             }
