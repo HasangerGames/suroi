@@ -635,7 +635,7 @@ export class Game implements GameData {
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDead, { attackerId: killer?.id });
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -646,10 +646,25 @@ export class Game implements GameData {
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
     }
 
+    killLeaderDisconnected(leader: Player): void {
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
+        let newKillLeader: Player | undefined;
+        for (const player of this.livingPlayers) {
+            if (player === leader) continue; 
+            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+                newKillLeader = player;
+            }
+        }
+        this._killLeader = newKillLeader;
+        if (this._killLeader != undefined) {
+            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
+        }
+    }
+
     private _sendKillLeaderKFPacket<
         Message extends
             | KillfeedMessageType.KillLeaderAssigned
-            | KillfeedMessageType.KillLeaderDead
+            | KillfeedMessageType.KillLeaderDeadOrDisconnected
             | KillfeedMessageType.KillLeaderUpdated
     >(
         messageType: Message,
@@ -842,6 +857,10 @@ export class Game implements GameData {
     }
 
     removePlayer(player: Player): void {
+        if (player === this.killLeader) {
+            this.killLeaderDisconnected(player);
+        }
+
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);

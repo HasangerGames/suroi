@@ -1341,7 +1341,7 @@ export class UIManager {
                 break;
             }
 
-            case KillfeedMessageType.KillLeaderDead: {
+            case KillfeedMessageType.KillLeaderDeadOrDisconnected: {
                 const {
                     killLeaderLeader: leader,
                     killLeaderCount: count,
@@ -1352,6 +1352,14 @@ export class UIManager {
                     attackerId,
                     victimId
                 } = message;
+
+                if (message.disconnected === true) {
+                    leader.text(getTranslatedString("msg_waiting_for_leader"));
+                    count.text("0");
+                    this.game.soundManager.play("kill_leader_dead");
+                    spectateLeader.addClass("btn-disabled");
+                    break;
+                }
 
                 const {
                     name: attackerName,

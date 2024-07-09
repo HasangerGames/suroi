@@ -40,7 +40,7 @@ export enum AnimationType {
 export enum KillfeedMessageType {
     DeathOrDown,
     KillLeaderAssigned,
-    KillLeaderDead,
+    KillLeaderDeadOrDisconnected,
     KillLeaderUpdated
 }
 
