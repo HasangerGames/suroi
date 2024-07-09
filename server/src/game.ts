@@ -650,7 +650,7 @@ export class Game implements GameData {
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player === leader) continue; 
+            if (player === leader) continue;
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
                 newKillLeader = player;
             }
