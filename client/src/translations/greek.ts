@@ -329,6 +329,8 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "m16a4": "M16A4",
     "mg36": "MG-36",
     "mcx_spear": "MCX Spear",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
 
     "frag_grenade": "Χειροβομβίδα",
     "smoke_grenade": "Χειροβομβίδα Καπνού",

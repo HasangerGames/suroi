@@ -321,6 +321,8 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "pp19": "PP-19",
     "vepr12": "Vepr-12",
     "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
     "mp40": "MP40",
     "m1895": "M1895",
     "ak47": "AK-47",
