@@ -119,7 +119,7 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "msg_win": "大吉大利，今晚去KFC開Party食燒雞！",
     "msg_your_rank": "名次",
 
-    "msg_kills": "殺死<kills>",
+    "msg_kills": "殺咗<kills>個",
 
     "gas_waiting": "電網會喺<time>後擴大",
     "gas_advancing": "電網擴大梗！盡快移步到安全區域",
@@ -204,6 +204,27 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "擊殺隊長死咗！",
     "kf_kl_suicide": "擊殺隊長諗唔開自殺咗",
 
+    // ------------------------------------------------------------------
+    "finally": "最终",
+    "with": "用",
+
+    // Kill modal only
+    "you": "你",
+    "yourself": "自己",
+    "km_killed": "殺死咗",
+    "km_knocked": "Knockdown咗",
+
+    "km_message": "<you><finally><with><weapon><event><victim>",
+
+    // Killfeed.
+    "kf_killed": "殺死咗",
+    "kf_knocked": "Knockdown咗",
+    "kf_finished_off": "搞掂咗",
+    "themselves": "佢自己",
+
+    "kf_message": "<player><finally><with><weapon><event><victim>",
+    // ------------------------------------------------------------------
+
     "tt_restores": "<item>恢復<amount><type>",
     "tt_reduces": "<item>減少<percent>%受到傷害",
 
@@ -267,10 +288,49 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "steelfang": "鋼牙刀",
     "ice_pick": "冰鎬",
     "seax": "Seax匕首",
+    "sickle": "鐮刀",
+    "crowbar": "鐵撬",
 
     "radio": "對講機", // 槍械
     "lewis_gun": "Lewis輕機槍",
     "deathray": "雷射槍",
+    "mosin": "Mosin-Nagant狙擊槍",
+    "cz600": "CZ-600狙擊槍",
+    "firework_launcher": "逼擊炮",
+    "arena_closer": "核子武器",
+    "revitalizer": "血量控制之槍",
+    "s_g17": "G17手槍(裝咗倍鏡)",
+    "vss": "VSS精確射手步槍",
+    "sr25": "SR-25精確射手步槍",
+    "pp19": "PP-19衝鋒槍(裝咗消音器)",
+    "micro_uzi": "UZI衝鋒槍",
+    "vector": "Vector衝鋒槍",
+    "saf_200": "SAF-200衝鋒槍",
+    "mp40": "MP-40衝鋒槍",
+    "vepr12": "Vepr-12霰彈槍",
+    "flues": "雙管霰彈槍",
+    "hp18": "HP-18霰彈槍",
+    "model_37": "Model 37霰彈槍",
+    "usas12": "USAS-12霰彈槍",
+    "m3k": "M3K霰彈槍",
+    "m1895": "M1895左輪",
+    "g19": "G19手槍",
+    "cz75a": "CZ75A手槍",
+    "ak47": "AK-47突擊步槍",
+    "acr": "ACR突擊步槍(裝咗消音器)",
+    "aug": "AUG突擊步槍",
+    "m16a4": "M16A4突擊步槍",
+    "arx160": "ARX-160突擊步槍",
+    "mg36": "MG-36突擊步槍",
+    "mcx_spear": "MCX SPEAR突擊步槍",
+    "mini14": "Mini-14精確射手步槍",
+    "model_89": "Model 89狙擊槍",
+    "negev": "Negev輕機槍",
+    "mg5": "MG5輕機槍",
+    "tango_51": "Tango 51狙擊槍",
+    "barrett": "Barrett M95狙擊槍",
+    "stoner_63": "Stoner 63輕機槍",
+    "m1_garand": "M1 Garand卡賓槍",
 
     "frag_grenade": "手榴彈", // 投擲物
     "smoke_grenade": "煙彈",
