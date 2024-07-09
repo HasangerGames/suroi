@@ -278,7 +278,12 @@ export async function setUpUI(game: Game): Promise<void> {
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", "");
         }
-        serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
+
+        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`) === "region_") {
+            serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
+        } else {
+            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
+        }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
