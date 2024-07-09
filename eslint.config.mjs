@@ -7,7 +7,6 @@ import tseslint from "typescript-eslint";
  * TODO Add eslint-plugin-import-x, when it has support for Flat configuration.
  */
 export default tseslint.config(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     eslint.configs.recommended,
     ...tseslint.configs.strictTypeChecked,
     ...tseslint.configs.stylisticTypeChecked,
