@@ -135,7 +135,19 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
-        const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
+        // Make sure we do not count the same values.
+        let filtered = Object.values(languageInfo);
+        if (!["en", "hp18"].includes(language)) {
+            for (const key of Object.keys(languageInfo)) {
+                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key]) {
+                    filtered = filtered.filter(translationString => {
+                        return translationString !== TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key];
+                    });
+                }
+            }
+        }
+
+        const percentage = (filtered.length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
         languageFieldset.append(html`
             <div>
               <input type="radio" name="selected-language" id="language-${language}" value="${language}">
