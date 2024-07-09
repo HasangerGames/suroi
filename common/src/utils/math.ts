@@ -233,7 +233,7 @@ export const Collision = Object.freeze({
         const y = centerA.y - centerB.y;
         const a2 = a * a;
         const xy = x * x + y * y;
-        return { collided: a2 > xy, distance: a2 - xy };
+        return { collided: a2 > xy, distance: xy - a2 };
     },
     /**
      * Determines the distance between a circle and a rectangle
