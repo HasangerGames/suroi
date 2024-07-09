@@ -6,8 +6,11 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
 
     "msg_rotate": "請將設備調成橫向嚟提升你嘅遊戲體驗。",
     "msg_loading": "連接梗",
-    "msg_err_joining": "入隊嘅時候出錯。",
-    "msg_err_finding": "揾隊伍嘅時候出錯。",
+    "msg_err_joining": "加入出錯。",
+    "msg_err_finding": "尋找出錯。",
+    "msg_spectating": "睇梗人哋",
+    "msg_enter_team_code": "打隊伍代碼",
+    "msg_lost_team_connection": "同隊伍失去連接",
     "msg_try_again": "請重試。",
     "msg_warning": "警告！",
     "msg_warning_msg": "你已經被警告，因為：<reason>",
