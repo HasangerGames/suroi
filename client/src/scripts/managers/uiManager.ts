@@ -1201,7 +1201,7 @@ export class UIManager {
                                 killMessage = getTranslatedString("kf_message", {
                                     player: victimText,
                                     finally: "",
-                                    event: getTranslatedString("kf_suicide_kill", { player: "" }),
+                                    event: getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: "" }),
                                     victim: "",
                                     with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
                                     weapon: fullyQualifiedName
