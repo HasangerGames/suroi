@@ -289,6 +289,8 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steewfang",
     "ice_pick": "Ice Pick",
     "seax": "Sex",
+    "crowbar": "Cwowbar",
+    "sickle": "Sickwle",
 
     "mosin": "Mosin-Nagant",
     "radio": "Wadio",
