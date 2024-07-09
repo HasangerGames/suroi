@@ -145,7 +145,7 @@ export async function setUpUI(game: Game): Promise<void> {
         languageFieldset.append(html`
             <div>
               <input type="radio" name="selected-language" id="language-${language}" value="${language}">
-              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
+              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${language === "qen" ? "OwO" : languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
             </div>
         `);
 
