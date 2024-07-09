@@ -186,15 +186,6 @@ function translateCurrentDOM(): void {
         debugTranslationCounter++;
     });
 
-    /* if (language !== "en") { // temporary until we translate killfeed
-        const shutUpEsLint = document.getElementById("toggle-text-kill-feed-option");
-
-        if (shutUpEsLint) {
-            const pepedls = shutUpEsLint.innerHTML;
-            shutUpEsLint.innerHTML = `<i class="fa-solid fa-lock"></i> ${pepedls}`;
-        }
-    } */
-
     if (printTranslationDebug) {
         console.log("Translated", debugTranslationCounter, "strings");
         console.log("With language as", language, "and default as", defaultLanguage);
