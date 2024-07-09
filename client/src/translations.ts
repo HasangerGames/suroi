@@ -42,6 +42,7 @@ export const TRANSLATIONS = {
     translations: {
         en: ENGLISH_TRANSLATIONS,
         gr: GREEK_TRANSLATIONS,
+        // eslint-disable-next-line
         tr: TURKISH_TRANSLATIONS,
         ab: ALBANIAN_TRANSLATIONS,
         fr: FRENCH_TRANSLATIONS,
