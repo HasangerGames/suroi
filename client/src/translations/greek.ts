@@ -185,7 +185,7 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "bindings_toggle_console": "Εναλλαγή Κονσόλας",
     "bindings_toggle_slot_lock": "Toggle Slot Lock",
 
-    "kf_suicide_kill": "Ο/Η <player> αυτοκτόνησε",
+    "kf_suicide_kill": "<player> αυτοκτόνησε",
     "kf_suicide_down": "Ο/Η <player> έβγαλε νοκ άουτ τον ευατό του/της",
     "kf_two_party_kill": "Ο/Η <player> σκότωσε τον/την <victim>",
     "kf_two_party_down": "Ο/Η <player> έβγαλε νοκ άουτ τον/την <victim>",
@@ -205,6 +205,27 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "Ο/Η <player> σκότωσε τον αρχηγό των σκοτωμών",
     "kf_kl_dead": "Ο/Η Αρχηγός των σκοτωμών είναι νεκρός!",
     "kf_kl_suicide": "Ο/Η Αρχηγός των σκοτωμών σκότωσε τον εαυτό του/της!",
+
+    // ------------------------------------------------------------------
+    "finally": "τελικά",
+    "with": "με",
+
+    // Kill modal only
+    "you": "",
+    "yourself": "τον εαυτό σου",
+    "km_killed": "σκότωσες τον/την",
+    "km_knocked": "έβγαλες νοκ άουτ τον/την",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "σκότωσε τον/την",
+    "kf_knocked": "έβγαλε νοκ άουτ τον/την",
+    "kf_finished_off": "αποτελείωσε τον/την",
+    "themselves": "τον εαυτό τους/της",
+
+    "kf_message": "Ο/Η <player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> επαναφέρει <amount> <type>",
     "tt_reduces": "<item> μειώνει την ζημιά κατά <percent>%",
@@ -267,6 +288,8 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "gas_can": "Δοχείο Αερίου",
     "heap_sword": "Σπαθί HE-AP",
     "steelfang": "Ατσάλινοw Kυνόδοντας",
+    "crowbar": "Λοστός",
+    "sickle": "Δρεπάνι",
     "ice_pick": "Ice Pick",
     "seax": "Μεγάλο Μαχαίρι",
 
@@ -278,6 +301,36 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "arena_closer": "Καταστροφέας Των Κόσμων",
     "revitalizer": "Αναζωογονητικό",
     "s_g17": "G17 (με διόπτρα)",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "usas12": "USAS-12",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Καπνοδόχο",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Μοντέλο 37",
+    "model_89": "Μοντέλο 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Τανγκό 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
 
     "frag_grenade": "Χειροβομβίδα",
     "smoke_grenade": "Χειροβομβίδα Καπνού",

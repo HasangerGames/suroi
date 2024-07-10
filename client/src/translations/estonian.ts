@@ -8,6 +8,10 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Ühendumine",
     "msg_err_joining": "Viga mänguga ühinemisel.",
     "msg_err_finding": "Viga mängu otsimisel.",
+    "msg_spectating": "Jälgite",
+    "msg_enter_team_code": "Sisesta tiimi kood:",
+    "msg_lost_team_connection": "Ühendus tiimiga katkes.",
+    "msg_error_joining_team": "Viga tiimiga liitumisel.<br>Seda ei pruugi olla olemas või see on täis.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Palun proovige uuesti.",
     "msg_warning": "Teid on hoiatatud!",
     "msg_warning_msg": "Te olete saanud mängu moderaatoritelt hoiatuse põhjusega: <reason>",
@@ -204,6 +208,27 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> tappis Tapmiste Liidri",
     "kf_kl_dead": "Tapmiste Liider on surnud!",
     "kf_kl_suicide": "Tapmiste Liider tappis iseennast!",
+
+    // ------------------------------------------------------------------
+    "finally": "lõpuks",
+    "with": "kasutades",
+
+    // Kill modal only
+    "you": "Sa",
+    "yourself": "ise ennast",
+    "km_killed": "tapsid",
+    "km_knocked": "lõid maha",
+
+    "km_message": "<you> <finally> <event> <victim>`i <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "tappis",
+    "kf_knocked": "lõi maha",
+    "kf_finished_off": "lõpetas",
+    "themselves": "ise ennast",
+
+    "kf_message": "<player> <finally> <event> <victim>`i <with> <weapon>",
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> taastab <amount> <type>",
     "tt_reduces": "<item> vähendab saadud kahju <percent>% võrra",

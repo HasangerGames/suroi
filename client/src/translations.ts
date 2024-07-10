@@ -22,7 +22,7 @@ import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
 import { CANTONESE_TRANSLATIONS } from "./translations/cantonese";
 import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
-import { DRUNKGLISH_TRANSLATIONS } from "./translations/drunkglish";
+import { ROMANIAN_TRANSLATIONS } from "./translations/romanian";
 
 export type TranslationMap = Record<
     string,
@@ -48,7 +48,8 @@ export const TRANSLATIONS = {
         fr: FRENCH_TRANSLATIONS,
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
-        zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
+        ro: ROMANIAN_TRANSLATIONS,
+        zh: CHINESE_SIMPLIFIED_TRANSLATIONS,
         tw: CHINESE_TRADITIONAL_TRANSLATIONS,
         hk_mo: CANTONESE_TRANSLATIONS,
         jp: JAPANESE_TRANSLATIONS,
@@ -61,10 +62,9 @@ export const TRANSLATIONS = {
         lt: LITHUANIAN_TRANSLATIONS,
         hp18: {
             name: "HP-18",
-            flag: "<img height=\"20\" src=\"./img/game/weapons/hp18.svg\" />"
+            flag: "<img height=\"20\" src=\"./img/killfeed/hp18_killfeed.svg\" />"
         },
-        qen: CUTE_ENGWISH_TRANSLATIONS,
-        den: DRUNKGLISH_TRANSLATIONS
+        qen: CUTE_ENGWISH_TRANSLATIONS
     }
 } as {
     get defaultLanguage(): string
@@ -112,10 +112,10 @@ export function getTranslatedString(key: string, replacements?: Record<string, s
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
     } catch (_) {
-        foundTranslation = "";
+        foundTranslation = "no translation found";
     }
 
-    if (!foundTranslation) return key;
+    if (foundTranslation === "no translation found") return key;
 
     if (foundTranslation instanceof Function) {
         return foundTranslation(replacements ?? {});
@@ -187,15 +187,6 @@ function translateCurrentDOM(): void {
 
         debugTranslationCounter++;
     });
-
-    if (language !== "en") { // temporary until we translate killfeed
-        const shutUpEsLint = document.getElementById("toggle-text-kill-feed-option");
-
-        if (shutUpEsLint) {
-            const pepedls = shutUpEsLint.innerHTML;
-            shutUpEsLint.innerHTML = `<i class="fa-solid fa-lock"></i> ${pepedls}`;
-        }
-    }
 
     if (printTranslationDebug) {
         console.log("Translated", debugTranslationCounter, "strings");

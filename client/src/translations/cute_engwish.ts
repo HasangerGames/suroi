@@ -4,7 +4,7 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "name": "Cute Engwish",
     "flag": "🎀",
 
-    "msg_rotate": "Fow a bettew expewience, pwease wotate youw device to wandscape. UwU",
+    "msg_rotate": "Fow a bettew expewience, pwease wotate your device to wandscape. UwU",
     "msg_loading": "Connectwing >w<",
     "msg_err_joining": "Ewwow joining game. OwO",
     "msg_err_finding": "Ewwow finding game. OwO",
@@ -187,8 +187,6 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> died of cwinge OwO",
     "kf_suicide_down": "<player> knocked themselves out",
-    "kf_two_party_kill": "<player> kwilled <victim>",
-    "kf_two_party_down": "<player> knocked out <victim>",
     "kf_bleed_out_kill": "<player> bwed out",
     "kf_bleed_out_down": "<player bwed out non-lethawwy",
     "kf_finished_off_kill": "<player> fwinished off <victim>",
@@ -200,6 +198,28 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "kf_gas_kill": "<player> died to the gas",
     "kf_gas_down": "<player> was kwnocked out by the gas",
     "kf_airdrop_kill": "<player> was siwently crushed by an airdwop",
+
+    // ------------------------------------------------------------------
+    "finally": "fwinally",
+    "with": "with",
+
+    // Kill modal only
+    "you": "You",
+    "yourself": "yourself",
+    "km_killed": "kwilled",
+    "km_knocked": "kwnocked out",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "kwilled",
+    "kf_knocked": "kwnocked out",
+    "kf_finished_off": "fwinished off",
+    "themselves": "themselves",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
     "kf_airdrop_down": "<player> was knocked out by an airdwop",
     "kf_kl_promotion": "<player> is pwomoted to the Kwill Weader!",
     "kf_kl_killed": "<player> killed the Kwill Weader",
@@ -269,6 +289,8 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steewfang",
     "ice_pick": "Ice Pick",
     "seax": "Sex",
+    "crowbar": "Cwowbar",
+    "sickle": "Sickwle",
 
     "mosin": "Mosin-Nagant",
     "radio": "Wadio",

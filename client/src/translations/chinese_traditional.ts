@@ -267,6 +267,8 @@ export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
     "steelfang": "鋼牙刀",
     "ice_pick": "冰鎬",
     "seax": "西克斯劍",
+    "crowbar": "撬棍",
+    "sickle": "鐮刀",
 
     "mosin": "莫辛納甘", // 槍械
     "radio": "無線電通訊機",

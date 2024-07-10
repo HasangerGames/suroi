@@ -206,6 +206,27 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "击杀领袖死了！",
     "kf_kl_suicide": "击杀领袖自杀了！",
 
+    // ------------------------------------------------------------------
+    "finally": "最终",
+    "with": "用",
+
+    // Kill modal only
+    "you": "你",
+    "yourself": "自己",
+    "km_killed": "击杀了",
+    "km_knocked": "击倒了",
+
+    "km_message": "<you><finally><with><weapon><event> <victim>",
+
+    // Killfeed.
+    "kf_killed": "击杀了",
+    "kf_knocked": "击倒了",
+    "kf_finished_off": "解决了",
+    "themselves": "自己",
+
+    "kf_message": "<player><finally><with><weapon><event><victim>",
+    // ------------------------------------------------------------------
+
     "tt_restores": "<item>恢复<amount><type>",
     "tt_reduces": "<item>减少<percent>%受到伤害",
 

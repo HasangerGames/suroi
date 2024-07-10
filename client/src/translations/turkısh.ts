@@ -205,6 +205,27 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "Öldürme Lideri Öldü!",
     "kf_kl_suicide": "Öldürme lideri kendini öldürdü!",
 
+    // ------------------------------------------------------------------
+    "finally": "sonunda",
+    "with": "ile",
+
+    // Kill modal only
+    "you": "Sen",
+    "yourself": "Kendin",
+    "km_killed": "öldürdün",
+    "km_knocked": "bayılttın",
+
+    "km_message": "<you> <victim> <finally> <weapon> <with> <event>",
+
+    // Killfeed.
+    "kf_killed": "öldürdü",
+    "kf_knocked": "bayılttı",
+    "kf_finished_off": "işini bitirdi",
+    "themselves": "kendilerinin",
+
+    "kf_message": "<player> <finally> <victim>'i <weapon> <with> <event>",
+    // ------------------------------------------------------------------
+
     "tt_restores": "<item> yeniler <amount> <type>",
     "tt_reduces": "<item> azaltır <percent>% damage",
 

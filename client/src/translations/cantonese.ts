@@ -6,8 +6,11 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
 
     "msg_rotate": "請將設備調成橫向嚟提升你嘅遊戲體驗。",
     "msg_loading": "連接梗",
-    "msg_err_joining": "入隊嘅時候出錯。",
-    "msg_err_finding": "揾隊伍嘅時候出錯。",
+    "msg_err_joining": "加入出錯。",
+    "msg_err_finding": "尋找出錯。",
+    "msg_spectating": "睇梗人哋",
+    "msg_enter_team_code": "打隊伍代碼",
+    "msg_lost_team_connection": "同隊伍失去連接",
     "msg_try_again": "請重試。",
     "msg_warning": "警告！",
     "msg_warning_msg": "你已經被警告，因為：<reason>",
@@ -19,9 +22,9 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
 
     "play_solo": "單機",
     "play_duo": "雙人",
-    "play_squad": "組隊",
-    "join_team": "入隊",
-    "msg_locked_tooltip": "因為唔夠人同時支撐唔同模式嘅Server, 遊戲會每日之間來回切換單機Mode同雙人Mode",
+    "play_squad": "四人",
+    "join_team": "加入隊伍",
+    "msg_locked_tooltip": "因為唔夠人同時支撐唔同模式嘅Server, 所以遊戲會每日之間來回切換單機Mode同雙人Mode",
     "rules_and_tutorial": "規則/教學",
     "news": "最新消息",
     "loadout": "倉庫",
@@ -36,12 +39,12 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "adrenaline": "腎上腺素",
 
     "settings_volume": "聲音",
-    "settings_keybinds": "鍵盤掣嘅位置",
+    "settings_keybinds": "自定義操作",
     "settings_graphics": "圖形",
     "settings_interface": "界面",
     "settings_save_load": "儲存/加載",
     "settings_mobile": "觸碰",
-    "settings_require_reload": "* 需要刷新網頁先致可以改呢啲設定",
+    "settings_require_reload": "* 需要重開網站先致可以更改到呢個設定",
     "settings_performance_warning": "* 呢個設定可能喺部分設備上出現問題。如果你加入唔到遊戲，試吓停用呢個設定。",
 
     "settings_master_volume": "主音量",
@@ -59,7 +62,7 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "settings_responsive_rotation": "響應式旋轉",
     "settings_camera_shake": "畫面抖動",
 
-    "settings_interface_scale": "界面縮放",
+    "settings_interface_scale": "界面大細",
     "settings_minimap_opacity": "細地圖可見度",
     "settings_fs_map_opacity": "主要地圖可見度",
     "settings_hide_minimap": "隱藏張細地圖",
@@ -95,17 +98,17 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "loadout_crosshairs_default": "預設",
     "loadout_crosshairs_size": "大細：",
     "loadout_crosshairs_color": "顏色：",
-    "loadout_crosshairs_stroke_size": "描邊大細：",
-    "loadout_crosshairs_stroke_color": "描邊顏色：",
+    "loadout_crosshairs_stroke_size": "邊框大細：",
+    "loadout_crosshairs_stroke_color": "邊框顏色：",
 
-    "emotes_category_People": "人物",
-    "emotes_category_Text": "文字",
+    "emotes_category_People": "基本表情",
+    "emotes_category_Text": "文字訊息",
     "emotes_category_Memes": "MEME",
     "emotes_category_Icons": "標誌",
-    "emotes_category_Misc": "其他雜項",
+    "emotes_category_Misc": "其他",
 
-    "featured_youtubr": "特別推介Youtuber",
-    "featured_streamr": "特別推介Streamr",
+    "featured_youtubr": "特別推介Youtube",
+    "featured_streamr": "特別推介Twitch",
 
     "btn_report": "投訴",
     "btn_spectate_kill_leader": "擊殺隊長視角",
@@ -119,11 +122,11 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "msg_win": "大吉大利，今晚去KFC開Party食燒雞！",
     "msg_your_rank": "名次",
 
-    "msg_kills": "殺死<kills>",
+    "msg_kills": "殺咗<kills>個",
 
     "gas_waiting": "電網會喺<time>後擴大",
     "gas_advancing": "電網擴大梗！盡快移步到安全區域",
-    "gas_inactive": "等梗挽家…",
+    "gas_inactive": "等梗其他人……",
 
     "action_open_door": "開門",
     "action_close_door": "閂門",
@@ -138,15 +141,15 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "action_tablets_use": "食梗<item>",
 
     "interact_airdrop_crate_locked": "解開空投",
-    "interact_control_panel": "暗掣開機",
-    "interact_generator": "開着個發電機",
+    "interact_control_panel": "着個控制台",
+    "interact_generator": "着個發電機",
     "interact_button": "暗掣",
 
-    "loading_spritesheets": "Load梗個圖像<progress>",
+    "loading_spritesheets": "Load梗入去<progress>",
     "loading_connecting": "連接梗",
     "loading_joining_game": "入梗去",
-    "loading_fetching_data": "從服務器攞梗數據…",
-    "loading_finding_game": "揾梗進入方式",
+    "loading_fetching_data": "喺Server度攞梗數據……",
+    "loading_finding_game": "揾梗適合嘅Server",
 
     "keybind_clear_tooltip": "如果唔想要呢個快捷鍵，請暗一下所揀嘅嗰個快捷鍵然後暗<kbd>Escape鍵</kbd>或<kbd>Backspace鍵</kbd>。",
     "keybind_reset": "重設全部",
@@ -160,16 +163,16 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "bindings_slot 1": "轉到副武器",
     "bindings_slot 2": "轉到近戰武器",
     "bindings_equip_or_cycle_throwables 1": "轉到投擲武器",
-    "bindings_last_item": "裝備前一武器",
-    "bindings_other_weapon": "裝備主副武器",
-    "bindings_swap_gun_slots": "交換主副武器",
-    "bindings_cycle_items -1": "裝備上一個武器",
-    "bindings_cycle_items 1": "裝備下一個武器",
+    "bindings_last_item": "轉到上次使用的武器",
+    "bindings_other_weapon": "主副武器切換",
+    "bindings_swap_gun_slots": "互換主副武器位置",
+    "bindings_cycle_items -1": "轉到上一個武器",
+    "bindings_cycle_items 1": "轉到下一個武器",
     "bindings_+attack": "用武器",
     "bindings_drop": "掉低武器",
     "bindings_reload": "裝彈",
-    "bindings_cycle_scopes -1": "細一個倍鏡",
-    "bindings_cycle_scopes 1": "大一個倍鏡",
+    "bindings_cycle_scopes -1": "轉到上一個倍鏡",
+    "bindings_cycle_scopes 1": "轉到下一個倍鏡",
     "bindings_use_consumable gauze": "用繃帶",
     "bindings_use_consumable medikit": "用醫療包",
     "bindings_use_consumable cola": "飲汽水",
@@ -197,39 +200,60 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "kf_finally_down": "<player>最終被人Knockout咗",
     "kf_gas_kill": "<player>被電網電死",
     "kf_gas_down": "<player>被電網電親",
-    "kf_airdrop_kill": "<player>被空投壓死咗",
+    "kf_airdrop_kill": "<player>被空投壓死",
     "kf_airdrop_down": "<player>被空投壓親",
     "kf_kl_promotion": "<player>升級做擊殺隊長！",
     "kf_kl_killed": "<player>殺咗擊殺隊長",
     "kf_kl_dead": "擊殺隊長死咗！",
-    "kf_kl_suicide": "擊殺隊長諗唔開自殺咗",
+    "kf_kl_suicide": "擊殺隊長諗唔開自殺咗！",
 
-    "tt_restores": "<item>恢復<amount><type>",
-    "tt_reduces": "<item>減少<percent>%受到傷害",
+    // ------------------------------------------------------------------
+    "finally": "最终",
+    "with": "用",
+
+    // Kill modal only
+    "you": "你",
+    "yourself": "自己",
+    "km_killed": "殺死咗",
+    "km_knocked": "Knockdown咗",
+
+    "km_message": "<you><finally><with><weapon><event><victim>",
+
+    // Killfeed.
+    "kf_killed": "殺死咗",
+    "kf_knocked": "Knockdown咗",
+    "kf_finished_off": "搞掂咗",
+    "themselves": "佢自己",
+
+    "kf_message": "<player><finally><with><weapon><event><victim>",
+    // ------------------------------------------------------------------
+
+    "tt_restores": "<item>加<amount><type>",
+    "tt_reduces": "<item>減少<percent>%嘅傷害",
 
     "go_kills": "擊殺人數：",
     "go_damage_done": "造成傷害：",
     "go_damage_taken": "受到傷害：",
     "go_time_alive": "生存時間：",
 
-    "create_team": "整個隊伍",
+    "create_team": "創立隊伍",
     "create_team_autofill": "自動填充隊友",
     "create_team_lock": "Lock住個隊",
-    "create_team_waiting": "等梗",
+    "create_team_waiting": "等梗隊長開始……",
     "create_team_play": "開始遊戲",
 
     "report_reporting": "投訴",
     "report_id": "投訴ID：",
     "report_instructions": `
-      <p><strong>請依照下面嘅說明操作！</strong>如果唔係嘅話你嘅投訴會唔受理。</p>
-      <h4>點樣投訴</h4>
-      <ol>
-        <li>加入<a href="https://discord.suroi.io">Discord Server. </a></li>
-        <li>去<a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
-            頻道。</a></li>
-        <li>瞭解置頂帖嘅投訴方式。</li>
-        <li>以帖子嘅方式嚟提交你嘅投訴。</li>
-      </ol>`,
+    <p><strong>請依照下面嘅說明操作！</strong>如果唔係嘅話你嘅投訴唔會受理。</p>
+    <h4>點樣投訴</h4>
+    <ol>
+      <li>加入<a href="https://discord.suroi.io">Discord Server. </a></li>
+      <li>去<a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
+          頻道。</a></li>
+      <li>瞭解置頂帖嘅投訴方式。</li>
+      <li>以帖子嘅方式嚟提交你嘅投訴。</li>
+    </ol>`,
 
     "languages": "語言",
 
@@ -252,12 +276,13 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "tactical_pack": "三級背",
 
     "1x_scope": "普通視角", // 呢個唔應該應該出現喺遊戲入面
-    "2x_scope": "二倍鏡",
+    "2x_scope": "兩倍鏡",
     "4x_scope": "四倍鏡",
     "8x_scope": "八倍鏡",
     "15x_scope": "十五倍鏡",
 
-    "fists": "拳頭", // 近戰武器
+    // 近戰武器
+    "fists": "拳頭",
     "baseball_bat": "棒球棍",
     "hatchet": "斧頭",
     "kbar": "KBar軍刀",
@@ -267,12 +292,52 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "steelfang": "鋼牙刀",
     "ice_pick": "冰鎬",
     "seax": "Seax匕首",
+    "sickle": "鐮刀",
+    "crowbar": "鐵撬",
 
     "radio": "對講機", // 槍械
     "lewis_gun": "Lewis輕機槍",
     "deathray": "雷射槍",
+    "mosin": "Mosin-Nagant狙擊槍",
+    "cz600": "CZ-600狙擊槍",
+    "firework_launcher": "逼擊炮",
+    "arena_closer": "核子武器",
+    "revitalizer": "血量控制之槍",
+    "s_g17": "G17手槍(裝咗倍鏡)",
+    "vss": "VSS精確射手步槍",
+    "sr25": "SR-25精確射手步槍",
+    "pp19": "PP-19衝鋒槍(裝咗消音器)",
+    "micro_uzi": "UZI衝鋒槍",
+    "vector": "Vector衝鋒槍",
+    "saf_200": "SAF-200衝鋒槍",
+    "mp40": "MP-40衝鋒槍",
+    "vepr12": "Vepr-12霰彈槍",
+    "flues": "雙管霰彈槍",
+    "hp18": "HP-18霰彈槍",
+    "model_37": "Model 37霰彈槍",
+    "usas12": "USAS-12霰彈槍",
+    "m3k": "M3K霰彈槍",
+    "m1895": "M1895左輪",
+    "g19": "G19手槍",
+    "cz75a": "CZ75A手槍",
+    "ak47": "AK-47突擊步槍",
+    "acr": "ACR突擊步槍(裝咗消音器)",
+    "aug": "AUG突擊步槍",
+    "m16a4": "M16A4突擊步槍",
+    "arx160": "ARX-160突擊步槍",
+    "mg36": "MG-36突擊步槍",
+    "mcx_spear": "MCX SPEAR突擊步槍",
+    "mini14": "Mini-14精確射手步槍",
+    "model_89": "Model 89狙擊槍",
+    "negev": "Negev輕機槍",
+    "mg5": "MG5輕機槍",
+    "tango_51": "Tango 51狙擊槍",
+    "barrett": "Barrett M95狙擊槍",
+    "stoner_63": "Stoner 63輕機槍",
+    "m1_garand": "M1 Garand卡賓槍",
 
-    "frag_grenade": "手榴彈", // 投擲物
+    // 投擲物
+    "frag_grenade": "手榴彈",
     "smoke_grenade": "煙彈",
     "confetti_grenade": "煙火彈",
 
@@ -285,45 +350,4 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "region_eu": "歐洲",
     "region_sa": "南美",
     "region_as": "亞洲"
-
-    // 服裝名稱
-    /* "HAZEL Jumpsuit": "榛色"
-    "The Amateur": "業餘裝"
-    "The Pro": "專業裝"
-    "Forest Camo": "綠色迷彩"
-    "Desert Camo": "沙漠迷彩"
-    "Arctic Camo": "白色迷彩"
-    "Bloodlust": "血紅迷彩"
-    "Tomato": "紅色"
-    "Greenhorn": "淺綠色"
-    "Blue Blood": "藍色"
-    "Silver Lining": "白漸變"
-    "Pot o' Gold": "金漸變"
-    "Gunmetal": "青銅"
-    "Algee": "海草"
-    "Twilight Zone": "藍海水"
-    "Bubblegum": "粉紅泡泡糖"
-    "Sunrise": "日出色"
-    "Sunset": "夕陽色"
-    "Stratosphere": "大氣漸變"
-    "Mango": "芒果色"
-    "Snow Cone": "雪紅"
-    "Aquatic": "水藍漸變"
-    "Floral": "繽紛"
-    "Sunny": "晴之裝"
-    "Volcanic": "烈火雄心"
-    "Ashfall": "冰心體"
-    "Solar Flare": "光斑"
-    "Beacon": "光圈"
-    "Wave Jumpsuit": "黃棕漸變"
-    "Toadstool": "紅蘑菇"
-    "Full Moon": "月球坑"
-    "Swiss Cheese": "芝士"
-    "Target Practice": "標靶人"
-    "Zebra": "斑馬"
-    "Tiger": "老虎"
-    "Bee": "蜜蜂"
-    "Armadillo": "犰狳"
-    "Printer": "影印機"
-    "Distant shores": "海灘" */
 };

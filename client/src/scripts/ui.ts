@@ -127,19 +127,25 @@ export async function setUpUI(game: Game): Promise<void> {
         $("#select-language-menu").css("display", "none");
     });
 
-    // temporary until we translate killfeed
-    if (game.console.getBuiltInCVar("cv_language") !== "en") {
-        $("#toggle-text-kill-feed-option").addClass("modal-locked");
-        game.console.setBuiltInCVar("cv_killfeed_style", "icon");
-    }
-
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
-        const percentage = (Object.values(languageInfo).length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
+        // Make sure we do not count the same values.
+        let filtered = Object.values(languageInfo);
+        if (!["en", "hp18"].includes(language)) {
+            for (const key of Object.keys(languageInfo)) {
+                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key]) {
+                    filtered = filtered.filter(translationString => {
+                        return translationString !== TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key];
+                    });
+                }
+            }
+        }
+
+        const percentage = (filtered.length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
         languageFieldset.append(html`
             <div>
               <input type="radio" name="selected-language" id="language-${language}" value="${language}">
-              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
+              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${language === "qen" ? "OwO" : languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
             </div>
         `);
 
@@ -272,7 +278,12 @@ export async function setUpUI(game: Game): Promise<void> {
             selectedRegion = regionInfo[Config.defaultRegion];
             game.console.setBuiltInCVar("cv_region", "");
         }
-        serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
+
+        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`) === "region_") {
+            serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
+        } else {
+            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
+        }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
