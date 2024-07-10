@@ -36,6 +36,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "quit": "Выйти",
     "none": "Никакой",
     "copy": "Копировать",
+    "copied": "Скопировано",
 
     "health": "здоровья",
     "adrenaline": "адреналина",
