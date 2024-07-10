@@ -419,6 +419,10 @@
 
             &.no-spaces {
                 display: block;
+
+                img {
+                    vertical-align: middle;
+                }
             }
         }
     }
