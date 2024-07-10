@@ -8,6 +8,10 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Đang Kết Nối",
     "msg_err_joining": "Lỗi khi tham gia trò chơi.",
     "msg_err_finding": "Lỗi khi tìm trò chơi.",
+    "msg_spectating": "Đang Theo Dõi",
+    "msg_enter_team_code": "Nhập mã nhóm:",
+    "msg_lost_team_connection": "Mất kết nối tới nhóm.",
+    "msg_error_joining_team": "Lỗi gia nhập nhóm.<br>Nhóm đã nhập không tồn tại hoặc đã đầy.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Vui lòng thử lại.",
     "msg_warning": "Bạn đã bị cảnh báo!",
     "msg_warning_msg": "Bạn đã nhận được cảnh báo từ người điều hành trò chơi với lí do: <reason>",
@@ -188,26 +192,51 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> đã tự sát",
     "kf_suicide_down": "<player> đã hạ gục chính họ",
-    "kf_two_party_kill": "<player> đã kêt liễu <victim>",
-    "kf_two_party_down": "<player> đã hạ gục <victim>",
+
     "kf_bleed_out_kill": "<player> chảy máu đến chết",
     "kf_bleed_out_down": "<player> chảy máu đến gục",
+
     "kf_finished_off_kill": "<player> cuối cùng đã kết liễu <victim>",
     "kf_finished_off_down": "<player> cuối cùng đã hạ gục <victim>",
+
     "kf_finally_died": "<player> cuối cùng đã bị kết liễu",
     "kf_finally_ended_themselves": "<player> cuối cùng đã kết liễu chính họ",
+
     "kf_finally_killed": "<player> cuối cùng đã bị kết liễu",
     "kf_finally_down": "<player> cuối cùng đã hạ gục",
+
     "kf_gas_kill": "<player> đã bị kết liễu bởi vòng bo",
     "kf_gas_down": "<player> đã bị hạ gục bởi vòng bo",
+
     "kf_airdrop_kill": "<player> đã bị nghiền nát bởi airdrop",
     "kf_airdrop_down": "<player> đã bị hạ gục bởi airdrop",
+
+    // ------------------------------------------------------------------
+    "finally": "cuối cùng đã",
+    "with": "với",
+
+    // Kill modal only
+    "you": "Bạn",
+    "yourself": "chính bạn",
+    "km_killed": "đã kết liễu",
+    "km_knocked": "đã hạ gục",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "đã kết liễu",
+    "kf_knocked": "đã hạ gục",
+    "kf_finished_off": "kết liễu",
+    "themselves": "chính họ",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
+    // Kill Leader stuff
     "kf_kl_promotion": "<player> đã được thăng lên làm Kill Leader!",
     "kf_kl_killed": "<player> đã kết liễu Kill Leader",
     "kf_kl_dead": "Kill Leader đã bị giết!",
     "kf_kl_suicide": "Kill Leader đã tự sát!",
-    "kf_you_killed": "Bạn đã kết liễu <player>",
-    "kf_you_downed": "Bạn đã hạ gục <player>",
 
     "tt_restores": "<item> hồi <amount> <type>",
     "tt_reduces": "<item> giảm <percent>% sát thương nhận",
@@ -226,15 +255,15 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Đang Báo Cáo",
     "report_id": "ID Báo Cáo:",
     "report_instructions": `
-    <p><strong>Hãy làm theo những hướng dẫn dưới đây!</strong> Nếu không, báo cáo của bạn sẽ không có hiệu lực.</p>
-    <h4>Cách làm Báo Báo</h4>
-    <ol>
-      <li>Gia nhập <a href="https://discord.suroi.io">server Discord.</a></li>
-      <li>Vào kênh <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+      <p><strong>Hãy làm theo những hướng dẫn dưới đây!</strong> Nếu không, báo cáo của bạn sẽ không có hiệu lực.</p>
+      <h4>Cách làm Báo Báo</h4>
+      <ol>
+        <li>Gia nhập <a href="https://discord.suroi.io">server Discord.</a></li>
+        <li>Vào kênh <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
 </a></li>
-      <li>Đọc quy tắc báo cáo ở bài viết được ghim.</li>
-      <li>Gửi báo cáo của bạn dưới dạng bài viết.</li>
-    </ol>`,
+        <li>Đọc quy tắc báo cáo ở bài viết được ghim.</li>
+        <li>Gửi báo cáo của bạn dưới dạng bài viết.</li>
+      </ol>`,
 
     "languages": "Ngôn ngữ",
 
@@ -278,25 +307,41 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "mosin": "Mosin-Nagant",
     "radio": "Radio",
     "lewis_gun": "Súng máy Lewis",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
     "deathray": "Tia Tử Thần",
+    "usas12": "USAS-12",
     "firework_launcher": "Súng Phóng Pháo Hoa",
     "arena_closer": "Kẻ Hủy Diệt Thế Giới",
     "revitalizer": "Súng Hồi Sinh",
     "s_g17": "G17 (Ống Ngắm)",
-    /* "vss": 'VSS',
+    "vss": "VSS",
+    "aug": "AUG",
     "pp19": "PP-19",
     "vepr12": "Vepr-12",
     "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
     "m1895": "M1895",
     "ak47": "AK-47",
     "vector": "Vector",
     "mini14": "Mini-14",
+    "model_37": "Model 37",
     "model_89": "Model 89",
     "negev": "Negev",
+    "sr25": "SR-25",
     "tango_51": "Tango 51",
     "barrett": "Barrett M95",
     "stoner_63": "Stoner 63",
-    "m1_garand": "M1 Garand", */
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     "frag_grenade": "Lựu Đạn",
     "smoke_grenade": "Bom Khói",
