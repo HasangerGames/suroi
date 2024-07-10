@@ -24,6 +24,7 @@ import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import type { ArmorDefinition } from "../../../common/src/definitions/armors";
+import { Guns } from "../../../common/src/definitions/guns";
 
 /*
     eslint-disable
@@ -131,9 +132,16 @@ export async function setUpUI(game: Game): Promise<void> {
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
         // Make sure we do not count the same values.
         let filtered = Object.values(languageInfo);
+
+        const gunStrings: string[] = [];
+        Guns.definitions.forEach(gun => {
+            gunStrings.push(gun.idString);
+        });
+
         if (!["en", "hp18"].includes(language)) {
             for (const key of Object.keys(languageInfo)) {
-                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key]) {
+                // Do not count guns or same strings (which are guns most of the time)
+                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key] && gunStrings.includes((languageInfo[key] as string))) {
                     filtered = filtered.filter(translationString => {
                         return translationString !== TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key];
                     });
@@ -145,7 +153,7 @@ export async function setUpUI(game: Game): Promise<void> {
         languageFieldset.append(html`
             <div>
               <input type="radio" name="selected-language" id="language-${language}" value="${language}">
-              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${language === "qen" ? "OwO" : languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
+              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${language === "den" ? "001" : language === "qen" ? "OwO" : languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
             </div>
         `);
 
