@@ -31,6 +31,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "quit": "Çık",
     "none": "Hiçbiri",
     "copy": "Kopyala",
+    "copied": "Kopyalandı",
 
     "health": "Can",
     "adrenaline": "Adrenalin",
