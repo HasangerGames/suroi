@@ -6,6 +6,10 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
     "msg_loading": "Bağlanılıyor",
+    "msg_spectating": "İzleniyor",
+    "msg_enter_team_code": "Takım kodu gir:",
+    "msg_lost_team_connection": "Takımla bağlantı kaybedildi.",
+    "msg_error_joining_team": "Takıma katılma hatası.<br>takım mevcut olmayabilir veya dolu olabilir.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_err_joining": "Oyuna katılma hatası.",
     "msg_err_finding": "Oyun bulma hatası.",
     "msg_try_again": "Lütfen yeniden deneyin.",
@@ -187,8 +191,6 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> intihar etti",
     "kf_suicide_down": "<player> kendini bayılttı",
-    "kf_two_party_kill": "<player> öldürdü <victim>",
-    "kf_two_party_down": "<player> bayılttı <victim>",
     "kf_bleed_out_kill": "<player> kanayarak öldü",
     "kf_bleed_out_down": "<player kanayarak bayıldı",
     "kf_finished_off_kill": "<player> işini bitirdi <victim>",
