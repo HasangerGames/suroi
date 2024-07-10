@@ -23,6 +23,7 @@ import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
 import { CANTONESE_TRANSLATIONS } from "./translations/cantonese";
 import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
 import { ROMANIAN_TRANSLATIONS } from "./translations/romanian";
+import { DRUNKGLISH_TRANSLATIONS } from "./translations/drunkglish";
 
 export type TranslationMap = Record<
     string,
@@ -64,7 +65,8 @@ export const TRANSLATIONS = {
             name: "HP-18",
             flag: "<img height=\"20\" src=\"./img/killfeed/hp18_killfeed.svg\" />"
         },
-        qen: CUTE_ENGWISH_TRANSLATIONS
+        qen: CUTE_ENGWISH_TRANSLATIONS,
+        den: DRUNKGLISH_TRANSLATIONS
     }
 } as {
     get defaultLanguage(): string
