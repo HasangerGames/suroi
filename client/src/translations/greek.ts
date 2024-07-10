@@ -31,6 +31,7 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "quit": "Εγκατάλειψη",
     "none": "Κανένα",
     "copy": "Αντιγραφή",
+    "copied": "Αντιγράφθηκε",
 
     "health": "ζωή",
     "adrenaline": "αδρεναλίνη",
