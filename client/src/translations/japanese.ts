@@ -8,6 +8,10 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "msg_loading": "接続中",
     "msg_err_joining": "ゲームへの参加中にエラーが発生しました。",
     "msg_err_finding": "ゲームが見つかりませんでした。",
+    "msg_spectating": "観戦中",
+    "msg_enter_team_code": "ここにチームコードを入力します:",
+    "msg_lost_team_connection": "チームとの接続が失われました。",
+    "msg_error_joining_team": "チームへの参加中にエラーが発生しました。<br>存在しないか、いっぱいである可能性があります。", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "もう一度試してください。",
     "msg_warning": "あなたは警告を受けました！",
     "msg_warning_msg": "あなたは次の理由で警告されましたため: <reason>",
@@ -31,6 +35,7 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "quit": "見切り",
     "none": "なし",
     "copy": "コピー",
+    "copied": "コピーしました。",
 
     "health": "健康",
     "adrenaline": "アドレナリン",
@@ -185,24 +190,51 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "bindings_toggle_console": "コンソールの切り替え",
     "bindings_toggle_slot_lock": "スロットロックの切り替え",
 
-    "kf_suicide_kill": "<player> は自殺しました",
-    "kf_suicide_down": "<player> は自身を気絶しました",
-    "kf_two_party_kill": "<player> は倒しました <victim>",
-    "kf_two_party_down": "<player> は気絶しました <victim>",
-    "kf_bleed_out_kill": "<player> は出血しました",
-    "kf_bleed_out_down": "<player> は出血しました",
-    "kf_finished_off_kill": "<player> は倒しました <victim>",
-    "kf_finished_off_down": "<player> は倒しました <victim>",
-    "kf_finally_died": "<player> はついに死にました",
-    "kf_finally_ended_themselves": "<player> はついに自ら命を絶ちました",
-    "kf_finally_killed": "<player> はついに殺された",
-    "kf_finally_down": "<player> はついに気絶した",
-    "kf_gas_kill": "<player> は気絶しましたでガス",
-    "kf_gas_down": "<player> は死亡しましたでガス",
-    "kf_airdrop_kill": "<player> は空中投下によって致命的に潰されました",
-    "kf_airdrop_down": "<player> はエアドロップで気絶しました",
-    "kf_kl_promotion": "<player> はキルリーダーになりました!",
-    "kf_kl_killed": "<player> はキルリーダーがを殺した",
+    "kf_suicide_kill": "<player>は自殺しました",
+    "kf_suicide_down": "<player>は自身を気絶しました",
+
+    "kf_bleed_out_kill": "<player>は出血しました",
+    "kf_bleed_out_down": "<player>は出血しました",
+
+    "kf_finished_off_kill": "<player>は倒しました<victim>",
+    "kf_finished_off_down": "<player>は倒しました<victim>",
+
+    "kf_finally_died": "<player>はついに死にました",
+    "kf_finally_ended_themselves": "<player>はついに自ら命を絶ちました",
+
+    "kf_finally_killed": "<player>はついに殺された",
+    "kf_finally_down": "<player>はついに気絶した",
+
+    "kf_gas_kill": "<player>は気絶しましたでガス",
+    "kf_gas_down": "<player>は死亡しましたでガス",
+
+    "kf_airdrop_kill": "<player>は空中投下によって致命的に潰されました",
+    "kf_airdrop_down": "<player>は空中投下で気絶しました",
+
+    // ------------------------------------------------------------------
+    "finally": "遂に",
+    "with": "で",
+
+    // Kill modal only
+    "you": "あなたは",
+    "yourself": "あなた自身",
+    "km_killed": "は倒しました",
+    "km_knocked": "は気絶しました",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "は倒しました",
+    "kf_knocked": "は気絶しました",
+    "kf_finished_off": "は倒しました",
+    "themselves": "彼ら自身",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
+    // Kill Leader stuff
+    "kf_kl_promotion": "<player>はキルリーダーになりました!",
+    "kf_kl_killed": "<player>はキルリーダーがを殺した.",
     "kf_kl_dead": "キルリーダーが死亡しました!",
     "kf_kl_suicide": "キルリーダーが自殺しました!",
 
@@ -223,15 +255,15 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "report_reporting": "あなたは報告しています:",
     "report_id": "報告ID:",
     "report_instructions": `
-      <p><strong>以下の手順に従ってください。</strong> そうしないと、レポートは無視されます。</p>
-      <h4>レポートの提出方法</h4>
-      <ol>
-        <li><a href="https://discord.suroi.io">Discordサーバー</a>に参加します。</li>
-        <li><a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
-            チャンネル</a>に移動します。</li>
-        <li>固定された投稿にあるレポートのガイドラインをお読みください。</li>
-        <li>レポートを投稿として送信します。</li>
-      </ol>`,
+    <p><strong>以下の手順に従ってください。</strong> そうしないと、レポートは無視されます。</p>
+    <h4>レポートの提出方法</h4>
+    <ol>
+      <li><a href="https://discord.suroi.io">Discordサーバー</a>に参加します。</li>
+      <li><a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
+          チャンネル</a>に移動します。</li>
+      <li>固定された投稿にあるレポートのガイドラインをお読みください。</li>
+      <li>レポートを投稿として送信します。</li>
+    </ol>`,
 
     "languages": "言語",
 
@@ -265,19 +297,51 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "kbar": "K-bar",
     "maul": "つるはし",
     "gas_can": "ガソリン缶",
-    "heap_sword": "HE-AP 剣",
+    "heap_sword": "HE-AP剣",
     "steelfang": "スティールファング",
     "ice_pick": "氷のつるはし",
     "seax": "ナイフ",
+    "crowbar": "鉄棒",
+    "sickle": "鎌",
 
     "mosin": "モシン・ナガン",
     "radio": "無線",
     "lewis_gun": "ルイス銃",
-    "deathray": "デスレイ",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "deathray": "殺人光線",
+    "usas12": "USAS-12",
     "firework_launcher": "花火発射装置",
     "arena_closer": "世界の破壊者",
     "revitalizer": "リバイタライザー",
-    "s_g17": "G17 範囲指定",
+    "s_g17": "G17 (範囲指定)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     "frag_grenade": "フラググレネード",
     "smoke_grenade": "煙幕弾",
