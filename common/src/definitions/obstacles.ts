@@ -3070,7 +3070,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             transportTo: -1,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
+                RectangleHitbox.fromRect(10, 10, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"
