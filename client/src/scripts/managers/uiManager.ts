@@ -1206,6 +1206,17 @@ export class UIManager {
                                     with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
                                     weapon: fullyQualifiedName
                                 });
+
+                                // Turkish special condition ('i shouldn't appear in these messages)
+                                if (this.game.console.getBuiltInCVar("cv_language") === "tr") {
+                                    const splittedString = killMessage.split(" ");
+                                    for (let i = 0; i < splittedString.length; i++) { // we hope i >= 11 is away from player name
+                                        if (splittedString[i] === "'i" && i >= 11) {
+                                            killMessage = killMessage.replace(splittedString[i], "");
+                                            break; // no more
+                                        }
+                                    }
+                                }
                                 useSpecialSentence = true;
                                 break;
                             case KillfeedEventType.BleedOut:
