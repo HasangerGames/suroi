@@ -190,7 +190,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "bindings_toggle_console": "Konzol vált.",
     "bindings_toggle_slot_lock": "Slot zárás vált.",
 
-    "kf_suicide_kill": "<player> öngyilkos lett",
+    "kf_suicide_kill": "<player> megölte magát",
     "kf_suicide_down": "<player> kiütötte magát",
     "kf_bleed_out_kill": "<player> kivérzett",
     "kf_bleed_out_down": "<player> kivérzett nem halálosan",
@@ -216,18 +216,18 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     // Kill modal only
     "you": "",
     "yourself": "magadat",
-    "km_killed": "megölted",
-    "km_knocked": "kiütötted",
+    "km_killed": "megölted őt:",
+    "km_knocked": "kiütötted őt:",
 
-    "km_message": "<you><finally> <event> őt: <victim> <with> <weapon>",
+    "km_message": "<you><finally> <event> <victim> <with> <weapon>",
 
     // Killfeed.
-    "kf_killed": "megölte",
-    "kf_knocked": "kiütötte",
-    "kf_finished_off": "kivégezte",
+    "kf_killed": "megölte őt:",
+    "kf_knocked": "kiütötte őt:",
+    "kf_finished_off": "kivégezte őt:",
     "themselves": "magát",
 
-    "kf_message": "<player> <finally> <event> őt: <victim> <with> <weapon>",
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
     "tt_restores": "<item> visszatölt <amount> <type>-t",
@@ -247,15 +247,15 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Jelentése:",
     "report_id": "Jelentési azonosító:",
     "report_instructions": `
-      <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>
-      <h4>Hogyan kell Beküldeni egy Jelentést</h4>
-      <ol>
-        <li>Csatlakozz a <a href="https://discord.suroi.io">Discord szerverhez</a>!</li>
-        <li>Menj a <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            csatornához</a>!</li>
-        <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>
-        <li>Küldd be a jelentésedet posztként!</li>
-      </ol>`,
+    <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>
+    <h4>Hogyan kell Beküldeni egy Jelentést</h4>
+    <ol>
+      <li>Csatlakozz a <a href="https://discord.suroi.io">Discord szerverhez</a>!</li>
+      <li>Menj a <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          csatornához</a>!</li>
+      <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>
+      <li>Küldd be a jelentésedet posztként!</li>
+    </ol>`,
 
     "languages": "Nyelvek",
 
