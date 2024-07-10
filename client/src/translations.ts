@@ -22,6 +22,7 @@ import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
 import { CANTONESE_TRANSLATIONS } from "./translations/cantonese";
 import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
+import { ROMANIAN_TRANSLATIONS } from "./translations/romanian";
 
 export type TranslationMap = Record<
     string,
@@ -47,6 +48,7 @@ export const TRANSLATIONS = {
         fr: FRENCH_TRANSLATIONS,
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
+        ro: ROMANIAN_TRANSLATIONS,
         zh: CHINESE_SIMPLIFIED_TRANSLATIONS,
         tw: CHINESE_TRADITIONAL_TRANSLATIONS,
         hk_mo: CANTONESE_TRANSLATIONS,
