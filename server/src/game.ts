@@ -16,7 +16,7 @@ import { PacketStream } from "../../common/src/packets/packetStream";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type PingSerialization } from "../../common/src/packets/updatePacket";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
 import { Timeout } from "../../common/src/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
@@ -635,7 +635,7 @@ export class Game implements GameData {
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDead, { attackerId: killer?.id });
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -646,10 +646,25 @@ export class Game implements GameData {
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
     }
 
+    killLeaderDisconnected(leader: Player): void {
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
+        let newKillLeader: Player | undefined;
+        for (const player of this.livingPlayers) {
+            if (player === leader) continue;
+            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+                newKillLeader = player;
+            }
+        }
+        this._killLeader = newKillLeader;
+        if (this._killLeader != undefined) {
+            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
+        }
+    }
+
     private _sendKillLeaderKFPacket<
         Message extends
             | KillfeedMessageType.KillLeaderAssigned
-            | KillfeedMessageType.KillLeaderDead
+            | KillfeedMessageType.KillLeaderDeadOrDisconnected
             | KillfeedMessageType.KillLeaderUpdated
     >(
         messageType: Message,
@@ -842,6 +857,10 @@ export class Game implements GameData {
     }
 
     removePlayer(player: Player): void {
+        if (player === this.killLeader) {
+            this.killLeaderDisconnected(player);
+        }
+
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
@@ -1037,6 +1056,8 @@ export class Game implements GameData {
     }
 
     summonAirdrop(position: Vector): void {
+        const paddingFactor = 1.25;
+
         const crateDef = Obstacles.fromString("airdrop_crate_locked");
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
@@ -1051,51 +1072,78 @@ export class Game implements GameData {
             for (const airdrop of this.airdrops) {
                 thisHitbox = crateHitbox.transform(position);
                 const thatHitbox = (airdrop.type.spawnHitbox ?? airdrop.type.hitbox).transform(airdrop.position);
+                thatHitbox.scale(paddingFactor);
+
+                if (Vec.equals(thisHitbox.getCenter(), thatHitbox.getCenter())) {
+                    /*
+                        when dealing with airdrops exactly superimposed, the normal collision
+                        method makes them line up all in one direction; ideally, we'd want them
+                        to scatter around the original point. to influence the collider, we'll
+                        nudge one of the hitboxes
+                    */
+                    thisHitbox = thisHitbox.transform(Vec.fromPolar(randomRotation(), 0.01));
+                }
 
                 if (thisHitbox.collidesWith(thatHitbox)) {
                     collided = true;
                     thisHitbox.resolveCollision(thatHitbox);
                 }
                 position = thisHitbox.getCenter();
-                if (collided) break;
             }
 
             thisHitbox = crateHitbox.transform(position);
 
-            for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (
-                    object instanceof Obstacle
-                    && !object.dead
-                    && object.definition.indestructible
-                    && object.spawnHitbox.collidesWith(thisHitbox)
-                ) {
-                    collided = true;
-                    thisHitbox.resolveCollision(object.spawnHitbox);
+            {
+                const padded = thisHitbox.clone();
+                padded.scale(paddingFactor);
+                for (const object of this.grid.intersectsHitbox(padded)) {
+                    let hitbox: Hitbox;
+                    if (
+                        object instanceof Obstacle
+                        && !object.dead
+                        && object.definition.indestructible
+                        && ((hitbox = object.spawnHitbox.clone()).scale(paddingFactor), hitbox.collidesWith(thisHitbox))
+                    ) {
+                        collided = true;
+                        thisHitbox.resolveCollision(object.spawnHitbox);
+                    }
+                    position = thisHitbox.getCenter();
                 }
-                position = thisHitbox.getCenter();
             }
 
-            // second loop, buildings
-            for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (
-                    object instanceof Building
-                    && object.scopeHitbox
-                    && object.definition.wallsToDestroy === Infinity
-                ) {
-                    const hitbox = object.scopeHitbox.clone();
-                    hitbox.scale(1.5);
-                    if (!thisHitbox.collidesWith(hitbox)) continue;
-                    collided = true;
-                    thisHitbox.resolveCollision(object.scopeHitbox);
+            thisHitbox = crateHitbox.transform(position);
+
+            {
+                const padded = thisHitbox.clone();
+                padded.scale(paddingFactor);
+                // second loop, buildings
+                for (const object of this.grid.intersectsHitbox(thisHitbox)) {
+                    if (
+                        object instanceof Building
+                        && object.scopeHitbox
+                        && object.definition.wallsToDestroy === Infinity
+                    ) {
+                        const hitbox = object.scopeHitbox.clone();
+                        hitbox.scale(paddingFactor);
+                        if (!thisHitbox.collidesWith(hitbox)) continue;
+                        collided = true;
+                        thisHitbox.resolveCollision(object.scopeHitbox);
+                    }
+                    position = thisHitbox.getCenter();
                 }
-                position = thisHitbox.getCenter();
             }
+
+            thisHitbox = crateHitbox.transform(position);
 
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;
             const height = max.y - min.y;
             position.x = Numeric.clamp(position.x, width, this.map.width - width);
             position.y = Numeric.clamp(position.y, height, this.map.height - height);
+        }
+
+        if (attempts > 500) {
+            console.warn("Airdrop spawn position calculation exceeded 500 attempts");
         }
 
         const direction = randomRotation();

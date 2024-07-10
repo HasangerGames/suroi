@@ -130,8 +130,10 @@ export class InputManager {
             ...(
                 this.isMobile
                     ? {
-                        angle: this.movementAngle,
-                        moving: this.movement.moving
+                        mobile: {
+                            angle: this.movementAngle,
+                            moving: this.movement.moving
+                        }
                     }
                     : {}
             ),

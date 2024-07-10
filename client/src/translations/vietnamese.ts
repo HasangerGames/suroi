@@ -1,7 +1,7 @@
 import type { TranslationMap } from "../translations";
 
 export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
-    "name": "Vietnamese",
+    "name": "Tiếng Việt",
     "flag": "🇻🇳",
 
     "msg_rotate": "Để có trải nghiệm game tốt hơn, vui lòng xoay thiết bị của bạn sang ngang.",
@@ -31,6 +31,7 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "quit": "Rời Đi",
     "none": "Không có",
     "copy": "Sao Chép",
+    "copied": "Đã Sao Chép",
 
     "health": "máu",
     "adrenaline": "adrenaline",
@@ -197,7 +198,7 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "kf_finally_ended_themselves": "<player> cuối cùng đã kết liễu chính họ",
     "kf_finally_killed": "<player> cuối cùng đã bị kết liễu",
     "kf_finally_down": "<player> cuối cùng đã hạ gục",
-    "kf_gas_kill": "<player> đã bị giết bởi vòng bo",
+    "kf_gas_kill": "<player> đã bị kết liễu bởi vòng bo",
     "kf_gas_down": "<player> đã bị hạ gục bởi vòng bo",
     "kf_airdrop_kill": "<player> đã bị nghiền nát bởi airdrop",
     "kf_airdrop_down": "<player> đã bị hạ gục bởi airdrop",
@@ -205,6 +206,8 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> đã kết liễu Kill Leader",
     "kf_kl_dead": "Kill Leader đã bị giết!",
     "kf_kl_suicide": "Kill Leader đã tự sát!",
+    "kf_you_killed": "Bạn đã kết liễu <player>",
+    "kf_you_downed": "Bạn đã hạ gục <player>",
 
     "tt_restores": "<item> hồi <amount> <type>",
     "tt_reduces": "<item> giảm <percent>% sát thương nhận",
@@ -223,15 +226,15 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Đang Báo Cáo",
     "report_id": "ID Báo Cáo:",
     "report_instructions": `
-      <p><strong>Hãy làm theo những hướng dẫn dưới đây!</strong> Nếu không, báo cáo của bạn sẽ không có hiệu lực.</p>
-      <h4>Cách làm Báo Báo</h4>
-      <ol>
-        <li>Gia nhập <a href="https://discord.suroi.io">server Discord.</a></li>
-        <li>Vào kênh <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+    <p><strong>Hãy làm theo những hướng dẫn dưới đây!</strong> Nếu không, báo cáo của bạn sẽ không có hiệu lực.</p>
+    <h4>Cách làm Báo Báo</h4>
+    <ol>
+      <li>Gia nhập <a href="https://discord.suroi.io">server Discord.</a></li>
+      <li>Vào kênh <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
 </a></li>
-        <li>Đọc quy tắc báo cáo ở bài viết được ghim.</li>
-        <li>Gửi báo cáo của bạn dưới dạng bài viết.</li>
-      </ol>`,
+      <li>Đọc quy tắc báo cáo ở bài viết được ghim.</li>
+      <li>Gửi báo cáo của bạn dưới dạng bài viết.</li>
+    </ol>`,
 
     "languages": "Ngôn ngữ",
 
@@ -268,15 +271,43 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "heap_sword": "Kiếm Xuyên Giáp",
     "steelfang": "Karambit",
     "ice_pick": "Cuốc Băng",
-    "seax": "Dao Chiến",
+    "seax": "Đao",
+    "crowbar": "Crowbar",
+    "sickle": "Sickle",
+
+    "mosin": "Mosin-Nagant",
+    "radio": "Radio",
+    "lewis_gun": "Súng máy Lewis",
+    "deathray": "Tia Tử Thần",
+    "firework_launcher": "Súng Phóng Pháo Hoa",
+    "arena_closer": "Kẻ Hủy Diệt Thế Giới",
+    "revitalizer": "Súng Hồi Sinh",
+    "s_g17": "G17 (Ống Ngắm)",
+    /* "vss": 'VSS',
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand", */
 
     "frag_grenade": "Lựu Đạn",
     "smoke_grenade": "Bom Khói",
     "confetti_grenade": "Lựu Đạn Bông Giấy",
 
-    "radio": "Radio",
-    "deathray": "Tia Tử Thần",
-
     // For dual guns
-    "dual_template": "<gun> Đôi"
+    "dual_template": "<gun> Đôi",
+
+    "region_dev": "Mạng Cục Bộ",
+    "region_na": "Bắc Mỹ",
+    "region_eu": "Châu Âu",
+    "region_sa": "Nam Mỹ",
+    "region_as": "Châu Á"
 };

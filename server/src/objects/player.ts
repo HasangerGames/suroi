@@ -1030,6 +1030,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // killfeed messages
         const killLeader = game.killLeader;
 
+        packet.planes = game.planes;
+        packet.mapPings = [...game.mapPings, ...this._mapPings];
+        this._mapPings.length = 0;
+
+        // serialize and send update packet
+        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
+
         if (this._firstPacket && killLeader) {
             this._packets.push(KillFeedPacket.create({
                 messageType: KillfeedMessageType.KillLeaderAssigned,
@@ -1039,12 +1046,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }));
         }
 
-        packet.planes = game.planes;
-        packet.mapPings = [...game.mapPings, ...this._mapPings];
-        this._mapPings.length = 0;
-
-        // serialize and send update packet
-        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
         this._firstPacket = false;
 
         this._packetStream.stream.index = 0;

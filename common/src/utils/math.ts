@@ -233,7 +233,7 @@ export const Collision = Object.freeze({
         const y = centerA.y - centerB.y;
         const a2 = a * a;
         const xy = x * x + y * y;
-        return { collided: a2 > xy, distance: a2 - xy };
+        return { collided: a2 > xy, distance: xy - a2 };
     },
     /**
      * Determines the distance between a circle and a rectangle
@@ -593,11 +593,11 @@ export const Collision = Object.freeze({
         return xo > 0 && yo > 0
             ? xo > yo
                 ? {
-                    dir: Vec.create(Math.sign(n.x), 0),
+                    dir: Vec.create(Math.sign(n.x) || 1, 0),
                     pen: xo
                 }
                 : {
-                    dir: Vec.create(0, Math.sign(n.y)),
+                    dir: Vec.create(0, Math.sign(n.y) || 1),
                     pen: yo
                 }
             : null;

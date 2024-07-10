@@ -333,6 +333,8 @@ export class Minimap {
                             .setZIndex(definition.ceilingZIndex);
 
                         sprite.scale.set(1 / PIXI_SCALE);
+                        sprite.scale.x *= image.scale?.x ?? 1;
+                        sprite.scale.y *= image.scale?.y ?? 1;
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         mapRender.addChild(sprite);
                     }

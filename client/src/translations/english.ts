@@ -8,6 +8,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Connecting",
     "msg_err_joining": "Error joining game.",
     "msg_err_finding": "Error finding game.",
+    "msg_spectating": "Spectating",
+    "msg_enter_team_code": "Enter a team code:",
+    "msg_lost_team_connection": "Lost connection to team.",
+    "msg_error_joining_team": "Error joining team.<br>It may not exist or it is full.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Please try again.",
     "msg_warning": "You have been warned!",
     "msg_warning_msg": "You have received a warning by the moderators for reason: <reason>",
@@ -31,6 +35,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "quit": "Quit",
     "none": "None",
     "copy": "Copy",
+    "copied": "Copied",
 
     "health": "health",
     "adrenaline": "adrenaline",
@@ -206,9 +211,6 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "kf_kl_dead": "The Kill Leader is dead!",
     "kf_kl_suicide": "The Kill Leader killed themselves!",
 
-    "kf_finished_off_kill_2": "<player> was finished off", // TODO
-    "kf_finished_off_down_2": "<player> was gently finished off", // TODO
-
     "tt_restores": "<item> restores <amount> <type>",
     "tt_reduces": "<item> reduces <percent>% damage",
 
@@ -272,6 +274,8 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Ice Pick",
     "seax": "Seax",
+    "crowbar": "Crowbar",
+    "sickle": "Sickle",
 
     "mosin": "Mosin-Nagant",
     "radio": "Radio",
@@ -281,6 +285,20 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "arena_closer": "Destroyer Of Worlds",
     "revitalizer": "Revitalizer",
     "s_g17": "G17 (Scoped)",
+    "vss": "VSS",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
 
     "frag_grenade": "Frag Grenade",
     "smoke_grenade": "Smoke Grenade",

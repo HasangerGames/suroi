@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="836.52435"
-   height="1147.241"
-   viewBox="0 0 221.3304 303.54084"
+   width="418.26199"
+   height="573.62024"
+   viewBox="0 0 110.66515 151.77036"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    sodipodi:docname="sea_traffic_control_ceiling.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,11 +23,11 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="0.7376459"
-     inkscape:cx="160.64618"
-     inkscape:cy="532.09812"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
+     inkscape:zoom="0.26079721"
+     inkscape:cx="115.03191"
+     inkscape:cy="444.79004"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -38,10 +38,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-349.00243,-38.547889)">
+     transform="translate(-349.00243,-38.54789)">
     <g
        id="g1"
-       transform="rotate(90,459.66763,190.31831)">
+       transform="matrix(0,0.49999979,-0.49999979,0,499.49412,-115.40065)">
       <g
          id="g38787-5"
          transform="translate(377.84129,-553.73302)">

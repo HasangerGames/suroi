@@ -181,9 +181,15 @@
                 <ul class="dropdown-content" id="server-list"></ul>
               </div>
 
-              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo" translation="play_solo"></button>
+              <button class="btn btn-lg btn-darken btn-secondary" id="btn-play-solo">
+                <img class="btn-icon" width="24" height="24" src="./img/game/weapons/radio.svg">
+                <span translation="play_solo"></span>
+              </button>
               <div class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo" translation="play_duo"></button>
+                <button class="btn btn-lg btn-darken btn-secondary" id="btn-play-duo">
+                  <img class="btn-icon" width="24" height="24" src="./img/game/weapons/radio.svg">
+                  <span translation="play_duo"></span>
+                </button>
                 <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad" translation="play_squad"></button>
               </div>
               <div id="team-option-btns" class="team-btns-container">
@@ -480,7 +486,7 @@
         <div id="center-top-container">
           <div class="inventory-container" id="scopes-container"></div>
           <div id="spectating-msg">
-            Spectating <span id="spectating-msg-player"></span>
+            <spec translation="msg_spectating">Spectating</spec> <span id="spectating-msg-player"></span>
             <button id="btn-spectate-options" class="btn btn-lg btn-primary">
               <i id="btn-spectate-options-icon" class="fa-solid fa-eye-slash"></i>
             </button>
@@ -817,7 +823,7 @@
               <input type="checkbox" id="toggle-hide-emote">
             </label>
           </div>
-          <div class="modal-item checkbox-setting">
+          <div class="modal-item checkbox-setting" id="toggle-text-kill-feed-option">
             <label>
               <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
               <input type="checkbox" id="toggle-text-kill-feed">

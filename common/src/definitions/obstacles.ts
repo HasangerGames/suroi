@@ -3050,8 +3050,24 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             health: 1000,
             indestructible: true,
             isStair: true,
+            transportTo: 0,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "stair_middle",
+            name: "Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            isStair: true,
             transportTo: -1,
-            returnTo: 0,
             invisible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
@@ -3069,7 +3085,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             isStair: true,
             transportTo: -2,
-            returnTo: -1,
             invisible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))

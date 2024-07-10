@@ -175,6 +175,5 @@ export class Shockwave {
         this.game.camera.container.filters = [this.game.camera.container.filters].flat().filter(filter => this.filter !== filter);
         this.game.camera.shockwaves.delete(this);
         this.anchorContainer.destroy();
-        this.filter.destroy();
     }
 }

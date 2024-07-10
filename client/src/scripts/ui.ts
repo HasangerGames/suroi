@@ -2,11 +2,11 @@ import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
-import { Ammos } from "../../../common/src/definitions/ammos";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
-import { Scopes } from "../../../common/src/definitions/scopes";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
@@ -23,6 +23,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import type { ArmorDefinition } from "../../../common/src/definitions/armors";
 
 /*
     eslint-disable
@@ -52,6 +53,8 @@ export let teamSocket: WebSocket | undefined;
 let teamID: string | undefined | null;
 let joinedTeam = false;
 let autoFill = false;
+
+export let autoPickup = true;
 
 let buttonsLocked = true;
 export function lockPlayButtons(): void { buttonsLocked = true; }
@@ -124,9 +127,11 @@ export async function setUpUI(game: Game): Promise<void> {
         $("#select-language-menu").css("display", "none");
     });
 
-    $("#close-select-language").on("click", () => {
-        $("#select-language-menu").css("display", "none");
-    });
+    // temporary until we translate killfeed
+    if (game.console.getBuiltInCVar("cv_language") !== "en") {
+        $("#toggle-text-kill-feed-option").addClass("modal-locked");
+        game.console.setBuiltInCVar("cv_killfeed_style", "icon");
+    }
 
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
@@ -221,17 +226,13 @@ export async function setUpUI(game: Game): Promise<void> {
         );
     }
 
-    // Get player counts + find server w/ best ping
-    let bestPing = Number.MAX_VALUE;
-    let bestRegion: string | undefined;
-    for (const [regionID, region] of regionMap) {
+    ui.loadingText.text(getTranslatedString("loading_fetching_data"));
+    const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
+        const pingStartTime = Date.now();
+
         try {
-            ui.loadingText.text(getTranslatedString("loading_fetching_data"));
-
-            const pingStartTime = Date.now();
-
             interface ServerInfo {
                 readonly protocolVersion: number
                 readonly playerCount: number
@@ -253,20 +254,16 @@ export async function setUpUI(game: Game): Promise<void> {
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
                 console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
-                continue;
+                return;
             }
 
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
             // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
-
-            if (ping < bestPing) {
-                bestPing = ping;
-                bestRegion = regionID;
-            }
         } catch (e) {
-            console.error(`Failed to load server info for region ${regionID}. Details:`, e);
+            console.error(`Failed to load server info for region ${regionID}. Details: `, e);
         }
-    }
+    });
+    await Promise.all(regionPromises);
 
     const serverName = $<HTMLSpanElement>("#server-name");
     const playerCount = $<HTMLSpanElement>("#server-player-count");
@@ -282,7 +279,7 @@ export async function setUpUI(game: Game): Promise<void> {
         resetPlayButtons();
     };
 
-    selectedRegion = regionInfo[(game.console.getBuiltInCVar("cv_region") || bestRegion) ?? Config.defaultRegion];
+    selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
     updateServerSelectors();
 
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
@@ -346,6 +343,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 } else {
                     let showWarningModal = false;
                     let title: string | undefined;
+                    const caseID = data.reportID || "No report ID provided.";
                     let message: string;
                     switch (data.message) {
                         case "warn":
@@ -374,7 +372,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
                     if (showWarningModal) {
                         ui.warningTitle.text(title ?? "");
-                        ui.warningText.html(message ?? "");
+                        ui.warningText.html(`<span style="font-size:20px">Case ID: ${caseID ?? ""}</span><br>${message ?? ""}`);
                         ui.warningAgreeOpts.toggle(data.message === "warn");
                         ui.warningAgreeCheckbox.prop("checked", false);
                         ui.warningModal.show();
@@ -425,7 +423,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
             // also rejects the empty string, but like who cares
             while (!teamID) {
-                teamID = prompt("Enter a team code:");
+                teamID = prompt(getTranslatedString("msg_enter_team_code"));
                 if (!teamID) {
                     resetPlayButtons();
                     return;
@@ -522,7 +520,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     ui.createTeamPlayers.find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
 
                     if (data.newLeaderID === playerID) {
-                        ui.btnStartGame.removeClass("btn-disabled").text("Start Game");
+                        ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
                         ui.createTeamToggles.removeClass("disabled");
                     }
                     break;
@@ -541,7 +539,7 @@ export async function setUpUI(game: Game): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            ui.splashMsgText.html("Error joining team.<br>It may not exist or it is full.");
+            ui.splashMsgText.html(getTranslatedString("msg_error_joining_team"));
             ui.splashMsg.show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
@@ -556,8 +554,8 @@ export async function setUpUI(game: Game): Promise<void> {
             if (teamSocket) {
                 ui.splashMsgText.html(
                     joinedTeam
-                        ? "Lost connection to team."
-                        : "Error joining team.<br>It may not exist or it is full."
+                        ? getTranslatedString("msg_lost_team_connection")
+                        : getTranslatedString("msg_error_joining_team")
                 );
                 ui.splashMsg.show();
             }
@@ -604,7 +602,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     .css("pointer-events", "none")
                     .html(`
                         <i class="fa-solid fa-check" id="copy-team-btn-icon"></i>
-                        Copied`
+                        ${getTranslatedString("copied")}`
                     );
 
                 // After some seconds, reset the copy button's css
@@ -614,7 +612,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         .css("pointer-events", "")
                         .html(`
                             <i class="fa-solid fa-clipboard" id="copy-team-btn-icon"></i>
-                            Copy`
+                            ${getTranslatedString("copy")}`
                         );
                 }, 2000); // 2 sec
             })
@@ -1732,6 +1730,28 @@ Video evidence is required.`)) {
 
     let dropTimer: number | undefined;
 
+    function mobileDropItem(button: number, condition: boolean, item?: AmmoDefinition | ArmorDefinition | ScopeDefinition | HealingItemDefinition, slot?: number): void {
+        dropTimer = window.setTimeout(() => {
+            if (button === 0 && condition) {
+                if (slot !== undefined) {
+                    inputManager.addAction({
+                        type: InputActions.DropWeapon,
+                        slot
+                    });
+                } else if (item !== undefined) {
+                    inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item
+                    });
+                }
+                autoPickup = false;
+                window.setTimeout(() => {
+                    autoPickup = true;
+                }, 600);
+            }
+        }, 600);
+    }
+
     // Generate the UI for scopes, healing items, weapons, and ammos
     $<HTMLDivElement>("#weapons-container").append(
         ...Array.from(
@@ -1756,18 +1776,6 @@ Video evidence is required.`)) {
                 element.addEventListener("pointerup", () => clearTimeout(dropTimer));
 
                 element.addEventListener("pointerdown", e => {
-                    if (e.button !== 0) return;
-
-                    clearTimeout(dropTimer);
-                    dropTimer = window.setTimeout(() => {
-                        inputManager.addAction({
-                            type: InputActions.DropWeapon,
-                            slot
-                        });
-                    }, 600);
-                });
-
-                element.addEventListener("pointerdown", e => {
                     if (!ele.hasClass("has-item")) return;
 
                     e.stopImmediatePropagation();
@@ -1782,6 +1790,8 @@ Video evidence is required.`)) {
                         type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
                         slot
                     });
+
+                    mobileDropItem(e.button, true, undefined, slot);
                 });
                 return ele;
             }
@@ -1810,15 +1820,7 @@ Video evidence is required.`)) {
                         item: scope
                     });
 
-                    if (isTeamMode) {
-                        clearTimeout(dropTimer);
-                        dropTimer = window.setTimeout(() => {
-                            inputManager.addAction({
-                                type: InputActions.DropItem,
-                                item: scope
-                            });
-                        }, 600);
-                    }
+                    mobileDropItem(button, isTeamMode, scope);
                 }
 
                 if (isSecondary && isTeamMode) {
@@ -1843,7 +1845,7 @@ Video evidence is required.`)) {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-                            item: getTranslatedString(item.idString),
+                            item: `${getTranslatedString(item.idString)}<br>`,
                             amount: item.restoreAmount.toString(),
                             type: item.healType === HealType.Adrenaline
                                 ? getTranslatedString("adrenaline")
@@ -1873,15 +1875,7 @@ Video evidence is required.`)) {
                         });
                     }
 
-                    if (isTeamMode) {
-                        clearTimeout(dropTimer);
-                        dropTimer = window.setTimeout(() => {
-                            inputManager.addAction({
-                                type: InputActions.DropItem,
-                                item
-                            });
-                        }, 600);
-                    }
+                    mobileDropItem(button, isTeamMode, item);
                 }
 
                 if (isSecondary && isTeamMode) {
@@ -1930,14 +1924,7 @@ Video evidence is required.`)) {
                     });
                 }
 
-                if (isTeamMode) {
-                    window.setTimeout(() => {
-                        inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: ammo
-                        });
-                    }, 600);
-                }
+                mobileDropItem(button, isTeamMode, ammo);
             }
 
             if (isSecondary && isTeamMode) {
@@ -1958,7 +1945,6 @@ Video evidence is required.`)) {
         ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
         slotListener(ele, button => {
-            const isPrimary = button === 0;
             const isSecondary = button === 2;
             const shouldDrop = game.activePlayer && game.teamMode;
 
@@ -1972,17 +1958,8 @@ Video evidence is required.`)) {
                 }
             }
 
-            if (isPrimary && shouldDrop) {
-                clearTimeout(dropTimer);
-                dropTimer = window.setTimeout(() => {
-                    const item = game.activePlayer?.getEquipment(type);
-                    if (!item || !game.teamMode) return;
-
-                    inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item
-                    });
-                }, 600);
+            if (shouldDrop !== undefined) {
+                mobileDropItem(button, shouldDrop, game.activePlayer?.getEquipment(type));
             }
         });
     }

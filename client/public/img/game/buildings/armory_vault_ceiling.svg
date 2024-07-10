@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1512.8296"
-   height="814.66852"
-   viewBox="0 0 400.26949 215.54771"
+   width="756.41498"
+   height="407.33435"
+   viewBox="0 0 200.13479 107.77388"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    sodipodi:docname="armory_vault_ceiling.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,11 +23,11 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="1.0627876"
-     inkscape:cx="868.00034"
-     inkscape:cy="561.25984"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
+     inkscape:zoom="0.5313938"
+     inkscape:cx="722.62793"
+     inkscape:cy="449.76061"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -38,10 +38,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(124.61875,-79.639545)">
+     transform="translate(124.61876,-79.639538)">
     <g
        id="g101186"
-       transform="translate(-815.94799,-1463.1928)">
+       transform="matrix(0.50000012,0,0,0.50000012,-470.28346,-691.77682)">
       <path
          id="rect59-1"
          style="fill:#405f3a;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

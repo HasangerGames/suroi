@@ -465,6 +465,10 @@
             color: #008aff;
         }
 
+        & .btn-secondary, &.btn-secondary {
+            color: #555555;
+        }
+
         & .btn-purple {
             color: #6666ff;
         }
@@ -740,12 +744,12 @@
     right: 0.75rem;
 
     .btn {
-        width: 51px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
 
     *:not(:last-child) {
-        margin-right: 5px;
+        margin-right: -2px;
     }
 }
 
