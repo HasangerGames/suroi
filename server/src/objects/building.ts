@@ -53,6 +53,8 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
         this.definition = Buildings.reify(definition);
 
+        this.layer = this.definition.layer ?? 0;
+
         this.rotation = orientation;
         this._wallsToDestroy = this.definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
@@ -99,7 +101,6 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
                 definition: this.definition,
                 position: this.position,
                 rotation: this.rotation,
-                layer: this.layer
             }
         };
     }

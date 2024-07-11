@@ -853,7 +853,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => ((!newVisibleObjects.has(object) && !(sameLayer(object.layer, this.layer))) && (this.visibleObjects.delete(object), true))
+                    object => ((!newVisibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && (this.visibleObjects.delete(object), true))
                 )
                 .map(({ id }) => id);
 
@@ -1838,12 +1838,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         if (
                             (object instanceof Loot)
                             && object.hitbox.collidesWith(detectionHitbox)
-                            && object.layer === this.layer
+                            && sameLayer(object.layer, this.layer)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (
                                 object instanceof Loot
                                 && dist < uninteractable.minDist
+                                && sameLayer(object.layer, this.layer)
                             ) {
                                 uninteractable.minDist = dist;
                                 uninteractable.object = object;

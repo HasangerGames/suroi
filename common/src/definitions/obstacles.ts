@@ -3069,6 +3069,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             isStair: true,
             transportTo: -1,
             invisible: true,
+            noBulletCollision: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 10, Vec.create(0, 0))
             ),

@@ -6,7 +6,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { randomRotation } from "../../../common/src/utils/random";
+import { randomRotation, sameLayer } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
@@ -110,6 +110,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 object instanceof Obstacle
                 && object.collidable
                 && object.hitbox.collidesWith(this.hitbox)
+                && sameLayer(object.layer, this.layer)
+                && !object.definition?.isStair
             ) {
                 this.hitbox.resolveCollision(object.hitbox);
             }
