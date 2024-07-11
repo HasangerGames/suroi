@@ -293,8 +293,8 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Çelik Diş",
     "ice_pick": "Dağcı Kazması",
     "seax": "Seax",
-    "crowbar": "Crowbar",
-    "sickle": "Sickle",
+    "crowbar": "Levye",
+    "sickle": "Orak",
 
     "frag_grenade": "El Bombası",
     "smoke_grenade": "Sis Bombası",
