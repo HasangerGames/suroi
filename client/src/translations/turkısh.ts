@@ -227,6 +227,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "themselves": "kendilerinin",
 
     "kf_message": "<player> <finally> <victim>'i <weapon> <with> <event>",
+    "kf_message_grammar": "<player> <finally> <victim> <weapon> <with> <event>", // used for special reason
     // ------------------------------------------------------------------
 
     "tt_restores": "<item> yeniler <amount> <type>",

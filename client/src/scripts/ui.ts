@@ -24,7 +24,6 @@ import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import type { ArmorDefinition } from "../../../common/src/definitions/armors";
-import { Guns } from "../../../common/src/definitions/guns";
 
 /*
     eslint-disable
@@ -133,12 +132,13 @@ export async function setUpUI(game: Game): Promise<void> {
         // Make sure we do not count the same values.
         let filtered = Object.values(languageInfo);
 
-        const gunStrings = Guns.definitions.map(gun => gun.idString);
+        const nonCountableStrings = Object.keys(TRANSLATIONS.translations.en);
+        nonCountableStrings.push("kf_message_grammar"); // because some languages have special grammar stuff (we do not count this special string)
 
         if (!["en", "hp18"].includes(language)) {
             for (const key of Object.keys(languageInfo)) {
                 // Do not count guns or same strings (which are guns most of the time)
-                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key] && gunStrings.includes((languageInfo[key] as string))) {
+                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key] && nonCountableStrings.includes((languageInfo[key] as string))) {
                     filtered = filtered.filter(translationString => {
                         return translationString !== TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key];
                     });
