@@ -416,6 +416,14 @@
             &.kill-feed-kill-leader {
                 background-color: #dca03590;
             }
+
+            &.no-spaces {
+                display: block;
+
+                img {
+                    vertical-align: middle;
+                }
+            }
         }
     }
 }

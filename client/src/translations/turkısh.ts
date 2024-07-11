@@ -6,6 +6,10 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
     "msg_loading": "Bağlanılıyor",
+    "msg_spectating": "İzleniyor",
+    "msg_enter_team_code": "Takım kodu gir:",
+    "msg_lost_team_connection": "Takımla bağlantı kaybedildi.",
+    "msg_error_joining_team": "Takıma katılma hatası.<br>takım mevcut olmayabilir veya dolu olabilir.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_err_joining": "Oyuna katılma hatası.",
     "msg_err_finding": "Oyun bulma hatası.",
     "msg_try_again": "Lütfen yeniden deneyin.",
@@ -31,6 +35,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "quit": "Çık",
     "none": "Hiçbiri",
     "copy": "Kopyala",
+    "copied": "Kopyalandı",
 
     "health": "Can",
     "adrenaline": "Adrenalin",
@@ -186,8 +191,6 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> intihar etti",
     "kf_suicide_down": "<player> kendini bayılttı",
-    "kf_two_party_kill": "<player> öldürdü <victim>",
-    "kf_two_party_down": "<player> bayılttı <victim>",
     "kf_bleed_out_kill": "<player> kanayarak öldü",
     "kf_bleed_out_down": "<player kanayarak bayıldı",
     "kf_finished_off_kill": "<player> işini bitirdi <victim>",
@@ -204,6 +207,28 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> Öldürme liderini öldürdü",
     "kf_kl_dead": "Öldürme Lideri Öldü!",
     "kf_kl_suicide": "Öldürme lideri kendini öldürdü!",
+
+    // ------------------------------------------------------------------
+    "finally": "sonunda",
+    "with": "ile",
+
+    // Kill modal only
+    "you": "Sen",
+    "yourself": "Kendin",
+    "km_killed": "öldürdün",
+    "km_knocked": "bayılttın",
+
+    "km_message": "<you> <victim> <finally> <weapon> <with> <event>",
+
+    // Killfeed.
+    "kf_killed": "öldürdü",
+    "kf_knocked": "bayılttı",
+    "kf_finished_off": "işini bitirdi",
+    "themselves": "kendilerinin",
+
+    "kf_message": "<player> <finally> <victim>'i <weapon> <with> <event>",
+    "kf_message_grammar": "<player> <finally> <victim> <weapon> <with> <event>", // used for special reason
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> yeniler <amount> <type>",
     "tt_reduces": "<item> azaltır <percent>% damage",
@@ -268,6 +293,8 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Çelik Diş",
     "ice_pick": "Dağcı Kazması",
     "seax": "Seax",
+    "crowbar": "Crowbar",
+    "sickle": "Sickle",
 
     "frag_grenade": "El Bombası",
     "smoke_grenade": "Sis Bombası",
@@ -275,6 +302,41 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "radio": "Radyo",
     "deathray": "Ölüm Işını",
+    "lewis_gun": "Lewis Gun",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "usas12": "USAS-12",
+    "firework_launcher": "Havai Fişek Fırlatıcısı",
+    "arena_closer": "Dünyaların Yok Edicisi",
+    "revitalizer": "Canlandırıcı",
+    "s_g17": "G17 (Dürbünlü)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     // For dual guns
     "dual_template": "Çift <gun>",
