@@ -2648,5 +2648,36 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0, layer: -2 }
             ],
             lootSpawners: []
-        }
+        },
+        {
+            idString: "headquarters",
+            name: "Headquarters",
+            spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
+            scopeHitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(33.50, 72, Vec.create(-32.75, 0)),
+                RectangleHitbox.fromRect(65.50, 29.50, Vec.create(16.75, -21.25))
+            ),
+            floorImages: [
+                {
+                    key: "headquarters_floor_top",
+                    position: Vec.create(0, -71)
+                },
+                {
+                    key: "headquarters_floor_bottom",
+                    position: Vec.create(0, 0)
+                }
+            ],
+            ceilingImages: [
+
+            ],
+            groundGraphics: [
+                
+            ],
+            floors: [
+               
+            ],
+            obstacles: [
+                
+            ] as BuildingObstacle[],
+        },
     ]);
