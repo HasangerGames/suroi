@@ -7,10 +7,10 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
     "msg_rotate": "Labākai pieredzei, lūdzu, pagrieziet ierīci horizontāli .",
     "msg_loading": "Savienojas",
     "msg_err_joining": "Kļūda pievienojoties spēlei.",
-    "msg_err_finding": "Kļūda meklējot spēli.",
-    "msg_spectating": "Novērošana",
+    "msg_err_finding": "Kļūda atrodot spēli.",
+    "msg_spectating": "Skatīties spēlētājus",
     "msg_enter_team_code": "Ievadiet komandas kodu:",
-    "msg_lost_team_connection": "Zaudēta savienojums ar komandu.",
+    "msg_lost_team_connection": "Zaudēts savienojums ar komandu.",
     "msg_error_joining_team": "Kļūda pievienojoties komandai.<br>Varbūt tā neeksistē vai ir pilna.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Lūdzu, mēģiniet vēlreiz.",
     "msg_warning": "Jūs esat brīdināts!",
@@ -126,8 +126,8 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
 
     "msg_kills": "killi: <kills>",
 
-    "gas_waiting": "Toksisks gāze virzās <time>",
-    "gas_advancing": "Toksisks gāzes virzās! Pārvietojieties uz drošo zonu",
+    "gas_waiting": "Toksisks gāze virzās pēc <time>",
+    "gas_advancing": "Toksisks gāze virzās! Pārvietojieties uz drošo zonu",
     "gas_inactive": "Gaida spēlētājus...",
 
     "action_open_door": "Atvērt durvis",
@@ -175,8 +175,8 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
     "bindings_reload": "Pārlādēt",
     "bindings_cycle_scopes -1": "Iepriekšējais skats",
     "bindings_cycle_scopes 1": "Nākamais skats",
-    "bindings_use_consumable gauze": "Izmantot marli",
-    "bindings_use_consumable medikit": "Izmantot Medikit",
+    "bindings_use_consumable gauze": "Izmantot Marli",
+    "bindings_use_consumable medikit": "Izmantot Medikitu",
     "bindings_use_consumable cola": "Izmantot Kolu",
     "bindings_use_consumable tablets": "Izmantot Tabletes",
     "bindings_cancel_action": "Atcelt darbību",
@@ -219,12 +219,12 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
     "you": "Tu",
     "yourself": "sevi",
     "km_killed": "nogalināts",
-    "km_knocked": "nokļuva",
+    "km_knocked": "nogāzts gar zemi",
 
     "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
 
     // Killfeed.
-    "kf_killed": "nogalināja",
+    "kf_killed": "ogalināja",
     "kf_knocked": "nokļuva",
     "kf_finished_off": "piebeidza",
     "themselves": "sevi",
@@ -255,14 +255,14 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
     "report_reporting": "reporto",
     "report_id": "reporta ID:",
     "report_instructions": `
-    <p><strong>Lūdzu, ievērojiet zemāk esošos norādījumus!</strong> Ja to nedarīsiet, jūsu reports tiks ignorēts.</p>
-    <h4>Kā iesniegt reportu</h4>
-    <ol>
-      <li>Pievienojieties <a href="https://discord.suroi.io">Discord serverim.</a></li>
-      <li>Iejiet <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports</a> kanālā.</li>
-      <li>Izlasiet reportošanas noteikumus piespraustajā ziņā.</li>
-      <li>Iesniedziet savu reportu kā ziņojumu.</li>
-    </ol>`,
+      <p><strong>Lūdzu, ievērojiet zemāk esošos norādījumus!</strong> Ja to nedarīsiet, jūsu reports tiks ignorēts.</p>
+      <h4>Kā iesniegt reportu</h4>
+      <ol>
+        <li>Pievienojieties <a href="https://discord.suroi.io">Discord serverim.</a></li>
+        <li>Iejiet <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports</a> kanālā.</li>
+        <li>Izlasiet reportošanas noteikumus piespraustajā ziņā.</li>
+        <li>Iesniedziet savu reportu kā ziņojumu.</li>
+      </ol>`,
 
     "languages": "Valodas",
 
