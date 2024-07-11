@@ -133,10 +133,7 @@ export async function setUpUI(game: Game): Promise<void> {
         // Make sure we do not count the same values.
         let filtered = Object.values(languageInfo);
 
-        const gunStrings: string[] = [];
-        Guns.definitions.forEach(gun => {
-            gunStrings.push(gun.idString);
-        });
+        const gunStrings = Guns.definitions.map(gun => gun.idString);
 
         if (!["en", "hp18"].includes(language)) {
             for (const key of Object.keys(languageInfo)) {
