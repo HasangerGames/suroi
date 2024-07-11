@@ -100,7 +100,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
             full: {
                 definition: this.definition,
                 position: this.position,
-                rotation: this.rotation,
+                rotation: this.rotation
             }
         };
     }
