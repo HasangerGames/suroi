@@ -5,10 +5,11 @@ import { Loots } from "../../../common/src/definitions/loots";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Angle } from "../../../common/src/utils/math";
-import { randomFloat } from "../../../common/src/utils/random";
+import { randomFloat, sameLayer } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
+import { Logger } from "../utils/misc";
 import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
@@ -44,6 +45,8 @@ export class Bullet extends BaseBullet {
 
     readonly finalPosition: Vector;
 
+    readonly originalLayer: number;
+
     constructor(
         game: Game,
         source: Weapon,
@@ -66,6 +69,7 @@ export class Bullet extends BaseBullet {
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
+        this.originalLayer = shooter.layer;
 
         this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
     }
@@ -94,7 +98,7 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player && this.layer === object.layer) {
+            if (object.type === ObjectCategory.Player && sameLayer(this.layer, object.layer)) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -110,7 +114,10 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle && this.layer === object.layer) {
+            const ye = false
+            // object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer) && sameLayer(this.originalLayer, object.layer)
+            if (ye) {
+                Logger.log("collide")
                 this.damagedIDs.add(object.id);
 
                 records.push({
@@ -123,7 +130,6 @@ export class Bullet extends BaseBullet {
 
                 if (definition.penetration.obstacles) continue;
 
-                // skip killing the bullet for obstacles with noCollisions like bushes
                 if (!object.definition.noCollisions) {
                     const { point, normal } = collision.intersection;
                     this.position = point;

@@ -425,6 +425,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
         this.inventory.addOrReplaceWeapon(1, "m3k");
+        this.inventory.items.setItem("12g", 15);
 
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
