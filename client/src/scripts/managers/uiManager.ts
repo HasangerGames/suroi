@@ -1198,8 +1198,8 @@ export class UIManager {
                                 useSpecialSentence = true;
                                 break;
                             case KillfeedEventType.Suicide:
-                                // Turkish special condition ('i shouldn't appear in these messages)
-                                killMessage = getTranslatedString(`kf_message${this.game.console.getBuiltInCVar("cv_language") === "tr" ? "_grammar" : ""}`, {
+                                // Turkish and Estonian special condition ('i shouldn't appear in these messages)
+                                killMessage = getTranslatedString(`kf_message${this.game.console.getBuiltInCVar("cv_language") === "tr" || this.game.console.getBuiltInCVar("cv_language") === "et" ? "_grammar" : ""}`, {
                                     player: victimText,
                                     finally: "",
                                     event: getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: "" }),
