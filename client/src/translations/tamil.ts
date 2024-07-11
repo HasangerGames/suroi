@@ -217,7 +217,7 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "km_message": "<you> <finally> <victim>-ஐ <weapon>-ஐ <with> <event>",
 
     // Killfeed.
-    "kf_killed": "கொலை குறியீடு",
+    "kf_killed": "கொன்றார்",
     "kf_knocked": "செயலிழக்க செய்தார்",
     "kf_finished_off": "முடித்தார்",
     "themselves": "தன்னைதானே",
