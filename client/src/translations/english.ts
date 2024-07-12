@@ -121,7 +121,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "Waiting for leader",
     "msg_you_died": "You died.",
     "msg_player_died": "<player> died.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rank",
 
     "msg_kills": "Kills: <kills>",

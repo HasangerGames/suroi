@@ -120,7 +120,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "En attente d'un leader",
     "msg_you_died": "Vous êtes mort",
     "msg_player_died": "<player> est mort.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rang",
 
     "msg_kills": "Kills : <kills>",
