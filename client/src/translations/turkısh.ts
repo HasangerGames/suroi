@@ -120,7 +120,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "Lider bekleniyor",
     "msg_you_died": "Öldün.",
     "msg_player_died": "<player> öldü.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rütbe",
 
     "msg_kills": "Öldürmeler: <kills>",
@@ -293,8 +293,8 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Çelik Diş",
     "ice_pick": "Dağcı Kazması",
     "seax": "Seax",
-    "crowbar": "Crowbar",
-    "sickle": "Sickle",
+    "crowbar": "Levye",
+    "sickle": "Orak",
 
     "frag_grenade": "El Bombası",
     "smoke_grenade": "Sis Bombası",

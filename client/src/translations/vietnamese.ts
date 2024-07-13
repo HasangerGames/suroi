@@ -121,7 +121,7 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "Đang Chờ Kill Leader",
     "msg_you_died": "Bạn đã chết.",
     "msg_player_died": "<player> đã chết.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Hạng",
 
     "msg_kills": "Số lần hạ: <kills>",
