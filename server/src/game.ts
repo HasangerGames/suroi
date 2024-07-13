@@ -1066,7 +1066,7 @@ export class Game implements GameData {
 
         while (collided) {
             if (attempts === 500) {
-                switch(true) {
+                switch (true) {
                     case position.x < this.map.height/2 && position.y < this.map.height/2:
                         randomInt = [1, 2, 3][Math.floor(Math.random() * 3)];
                         break;
@@ -1085,7 +1085,7 @@ export class Game implements GameData {
             if (randomInt !== undefined) {
                 const distance = crateHitbox.toRectangle().max.x * 2 * paddingFactor;
 
-                switch(randomInt) {
+                switch (randomInt) {
                     case 1:
                         position.y = position.y + distance;
                         break;
