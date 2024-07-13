@@ -1067,16 +1067,16 @@ export class Game implements GameData {
         while (collided) {
             if (attempts === 500) {
                 switch (true) {
-                    case position.x < this.map.height/2 && position.y < this.map.height/2:
+                    case position.x < this.map.height / 2 && position.y < this.map.height / 2:
                         randomInt = [1, 2, 3][Math.floor(Math.random() * 3)];
                         break;
-                    case position.x > this.map.height/2 && position.y < this.map.height/2:
+                    case position.x > this.map.height / 2 && position.y < this.map.height / 2:
                         randomInt = [1, 4, 5][Math.floor(Math.random() * 3)];
                         break;
-                    case position.x < this.map.height/2 && position.y > this.map.height/2:
+                    case position.x < this.map.height / 2 && position.y > this.map.height / 2:
                         randomInt = [3, 6, 7][Math.floor(Math.random() * 3)];
                         break;
-                    case position.x > this.map.height/2 && position.y > this.map.height/2:
+                    case position.x > this.map.height / 2 && position.y > this.map.height / 2:
                         randomInt = [4, 6, 8][Math.floor(Math.random() * 3)];
                         break;
                 }
