@@ -76,7 +76,7 @@ export function randomPointInsideCircle(position: Vector, maxRadius: number, min
  * @param items The elements to choose from.
  * @param weights A legend of the elements' relative weights.
  */
-export function weightedRandom<T>(items: readonly T[], weights: readonly number[]) {
+export function weightedRandom<T>(items: readonly T[], weights: readonly number[]): T {
     let pick = Math.random() * weights.reduce((acc, cur) => acc + cur, 0);
     let i = 0;
     while ((pick -= weights[i++]) > 0);
