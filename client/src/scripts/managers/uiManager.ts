@@ -1247,7 +1247,7 @@ export class UIManager {
                             ${icon}
                             ${killMessage}${weaponNameText}`;
                         } else {
-                            messageText = killMessage;
+                            messageText = `${icon}${killMessage}`;
                         }
                         break;
                     }
