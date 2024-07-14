@@ -46,8 +46,9 @@ export const TRANSLATIONS = {
         fr: FRENCH_TRANSLATIONS,
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
-        zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
-        hk_mo: CHINESE_TRADITIONAL_TRANSLATIONS,
+        zh_cn: CHINESE_SIMPLIFIED_TRANSLATIONS,
+        zh_tw: CHINESE_TRADITIONAL_TRANSLATIONS,
+        zh_yue: CHINESE_CANTONESE_TRANSLATIONS,
         jp: JAPANESE_TRANSLATIONS,
         vi: VIETNAMESE_TRANSLATIONS,
         ta: TAMIL_TRANSLATIONS,
@@ -81,6 +82,8 @@ export function initTranslation(game: Game): void {
         : defaultClientCVars.cv_language;
 
     language = game.console.getBuiltInCVar("cv_language");
+
+    if (navigator.language.match(/^zh(-CN)?$/)) TRANSLATIONS.translations.zh_tw.flag = TRANSLATIONS.translations.zh_cn.flag;
 
     translateCurrentDOM();
 }
