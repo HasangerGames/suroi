@@ -1,4 +1,5 @@
-import { Vec } from "../../../common/src/utils/vector";
+import { Vec } from "@common/utils/vector";
+
 import { Events, GamePlugin } from "../pluginManager";
 
 /**

@@ -1,11 +1,12 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { FlyoverPref } from "../../../common/src/definitions/obstacles";
-import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { CircleHitbox, HitboxType, type RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Collision, Numeric } from "../../../common/src/utils/math";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { FloorTypes } from "../../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { FlyoverPref } from "@common/definitions/obstacles";
+import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { CircleHitbox, HitboxType, type RectangleHitbox } from "@common/utils/hitbox";
+import { Angle, Collision, Numeric } from "@common/utils/math";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
 import { dragConst } from "../utils/misc";

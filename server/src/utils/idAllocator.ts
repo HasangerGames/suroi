@@ -1,9 +1,9 @@
-import { Queue } from "../../../common/src/utils/misc";
+import { Queue } from "@common/utils/misc";
 
 /**
- * A class that manages a pool of numerical identifiers
+ * A class that manages a pool of numerical identifiers.
  *
- * Ostensibly a proxy for a {@link Queue}, with some extra validation for inputs
+ * Ostensibly a proxy for a {@link Queue}, with some extra validation for inputs.
  */
 export class IDAllocator {
     /**

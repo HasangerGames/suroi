@@ -1,4 +1,5 @@
-import { TeamSize } from "../../../common/src/constants";
+import { TeamSize } from "@common/constants";
+
 import { Config } from "../config";
 import { Game } from "../game";
 

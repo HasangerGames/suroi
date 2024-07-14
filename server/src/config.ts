@@ -1,5 +1,6 @@
-import { TeamSize } from "../../common/src/constants";
-import { type Vector } from "../../common/src/utils/vector";
+import { TeamSize } from "@common/constants";
+import { type Vector } from "@common/utils/vector";
+
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
