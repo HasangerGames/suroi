@@ -6,7 +6,7 @@
   ],
   "compilerOptions": {
     "paths": {
-      "@common/*": [ "./common/src/*" ]
+      "@common/*": ["./common/src/*"]
     }
   }
 }

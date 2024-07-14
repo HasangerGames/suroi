@@ -10,7 +10,7 @@
     "strictNullChecks": true,
     "strict": true,
     "paths": {
-      "@common/*": [ "../common/src/*" ]
+      "@common/*": ["../common/src/*"]
     }
   },
   "exclude": ["node_modules"],
