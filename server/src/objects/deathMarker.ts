@@ -1,5 +1,6 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
+import { ObjectCategory } from "@common/constants";
+import { type FullData } from "@common/utils/objectsSerializations";
+
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 

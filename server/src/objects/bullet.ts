@@ -1,12 +1,13 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { Bullets } from "../../../common/src/definitions/bullets";
-import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
-import { BaseBullet } from "../../../common/src/utils/baseBullet";
-import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle } from "../../../common/src/utils/math";
-import { randomFloat } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { Bullets } from "@common/definitions/bullets";
+import { type SingleGunNarrowing } from "@common/definitions/guns";
+import { Loots } from "@common/definitions/loots";
+import { BaseBullet } from "@common/utils/baseBullet";
+import { RectangleHitbox } from "@common/utils/hitbox";
+import { Angle } from "@common/utils/math";
+import { randomFloat } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { type Explosion } from "./explosion";

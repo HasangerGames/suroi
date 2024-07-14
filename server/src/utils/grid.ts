@@ -1,8 +1,9 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { Numeric } from "../../../common/src/utils/math";
-import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { type Hitbox } from "@common/utils/hitbox";
+import { Numeric } from "@common/utils/math";
+import { ObjectPool } from "@common/utils/objectPool";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 import { Logger } from "./misc";
