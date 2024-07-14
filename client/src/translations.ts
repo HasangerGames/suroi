@@ -4,7 +4,9 @@ import { Loots } from "../../common/src/definitions/loots";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { ALBANIAN_TRANSLATIONS } from "./translations/albanian";
+import { CHINESE_CANTONESE_TRANSLATIONS } from "./translations/chinese_cantonese";
 import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
+import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
 import { CZECH_TRANSLATIONS } from "./translations/czech";
 import { ENGLISH_TRANSLATIONS } from "./translations/english";
 import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
@@ -20,7 +22,6 @@ import { TAMIL_TRANSLATIONS } from "./translations/tamil";
 import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
 import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
 import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
-import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
 
 export type TranslationMap = Record<
     string,
@@ -46,8 +47,9 @@ export const TRANSLATIONS = {
         fr: FRENCH_TRANSLATIONS,
         ru: RUSSIAN_TRANSLATIONS,
         de: GERMAN_TRANSLATIONS,
-        zn: CHINESE_SIMPLIFIED_TRANSLATIONS,
-        hk_mo: CHINESE_TRADITIONAL_TRANSLATIONS,
+        zh_cn: CHINESE_SIMPLIFIED_TRANSLATIONS,
+        zh_tw: CHINESE_TRADITIONAL_TRANSLATIONS,
+        zh_yue: CHINESE_CANTONESE_TRANSLATIONS,
         jp: JAPANESE_TRANSLATIONS,
         vi: VIETNAMESE_TRANSLATIONS,
         ta: TAMIL_TRANSLATIONS,
@@ -81,6 +83,8 @@ export function initTranslation(game: Game): void {
         : defaultClientCVars.cv_language;
 
     language = game.console.getBuiltInCVar("cv_language");
+
+    if (navigator.language.match(/^zh(-CN)?$/)) TRANSLATIONS.translations.zh_tw.flag = TRANSLATIONS.translations.zh_cn.flag;
 
     translateCurrentDOM();
 }
