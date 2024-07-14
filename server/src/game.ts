@@ -1064,8 +1064,61 @@ export class Game implements GameData {
 
         let collided = true;
         let attempts = 0;
+        let randomInt: number | undefined;
 
-        while (collided && attempts < 500) {
+        while (collided) {
+            if (attempts === 500) {
+                switch (true) {
+                    case position.x < this.map.height / 2 && position.y < this.map.height / 2:
+                        randomInt = [1, 2, 3][Math.floor(Math.random() * 3)];
+                        break;
+                    case position.x > this.map.height / 2 && position.y < this.map.height / 2:
+                        randomInt = [1, 4, 5][Math.floor(Math.random() * 3)];
+                        break;
+                    case position.x < this.map.height / 2 && position.y > this.map.height / 2:
+                        randomInt = [3, 6, 7][Math.floor(Math.random() * 3)];
+                        break;
+                    case position.x > this.map.height / 2 && position.y > this.map.height / 2:
+                        randomInt = [4, 6, 8][Math.floor(Math.random() * 3)];
+                        break;
+                }
+            }
+
+            if (randomInt !== undefined) {
+                const distance = crateHitbox.toRectangle().max.x * 2 * paddingFactor;
+
+                switch (randomInt) {
+                    case 1:
+                        position.y = position.y + distance;
+                        break;
+                    case 2:
+                        position.x = position.x + distance;
+                        position.y = position.y + distance;
+                        break;
+                    case 3:
+                        position.x = position.x + distance;
+                        break;
+                    case 4:
+                        position.x = position.x - distance;
+                        break;
+                    case 5:
+                        position.x = position.x - distance;
+                        position.y = position.y + distance;
+                        break;
+                    case 6:
+                        position.y = position.y - distance;
+                        break;
+                    case 7:
+                        position.y = position.y - distance;
+                        position.x = position.x + distance;
+                        break;
+                    case 8:
+                        position.y = position.y - distance;
+                        position.x = position.x - distance;
+                        break;
+                }
+            }
+
             attempts++;
             collided = false;
 
@@ -1086,6 +1139,7 @@ export class Game implements GameData {
 
                 if (thisHitbox.collidesWith(thatHitbox)) {
                     collided = true;
+                    if (attempts >= 500) continue;
                     thisHitbox.resolveCollision(thatHitbox);
                 }
                 position = thisHitbox.getCenter();
@@ -1105,6 +1159,7 @@ export class Game implements GameData {
                         && ((hitbox = object.spawnHitbox.clone()).scale(paddingFactor), hitbox.collidesWith(thisHitbox))
                     ) {
                         collided = true;
+                        if (attempts >= 500) continue;
                         thisHitbox.resolveCollision(object.spawnHitbox);
                     }
                     position = thisHitbox.getCenter();
@@ -1127,6 +1182,7 @@ export class Game implements GameData {
                         hitbox.scale(paddingFactor);
                         if (!thisHitbox.collidesWith(hitbox)) continue;
                         collided = true;
+                        if (attempts >= 500) continue;
                         thisHitbox.resolveCollision(object.scopeHitbox);
                     }
                     position = thisHitbox.getCenter();
@@ -1140,10 +1196,6 @@ export class Game implements GameData {
             const height = max.y - min.y;
             position.x = Numeric.clamp(position.x, width, this.map.width - width);
             position.y = Numeric.clamp(position.y, height, this.map.height - height);
-        }
-
-        if (attempts > 500) {
-            console.warn("Airdrop spawn position calculation exceeded 500 attempts");
         }
 
         const direction = randomRotation();
