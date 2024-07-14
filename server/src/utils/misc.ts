@@ -51,9 +51,9 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
         weights.push(item.weight);
     }
 
-    const selectedItem = weightedRandom<WeightedItem | readonly WeightedItem[]>(items, weights);
-
-    for (const selection of [selectedItem].flat()) {
+    for (
+        const selection of [weightedRandom<WeightedItem | readonly WeightedItem[]>(items, weights)].flat()
+    ) {
         if ("tier" in selection) {
             loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
             continue;
@@ -89,7 +89,7 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
 export function getRandomIDString<T extends ObjectDefinition>(table: Record<ReferenceTo<T>, number> | ReferenceTo<T>): ReferenceTo<T> {
     if (typeof table === "string") return table;
 
-    const items: string[] = [];
+    const items: Array<ReferenceTo<T>> = [];
     const weights: number[] = [];
     for (const item in table) {
         items.push(item);
