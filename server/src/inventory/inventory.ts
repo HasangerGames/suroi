@@ -621,7 +621,7 @@ export class Inventory {
             || this.isLocked(slot)
         ) return false;
 
-        const gun = this.weapons[slot] as GunItem;
+        const gun = this.weapons[slot];
 
         if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
 

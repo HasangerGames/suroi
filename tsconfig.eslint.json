@@ -9,6 +9,9 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "strict": true,
+    "paths": {
+      "@common/*": [ "./common/src/*" ]
+    }
   },
   "include": [
     "common/src/**/*.ts",

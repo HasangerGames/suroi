@@ -8,7 +8,7 @@
     "start": "node dist/server/src/server.js",
     "moderation": "node dist/server/src/moderation.js",
     "validateDefinitions": "node dist/server/src/validateDefinitions.js",
-    "dev": "node -r ts-node/register --watch --watch-path=./src --watch-path=../common src/server.ts",
+    "dev": "node -r ts-node/register -r tsconfig-paths/register --watch --watch-path=./src --watch-path=../common src/server.ts",
     "dev:test": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/server/src/stressTest.js"
   },
   "keywords": [],
@@ -18,6 +18,7 @@
     "@types/sanitize-html": "^2.11.0",
     "@types/ws": "^8.5.11",
     "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.3"
   },
   "dependencies": {
