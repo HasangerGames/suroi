@@ -428,6 +428,11 @@ export class UIManager {
 
     updateEmoteWheel(): void {
         const { pingWheelActive } = this.game.inputManager;
+        for (const ammo of Ammos) {
+            const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
+            if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
+            else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
+        }
         for (let i = 0; i < 4; i++) {
             const definition = (pingWheelActive ? this.mapPings : this.emotes)[i];
 
