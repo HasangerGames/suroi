@@ -13,7 +13,6 @@ import { ReportPacketData, ReportPacket } from "./reportPacket";
 import { SpectatePacketData, SpectatePacket } from "./spectatePacket";
 import { PlayerData, UpdatePacket, UpdatePacketDataCommon, UpdatePacketDataIn } from "./updatePacket";
 
-
 export {
     DisconnectData, DisconnectPacket,
     GameOverData, GameOverPacket,
@@ -28,6 +27,6 @@ export {
     PingPacket,
     ReportPacketData, ReportPacket,
     SpectatePacketData, SpectatePacket,
-    UpdatePacket, UpdatePacketDataIn, UpdatePacketDataCommon, PlayerData,
-    
-}
+    UpdatePacket, UpdatePacketDataIn, UpdatePacketDataCommon, PlayerData
+
+};

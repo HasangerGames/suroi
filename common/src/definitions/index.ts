@@ -37,4 +37,4 @@ export {
     SyncedParticleDefinition,
     Throwables, ThrowableDefinition,
     Skins
-}
+};

@@ -26,4 +26,4 @@ export {
     Player,
     SyncedParticle,
     ThrowableProjectile
-}
+};

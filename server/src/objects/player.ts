@@ -10,13 +10,13 @@ import {
     DEFAULT_SCOPE,
     type BadgeDefinition, type EmoteDefinition, type GunDefinition, type WeaponDefinition, type PlayerPing,
     type MeleeDefinition, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition,
-    type ThrowableDefinition,
+    type ThrowableDefinition
 } from "@common/definitions";
 import {
     DisconnectPacket, GameOverPacket, KillFeedPacket, ReportPacket, UpdatePacket,
     type GameOverData, type InputPacket, type ForEventType, type UpdatePacketDataIn,
-    type PlayerData, type UpdatePacketDataCommon, 
-    NoMobile, PlayerInputData, PacketStream, SpectatePacketData,
+    type PlayerData, type UpdatePacketDataCommon,
+    NoMobile, PlayerInputData, PacketStream, SpectatePacketData
 } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
