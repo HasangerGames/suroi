@@ -8,6 +8,10 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Σύνδεση",
     "msg_err_joining": "Σφάλμα σύνδεσης",
     "msg_err_finding": "Σφάλμα εύρεσης παιχνιδιού",
+    "msg_spectating": "Παρακολούθηση",
+    "msg_enter_team_code": "Εισάγετε κωδικό ομάδας:",
+    "msg_lost_team_connection": "Χάθηκε η σύνδεση στην ομάδα.",
+    "msg_error_joining_team": "Σφάλμα σύνδεσης παιχνιδιού.<br>Μπορεί να μην υπάρχει ή να είναι γεμάτο.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Παρακαλώ προσπαθήστε ξανά",
     "msg_warning": "Έχετε προειδοποιηθεί!",
     "msg_warning_msg": "Λάβατε μια προειδοποίηση από τους συντονιστές λόγω: <reason>",
