@@ -2668,7 +2668,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             ceilingImages: [
-
+                {
+                    key: "headquarters_ceiling_1",
+                    position: Vec.create(4, -70)
+                },
+                {
+                    key: "headquarters_ceiling_2",
+                    position: Vec.create(-45, -5)
+                }
             ],
             groundGraphics: [
                 
