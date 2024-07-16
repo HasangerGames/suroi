@@ -15,7 +15,7 @@ import { Numeric } from "../../../../common/src/utils/math";
 import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
-import { getTranslatedString } from "../../translations";
+import { getTranslatedString, NO_SPACE_LANGUAGES } from "../../translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
@@ -94,7 +94,12 @@ export class UIManager {
         const element = $<HTMLSpanElement>("<span>");
         const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
-        const name = this.getRawPlayerName(id);
+        let name = this.getRawPlayerName(id);
+
+        // Remove spaces if chinese/japanese language.
+        if (name.includes(" ") && NO_SPACE_LANGUAGES.includes(this.game.console.getBuiltInCVar("cv_language"))) {
+            name = name.replaceAll(" ", "");
+        }
 
         if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
             element.css("color", player.nameColor?.toHex() ?? "");
@@ -1494,7 +1499,7 @@ export class UIManager {
         }
 
         // Disable spaces in chinese languages.
-        if (["zh", "tw", "hk_mo", "jp"].includes(this.game.console.getBuiltInCVar("cv_language"))) {
+        if (NO_SPACE_LANGUAGES.includes(this.game.console.getBuiltInCVar("cv_language"))) {
             classes.push("no-spaces");
         }
 

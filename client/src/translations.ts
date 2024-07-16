@@ -73,6 +73,8 @@ export const TRANSLATIONS = {
     readonly translations: Record<string, TranslationMap>
 };
 
+export const NO_SPACE_LANGUAGES = ["zh", "tw", "hk_mo", "jp"];
+
 let setup = false;
 export function initTranslation(game: Game): void {
     if (setup) {
