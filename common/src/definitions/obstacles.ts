@@ -3096,6 +3096,36 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
+            idString: "headquarters_outer_walls",
+            name: "Headquarters Outer Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25.25)),
+                RectangleHitbox.fromRect(1.75, 55, Vec.create(69.5, -22.5)),
+                RectangleHitbox.fromRect(1.75, 48, Vec.create(69.5, -84.5)),
+                RectangleHitbox.fromRect(45.5, 1.75, Vec.create(46, -107.5)),
+                RectangleHitbox.fromRect(71, 1.75, Vec.create(-23.5, -107.5)),
+                RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58, -76.25)),
+                RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58, -35)),
+                RectangleHitbox.fromRect(25, 1.75, Vec.create(-59.65, -35)),
+                RectangleHitbox.fromRect(1.75, 70, Vec.create(-71, 0.5)),
+                RectangleHitbox.fromRect(30, 1.75, Vec.create(-56, 34.75)),
+                RectangleHitbox.fromRect(18, 1.75, Vec.create(-11.5, 34.75)),
+                RectangleHitbox.fromRect(12.25, 1.75, Vec.create(14.75, 34.75)),
+                RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75)),
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
             idString: "test_wall",
             name: "Test Wall",
             material: "wood",

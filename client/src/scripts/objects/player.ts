@@ -357,7 +357,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         const isOnGround = (this.layer === Layer.Floor1);
-        console.log(isOnGround);
 
         const floorType = isOnGround ? this.game.map.terrain.getFloor(this.position) : "grass";
 

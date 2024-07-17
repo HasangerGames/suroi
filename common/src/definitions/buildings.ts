@@ -2652,11 +2652,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters",
             name: "Headquarters",
-            spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(100, 100)),
+            spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(75, 75)),
             scopeHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(140, 70, Vec.create(0, 0)),
-                RectangleHitbox.fromRect(100, 29.50, Vec.create(16.75, -120))
+                RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
+                RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
             ),
+            spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
                     key: "headquarters_floor_top",
@@ -2670,11 +2671,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "headquarters_ceiling_1",
-                    position: Vec.create(-1, -68.3)
+                    position: Vec.create(-0.725, -68)
                 },
                 {
                     key: "headquarters_ceiling_2",
-                    position: Vec.create(-47, 4.5)
+                    position: Vec.create(-46.7, 4.5)
                 }
             ],
             groundGraphics: [
@@ -2684,7 +2685,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                
             ],
             obstacles: [
-                
+                { idString: "headquarters_outer_walls", position: Vec.create(0, 0), rotation: 0 },
             ] as BuildingObstacle[],
+            subBuildings: [
+                { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0}
+            ]
         },
     ]);
