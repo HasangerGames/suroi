@@ -94,12 +94,7 @@ export class UIManager {
         const element = $<HTMLSpanElement>("<span>");
         const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
-        let name = this.getRawPlayerName(id);
-
-        // Remove spaces if chinese/japanese language.
-        if (name.includes(" ") && NO_SPACE_LANGUAGES.includes(this.game.console.getBuiltInCVar("cv_language"))) {
-            name = name.replaceAll(" ", "");
-        }
+        const name = this.getRawPlayerName(id);
 
         if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
             element.css("color", player.nameColor?.toHex() ?? "");
@@ -1146,6 +1141,8 @@ export class UIManager {
                 const killstreak = "killstreak" in message ? message.killstreak : undefined;
                 const hasKillstreak = !!killstreak;
 
+                const language = this.game.console.getBuiltInCVar("cv_language");
+
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         let killMessage = "";
@@ -1154,10 +1151,15 @@ export class UIManager {
 
                         // const description = UIManager._killfeedEventDescription[eventType][severity];
 
+                        // Remove spaces if chinese/japanese language.
+                        if (NO_SPACE_LANGUAGES.includes(language) && messageText) {
+                            messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
+                        }
+
                         const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString)) : "";
 
                         // special case for turkish
-                        if (this.game.console.getBuiltInCVar("cv_language") === "tr") {
+                        if (language === "tr") {
                             victimText = victimText.replace("<span>", "<span style=\"display:contents;\">");
                         }
 
@@ -1211,7 +1213,7 @@ export class UIManager {
                                 break;
                             case KillfeedEventType.Suicide:
                                 // Turkish and Estonian special condition ('i shouldn't appear in these messages)
-                                killMessage = getTranslatedString(`kf_message${this.game.console.getBuiltInCVar("cv_language") === "tr" || this.game.console.getBuiltInCVar("cv_language") === "et" ? "_grammar" : ""}`, {
+                                killMessage = getTranslatedString(`kf_message${language === "tr" || language === "et" ? "_grammar" : ""}`, {
                                     player: victimText,
                                     finally: "",
                                     event: getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: "" }),
