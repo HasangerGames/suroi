@@ -2652,15 +2652,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters",
             name: "Headquarters",
-            spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
+            spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(100, 100)),
             scopeHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(33.50, 72, Vec.create(-32.75, 0)),
-                RectangleHitbox.fromRect(65.50, 29.50, Vec.create(16.75, -21.25))
+                RectangleHitbox.fromRect(140, 70, Vec.create(0, 0)),
+                RectangleHitbox.fromRect(100, 29.50, Vec.create(16.75, -120))
             ),
             floorImages: [
                 {
                     key: "headquarters_floor_top",
-                    position: Vec.create(0, -71)
+                    position: Vec.create(0, -74)
                 },
                 {
                     key: "headquarters_floor_bottom",
@@ -2670,11 +2670,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "headquarters_ceiling_1",
-                    position: Vec.create(4, -70)
+                    position: Vec.create(-1, -68.3)
                 },
                 {
                     key: "headquarters_ceiling_2",
-                    position: Vec.create(-45, -5)
+                    position: Vec.create(-47, 4.5)
                 }
             ],
             groundGraphics: [
