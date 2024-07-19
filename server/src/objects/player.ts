@@ -781,14 +781,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
         depleters.forEach(depleter => {
-            let def = depleter.definition;
+            const def = depleter.definition;
             const depletion = def.depletePerMs;
 
             // For convenience and readability
             type ScopeBlockingParticle = SyncedParticleDefinition & { readonly hitbox: Hitbox };
             // If lifetime - age > scope out time, we have the potential to zoom in the scope
-            if (depleter._lifetime - (this.game.now - depleter._creationDate) >=
-                ((def as ScopeBlockingParticle).scopeOutPreMs ?? 0)) {
+            if (depleter._lifetime - (this.game.now - depleter._creationDate)
+                >= ((def as ScopeBlockingParticle).scopeOutPreMs ?? 0)) {
                 scopeTarget ??= (def as ScopeBlockingParticle).snapScopeTo;
             }
 
