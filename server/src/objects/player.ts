@@ -684,6 +684,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     collided = true;
                     this.hitbox.resolveCollision(potential.hitbox);
                 }
+                if (
+                    potential.type === ObjectCategory.ThrowableProjectile
+                    && potential.Armed
+                    && this.hitbox.collidesWith(potential.hitbox)
+                ) {
+                    potential.detonateWhenPlayerLeaves = true;
+                }
             }
             if (!collided) break;
         }

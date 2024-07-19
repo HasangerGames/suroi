@@ -153,6 +153,19 @@ export class Bullet extends BaseBullet {
             }
         }
 
+        // Explode mines
+        const nearObjects = this.game.grid.intersectsHitbox(lineRect);
+
+        for (const potential of nearObjects) {
+            if (
+                potential.type === ObjectCategory.ThrowableProjectile
+                && potential.Armed
+                && lineRect.collidesWith(potential.hitbox)
+            ) {
+                potential.detonate()
+            }
+        }
+
         return records;
     }
 

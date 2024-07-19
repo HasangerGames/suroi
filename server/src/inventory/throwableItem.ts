@@ -209,18 +209,20 @@ class GrenadeHandler {
          */
         const superStrangeMysteryConstant = 2.79 * Math.log(1.6) / 1000;
 
-        projectile.velocity = Vec.add(
-            Vec.fromPolar(
-                this.owner.rotation,
-                soft
-                    ? 0
-                    : Math.min(
-                        definition.maxThrowDistance,
-                        this.owner.distanceToMouse
-                    ) * superStrangeMysteryConstant
-            ),
-            this.owner.movementVector
-        );
+        if (this.definition.stationary !== true) {
+            projectile.velocity = Vec.add(
+                Vec.fromPolar(
+                    this.owner.rotation,
+                    soft
+                        ? 0
+                        : Math.min(
+                            definition.maxThrowDistance,
+                            this.owner.distanceToMouse
+                        ) * superStrangeMysteryConstant
+                ),
+                this.owner.movementVector
+            );
+        }
     }
 
     destroy(): void {
