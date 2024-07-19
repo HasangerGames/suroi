@@ -733,9 +733,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         const gas = this.game.gas;
         // Gas damage
-        if (gas.doDamage && gas.isInGas(this.position)) {
+        if (gas.doDamage) {
             this.piercingDamage({
-                amount: gas.dps,
+                // scaledDamage accounts for whether we are in the gas or not.
+                amount: gas.scaledDamage(this.position),
                 source: KillfeedEventType.Gas
             });
         }

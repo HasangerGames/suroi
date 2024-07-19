@@ -1,4 +1,4 @@
-import { GasState } from "@common/constants";
+import { GameConstants, GasState } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric } from "@common/utils/math";
 import { MapObjectSpawnMode } from "@common/utils/objectDefinitions";
@@ -35,6 +35,11 @@ export class Gas {
 
     readonly game: Game;
     readonly mapSize: number;
+
+    // Extra damage, linear per distance unit into the gas
+    static readonly damageScaleFactor: number = 0.005;
+    // Don't scale damage for a certain distance into the gas
+    static readonly unscaledDamageDist: number = (GameConstants.player.radius * 2) * 15;
 
     constructor(game: Game) {
         this.game = game;
@@ -97,6 +102,13 @@ export class Gas {
         } else {
             return Vec.create(x, y);
         }
+    }
+
+    scaledDamage(position: Vector): number {
+        if (!this.isInGas(position)) return 0;
+
+        const distIntoGas = Geometry.distance(position, this.currentPosition) - this.currentRadius;
+        return this.dps + Numeric.clamp(distIntoGas - Gas.unscaledDamageDist, 0, Infinity) * Gas.damageScaleFactor;
     }
 
     advanceGasStage(): void {
