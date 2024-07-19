@@ -749,7 +749,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         let isInsideBuilding = false;
-        const depleters = new Set<SyncedParticleDefinition>();
+        const depleters = new Set<SyncedParticle>();
         for (const object of this.nearObjects) {
             if (
                 !isInsideBuilding
@@ -764,7 +764,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 object instanceof SyncedParticle
                 && object.hitbox?.collidesWith(this.hitbox)
             ) {
-                depleters.add(object.definition);
+                depleters.add(object);
             }
         }
 
@@ -780,11 +780,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
-        depleters.forEach(def => {
+        depleters.forEach(depleter => {
+            let def = depleter.definition;
             const depletion = def.depletePerMs;
 
-            // we arbitrarily take the first scope target we find and stick with it
-            scopeTarget ??= (def as SyncedParticleDefinition & { readonly hitbox: Hitbox }).snapScopeTo;
+            // For convenience and readability
+            type ScopeBlockingParticle = SyncedParticleDefinition & { readonly hitbox: Hitbox };
+            // If lifetime - age > scope out time, we have the potential to zoom in the scope
+            if (depleter._lifetime - (this.game.now - depleter._creationDate) >=
+                ((def as ScopeBlockingParticle).scopeOutPreMs ?? 0)) {
+                scopeTarget ??= (def as ScopeBlockingParticle).snapScopeTo;
+            }
 
             if (depletion.health) {
                 this.piercingDamage({
