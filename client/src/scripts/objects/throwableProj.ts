@@ -63,9 +63,9 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
             }
             this.floorType = floorType;
         }
-        if (data.armed && data.full !== undefined && data.full.definition.animation.armedImage !== undefined){
+        if (data.armed && data.full?.definition.animation.armedImage !== undefined) {
             this.image.setFrame(data.full.definition.animation.armedImage);
-            if (data.full.definition.sound !== undefined) this.playSound(data.full.definition.sound)
+            if (data.full.definition.sound !== undefined) this.playSound(data.full.definition.sound);
         }
 
         if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {

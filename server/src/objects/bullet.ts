@@ -162,7 +162,7 @@ export class Bullet extends BaseBullet {
                 && potential.Armed
                 && lineRect.collidesWith(potential.hitbox)
             ) {
-                potential.detonate()
+                potential.detonate();
             }
         }
 

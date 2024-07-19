@@ -55,7 +55,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
             readonly rightFist: Vector
         }
     }
-    readonly sound?: string;
+    readonly sound?: string
 } & ({
     readonly impactDamage: number
     /**
