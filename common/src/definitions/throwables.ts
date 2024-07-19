@@ -72,13 +72,14 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             itemType: ItemType.Throwable,
             speedMultiplier: 0.92,
             cookable: false,
-            fuseTime: Infinity,
+            fuseTime: 4000,
             cookTime: 150,
             throwTime: 150,
             noDrop: false,
             cookSpeedMultiplier: 0.7,
             hitboxRadius: 1,
             impactDamage: 0,
+            obstacleMultiplier: 20,
             image: {
                 zIndex: 5
             },

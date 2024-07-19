@@ -125,7 +125,7 @@ class GrenadeHandler {
         recoil.multiplier = this.definition.cookSpeedMultiplier;
         recoil.time = Infinity;
 
-        if (this.definition.cookable) {
+        if (this.definition.cookable && !this.definition.stationary) {
             this._timer = this.game.addTimeout(
                 () => {
                     if (!this._thrown) {
@@ -180,13 +180,15 @@ class GrenadeHandler {
 
         this._resetAnimAndRemoveFromInv();
 
-        this._timer ??= this.game.addTimeout(
-            () => {
-                this.destroy();
-                this._detonate();
-            },
-            this.definition.fuseTime
-        );
+        if (!this.definition.stationary) {
+            this._timer ??= this.game.addTimeout(
+                () => {
+                    this.destroy();
+                    this._detonate();
+                },
+                this.definition.fuseTime
+            );
+        }
 
         const projectile = this._projectile = this.game.addProjectile(
             definition,
