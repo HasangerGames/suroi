@@ -1,4 +1,4 @@
-import { GameConstants } from "../../../common/src/constants";
+import { GameConstants } from "@common/constants";
 import { Config } from "../config";
 
 const badWordRegexes: RegExp[] = [

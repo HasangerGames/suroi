@@ -1,9 +1,10 @@
-import { Explosions, type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Geometry } from "../../../common/src/utils/math";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { randomRotation } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { Angle, Geometry } from "@common/utils/math";
+import { type ReifiableDef } from "@common/utils/objectDefinitions";
+import { randomRotation } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";

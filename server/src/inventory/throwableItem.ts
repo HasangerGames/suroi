@@ -1,8 +1,9 @@
-import { AnimationType } from "../../../common/src/constants";
-import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { Vec } from "../../../common/src/utils/vector";
+import { AnimationType } from "@common/constants";
+import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { type Timeout } from "@common/utils/misc";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { Vec } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
@@ -124,7 +125,7 @@ class GrenadeHandler {
         recoil.multiplier = this.definition.cookSpeedMultiplier;
         recoil.time = Infinity;
 
-        if (this.definition.cookable) {
+        if (this.definition.cookable && !this.definition.stationary) {
             this._timer = this.game.addTimeout(
                 () => {
                     if (!this._thrown) {
@@ -179,13 +180,15 @@ class GrenadeHandler {
 
         this._resetAnimAndRemoveFromInv();
 
-        this._timer ??= this.game.addTimeout(
-            () => {
-                this.destroy();
-                this._detonate();
-            },
-            this.definition.fuseTime
-        );
+        if (!this.definition.stationary) {
+            this._timer ??= this.game.addTimeout(
+                () => {
+                    this.destroy();
+                    this._detonate();
+                },
+                this.definition.fuseTime
+            );
+        }
 
         const projectile = this._projectile = this.game.addProjectile(
             definition,
@@ -208,18 +211,20 @@ class GrenadeHandler {
          */
         const superStrangeMysteryConstant = 2.79 * Math.log(1.6) / 1000;
 
-        projectile.velocity = Vec.add(
-            Vec.fromPolar(
-                this.owner.rotation,
-                soft
-                    ? 0
-                    : Math.min(
-                        definition.maxThrowDistance,
-                        this.owner.distanceToMouse
-                    ) * superStrangeMysteryConstant
-            ),
-            this.owner.movementVector
-        );
+        if (this.definition.stationary !== true) {
+            projectile.velocity = Vec.add(
+                Vec.fromPolar(
+                    this.owner.rotation,
+                    soft
+                        ? 0
+                        : Math.min(
+                            definition.maxThrowDistance,
+                            this.owner.distanceToMouse
+                        ) * superStrangeMysteryConstant
+                ),
+                this.owner.movementVector
+            );
+        }
     }
 
     destroy(): void {

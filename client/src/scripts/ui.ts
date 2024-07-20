@@ -1795,17 +1795,20 @@ Video evidence is required.`)) {
                     if (!ele.hasClass("has-item")) return;
 
                     e.stopImmediatePropagation();
-                    if (
-                        isGrenadeSlot
-                        && game.activePlayer?.activeItem.itemType === ItemType.Throwable
-                    ) {
-                        inputManager.cycleThrowable(step);
-                    }
 
                     inputManager.addAction({
                         type: e.button === 2 ? InputActions.DropWeapon : InputActions.EquipItem,
                         slot
                     });
+
+                    // We cycle the throwables after the drop item call, otherwise the wrong grenade will be dropped.
+                    if (
+                        isGrenadeSlot
+                        && game.activePlayer?.activeItem.itemType === ItemType.Throwable
+                        && e.button !== 2 // it can be anything but the right click, because right click drops stuff
+                    ) {
+                        inputManager.cycleThrowable(step);
+                    }
 
                     mobileDropItem(e.button, true, undefined, slot);
                 });

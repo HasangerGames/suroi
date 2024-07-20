@@ -1,8 +1,9 @@
-import { AnimationType, GameConstants, PlayerActions } from "../../../common/src/constants";
-import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
+import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Loots } from "@common/definitions/loots";
+import { type Timeout } from "@common/utils/misc";
+import { type ReifiableDef } from "@common/utils/objectDefinitions";
+
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 

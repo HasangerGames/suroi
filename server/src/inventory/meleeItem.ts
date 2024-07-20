@@ -1,8 +1,9 @@
-import { AnimationType, FireMode } from "../../../common/src/constants";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { Vec } from "../../../common/src/utils/vector";
+import { AnimationType, FireMode } from "@common/constants";
+import { type MeleeDefinition } from "@common/definitions/melees";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { Vec } from "@common/utils/vector";
+
 import { type CollidableGameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";

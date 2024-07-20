@@ -142,6 +142,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly rotation: number
         readonly layer: Layer
         readonly airborne: boolean
+        readonly armed: boolean
         readonly full?: {
             readonly definition: ThrowableDefinition
         }
@@ -461,6 +462,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeRotation(data.rotation, 16);
             stream.writeInt8(data.layer);
             stream.writeBoolean(data.airborne);
+            stream.writeBoolean(data.armed);
         },
         serializeFull(stream, data) {
             Loots.writeToStream(stream, data.full.definition);
@@ -470,13 +472,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
                 layer: stream.readInt8(),
-                airborne: stream.readBoolean()
+                airborne: stream.readBoolean(),
+                armed: stream.readBoolean()
             };
         },
         deserializeFull(stream) {
             return {
                 definition: Loots.readFromStream(stream)
-
             };
         }
     },

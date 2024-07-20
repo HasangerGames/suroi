@@ -1,8 +1,9 @@
-import { EmoteDefinition } from "../../common/src/definitions/emotes";
-import { type PlayerPing } from "../../common/src/definitions/mapPings";
-import { type PlayerInputData } from "../../common/src/packets/inputPacket";
-import { ExtendedMap } from "../../common/src/utils/misc";
-import { Vector } from "../../common/src/utils/vector";
+import { EmoteDefinition } from "@common/definitions/emotes";
+import { type PlayerPing } from "@common/definitions/mapPings";
+import { type PlayerInputData } from "@common/packets/inputPacket";
+import { ExtendedMap } from "@common/utils/misc";
+import { Vector } from "@common/utils/vector";
+
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
 import { type InventoryItem } from "./inventory/inventoryItem";

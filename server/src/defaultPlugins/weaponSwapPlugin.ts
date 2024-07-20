@@ -1,8 +1,9 @@
-import { GunDefinition, Guns } from "../../../common/src/definitions/guns";
-import { MeleeDefinition, Melees } from "../../../common/src/definitions/melees";
-import { ThrowableDefinition, Throwables } from "../../../common/src/definitions/throwables";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { pickRandomInArray } from "../../../common/src/utils/random";
+import { GunDefinition, Guns } from "@common/definitions/guns";
+import { MeleeDefinition, Melees } from "@common/definitions/melees";
+import { ThrowableDefinition, Throwables } from "@common/definitions/throwables";
+import { ItemType } from "@common/utils/objectDefinitions";
+import { pickRandomInArray } from "@common/utils/random";
+
 import { GunItem } from "../inventory/gunItem";
 import { Player } from "../objects/player";
 import { Events, GamePlugin } from "../pluginManager";

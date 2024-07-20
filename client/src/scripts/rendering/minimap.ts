@@ -30,8 +30,6 @@ export class Minimap {
     private _visible = true;
     get visible(): boolean { return this._visible; }
     set visible(visible: boolean) {
-        if (this._visible === visible) return;
-
         this._visible = visible;
 
         this.switchToSmallMap();

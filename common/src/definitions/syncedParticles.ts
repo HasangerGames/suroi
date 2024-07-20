@@ -69,6 +69,10 @@ export type SyncedParticleDefinition = ObjectDefinition & {
 } | {
     readonly hitbox: CircleHitbox
     readonly snapScopeTo?: ReferenceTo<ScopeDefinition>
+    /**
+     * How long before the particle disappears do players zoom back out.
+     */
+    readonly scopeOutPreMs?: number
 });
 
 export interface SyncedParticleSpawnerDefinition {
@@ -147,7 +151,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 1000
                 },
                 frame: "smoke_grenade_particle",
-                zIndex: ZIndexes.ObstaclesLayer5 - 1
+                zIndex: ZIndexes.ObstaclesLayer5 - 1,
+                scopeOutPreMs: 3200
             })
         }
     })
@@ -193,7 +198,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 500
                 },
                 hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope"
+                snapScopeTo: "1x_scope",
+                scopeOutPreMs: 500
             },
             [],
             ["airdrop_smoke_particle"]

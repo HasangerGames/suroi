@@ -22,6 +22,8 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Whether cooking the grenade will run down the fuse
      */
     readonly cookable: boolean
+    readonly stationary?: boolean
+    readonly armTime?: number
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
@@ -40,6 +42,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly animation: {
         readonly pinImage: string
         readonly liveImage: string
+        readonly armedImage?: string
         readonly leverImage: string
         readonly cook: {
             readonly cookingImage?: string
@@ -51,6 +54,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
             readonly rightFist: Vector
         }
     }
+    readonly sound?: string
 } & ({
     readonly impactDamage: number
     /**
@@ -67,10 +71,14 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             itemType: ItemType.Throwable,
             speedMultiplier: 0.92,
             cookable: false,
+            fuseTime: 4000,
+            cookTime: 150,
+            throwTime: 150,
             noDrop: false,
             cookSpeedMultiplier: 0.7,
             hitboxRadius: 1,
             impactDamage: 0,
+            obstacleMultiplier: 20,
             image: {
                 zIndex: 5
             },
@@ -185,6 +193,35 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                     rightFist: Vec.create(4, 2.15)
                 }
             }
+        },
+        {
+            idString: "mine",
+            name: "Mine",
+            stationary: true,
+            armTime: 5000,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            speedCap: 0.15,
+            detonation: {
+                explosion: "mine_explosion"
+            },
+            animation: {
+                pinImage: "mine_pin",
+                liveImage: "proj_mine",
+                armedImage: "mine_armed",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2, -1),
+                    rightFist: Vec.create(3, 0)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            sound: "mine_beep"
         }
     ]
 );
