@@ -41,7 +41,9 @@ export class Bullet extends BaseBullet {
     readonly shooter: GameObject;
 
     readonly clipDistance: number;
+
     reflected = false;
+    layer = 0;
 
     readonly finalPosition: Vector;
 
@@ -70,6 +72,7 @@ export class Bullet extends BaseBullet {
         this.sourceGun = source;
         this.shooter = shooter;
         this.originalLayer = shooter.layer;
+        this.layer = shooter.layer;
 
         this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
     }
@@ -114,10 +117,7 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            const ye = false
-            // object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer) && sameLayer(this.originalLayer, object.layer)
-            if (ye) {
-                Logger.log("collide")
+            if (object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer)) {
                 this.damagedIDs.add(object.id);
 
                 records.push({
@@ -127,6 +127,11 @@ export class Bullet extends BaseBullet {
                     source: this.shooter,
                     position: collision.intersection.point
                 });
+
+                if(object.definition.isStair) {
+                    Logger.log("Collide")
+                    this.changeLayer(object.definition.transportTo ?? 0)
+                }
 
                 if (definition.penetration.obstacles) continue;
 
@@ -170,6 +175,21 @@ export class Bullet extends BaseBullet {
                 position: Vec.clone(this.position),
                 rotation: direction,
                 layer: this.layer,
+                reflectionCount: this.reflectionCount + 1,
+                variance: this.rangeVariance,
+                rangeOverride: this.clipDistance
+            }
+        );
+    }
+
+    changeLayer(layer: number): void {
+        this.game.addBullet(
+            this.sourceGun,
+            this.shooter,
+            {
+                position: Vec.clone(this.position),
+                rotation: this.rotation,
+                layer: layer,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance

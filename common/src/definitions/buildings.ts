@@ -2643,9 +2643,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
+                { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: -1 },
                 { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
-                { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0, layer: -2 }
+                { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
         },

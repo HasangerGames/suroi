@@ -51,7 +51,7 @@ import { Emote } from "./emote";
 import { Explosion } from "./explosion";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
-import { type Obstacle } from "./obstacle";
+import { Obstacle } from "./obstacle";
 import { SyncedParticle } from "./syncedParticle";
 export interface PlayerContainer {
     readonly teamID?: string
