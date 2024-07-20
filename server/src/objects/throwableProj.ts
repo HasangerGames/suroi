@@ -62,8 +62,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
     private readonly _currentlyAbove = new Set<Obstacle>();
 
-    private WasArmed = false;
-    public Armed = false;
+    private wasArmed = false;
+    public armed = false;
     public detonateWhenPlayerLeaves = false;
     private playerDetected = false;
 
@@ -96,7 +96,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.hitbox = new CircleHitbox(radius ?? 1, position);
         if (this.definition.stationary) {
             setTimeout(() => {
-                this.Armed = true;
+                this.armed = true;
             }, this.definition.armTime);
         }
     }
@@ -119,7 +119,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     }
 
     beep(): void {
-        this.WasArmed = false;
+        this.wasArmed = false;
     }
 
     detonate(): void {
@@ -163,9 +163,9 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
             this._airborne = false;
             this.game.grid.updateObject(this);
-            if (!this.WasArmed) this.setDirty();
+            if (!this.wasArmed) this.setDirty();
             else this.setPartialDirty();
-            if (this.Armed) this.WasArmed = true;
+            if (this.armed) this.wasArmed = true;
             return;
         }
 
@@ -332,7 +332,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             position: this.position,
             rotation: this.rotation,
             airborne: this.airborne,
-            armed: this.Armed,
+            armed: this.armed,
             full: {
                 definition: this.definition
             }

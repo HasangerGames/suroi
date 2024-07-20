@@ -24,7 +24,6 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly cookable: boolean
     readonly stationary?: boolean
     readonly armTime?: number
-    readonly armed?: boolean
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
@@ -200,7 +199,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             name: "Mine",
             stationary: true,
             armTime: 5000,
-            armed: false,
             image: {
                 position: Vec.create(60, 43),
                 angle: 60

@@ -686,7 +686,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 }
                 if (
                     potential.type === ObjectCategory.ThrowableProjectile
-                    && potential.Armed
+                    && potential.armed
                     && this.hitbox.collidesWith(potential.hitbox)
                 ) {
                     potential.detonateWhenPlayerLeaves = true;

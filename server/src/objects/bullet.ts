@@ -159,7 +159,7 @@ export class Bullet extends BaseBullet {
         for (const potential of nearObjects) {
             if (
                 potential.type === ObjectCategory.ThrowableProjectile
-                && potential.Armed
+                && potential.armed
                 && lineRect.collidesWith(potential.hitbox)
             ) {
                 potential.detonate();
