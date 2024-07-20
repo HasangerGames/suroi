@@ -352,6 +352,38 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
         apply(
             "explosion_factory",
             {
+                damage: 100,
+                obstacleMultiplier: 1.15,
+                radius: {
+                    min: 5,
+                    max: 12
+                },
+                cameraShake: {
+                    duration: 100,
+                    intensity: 30
+                },
+                animation: {
+                    duration: 1000,
+                    tint: 0x91140b,
+                    scale: 1
+                },
+                shrapnelCount: 10,
+                ballistics: {
+                    damage: 15,
+                    obstacleMultiplier: 1,
+                    speed: 0.08,
+                    range: 15,
+                    rangeVariance: 1,
+                    shrapnel: true
+                },
+                sound: "frag_grenade",
+                decal: "frag_explosion_decal"
+            },
+            "Mine"
+        ),
+        apply(
+            "explosion_factory",
+            {
                 damage: 0,
                 obstacleMultiplier: 0,
                 radius: {

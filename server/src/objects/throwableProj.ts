@@ -62,6 +62,11 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
     private readonly _currentlyAbove = new Set<Obstacle>();
 
+    private wasArmed = false;
+    public armed = false;
+    public detonateWhenPlayerLeaves = false;
+    private playerDetected = false;
+
     public static readonly squaredThresholds = Object.freeze({
         impactDamage: 0.0009 as number,
         flyover: 0.0009 as number,
@@ -89,6 +94,11 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         super(game, position);
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
+        if (this.definition.stationary) {
+            setTimeout(() => {
+                this.armed = true;
+            }, this.definition.armTime);
+        }
     }
 
     push(angle: number, speed: number): void {
@@ -108,7 +118,57 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         return displacement;
     }
 
+    beep(): void {
+        this.wasArmed = false;
+    }
+
+    detonate(): void {
+        this.game.removeProjectile(this);
+
+        const { explosion, particles } = this.definition.detonation;
+
+        const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+        const game = this.game;
+
+        if (explosion !== undefined) {
+            game.addExplosion(
+                explosion,
+                referencePosition,
+                this.source.owner
+            );
+        }
+
+        if (particles !== undefined) {
+            game.addSyncedParticles(particles, referencePosition);
+        }
+    }
+
     update(): void {
+        if (this.definition.stationary) {
+            if (this.detonateWhenPlayerLeaves) {
+                if (!this.playerDetected) this.beep();
+                this.playerDetected = false;
+                for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
+                    if (object instanceof Player && object.hitbox.collidesWith(this.hitbox)) {
+                        this.playerDetected = true;
+                        break;
+                    }
+                }
+                if (!this.playerDetected) {
+                    this.detonate();
+                    this.detonateWhenPlayerLeaves = false;
+                    return;
+                }
+            }
+
+            this._airborne = false;
+            this.game.grid.updateObject(this);
+            if (!this.wasArmed) this.setDirty();
+            else this.setPartialDirty();
+            if (this.armed) this.wasArmed = true;
+            return;
+        }
+
         const halfDt = 0.5 * this._dt;
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
@@ -272,6 +332,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             position: this.position,
             rotation: this.rotation,
             airborne: this.airborne,
+            armed: this.armed,
             full: {
                 definition: this.definition
             }
