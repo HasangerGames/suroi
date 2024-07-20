@@ -213,8 +213,8 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 armedImage: "mine_armed",
                 leverImage: "proj_frag_lever",
                 cook: {
-                    leftFist: Vec.create(2, 0),
-                    rightFist: Vec.create(2, 0)
+                    leftFist: Vec.create(2, -1),
+                    rightFist: Vec.create(3, 0)
                 },
                 throw: {
                     leftFist: Vec.create(1.9, -1.75),
