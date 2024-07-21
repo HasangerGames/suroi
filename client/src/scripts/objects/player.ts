@@ -28,6 +28,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import { getTranslatedString } from "../../translations";
+import type { ThrowableProjectile } from "./throwableProj";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -45,7 +46,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     } = {
             backpack: Loots.fromString("bag")
         };
-
+        
     distTraveled = 0;
 
     get isActivePlayer(): boolean {
@@ -447,6 +448,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (data.animation !== undefined) {
             this.playAnimation(data.animation);
         }
+
+        if (data.placedC4 !== undefined && data.placedC4 === true) uiManager.updateC4(true)
 
         if (data.full) {
             const full = data.full;
@@ -1335,9 +1338,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const pinImage = this.images.altWeapon;
 
                 projImage.visible = true;
-                pinImage.setFrame(def.animation.pinImage);
-                pinImage.setPos(35, 0);
-                pinImage.setZIndex(ZIndexes.Players + 1);
+                if (def.animation.pinImage){
+                    pinImage.setFrame(def.animation.pinImage);
+                    pinImage.setPos(35, 0);
+                    pinImage.setZIndex(ZIndexes.Players + 1);
+                } 
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
                 this.updateFistsPosition(false);
 
@@ -1355,17 +1360,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             }
                         });
 
-                        pinImage.visible = true;
-                        this.anims.pin = this.game.addTween({
-                            target: pinImage,
-                            duration: def.cookTime / 2,
-                            to: {
-                                ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
-                            },
-                            onComplete: () => {
-                                this.anims.pin = undefined;
-                            }
-                        });
+                        if (def.animation.pinImage){
+                            pinImage.visible = true;
+                            this.anims.pin = this.game.addTween({
+                                target: pinImage,
+                                duration: def.cookTime / 2,
+                                to: {
+                                    ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
+                                },
+                                onComplete: () => {
+                                    this.anims.pin = undefined;
+                                }
+                            });
+                        }
                     }
                 });
 

@@ -71,7 +71,8 @@ export enum InputActions {
     UseItem,
     Emote,
     MapPing,
-    Loot
+    Loot,
+    ExplodeC4
 }
 
 export enum SpectateActions {

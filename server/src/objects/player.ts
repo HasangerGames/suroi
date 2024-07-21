@@ -44,7 +44,8 @@ import { removeFrom } from "../utils/misc";
 
 import {
     Building, DeathMarker, Emote, Explosion, BaseGameObject, DamageParams,
-    type GameObject, Loot, type Obstacle, SyncedParticle
+    type GameObject, Loot, type Obstacle, SyncedParticle,
+    ThrowableProjectile
 } from ".";
 
 export interface PlayerContainer {
@@ -379,6 +380,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
 
     private readonly _mapPings: Game["mapPings"] = [];
+
+    public c4s: ThrowableProjectile[] = [];
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
@@ -1914,6 +1917,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 case InputActions.MapPing:
                     this.sendMapPing(action.ping, action.position);
                     break;
+                case InputActions.ExplodeC4:
+                    for (const c4 of this.c4s) {
+                        c4.detonate();
+                    }
+                    this.c4s = [];
+                    break;
             }
         }
 
@@ -1949,6 +1958,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         if (this._animation.dirty) {
             data.animation = this.animation;
+        }
+
+        if (this.c4s.length > 0) {
+            data.placedC4 = true;
         }
 
         if (this._action.dirty) {

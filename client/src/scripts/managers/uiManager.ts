@@ -252,7 +252,9 @@ export class UIManager {
         createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
         createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
-        closeCreateTeam: $<HTMLButtonElement>("#close-create-team")
+        closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
+
+        c4DetonateButton: $<HTMLButtonElement>("#c4-detonate-btn")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -839,6 +841,36 @@ export class UIManager {
             if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
                 itemSlot.toggle(isPresent).removeClass("active");
             }
+        }
+
+        (
+            this._scopeSlotCache[this.inventory.scope.idString] ??= $(`#${this.inventory.scope.idString}-slot`)
+        ).addClass("active");
+    }
+
+    updateC4(hasC4: boolean | undefined): void {
+        const itemSlot = this.ui.c4DetonateButton;
+
+        if (+countElem.text() < count && itemSlot.length) {
+            this._playSlotAnimation(itemSlot);
+        }
+
+        countElem.text(count);
+
+        if (this.game.activePlayer) {
+            const backpack = this.game.activePlayer.equipment.backpack;
+            itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
+        }
+        const isPresent = count > 0;
+
+        itemSlot.toggleClass("has-item", isPresent);
+
+        if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
+            itemSlot.css("visibility", isPresent ? "visible" : "hidden");
+        }
+
+        if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
+            itemSlot.toggle(isPresent).removeClass("active");
         }
 
         (
