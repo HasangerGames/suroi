@@ -252,7 +252,9 @@ export class UIManager {
         createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
         createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
-        closeCreateTeam: $<HTMLButtonElement>("#close-create-team")
+        closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
+
+        c4Button: $<HTMLButtonElement>("#c4-detonate-btn")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -467,7 +469,8 @@ export class UIManager {
             teammates,
             inventory,
             lockedSlots,
-            items
+            items,
+            activeC4s
         } = data;
 
         if (id !== undefined) this.game.activePlayerID = id.id;
@@ -638,6 +641,9 @@ export class UIManager {
         if (inventory?.weapons || items) {
             this.updateWeapons();
         }
+
+        if (activeC4s) this.ui.c4Button.show();
+        else this.ui.c4Button.hide();
     }
 
     skinID?: string;

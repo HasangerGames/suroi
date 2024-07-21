@@ -95,7 +95,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             this.handleCollision(object);
         }
-        if (this.definition.c4) this.source.owner.c4s.push(this);
+        if (this.definition.c4) {
+            this.source.owner.c4s.push(this);
+            this.source.owner.updatedC4Button = false;
+        }
         if (this.definition.health) this.health = this.definition.health;
     }
 
@@ -327,6 +330,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         if (this.health <= 0) {
             this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
             this.game.removeProjectile(this);
+            this.source.owner.updatedC4Button = false;
         }
     }
 

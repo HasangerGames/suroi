@@ -183,6 +183,11 @@ const [serializePlayerData, deserializePlayerData] = (() => {
         }
     );
 
+    const activeC4s = generateReadWritePair<PlayerData["activeC4s"]>(
+        (activeC4s, stream) => stream.writeBoolean(activeC4s),
+        stream => stream.readBoolean()
+    );
+
     return [
         (stream: SuroiBitStream, data: PlayerData): void => {
             minMax.write(stream, data.minMax);
@@ -194,6 +199,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
             inventory.write(stream, data.inventory);
             slotLocks.write(stream, data.lockedSlots);
             items.write(stream, data.items);
+            activeC4s.write(stream, data.activeC4s);
         },
 
         (stream: SuroiBitStream): PlayerData => {
@@ -206,7 +212,8 @@ const [serializePlayerData, deserializePlayerData] = (() => {
                 teammates: teammates.read(stream),
                 inventory: inventory.read(stream),
                 lockedSlots: slotLocks.read(stream),
-                items: items.read(stream)
+                items: items.read(stream),
+                activeC4s: activeC4s.read(stream)
             };
         }
     ];
@@ -289,6 +296,7 @@ export type PlayerData = {
         readonly items: typeof DEFAULT_INVENTORY
         readonly scope: ScopeDefinition
     }
+    readonly activeC4s?: boolean
 };
 
 export type UpdatePacketDataCommon = {

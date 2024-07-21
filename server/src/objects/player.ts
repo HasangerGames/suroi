@@ -237,7 +237,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         weapons: true,
         slotLocks: true,
         items: true,
-        zoom: true
+        zoom: true,
+        activeC4s: true
     };
 
     readonly inventory = new Inventory(this);
@@ -382,6 +383,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     private readonly _mapPings: Game["mapPings"] = [];
 
     public c4s: ThrowableProjectile[] = [];
+    public updatedC4Button = false;
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
@@ -889,6 +891,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.startedSpectating = false;
         }
 
+        if (
+                player.dirty.maxMinStats ||
+                player.dirty.health ||
+                player.dirty.adrenaline ||
+                player.dirty.zoom ||
+                player.dirty.id ||
+                player.dirty.teammates ||
+                player.dirty.weapons ||
+                player.dirty.slotLocks ||
+                player.dirty.items ||
+                forceInclude
+        ) {
+            this.updatedC4Button = false;
+        }
+
         packet.playerData = {
             ...(
                 player.dirty.maxMinStats || forceInclude
@@ -959,8 +976,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         scope: inventory.scope
                     } }
                     : {}
+            ),
+            ...(
+                this.c4s.length > 0 && !this.updatedC4Button
+                    ? { activeC4s: true }
+                    : !this.updatedC4Button 
+                        ? { activeC4s: false}
+                        : {}
             )
         };
+
+        if (!this.updatedC4Button) this.updatedC4Button = true;
 
         // Cull bullets
         packet.bullets = game.newBullets.filter(
@@ -1922,6 +1948,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         c4.detonate();
                     }
                     this.c4s = [];
+                    this.updatedC4Button = false;
                     break;
             }
         }
