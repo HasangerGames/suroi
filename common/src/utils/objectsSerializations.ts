@@ -45,7 +45,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly type: PlayerActions.UseItem
             readonly item: HealingItemDefinition
         })
-        readonly placedC4?: boolean
         readonly full?: {
             readonly dead: boolean
             readonly downed: boolean
@@ -169,7 +168,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Player]: {
         serializePartial(stream, data): void {
-            const { position, rotation, animation, placedC4, action } = data;
+            const { position, rotation, animation, action } = data;
 
             stream.writePosition(position);
             stream.writeRotation(rotation, 16);
@@ -225,8 +224,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
-                animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined,
-                placedC4: stream.readBoolean()
+                animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
 
             if (stream.readBoolean()) { // action dirty

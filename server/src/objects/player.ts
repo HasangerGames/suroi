@@ -1960,10 +1960,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             data.animation = this.animation;
         }
 
-        if (this.c4s.length > 0) {
-            data.placedC4 = true;
-        }
-
         if (this._action.dirty) {
             data.action = this.action instanceof HealingAction
                 ? { type: PlayerActions.UseItem, item: this.action.item }

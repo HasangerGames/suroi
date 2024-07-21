@@ -28,7 +28,6 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import { getTranslatedString } from "../../translations";
-import type { ThrowableProjectile } from "./throwableProj";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -46,7 +45,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     } = {
             backpack: Loots.fromString("bag")
         };
-        
+
     distTraveled = 0;
 
     get isActivePlayer(): boolean {
@@ -448,8 +447,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (data.animation !== undefined) {
             this.playAnimation(data.animation);
         }
-
-        if (data.placedC4 !== undefined && data.placedC4 === true) uiManager.updateC4(true)
 
         if (data.full) {
             const full = data.full;
