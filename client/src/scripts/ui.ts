@@ -356,6 +356,9 @@ export async function setUpUI(game: Game): Promise<void> {
 
                     game.connect(`${target.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
                     ui.splashMsg.hide();
+
+                    // Check again because there is a small chance that the create-team-menu element won't hide.
+                    if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
                 } else {
                     let showWarningModal = false;
                     let title: string | undefined;
