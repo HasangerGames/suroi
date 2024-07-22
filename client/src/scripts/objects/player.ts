@@ -1328,7 +1328,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     return;
                 }
 
-                this.playSound("throwable_pin");
+                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin");
 
                 const def = this.activeItem;
                 const projImage = this.images.weapon;

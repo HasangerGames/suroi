@@ -26,8 +26,8 @@
     transform-origin: 0 0;
 
     #c4-detonate-btn {
-        bottom: 30px;
-        right: 245px;
+        top: 20rem;
+        right: 0.5rem;
         position: absolute;
         cursor: pointer !important;
         display: flex;
@@ -44,7 +44,7 @@
         padding: 0 8px 0 8px;
     
         &:hover {
-            outline: 2px solid red !important;
+            outline: 2px solid $danger !important;
         }
 
         #detonate-key {
@@ -55,15 +55,15 @@
             justify-content: center;
             align-items: center;
             vertical-align: middle;
-            width: 30px;
-            height: 30px;
+            width: 20px;
+            height: 20px;
             background-color: #eee;
             border-radius: 3px;
             border: 1px solid #b4b4b4;
             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
                 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
             color: #333;
-            font-size: 25px;
+            font-size: 15px;
             font-weight: 700;
             line-height: 1;
             padding: 2px 4px;

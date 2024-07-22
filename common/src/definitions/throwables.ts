@@ -194,7 +194,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
         },
         {
             idString: "c4",
-            name: "c4",
+            name: "C4",
             c4: true,
             health: 30,
             armTime: 5000,

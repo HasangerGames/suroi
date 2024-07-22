@@ -642,8 +642,7 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        if (activeC4s) this.ui.c4Button.show();
-        else this.ui.c4Button.hide();
+        activeC4s ? this.ui.c4Button.show() : this.ui.c4Button.hide();
     }
 
     skinID?: string;
