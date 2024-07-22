@@ -323,7 +323,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         }
     }
 
-    damageC4(amount: number): void { 
+    damageC4(amount: number): void {
         if (!this.health) return;
 
         this.health = this.health - amount;

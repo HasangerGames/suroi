@@ -24,6 +24,67 @@
     left: 0;
     position: absolute;
     transform-origin: 0 0;
+
+    #c4-detonate-btn {
+        bottom: 30px;
+        right: 245px;
+        position: absolute;
+        cursor: pointer !important;
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        box-sizing: border-box;
+        height: 40px;
+        width: 100px;
+        z-index: 9999999;
+        background: $transparent_bg;
+        border-radius: 10px;
+        font-size: 15px;
+        align-items: center;
+        padding: 0 8px 0 8px;
+    
+        &:hover {
+            outline: 2px solid $orange !important;
+        }
+    
+        .detonate-key {
+            opacity: 1;
+            float: right;
+            margin-left: auto;
+        }
+    
+        .item-image {
+            opacity: 1;
+            pointer-events: none;
+            float: left;
+            width: 40px;
+            height: 30px;
+            @include drop-shadow;
+    
+            @media screen and (max-width: $screen_large) {
+                width: 30px;
+                height: 20px;
+            }
+        }
+    
+        @media screen and (max-width: $screen_large) {
+            height: 25px;
+            width: 55px;
+            border-radius: 5px;
+        }
+    
+        @media screen and (max-width: $screen_large) {
+            left: 5px;
+        }
+    
+        @media screen and (max-width: $screen_medium) {
+            bottom: 43px;
+        }
+    
+        @media screen and (max-width: 500px) {
+            bottom: 128px;
+        }
+    }
 }
 
 #btn-close-minimap {
@@ -1467,60 +1528,6 @@
                 margin-top: 110px;
             }
         }
-    }
-}
-
-#c4-detonate-btn {
-    bottom: 30px;
-    right: 245px;
-    position: absolute;
-    display: flex;
-    justify-content: space-between;
-    gap: 5px;
-    box-sizing: border-box;
-    height: 40px;
-    width: 100px;
-    background: $transparent_bg;
-    border-radius: 10px;
-    font-size: 15px;
-    align-items: center;
-    padding: 0 8px 0 8px;
-
-    .detonate-key {
-        opacity: 1;
-        float: right;
-        margin-left: auto;
-    }
-
-    .item-image {
-        opacity: 1;
-        float: left;
-        width: 40px;
-        height: 30px;
-        @include drop-shadow;
-
-        @media screen and (max-width: $screen_large) {
-            width: 30px;
-            height: 20px;
-        }
-    }
-
-    @media screen and (max-width: $screen_large) {
-        height: 25px;
-        width: 55px;
-        border-radius: 5px;
-    }
-
-    @media screen and (max-width: $screen_large) {
-        left: 5px;
-    }
-
-    @media screen and (max-width: $screen_medium) {
-        bottom: 43px;
-    }
-
-    @media screen and (max-width: 500px) {
-        bottom: 128px;
     }
 }
 

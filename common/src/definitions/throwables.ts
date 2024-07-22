@@ -217,7 +217,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                     leftFist: Vec.create(1.9, -1.75),
                     rightFist: Vec.create(4, 2.15)
                 }
-            },
+            }
         }
     ]
 );

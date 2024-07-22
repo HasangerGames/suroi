@@ -14,7 +14,6 @@ import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { ThrowableProjectile } from "./throwableProj";
 
 type Weapon = GunItem | Explosion;
 
@@ -155,7 +154,7 @@ export class Bullet extends BaseBullet {
         }
 
         for (const object of grid.intersectsHitbox(lineRect)) {
-            if (object.type === ObjectCategory.ThrowableProjectile 
+            if (object.type === ObjectCategory.ThrowableProjectile
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {

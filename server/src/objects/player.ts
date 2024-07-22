@@ -892,16 +892,16 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         if (
-                player.dirty.maxMinStats ||
-                player.dirty.health ||
-                player.dirty.adrenaline ||
-                player.dirty.zoom ||
-                player.dirty.id ||
-                player.dirty.teammates ||
-                player.dirty.weapons ||
-                player.dirty.slotLocks ||
-                player.dirty.items ||
-                forceInclude
+            player.dirty.maxMinStats
+            || player.dirty.health
+            || player.dirty.adrenaline
+            || player.dirty.zoom
+            || player.dirty.id
+            || player.dirty.teammates
+            || player.dirty.weapons
+            || player.dirty.slotLocks
+            || player.dirty.items
+            || forceInclude
         ) {
             this.updatedC4Button = false;
         }
@@ -980,8 +980,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             ...(
                 this.c4s.length > 0 && !this.updatedC4Button
                     ? { activeC4s: true }
-                    : !this.updatedC4Button 
-                        ? { activeC4s: false}
+                    : !this.updatedC4Button
+                        ? { activeC4s: false }
                         : {}
             )
         };

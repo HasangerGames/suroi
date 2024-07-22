@@ -88,7 +88,7 @@ export class Explosion {
                     }
 
                     if (object instanceof Loot || object instanceof ThrowableProjectile) {
-                        if (object instanceof ThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage)
+                        if (object instanceof ThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
                         else {
                             object.push(
                                 Angle.betweenPoints(object.position, this.position),

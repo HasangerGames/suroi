@@ -1335,11 +1335,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const pinImage = this.images.altWeapon;
 
                 projImage.visible = true;
-                if (def.animation.pinImage){
+                if (def.animation.pinImage) {
                     pinImage.setFrame(def.animation.pinImage);
                     pinImage.setPos(35, 0);
                     pinImage.setZIndex(ZIndexes.Players + 1);
-                } 
+                }
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
                 this.updateFistsPosition(false);
 
@@ -1357,7 +1357,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             }
                         });
 
-                        if (def.animation.pinImage){
+                        if (def.animation.pinImage) {
                             pinImage.visible = true;
                             this.anims.pin = this.game.addTween({
                                 target: pinImage,
