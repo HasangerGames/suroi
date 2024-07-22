@@ -1959,7 +1959,7 @@ Video evidence is required.`)) {
         });
     }
 
-    const interactKey = $<HTMLDivElement>("#detonate-key")
+    const interactKey = $<HTMLDivElement>("#detonate-key");
     const bind: string = inputManager.binds.getInputsBoundToAction("explodeC4")[0];
     const bindImg = InputManager.getIconFromInputName(bind);
 
