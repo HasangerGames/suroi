@@ -124,10 +124,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             this.game.removeProjectile(this);
 
             const { explosion, particles } = this.definition.detonation;
-    
+
             const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
             const game = this.game;
-    
+
             if (explosion !== undefined) {
                 game.addExplosion(
                     explosion,
@@ -135,7 +135,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     this.source.owner
                 );
             }
-    
+
             if (particles !== undefined) {
                 game.addSyncedParticles(particles, referencePosition);
             }
