@@ -133,7 +133,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             piercingMultiplier: 2,
             canPierceMaterials: ["cardboard"], // ammo crate moment
             radius: 2.55,
-            offset: Vec.create(6.5, 2),
+            offset: Vec.create(6.375, 2),
             cooldown: 560,
             fists: {
                 animationDuration: 200,
