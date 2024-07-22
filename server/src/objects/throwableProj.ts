@@ -119,25 +119,27 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         return displacement;
     }
 
-    detonate(): void {
-        this.game.removeProjectile(this);
+    detonate(delay: number): void {
+        setTimeout(() => {
+            this.game.removeProjectile(this);
 
-        const { explosion, particles } = this.definition.detonation;
-
-        const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
-        const game = this.game;
-
-        if (explosion !== undefined) {
-            game.addExplosion(
-                explosion,
-                referencePosition,
-                this.source.owner
-            );
-        }
-
-        if (particles !== undefined) {
-            game.addSyncedParticles(particles, referencePosition);
-        }
+            const { explosion, particles } = this.definition.detonation;
+    
+            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+            const game = this.game;
+    
+            if (explosion !== undefined) {
+                game.addExplosion(
+                    explosion,
+                    referencePosition,
+                    this.source.owner
+                );
+            }
+    
+            if (particles !== undefined) {
+                game.addSyncedParticles(particles, referencePosition);
+            }
+        }, delay);
     }
 
     update(): void {

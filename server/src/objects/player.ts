@@ -1950,7 +1950,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 case InputActions.ExplodeC4:
                     for (const c4 of this.c4s) {
-                        c4.detonate();
+                        c4.detonate(750);
                     }
                     this.c4s = [];
                     this.updatedC4Button = false;
