@@ -63,6 +63,8 @@ export class UIManager {
         pos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
+    public hasC4s = false;
+
     private static _instantiated = false;
     constructor(readonly game: Game) {
         if (UIManager._instantiated) {
@@ -643,6 +645,7 @@ export class UIManager {
         }
 
         activeC4s ? this.ui.c4Button.show() : this.ui.c4Button.hide();
+        if (activeC4s !== undefined) this.hasC4s = activeC4s;
     }
 
     skinID?: string;

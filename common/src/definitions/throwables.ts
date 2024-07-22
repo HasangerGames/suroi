@@ -196,7 +196,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             idString: "c4",
             name: "C4",
             c4: true,
-            health: 30,
+            health: 40,
             armTime: 5000,
             image: {
                 position: Vec.create(60, 43),
