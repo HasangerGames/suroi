@@ -26,8 +26,8 @@
     transform-origin: 0 0;
 
     #c4-detonate-btn {
-        top: 20rem;
-        right: 0.5rem;
+        right: 0;
+        top: 120%;
         position: absolute;
         cursor: pointer !important;
         display: flex;
@@ -86,21 +86,13 @@
         }
     
         @media screen and (max-width: $screen_large) {
-            height: 25px;
-            width: 55px;
-            border-radius: 5px;
-        }
-    
-        @media screen and (max-width: $screen_large) {
-            left: 5px;
-        }
-    
-        @media screen and (max-width: $screen_medium) {
-            bottom: 43px;
-        }
-    
-        @media screen and (max-width: 500px) {
-            bottom: 128px;
+            position: absolute;
+            top: -40%;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
         }
     }
 }
