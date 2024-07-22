@@ -8,6 +8,13 @@
 
 body {
   background: $grass_bg;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+
+  margin: 0;
+  padding: 0;
+
   & > :not(#loading-logo) {
     opacity: 1;
   }
@@ -15,12 +22,6 @@ body {
     display: none;
     animation: none;
   }
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-
-  margin: 0;
-  padding: 0;
 }
 
 // NOTE: WIP, will refactor later

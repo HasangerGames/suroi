@@ -6,6 +6,8 @@
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
 
+        z-index: 1;
+
         a {
             display: flex;
             width: 100%;
@@ -37,8 +39,6 @@
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
         }
-
-        z-index: 1;
     }
 
     .dropdown-content.active {
