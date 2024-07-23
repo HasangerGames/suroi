@@ -42,7 +42,6 @@
         font-size: 15px;
         align-items: center;
         padding: 0 8px 0 8px;
-        overflow: hidden;
     
         &:hover {
             outline: 2px solid $danger !important;
@@ -76,8 +75,8 @@
             opacity: 1;
             pointer-events: none;
             float: left;
-            width: 60px;
-            height: 45px;
+            width: 40px;
+            height: 30px;
             @include drop-shadow;
     
             @media screen and (max-width: $screen_large) {
@@ -87,42 +86,8 @@
         }
     
         @media screen and (max-width: $screen_large) {
-            position: fixed;
-            top: 94%;
-            right: 150px;
-            width: auto;
-
-            #detonate-key {
-                display: none;
-            }
-        }
-
-        @media screen and (max-width: 932px) {
-            position: fixed;
-            top: 88.5%;
-            right: 150px;
-            width: auto;
-
-            #detonate-key {
-                display: none;
-            }
-        }
-
-        @media screen and (max-width: 896px) {
-            position: fixed;
-            top: 88%;
-            right: 150px;
-            width: auto;
-
-            #detonate-key {
-                display: none;
-            }
-        }
-
-        @media screen and (max-width: $screen_medium) {
-            position: fixed;
-            top: 91.5%;
-            right: 120px;
+            position: absolute;
+            top: -40%;
             width: auto;
 
             #detonate-key {
