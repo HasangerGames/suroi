@@ -169,17 +169,17 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     }
                 },
                 angularVelocity: {
-                    min: -0.05,
-                    max: 0.05
+                    min: -0.0005,
+                    max: 0.0005
                 },
                 velocity: {
                     min: {
-                        x: -0.002,
-                        y: -0.002
+                        x: -0.0002,
+                        y: -0.0002
                     },
                     max: {
-                        x: 0.002,
-                        y: 0.002
+                        x: 0.0002,
+                        y: 0.0002
                     }
                 },
                 lifetime: {
@@ -244,12 +244,12 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
             {
                 velocity: {
                     min: {
-                        x: -0.02,
-                        y: -0.02
+                        x: -0.002,
+                        y: -0.002
                     },
                     max: {
-                        x: 0.02,
-                        y: 0.02
+                        x: 0.002,
+                        y: 0.002
                     }
                 },
                 lifetime: {
