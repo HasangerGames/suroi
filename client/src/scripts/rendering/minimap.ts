@@ -476,7 +476,7 @@ export class Minimap {
 
     update(): void {
         // Hide the map while spectating in mobile
-        if (this.game.inputManager.isMobile && this.game.spectating && this._visible) {
+        if (this.game.inputManager.isMobile && this._visible) {
             if (this.game.uiManager.ui.spectatingContainer.css("display") !== "none") { // class check wont work here for some reason
                 this._borderContainer.hide();
                 this.container.visible = false;
