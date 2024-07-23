@@ -142,6 +142,17 @@
     }
 }
 
+.spectating-mode {
+    @media screen and (max-width: $screen_large) {
+        display: inline-flex;
+        gap: 5px;
+
+        #debug-hud {
+            font-size: 10px;
+        }
+    }
+}
+
 #team-container {
     display: flex;
     flex-direction: column;
@@ -828,11 +839,17 @@
     z-index: 1002;
 
     @media screen and (max-width: $screen_large) {
-        top: 95px;
-        width: 200px;
+        width: 150px;
+        position: fixed;
+        top: 10%;
+        left: 5rem;
 
         & > button {
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px !important;
         }
     }
 

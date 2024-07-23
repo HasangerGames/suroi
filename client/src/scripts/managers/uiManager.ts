@@ -192,6 +192,9 @@ export class UIManager {
         spectatePrevious: $<HTMLButtonElement>("#btn-spectate-previous"),
         spectateNext: $<HTMLButtonElement>("#btn-spectate-next"),
         spectatingOptions: $<HTMLButtonElement>("#btn-spectate-options-icon"),
+        btnPlayAgainSpectating: $<HTMLButtonElement>("#btn-spectate-replay"),
+        btnSpectateMenu: $<HTMLButtonElement>("#btn-spectate-menu"),
+        gasAndDebug: $<HTMLDivElement>("#gas-and-debug"),
 
         gasMsg: $<HTMLDivElement>("#gas-msg"),
         gasMsgInfo: $<HTMLDivElement>("#gas-msg-info"),

@@ -475,6 +475,19 @@ export class Minimap {
     }
 
     update(): void {
+        // Hide the map while spectating in mobile
+        if (this.game.inputManager.isMobile && this.game.spectating && this._visible) {
+            if (this.game.uiManager.ui.spectatingContainer.css("display") !== "none") { // class check wont work here for some reason
+                this._borderContainer.hide();
+                this.container.visible = false;
+            } else if (!this._expanded) {
+                this._borderContainer.show();
+                this.container.visible = true;
+            }
+
+            this.game.uiManager.ui.gasAndDebug.toggleClass("spectating-mode", !this.container.visible);
+        }
+
         if (this.pings.size > 0) {
             this.pingGraphics.clear();
             const now = Date.now();
@@ -674,10 +687,19 @@ export class Minimap {
         const width = window.innerWidth;
         if (width > 768) this._uiCache.killLeader.show();
         this._uiCache.killCounter.hide();
+
+        // We check again for the mobile spectating stuff due to a bug
+        if (this.game.inputManager.isMobile && this.game.spectating && this._visible) {
+            this.game.uiManager.ui.spectatingContainer.toggleClass("mobile-visible", false);
+            this.game.uiManager.ui.spectatingContainer.hide();
+            this.container.visible = this.game.uiManager.ui.spectatingContainer.hasClass("mobile-visible");
+        }
+
         if (!this._visible) {
             this.container.visible = false;
             return;
         }
+
         this._borderContainer.show();
         this.resize();
     }
