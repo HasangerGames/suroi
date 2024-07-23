@@ -204,7 +204,12 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             },
             speedCap: 0.15,
             detonation: {
-                explosion: "c4_explosion"
+                explosion: "c4_explosion",
+                particles: {
+                    type: "c4_particle",
+                    count: 8,
+                    spawnRadius: 2
+                }
             },
             animation: {
                 liveImage: "proj_c4",

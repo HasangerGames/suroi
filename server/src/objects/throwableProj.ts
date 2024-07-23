@@ -333,6 +333,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
             this.game.removeProjectile(this);
             this.source.owner.updatedC4Button = false;
+
+            const { particles } = this.definition.detonation;
+            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+            if (particles !== undefined) this.game.addSyncedParticles(particles, referencePosition);
         }
     }
 
