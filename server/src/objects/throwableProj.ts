@@ -123,7 +123,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         setTimeout(() => {
             this.game.removeProjectile(this);
 
-            const { explosion, particles } = this.definition.detonation;
+            const { explosion } = this.definition.detonation;
 
             const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
             const game = this.game;
@@ -134,10 +134,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     referencePosition,
                     this.source.owner
                 );
-            }
-
-            if (particles !== undefined) {
-                game.addSyncedParticles(particles, referencePosition);
             }
         }, delay);
     }
