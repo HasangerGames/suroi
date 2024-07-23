@@ -356,6 +356,9 @@ export async function setUpUI(game: Game): Promise<void> {
 
                     game.connect(`${target.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
                     ui.splashMsg.hide();
+
+                    // Check again because there is a small chance that the create-team-menu element won't hide.
+                    if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
                 } else {
                     let showWarningModal = false;
                     let title: string | undefined;
@@ -1983,9 +1986,24 @@ Video evidence is required.`)) {
         });
     }
 
+    // Alright so in mobile we have a completely different spectating container.
+    if (inputManager.isMobile) {
+        ui.btnReport.html("<i class=\"fa-solid fa-flag\"></i>");
+        ui.btnPlayAgainSpectating.html("<i class=\"fa-solid fa-rotate-right\"></i>");
+
+        // Spectate Kill Leader button
+        ui.spectateKillLeader.html("<i class=\"fa-solid fa-crown\"></i>");
+        ui.spectateKillLeader.addClass("btn-spectate-kill-leader");
+
+        ui.btnSpectateMenu.html("<i class=\"fa-solid fa-bars\"></i>");
+        ui.btnSpectateMenu.addClass("btn-success");
+    }
+
     const optionsIcon = $("#btn-spectate-options-icon");
     $<HTMLButtonElement>("#btn-spectate-options").on("click", () => {
         ui.spectatingContainer.toggle();
+
+        if (game.inputManager.isMobile) ui.spectatingContainer.toggleClass("mobile-visible");
 
         const visible = ui.spectatingContainer.is(":visible");
         optionsIcon

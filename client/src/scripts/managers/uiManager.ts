@@ -191,6 +191,10 @@ export class UIManager {
         btnSpectate: $<HTMLButtonElement>("#btn-spectate"),
         spectatePrevious: $<HTMLButtonElement>("#btn-spectate-previous"),
         spectateNext: $<HTMLButtonElement>("#btn-spectate-next"),
+        spectatingOptions: $<HTMLButtonElement>("#btn-spectate-options-icon"),
+        btnPlayAgainSpectating: $<HTMLButtonElement>("#btn-spectate-replay"),
+        btnSpectateMenu: $<HTMLButtonElement>("#btn-spectate-menu"),
+        gasAndDebug: $<HTMLDivElement>("#gas-and-debug"),
 
         gasMsg: $<HTMLDivElement>("#gas-msg"),
         gasMsgInfo: $<HTMLDivElement>("#gas-msg-info"),
@@ -483,7 +487,7 @@ export class UIManager {
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
             }
-            this.ui.spectatingContainer.toggle(spectating);
+            this.ui.spectatingContainer.toggle(spectating && this.ui.spectatingOptions.hasClass("fa-eye-slash"));
             this.ui.spectatingMsg.toggle(spectating);
             this.clearTeammateCache();
 
