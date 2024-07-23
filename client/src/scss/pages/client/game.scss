@@ -81,14 +81,48 @@
             @include drop-shadow;
     
             @media screen and (max-width: $screen_large) {
-                width: 30px;
-                height: 20px;
+                width: 50px;
+                height: 40px;
             }
         }
     
         @media screen and (max-width: $screen_large) {
-            position: absolute;
-            top: -40%;
+            position: fixed;
+            top: 94%;
+            right: 150px;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 932px) {
+            position: fixed;
+            top: 88.5%;
+            right: 150px;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 896px) {
+            position: fixed;
+            top: 88%;
+            right: 150px;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: $screen_medium) {
+            position: fixed;
+            top: 91.5%;
+            right: 120px;
             width: auto;
 
             #detonate-key {
