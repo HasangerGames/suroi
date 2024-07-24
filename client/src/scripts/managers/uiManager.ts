@@ -498,6 +498,36 @@ export class UIManager {
             }
         }
 
+        if (health !== undefined) {
+            this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
+
+            const normalizedHealth = this.health / this.maxHealth;
+            const realPercentage = 100 * normalizedHealth;
+            const percentage = safeRound(realPercentage);
+
+            this.ui.healthBar
+                .width(`${realPercentage}%`)
+                .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
+                .toggleClass("flashing", percentage <= 25);
+
+            if (realPercentage === 0) {
+                this.ui.healthAnim
+                    .stop()
+                    .width(0);
+            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
+                this.ui.healthAnim
+                    .stop()
+                    .width(`${this._oldHealth}%`)
+                    .animate({ width: `${realPercentage}%` }, 500);
+                this._oldHealth = realPercentage;
+                this._lastHealthBarAnimTime = Date.now();
+            }
+
+            this.ui.healthBarAmount
+                .text(safeRound(this.health))
+                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
+        }
+
         if (teammates && this.game.teamMode) {
             this.teammates = teammates;
 
@@ -580,36 +610,6 @@ export class UIManager {
             } else {
                 this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
             }
-        }
-
-        if (health !== undefined) {
-            this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
-
-            const normalizedHealth = this.health / this.maxHealth;
-            const realPercentage = 100 * normalizedHealth;
-            const percentage = safeRound(realPercentage);
-
-            this.ui.healthBar
-                .width(`${realPercentage}%`)
-                .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
-                .toggleClass("flashing", percentage <= 25);
-
-            if (realPercentage === 0) {
-                this.ui.healthAnim
-                    .stop()
-                    .width(0);
-            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
-                this.ui.healthAnim
-                    .stop()
-                    .width(`${this._oldHealth}%`)
-                    .animate({ width: `${realPercentage}%` }, 500);
-                this._oldHealth = realPercentage;
-                this._lastHealthBarAnimTime = Date.now();
-            }
-
-            this.ui.healthBarAmount
-                .text(safeRound(this.health))
-                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
         if (adrenaline !== undefined) {
