@@ -2700,7 +2700,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     type: "stone",
                     hitbox: new HitboxGroup(
-                        RectangleHitbox.fromRect(20, 50, Vec.create(-31, 10)),
+                        RectangleHitbox.fromRect(20, 50, Vec.create(-30.85, 10)),
                         RectangleHitbox.fromRect(26, 30.5, Vec.create(-33.5, -19)),
                         RectangleHitbox.fromRect(1.65, 10.7, Vec.create(-47.5, -27.6)),
                         RectangleHitbox.fromRect(78, 30.5, Vec.create(-7, -43)),

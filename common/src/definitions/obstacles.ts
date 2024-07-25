@@ -3137,9 +3137,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(71, 1.75, Vec.create(-23.5, -107.5)),
                 RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58, -76.25)),
                 RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58, -35)),
-                RectangleHitbox.fromRect(25, 1.75, Vec.create(-59.65, -35)),
+                RectangleHitbox.fromRect(24.9, 1.7, Vec.create(-59.5, -35)),
                 RectangleHitbox.fromRect(1.75, 70, Vec.create(-71, 0.5)),
-                RectangleHitbox.fromRect(30, 1.75, Vec.create(-56, 34.75)),
+                RectangleHitbox.fromRect(30, 1.75, Vec.create(-55.9, 34.65)),
                 RectangleHitbox.fromRect(18, 1.75, Vec.create(-11.5, 34.75)),
                 RectangleHitbox.fromRect(12.25, 1.75, Vec.create(14.75, 34.75)),
                 RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75))
@@ -3202,7 +3202,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(53.5, 1.52, Vec.create(42.1, -26.4)),
 
                 RectangleHitbox.fromRect(1.51, 18.6, Vec.create(-47.4, -12.65)),
-                RectangleHitbox.fromRect(29.5, 1.51, Vec.create(-55.5, -2.6)),
+                RectangleHitbox.fromRect(29.5, 1.51, Vec.create(-55.6, -2.6)),
                 RectangleHitbox.fromRect(1.51, 8, Vec.create(-41.6, 2)),
                 RectangleHitbox.fromRect(1.51, 18, Vec.create(-41.6, 25)),
                 RectangleHitbox.fromRect(1.5, 40.5, Vec.create(-34.1, -86.3)),
