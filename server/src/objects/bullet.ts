@@ -129,9 +129,9 @@ export class Bullet extends BaseBullet {
                     position: collision.intersection.point
                 });
 
-                if(object.definition.isStair) {
-                    Logger.log("Collide")
-                    this.changeLayer(object.definition.transportTo ?? 0)
+                if (object.definition.isStair) {
+                    Logger.log("Collide");
+                    this.changeLayer(object.definition.transportTo ?? 0);
                 }
 
                 if (definition.penetration.obstacles) continue;

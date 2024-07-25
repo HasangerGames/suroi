@@ -2679,16 +2679,41 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             groundGraphics: [
-                
+
             ],
             floors: [
-               
+                {
+                    type: "wood",
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(88.3, 59.5, Vec.create(25.1, 4.125)),
+                        RectangleHitbox.fromRect(15.25, 1.5, Vec.create(7.75, -26.3)),
+                        RectangleHitbox.fromRect(35.5, 60.5, Vec.create(51.25, -57.5)),
+                        RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -41.5)),
+                        RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -81)),
+                        RectangleHitbox.fromRect(22, 30.6, Vec.create(-59.5, -18.7))
+                    )
+                },
+                {
+                    type: "stone",
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(20, 50, Vec.create(-31, 10)),
+                        RectangleHitbox.fromRect(26, 30.5, Vec.create(-33.5, -19)),
+                        RectangleHitbox.fromRect(1.65, 10.7, Vec.create(-47.5, -27.6)),
+                        RectangleHitbox.fromRect(78, 30.5, Vec.create(-7, -43)),
+                        RectangleHitbox.fromRect(20, 71, Vec.create(22, -71.5)),
+                        RectangleHitbox.fromRect(22.5, 42.5, Vec.create(-46, -57.5)),
+                        RectangleHitbox.fromRect(50, 8.5, Vec.create(-12, -59))
+                    )
+                }
             ],
             obstacles: [
                 { idString: "headquarters_outer_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "headquarters_inner_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "headquarters_wood_obstacles", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "headquarters_sinks", position: Vec.create(0, 0), rotation: 0 }
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0}
+                { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 }
             ]
-        },
+        }
     ]);

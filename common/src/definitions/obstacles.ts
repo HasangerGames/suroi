@@ -3104,10 +3104,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hideOnMap: true,
             indestructible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25.25)),
+                RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25)),
                 RectangleHitbox.fromRect(1.75, 55, Vec.create(69.5, -22.5)),
-                RectangleHitbox.fromRect(1.75, 48, Vec.create(69.5, -84.5)),
-                RectangleHitbox.fromRect(45.5, 1.75, Vec.create(46, -107.5)),
+                RectangleHitbox.fromRect(1.75, 48, Vec.create(69.5, -84.25)),
+                RectangleHitbox.fromRect(45.5, 1.75, Vec.create(46, -107.4)),
                 RectangleHitbox.fromRect(71, 1.75, Vec.create(-23.5, -107.5)),
                 RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58, -76.25)),
                 RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58, -35)),
@@ -3116,7 +3116,76 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(30, 1.75, Vec.create(-56, 34.75)),
                 RectangleHitbox.fromRect(18, 1.75, Vec.create(-11.5, 34.75)),
                 RectangleHitbox.fromRect(12.25, 1.75, Vec.create(14.75, 34.75)),
-                RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75)),
+                RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
+            idString: "headquarters_wood_obstacles",
+            name: "Headquarters Wood Obstacles",
+            material: "wood",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(24.7, 5.5, Vec.create(-11, -47.5)),
+                RectangleHitbox.fromRect(4.7, 6.5, Vec.create(-21, -53.5)),
+                RectangleHitbox.fromRect(4.7, 6.5, Vec.create(-1, -53.5)),
+                RectangleHitbox.fromRect(27.5, 5, Vec.create(-56.3, 31))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            invisible: true,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "headquarters_sinks",
+            name: "Headquarters Sinks",
+            material: "porcelain",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(34, 6, Vec.create(-7.4, -103.5))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            invisible: true,
+            frames: {
+                particle: "toilet_particle"
+            }
+        },
+        {
+            idString: "headquarters_inner_walls",
+            name: "Headquarters Inner Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.5, 61, Vec.create(-19.7, 3.5)),
+                RectangleHitbox.fromRect(20.5, 1.54, Vec.create(-10.25, -26.3)),
+                RectangleHitbox.fromRect(53.5, 1.52, Vec.create(42.1, -26.4)),
+
+                RectangleHitbox.fromRect(1.51, 18.6, Vec.create(-47.4, -12.65)),
+                RectangleHitbox.fromRect(29.5, 1.51, Vec.create(-55.5, -2.6)),
+                RectangleHitbox.fromRect(1.51, 8, Vec.create(-41.6, 2)),
+                RectangleHitbox.fromRect(1.51, 18, Vec.create(-41.6, 25)),
+                RectangleHitbox.fromRect(1.5, 40.5, Vec.create(-34.1, -86.3)),
+
+                // squares
+                RectangleHitbox.fromRect(4, 4, Vec.create(-47.3, -34.9)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(32.5, -64.1)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(10.9, -64.1)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(-33.5, -64))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
