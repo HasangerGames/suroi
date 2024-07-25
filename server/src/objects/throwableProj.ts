@@ -62,11 +62,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
     private readonly _currentlyAbove = new Set<Obstacle>();
 
-    private wasArmed = false;
-    public armed = false;
-    public detonateWhenPlayerLeaves = false;
-    private playerDetected = false;
-
     public static readonly squaredThresholds = Object.freeze({
         impactDamage: 0.0009 as number,
         flyover: 0.0009 as number,
@@ -94,15 +89,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         super(game, position);
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
-        if (this.definition.stationary) {
-            setTimeout(() => {
-                this.armed = true;
-            }, this.definition.armTime);
-        }
-
-        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
-            this.handleCollision(object);
-        }
     }
 
     push(angle: number, speed: number): void {
@@ -122,57 +108,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         return displacement;
     }
 
-    beep(): void {
-        this.wasArmed = false;
-    }
-
-    detonate(): void {
-        this.game.removeProjectile(this);
-
-        const { explosion, particles } = this.definition.detonation;
-
-        const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
-        const game = this.game;
-
-        if (explosion !== undefined) {
-            game.addExplosion(
-                explosion,
-                referencePosition,
-                this.source.owner
-            );
-        }
-
-        if (particles !== undefined) {
-            game.addSyncedParticles(particles, referencePosition);
-        }
-    }
-
     update(): void {
-        if (this.definition.stationary) {
-            if (this.detonateWhenPlayerLeaves) {
-                if (!this.playerDetected) this.beep();
-                this.playerDetected = false;
-                for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
-                    if (object instanceof Player && object.hitbox.collidesWith(this.hitbox)) {
-                        this.playerDetected = true;
-                        break;
-                    }
-                }
-                if (!this.playerDetected) {
-                    this.detonate();
-                    this.detonateWhenPlayerLeaves = false;
-                    return;
-                }
-            }
-
-            this._airborne = false;
-            this.game.grid.updateObject(this);
-            if (!this.wasArmed) this.setDirty();
-            else this.setPartialDirty();
-            if (this.armed) this.wasArmed = true;
-            return;
-        }
-
         const halfDt = 0.5 * this._dt;
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
@@ -257,8 +193,75 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
                 damagedThisTick.add(object);
             }
-
-            this.handleCollision(object);
+    
+            if (
+                object.dead
+                || (
+                    (!isObstacle || !object.collidable)
+                    && (!isPlayer || (!this._collideWithOwner && object === this.source.owner))
+                )
+            ) return;
+    
+            const hitbox = object.hitbox;
+    
+            if (!collidingWithObject) return;
+    
+            const handleCircle = (hitbox: CircleHitbox): void => {
+                const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
+    
+                if (collision) {
+                    this.velocity = Vec.sub(this._velocity, Vec.scale(collision.dir, 0.8 * Vec.length(this._velocity)));
+                    this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
+                }
+            };
+    
+            const handleRectangle = (hitbox: RectangleHitbox): void => {
+                const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
+    
+                if (collision) {
+                    this._velocity = Vec.add(
+                        this._velocity,
+                        Vec.scale(
+                            Vec.project(
+                                this._velocity,
+                                Vec.scale(collision.dir, 1)
+                            ),
+                            -1.5
+                        )
+                    );
+    
+                    this.hitbox.position = Vec.sub(
+                        this.hitbox.position,
+                        Vec.scale(
+                            collision.dir,
+                            (hitbox.isPointInside(this.hitbox.position) ? -1 : 1) * collision.pen
+                            // "why?", you ask
+                            // cause it makes the thingy work and rectCircleIntersection is goofy
+                        )
+                    );
+                }
+            };
+    
+            switch (hitbox.type) {
+                case HitboxType.Circle: {
+                    handleCircle(hitbox);
+                    break;
+                }
+                case HitboxType.Rect: {
+                    handleRectangle(hitbox);
+                    break;
+                }
+                case HitboxType.Group: {
+                    for (const target of hitbox.hitboxes) {
+                        if (target.collidesWith(this.hitbox)) {
+                            target instanceof CircleHitbox
+                                ? handleCircle(target)
+                                : handleRectangle(target);
+                        }
+                    }
+                    break;
+                }
+            }    
 
             this._angularVelocity *= 0.6;
         }
@@ -273,81 +276,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.setPartialDirty();
     }
 
-    handleCollision(object: GameObject): void {
-        const isObstacle = object instanceof Obstacle;
-        const isPlayer = object instanceof Player;
-
-        if (
-            object.dead
-            || (
-                (!isObstacle || !object.collidable)
-                && (!isPlayer || (!this._collideWithOwner && object === this.source.owner))
-            )
-        ) return;
-
-        const hitbox = object.hitbox;
-        const collidingWithObject = object.hitbox.collidesWith(this.hitbox);
-
-        if (!collidingWithObject) return;
-
-        const handleCircle = (hitbox: CircleHitbox): void => {
-            const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
-
-            if (collision) {
-                this.velocity = Vec.sub(this._velocity, Vec.scale(collision.dir, 0.8 * Vec.length(this._velocity)));
-                this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
-            }
-        };
-
-        const handleRectangle = (hitbox: RectangleHitbox): void => {
-            const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
-
-            if (collision) {
-                this._velocity = Vec.add(
-                    this._velocity,
-                    Vec.scale(
-                        Vec.project(
-                            this._velocity,
-                            Vec.scale(collision.dir, 1)
-                        ),
-                        -1.5
-                    )
-                );
-
-                this.hitbox.position = Vec.sub(
-                    this.hitbox.position,
-                    Vec.scale(
-                        collision.dir,
-                        (hitbox.isPointInside(this.hitbox.position) ? -1 : 1) * collision.pen
-                        // "why?", you ask
-                        // cause it makes the thingy work and rectCircleIntersection is goofy
-                    )
-                );
-            }
-        };
-
-        switch (hitbox.type) {
-            case HitboxType.Circle: {
-                handleCircle(hitbox);
-                break;
-            }
-            case HitboxType.Rect: {
-                handleRectangle(hitbox);
-                break;
-            }
-            case HitboxType.Group: {
-                for (const target of hitbox.hitboxes) {
-                    if (target.collidesWith(this.hitbox)) {
-                        target instanceof CircleHitbox
-                            ? handleCircle(target)
-                            : handleRectangle(target);
-                    }
-                }
-                break;
-            }
-        }
-    }
-
     override damage(): void { /* can't damage a throwable projectile */ }
 
     get data(): FullData<ObjectCategory.ThrowableProjectile> {
@@ -356,7 +284,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             rotation: this.rotation,
             layer: this.layer,
             airborne: this.airborne,
-            armed: this.armed,
             full: {
                 definition: this.definition
             }

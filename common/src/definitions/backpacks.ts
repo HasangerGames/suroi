@@ -43,7 +43,6 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                 "firework_rocket": 10,
                 "frag_grenade": 3,
                 "smoke_grenade": 3,
-                "mine": 2,
                 "confetti_grenade": 5
             },
             noDrop: true
@@ -67,7 +66,6 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "firework_rocket": 20,
                     "frag_grenade": 6,
                     "smoke_grenade": 6,
-                    "mine": 4,
                     "confetti_grenade": 9
                 },
                 defaultTint: 0xeeeeee
@@ -93,7 +91,6 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "firework_rocket": 30,
                     "frag_grenade": 9,
                     "smoke_grenade": 9,
-                    "mine": 6,
                     "confetti_grenade": 12
                 },
                 defaultTint: 0x63754b
@@ -119,7 +116,6 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "firework_rocket": 40,
                     "frag_grenade": 12,
                     "smoke_grenade": 12,
-                    "mine": 8,
                     "confetti_grenade": 16
                 },
                 defaultTint: 0x3f3f3f

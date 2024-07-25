@@ -506,17 +506,17 @@ export class Game implements GameData {
             });
         }
 
+        // Handle explosions
+        for (const explosion of this.explosions) {
+            explosion.explode();
+        }
+
         // Update gas
         this.gas.tick();
 
         // First loop over players: movement, animations, & actions
         for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
             if (!player.dead) player.update();
-        }
-
-        // Handle explosions
-        for (const explosion of this.explosions) {
-            explosion.explode();
         }
 
         // Cache objects serialization
