@@ -67,10 +67,10 @@ export class SuroiBitStream extends BitStream {
      * @param maxY The maximum Y position
      * @param bitCount The number of bits to write
      */
-  writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
-    this.writeFloat(vector.x, minX, maxX, bitCount);
-    this.writeFloat(vector.y, minY, maxY, bitCount);
-  }
+    writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
+        this.writeFloat(vector.x, minX, maxX, bitCount);
+        this.writeFloat(vector.y, minY, maxY, bitCount);
+    }
 
     /**
      * Read a position Vector from the stream
