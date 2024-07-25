@@ -3097,6 +3097,32 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
+            idString: "headquarters_bottom_entrance",
+            name: "Headquarters Bottom Entrance",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                // left
+                RectangleHitbox.fromRect(0.25, 12.5, Vec.create(-40.9, 43)),
+                new CircleHitbox(0.5, Vec.create(-41.1, 50.15)),
+                // a circle is missing from the SVG.. not sure if it's intentional
+
+                // right
+                RectangleHitbox.fromRect(0.25, 12.5, Vec.create(-20.86, 43.1)),
+                new CircleHitbox(0.5, Vec.create(-20.95, 50.15)),
+                new CircleHitbox(0.5, Vec.create(-20.95, 36.9))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
             idString: "headquarters_outer_walls",
             name: "Headquarters Outer Walls",
             material: "stone",

@@ -193,7 +193,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
                 damagedThisTick.add(object);
             }
-    
+
             if (
                 object.dead
                 || (
@@ -201,23 +201,23 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     && (!isPlayer || (!this._collideWithOwner && object === this.source.owner))
                 )
             ) return;
-    
+
             const hitbox = object.hitbox;
-    
+
             if (!collidingWithObject) return;
-    
+
             const handleCircle = (hitbox: CircleHitbox): void => {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
-    
+
                 if (collision) {
                     this.velocity = Vec.sub(this._velocity, Vec.scale(collision.dir, 0.8 * Vec.length(this._velocity)));
                     this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
                 }
             };
-    
+
             const handleRectangle = (hitbox: RectangleHitbox): void => {
                 const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
-    
+
                 if (collision) {
                     this._velocity = Vec.add(
                         this._velocity,
@@ -229,7 +229,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                             -1.5
                         )
                     );
-    
+
                     this.hitbox.position = Vec.sub(
                         this.hitbox.position,
                         Vec.scale(
@@ -241,7 +241,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     );
                 }
             };
-    
+
             switch (hitbox.type) {
                 case HitboxType.Circle: {
                     handleCircle(hitbox);
@@ -261,7 +261,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     }
                     break;
                 }
-            }    
+            }
 
             this._angularVelocity *= 0.6;
         }

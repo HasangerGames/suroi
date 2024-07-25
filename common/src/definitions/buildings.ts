@@ -2660,6 +2660,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
+                    key: "headquarters_floor_entrance",
+                    position: Vec.create(-31, 43)
+                },
+                {
                     key: "headquarters_floor_top",
                     position: Vec.create(0, -74)
                 },
@@ -2702,11 +2706,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(78, 30.5, Vec.create(-7, -43)),
                         RectangleHitbox.fromRect(20, 71, Vec.create(22, -71.5)),
                         RectangleHitbox.fromRect(22.5, 42.5, Vec.create(-46, -57.5)),
-                        RectangleHitbox.fromRect(50, 8.5, Vec.create(-12, -59))
+                        RectangleHitbox.fromRect(50, 8.5, Vec.create(-12, -59)),
+                        RectangleHitbox.fromRect(22.5, 16, Vec.create(-31, 43.15))
                     )
                 }
             ],
             obstacles: [
+                { idString: "headquarters_bottom_entrance", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_outer_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_inner_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_wood_obstacles", position: Vec.create(0, 0), rotation: 0 },
