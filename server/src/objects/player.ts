@@ -736,11 +736,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.activeItem.stopUse();
         }
 
-        const gas = this.game.gas;
         // Gas damage
+        const gas = this.game.gas;
         if (gas.doDamage && gas.isInGas(this.position)) {
             this.piercingDamage({
-                amount: gas.dps,
+                amount: gas.scaledDamage(this.position),
                 source: KillfeedEventType.Gas
             });
         }
