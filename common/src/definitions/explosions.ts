@@ -383,7 +383,7 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
         apply(
             "explosion_factory",
             {
-                damage: 120,
+                damage: 150,
                 obstacleMultiplier: 1.15,
                 radius: {
                     min: 10,
@@ -398,7 +398,7 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
                     tint: 0x91140b,
                     scale: 1.5
                 },
-                shrapnelCount: 10,
+                shrapnelCount: 0,
                 ballistics: {
                     damage: 15,
                     obstacleMultiplier: 1,
