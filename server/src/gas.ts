@@ -36,11 +36,6 @@ export class Gas {
     readonly game: Game;
     readonly mapSize: number;
 
-    // Extra damage, linear per distance unit into the gas
-    static readonly damageScaleFactor: number = 0.005;
-    // Don't scale damage for a certain distance into the gas
-    static readonly unscaledDamageDist: number = (GameConstants.player.radius * 2) * 15;
-
     constructor(game: Game) {
         this.game = game;
         this.mapSize = (this.game.map.width + this.game.map.height) / 2;
@@ -105,10 +100,8 @@ export class Gas {
     }
 
     scaledDamage(position: Vector): number {
-        if (!this.isInGas(position)) return 0;
-
         const distIntoGas = Geometry.distance(position, this.currentPosition) - this.currentRadius;
-        return this.dps + Numeric.clamp(distIntoGas - Gas.unscaledDamageDist, 0, Infinity) * Gas.damageScaleFactor;
+        return this.dps + Numeric.clamp(distIntoGas - GameConstants.gas.unscaledDamageDist, 0, Infinity) * GameConstants.gas.damageScaleFactor;
     }
 
     advanceGasStage(): void {
