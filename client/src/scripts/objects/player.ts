@@ -1328,16 +1328,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     return;
                 }
 
-                this.playSound("throwable_pin");
+                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin");
 
                 const def = this.activeItem;
                 const projImage = this.images.weapon;
                 const pinImage = this.images.altWeapon;
 
                 projImage.visible = true;
-                pinImage.setFrame(def.animation.pinImage);
-                pinImage.setPos(35, 0);
-                pinImage.setZIndex(ZIndexes.Players + 1);
+                if (def.animation.pinImage) {
+                    pinImage.setFrame(def.animation.pinImage);
+                    pinImage.setPos(35, 0);
+                    pinImage.setZIndex(ZIndexes.Players + 1);
+                }
                 projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
                 this.updateFistsPosition(false);
 
@@ -1355,17 +1357,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             }
                         });
 
-                        pinImage.visible = true;
-                        this.anims.pin = this.game.addTween({
-                            target: pinImage,
-                            duration: def.cookTime / 2,
-                            to: {
-                                ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
-                            },
-                            onComplete: () => {
-                                this.anims.pin = undefined;
-                            }
-                        });
+                        if (def.animation.pinImage) {
+                            pinImage.visible = true;
+                            this.anims.pin = this.game.addTween({
+                                target: pinImage,
+                                duration: def.cookTime / 2,
+                                to: {
+                                    ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
+                                },
+                                onComplete: () => {
+                                    this.anims.pin = undefined;
+                                }
+                            });
+                        }
                     }
                 });
 

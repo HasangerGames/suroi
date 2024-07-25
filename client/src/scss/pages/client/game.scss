@@ -24,6 +24,77 @@
     left: 0;
     position: absolute;
     transform-origin: 0 0;
+
+    #c4-detonate-btn {
+        right: 0;
+        top: 120%;
+        position: absolute;
+        cursor: pointer !important;
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        box-sizing: border-box;
+        height: 40px;
+        width: 100px;
+        z-index: 9999999;
+        background: $transparent_bg;
+        border-radius: 10px;
+        font-size: 15px;
+        align-items: center;
+        padding: 0 8px 0 8px;
+    
+        &:hover {
+            outline: 2px solid $danger !important;
+        }
+
+        #detonate-key {
+            opacity: 1;
+            float: right;
+            margin-left: auto;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 3px;
+            border: 1px solid #b4b4b4;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+                0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+            color: #333;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1;
+            padding: 2px 4px;
+            margin-right: 3px;
+            white-space: nowrap;
+        }
+    
+        .item-image {
+            opacity: 1;
+            pointer-events: none;
+            float: left;
+            width: 60px;
+            height: 45px;
+            @include drop-shadow;
+    
+            @media screen and (max-width: $screen_large) {
+                width: 50px;
+                height: 40px;
+            }
+        }
+    
+        @media screen and (max-width: $screen_large) {
+            position: absolute;
+            top: -40%;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
+        }
+    }
 }
 
 #btn-close-minimap {
