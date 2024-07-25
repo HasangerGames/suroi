@@ -845,7 +845,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "saf_200",
+            idString: "saf200",
             name: "SAF-200",
             ammoType: "9mm",
             ammoSpawnAmount: 90,
@@ -1622,7 +1622,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "g17_s",
+            idString: "g17_scoped",
             name: "G17 (scoped)",
             ammoType: "bb",
             fireDelay: 35,
@@ -1669,7 +1669,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
 
         // only dev weapons below this point
         {
-            idString: "deathray",
+            idString: "death_ray",
             name: "Death Ray",
             ammoType: "power_cell",
             capacity: 1,
