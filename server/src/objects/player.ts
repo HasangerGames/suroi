@@ -1628,7 +1628,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Create death marker
-        this.game.grid.addObject(new DeathMarker(this));
+        this.game.grid.addObject(new DeathMarker(this, this.layer));
 
         // Send game over to dead player
         if (!this.disconnected) {

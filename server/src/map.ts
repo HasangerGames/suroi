@@ -500,6 +500,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
+                    definition.layer ?? 0,
                     { count: item.count, jitterSpawn: false }
                 );
             }
@@ -657,6 +658,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     position,
+                    0, // uhh what
                     { count: item.count, jitterSpawn: false }
                 );
             }

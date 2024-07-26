@@ -11,9 +11,10 @@ export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
     readonly player: Player;
     isNew = true;
 
-    constructor(player: Player) {
+    constructor(player: Player, layer: number) {
         super(player.game, player.position);
         this.player = player;
+        this.layer = layer;
 
         this.game.addTimeout(() => {
             this.isNew = false;
@@ -25,7 +26,8 @@ export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
         return {
             position: this.position,
             isNew: this.isNew,
-            playerID: this.player.id
+            playerID: this.player.id,
+            layer: this.layer
         };
     }
 
