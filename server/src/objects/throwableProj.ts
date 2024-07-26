@@ -62,6 +62,9 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     private _airborne = true;
     get airborne(): boolean { return this._airborne; }
 
+    private _activated = false;
+    get activated(): boolean { return this._activated; }
+
     private readonly _currentlyAbove = new Set<Obstacle>();
 
     public static readonly squaredThresholds = Object.freeze({
@@ -120,6 +123,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     }
 
     detonate(delay: number): void {
+        this._activated = true;
+        this.setDirty();
         setTimeout(() => {
             this.game.removeProjectile(this);
 
@@ -343,6 +348,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             position: this.position,
             rotation: this.rotation,
             airborne: this.airborne,
+            activated: this.activated,
             full: {
                 definition: this.definition
             }

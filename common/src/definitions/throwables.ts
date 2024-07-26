@@ -43,6 +43,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly pinImage?: string
         readonly liveImage: string
         readonly leverImage: string
+        readonly activatedImage?: string
         readonly cook: {
             readonly cookingImage?: string
             readonly leftFist: Vector
@@ -197,7 +198,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             name: "C4",
             c4: true,
             health: 40,
-            armTime: 5000,
             image: {
                 position: Vec.create(60, 43),
                 angle: 60
@@ -214,6 +214,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             animation: {
                 liveImage: "proj_c4",
                 leverImage: "proj_frag_lever",
+                activatedImage: "proj_c4_activated",
                 cook: {
                     leftFist: Vec.create(2, -1),
                     rightFist: Vec.create(3, 0)
