@@ -10,7 +10,6 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { Logger } from "../utils/misc";
 import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
@@ -45,7 +44,6 @@ export class Bullet extends BaseBullet {
 
     reflected = false;
     layer = 0;
-    switchedLayer = false;
 
     readonly finalPosition: Vector;
 
@@ -74,8 +72,6 @@ export class Bullet extends BaseBullet {
         this.sourceGun = source;
         this.shooter = shooter;
         this.originalLayer = shooter.layer;
-
-        this.switchedLayer = false;
 
         this.layer = options.layer ?? shooter.layer;
 
@@ -106,7 +102,7 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player && sameLayer(this.layer, object.layer) && !this.switchedLayer) {
+            if (object.type === ObjectCategory.Player && sameLayer(this.layer, object.layer)) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -122,7 +118,7 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer) && !this.switchedLayer) {
+            if (object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer)) {
                 this.damagedIDs.add(object.id);
 
                 records.push({
@@ -187,7 +183,6 @@ export class Bullet extends BaseBullet {
     }
 
     changeLayer(layer: number, position: Vector): void {
-        this.switchedLayer = true;
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
