@@ -3,7 +3,7 @@ import { Color } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { Geometry } from "../../../../common/src/utils/math";
-import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { random, randomFloat, randomRotation, sameLayer } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
@@ -68,7 +68,8 @@ export class Bullet extends BaseBullet {
 
                 const isObstacle = object.type === ObjectCategory.Obstacle;
                 const isPlayer = object.type === ObjectCategory.Player;
-                if (isObstacle || isPlayer) {
+
+                if ((isObstacle || isPlayer) && sameLayer(this.layer, object.layer)) {
                     (object as Obstacle | Player).hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
                 }
 
