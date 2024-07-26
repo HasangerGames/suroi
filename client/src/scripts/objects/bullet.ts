@@ -69,7 +69,7 @@ export class Bullet extends BaseBullet {
                 const isObstacle = object.type === ObjectCategory.Obstacle;
                 const isPlayer = object.type === ObjectCategory.Player;
 
-                if ((isObstacle || isPlayer) && sameLayer(this.layer, object.layer)) {
+                if ((isPlayer || (isObstacle && !object.definition.isStair)) && sameLayer((object.layer ?? 0), this.layer)) {
                     (object as Obstacle | Player).hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
                 }
 

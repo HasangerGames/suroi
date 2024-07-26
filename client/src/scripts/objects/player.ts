@@ -339,7 +339,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        this.changeLayer(data.layer);
+        this.layer = data.layer;
+        this.changeLayer(this.layer);
 
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
@@ -911,7 +912,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.game.map.terrainGraphics.visible = false;
 
-                this.layer = layer;
                 break;
             }
             case Layer.StairsToBasement: {
@@ -919,7 +919,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.game.pixi.renderer.background.color = COLORS.grass;
 
-                this.layer = layer;
                 break;
             }
             case Layer.Floor1: {
@@ -927,7 +926,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.game.map.terrainGraphics.visible = true;
 
-                this.layer = layer;
                 break;
             }
         }
