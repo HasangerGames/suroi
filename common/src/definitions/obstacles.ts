@@ -3197,9 +3197,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hideOnMap: true,
             indestructible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1.5, 61, Vec.create(-19.7, 3.5)),
-                RectangleHitbox.fromRect(20.5, 1.54, Vec.create(-10.25, -26.3)),
-                RectangleHitbox.fromRect(53.5, 1.52, Vec.create(42.1, -26.4)),
+                RectangleHitbox.fromRect(1.55, 61, Vec.create(-19.7, 3.5)),
+                RectangleHitbox.fromRect(20.5, 1.55, Vec.create(-10.25, -26.3)),
+                RectangleHitbox.fromRect(53.5, 1.55, Vec.create(42.1, -26.4)),
 
                 RectangleHitbox.fromRect(1.51, 18.6, Vec.create(-47.4, -12.65)),
                 RectangleHitbox.fromRect(29.5, 1.51, Vec.create(-55.6, -2.6)),
