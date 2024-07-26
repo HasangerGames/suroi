@@ -2700,6 +2700,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     type: "stone",
                     hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(15.25, 1, Vec.create(7.75, -27.5)),
                         RectangleHitbox.fromRect(20, 50, Vec.create(-30.85, 10)),
                         RectangleHitbox.fromRect(26, 30.5, Vec.create(-33.5, -19)),
                         RectangleHitbox.fromRect(1.65, 10.7, Vec.create(-47.5, -27.6)),
@@ -2709,6 +2710,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(22.5, 42.5, Vec.create(-46, -57.5)),
                         RectangleHitbox.fromRect(50, 8.5, Vec.create(-12, -59)),
                         RectangleHitbox.fromRect(22.5, 16, Vec.create(-31, 43.15)),
+                        RectangleHitbox.fromRect(1.5, 80, Vec.create(32.5, -67)),
+                        RectangleHitbox.fromRect(1.67, 9.7, Vec.create(-41.8, 11.05)),
 
                         // TODO: new floor types for these (positions are done)
                         RectangleHitbox.fromRect(45, 43.5, Vec.create(-10.8, -85.25)), // toilet (grey and white tiles)

@@ -45,6 +45,7 @@ export class Bullet extends BaseBullet {
 
     reflected = false;
     layer = 0;
+    switchedLayer = false;
 
     readonly finalPosition: Vector;
 
@@ -73,7 +74,10 @@ export class Bullet extends BaseBullet {
         this.sourceGun = source;
         this.shooter = shooter;
         this.originalLayer = shooter.layer;
-        this.layer = shooter.layer;
+
+        this.switchedLayer = false;
+
+        this.layer = options.layer ?? shooter.layer;
 
         this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
     }
@@ -102,7 +106,7 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player && sameLayer(this.layer, object.layer)) {
+            if (object.type === ObjectCategory.Player && sameLayer(this.layer, object.layer) && !this.switchedLayer) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -118,7 +122,7 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer)) {
+            if (object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer) && !this.switchedLayer) {
                 this.damagedIDs.add(object.id);
 
                 records.push({
@@ -130,8 +134,7 @@ export class Bullet extends BaseBullet {
                 });
 
                 if (object.definition.isStair) {
-                    Logger.log("Collide");
-                    this.changeLayer(object.definition.transportTo ?? 0);
+                    this.changeLayer(object.definition.transportTo ?? 0, this.position);
                 }
 
                 if (definition.penetration.obstacles) continue;
@@ -183,12 +186,13 @@ export class Bullet extends BaseBullet {
         );
     }
 
-    changeLayer(layer: number): void {
+    changeLayer(layer: number, position: Vector): void {
+        this.switchedLayer = true;
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
             {
-                position: Vec.clone(this.position),
+                position: Vec.clone(position),
                 rotation: this.rotation,
                 layer: layer,
                 reflectionCount: this.reflectionCount + 1,
