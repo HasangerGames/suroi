@@ -5,7 +5,7 @@ import { Loots } from "@common/definitions/loots";
 import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
-import { randomFloat, sameLayer } from "@common/utils/random";
+import { isAdjacent, randomFloat, sameLayer } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
@@ -119,7 +119,7 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle && sameLayer(this.layer, object.layer)) {
+            if (object.type === ObjectCategory.Obstacle && isAdjacent(this.layer, object.layer)) {
                 this.damagedIDs.add(object.id);
 
                 records.push({
@@ -130,7 +130,7 @@ export class Bullet extends BaseBullet {
                     position: collision.intersection.point
                 });
 
-                if (object.definition.isStair) {
+                if (object.definition.isStair && sameLayer(this.shooter.layer, this.originalLayer)) {
                     this.changeLayer(object.definition.transportTo ?? this.originalLayer, this.position);
                 }
 
