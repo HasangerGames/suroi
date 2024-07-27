@@ -353,7 +353,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (noMovementSmoothing) this.game.camera.position = toPixiCoords(this.position);
 
             if (this.game.console.getBuiltInCVar("pf_show_pos")) {
-                uiManager.debugReadouts.pos.text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
+                uiManager.debugReadouts.pos.text(
+                    `X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)} Z: ${this.layer}`
+                );
             }
         }
 
