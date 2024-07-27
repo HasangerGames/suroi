@@ -151,7 +151,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             if (obstacle?.layer < this.layer) {
                 // console.log(`Flying over lower layer object. Object: ${ obstacle.layer }, Throwable: ${ this.layer }`);
                 return true;
-            } 
+            }
 
             return flyoverCondMap[obstacle.definition.allowFlyover];
         };
@@ -186,8 +186,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                             // console.log(`Colliding with higher layer object. Object: ${ object.layer }, Throwable: ${ this.layer }`);
                             this._currentDragConst = ThrowableProjectile._extraHarshDragConstant;
                         }
-                    }
-                    else {
+                    } else {
                         this._currentDragConst = ThrowableProjectile._harshDragConstant;
                     }
 

@@ -224,6 +224,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }),
+        hqWall: (lengthNumber: number) => ({
+            idString: `headquarters_wall_${lengthNumber}`,
+            name: `Headquarters Wall ${lengthNumber}`,
+            material: "wood",
+            hideOnMap: true,
+            noResidue: true,
+            health: 170,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "wall_particle"
+            },
+            wall: {
+                borderColor: 0x4a4134,
+                color: 0xafa08c
+            },
+            role: ObstacleSpecialRoles.Wall
+        }),
         concreteWall: () => ({
             material: "stone",
             health: 500,
@@ -936,6 +959,16 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.6, 2) }, 7),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(10.7, 2) }, 8),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(17.7, 2) }, 9),
+
+        // HQ walls (headquarters)
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.5, 2) }, 1),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21, 2) }, 2),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(9.1, 2) }, 3),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(15.5, 2) }, 4),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(16.3, 2) }, 5),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.25, 2) }, 6),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 7),
+
         {
             idString: "fridge",
             name: "Fridge",
@@ -3043,6 +3076,21 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(0.1, 18.5, Vec.create(5, 0)),
                 RectangleHitbox.fromRect(0.1, 18.5, Vec.create(-5, 0))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "stair_thing",
+            name: "Stair thing",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(12, 0.25, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"

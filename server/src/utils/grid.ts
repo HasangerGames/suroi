@@ -146,11 +146,9 @@ export class Grid {
                     if (layer != null) {
                         if (object.layer != null) {
                             // Only include adjacent layers.
-                            if (object.layer >= layer - 1 && object.layer <= layer + 1)
-                                objects.add(object);
+                            if (object.layer >= layer - 1 && object.layer <= layer + 1) { objects.add(object); }
                         }
-                    }
-                    else {
+                    } else {
                         objects.add(object);
                     }
                 }
