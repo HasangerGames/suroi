@@ -10,19 +10,26 @@ import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
  * An enum indicating the degree to which an obstacle should allow
  * throwables to sail over it.
  *
- * - `Always` will, as its name implies, always allow throwables to fly over.
- * - `Sometimes` will allow throwables to fly over if their velocity exceeds 0.04 u/ms
- * (for reference, the maximum throwing speed is around 0.09 u/ms for a 1x scope).
- * - `Never` will, as its name implies, never allow throwables to fly over.
- *
  * Note that any throwable whose velocity is below 0.03 u/ms won't be able to sail
  * over any obstacle, even those marked as `Always`. Additionally, if the obstacle
  * in question has a role that is `ObstacleSpecialRoles.Door`, its preference will only
- * be honored when the door is opened; if it is closed, it will act as `Never`.
+ * be honored when the door is opened; if it is closed, it will act as {@link Never}.
  */
 export enum FlyoverPref {
+    /**
+     * Always allow throwables to fly over the object.
+     */
     Always,
+
+    /**
+     * Only allow throwables to fly over the object if the throwable's velocity exceeds 0.04 u/ms.
+     * For reference, the maximum throwing speed is around 0.09 u/ms for a 1x scope.
+     */
     Sometimes,
+
+    /**
+     * Never allow throwables to fly over the object.
+     */
     Never
 }
 
