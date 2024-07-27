@@ -2725,7 +2725,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_outer_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_inner_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_wood_obstacles", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "headquarters_sinks", position: Vec.create(0, 0), rotation: 0 }
+                { idString: "headquarters_sinks", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "regular_crate", position: Vec.create(-30, -90), layer: -2 } // dummy crate for testing (remove when done)
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 }

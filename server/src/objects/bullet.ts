@@ -119,48 +119,92 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle && isAdjacent(this.layer, object.layer)) {
-                this.damagedIDs.add(object.id);
+            if (object.type === ObjectCategory.Obstacle) {
+                // FOR THE LOVE OF GOD IMPROVE THIS ABOMINATION
+                // isAdjacent(this.layer, object.layer) makes it so that you cant shoot through walls while on stairs (-1 layer)
 
-                records.push({
-                    object: object as Obstacle,
-                    damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
-                    weapon: this.sourceGun,
-                    source: this.shooter,
-                    position: collision.intersection.point
-                });
+                if (isAdjacent(this.layer, object.layer) && object.definition.isStair) { // stair
+                    this.damagedIDs.add(object.id);
 
-                if (object.definition.isStair && sameLayer(this.shooter.layer, this.originalLayer)) {
-                    this.changeLayer(object.definition.transportTo ?? this.originalLayer, this.position);
-                }
+                    records.push({
+                        object: object as Obstacle,
+                        damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
+                        weapon: this.sourceGun,
+                        source: this.shooter,
+                        position: collision.intersection.point
+                    });
 
-                if (definition.penetration.obstacles) continue;
-
-                if (!object.definition.noCollisions) {
-                    const { point, normal } = collision.intersection;
-                    this.position = point;
-
-                    if (object.definition.reflectBullets && this.reflectionCount < 3) {
-                        /*
-                                no matter what, nudge the bullet
-
-                                if the bullet reflects, we do this to ensure that it doesn't re-collide
-                                with the same obstacle instantly
-
-                                if it doesn't, then we do this to avoid having the obstacle eat the
-                                explosion, thereby shielding others from its effects
-                            */
-                        const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                        this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
-
-                        if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
-                            this.reflect(rotation);
-                            this.reflected = true;
-                        }
+                    if (object.definition.isStair) {
+                        this.changeLayer(object.definition.transportTo ?? this.originalLayer, this.position);
                     }
 
-                    this.dead = true;
-                    break;
+                    if (definition.penetration.obstacles) continue;
+
+                    if (!object.definition.noCollisions) {
+                        const { point, normal } = collision.intersection;
+                        this.position = point;
+
+                        if (object.definition.reflectBullets && this.reflectionCount < 3) {
+                            /*
+                                    no matter what, nudge the bullet
+
+                                    if the bullet reflects, we do this to ensure that it doesn't re-collide
+                                    with the same obstacle instantly
+
+                                    if it doesn't, then we do this to avoid having the obstacle eat the
+                                    explosion, thereby shielding others from its effects
+                                */
+                            const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                            this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+
+                            if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
+                                this.reflect(rotation);
+                                this.reflected = true;
+                            }
+                        }
+
+                        this.dead = true;
+                        break;
+                    }
+                } else if (sameLayer(this.layer, object.layer) && !object.definition.isStair) {
+                    this.damagedIDs.add(object.id);
+
+                    records.push({
+                        object: object as Obstacle,
+                        damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
+                        weapon: this.sourceGun,
+                        source: this.shooter,
+                        position: collision.intersection.point
+                    });
+
+                    if (definition.penetration.obstacles) continue;
+
+                    if (!object.definition.noCollisions) {
+                        const { point, normal } = collision.intersection;
+                        this.position = point;
+
+                        if (object.definition.reflectBullets && this.reflectionCount < 3) {
+                            /*
+                                    no matter what, nudge the bullet
+
+                                    if the bullet reflects, we do this to ensure that it doesn't re-collide
+                                    with the same obstacle instantly
+
+                                    if it doesn't, then we do this to avoid having the obstacle eat the
+                                    explosion, thereby shielding others from its effects
+                                */
+                            const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                            this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+
+                            if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
+                                this.reflect(rotation);
+                                this.reflected = true;
+                            }
+                        }
+
+                        this.dead = true;
+                        break;
+                    }
                 }
             }
         }
