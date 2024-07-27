@@ -194,6 +194,7 @@ class GrenadeHandler {
                 this.owner.position,
                 Vec.rotate(definition.animation.cook.rightFist, this.owner.rotation)
             ),
+            this.parent.owner.layer,
             this.parent
         );
 

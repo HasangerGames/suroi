@@ -974,8 +974,8 @@ export class Game implements GameData {
         return explosion;
     }
 
-    addProjectile(definition: ThrowableDefinition, position: Vector, source: ThrowableItem): ThrowableProjectile {
-        const projectile = new ThrowableProjectile(this, position, definition, source);
+    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source: ThrowableItem): ThrowableProjectile {
+        const projectile = new ThrowableProjectile(this, position, layer, definition, source);
         this.grid.addObject(projectile);
         return projectile;
     }
