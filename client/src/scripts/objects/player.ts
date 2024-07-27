@@ -339,14 +339,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        this.layer = data.layer;
-        this.changeLayer(this.layer);
-
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
         if (this.isActivePlayer) {
+            this.layer = data.layer;
+            this.changeLayer(this.layer);
+
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
