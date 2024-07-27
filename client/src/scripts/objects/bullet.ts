@@ -78,6 +78,10 @@ export class Bullet extends BaseBullet {
                 if (isObstacle) {
                     if (this.definition.penetration.obstacles && !object.definition.impenetrable) continue;
                     if (object.definition.noBulletCollision || object.definition.noCollisions) continue;
+                    if (object.definition.isStair && this.game.activePlayer && this.game.activePlayer.layer === this.layer) {
+                        this.layer = object.definition.transportTo ?? 0;
+                        continue;
+                    }
                 }
                 if (this.definition.penetration.players && isPlayer) continue;
 

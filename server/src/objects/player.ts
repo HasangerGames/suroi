@@ -419,7 +419,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
         this.inventory.addOrReplaceWeapon(1, "m3k");
-        // this.inventory.addOrReplaceWeapon(3, "frag_grenade");
+        this.inventory.addOrReplaceWeapon(3, "frag_grenade");
         this.inventory.items.setItem("12g", 15);
 
         this.inventory.scope = "4x_scope";
@@ -854,14 +854,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => ((!newVisibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && (this.visibleObjects.delete(object), true))
+                    object => (((!newVisibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && (this.visibleObjects.delete(object), true)) && !(object.type === ObjectCategory.Obstacle && object.definition.isStair))
                 )
                 .map(({ id }) => id);
 
             newVisibleObjects
                 .forEach(
                     object => {
-                        if (this.visibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) return;
+                        if ((this.visibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)) return;
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);

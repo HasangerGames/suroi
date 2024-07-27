@@ -45,7 +45,7 @@ export class BaseBullet {
     readonly initialPosition: Vector;
 
     readonly rotation: number;
-    readonly layer: Layer;
+    layer: Layer;
     readonly velocity: Vector;
     readonly direction: Vector;
 
