@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { CircleHitbox, HitboxType, type RectangleHitbox } from "@common/utils/hitbox";
@@ -55,6 +55,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
      */
     private static readonly _harshDragConstant = dragConst(5.4, 1.6);
 
+    private static readonly _extraHarshDragConstant = dragConst(6.7, 1.6);
+
     override get position(): Vector { return this.hitbox.position; }
 
     private _airborne = true;
@@ -82,11 +84,13 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     constructor(
         game: Game,
         position: Vector,
+        layer: Layer,
         readonly definition: ThrowableDefinition,
         readonly source: ThrowableItem,
         radius?: number
     ) {
         super(game, position);
+        this.layer = layer;
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
     }
@@ -140,14 +144,21 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         };
 
         const canFlyOver = (obstacle: Obstacle): boolean => {
-            return obstacle.door?.isOpen === false
-                ? false
-                : flyoverCondMap[obstacle.definition.allowFlyover];
+            // If the obstacle is a door, and the door is not open, then the throwable cannot fly over it.
+            if (obstacle.door?.isOpen === false) return false;
+            // If the obstacle is of a lower layer than this throwable, then the throwable can fly over it.
+            // This allows throwables to go down stairs with ease.
+            if (obstacle?.layer < this.layer) {
+                // console.log(`Flying over lower layer object. Object: ${ obstacle.layer }, Throwable: ${ this.layer }`);
+                return true;
+            } 
+
+            return flyoverCondMap[obstacle.definition.allowFlyover];
         };
 
         const damagedThisTick = new Set<GameObject>();
 
-        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
+        for (const object of this.game.grid.intersectsHitbox(this.hitbox, this.layer)) {
             const isObstacle = object instanceof Obstacle;
             const isPlayer = object instanceof Player;
 
@@ -166,8 +177,25 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     let isAbove = false;
                     if (isAbove = canFlyOver(object)) {
                         this._currentlyAbove.add(object);
-                    } else {
+
+                        // If the colliding object is a stair-type object, and its layer is greater than this throwable's
+                        // current layer, then this throwable appears to have been thrown up the stairs.
+                        // To emulate the difficulty of throwing something up the stairs, apply a higher drag coefficient
+                        // to slow it down.
+                        if (object.definition?.isStair && object.layer > this.layer) {
+                            // console.log(`Colliding with higher layer object. Object: ${ object.layer }, Throwable: ${ this.layer }`);
+                            this._currentDragConst = ThrowableProjectile._extraHarshDragConstant;
+                        }
+                    }
+                    else {
                         this._currentDragConst = ThrowableProjectile._harshDragConstant;
+                    }
+
+                    if (object.definition.isStair) {
+                        // console.log(`Colliding with a stair-type object! TransportTo: ${object.definition.transportTo}`)
+                        if (object.definition?.transportTo != null) {
+                            this.layer = object.definition.transportTo;
+                        }
                     }
 
                     if (isAbove || this._currentlyAbove.has(object)) {
@@ -179,6 +207,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             }
 
             if (!collidingWithObject) continue;
+            // else console.log(object.data);
 
             if (shouldDealImpactDamage && !this._damagedLastTick.has(object)) {
                 object.damage({
