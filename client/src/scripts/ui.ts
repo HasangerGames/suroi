@@ -1751,6 +1751,7 @@ Video evidence is required.`)) {
     let dropTimer: number | undefined;
 
     function mobileDropItem(button: number, condition: boolean, item?: AmmoDefinition | ArmorDefinition | ScopeDefinition | HealingItemDefinition, slot?: number): void {
+        if (!inputManager.isMobile) return;
         dropTimer = window.setTimeout(() => {
             if (button === 0 && condition) {
                 if (slot !== undefined) {
