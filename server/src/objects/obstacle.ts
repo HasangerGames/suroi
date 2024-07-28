@@ -191,7 +191,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
-                this.game.addExplosion(definition.explosion, this.position, source);
+                this.game.addExplosion(definition.explosion, this.position, source, source.layer);
             }
 
             if (definition.particlesOnDestroy !== undefined) {
