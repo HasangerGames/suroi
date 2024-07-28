@@ -975,7 +975,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max
-            ) && layer === this.layer
+            ) && layer === (this.layer as number)
         );
 
         /**

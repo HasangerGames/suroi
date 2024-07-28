@@ -146,6 +146,7 @@ export class Grid {
                     if (layer != null) {
                         if (object.layer != null) {
                             // Only include adjacent layers.
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
                             if (object.layer >= layer - 1 && object.layer <= layer + 1) { objects.add(object); }
                         }
                     } else {
