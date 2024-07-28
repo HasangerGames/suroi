@@ -2717,10 +2717,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                         // TODO: new floor types for these (positions are done)
                         RectangleHitbox.fromRect(45, 43.5, Vec.create(-10.8, -85.25)), // toilet (grey and white tiles)
-                        RectangleHitbox.fromRect(35.4, 19, Vec.create(51.25, -97.35)), // toilet (grey and white tiles)
-                        RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8)) // red/maroon carpet
+                        RectangleHitbox.fromRect(35.4, 19, Vec.create(51.25, -97.35)) // toilet (grey and white tiles)
                     )
-                }
+                },
+
+                {
+                    type: "carpet",
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8))
+                    )
+                },
             ],
             obstacles: [
                 { idString: "headquarters_bottom_entrance", position: Vec.create(0, 0), rotation: 0 },

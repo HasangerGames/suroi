@@ -26,6 +26,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     metal: {
         debugColor: 0x808080
     },
+    carpet: {
+        debugColor: 0x32a868
+    },
     water: {
         debugColor: 0x00ddff,
         speedMultiplier: 0.7,
