@@ -2784,7 +2784,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "potted_plant", position: Vec.create(38, -31.7) },
 
                 // bottom right
-                { idString: "button", position: Vec.create(68.5, -22), rotation: 3, puzzlePiece: true },
+               // { idString: "button", position: Vec.create(68.5, -22), rotation: 3, puzzlePiece: true }, - TODO
 
                 // toilets area
                 { idString: "headquarters_wall_2", position: Vec.create(10.9, -77.2), rotation: 1 },
