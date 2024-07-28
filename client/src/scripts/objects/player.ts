@@ -34,6 +34,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     teamID!: number;
 
+    wasDetected = false;
+    wasDetectedBy = 0;
+    detectionTimeoutID = 0;
+
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
     private _oldItem = this.activeItem;
@@ -54,6 +58,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     footstepSound?: GameSound;
+    detectedSound?: GameSound;
     actionSound?: GameSound;
 
     action = {
@@ -442,6 +447,28 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             end: 0
                         }
                     });
+                }
+            }
+
+            // Alarm system (for HQ)
+            for (const object of this.game.objects) {
+                if (object instanceof Obstacle && object.hitbox.collidesWith(this.hitbox)) {
+                    if (object.definition.detector && !this.wasDetected) {
+                        // Alert only when player doesn't have fists equipped (hehe idstring check)
+                        if (this.activeItem.idString !== "fists") {
+                            this.wasDetected = true;
+                            this.detectedSound = this.playSound("detection", {
+                                falloff: 0.25,
+                                maxRange: 180
+                            });
+                        }
+                    } else {
+                        clearTimeout(this.detectionTimeoutID);
+
+                        this.detectionTimeoutID = window.setTimeout(() => {
+                            this.wasDetected = false;
+                        }, 100);
+                    }
                 }
             }
         }

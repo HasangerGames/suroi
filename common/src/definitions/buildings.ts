@@ -2760,6 +2760,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "white_small_couch", position: Vec.create(-8, -31.5), rotation: 2 },
                 { idString: "folders_shelf", position: Vec.create(-32.5, -19), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(-43, -12), rotation: 1 },
+                { idString: "detector", position: Vec.create(-36, 23.5), rotation: 0 },
+                { idString: "detector", position: Vec.create(-26, 23.5), rotation: 0 },
 
                 // bottom left room
                 { idString: "gun_case", position: Vec.create(-48.5, 1.5), rotation: 0 },
