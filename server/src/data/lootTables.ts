@@ -264,6 +264,16 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.3 }
         ]
     },
+    metal_small_drawer: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "equipment", weight: 0.85 },
+            { tier: "healing_items", weight: 0.4 },
+            { tier: "guns", weight: 0.3 }
+        ]
+    },
     small_table: {
         min: 1,
         max: 1,
@@ -296,6 +306,13 @@ export const LootTables: Record<string, LootTable> = {
     fridge: {
         min: 2,
         max: 3,
+        loot: [
+            { item: "cola", weight: 1 }
+        ]
+    },
+    hq_fridge: {
+        min: 3,
+        max: 4,
         loot: [
             { item: "cola", weight: 1 }
         ]
@@ -370,6 +387,13 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "stoner_63", weight: 1 }
+        ]
+    },
+    gun_mount_mini_14: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "mini14", weight: 1 }
         ]
     },
     gun_mount_maul: {

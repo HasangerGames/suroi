@@ -24,12 +24,12 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.20992357"
-     inkscape:cx="1595.8189"
-     inkscape:cy="-476.36386"
-     inkscape:window-width="1918"
-     inkscape:window-height="1520"
-     inkscape:window-x="1913"
+     inkscape:zoom="0.83969428"
+     inkscape:cx="240.56374"
+     inkscape:cy="188.75918"
+     inkscape:window-width="1902"
+     inkscape:window-height="1033"
+     inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
      inkscape:current-layer="g14064" />
@@ -18325,6 +18325,12 @@
           <g
              id="g27025"
              transform="matrix(-1,0,0,1,1245.7119,-1581.6197)" />
+          <circle
+             style="fill:#666666;fill-opacity:1;stroke:#292929;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+             id="circle114921-6"
+             cx="-63.663303"
+             cy="-505.80124"
+             r="2.9104168" />
         </g>
       </g>
     </g>

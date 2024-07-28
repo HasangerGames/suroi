@@ -104,7 +104,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 25,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1.5,
-            canPierceMaterials: ["cardboard"], // because ammo crate has "cardboard" material
+            canPierceMaterials: ["cardboard", "crate"], // because ammo crate has "cardboard" material
             radius: 2,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
@@ -131,7 +131,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 40,
             obstacleMultiplier: 2.2,
             piercingMultiplier: 2,
-            canPierceMaterials: ["cardboard"], // ammo crate moment
+            canPierceMaterials: ["cardboard", "crate"], // ammo crate moment
             radius: 2.58,
             offset: Vec.create(5.9, 1.7),
             cooldown: 560,
@@ -206,7 +206,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             swingSound: "heavy_swing",
             obstacleMultiplier: 2,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "stone"],
+            canPierceMaterials: ["cardboard", "crate", "stone"],
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),
             cooldown: 450,
@@ -232,7 +232,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             noDrop: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "stone"],
+            canPierceMaterials: ["cardboard", "crate", "stone"],
             radius: 2.7,
             offset: Vec.create(3.1, 0.9),
             cooldown: 200,
@@ -285,7 +285,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "stone"],
+            canPierceMaterials: ["cardboard", "crate", "stone"],
             killstreak: true,
             radius: 4,
             offset: Vec.create(5, 0),
