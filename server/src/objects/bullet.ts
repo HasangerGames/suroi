@@ -44,7 +44,6 @@ export class Bullet extends BaseBullet {
 
     reflected = false;
     layer = 0;
-    switchedLayer = false;
 
     readonly finalPosition: Vector;
 

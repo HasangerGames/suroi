@@ -94,7 +94,8 @@ class GrenadeHandler {
             game.addExplosion(
                 explosion,
                 referencePosition,
-                this.parent.owner
+                this.parent.owner,
+                this._projectile ? this._projectile.layer : 0
             );
         }
 

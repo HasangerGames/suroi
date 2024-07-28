@@ -2,7 +2,7 @@ import { Explosions, type ExplosionDefinition } from "@common/definitions/explos
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { randomRotation } from "@common/utils/random";
+import { randomRotation, sameLayer } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
@@ -12,18 +12,21 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
+import { Layer } from "@common/constants";
 
 export class Explosion {
     readonly game: Game;
     readonly definition: ExplosionDefinition;
     readonly position: Vector;
     readonly source: GameObject;
+    readonly layer: Layer;
 
-    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject) {
+    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer) {
         this.game = game;
         this.definition = Explosions.reify(definition);
         this.position = position;
         this.source = source;
+        this.layer = layer ?? 0;
     }
 
     explode(): void {
@@ -75,7 +78,7 @@ export class Explosion {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if (object instanceof Player || object instanceof Obstacle) {
+                    if ((object instanceof Player || object instanceof Obstacle) && sameLayer(object.layer, this.layer)) {
                         object.damage({
                             amount: this.definition.damage
                             * (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1)
@@ -83,11 +86,10 @@ export class Explosion {
 
                             source: this.source,
                             weaponUsed: this
-                        }
-                        );
+                        });
                     }
 
-                    if (object instanceof Loot || object instanceof ThrowableProjectile) {
+                    if ((object instanceof Loot || object instanceof ThrowableProjectile) && sameLayer(object.layer, this.layer)) {
                         object.push(
                             Angle.betweenPoints(object.position, this.position),
                             (max - dist) * 0.01
@@ -106,7 +108,7 @@ export class Explosion {
                 {
                     position: this.position,
                     rotation: randomRotation(),
-                    layer: this.source.layer
+                    layer: this.layer
                 }
             );
         }

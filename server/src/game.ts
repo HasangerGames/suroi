@@ -481,7 +481,7 @@ export class Game implements GameData {
             if (bullet.dead) {
                 const onHitExplosion = bullet.definition.onHitExplosion;
                 if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter);
+                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter, bullet.layer);
                 }
                 this.bullets.delete(bullet);
             }
@@ -968,8 +968,8 @@ export class Game implements GameData {
         return bullet;
     }
 
-    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
-        const explosion = new Explosion(this, type, position, source);
+    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer): Explosion {
+        const explosion = new Explosion(this, type, position, source, layer);
         this.explosions.push(explosion);
         return explosion;
     }
