@@ -2659,6 +2659,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
+            /* puzzle: {
+                triggerInteractOn: "vault_door", -TODO
+                interactDelay: 2000
+            }, */
             floorImages: [
                 {
                     key: "headquarters_floor_entrance",
@@ -2726,7 +2730,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8))
                     )
-                },
+                }
             ],
             obstacles: [
                 { idString: "headquarters_bottom_entrance", position: Vec.create(0, 0), rotation: 0 },
@@ -2735,15 +2739,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wood_obstacles", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_sinks", position: Vec.create(0, 0), rotation: 0 },
 
-                // Real obstacles
+                // bottom left
                 { idString: "gun_case", position: Vec.create(-48.5, 1.5), rotation: 0 },
-                { idString: "cabinet", position: Vec.create(-63, 1.5), rotation: 0 },
+                { idString: "cabinet", position: Vec.create(-62.8, 1.5), rotation: 0 },
+                { idString: "cabinet", position: Vec.create(-43, -12), rotation: 1 },
+                { idString: "door", position: Vec.create(-41.8, 10.6), rotation: 1 },
+                //  { idString: "vault_door", position: Vec.create(68.5, -22), rotation: 1 }, - TODO
 
                 // the door for stairs part
                 { idString: "headquarters_wall_1", position: Vec.create(-41.7, -64.25), rotation: 0 },
-                { idString: "door", position: Vec.create(-53, -64.25), rotation: 6 },
-                { idString: "small_drawer", position: Vec.create(-39.7, -69.5), rotation: 6 },
+                { idString: "door", position: Vec.create(-53, -64.25), rotation: 2 },
+                { idString: "small_drawer", position: Vec.create(-39.7, -69.5), rotation: 2 },
                 { idString: { box: 9, grenade_box: 1 }, position: Vec.create(-38.25, -94.25) },
+                { idString: "potted_plant", position: Vec.create(-33, -57.5) },
+                { idString: "potted_plant", position: Vec.create(10.9, -57.5) },
 
                 // right side ig
                 { idString: "door", position: Vec.create(32.6, -81.25), rotation: 1 },
@@ -2760,6 +2769,23 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "small_drawer", position: Vec.create(65, -103.25), rotation: 3 },
                 { idString: "fridge", position: Vec.create(65, -94.5), rotation: 3 },
 
+                // tables (right)
+                { idString: "green_house_large_table", position: Vec.create(60, -70), rotation: 1 },
+                { idString: "chair", position: Vec.create(64, -63.5), rotation: 0 },
+                { idString: "chair", position: Vec.create(56.5, -63.5), rotation: 0 },
+                { idString: "chair", position: Vec.create(64, -76.5), rotation: 2 },
+                { idString: "chair", position: Vec.create(56.5, -76.5), rotation: 2 },
+
+                { idString: "green_house_large_table", position: Vec.create(60, -40), rotation: 1 },
+                { idString: "chair", position: Vec.create(64, -33.5), rotation: 0 },
+                { idString: "chair", position: Vec.create(56.5, -33.5), rotation: 0 },
+                { idString: "chair", position: Vec.create(64, -46.5), rotation: 2 },
+                { idString: "chair", position: Vec.create(56.5, -46.5), rotation: 2 },
+                { idString: "potted_plant", position: Vec.create(38, -31.7) },
+
+                // bottom right
+                { idString: "button", position: Vec.create(68.5, -22), rotation: 3, puzzlePiece: true },
+
                 // toilets area
                 { idString: "headquarters_wall_2", position: Vec.create(10.9, -77.2), rotation: 1 },
                 { idString: "headquarters_wall_3", position: Vec.create(10.9, -102.325), rotation: 1 },
@@ -2769,9 +2795,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wall_6", position: Vec.create(-20.66, -64.1), rotation: 0 },
                 { idString: "porta_potty_toilet_paper_wall", position: Vec.create(-3, -74.7), rotation: 1 },
                 { idString: "porta_potty_front_wall", position: Vec.create(8.3, -83.4), rotation: 0 },
-                { idString: { toilet: 2, used_toilet: 0.5 }, position: Vec.create(4.5, -70), rotation: 6 },
-                { idString: { toilet: 2, used_toilet: 0.5 }, position: Vec.create(-10, -70), rotation: 6 },
-                { idString: { toilet: 2, used_toilet: 0.5 }, position: Vec.create(-25, -70), rotation: 6 },
+                { idString: { toilet: 2, used_toilet: 0.5 }, position: Vec.create(4.5, -70), rotation: 2 },
+                { idString: { toilet: 2, used_toilet: 0.5 }, position: Vec.create(-10, -70), rotation: 2 },
+                { idString: { toilet: 2, used_toilet: 0.5 }, position: Vec.create(-25, -70), rotation: 2 },
                 { idString: "porta_potty_toilet_paper_wall", position: Vec.create(-18, -74.7), rotation: 1 },
                 { idString: "porta_potty_front_wall", position: Vec.create(-6.5, -83.4), rotation: 0 },
                 { idString: "porta_potty_front_wall", position: Vec.create(-21.5, -83.4), rotation: 0 },
@@ -2781,8 +2807,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // bottom area (right bottom or something)
                 { idString: "house_column", position: Vec.create(18, -10.8) },
+                { idString: "potted_plant", position: Vec.create(11.7, -5.25) },
                 { idString: "headquarters_wall_3", position: Vec.create(12, -10.8), rotation: 0 },
-                { idString: "door", position: Vec.create(2, -10.8), rotation: 6 },
+                { idString: "door", position: Vec.create(2, -10.8), rotation: 2 },
                 { idString: "headquarters_wall_5", position: Vec.create(-10.7, -10.8), rotation: 0 },
                 { idString: "headquarters_wall_5", position: Vec.create(-10.7, 12), rotation: 0 },
                 { idString: "headquarters_wall_6", position: Vec.create(18, 1.25), rotation: 1 },
@@ -2793,6 +2820,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_column", position: Vec.create(51.3, 0.4) },
                 { idString: "headquarters_wall_5", position: Vec.create(41.8, 0.4), rotation: 0 },
                 { idString: "house_column", position: Vec.create(32.25, 0.4) },
+                { idString: "headquarters_wall_1", position: Vec.create(32.25, -6.8), rotation: 1 },
+                { idString: "house_column", position: Vec.create(32.25, -24.1) },
+                { idString: "door", position: Vec.create(32.25, -18), rotation: 1 },
+                { idString: "headquarters_wall_6", position: Vec.create(47.5, 23.25), rotation: 1 },
 
                 // windows (not the OS)
                 { idString: "window", position: Vec.create(70, 10), rotation: 0 },
