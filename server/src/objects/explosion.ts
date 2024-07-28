@@ -118,7 +118,8 @@ export class Explosion {
                 new Decal(
                     this.game,
                     this.definition.decal,
-                    this.position
+                    this.position,
+                    this.layer
                 )
             );
 

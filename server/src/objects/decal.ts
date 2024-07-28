@@ -15,12 +15,13 @@ export class Decal extends BaseGameObject<ObjectCategory.Decal> {
 
     readonly definition: DecalDefinition;
 
-    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number) {
+    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, layer: number, rotation?: number) {
         super(game, position);
 
         this.definition = Decals.reify(definition);
 
         this.rotation = rotation ?? randomRotation();
+        this.layer = layer;
     }
 
     override get data(): FullData<ObjectCategory.Decal> {
