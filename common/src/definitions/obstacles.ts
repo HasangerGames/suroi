@@ -3358,6 +3358,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             rotationMode: RotationMode.Limited
         },
+
+        // --------------------------------------------------------------------------------------------
+        // Headquarters.
+        // --------------------------------------------------------------------------------------------
         {
             idString: "headquarters_bottom_entrance",
             name: "Headquarters Bottom Entrance",
@@ -3382,6 +3386,27 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             particleVariations: 2,
             frames: {
                 particle: "rock_particle"
+            }
+        },
+        {
+            idString: "headquarters_alarm_barriers",
+            name: "Headquarters Alarm Barriers",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            reflectBullets: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1, 9, Vec.create(-32.1, 23.5)),
+                RectangleHitbox.fromRect(1, 8.5, Vec.create(-39.5, 23.5)),
+                RectangleHitbox.fromRect(1, 9, Vec.create(-22.1, 23.5)),
+                RectangleHitbox.fromRect(1, 8.5, Vec.create(-29.55, 23.5))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            invisible: true,
+            frames: {
+                particle: "metal_particle"
             }
         },
         {
@@ -3483,6 +3508,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "rock_particle"
             }
         },
+        // --------------------------------------------------------------------------------------------
+
         {
             idString: "test_wall",
             name: "Test Wall",
