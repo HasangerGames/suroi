@@ -73,6 +73,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
                 readonly orientation: Orientation
                 readonly rotation: number
             }
+            readonly locked: boolean
             readonly variation?: Variation
             readonly activated?: boolean
             readonly door?: {
@@ -289,6 +290,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writePosition(full.position);
             stream.writeObstacleRotation(full.rotation.rotation, full.definition.rotationMode);
             stream.writeInt8(full.layer);
+            stream.writeBoolean(full.locked);
             if (full.definition.variations !== undefined && full.variation !== undefined) {
                 stream.writeVariation(full.variation);
             }
@@ -313,7 +315,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readInt8(),
-                variation: definition.variations ? stream.readVariation() : undefined
+                variation: definition.variations ? stream.readVariation() : undefined,
+                locked: stream.readBoolean()
             };
 
             if (definition.role === ObstacleSpecialRoles.Door) {

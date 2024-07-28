@@ -1042,6 +1042,30 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "metal_door",
+            name: "Metal Door",
+            material: "metal",
+            reflectBullets: true,
+            doorSound: "metal_door",
+            indestructible: true,
+            health: 500,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 1
+            },
+            hitbox: RectangleHitbox.fromRect(10.55, 1.6, Vec.create(-0.44, 0)),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            animationDuration: 80,
+            role: ObstacleSpecialRoles.Door,
+            hingeOffset: Vec.create(-5.5, 0),
+            zIndex: ZIndexes.ObstaclesLayer3,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
             idString: "vault_door",
             name: "Vault Door",
             material: "metal",

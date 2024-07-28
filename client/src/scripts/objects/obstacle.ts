@@ -29,6 +29,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     definition!: ObstacleDefinition;
     scale!: number;
     variation?: Variation;
+    locked = false;
 
     /**
      * `undefined` if this obstacle hasn't been updated yet, or if it's not a door obstacle
@@ -79,6 +80,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.rotation = full.rotation.rotation;
             this.orientation = full.rotation.orientation;
             this.variation = full.variation;
+            this.locked = full.locked;
 
             if (definition.invisible) this.container.visible = false;
 
@@ -411,7 +413,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     canInteract(player: Player): boolean {
         return !this.dead && (
-            (this._door !== undefined && !this._door.locked)
+            (this._door !== undefined && !this._door.locked && !this.locked)
             || (
                 this.definition.role === ObstacleSpecialRoles.Activatable
                 && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem)

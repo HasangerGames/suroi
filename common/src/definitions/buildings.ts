@@ -17,6 +17,7 @@ interface BuildingObstacle {
     readonly scale?: number
     readonly lootSpawnOffset?: Vector
     readonly puzzlePiece?: string | boolean
+    readonly locked?: boolean
 }
 
 interface LootSpawner {
@@ -2650,6 +2651,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             lootSpawners: []
         },
+        /*  {
+            idString: "headquarters_mini_vault",
+            name: "Headquarters Ship Vault",
+            spawnHitbox: RectangleHitbox.fromRect(22, 30.6),
+            scopeHitbox: RectangleHitbox.fromRect(22, 30.6),
+            ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+            ceilingImages: [{
+                key: "headquarters_mini_vault_ceiling", - TODO: svg
+                position: Vec.create(0, 0),
+                scale: Vec.create(0.99, 1.1)
+            }]
+        }, */
         {
             idString: "headquarters",
             name: "Headquarters",
@@ -2659,10 +2672,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
-            /* puzzle: {
-                triggerInteractOn: "vault_door", -TODO
-                interactDelay: 2000
-            }, */
+            puzzle: {
+                triggerInteractOn: "metal_door",
+                solvedSound: true,
+                interactDelay: 500
+            },
             floorImages: [
                 {
                     key: "headquarters_floor_entrance",
@@ -2744,7 +2758,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "cabinet", position: Vec.create(-62.8, 1.5), rotation: 0 },
                 { idString: "cabinet", position: Vec.create(-43, -12), rotation: 1 },
                 { idString: "door", position: Vec.create(-41.8, 10.6), rotation: 1 },
-                //  { idString: "vault_door", position: Vec.create(68.5, -22), rotation: 1 }, - TODO
+                { idString: "metal_door", position: Vec.create(-47.5, -27.75), rotation: 1, locked: true },
 
                 // the door for stairs part
                 { idString: "headquarters_wall_1", position: Vec.create(-41.7, -64.25), rotation: 0 },
@@ -2753,6 +2767,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: { box: 9, grenade_box: 1 }, position: Vec.create(-38.25, -94.25) },
                 { idString: "potted_plant", position: Vec.create(-33, -57.5) },
                 { idString: "potted_plant", position: Vec.create(10.9, -57.5) },
+                { idString: "metal_door", position: Vec.create(-58.35, -41.25), rotation: 3, locked: true }, // eh not sure if we want this one locked
 
                 // right side ig
                 { idString: "door", position: Vec.create(32.6, -81.25), rotation: 1 },
@@ -2784,7 +2799,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "potted_plant", position: Vec.create(38, -31.7) },
 
                 // bottom right
-                // { idString: "button", position: Vec.create(68.5, -22), rotation: 3, puzzlePiece: true }, - TODO
+                { idString: "button", position: Vec.create(68.5, -22), rotation: 3, puzzlePiece: true },
 
                 // toilets area
                 { idString: "headquarters_wall_2", position: Vec.create(10.9, -77.2), rotation: 1 },
@@ -2835,6 +2850,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 }
+                //  { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 }
             ]
         }
     ]);
