@@ -45,7 +45,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap: boolean
     readonly isStair?: boolean
-    readonly layer?: number
+    layer?: number
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
