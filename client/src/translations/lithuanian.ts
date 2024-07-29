@@ -256,7 +256,7 @@ export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
 
     "report_reporting": "Pranešimas",
     "report_id": "Pranešimo ID:",
-    "report_instructions": ` 
+    "report_instructions": `
       <p><strong>Prašome laikytis žemiau pateiktų instrukcijų!</strong> Jei jūs jų nesilaikysite, jūsų pranešimas bus ignoruotas.</p>
       <h4>Kaip pateikti pranešimą</h4>
       <ol>
@@ -308,18 +308,18 @@ export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
     "crowbar": "Varniuko peilis",
     "sickle": "Kaspinas",
 
-    "mosin": "Mosinas-Nagant",
+    "mosin_nagant": "Mosinas-Nagant",
     "radio": "Radijas",
     "lewis_gun": "Lewis Gun",
     "hp18": "HP-18",
     "acr": "ACR",
-    "saf_200": "SAF-200",
-    "deathray": "Mirties spindulys",
+    "saf200": "SAF-200",
+    "death_ray": "Mirties spindulys",
     "usas12": "USAS-12",
     "firework_launcher": "Kasmet šventės iššūkis",
-    "arena_closer": "Žemės sunaikinimas",
+    "destroyer_of_worlds": "Žemės sunaikinimas",
     "revitalizer": "Revitalizatorius",
-    "s_g17": "G17 (Apšviestas)",
+    "g17_scoped": "G17 (Apšviestas)",
     "vss": "VSS",
     "aug": "AUG",
     "pp19": "PP-19",
@@ -337,7 +337,7 @@ export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
     "negev": "Negevas",
     "sr25": "SR-25",
     "tango_51": "Tango 51",
-    "barrett": "Barreto M95",
+    "barrett_m95": "Barreto M95",
     "stoner_63": "Stoner 63",
     "m1_garand": "M1 Garandas",
     "micro_uzi": "Mikro Uzi",

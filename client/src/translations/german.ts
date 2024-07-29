@@ -274,7 +274,7 @@ export const GERMAN_TRANSLATIONS: TranslationMap = {
     "confetti_grenade": "Konfetti-Granate",
 
     "radio": "Radio",
-    "deathray": "Todesstrahl",
+    "death_ray": "Todesstrahl",
 
     // For dual guns
     "dual_template": "Doppel <gun>"

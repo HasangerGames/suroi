@@ -270,14 +270,14 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "ice_pick": "Kazëm Akulli",
     "seax": "Shpatë",
 
-    "mosin": "Mosin-Nagant",
+    "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
     "lewis_gun": "Arma e Luisit",
-    "deathray": "Rreze Vdekjeje",
+    "death_ray": "Rreze Vdekjeje",
     "firework_launcher": "Lëshues Fishekzjarre",
-    "arena_closer": "Shkatërrues i Botëve",
+    "destroyer_of_worlds": "Shkatërrues i Botëve",
     "revitalizer": "Rivitalizues",
-    "s_g17": "G17 (Skoped)",
+    "g17_scoped": "G17 (Skoped)",
 
     "frag_grenade": "Granadë Frag",
     "smoke_grenade": "Granadë Tymi",

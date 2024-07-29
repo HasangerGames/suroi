@@ -292,17 +292,17 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "crowbar": "Cwowbar",
     "sickle": "Sickwle",
 
-    "mosin": "Mosin-Nagant",
+    "mosin_nagant": "Mosin-Nagant",
     "radio": "Wadio",
     "lewis_gun": "Wewis Gun",
-    "deathray": "Deathway",
+    "death_ray": "Deathway",
 
     "frag_grenade": "Fwag Gwenade",
     "smoke_grenade": "Smoke Gwenade",
     "confetti_grenade": "Confetti Gwenade",
 
     // For dual guns
-    "dual_template": "Dual <gun>",
+    "dual_template": "Duwal <gun>",
 
     // Regions
     "region_dev": "Wocalhost Server",
