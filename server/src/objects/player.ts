@@ -687,7 +687,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     && this.hitbox.collidesWith(potential.hitbox)
                     && (sameLayer(potential.layer, this.layer) || isAdjacent(potential.layer, this.layer))
                 ) {
-                    if (potential.definition.isStair && sameLayer(potential.layer, this.layer)) {
+                    if (potential.definition.isStair && (sameLayer(potential.layer, this.layer))) {
                         this.layer = potential.definition.transportTo ?? 0;
                     } else {
                         collided = true;

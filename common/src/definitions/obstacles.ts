@@ -1261,6 +1261,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             hitbox: RectangleHitbox.fromRect(6.2, 6, Vec.create(0, -0.4)),
             rotationMode: RotationMode.Limited,
+            reflectBullets: true,
             allowFlyover: FlyoverPref.Always,
             noResidue: true, // todo
             hasLoot: true,
@@ -3495,7 +3496,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(1.5, 40.5, Vec.create(-34.1, -86.3)),
 
                 // squares
-                RectangleHitbox.fromRect(4, 4, Vec.create(-47.3, -34.9)),
+                RectangleHitbox.fromRect(4, 4.8, Vec.create(-47.3, -34.6)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(32.5, -64.1)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(10.9, -64.1)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(-33.5, -64))

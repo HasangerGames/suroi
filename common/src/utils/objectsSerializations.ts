@@ -107,11 +107,11 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     //
     readonly [ObjectCategory.Building]: {
         readonly dead: boolean
-        readonly layer: number
         readonly puzzle: undefined | {
             readonly solved: boolean
             readonly errorSeq: boolean
         }
+        readonly layer: number
         readonly full?: {
             readonly definition: BuildingDefinition
             readonly position: Vector
@@ -388,11 +388,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writeBoolean(data.dead);
             stream.writeBoolean(!!data.puzzle);
-            stream.writeInt8(data.layer);
             if (data.puzzle) {
                 stream.writeBoolean(data.puzzle.solved);
                 stream.writeBoolean(data.puzzle.errorSeq);
             }
+            stream.writeInt8(data.layer);
         },
         serializeFull(stream, data): void {
             Buildings.writeToStream(stream, data.full.definition);
@@ -402,13 +402,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             return {
                 dead: stream.readBoolean(),
-                layer: stream.readInt8(),
                 puzzle: stream.readBoolean() // is puzzle
                     ? {
                         solved: stream.readBoolean(),
                         errorSeq: stream.readBoolean()
                     }
-                    : undefined
+                    : undefined,
+                layer: stream.readInt8()
             };
         },
         deserializeFull(stream) {
