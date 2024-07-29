@@ -2645,6 +2645,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
+
                 { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
                 { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
@@ -2675,18 +2677,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
-                    key: "headquarters_floor_entrance",
-                    position: Vec.create(-31, 43)
-                },
-                {
-                    key: "headquarters_floor_top",
-                    position: Vec.create(0, -74)
-                },
-                {
-                    key: "headquarters_floor_bottom",
+                    key: "headquarters_second_floor_bottom",
                     position: Vec.create(0, 0)
+                },
+                {
+                    key: "headquarters_second_floor_top",
+                    position: Vec.create(0, -73)
                 }
-            ]
+            ],
+            obstacles: [
+                { idString: "stair_walls", position: Vec.create(-40.5, -102), rotation: 0, layer: -2 }
+            ] as BuildingObstacle[]
+            /*  subBuildings: [
+                { idString: "stairToBasement", position: Vec.create(-40, -105), orientation: 2 },
+            ] */
         },
         {
             idString: "headquarters",
@@ -2909,7 +2913,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "regular_crate", position: Vec.create(-30, -90), layer: -2 } // dummy crate for testing (remove when done)
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_second_floor", position: Vec.create(50, -90), orientation: 0, layer: -2 },
+                { idString: "headquarters_second_floor", position: Vec.create(0, 0), orientation: 0, layer: -2 },
                 { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 }
             ]
