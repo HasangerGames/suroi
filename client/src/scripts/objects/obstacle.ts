@@ -43,6 +43,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         locked?: boolean
     };
 
+    elapsedTimeSinceLastDetection!: number;
+    lastDetectionTime!: number;
+
     get door(): {
         readonly closedHitbox?: RectangleHitbox
         readonly openHitbox?: RectangleHitbox
@@ -81,6 +84,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.orientation = full.rotation.orientation;
             this.variation = full.variation;
             this.locked = full.locked;
+
+            if (this.definition.detector) {
+                this.lastDetectionTime = 0;
+                this.elapsedTimeSinceLastDetection = 0;
+            }
 
             if (definition.invisible) this.container.visible = false;
 

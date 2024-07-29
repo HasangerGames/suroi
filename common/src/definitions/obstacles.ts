@@ -226,13 +226,13 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }),
-        hqWall: (lengthNumber: number) => ({
+        hqWall: (lengthNumber: number, customHealth = false) => ({
             idString: `headquarters_wall_${lengthNumber}`,
             name: `Headquarters Wall ${lengthNumber}`,
             material: "wood",
             hideOnMap: true,
             noResidue: true,
-            health: 170,
+            health: customHealth ? 100 : 170,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -1050,6 +1050,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(16.3, 2) }, 5),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.25, 2) }, 6),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 7),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3, 1.6) }, 8, true),
 
         {
             idString: "fridge",
@@ -1141,6 +1142,26 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "glass_door",
+            name: "Glass Door",
+            material: "glass",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 1
+            },
+            hitbox: RectangleHitbox.fromRect(10.25, 1.25, Vec.create(-0.6, 0)),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            role: ObstacleSpecialRoles.Door,
+            hingeOffset: Vec.create(-5.5, 0),
+            zIndex: ZIndexes.ObstaclesLayer3,
+            frames: {
+                particle: "window_particle"
             }
         },
         {
@@ -1253,7 +1274,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "metal_small_drawer",
             name: "Metal Small Drawer",
             material: "iron",
-            health: 100,
+            health: 125,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -1659,6 +1680,27 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
                 particle: "porta_potty_wall_particle"
+            }
+        },
+        {
+            idString: "hq_toilet_paper_wall",
+            name: "Headquarters Toilet Paper Wall",
+            material: "wood",
+            health: 100,
+            noResidue: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec.create(0, -1.15)),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            role: ObstacleSpecialRoles.Wall,
+            zIndex: ZIndexes.ObstaclesLayer2,
+            frames: {
+                particle: "wall_particle"
             }
         },
         apply(
@@ -3192,6 +3234,25 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 }).flat()
             ),
             spawnHitbox: RectangleHitbox.fromRect(21.02, 69.69, Vec.create(0, 0))
+        },
+        {
+            idString: "planted_bushes",
+            name: "Planted Bushes",
+            material: "porcelain",
+            health: 800,
+            indestructible: true,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.8
+            },
+            hitbox: RectangleHitbox.fromRect(9.5, 16.5, Vec.create(0, 0)),
+            rotationMode: RotationMode.Limited,
+            spawnMode: MapObjectSpawnMode.River,
+            noResidue: true,
+            frames: {
+                particle: "toilet_particle"
+            }
         },
         {
             idString: "large_bridge",

@@ -168,7 +168,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         this.game.addTimeout(() => {
             for (const obstacle of this.interactableObstacles) {
                 if (obstacle.definition.idString === puzzleDef.triggerInteractOn) {
-                    obstacle.interact();
+                    if (obstacle.locked) obstacle.interact();
                     obstacle.locked = false;
                 }
             }
