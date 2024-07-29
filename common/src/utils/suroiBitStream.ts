@@ -3,7 +3,7 @@ import { GameConstants, ObjectCategory } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, Numeric } from "./math";
-import { type Vector } from "./vector";
+import { Vec, type Vector } from "./vector";
 
 export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
 
@@ -68,23 +68,8 @@ export class SuroiBitStream extends BitStream {
      * @param bitCount The number of bits to write
      */
     writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
-        this.writeVector2(vector.x, vector.y, minX, minY, maxX, maxY, bitCount);
-    }
-
-    /**
-     * Write a position Vector to the stream
-     * @param x The X position
-     * @param y The Y position
-     * @param minX The minimum X position
-     * @param minY The minimum Y position
-     * @param maxX The maximum X position
-     * @param maxY The maximum Y position
-     * @param bitCount The number of bits to write
-     * @return The position Vector
-     */
-    writeVector2(x: number, y: number, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
-        this.writeFloat(x, minX, maxX, bitCount);
-        this.writeFloat(y, minY, maxY, bitCount);
+        this.writeFloat(vector.x, minX, maxX, bitCount);
+        this.writeFloat(vector.y, minY, maxY, bitCount);
     }
 
     /**
@@ -148,7 +133,7 @@ export class SuroiBitStream extends BitStream {
      * @param y The y-coordinate of the vector to write
      */
     writePosition2(x: number, y: number): void {
-        this.writeVector2(x, y, 0, 0, GameConstants.maxPosition, GameConstants.maxPosition, 16);
+        this.writeVector(Vec.create(x, y), 0, 0, GameConstants.maxPosition, GameConstants.maxPosition, 16);
     }
 
     /**

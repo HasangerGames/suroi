@@ -154,6 +154,41 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 zIndex: ZIndexes.ObstaclesLayer5 - 1,
                 scopeOutPreMs: 3200
             })
+        },
+        c4: {
+            extends: "synced_particle_factory",
+            applier: () => ({
+                scale: {
+                    start: {
+                        min: 1.5,
+                        max: 2
+                    },
+                    end: {
+                        min: 1.75,
+                        max: 2.25
+                    }
+                },
+                angularVelocity: {
+                    min: -0.0005,
+                    max: 0.0005
+                },
+                velocity: {
+                    min: {
+                        x: -0.0002,
+                        y: -0.0002
+                    },
+                    max: {
+                        x: 0.0002,
+                        y: 0.0002
+                    }
+                },
+                lifetime: {
+                    mean: 500,
+                    deviation: 0
+                },
+                frame: "c4_particle",
+                zIndex: ZIndexes.ObstaclesLayer1
+            })
         }
     })
 )(
@@ -203,6 +238,27 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
             },
             [],
             ["airdrop_smoke_particle"]
+        ),
+        apply(
+            "c4",
+            {
+                velocity: {
+                    min: {
+                        x: -0.002,
+                        y: -0.002
+                    },
+                    max: {
+                        x: 0.002,
+                        y: 0.002
+                    }
+                },
+                lifetime: {
+                    mean: 500,
+                    deviation: 0
+                }
+            },
+            [],
+            ["c4_particle"]
         )
     ]
 );

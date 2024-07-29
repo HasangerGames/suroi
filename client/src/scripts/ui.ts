@@ -24,6 +24,7 @@ import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import type { ArmorDefinition } from "../../../common/src/definitions/armors";
+import { InputManager } from "./managers/inputManager";
 
 /*
     eslint-disable
@@ -1750,6 +1751,7 @@ Video evidence is required.`)) {
     let dropTimer: number | undefined;
 
     function mobileDropItem(button: number, condition: boolean, item?: AmmoDefinition | ArmorDefinition | ScopeDefinition | HealingItemDefinition, slot?: number): void {
+        if (!inputManager.isMobile) return;
         dropTimer = window.setTimeout(() => {
             if (button === 0 && condition) {
                 if (slot !== undefined) {
@@ -1957,6 +1959,27 @@ Video evidence is required.`)) {
             }
         });
     }
+
+    const interactKey = $<HTMLDivElement>("#detonate-key");
+    const bind: string = inputManager.binds.getInputsBoundToAction("explodeC4")[0];
+    const bindImg = InputManager.getIconFromInputName(bind);
+
+    if (bindImg === undefined) {
+        interactKey.text(bind ?? "");
+    } else {
+        interactKey.html(`<img src="${bindImg}" alt="${bind}"/>`);
+    }
+
+    const c4Button = $<HTMLDivElement>("#c4-detonate-btn");
+    slotListener(c4Button, button => {
+        const isPrimary = button === 0;
+
+        if (isPrimary) {
+            inputManager.addAction({
+                type: InputActions.ExplodeC4
+            });
+        }
+    });
 
     for (
         const [ele, type] of [

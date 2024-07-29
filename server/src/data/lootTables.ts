@@ -173,7 +173,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "mosin", weight: 1 }
+            { item: "mosin_nagant", weight: 1 }
         ]
     },
     loot_tree: {
@@ -213,7 +213,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "s_g17", weight: 0.95 },
+            { item: "g17_scoped", weight: 0.95 },
             { item: "usas12", weight: 0.05 }
         ]
     },
@@ -606,7 +606,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "g19", weight: 2 },
         { item: "m1895", weight: 1.75 },
         { item: "mp40", weight: 1.7 },
-        { item: "saf_200", weight: 1.5 },
+        { item: "saf200", weight: 1.5 },
         { item: "cz75a", weight: 1.5 },
         { item: "hp18", weight: 1.25 },
         { item: "micro_uzi", weight: 1 },
@@ -627,7 +627,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "vepr12", weight: 0.008 },
         { item: "stoner_63", weight: 0.005 },
         { item: "radio", weight: 0.005 },
-        { item: "mosin", weight: 0.005 },
+        { item: "mosin_nagant", weight: 0.005 },
         { item: "vector", weight: 0.004 },
         { item: "negev", weight: 0.003 },
         { item: "mg5", weight: 0.003 },
@@ -666,7 +666,8 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
     ],
     throwables: [
         { item: "frag_grenade", count: 2, weight: 1 },
-        { item: "smoke_grenade", count: 2, weight: 1 }
+        { item: "smoke_grenade", count: 2, weight: 1 },
+        { item: "c4", count: 2, weight: 1 }
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },
@@ -678,7 +679,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "m3k", weight: 0.8 },
         { item: "arx160", weight: 0.8 },
         { item: "flues", weight: 0.8 },
-        { item: "saf_200", weight: 0.75 },
+        { item: "saf200", weight: 0.75 },
         { item: "cz75a", weight: 0.75 },
         { item: "m16a4", weight: 0.5 },
         { item: "lewis_gun", weight: 0.5 },
@@ -693,7 +694,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "cz600", weight: 0.03 },
         { item: "stoner_63", weight: 0.01 },
         { item: "radio", weight: 0.01 },
-        { item: "mosin", weight: 0.01 },
+        { item: "mosin_nagant", weight: 0.01 },
         { item: "vector", weight: 0.008 },
         { item: "negev", weight: 0.005 },
         { item: "mg5", weight: 0.005 },
@@ -768,7 +769,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "vepr12", weight: 1 },
         { item: "cz600", weight: 1 },
         { item: "mcx_spear", weight: 0.95 },
-        { item: "mosin", weight: 0.95 },
+        { item: "mosin_nagant", weight: 0.95 },
         { item: "tango_51", weight: 0.9 },
         { item: "stoner_63", weight: 0.9 },
         { item: "radio", weight: 0.1 }
@@ -779,7 +780,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "pp19", weight: 1 },
         { item: "negev", weight: 1 },
         { item: "mg5", weight: 1 },
-        { item: "barrett", weight: 0.5 },
+        { item: "barrett_m95", weight: 0.5 },
         { item: "model_89", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
     ],
@@ -807,7 +808,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "cz600", weight: 0.7 },
         { item: "vepr12", weight: 0.6 },
         { item: "lewis_gun", weight: 0.6 },
-        { item: "mosin", weight: 0.5 },
+        { item: "mosin_nagant", weight: 0.5 },
         { item: "vector", weight: 0.4 },
         { item: "stoner_63", weight: 0.15 },
         { item: "negev", weight: 0.1 },
@@ -823,7 +824,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "sr25", weight: 0.5 },
         { item: "vss", weight: 0.5 },
         { item: "mg36", weight: 0.45 },
-        { item: "mosin", weight: 0.45 },
+        { item: "mosin_nagant", weight: 0.45 },
         { item: "vector", weight: 0.4 },
         { item: "stoner_63", weight: 0.08 },
         { item: "tango_51", weight: 0.08 },

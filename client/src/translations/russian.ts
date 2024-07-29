@@ -296,7 +296,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "seax": "Пиратский меч",
     "sickle": "Серп",
     "crowbar": "Фомка",
-    "deathray": "Луч смерти",
+    "death_ray": "Луч смерти",
     "radio": "Рация",
 
     "frag_grenade": "Осколочная граната",
@@ -316,7 +316,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "vss": 'ВСС "Винторез"',
     "pp19": 'ПП-19 "Витязь"',
     "vepr12": 'Вепрь-12 "Молот"',
-    "mosin": "В. Мосина-Нагана",
+    "mosin_nagant": "В. Мосина-Нагана",
     "flues": "Обрез двустволки",
     "m1895": "Наган",
     "lewis_gun": "Пулемет Льюиса",

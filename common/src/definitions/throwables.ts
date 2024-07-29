@@ -22,6 +22,8 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Whether cooking the grenade will run down the fuse
      */
     readonly cookable: boolean
+    readonly c4?: boolean
+    readonly health?: number
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
@@ -38,9 +40,10 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly particles?: SyncedParticleSpawnerDefinition
     }
     readonly animation: {
-        readonly pinImage: string
+        readonly pinImage?: string
         readonly liveImage: string
         readonly leverImage: string
+        readonly activatedImage?: string
         readonly cook: {
             readonly cookingImage?: string
             readonly leftFist: Vector
@@ -67,6 +70,9 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             itemType: ItemType.Throwable,
             speedMultiplier: 0.92,
             cookable: false,
+            fuseTime: 4000,
+            cookTime: 150,
+            throwTime: 150,
             noDrop: false,
             cookSpeedMultiplier: 0.7,
             hitboxRadius: 1,
@@ -180,6 +186,38 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 cook: {
                     leftFist: Vec.create(2.5, 0),
                     rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "c4",
+            name: "C4",
+            c4: true,
+            health: 40,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            speedCap: 0.15,
+            detonation: {
+                explosion: "c4_explosion",
+                particles: {
+                    type: "c4_particle",
+                    count: 8,
+                    spawnRadius: 2
+                }
+            },
+            animation: {
+                liveImage: "proj_c4",
+                leverImage: "proj_frag_lever",
+                activatedImage: "proj_c4_activated",
+                cook: {
+                    leftFist: Vec.create(2, -1),
+                    rightFist: Vec.create(3, 0)
                 },
                 throw: {
                     leftFist: Vec.create(1.9, -1.75),

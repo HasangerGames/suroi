@@ -19,7 +19,7 @@
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "lint:ci": "eslint . --max-warnings 0",
-    "validateDefinitions": "cd tests && tsc && pnpm validateDefinitions",
+    "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install"
   },
   "engines": {
@@ -39,7 +39,7 @@
     "eslint": "^9.7.0",
     "jest": "^29.7.0",
     "jest-runner-eslint": "^2.2.0",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "typescript-eslint": "^7.16.0"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"

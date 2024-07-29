@@ -19,6 +19,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 4;
 
+    private health?: number;
+
     declare readonly hitbox: CircleHitbox;
 
     private _velocity = Vec.create(0, 0);
@@ -62,6 +64,9 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     private _airborne = true;
     get airborne(): boolean { return this._airborne; }
 
+    private _activated = false;
+    get activated(): boolean { return this._activated; }
+
     private readonly _currentlyAbove = new Set<Obstacle>();
 
     public static readonly squaredThresholds = Object.freeze({
@@ -93,6 +98,15 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.layer = layer;
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
+
+        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
+            this.handleCollision(object);
+        }
+        if (this.definition.c4) {
+            this.source.owner.c4s.push(this);
+            this.source.owner.updatedC4Button = false;
+        }
+        if (this.definition.health) this.health = this.definition.health;
     }
 
     push(angle: number, speed: number): void {
@@ -112,7 +126,36 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         return displacement;
     }
 
+    detonate(delay: number): void {
+        this._activated = true;
+        this.setDirty();
+        setTimeout(() => {
+            this.game.removeProjectile(this);
+
+            const { explosion } = this.definition.detonation;
+
+            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+            const game = this.game;
+
+            if (explosion !== undefined) {
+                game.addExplosion(
+                    explosion,
+                    referencePosition,
+                    this.source.owner,
+                    this.source.owner.layer
+                );
+            }
+        }, delay);
+    }
+
     update(): void {
+        if (this.definition.c4) {
+            this._airborne = false;
+            this.game.grid.updateObject(this);
+            this.setPartialDirty();
+            return;
+        }
+
         const halfDt = 0.5 * this._dt;
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
@@ -290,6 +333,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     break;
                 }
             }
+            this.handleCollision(object);
 
             this._angularVelocity *= 0.6;
         }
@@ -304,6 +348,96 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this.setPartialDirty();
     }
 
+    handleCollision(object: GameObject): void {
+        const isObstacle = object instanceof Obstacle;
+        const isPlayer = object instanceof Player;
+
+        if (
+            object.dead
+            || (
+                (!isObstacle || !object.collidable)
+                && (!isPlayer || (!this._collideWithOwner && object === this.source.owner))
+            )
+        ) return;
+
+        const hitbox = object.hitbox;
+        const collidingWithObject = object.hitbox.collidesWith(this.hitbox);
+
+        if (!collidingWithObject) return;
+
+        const handleCircle = (hitbox: CircleHitbox): void => {
+            const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
+
+            if (collision) {
+                this.velocity = Vec.sub(this._velocity, Vec.scale(collision.dir, 0.8 * Vec.length(this._velocity)));
+                this.hitbox.position = Vec.sub(this.hitbox.position, Vec.scale(collision.dir, collision.pen));
+            }
+        };
+
+        const handleRectangle = (hitbox: RectangleHitbox): void => {
+            const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
+
+            if (collision) {
+                this._velocity = Vec.add(
+                    this._velocity,
+                    Vec.scale(
+                        Vec.project(
+                            this._velocity,
+                            Vec.scale(collision.dir, 1)
+                        ),
+                        -1.5
+                    )
+                );
+
+                this.hitbox.position = Vec.sub(
+                    this.hitbox.position,
+                    Vec.scale(
+                        collision.dir,
+                        (hitbox.isPointInside(this.hitbox.position) ? -1 : 1) * collision.pen
+                        // "why?", you ask
+                        // cause it makes the thingy work and rectCircleIntersection is goofy
+                    )
+                );
+            }
+        };
+
+        switch (hitbox.type) {
+            case HitboxType.Circle: {
+                handleCircle(hitbox);
+                break;
+            }
+            case HitboxType.Rect: {
+                handleRectangle(hitbox);
+                break;
+            }
+            case HitboxType.Group: {
+                for (const target of hitbox.hitboxes) {
+                    if (target.collidesWith(this.hitbox)) {
+                        target instanceof CircleHitbox
+                            ? handleCircle(target)
+                            : handleRectangle(target);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    damageC4(amount: number): void {
+        if (!this.health) return;
+
+        this.health = this.health - amount;
+        if (this.health <= 0) {
+            this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
+            this.game.removeProjectile(this);
+            this.source.owner.updatedC4Button = false;
+
+            const { particles } = this.definition.detonation;
+            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+            if (particles !== undefined) this.game.addSyncedParticles(particles, referencePosition);
+        }
+    }
+
     override damage(): void { /* can't damage a throwable projectile */ }
 
     get data(): FullData<ObjectCategory.ThrowableProjectile> {
@@ -312,6 +446,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             rotation: this.rotation,
             layer: this.layer,
             airborne: this.airborne,
+            activated: this.activated,
             full: {
                 definition: this.definition
             }

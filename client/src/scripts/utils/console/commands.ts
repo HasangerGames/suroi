@@ -726,6 +726,21 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    Command.createCommand(
+        "explodeC4",
+        function() {
+            game.inputManager.addAction(InputActions.ExplodeC4);
+            this.uiManager.ui.c4Button.hide();
+        },
+        game,
+        {
+            short: "Explodes all of your c4s",
+            long: "When invoked, the game will attempt to explode all the c4s the player owns",
+            allowOnlyWhenGameStarted: true,
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
     Command.createInvertiblePair(
         "emote_wheel",
         function() {

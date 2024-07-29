@@ -44,7 +44,8 @@ import { removeFrom } from "../utils/misc";
 
 import {
     Building, DeathMarker, Emote, Explosion, BaseGameObject, DamageParams,
-    type GameObject, Loot, type Obstacle, SyncedParticle
+    type GameObject, Loot, type Obstacle, SyncedParticle,
+    ThrowableProjectile
 } from ".";
 
 export interface PlayerContainer {
@@ -237,7 +238,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         slotLocks: true,
         items: true,
         zoom: true,
-        layer: true
+        layer: true,
+        activeC4s: true
     };
 
     readonly inventory = new Inventory(this);
@@ -380,6 +382,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
     spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
 
     private readonly _mapPings: Game["mapPings"] = [];
+
+    public c4s: ThrowableProjectile[] = [];
+    public updatedC4Button = false;
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
@@ -741,11 +746,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.activeItem.stopUse();
         }
 
-        const gas = this.game.gas;
         // Gas damage
+        const gas = this.game.gas;
         if (gas.doDamage && gas.isInGas(this.position)) {
             this.piercingDamage({
-                amount: gas.dps,
+                amount: gas.scaledDamage(this.position),
                 source: KillfeedEventType.Gas
             });
         }
@@ -896,6 +901,21 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.startedSpectating = false;
         }
 
+        if (
+            player.dirty.maxMinStats
+            || player.dirty.health
+            || player.dirty.adrenaline
+            || player.dirty.zoom
+            || player.dirty.id
+            || player.dirty.teammates
+            || player.dirty.weapons
+            || player.dirty.slotLocks
+            || player.dirty.items
+            || forceInclude
+        ) {
+            this.updatedC4Button = false;
+        }
+
         packet.playerData = {
             ...(
                 player.dirty.maxMinStats || forceInclude
@@ -966,8 +986,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         scope: inventory.scope
                     } }
                     : {}
+            ),
+            ...(
+                this.c4s.length > 0 && !this.updatedC4Button
+                    ? { activeC4s: true }
+                    : !this.updatedC4Button
+                        ? { activeC4s: false }
+                        : {}
             )
         };
+
+        if (!this.updatedC4Button) this.updatedC4Button = true;
 
         // Cull bullets
         packet.bullets = game.newBullets.filter(
@@ -1632,6 +1661,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // Create death marker
         this.game.grid.addObject(new DeathMarker(this, this.layer));
 
+        // remove all c4s
+        for (const c4 of this.c4s) {
+            c4.damageC4(Infinity);
+        }
+
         // Send game over to dead player
         if (!this.disconnected) {
             this.sendGameOverPacket();
@@ -1926,6 +1960,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     break;
                 case InputActions.MapPing:
                     this.sendMapPing(action.ping, action.position);
+                    break;
+                case InputActions.ExplodeC4:
+                    for (const c4 of this.c4s) {
+                        c4.detonate(750);
+                    }
+                    this.c4s = [];
+                    this.updatedC4Button = false;
                     break;
             }
         }

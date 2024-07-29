@@ -126,7 +126,7 @@ class GrenadeHandler {
         recoil.multiplier = this.definition.cookSpeedMultiplier;
         recoil.time = Infinity;
 
-        if (this.definition.cookable) {
+        if (this.definition.cookable && !this.definition.c4) {
             this._timer = this.game.addTimeout(
                 () => {
                     if (!this._thrown) {
@@ -181,13 +181,15 @@ class GrenadeHandler {
 
         this._resetAnimAndRemoveFromInv();
 
-        this._timer ??= this.game.addTimeout(
-            () => {
-                this.destroy();
-                this._detonate();
-            },
-            this.definition.fuseTime
-        );
+        if (!this.definition.c4) {
+            this._timer ??= this.game.addTimeout(
+                () => {
+                    this.destroy();
+                    this._detonate();
+                },
+                this.definition.fuseTime
+            );
+        }
 
         const projectile = this._projectile = this.game.addProjectile(
             definition,
@@ -211,18 +213,20 @@ class GrenadeHandler {
          */
         const superStrangeMysteryConstant = 2.79 * Math.log(1.6) / 1000;
 
-        projectile.velocity = Vec.add(
-            Vec.fromPolar(
-                this.owner.rotation,
-                soft
-                    ? 0
-                    : Math.min(
-                        definition.maxThrowDistance,
-                        this.owner.distanceToMouse
-                    ) * superStrangeMysteryConstant
-            ),
-            this.owner.movementVector
-        );
+        if (this.definition.c4 !== true) {
+            projectile.velocity = Vec.add(
+                Vec.fromPolar(
+                    this.owner.rotation,
+                    soft
+                        ? 0
+                        : Math.min(
+                            definition.maxThrowDistance,
+                            this.owner.distanceToMouse
+                        ) * superStrangeMysteryConstant
+                ),
+                this.owner.movementVector
+            );
+        }
     }
 
     destroy(): void {

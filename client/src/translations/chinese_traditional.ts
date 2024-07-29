@@ -270,10 +270,10 @@ export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
     "crowbar": "撬棍",
     "sickle": "鐮刀",
 
-    "mosin": "莫辛納甘", // 槍械
+    "mosin_nagant": "莫辛納甘", // 槍械
     "radio": "無線電通訊機",
     "lewis_gun": "路易士機槍",
-    "deathray": "死亡射線",
+    "death_ray": "死亡射線",
 
     "frag_grenade": "破片手榴彈", // 投擲物
     "smoke_grenade": "煙霧彈",
@@ -296,7 +296,7 @@ export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
     "flues": "弗魯斯",
     "vepr12": "維普爾12",
     "tango_51": "探戈51",
-    "barrett": "巴雷特95式",
+    "barrett_m95": "巴雷特95式",
     "m1895": "1895式",
     "g19": "格洛克19",
     "micro_uzi": "微型烏茲",
@@ -307,7 +307,7 @@ export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
     "mini14": "迷你14",
     "model_89": "89式",
     "firework_launcher": "煙花火箭筒",
-    "s_g17": "格洛克17（倍鏡）",
-    "arena_closer": "世界毀滅者",
+    "g17_scoped": "格洛克17（倍鏡）",
+    "destroyer_of_worlds": "世界毀滅者",
     "revitalizer": "覆興者"
 };

@@ -63,6 +63,8 @@ export class UIManager {
         pos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
+    public hasC4s = false;
+
     private static _instantiated = false;
     constructor(readonly game: Game) {
         if (UIManager._instantiated) {
@@ -256,7 +258,9 @@ export class UIManager {
         createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
         createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
-        closeCreateTeam: $<HTMLButtonElement>("#close-create-team")
+        closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
+
+        c4Button: $<HTMLButtonElement>("#c4-detonate-btn")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -471,7 +475,8 @@ export class UIManager {
             teammates,
             inventory,
             lockedSlots,
-            items
+            items,
+            activeC4s
         } = data;
 
         if (id !== undefined) this.game.activePlayerID = id.id;
@@ -496,6 +501,36 @@ export class UIManager {
                 this.ui.pingToggle.toggle(!spectating);
                 this.ui.menuButton.toggle(!spectating);
             }
+        }
+
+        if (health !== undefined) {
+            this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
+
+            const normalizedHealth = this.health / this.maxHealth;
+            const realPercentage = 100 * normalizedHealth;
+            const percentage = safeRound(realPercentage);
+
+            this.ui.healthBar
+                .width(`${realPercentage}%`)
+                .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
+                .toggleClass("flashing", percentage <= 25);
+
+            if (realPercentage === 0) {
+                this.ui.healthAnim
+                    .stop()
+                    .width(0);
+            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
+                this.ui.healthAnim
+                    .stop()
+                    .width(`${this._oldHealth}%`)
+                    .animate({ width: `${realPercentage}%` }, 500);
+                this._oldHealth = realPercentage;
+                this._lastHealthBarAnimTime = Date.now();
+            }
+
+            this.ui.healthBarAmount
+                .text(safeRound(this.health))
+                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
         if (teammates && this.game.teamMode) {
@@ -582,36 +617,6 @@ export class UIManager {
             }
         }
 
-        if (health !== undefined) {
-            this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
-
-            const normalizedHealth = this.health / this.maxHealth;
-            const realPercentage = 100 * normalizedHealth;
-            const percentage = safeRound(realPercentage);
-
-            this.ui.healthBar
-                .width(`${realPercentage}%`)
-                .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
-                .toggleClass("flashing", percentage <= 25);
-
-            if (realPercentage === 0) {
-                this.ui.healthAnim
-                    .stop()
-                    .width(0);
-            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
-                this.ui.healthAnim
-                    .stop()
-                    .width(`${this._oldHealth}%`)
-                    .animate({ width: `${realPercentage}%` }, 500);
-                this._oldHealth = realPercentage;
-                this._lastHealthBarAnimTime = Date.now();
-            }
-
-            this.ui.healthBarAmount
-                .text(safeRound(this.health))
-                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
-        }
-
         if (adrenaline !== undefined) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
             const percentage = 100 * this.adrenaline / this.maxAdrenaline;
@@ -642,6 +647,9 @@ export class UIManager {
         if (inventory?.weapons || items) {
             this.updateWeapons();
         }
+
+        activeC4s ? this.ui.c4Button.show() : this.ui.c4Button.hide();
+        if (activeC4s !== undefined) this.hasC4s = activeC4s;
     }
 
     skinID?: string;

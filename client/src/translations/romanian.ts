@@ -278,7 +278,7 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
     "lewis_gun": "Pușcă Mitralieră Lewis",
     "deathray": "Rază De Moarte",
     "firework_launcher": "Lansator De Artificii",
-    "arena_closer": "Destrugător De Lumi",
+    "destroyer_of_worlds": "Destrugător De Lumi",
     "revitalizer": "Revitalizant",
     "s_g17": "G17 (Scoped)",
     "vss": "VSS",

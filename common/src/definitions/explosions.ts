@@ -379,6 +379,38 @@ export const Explosions = ObjectDefinitions.create<ExplosionDefinition>()(
                 decal: "smoke_explosion_decal"
             },
             "Smoke Grenade"
+        ),
+        apply(
+            "explosion_factory",
+            {
+                damage: 150,
+                obstacleMultiplier: 1.15,
+                radius: {
+                    min: 10,
+                    max: 25
+                },
+                cameraShake: {
+                    duration: 200,
+                    intensity: 30
+                },
+                animation: {
+                    duration: 1000,
+                    tint: 0x91140b,
+                    scale: 1.5
+                },
+                shrapnelCount: 0,
+                ballistics: {
+                    damage: 15,
+                    obstacleMultiplier: 1,
+                    speed: 0.08,
+                    range: 20,
+                    rangeVariance: 1,
+                    shrapnel: true
+                },
+                sound: "frag_grenade",
+                decal: "frag_explosion_decal"
+            },
+            "C4"
         )
     ]
 );

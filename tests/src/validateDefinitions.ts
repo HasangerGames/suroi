@@ -2662,33 +2662,26 @@ logger.indent("Validating throwables", () => {
                 });
             });
 
-            tester.assertValidOrNPV({
+            tester.assertIsRealNumber({
                 obj: throwable,
                 field: "impactDamage",
-                defaultValue: 0,
-                validatorIfPresent: (impactDamage, errorPath) => {
-                    tester.assertIsRealNumber({
-                        value: impactDamage,
-                        errorPath
-                    });
-
-                    tester.assertNoPointlessValue({
-                        obj: throwable as ThrowableDefinition & { readonly impactDamage: number },
-                        field: "obstacleMultiplier",
-                        defaultValue: 1,
-                        baseErrorPath: errorPath
-                    });
-
-                    if (throwable.impactDamage !== undefined) {
-                        tester.assertIsRealNumber({
-                            obj: throwable,
-                            field: "obstacleMultiplier",
-                            baseErrorPath: errorPath
-                        });
-                    }
-                },
                 baseErrorPath: errorPath
             });
+
+            tester.assertNoPointlessValue({
+                obj: throwable as ThrowableDefinition & { readonly impactDamage: number },
+                field: "obstacleMultiplier",
+                defaultValue: 1,
+                baseErrorPath: errorPath
+            });
+
+            if (throwable.impactDamage !== undefined) {
+                tester.assertIsRealNumber({
+                    obj: throwable,
+                    field: "obstacleMultiplier",
+                    baseErrorPath: errorPath
+                });
+            }
 
             tester.assertWarn(
                 throwable.wearerAttributes !== undefined,

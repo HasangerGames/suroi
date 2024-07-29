@@ -79,7 +79,8 @@ export enum InputActions {
     UseItem,
     Emote,
     MapPing,
-    Loot
+    Loot,
+    ExplodeC4
 }
 
 export enum SpectateActions {
@@ -149,6 +150,10 @@ export const GameConstants = freezeDeep({
         maxMouseDist: 128,
         reviveTime: 8,
         maxReviveDist: 5
+    },
+    gas: {
+        damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
+        unscaledDamageDist: 12 // Don't scale damage for a certain distance into the gas
     },
     lootSpawnDistance: 0.7,
     airdrop: {

@@ -32,6 +32,8 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
             this.radius = data.full.definition.hitboxRadius;
         }
 
+        if (data.activated && data.full?.definition.animation.activatedImage) this.image.setFrame(data.full.definition.animation.activatedImage);
+
         this.position = data.position;
         this.rotation = data.rotation;
 

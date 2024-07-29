@@ -61,8 +61,7 @@ import { cleanUsername } from "./utils/usernameFilter";
     `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
  */
 export class Game implements GameData {
-    readonly _id: number;
-    get id(): number { return this._id; }
+    public readonly id: number;
 
     server: TemplatedApp;
 
@@ -224,7 +223,7 @@ export class Game implements GameData {
     }
 
     constructor() {
-        this._id = (workerData as WorkerInitData).id;
+        this.id = (workerData as WorkerInitData).id;
         this.maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
@@ -603,7 +602,7 @@ export class Game implements GameData {
 
         if (this._tickTimes.length >= 200) {
             const mspt = this._tickTimes.reduce((a, b) => a + b) / this._tickTimes.length;
-            Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
+            Logger.log(`Game ${this.id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
             this._tickTimes.length = 0;
         }
 

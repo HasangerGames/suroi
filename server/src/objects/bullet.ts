@@ -208,6 +208,15 @@ export class Bullet extends BaseBullet {
             }
         }
 
+        for (const object of grid.intersectsHitbox(lineRect)) {
+            if (object.type === ObjectCategory.ThrowableProjectile
+                && object.definition.health
+                && lineRect.collidesWith(object.hitbox)
+            ) {
+                object.damageC4(definition.damage);
+            }
+        }
+
         return records;
     }
 
