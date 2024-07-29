@@ -49,12 +49,13 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
     readonly puzzlePieces: Obstacle[] = [];
 
-    constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation) {
+    constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation, layer: number) {
         super(game, position);
 
         this.definition = Buildings.reify(definition);
 
-        this.layer = this.definition.layer ?? 0;
+        this.layer = layer ?? this.definition.layer ?? 0;
+        this.definition.layer = this.layer;
 
         this.rotation = orientation;
         this._wallsToDestroy = this.definition.wallsToDestroy;
@@ -98,6 +99,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         return {
             dead: this.dead,
             puzzle: this.puzzle,
+            layer: this.layer,
             full: {
                 definition: this.definition,
                 position: this.position,

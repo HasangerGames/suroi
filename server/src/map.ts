@@ -348,7 +348,7 @@ export class GameMap {
                         }
                     }
 
-                    this.generateBuilding(definition, position, orientation);
+                    this.generateBuilding(definition, position, orientation, (definition.layer ?? 0));
                     this._addBuildingToQuad(quad, idString);
                     validPositionFound = true;
                 }
@@ -432,7 +432,7 @@ export class GameMap {
                 }
 
                 this.occupiedBridgePositions.push(position);
-                this.generateBuilding(definition, position, bestOrientation);
+                this.generateBuilding(definition, position, bestOrientation, (definition.layer ?? 0));
                 spawnedCount++;
             };
 
@@ -450,12 +450,13 @@ export class GameMap {
     generateBuilding(
         definition: ReifiableDef<BuildingDefinition>,
         position: Vector,
-        orientation?: Orientation
+        orientation?: Orientation,
+        layer?: number
     ): Building {
         definition = Buildings.reify(definition);
         orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
 
-        const building = new Building(this.game, definition, Vec.clone(position), orientation);
+        const building = new Building(this.game, definition, Vec.clone(position), orientation, layer ?? 0);
 
         for (const obstacleData of definition.obstacles) {
             const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
@@ -512,7 +513,8 @@ export class GameMap {
             this.generateBuilding(
                 getRandomIDString(subBuilding.idString),
                 Vec.addAdjust(position, subBuilding.position, finalOrientation),
-                finalOrientation
+                finalOrientation,
+                (subBuilding.layer ?? definition.layer ?? 0)
             );
         }
 

@@ -25,6 +25,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
 
+    layer = 0;
+
     orientation!: Orientation;
 
     ceilingVisible = false;
@@ -212,6 +214,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
 
         const definition = this.definition;
+
+        this.layer = data.layer;
 
         if (definition === undefined) {
             console.warn("Building partially updated before being fully updated");
