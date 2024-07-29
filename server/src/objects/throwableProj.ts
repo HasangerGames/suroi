@@ -142,7 +142,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     explosion,
                     referencePosition,
                     this.source.owner,
-                    this.source.owner.layer
+                    this.layer
                 );
             }
         }, delay);
