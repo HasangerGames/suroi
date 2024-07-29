@@ -554,7 +554,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1.1,
                 destroy: 0.8
             },
-            hitbox: RectangleHitbox.fromRect(9, 9, Vec.create(0, 0)),
+            hitbox: RectangleHitbox.fromRect(9, 3, Vec.create(0, 0.5)),
             noCollisions: true,
             noResidue: true,
             rotationMode: RotationMode.Limited,
@@ -2616,6 +2616,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 0.95
             },
+            hasLoot: true,
+            reflectBullets: true,
             hitbox: new CircleHitbox(2.5, Vec.create(0, 0)),
             rotationMode: RotationMode.Full,
             allowFlyover: FlyoverPref.Never,
@@ -3392,7 +3394,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "headquarters_alarm_barriers",
             name: "Headquarters Alarm Barriers",
-            material: "stone",
+            material: "metal",
             health: 1000,
             hideOnMap: true,
             indestructible: true,
@@ -3431,6 +3433,24 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(18, 1.75, Vec.create(-11.5, 34.75)),
                 RectangleHitbox.fromRect(12.25, 1.75, Vec.create(14.75, 34.75)),
                 RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
+            idString: "headquarters_outer_walls_second_floor", // TODO
+            name: "Headquarters Outer Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,

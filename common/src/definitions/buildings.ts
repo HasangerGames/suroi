@@ -2686,7 +2686,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "stair_walls", position: Vec.create(-40.5, -102), rotation: 0, layer: -2 }
+                { idString: "stair_walls", position: Vec.create(-40.5, -102), rotation: 0 },
+                { idString: "headquarters_outer_walls_second_floor", position: Vec.create(0, 0), rotation: 0 }// TODO
             ] as BuildingObstacle[]
             /*  subBuildings: [
                 { idString: "stairToBasement", position: Vec.create(-40, -105), orientation: 2 },
