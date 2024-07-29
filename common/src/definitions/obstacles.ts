@@ -3504,14 +3504,30 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "headquarters_outer_walls_second_floor", // TODO
-            name: "Headquarters Outer Walls",
+            idString: "headquarters_walls_second_floor",
+            name: "Headquarters Walls",
             material: "stone",
             health: 1000,
             hideOnMap: true,
             indestructible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25))
+                // outer
+                RectangleHitbox.fromRect(1.75, 81.8, Vec.create(69.85, -80)),
+                RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.85)),
+                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.15, -83)),
+                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-64.5, -46.7)),
+                RectangleHitbox.fromRect(1.75, 71.5, Vec.create(-71, -12)),
+                RectangleHitbox.fromRect(1.75, 71.5, Vec.create(-22.5, -12)),
+
+                // inner
+                RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.1)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
+                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.1, -96)),
+                RectangleHitbox.fromRect(92, 1.77, Vec.create(23, -40.1)),
+                RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
+                RectangleHitbox.fromRect(14, 1.75, Vec.create(-29.25, -46.6))
+
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,

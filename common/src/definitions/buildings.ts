@@ -2667,6 +2667,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }]
         },
         {
+            idString: "headquarters_secret_room",
+            name: "Headquarters Secret Room",
+            spawnHitbox: RectangleHitbox.fromRect(19, 26),
+            scopeHitbox: RectangleHitbox.fromRect(19, 26),
+            ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+            ceilingImages: [{
+                key: "secret_room_ceiling",
+                position: Vec.create(0, 0),
+                scale: Vec.create(1.05, 1.05)
+            }]
+        },
+        {
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
             spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(40, -40)),
@@ -2687,11 +2699,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "stair_walls", position: Vec.create(-40.5, -102), rotation: 0 },
-                { idString: "headquarters_outer_walls_second_floor", position: Vec.create(0, 0), rotation: 0 }// TODO
-            ] as BuildingObstacle[]
-            /*  subBuildings: [
-                { idString: "stairToBasement", position: Vec.create(-40, -105), orientation: 2 },
-            ] */
+                { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 }
+            ] as BuildingObstacle[],
+            subBuildings: [
+                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0 }
+            ]
         },
         {
             idString: "headquarters",
