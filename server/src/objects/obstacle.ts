@@ -61,6 +61,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
 
     puzzlePiece?: string | boolean;
 
+    detectedMetal?: boolean;
+
     constructor(
         game: Game,
         type: ReifiableDef<ObstacleDefinition>,
@@ -149,6 +151,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         if (puzzlePiece) {
             this.parentBuilding?.puzzlePieces.push(this);
         }
+
+        if (this.definition.detector) game.detectors.push(this);
     }
 
     damage(params: DamageParams & { position?: Vector }): void {
@@ -382,6 +386,22 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         this.game.grid.updateObject(this);
     }
 
+    updateDetector(): void {
+        for (const player of this.game.livingPlayers) {
+            if (
+                this.hitbox.collidesWith(player.hitbox)
+                && (player.activeItem.definition.idString !== "fists" || player.inventory.vest || player.inventory.helmet)
+                && player.layer === this.layer
+            ) {
+                this.detectedMetal = true;
+                this.setDirty();
+            } else if (this.detectedMetal) {
+                this.detectedMetal = false;
+                this.setDirty();
+            }
+        }
+    }
+
     override get data(): FullData<ObjectCategory.Obstacle> {
         return {
             scale: this.scale,
@@ -397,7 +417,8 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                     rotation: this.rotation,
                     orientation: this.rotation as Orientation
                 },
-                locked: this.locked
+                locked: this.locked,
+                detectedMetal: this.detectedMetal
             }
         };
     }

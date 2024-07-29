@@ -76,6 +76,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly locked: boolean
             readonly variation?: Variation
             readonly activated?: boolean
+            readonly detectedMetal?: boolean
             readonly door?: {
                 readonly offset: number
             }
@@ -300,6 +301,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } else if (full.definition.role === ObstacleSpecialRoles.Activatable) {
                 stream.writeBoolean(full.activated ?? false);
             }
+            if (full.definition.detector && full.detectedMetal) stream.writeBoolean(full.detectedMetal);
         },
         deserializePartial(stream) {
             const data: ObjectsNetData[ObjectCategory.Obstacle] = {
@@ -317,7 +319,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readInt8(),
                 variation: definition.variations ? stream.readVariation() : undefined,
-                locked: stream.readBoolean()
+                locked: stream.readBoolean(),
+                detectedMetal: definition.detector ? stream.readBoolean() : undefined
             };
 
             if (definition.role === ObstacleSpecialRoles.Door) {

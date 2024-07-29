@@ -165,6 +165,8 @@ export class Game implements GameData {
         readonly direction: number
     }> = [];
 
+    readonly detectors: Obstacle[] = [];
+
     /**
      * All map pings this tick
      */
@@ -509,6 +511,11 @@ export class Game implements GameData {
         // Handle explosions
         for (const explosion of this.explosions) {
             explosion.explode();
+        }
+
+        // Update detectors
+        for (const detector of this.detectors) {
+            detector.updateDetector();
         }
 
         // Update gas

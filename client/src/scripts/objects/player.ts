@@ -445,26 +445,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
             }
-
-            // Alarm system (for HQ)
-            for (const object of this.game.objects) {
-                if (object instanceof Obstacle && object.hitbox.collidesWith(this.hitbox)) {
-                    // Sound spam control.
-                    object.elapsedTimeSinceLastDetection = Date.now() - object.lastDetectionTime;
-
-                    if (object.definition.detector && object.elapsedTimeSinceLastDetection > 3000) {
-                        // Alert only when player doesn't have fists equipped (hehe idstring check)
-                        if (this.activeItem.idString !== "fists" && object.elapsedTimeSinceLastDetection >= 0) {
-                            this.detectedSound = this.playSound("detection", {
-                                falloff: 0.25,
-                                maxRange: 180
-                            });
-
-                            object.lastDetectionTime = Date.now();
-                        }
-                    }
-                }
-            }
         }
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {

@@ -63,6 +63,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     hitSound?: GameSound;
 
+    notOnCoolDown = true;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
         super(game, id);
 
@@ -85,9 +87,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.variation = full.variation;
             this.locked = full.locked;
 
-            if (this.definition.detector) {
-                this.lastDetectionTime = 0;
-                this.elapsedTimeSinceLastDetection = 0;
+            if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
+                this.playSound("detection", {
+                    falloff: 0.25,
+                    maxRange: 180
+                });
+                this.notOnCoolDown = false;
+                setTimeout(() => {
+                    this.notOnCoolDown = true;
+                }, 2000);
             }
 
             if (definition.invisible) this.container.visible = false;
