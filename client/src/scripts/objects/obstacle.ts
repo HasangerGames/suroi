@@ -43,9 +43,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         locked?: boolean
     };
 
-    elapsedTimeSinceLastDetection!: number;
-    lastDetectionTime!: number;
-
     get door(): {
         readonly closedHitbox?: RectangleHitbox
         readonly openHitbox?: RectangleHitbox
@@ -95,7 +92,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.notOnCoolDown = false;
                 setTimeout(() => {
                     this.notOnCoolDown = true;
-                }, 2000);
+                }, 1000);
             }
 
             if (definition.invisible) this.container.visible = false;

@@ -2648,12 +2648,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
 
                 { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
+                //  { idString: "stair_thing", position: Vec.create(0.5, -0.7), rotation: 0, layer: -2 }, - BUGGED
+
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
                 { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
                 { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0, layer: -2 }
             ],
             lootSpawners: []
         },
+
+        // -----------------------------------------------------------------------------------------------
+        // Headquarters.
+        // -----------------------------------------------------------------------------------------------
         {
             idString: "headquarters_mini_vault",
             name: "Headquarters Ship Vault",
@@ -2686,6 +2692,17 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
             ),
+            puzzle: {
+                triggerInteractOn: "",
+                solvedSound: false,
+                interactDelay: 500
+            },
+            sounds: {
+                solved: "speaker",
+                position: Vec.create(64, -66),
+                maxRange: 100,
+                falloff: 0.5
+            },
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
@@ -2698,8 +2715,34 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "stair_walls", position: Vec.create(-40.5, -102), rotation: 0 },
-                { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 }
+                { idString: "stair_walls_big", position: Vec.create(-40.5, -100.5), rotation: 0 },
+                { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 },
+
+                { idString: "headquarters_wall_4", position: Vec.create(1.25, -79.25), rotation: 1 },
+                { idString: "house_column", position: Vec.create(1.25, -88.5) },
+                { idString: "door", position: Vec.create(1.25, -95.4), rotation: 1 },
+                { idString: "house_column", position: Vec.create(1.25, -101.5) },
+                { idString: "headquarters_wall_5", position: Vec.create(1.25, -111.1), rotation: 1 },
+
+                { idString: "headquarters_wall_1", position: Vec.create(-6.4, -69), rotation: 0 },
+                { idString: "white_small_couch", position: Vec.create(-6.4, -74.25), rotation: 2 },
+                { idString: "metal_small_drawer", position: Vec.create(-29.5, -73.5), rotation: 1 },
+                { idString: "chair", position: Vec.create(-24, -107), rotation: 2 },
+                { idString: "chair", position: Vec.create(-24, -93), rotation: 0 },
+                { idString: "green_house_large_table", position: Vec.create(-23.5, -100), rotation: 1 },
+                { idString: "cabinet", position: Vec.create(-25.7, -116.25), rotation: 0 },
+                { idString: "door", position: Vec.create(-17.7, -69.05), rotation: 2 },
+                { idString: "headquarters_wall_9", position: Vec.create(-27.8, -69), rotation: 0 },
+                { idString: "trash_can", position: Vec.create(-3, -116.2) },
+
+                { idString: "headquarters_wall_10", position: Vec.create(13.5, -61.5), rotation: 1 },
+                { idString: "door", position: Vec.create(13.5, -48), rotation: 3 },
+                { idString: "speaker", position: Vec.create(64, -66), rotation: 0, puzzlePiece: true },
+                { idString: "small_drawer", position: Vec.create(65.5, -45.25), rotation: 2 },
+                { idString: "potted_plant", position: Vec.create(8, -65.5) },
+
+                { idString: "secret_door", position: Vec.create(63.8, -97.58), rotation: 2 }
+
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0 }
@@ -2928,9 +2971,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "aegis_crate", position: Vec.create(-65, -9.25) },
                 { idString: { box: 1, grenade_box: 0.25 }, position: Vec.create(-67, -17.5) },
                 { idString: "gun_mount_mini_14", position: Vec.create(-68.8, -29), rotation: 1 },
-                { idString: "barrel", position: Vec.create(-53.5, -8.5) },
+                { idString: "barrel", position: Vec.create(-53.5, -8.5) }
 
-                { idString: "regular_crate", position: Vec.create(-30, -90), layer: -2 } // dummy crate for testing (remove when done)
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "headquarters_second_floor", position: Vec.create(0, 0), orientation: 0, layer: -2 },
@@ -2938,4 +2980,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 }
             ]
         }
+        // -----------------------------------------------------------------------------------------------
+
     ]);

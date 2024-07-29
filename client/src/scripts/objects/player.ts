@@ -54,7 +54,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     footstepSound?: GameSound;
-    detectedSound?: GameSound;
     actionSound?: GameSound;
 
     action = {

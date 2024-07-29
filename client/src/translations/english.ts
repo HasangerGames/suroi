@@ -146,6 +146,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "interact_control_panel": "Activate Control Panel",
     "interact_generator": "Activate Generator",
     "interact_button": "Press Button",
+    "interact_speaker": "Play Speaker",
 
     "loading_spritesheets": "Loading Spritesheets <progress>",
     "loading_connecting": "Connecting",
