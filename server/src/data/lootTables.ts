@@ -303,7 +303,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 0.6 }
         ]
     },
-    trash_can: {
+    trash_can: { // note from pap: very small chance to get the cola from the trash can :D
         min: 1,
         max: 1,
         loot: [

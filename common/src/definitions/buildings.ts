@@ -368,12 +368,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: RectangleHitbox.fromRect(65, 48),
             floorImages: [
                 {
-                    key: "firework_warehouse_floor_1",
-                    position: Vec.create(-17.5, 0)
+                    key: "firework_warehouse_floor_1_top",
+                    position: Vec.create(-17.4, -14)
                 },
                 {
-                    key: "firework_warehouse_floor_2",
-                    position: Vec.create(17.4, 0)
+                    key: "firework_warehouse_floor_1_bottom",
+                    position: Vec.create(-17.4, 14)
+                },
+                {
+                    key: "firework_warehouse_floor_2_top",
+                    position: Vec.create(17.4, -14)
+                },
+                {
+                    key: "firework_warehouse_floor_2_bottom",
+                    position: Vec.create(17.4, 14)
                 }
             ],
             ceilingImages: [
@@ -2703,12 +2711,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
-                    key: "construction_site_floor_1",
-                    position: Vec.create(0, -16.5)
+                    key: "construction_site_floor_1_left",
+                    position: Vec.create(-16.5, -16.5)
                 },
                 {
-                    key: "construction_site_floor_2",
-                    position: Vec.create(0, 16.5)
+                    key: "construction_site_floor_1_right",
+                    position: Vec.create(15.5, -16.5)
+                },
+                {
+                    key: "construction_site_floor_2_right",
+                    position: Vec.create(-16.5, 16)
+                },
+                {
+                    key: "construction_site_floor_2_left",
+                    position: Vec.create(16.5, 16)
                 }
             ],
             floors: [
@@ -2758,7 +2774,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
 
                 { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
@@ -2846,6 +2861,38 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 },
 
+                // ---------------------------------------------------------------------------------------------------------------
+                // discussion room? (bottom left)
+                // ---------------------------------------------------------------------------------------------------------------
+                { idString: "door", position: Vec.create(-42.8, -46.8), rotation: 2 },
+                { idString: "door", position: Vec.create(-52, -46.8), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-26, -28), rotation: 1 },
+                { idString: "tv", position: Vec.create(-24.35, -13.25), rotation: 0 },
+                { idString: "large_drawer", position: Vec.create(-27.4, -13.25), rotation: 3 },
+                { idString: "bookshelf", position: Vec.create(-26, 1.5), rotation: 1 },
+                { idString: "potted_plant", position: Vec.create(-66.7, 18) },
+                { idString: "potted_plant", position: Vec.create(-27.5, 17.7) },
+                { idString: "sword_case", position: Vec.create(-46, 18.5), rotation: 2 },
+                { idString: "water_cooler", position: Vec.create(-66.7, -42), rotation: 1 },
+
+                // todo: figure out why the hazel note doesn't get rendered (via the floor)
+                // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
+                { idString: "chair", position: Vec.create(-49, -28), rotation: 2 },
+                { idString: "chair", position: Vec.create(-49, 6.5), rotation: 0 },
+
+                { idString: "large_table_with_stuff", position: Vec.create(-49.25, -22), rotation: 0 },
+                { idString: "chair", position: Vec.create(-57.5, -22), rotation: 3 }, // rotation1=I_
+                { idString: "chair", position: Vec.create(-41, -22), rotation: 1 },
+
+                { idString: "large_table", position: Vec.create(-49.25, -10.4), rotation: 0 },
+                { idString: "chair", position: Vec.create(-57.5, -10.4), rotation: 3 },
+                { idString: "chair", position: Vec.create(-41, -10.4), rotation: 1 },
+
+                { idString: "large_table", position: Vec.create(-49.25, 1.25), rotation: 0 },
+                { idString: "chair", position: Vec.create(-57.5, 1.25), rotation: 3 },
+                { idString: "chair", position: Vec.create(-41, 1.25), rotation: 1 },
+                // ---------------------------------------------------------------------------------------------------------------
+
                 { idString: "headquarters_wall_4", position: Vec.create(1.25, -79.25), rotation: 1 },
                 { idString: "house_column", position: Vec.create(1.25, -88.5) },
                 { idString: "door", position: Vec.create(1.25, -95.4), rotation: 1 },
@@ -2855,6 +2902,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wall_1", position: Vec.create(-6.4, -69), rotation: 0 },
                 { idString: "white_small_couch", position: Vec.create(-6.4, -74.25), rotation: 2 },
                 { idString: "metal_small_drawer", position: Vec.create(-29.5, -73.5), rotation: 1 },
+                { idString: "water_cooler", position: Vec.create(-30, -80), rotation: 1 },
                 { idString: "chair", position: Vec.create(-24, -107), rotation: 2 },
                 { idString: "chair", position: Vec.create(-24, -93), rotation: 0 },
                 { idString: "green_house_large_table", position: Vec.create(-23.5, -100), rotation: 1 },
@@ -2896,7 +2944,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "couch_part", position: Vec.create(12.5, -75.35), rotation: 1 }, // couch parts y += 1.5
                 { idString: "couch_end_left", position: Vec.create(19.2, -75.65), rotation: 1 }, // end part y += .40
                 { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 },
-                { idString: "secret_door", position: Vec.create(63.8, -97.58), rotation: 2 }
+
+                // secret room
+                { idString: "secret_door", position: Vec.create(63.8, -97.58), rotation: 2 },
+                { idString: "aegis_golden_case", position: Vec.create(55.5, -77.8), rotation: 1 }
 
             ] as BuildingObstacle[],
             subBuildings: [
@@ -3006,6 +3057,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "white_small_couch", position: Vec.create(-41.5, -59), rotation: 0 },
                 { idString: "white_small_couch", position: Vec.create(16, -72), rotation: 1 },
                 { idString: "white_small_couch", position: Vec.create(-8, -31.5), rotation: 2 },
+                { idString: "water_cooler", position: Vec.create(28, -30.7), rotation: 2 },
                 { idString: "folders_shelf", position: Vec.create(-32.5, -19), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(-43, -12), rotation: 1 },
                 { idString: "detector", position: Vec.create(-36, 23.5), rotation: 0 },
@@ -3023,8 +3075,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wall_1", position: Vec.create(-41.7, -64.25), rotation: 0 },
                 { idString: "door", position: Vec.create(-53, -64.25), rotation: 2 },
                 { idString: "small_drawer", position: Vec.create(-39.7, -69.5), rotation: 2 },
-                { idString: { box: 9, grenade_box: 1 }, position: Vec.create(-38.25, -94.25) },
+                { idString: { box: 0.9, grenade_box: 0.1 }, position: Vec.create(-38.25, -94.25) },
                 { idString: "metal_door", position: Vec.create(-58.35, -41.25), rotation: 3 }, // eh not sure if we want this one locked
+                { idString: "dumpster", position: Vec.create(-63, -63), rotation: 2 },
+                { idString: "trash_bag", position: Vec.create(-63, -52.5) },
 
                 // right side ig
                 { idString: "door", position: Vec.create(32.6, -81.25), rotation: 1 },

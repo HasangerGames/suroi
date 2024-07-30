@@ -712,7 +712,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "piano",
             name: "Piano",
-            material: "piano",
+            material: "piano", // TODO: sounds
             health: 350,
             impenetrable: true,
             scale: {
@@ -1115,6 +1115,28 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
+            idString: "water_cooler",
+            name: "Cool Water",
+            material: "appliance",
+            health: 125,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(6, 5, Vec.create(0, -0.2)),
+                RectangleHitbox.fromRect(5.7, 0.25, Vec.create(0, 2.5))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            },
+            reflectBullets: true
+        },
+        {
             idString: "stove",
             name: "Stove",
             material: "metal",
@@ -1213,6 +1235,90 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "furniture_particle"
             }
+        },
+        {
+            idString: "aegis_golden_case", // TODO: add deagle loot and set hasLoot to true
+            name: "Golden Aegis Case",
+            material: "wood", // crate or wood?
+            health: 150,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(11, 6, Vec.create(0, -0.2)),
+                RectangleHitbox.fromRect(1, 0.4, Vec.create(-3.6, 3)),
+                RectangleHitbox.fromRect(1, 0.4, Vec.create(3.8, 3))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            noResidue: true,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "sword_case",
+            name: "Sword Case",
+            material: "glass",
+            health: 200,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(13, 6, Vec.create(0, 0))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            noResidue: true,
+            frames: {
+                particle: "window_particle"
+            }
+        },
+        {
+            idString: "dumpster",
+            name: "Dumpster",
+            material: "iron",
+            reflectBullets: true,
+            health: 300,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(6.5, 12.5, Vec.create(0.2, 0)),
+                RectangleHitbox.fromRect(5.8, 0.8, Vec.create(0.25, 6.4)),
+                RectangleHitbox.fromRect(5.8, 0.8, Vec.create(0.25, -6.4))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "trash_bag",
+            name: "Trash Bag",
+            material: "stone",
+            health: 70,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new CircleHitbox(2.2, Vec.create(0, 0)),
+            rotationMode: RotationMode.Full,
+            allowFlyover: FlyoverPref.Always,
+            noResidue: true,
+            frames: {
+                particle: "flint_stone_particle"
+            },
+            particleVariations: 2
         },
         {
             idString: "secret_door",
@@ -1579,6 +1685,46 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(12, 16.6),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle"
+            },
+            zIndex: ZIndexes.ObstaclesLayer3,
+            noCollisions: true,
+            noResidue: true
+        },
+        {
+            idString: "large_table",
+            name: "Large Table",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(16.6, 12),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle"
+            },
+            zIndex: ZIndexes.ObstaclesLayer3,
+            noCollisions: true,
+            noResidue: true
+        },
+        {
+            idString: "large_table_with_stuff",
+            name: "Large Table Thing",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(16.6, 12),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
