@@ -1,7 +1,7 @@
 import { ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
-import { CircleHitbox, HitboxType, type RectangleHitbox } from "@common/utils/hitbox";
+import { CircleHitbox, Hitbox, HitboxType, HitboxTypeRectangleHitbox, RectangleHitbox,  } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
@@ -153,6 +153,11 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
         const halfDt = 0.5 * this._dt;
 
+        // Create a copy of the original hitbox position.
+        // We need to know the hitbox's position before and after the proposed update to perform ray casting as part of
+        // continuous collision detection.
+        const originalHitboxPosition: Vector = Vec.clone(this.hitbox.position);
+
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
         this._velocity = { ...Vec.scale(this._velocity, this._currentDragConst) };
@@ -189,9 +194,12 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
         const damagedThisTick = new Set<GameObject>();
 
+        console.log("Start EVAL!")
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             const isObstacle = object instanceof Obstacle;
             const isPlayer = object instanceof Player;
+
+            console.log(`ID: ${ (object.data as any)?.full?.definition?.idString }, (${ object.position.x }, ${ object.position.y })`)
 
             if (
                 object.dead
@@ -201,10 +209,27 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                 )
             ) continue;
 
-            const collidingWithObject = object.hitbox.collidesWith(this.hitbox);
+
+            // This is a discrete collision detection that looks for overlap between geometries.
+            const isGeometricCollision = object.hitbox.collidesWith(this.hitbox);
+            // This is a continuous collision detection that looks for an intersection between this object's path of
+            // travel and the boundaries of the object.
+            const rayCastCollisionPointWithObject: Vector | null = this._travelCollidesWith(originalHitboxPosition, this.hitbox.position, object.hitbox);
+            const isRayCastedCollision = rayCastCollisionPointWithObject != null;
+
+            if (isRayCastedCollision) {
+                console.log(`FOUND A RAY-CASTED COLLISION!!!`);
+                const movementVector: Vector = Vec.sub(this.hitbox.position, originalHitboxPosition);
+                console.log(`Po: (${ originalHitboxPosition.x }, ${ originalHitboxPosition.y }), Pn: (${ this.hitbox.position.x }, ${ this.hitbox.position.y }), M: ${ Vec.length(movementVector) }`);
+                console.log(`I: (${ rayCastCollisionPointWithObject.x}, ${ rayCastCollisionPointWithObject.y})`)
+            }
+
+            const collidingWithObject = isGeometricCollision || isRayCastedCollision;
 
             if (isObstacle) {
                 if (collidingWithObject) {
+                    // console.log(`Colliding with object!`, object.data)
+
                     let isAbove = false;
                     if (isAbove = canFlyOver(object)) {
                         this._currentlyAbove.add(object);
@@ -236,6 +261,41 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                 damagedThisTick.add(object);
             }
 
+            console.log("Handling the collision...");
+
+            if (isRayCastedCollision && rayCastCollisionPointWithObject != null) {
+
+                // The path of travel is as follows.
+                // (S)----(I)-------------(E)
+                // Where...
+                //  * (S) is the start of the line segment.
+                //  * (E) is the end of the line segment.
+                //  * (I) is the intersection point (with some obstacle boundary) along the line segment.
+                //
+                // If we set the hitbox's new position to the intersection point, then it makes the overlap detection
+                // and correction done in `handleCollision` create wonky results.
+                // We know that, because the intersection exists, it's not really safe to move the hitbox to the end of
+                // the line segment, but moving closer to the start of the line segment would only decrease or alleviate
+                // the collision.
+                // We can start by placing the hitbox center at the intersection, then moving it towards the start of
+                // the line segment by a distance equal to some ratio of the hitbox's radius.
+
+                this.hitbox.position = Vec.sub(
+                    Vec.clone(rayCastCollisionPointWithObject),
+                    Vec.scale(
+                        Vec.normalize(
+                            Vec.sub(
+                                originalHitboxPosition,
+                                rayCastCollisionPointWithObject
+                            )
+                        ),
+                        this.hitbox.radius / 5
+                    )
+                );
+
+                // this.hitbox.position = Vec.clone(rayCastCollisionPointWithObject);
+            }
+
             this.handleCollision(object);
 
             this._angularVelocity *= 0.6;
@@ -249,6 +309,88 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         this._damagedLastTick = damagedThisTick;
         this.game.grid.updateObject(this);
         this.setPartialDirty();
+    }
+
+    private _travelCollidesWith(travelStart: Vector, travelEnd: Vector, hitbox: Hitbox): Vector | null {
+
+        const handleRectangle = (hitbox: RectangleHitbox) => {
+            // A rectangular hitbox is comprised of four distinct line segments, but is defined diagonally using a
+            // minimum and maximum point. Expand these two points into all four corners of the rectangle.
+            const hitboxTopLeftPoint: Vector = Vec.clone(hitbox.min);
+            const hitboxTopRightPoint: Vector = Vec.create(hitbox.max.x, hitbox.min.y);
+            const hitboxBottomLeftPoint: Vector = Vec.create(hitbox.min.x, hitbox.max.y);
+            const hitboxBottomRightPoint: Vector = Vec.clone(hitbox.max);
+
+            // Create line segment representations of all four sides of the hitbox.
+            const topLineSegment: Vector[] = [hitboxTopLeftPoint, hitboxTopRightPoint];
+            const bottomLineSegment: Vector[] = [hitboxBottomLeftPoint, hitboxBottomRightPoint];
+            const leftLineSegment: Vector[] = [hitboxTopLeftPoint, hitboxBottomLeftPoint];
+            const rightLineSegment: Vector[] = [hitboxTopRightPoint, hitboxBottomRightPoint];
+
+            let nearestIntersection: Vector | null = null;
+            let nearestIntersectionDistance: number = Number.MAX_SAFE_INTEGER;
+
+            // Check each of the line segments for intersection with the path of travel.
+            for (let lineSegment of [topLineSegment, bottomLineSegment, leftLineSegment, rightLineSegment]) {
+                
+                const intersection: Vector | null = Collision.lineSegmentIntersection(travelStart, travelEnd, lineSegment[0], lineSegment[1]);
+
+                if (intersection != null) {
+
+                    // If a nearest intersection doesn't already exist, then this is the new nearest.
+                    if (nearestIntersection == null) {
+                        nearestIntersection = intersection;
+                    }
+                    else {
+                        // Create a new Vector from the starting position to this intersection position.
+                        const startToIntersection: Vector = Vec.sub(intersection, travelStart);
+                        
+                        // If the length of that Vector is less than nearest intersection encountered so far, then this
+                        // intersection is closer, or precedes previosuly encountered intersections.
+                        const startToIntersectionLength: number = Vec.length(startToIntersection);
+                        if (startToIntersectionLength < nearestIntersectionDistance) {
+                            nearestIntersection = intersection;
+                            nearestIntersectionDistance = startToIntersectionLength;
+                        }
+                    }
+                }
+            }
+
+            return nearestIntersection;
+        };
+
+        switch (hitbox.type) {
+            // Not currently supported.
+            // case HitboxType.Circle: {
+            //     handleCircle(hitbox);
+            //     break;
+            // }
+            case HitboxType.Rect: {
+                return handleRectangle(hitbox);
+            }
+            // Not currently supported (missing circle).
+            case HitboxType.Group: {
+                const anyCollides = hitbox.hitboxes
+                    .filter((hitbox: Hitbox) => hitbox instanceof RectangleHitbox)
+                    .find((hitbox: Hitbox) => handleRectangle(hitbox as RectangleHitbox))
+
+                for (let target of hitbox.hitboxes) {
+                    if (target instanceof RectangleHitbox) {
+                        const intersection: Vector | null = handleRectangle(target);
+
+                        if (intersection != null) {
+                            return intersection;
+                        }
+                    }
+                }
+
+                return null;
+            }
+            default:
+                return null;
+        }
+
+
     }
 
     handleCollision(object: GameObject): void {
@@ -278,9 +420,11 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         };
 
         const handleRectangle = (hitbox: RectangleHitbox): void => {
-            const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
-
+            const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.hitbox.position, this.hitbox.radius);
+            // const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
+            
             if (collision) {
+                console.log(`Collision response: Dir_x ${ collision?.dir.x }, Dir_y ${ collision?.dir.y }, Pen ${ collision?.pen }`);
                 this._velocity = Vec.add(
                     this._velocity,
                     Vec.scale(
@@ -296,11 +440,15 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     this.hitbox.position,
                     Vec.scale(
                         collision.dir,
+                        // collision.pen,
                         (hitbox.isPointInside(this.hitbox.position) ? -1 : 1) * collision.pen
                         // "why?", you ask
                         // cause it makes the thingy work and rectCircleIntersection is goofy
                     )
                 );
+            }
+            else {
+                console.log("No collision in handleRectangle")
             }
         };
 

@@ -101,7 +101,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
+            speedCap: 0.13,
             detonation: {
                 explosion: "frag_grenade_explosion"
             },
