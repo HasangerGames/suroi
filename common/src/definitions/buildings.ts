@@ -2814,7 +2814,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
             ),
             puzzle: {
-                triggerInteractOn: "",
+                triggerInteractOn: "speaker",
                 solvedSound: false,
                 interactDelay: 500
             },
@@ -2836,7 +2836,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
+                /*  couch parts (note by pap)
+                  couch_end_right
+                  couch_end_left
+                  couch_part
+                  couch_corner
+                */
                 { idString: "stair_walls_big", position: Vec.create(-40.5, -100.5), rotation: 0 },
+                { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 },
 
                 { idString: "headquarters_wall_4", position: Vec.create(1.25, -79.25), rotation: 1 },
@@ -2857,11 +2864,37 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "trash_can", position: Vec.create(-3, -116.2) },
 
                 { idString: "headquarters_wall_10", position: Vec.create(13.5, -61.5), rotation: 1 },
-                { idString: "door", position: Vec.create(13.5, -48), rotation: 3 },
+                { idString: "door", position: Vec.create(13.5, -48.9), rotation: 1 },
                 { idString: "speaker", position: Vec.create(64, -66), rotation: 0, puzzlePiece: true },
                 { idString: "small_drawer", position: Vec.create(65.5, -45.25), rotation: 2 },
+                { idString: "couch_end_left", position: Vec.create(58, -45.25), rotation: 1 },
+                { idString: "couch_part", position: Vec.create(51.5, -44.95), rotation: 1 },
+                { idString: "green_house_small_table", position: Vec.create(51.5, -54), rotation: 1 },
+                { idString: "tv", position: Vec.create(51, -68.8), rotation: 1 },
+                { idString: "trash_can", position: Vec.create(39.5, -66.5) },
+                { idString: "couch_end_right", position: Vec.create(45, -45.25), rotation: 2 },
                 { idString: "potted_plant", position: Vec.create(8, -65.5) },
+                { idString: "couch_corner", position: Vec.create(18, -66), rotation: 0 },
+                { idString: "couch_part", position: Vec.create(23.95, -65.9), rotation: 3 },
+                { idString: "couch_end_right", position: Vec.create(30.5, -65.6), rotation: 0 },
+                { idString: "couch_end_left", position: Vec.create(18.4, -59.25), rotation: 0 },
+                { idString: "folders_shelf", position: Vec.create(-14, -46), rotation: 0 },
 
+                // near stairs
+                { idString: "metal_small_drawer", position: Vec.create(-53.7, -80), rotation: 1 },
+                { idString: "white_small_couch", position: Vec.create(-53.4, -71.8), rotation: 1 },
+
+                // secret room + near secret room
+                { idString: "large_drawer", position: Vec.create(9.5, -115), rotation: 0 },
+                { idString: "potted_plant", position: Vec.create(64, -115) },
+                { idString: "office_chair", position: Vec.create(25.5, -110.5), rotation: 2 },
+                { idString: "office_chair", position: Vec.create(34, -110.5), rotation: 2 },
+                { idString: "bookshelf", position: Vec.create(62.25, -101), rotation: 0 },
+                { idString: "metal_small_drawer", position: Vec.create(27.8, -75.5), rotation: 2 },
+                { idString: "couch_corner", position: Vec.create(6.5, -75.2), rotation: 1 }, // pain to rotate a corner
+                { idString: "couch_part", position: Vec.create(12.5, -75.35), rotation: 1 }, // couch parts y += 1.5
+                { idString: "couch_end_left", position: Vec.create(19.2, -75.65), rotation: 1 }, // end part y += .40
+                { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 },
                 { idString: "secret_door", position: Vec.create(63.8, -97.58), rotation: 2 }
 
             ] as BuildingObstacle[],

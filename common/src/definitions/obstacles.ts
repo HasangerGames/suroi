@@ -1395,6 +1395,101 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "couch_part",
+            name: "Couch Part",
+            material: "wood",
+            health: 95,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(5, 5, Vec.create(0, 0)),
+                RectangleHitbox.fromRect(1.5, 6, Vec.create(-2.5, 0)),
+                new CircleHitbox(2.5, Vec.create(0.9, 0))
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle",
+                residue: "brown_couch_part_residue"
+            }
+        },
+        {
+            idString: "couch_corner",
+            name: "Couch Corner",
+            material: "wood",
+            health: 95,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(5, 5, Vec.create(0.6, 0.6)),
+                RectangleHitbox.fromRect(1.5, 5, Vec.create(-2.5, 0.6)),
+                RectangleHitbox.fromRect(5, 1.5, Vec.create(0.6, -2.5)),
+                new CircleHitbox(0.8, Vec.create(-2.4, -2.4))
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle",
+                residue: "brown_couch_part_residue"
+            }
+        },
+        {
+            idString: "couch_end_right",
+            name: "Couch Part",
+            material: "wood",
+            health: 95,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(5, 5, Vec.create(-1, 0)),
+                RectangleHitbox.fromRect(6.8, 1.5, Vec.create(-0.25, -2.6)),
+                RectangleHitbox.fromRect(1.5, 4.5, Vec.create(2.6, -0.5)),
+                new CircleHitbox(0.85, Vec.create(2.6, -2.6)),
+                new CircleHitbox(0.85, Vec.create(2.6, 2.65)),
+                new CircleHitbox(2.635, Vec.create(-1, 0.25))
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle",
+                residue: "brown_couch_part_residue"
+            }
+        },
+        {
+            idString: "couch_end_left",
+            name: "Couch Part",
+            material: "wood",
+            health: 95,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(5, 5, Vec.create(0, -1)),
+                RectangleHitbox.fromRect(1.5, 6.8, Vec.create(-2.6, -0.5)),
+                RectangleHitbox.fromRect(4.5, 1.5, Vec.create(0, 2.6)),
+                new CircleHitbox(0.85, Vec.create(2.6, 2.6)),
+                new CircleHitbox(0.85, Vec.create(-2.6, 2.65)),
+                new CircleHitbox(2.65, Vec.create(0.25, -0.5))
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle",
+                residue: "brown_couch_part_residue"
+            }
+        },
+        {
             idString: "tv",
             name: "TV",
             material: "glass",
@@ -3617,6 +3712,24 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(4.7, 6.5, Vec.create(-21, -53.5)),
                 RectangleHitbox.fromRect(4.7, 6.5, Vec.create(-1, -53.5)),
                 RectangleHitbox.fromRect(27.5, 5, Vec.create(-56.3, 31))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            invisible: true,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "headquarters_wood_table_second_floor",
+            name: "Headquarters Wood Obstacles",
+            material: "wood",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(25.3, 3, Vec.create(29.5, -117)),
+                RectangleHitbox.fromRect(4.2, 15.5, Vec.create(18.8, -111))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
