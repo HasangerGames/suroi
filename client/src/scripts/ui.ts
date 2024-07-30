@@ -50,6 +50,9 @@ let selectedRegion: RegionInfo | undefined;
 
 const regionInfo: Record<string, RegionInfo> = Config.regions;
 
+const ammoIdStrings = Ammos.definitions.map(ammo => ammo.idString);
+const healingItemsIdStrings = HealingItems.definitions.map(healingItem => healingItem.idString);
+
 export let teamSocket: WebSocket | undefined;
 let teamID: string | undefined | null;
 let joinedTeam = false;
@@ -1031,9 +1034,10 @@ Video evidence is required.`)) {
             }
 
             // noinspection CssUnknownTarget
+            const emoteIdString = (ammoIdStrings.includes(emote.idString) || healingItemsIdStrings.includes(emote.idString)) ? `./img/game/loot/${emote.idString}.svg` : `./img/game/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
-                    <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
+                    <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
                     <span class="emote-name">${getTranslatedString(`emote_${emote.idString}`)}</span>
                 </div>`
             );

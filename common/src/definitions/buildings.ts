@@ -366,15 +366,29 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Firework Warehouse",
             spawnHitbox: RectangleHitbox.fromRect(110, 70),
             scopeHitbox: RectangleHitbox.fromRect(65, 48),
-            floorImages: [{
-                key: "firework_warehouse",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "firework_warehouse_ceiling",
-                position: Vec.create(0, 0),
-                scale: Vec.create(2, 2)
-            }],
+            floorImages: [
+                {
+                    key: "firework_warehouse_floor_1",
+                    position: Vec.create(-17.5, 0)
+                },
+                {
+                    key: "firework_warehouse_floor_2",
+                    position: Vec.create(17.4, 0)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "firework_warehouse_ceiling_1",
+                    position: Vec.create(-16.5, 0),
+                    scale: Vec.create(2, 2)
+                },
+
+                {
+                    key: "firework_warehouse_ceiling_2",
+                    position: Vec.create(17, 0),
+                    scale: Vec.create(2, 2)
+                }
+            ],
             floors: [
                 {
                     type: "stone",
@@ -407,15 +421,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Warehouse",
             spawnHitbox: RectangleHitbox.fromRect(60, 88),
             scopeHitbox: RectangleHitbox.fromRect(40, 70),
-            floorImages: [{
-                key: "warehouse_floor",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "warehouse_ceiling",
-                position: Vec.create(0, 0),
-                scale: Vec.create(2, 2)
-            }],
+            floorImages: [
+                {
+                    key: "warehouse_floor_1",
+                    position: Vec.create(0, -22.5)
+                },
+                {
+                    key: "warehouse_floor_2",
+                    position: Vec.create(0, 22.3)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "warehouse_ceiling_1",
+                    position: Vec.create(0, -17),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "warehouse_ceiling_2",
+                    position: Vec.create(0, 17),
+                    scale: Vec.create(2, 2)
+                }
+            ],
             floors: [
                 {
                     type: "stone",
@@ -439,7 +466,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
                 { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
                 { idString: { box: 9, grenade_box: 1 }, get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
-            ],
+            ] as BuildingObstacle[],
             lootSpawners: [
                 {
                     position: Vec.create(0, 0),
@@ -953,10 +980,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Red House",
             spawnHitbox: RectangleHitbox.fromRect(80, 80),
             scopeHitbox: RectangleHitbox.fromRect(60, 56),
-            floorImages: [{
-                key: "red_house_floor",
-                position: Vec.create(0, 0)
-            }],
+            floorImages: [
+                {
+                    key: "red_house_floor_1",
+                    position: Vec.create(0, -17.2)
+                },
+                {
+                    key: "red_house_floor_2",
+                    position: Vec.create(0, 17.1)
+                }
+            ],
             ceilingImages: [{
                 key: "red_house_ceiling",
                 position: Vec.create(0, -0.25),
@@ -1136,14 +1169,26 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Port Shed",
             spawnHitbox: RectangleHitbox.fromRect(27, 37, Vec.create(-0.8, 0)),
             scopeHitbox: RectangleHitbox.fromRect(20, 27.5, Vec.create(-0.8, -1.5)),
-            floorImages: [{
-                key: "port_shed_floor",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "port_shed_ceiling",
-                position: Vec.create(-0.8, -1.7)
-            }],
+            floorImages: [
+                {
+                    key: "port_shed_floor_1",
+                    position: Vec.create(0, -8.3)
+                },
+                {
+                    key: "port_shed_floor_2",
+                    position: Vec.create(0, 8.1)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "port_shed_ceiling_1",
+                    position: Vec.create(-0.8, -9.025)
+                },
+                {
+                    key: "port_shed_ceiling_2",
+                    position: Vec.create(-0.8, 5.9)
+                }
+            ],
             obstacles: [
                 {
                     idString: "port_shed_exterior",
@@ -1923,15 +1968,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Armory Barracks",
             spawnHitbox: RectangleHitbox.fromRect(50, 84),
             scopeHitbox: RectangleHitbox.fromRect(50, 84),
-            floorImages: [{
-                key: "armory_barracks_floor",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "armory_barracks_ceiling",
-                position: Vec.create(0, 0),
-                scale: Vec.create(2, 2)
-            }],
+            floorImages: [
+                {
+                    key: "armory_barracks_floor_1",
+                    position: Vec.create(0, -23.2)
+                },
+                {
+                    key: "armory_barracks_floor_2",
+                    position: Vec.create(0, 23.2)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "armory_barracks_ceiling_1",
+                    position: Vec.create(0, -21),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "armory_barracks_ceiling_2",
+                    position: Vec.create(0, 20.4),
+                    scale: Vec.create(2, 2)
+                }
+            ],
             floors: [{
                 type: "wood",
                 hitbox: RectangleHitbox.fromRect(50, 84)
@@ -1961,15 +2019,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Armory Center",
             spawnHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
             scopeHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
-            floorImages: [{
-                key: "armory_center_floor",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "armory_center_ceiling",
-                position: Vec.create(1.25, 0),
-                scale: Vec.create(2, 2)
-            }],
+            floorImages: [
+                {
+                    key: "armory_center_floor_1",
+                    position: Vec.create(0, -11.5)
+                },
+                {
+                    key: "armory_center_floor_2",
+                    position: Vec.create(0, 11.5)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "armory_center_ceiling_1",
+                    position: Vec.create(1.25, -11),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "armory_center_ceiling_2",
+                    position: Vec.create(1.25, 11.4),
+                    scale: Vec.create(2, 2)
+                }
+            ],
             floors: [{
                 type: "wood",
                 hitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0))
@@ -1998,15 +2069,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 solvedSound: true,
                 setSolvedImmediately: true
             },
-            floorImages: [{
-                key: "armory_vault_floor",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "armory_vault_ceiling",
-                position: Vec.create(0, -2.5),
-                scale: Vec.create(2, 2)
-            }],
+            floorImages: [
+                {
+                    key: "armory_vault_floor_1",
+                    position: Vec.create(-16.6, 0)
+                },
+                {
+                    key: "armory_vault_floor_2",
+                    position: Vec.create(20.2, 0)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "armory_vault_ceiling_1",
+                    position: Vec.create(19, -2.5),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "armory_vault_ceiling_2",
+                    position: Vec.create(-18.4, -2.5),
+                    scale: Vec.create(2, 2)
+                }
+            ],
             ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
             floors: [{
                 type: "wood",
@@ -2048,10 +2132,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Armory Inner Vault",
             spawnHitbox: RectangleHitbox.fromRect(20.87, 36.34),
             scopeHitbox: RectangleHitbox.fromRect(20.87, 36.34),
-            ceilingImages: [{
-                key: "armory_inner_vault_ceiling",
-                position: Vec.create(0, 0)
-            }]
+            ceilingImages: [
+                {
+                    key: "armory_inner_vault_ceiling_1",
+                    position: Vec.create(0, -9)
+                },
+                {
+                    key: "armory_inner_vault_ceiling_2",
+                    position: Vec.create(0, 9.1)
+                }
+            ]
         },
         {
             idString: "armory",
@@ -2328,14 +2418,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Beach,
             spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
             scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
-            floorImages: [{
-                key: "tugboat_red_floor",
-                position: Vec.create(90, 0)
-            }],
-            ceilingImages: [{
+            floorImages: [
+                {
+                    key: "tugboat_red_floor_1",
+                    position: Vec.create(90, -23.7)
+                },
+                {
+                    key: "tugboat_red_floor_2",
+                    position: Vec.create(90, 23.7)
+                }
+            ],
+            /* ceilingImages: [{
                 key: "tugboat_red_ceiling",
                 position: Vec.create(90, 12.5)
-            }],
+            }], */
             floors: [
                 { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
                 { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
@@ -2373,10 +2469,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Beach,
             spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
             scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
-            floorImages: [{
-                key: "tugboat_white_floor",
-                position: Vec.create(90, 0)
-            }],
+            floorImages: [
+                {
+                    key: "tugboat_white_floor_1",
+                    position: Vec.create(90, -23.6)
+                },
+                {
+                    key: "tugboat_white_floor_2",
+                    position: Vec.create(90, 23.6)
+                }
+            ],
             ceilingImages: [{
                 key: "tugboat_white_ceiling",
                 position: Vec.create(90, 12.5)
@@ -2415,10 +2517,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(48, 98, Vec.create(0, 15)),
             scopeHitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)),
             spawnMode: MapObjectSpawnMode.Beach,
-            floorImages: [{
-                key: "sea_traffic_control_floor",
-                position: Vec.create(0, 0)
-            }],
+            floorImages: [
+                {
+                    key: "sea_traffic_control_floor_1",
+                    position: Vec.create(0, -15.45)
+                },
+                {
+                    key: "sea_traffic_control_floor_2",
+                    position: Vec.create(0, 15.45)
+                }
+            ],
             ceilingImages: [{
                 key: "sea_traffic_control_ceiling",
                 position: Vec.create(-0.25, -2.4),
@@ -2593,10 +2701,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Construction Site",
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             spawnMode: MapObjectSpawnMode.Grass,
-            floorImages: [{
-                key: "construction_site_floor",
-                position: Vec.create(0, 0)
-            }],
+            floorImages: [
+                {
+                    key: "construction_site_floor_1",
+                    position: Vec.create(0, -16.5)
+                },
+                {
+                    key: "construction_site_floor_2",
+                    position: Vec.create(0, 16.5)
+                }
+            ],
             floors: [
                 { type: "sand", hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) }
             ],
@@ -2666,11 +2780,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(22, 30.6),
             scopeHitbox: RectangleHitbox.fromRect(22, 30.6),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
-            ceilingImages: [{
-                key: "headquarters_mini_vault_ceiling",
-                position: Vec.create(0, 0),
-                scale: Vec.create(1.08, 1.08)
-            }]
+            ceilingImages: [
+                {
+                    key: "headquarters_mini_vault_ceiling_1",
+                    position: Vec.create(0, -7.3),
+                    scale: Vec.create(1.08, 1.08)
+                },
+                {
+                    key: "headquarters_mini_vault_ceiling_2",
+                    position: Vec.create(0, 7),
+                    scale: Vec.create(1.08, 1.08)
+                }
+            ]
         },
         {
             idString: "headquarters_secret_room",
