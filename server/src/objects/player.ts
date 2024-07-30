@@ -432,7 +432,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.scope = "4x_scope";
         this.effectiveScope = "4x_scope";
 
-        //this.effectiveScope = DEFAULT_SCOPE;
+        // this.effectiveScope = DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset

@@ -2862,6 +2862,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-17.7, -69.05), rotation: 2 },
                 { idString: "headquarters_wall_9", position: Vec.create(-27.8, -69), rotation: 0 },
                 { idString: "trash_can", position: Vec.create(-3, -116.2) },
+                { idString: "piano", position: Vec.create(41.5, -81), rotation: 0 },
 
                 { idString: "headquarters_wall_10", position: Vec.create(13.5, -61.5), rotation: 1 },
                 { idString: "door", position: Vec.create(13.5, -48.9), rotation: 1 },
@@ -2997,6 +2998,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "glass_door", position: Vec.create(-26.25, 35.5), rotation: 2 },
 
                 // main area (hallway/where unbreakable large desk is)
+                { idString: "headquarters_main_desk", position: Vec.create(-11, -52), rotation: 0 },
                 { idString: "metal_door", position: Vec.create(17.4, -107.8), rotation: 2 },
                 { idString: "potted_plant", position: Vec.create(-33, -57.5) },
                 { idString: "potted_plant", position: Vec.create(10.9, -57.5) },

@@ -147,7 +147,8 @@ export const Materials = [
     "large_refinery_barrel",
     "sand",
     "fence",
-    "iron"
+    "iron",
+    "piano"
 ] as const;
 
 export enum RotationMode {
@@ -675,7 +676,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
-                destroy: 1
+                destroy: 0.95
             },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(18.25, 5.25, Vec.create(0, -3)),
@@ -696,11 +697,46 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
-                destroy: 1
+                destroy: 0.95
             },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(18.25, 5.25, Vec.create(0, -3)),
                 RectangleHitbox.fromRect(4.5, 11, Vec.create(6.8, 0))
+            ),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "piano",
+            name: "Piano",
+            material: "piano",
+            health: 350,
+            impenetrable: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(12.9, 3, Vec.create(0.1, -6.5)),
+                RectangleHitbox.fromRect(11, 5, Vec.create(0.1, -3)),
+                RectangleHitbox.fromRect(7, 5, Vec.create(3.5, 2.5)),
+                RectangleHitbox.fromRect(2, 8, Vec.create(6, 0)),
+                new CircleHitbox(1.6, Vec.create(-5.1, -4)),
+                new CircleHitbox(1.6, Vec.create(-4.5, -2)),
+                new CircleHitbox(1.6, Vec.create(-3, -1)),
+                new CircleHitbox(1.6, Vec.create(0.5, 3)),
+                new CircleHitbox(1.6, Vec.create(0, 2)),
+                new CircleHitbox(1.6, Vec.create(-0.5, 1)),
+                new CircleHitbox(1.6, Vec.create(-1, 0.5)),
+                new CircleHitbox(1, Vec.create(6, -4.5)),
+                new CircleHitbox(0.8, Vec.create(-6.4, -4.8)),
+                new CircleHitbox(2.8, Vec.create(3.5, 5)),
+                new CircleHitbox(3, Vec.create(4, 5)),
+                new CircleHitbox(3, Vec.create(3, 4))
             ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
@@ -1023,6 +1059,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             health: 210,
             impenetrable: true,
             hideOnMap: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(11, 6.3, Vec.create(0, 0))
             ),
@@ -3701,18 +3742,36 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "headquarters_main_desk",
+            name: "Headquarters Main Desk",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hideOnMap: true,
+            noResidue: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(23.6, 5, Vec.create(0, 3)),
+                RectangleHitbox.fromRect(4.6, 8, Vec.create(9.5, -1.5)),
+                RectangleHitbox.fromRect(4.6, 8, Vec.create(-9.5, -1.5))
+            ),
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
             idString: "headquarters_wood_obstacles",
             name: "Headquarters Wood Obstacles",
             material: "wood",
             health: 1000,
             hideOnMap: true,
             indestructible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(24.7, 5.5, Vec.create(-11, -47.5)),
-                RectangleHitbox.fromRect(4.7, 6.5, Vec.create(-21, -53.5)),
-                RectangleHitbox.fromRect(4.7, 6.5, Vec.create(-1, -53.5)),
-                RectangleHitbox.fromRect(27.5, 5, Vec.create(-56.3, 31))
-            ),
+            hitbox: RectangleHitbox.fromRect(27.5, 5, Vec.create(-56.3, 31)),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
             invisible: true,

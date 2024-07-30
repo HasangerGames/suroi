@@ -35,7 +35,7 @@ export const Config = {
 
     gas: { mode: GasMode.Disabled },
 
-    //disableBuildingCheck: true,
+    // disableBuildingCheck: true,
 
     movementSpeed: 0.02655,
 
