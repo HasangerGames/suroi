@@ -35,6 +35,8 @@ export const Config = {
 
     gas: { mode: GasMode.Disabled },
 
+    //disableBuildingCheck: true,
+
     movementSpeed: 0.02655,
 
     censorUsernames: true,
@@ -182,6 +184,11 @@ export interface ConfigType {
     }
 
     readonly movementSpeed: number
+
+    /**
+     * Allows scopes and radios to work in buildings.
+     */
+    readonly disableBuildingCheck?: boolean
 
     /**
      * A basic filter that censors only the most extreme swearing.

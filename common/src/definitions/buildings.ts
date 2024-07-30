@@ -2905,7 +2905,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters",
             name: "Headquarters",
-            spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(40, -40)),
+            spawnHitbox: RectangleHitbox.fromRect(165, 200, Vec.create(0, -40)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
@@ -2975,7 +2975,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(35.4, 19, Vec.create(51.25, -97.35)) // toilet (grey and white tiles)
                     )
                 },
-
                 {
                     type: "carpet",
                     hitbox: new HitboxGroup(

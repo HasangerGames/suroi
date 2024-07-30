@@ -428,8 +428,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.inventory.addOrReplaceWeapon(3, "c4");
         this.inventory.items.setItem("12g", 15);
 
+        this.inventory.items.setItem("4x_scope", 1);
         this.inventory.scope = "4x_scope";
-        this.effectiveScope = DEFAULT_SCOPE;
+        this.effectiveScope = "4x_scope";
+
+        //this.effectiveScope = DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
@@ -771,6 +774,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 && object instanceof Building
                 && !object.dead
                 && object.scopeHitbox?.collidesWith(this.hitbox)
+                && !Config.disableBuildingCheck
             ) {
                 isInsideBuilding = true;
             }
