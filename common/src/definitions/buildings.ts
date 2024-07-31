@@ -228,15 +228,31 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Porta Potty",
             spawnHitbox: RectangleHitbox.fromRect(20, 32),
             scopeHitbox: RectangleHitbox.fromRect(14, 18),
-            floorImages: [{
-                key: "porta_potty_floor",
-                position: Vec.create(0, 1.5)
-            }],
-            ceilingImages: [{
-                key: "porta_potty_ceiling",
-                position: Vec.create(0, 0),
-                residue: "porta_potty_residue"
-            }],
+            floorImages: [
+                {
+                    key: "porta_potty_floor_1",
+                    position: Vec.create(0, -3.8)
+                },
+                {
+                    key: "porta_potty_floor_2",
+                    position: Vec.create(0, 7)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "porta_potty_ceiling_2",
+                    position: Vec.create(0, 0),
+                    residue: "porta_potty_residue"
+                },
+                {
+                    key: "porta_potty_ceiling_1",
+                    position: Vec.create(0, -4.81)
+                },
+                {
+                    key: "porta_potty_ceiling_2",
+                    position: Vec.create(0, 4.825)
+                }
+            ],
             wallsToDestroy: 2,
             floors: [
                 {
@@ -293,15 +309,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
                 RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1))
             ),
-            floorImages: [{
-                key: "green_house_floor",
-                position: Vec.create(0, 0)
-            }],
-            ceilingImages: [{
-                key: "green_house_ceiling",
-                position: Vec.create(-2, -1.1),
-                scale: Vec.create(2, 2)
-            }],
+            floorImages: [
+                {
+                    key: "green_house_floor_1",
+                    position: Vec.create(22, 0)
+                },
+                {
+                    key: "green_house_floor_2",
+                    position: Vec.create(-22, 0)
+                }
+            ],
+            ceilingImages: [
+                {
+                    key: "green_house_ceiling_1",
+                    position: Vec.create(22, -1.1), // x_arxiko=-2
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "green_house_ceiling_2",
+                    position: Vec.create(-26, -1.1), // x_arxiko=-2
+                    scale: Vec.create(2, 2)
+                }
+            ],
             floors: [
                 {
                     type: "wood",
@@ -1158,8 +1187,23 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
             ceilingImages: [
                 {
-                    key: "crane_ceiling",
-                    position: Vec.create(55.5, -60),
+                    key: "crane_ceiling_4",
+                    position: Vec.create(131, -60),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "crane_ceiling_2",
+                    position: Vec.create(77.5, -60),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "crane_ceiling_1",
+                    position: Vec.create(31, -60),
+                    scale: Vec.create(2, 2)
+                },
+                {
+                    key: "crane_ceiling_3",
+                    position: Vec.create(-20, -60),
                     scale: Vec.create(2, 2)
                 }
             ],
