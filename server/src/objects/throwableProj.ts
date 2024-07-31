@@ -439,7 +439,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             // const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
             
             if (collision) {
-                console.log(`Collision response: Dir_x ${ collision?.dir.x }, Dir_y ${ collision?.dir.y }, Pen ${ collision?.pen }`);
                 this._velocity = Vec.add(
                     this._velocity,
                     Vec.scale(
