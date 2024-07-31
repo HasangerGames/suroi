@@ -352,6 +352,9 @@ export const Collision = Object.freeze({
         // This can be represented by in vector definitions...
         // t_a * S_a→ - t_b * S_b→ = R→
         // Where R→ is the vector S_a_start to S_b_start.
+        
+        // dedl0x: This should be the other way around but it doesn't work when it is. Everything works when it's like
+        // this. Still don't know why.
         const R = Vec.sub(segmentAStart, segmentBStart);
 
         // The above equation is a system of linear equations...
