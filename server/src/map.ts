@@ -598,7 +598,7 @@ export class GameMap {
             locked
         );
 
-        if (!definition.hideOnMap && !definition.invisible) this._packet.objects.push(obstacle);
+        if (!definition.hideOnMap && !definition.invisible && obstacle.layer === Layer.Floor1) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
