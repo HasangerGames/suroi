@@ -682,7 +682,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "barrett",
             name: "Barrett M95",
             ammoType: "127mm",
-            ammoSpawnAmount: 20,
+            ammoSpawnAmount: 25,
             capacity: 5,
             reloadTime: 3.4,
             fireDelay: 1400,
