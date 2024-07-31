@@ -304,12 +304,15 @@ export const Collision = Object.freeze({
      * Determines the Vector describing the point in which two line segments, each described by a pair of Vector points,
      * intersect, if at all.
      * 
-     * This method uses the 
+     * This method uses the parametric definition of lines to quickly find a point of intersection.
      * 
      * @param segmentAStart - A Vector describing the point at which the first line segment begins.
      * @param segmentAEnd - A Vector describing the point at which the first line segment ends.
      * @param segmentBStart - A Vector describing the point at which the second line segment begins.
      * @param segmentBEnd - A Vector describing the point at which the second line segment ends.
+     * 
+     * @returns The point of intersection between the two line segments, if it exists. `null` if an intersection does
+     * not exist.
      */
     lineSegmentIntersection(segmentAStart: Vector, segmentAEnd: Vector, segmentBStart: Vector, segmentBEnd: Vector): Vector | null {
 
