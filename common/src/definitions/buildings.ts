@@ -2818,7 +2818,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 key: "secret_room_ceiling",
                 position: Vec.create(0, 0),
                 scale: Vec.create(1.05, 1.05)
-            }]
+            }],
+            obstacles: [
+                // secret room
+                { idString: "headquarters_secret_room_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "secret_door", position: Vec.create(3.5, -13.5), rotation: 2 },
+                { idString: "aegis_golden_case", position: Vec.create(-4.8, 6.25), rotation: 1 }
+            ] as BuildingObstacle[]
         },
         {
             idString: "headquarters_second_floor",
@@ -2938,17 +2944,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "potted_plant", position: Vec.create(64, -115) },
                 { idString: "office_chair", position: Vec.create(25.5, -110.5), rotation: 2 },
                 { idString: "office_chair", position: Vec.create(34, -110.5), rotation: 2 },
-                { idString: "bookshelf", position: Vec.create(62.25, -101), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(62.26, -100.8), rotation: 0 },
                 { idString: "metal_small_drawer", position: Vec.create(27.8, -75.5), rotation: 2 },
                 { idString: "couch_corner", position: Vec.create(6.5, -75.2), rotation: 1 }, // pain to rotate a corner
                 { idString: "couch_part", position: Vec.create(12.5, -75.35), rotation: 1 }, // couch parts y += 1.5
                 { idString: "couch_end_left", position: Vec.create(19.2, -75.65), rotation: 1 }, // end part y += .40
-                { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 },
-
-                // secret room
-                { idString: "secret_door", position: Vec.create(63.8, -97.58), rotation: 2 },
-                { idString: "aegis_golden_case", position: Vec.create(55.5, -77.8), rotation: 1 }
-
+                { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0 }

@@ -3851,6 +3851,25 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "headquarters_secret_room_walls",
+            name: "Headquarters Secret Room Walls",
+            material: "stone",
+            health: 1000,
+            hideOnMap: true,
+            indestructible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(9.35, 1.6, Vec.create(-5.8, -13.5)),
+                RectangleHitbox.fromRect(1.6, 27, Vec.create(-9.7, 0))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            invisible: true,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
             idString: "headquarters_walls_second_floor",
             name: "Headquarters Walls",
             material: "stone",
@@ -3874,10 +3893,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.1, -96)),
                 RectangleHitbox.fromRect(92, 1.8, Vec.create(23, -40.2)),
                 RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
-                RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6)),
-                RectangleHitbox.fromRect(1.75, 28, Vec.create(50.1, -84)),
-                RectangleHitbox.fromRect(9, 1.75, Vec.create(54.5, -97.25))
-
+                RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
