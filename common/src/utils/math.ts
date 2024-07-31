@@ -314,10 +314,11 @@ export const Collision = Object.freeze({
     lineSegmentIntersection(segmentAStart: Vector, segmentAEnd: Vector, segmentBStart: Vector, segmentBEnd: Vector): Vector | null {
 
         // Calculate the vectors representing the two line segments.
-        // These vectors describes the direction and length of travel to go from the start to the end of the respective
+        // These vectors describe the direction and length of travel to go from the start to the end of the respective
         // line segments.
         const Sa: Vector = Vec.sub(segmentAEnd, segmentAStart);
         const Sb: Vector = Vec.sub(segmentBEnd, segmentBStart);
+
 
         // Calculate the determinate of these two vectors.
         // This value provides information about how the two line segment vectors relate to one another.
@@ -327,9 +328,9 @@ export const Collision = Object.freeze({
         // 
         const lineSegmentDeterminant = (Sa.x * Sb.y) - (Sb.x * Sa.y);
 
-        // When this value is 0, it means that the lines are either parallel or collinear, and so we would not consider
-        // them intersecting lines. An argument can be made that collinear lines constitute an infinite number of
-        // intersecting points, but this method only deals with a single discrete point of intersection.
+        // When the determinant is 0, it means that the lines are either parallel or collinear, and so we would not
+        // consider them intersecting lines. An argument can be made that collinear lines constitute an infinite number
+        // of intersecting points, but this method only deals with a single discrete point of intersection.
         if (lineSegmentDeterminant === 0) {
             return null;
         }
@@ -343,44 +344,44 @@ export const Collision = Object.freeze({
         // along the segment until the ending position.
         
         // If there is a point of intersection between the two lines segments, then it must hold that...
-        //   S_a_start + t_1 * (S_a_end - S_a_start) = S_b_start + t_2 * (S_b_end - S_b_start)
-        // ...for some values of `t_1` and `t_2`.
-        // Rearrange this to isolate in terms of `t_1` and `t_2`
-        // S_a_start + t_1 * (S_a_end - S_a_start) = S_b_start + t_2 * (S_b_end - S_b_start)
-        // t_1 * (S_a_end - S_a_start) - t_2 * (S_b_end - S_b_start) = S_b_start - S_a_start
+        //   S_a_start + t_a * (S_a_end - S_a_start) = S_b_start + t_b * (S_b_end - S_b_start)
+        // ...for some values of `t_a` and `t_b`.
+        // Rearrange this to isolate in terms of `t_a` and `t_b`
+        // S_a_start + t_a * (S_a_end - S_a_start) = S_b_start + t_b * (S_b_end - S_b_start)
+        // t_a * (S_a_end - S_a_start) - t_b * (S_b_end - S_b_start) = S_b_start - S_a_start
         // This can be represented by in vector definitions...
-        // t_1 * S_a→ - t_2 * S_b→ = R→
+        // t_a * S_a→ - t_b * S_b→ = R→
         // Where R→ is the vector S_a_start to S_b_start.
-        const R = Vec.sub(segmentBEnd, segmentAStart);
+        const R = Vec.sub(segmentAStart, segmentBStart);
 
         // The above equation is a system of linear equations...
         //       [ S_a_x ]         [ S_b_x ]   [ R_x ]
-        // t_1 * [ S_a_y ] - t_2 * [ S_b_y ] = [ R_y ]
+        // t_a * [ S_a_y ] - t_b * [ S_b_y ] = [ R_y ]
         // or in matrix form...
-        // [ S_a_x  S_b_x ] [ t_1 ]   [ R_x ]
-        // [ S_a_y  S_b_y ] [ t_2 ] = [ R_y ]
+        // [ S_a_x  -S_b_x ] [ t_a ]   [ R_x ]
+        // [ S_a_y  -S_b_y ] [ t_b ] = [ R_y ]
         // Cramer's rule states that for a system Ax→ = b→, where A is a matrix and x→ and b→ are vectors, the solution
         // is given by... 
         // x_i = det(A_i) / det(A)
         // Where A_i is the matrix formed by replacing the i'th column of A with b→.
-        // So to solve for `t_1` and `t_2`, we only need to calculate the determinants.
-        const determinantT1 = (R.x * Sb.y) - (Sb.x * R.y);
-        const determinantT2 = (Sa.x * R.y) - (R.x * Sa.y);
+        // So to solve for `t_a` and `t_b`, we only need to calculate the determinants.
+        const determinantForTa = (R.x * (-1 * Sb.y)) - ((-1 * Sb.x) * R.y);
+        const determinantForTb = (Sa.x * R.y) - (R.x * Sa.y);
 
-        // x_1 = det(A_1) / det(A)
-        const t1 = determinantT1 / lineSegmentDeterminant;
-        // x_2 = det(A_2) / det(A)
-        const t2 = determinantT2 / lineSegmentDeterminant;
+        // t_a = det(A_t_a) / det(A)
+        const ta = determinantForTa / lineSegmentDeterminant;
+        // t_b = det(A_t_b) / det(A)
+        const tb = determinantForTb / lineSegmentDeterminant;
 
         // It's important to note that the parametric representation of the line segments, as detailed above, states
         // that the value of `t` should be in the interval [0, 1] for points that exist within the line segment. Values
         // outside of this interval describe extrapolated points. We performed a check earlier against the determinant
         // to rule out the segments being parallel or collinear, and so these lines must intersect at some point. Our
         // concern is whether or not they intersect within the boundaries of the line segment ([0, 1]).
-        if ((0 <= t1 && t1 <= 1) && (0 <= t2 && t2 <= 1)) {
+        if ((0 <= ta && ta <= 1) && (0 <= tb && tb <= 1)) {
             return Vec.create(
-                segmentAStart.x + (t1 * Sa.x),
-                segmentAStart.y + (t1 * Sa.y)
+                segmentAStart.x + (ta * Sa.x),
+                segmentAStart.y + (ta * Sa.y)
             );
         }
 
