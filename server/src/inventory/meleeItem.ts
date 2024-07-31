@@ -8,7 +8,6 @@ import { type CollidableGameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
-import { sameLayer } from "@common/utils/random";
 
 /**
  * A class representing a melee weapon
@@ -69,7 +68,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             && object.damageable
                             && object.hitbox
                             && hitbox.collidesWith(object.hitbox)
-                            && sameLayer(object.layer, this.owner.layer)
+                            && (object.layer === this.owner.layer)
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
                     if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;

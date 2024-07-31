@@ -2775,9 +2775,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0, layer: -1 }, // removing this will allow people to walk through stair walls at layer -1
 
                 { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
-                //  { idString: "stair_thing", position: Vec.create(0.5, -0.7), rotation: 0, layer: -2 }, - BUGGED
+                { idString: "stair_thing", position: Vec.create(0.5, -0.7), rotation: 0, layer: -2 },
 
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
                 { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
