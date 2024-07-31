@@ -206,7 +206,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             detonation: {
                 explosion: "c4_explosion",
                 particles: {
-                    type: "c4_particle",
+                    type: "metal_particle",
                     count: 8,
                     spawnRadius: 2
                 }

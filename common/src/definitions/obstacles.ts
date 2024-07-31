@@ -138,6 +138,37 @@ export const Materials = [
     "fence"
 ] as const;
 
+export const TintedParticles: Record<string, { base: string, tint: number, variants?: number }> = {
+    aegis_crate_particle:        { base: "wood_particle",    tint: 0x2687d9 },
+    airdrop_crate_particle:      { base: "wood_particle",    tint: 0x4059bf },
+    chest_particle:              { base: "wood_particle",    tint: 0xa87e5a },
+    cooler_particle:             { base: "wood_particle",    tint: 0x406c65 },
+    crate_particle:              { base: "wood_particle",    tint: 0x9e7437 },
+    flint_crate_particle:        { base: "wood_particle",    tint: 0xda6a0b },
+    furniture_particle:          { base: "wood_particle",    tint: 0x785a2e },
+    grenade_crate_particle:      { base: "wood_particle",    tint: 0x4c4823 },
+    gun_case_particle:           { base: "wood_particle",    tint: 0x2e3726 },
+    hazel_crate_particle:        { base: "wood_particle",    tint: 0x6ba371 },
+    lux_crate_particle:          { base: "wood_particle",    tint: 0x4e5c3d },
+    melee_crate_particle:        { base: "wood_particle",    tint: 0x23374c },
+    tango_crate_particle:        { base: "wood_particle",    tint: 0x3f4c39 },
+    wall_particle:               { base: "wood_particle",    tint: 0xafa08c },
+    flint_stone_particle_1:      { base: "stone_particle_1", tint: 0x26272c },
+    flint_stone_particle_2:      { base: "stone_particle_2", tint: 0x26272c },
+    gold_rock_particle_1:        { base: "stone_particle_1", tint: 0x25262a },
+    gold_rock_particle_2:        { base: "stone_particle_2", tint: 0x25262a },
+    rock_particle_1:             { base: "stone_particle_1", tint: 0x8e8e8e },
+    rock_particle_2:             { base: "stone_particle_2", tint: 0x8e8e8e },
+    river_rock_particle_1:       { base: "stone_particle_1", tint: 0x626471 },
+    river_rock_particle_2:       { base: "stone_particle_2", tint: 0x626471 },
+    sandbags_particle:           { base: "stone_particle_2", tint: 0xd59d4e },
+    porta_potty_door_particle:   { base: "plastic_particle", tint: 0xf5f9fd },
+    porta_potty_toilet_particle: { base: "plastic_particle", tint: 0x5e5e5e },
+    porta_potty_wall_particle:   { base: "plastic_particle", tint: 0x1c71d8 },
+    porta_potty_particle:        { base: "ceiling_particle", tint: 0xe7e7e7 },
+    mobile_home_particle:        { base: "ceiling_particle", tint: 0xa8a8a8 }
+};
+
 export enum RotationMode {
     /**
      * Allows rotation in any direction (within the limits of the bit stream's encoding capabilities)
@@ -716,7 +747,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             explosion: "barrel_explosion",
             reflectBullets: true,
             frames: {
-                particle: "barrel_particle",
+                particle: "metal_particle",
                 residue: "barrel_residue"
             }
         },
@@ -1573,7 +1604,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             explosion: "small_refinery_barrel_explosion",
             reflectBullets: true,
             frames: {
-                particle: "barrel_particle",
+                particle: "metal_particle",
                 residue: "barrel_residue"
             }
         },
@@ -1594,7 +1625,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true,
             zIndex: ZIndexes.ObstaclesLayer5,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1613,7 +1644,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Full,
             allowFlyover: FlyoverPref.Never,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1629,7 +1660,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer5,
             noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1648,7 +1679,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer5,
             noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1675,7 +1706,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true,
             noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         apply(
@@ -1856,7 +1887,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 names: ["button_press", "puzzle_solved"]
             },
             frames: {
-                particle: "barrel_particle",
+                particle: "metal_particle",
                 residue: "barrel_residue"
             }
         },
@@ -1875,7 +1906,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
             frames: {
-                particle: "barrel_particle",
+                particle: "metal_particle",
                 residue: "barrel_residue"
             }
         },
@@ -1894,7 +1925,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
             frames: {
-                particle: "barrel_particle",
+                particle: "metal_particle",
                 residue: "barrel_residue"
             }
         },
@@ -1913,7 +1944,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
             frames: {
-                particle: "barrel_particle",
+                particle: "metal_particle",
                 residue: "barrel_residue"
             }
         },
@@ -2349,7 +2380,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Never,
             invisible: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -2811,7 +2842,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
