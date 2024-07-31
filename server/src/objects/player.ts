@@ -693,11 +693,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     potential.type === ObjectCategory.Obstacle
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
-                    && ((potential.layer === this.layer || (isAdjacent(potential.layer, this.layer))) && potential.definition.isStair)
+                    && (sameLayer(potential.layer, this.layer) || isAdjacent(potential.layer, this.layer))
                 ) {
-                    if (potential.definition.isStair && (isAdjacent(potential.definition.transportTo ?? potential.layer, this.layer) || potential.layer === this.layer)) {
+                    if (potential.definition.isStair && (sameLayer(potential.layer, this.layer))) {
                         this.layer = potential.definition.transportTo ?? 0;
-                    } else if (potential.layer === this.layer) {
+                    } else {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
                     }

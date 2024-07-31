@@ -2,7 +2,7 @@ import { Explosions, type ExplosionDefinition } from "@common/definitions/explos
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { randomRotation } from "@common/utils/random";
+import { randomRotation, sameLayer } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
@@ -78,7 +78,7 @@ export class Explosion {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if ((object instanceof Player || object instanceof Obstacle) && object.layer === this.layer) {
+                    if ((object instanceof Player || object instanceof Obstacle) && sameLayer(object.layer, this.layer)) {
                         object.damage({
                             amount: this.definition.damage
                             * (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1)
@@ -89,7 +89,7 @@ export class Explosion {
                         });
                     }
 
-                    if ((object instanceof Loot || object instanceof ThrowableProjectile) && object.layer === this.layer) {
+                    if ((object instanceof Loot || object instanceof ThrowableProjectile) && sameLayer(object.layer, this.layer)) {
                         if (object instanceof ThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
                         else {
                             object.push(

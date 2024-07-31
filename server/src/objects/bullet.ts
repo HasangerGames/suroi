@@ -165,7 +165,7 @@ export class Bullet extends BaseBullet {
                         this.dead = true;
                         break;
                     }
-                } else if (this.layer === (object.layer as number) && !object.definition.isStair) {
+                } else if (sameLayer(this.layer, object.layer) && !object.definition.isStair) {
                     this.damagedIDs.add(object.id);
 
                     records.push({
