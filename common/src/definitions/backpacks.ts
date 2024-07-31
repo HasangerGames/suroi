@@ -60,7 +60,7 @@ export const Backpacks = ObjectDefinitions.create<BackpackDefinition>()(
                     "556mm": 180,
                     "762mm": 180,
                     "9mm": 240,
-                    "127mm": 10,
+                    "127mm": 20,
                     "power_cell": Infinity,
                     "curadell": 2,
                     "firework_rocket": 20,
