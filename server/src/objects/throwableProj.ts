@@ -313,27 +313,18 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
     private _travelCollidesWith(travelStart: Vector, travelEnd: Vector, hitbox: Hitbox): Vector | null {
 
-        const handleRectangle = (hitbox: RectangleHitbox) => {
-            // A rectangular hitbox is comprised of four distinct line segments, but is defined diagonally using a
-            // minimum and maximum point. Expand these two points into all four corners of the rectangle.
-            const hitboxTopLeftPoint: Vector = Vec.clone(hitbox.min);
-            const hitboxTopRightPoint: Vector = Vec.create(hitbox.max.x, hitbox.min.y);
-            const hitboxBottomLeftPoint: Vector = Vec.create(hitbox.min.x, hitbox.max.y);
-            const hitboxBottomRightPoint: Vector = Vec.clone(hitbox.max);
-
-            // Create line segment representations of all four sides of the hitbox.
-            const topLineSegment: Vector[] = [hitboxTopLeftPoint, hitboxTopRightPoint];
-            const bottomLineSegment: Vector[] = [hitboxBottomLeftPoint, hitboxBottomRightPoint];
-            const leftLineSegment: Vector[] = [hitboxTopLeftPoint, hitboxBottomLeftPoint];
-            const rightLineSegment: Vector[] = [hitboxTopRightPoint, hitboxBottomRightPoint];
-
+        // Checks for an intersection between the path of travel and all of the provided boundary line segments.
+        // The intersection that is closest to the trajectory's starting position is returned.
+        const getClosestIntersection = (boundaryLineSegments: Vector[][]) => {
             let nearestIntersection: Vector | null = null;
             let nearestIntersectionDistance: number = Number.MAX_SAFE_INTEGER;
 
             // Check each of the line segments for intersection with the path of travel.
-            for (let lineSegment of [topLineSegment, bottomLineSegment, leftLineSegment, rightLineSegment]) {
+            for (let lineSegment of boundaryLineSegments) {
                 
-                const intersection: Vector | null = Collision.lineSegmentIntersection(travelStart, travelEnd, lineSegment[0], lineSegment[1]);
+                const intersection: Vector | null = Collision.lineSegmentIntersection(
+                    travelStart, travelEnd, lineSegment[0], lineSegment[1]
+                );
 
                 if (intersection != null) {
 
@@ -357,7 +348,36 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             }
 
             return nearestIntersection;
+        }
+
+        // Returns a list of point pairs for the line segments that comprise the boundaries of the rectangular hitbox.
+        const getBoundaryLineSegmentsForRectangle = (hitbox: RectangleHitbox) => {
+            const hitboxTopLeftPoint: Vector = Vec.clone(hitbox.min);
+            const hitboxTopRightPoint: Vector = Vec.create(hitbox.max.x, hitbox.min.y);
+            const hitboxBottomLeftPoint: Vector = Vec.create(hitbox.min.x, hitbox.max.y);
+            const hitboxBottomRightPoint: Vector = Vec.clone(hitbox.max);
+
+            return [
+                [hitboxTopLeftPoint, hitboxTopRightPoint],
+                [hitboxBottomLeftPoint, hitboxBottomRightPoint],
+                [hitboxTopLeftPoint, hitboxBottomLeftPoint],
+                [hitboxTopRightPoint, hitboxBottomRightPoint]
+            ];
+        }
+
+        const handleRectangle = (hitbox: RectangleHitbox) => {
+            const boundaryLineSegments: Vector[][] = getBoundaryLineSegmentsForRectangle(hitbox);
+            return getClosestIntersection(boundaryLineSegments);
         };
+
+        const handleGroup = (hitbox: HitboxGroup) => {
+            const allRectangleHitboxBoundaryLineSegments = hitbox.hitboxes
+                .filter((hitbox: Hitbox) => hitbox instanceof RectangleHitbox)
+                .map((hitbox: Hitbox) => getBoundaryLineSegmentsForRectangle(hitbox as RectangleHitbox))
+                .reduce((prev, cur) => prev.concat(cur), []);
+
+            return getClosestIntersection(allRectangleHitboxBoundaryLineSegments);
+        }
 
         switch (hitbox.type) {
             // Not currently supported.
@@ -370,21 +390,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             }
             // Not currently supported (missing circle).
             case HitboxType.Group: {
-                const anyCollides = hitbox.hitboxes
-                    .filter((hitbox: Hitbox) => hitbox instanceof RectangleHitbox)
-                    .find((hitbox: Hitbox) => handleRectangle(hitbox as RectangleHitbox))
-
-                for (let target of hitbox.hitboxes) {
-                    if (target instanceof RectangleHitbox) {
-                        const intersection: Vector | null = handleRectangle(target);
-
-                        if (intersection != null) {
-                            return intersection;
-                        }
-                    }
-                }
-
-                return null;
+                return handleGroup(hitbox);
             }
             default:
                 return null;
