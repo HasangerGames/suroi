@@ -3178,7 +3178,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // mini vault
                 { idString: "metal_door", position: Vec.create(-47.5, -27.75), rotation: 1, locked: true },
                 { idString: "aegis_crate", position: Vec.create(-65, -9.25) },
-                { idString: { box: 1, grenade_box: 0.25 }, position: Vec.create(-67, -17.5) },
+                { idString: { box: 9, grenade_box: 1 }, position: Vec.create(-67, -17.5) },
                 { idString: "gun_mount_mini_14", position: Vec.create(-68.8, -29), rotation: 1 },
                 { idString: "barrel", position: Vec.create(-53.5, -8.5) }
 

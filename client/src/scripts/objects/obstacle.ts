@@ -266,7 +266,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 : definition.frames.base ?? definition.idString
             : definition.frames.residue ?? `${definition.idString}_residue`;
 
-        if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
+        if (this.variation !== undefined && !this.dead) {
+            // There is a chance that the server might send a shitty variation that doesn't exist, for example an obstacle has 3
+            // and the server sends 5, therefore we get texture not found. We pray that this little if can patch this bug.
+            if (this.definition.variations && this.variation > this.definition.variations) {
+                this.variation = this.definition.variations;
+            }
+
+            texture += `_${this.variation === 0 ? (this.variation + 1) : this.variation}`;
+        }
 
         if (!definition.invisible && !definition.wall && !(this.dead && definition.noResidue)) this.image.setFrame(texture);
 
