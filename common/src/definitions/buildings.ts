@@ -2966,7 +2966,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             puzzle: {
                 triggerInteractOn: "metal_door",
                 solvedSound: true,
-                interactDelay: 500
+                interactDelay: 2000
             },
             floorImages: [
                 {

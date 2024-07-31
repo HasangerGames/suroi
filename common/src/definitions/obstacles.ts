@@ -1373,7 +1373,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 1
             },
-            hitbox: RectangleHitbox.fromRect(10.55, 1.6, Vec.create(-0.44, 0)),
+            hitbox: RectangleHitbox.fromRect(10.55, 1.9, Vec.create(-0.44, 0)),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             animationDuration: 80,
