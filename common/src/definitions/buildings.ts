@@ -3015,7 +3015,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0 }
+                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0, layer: -2 }
             ]
         },
         {
