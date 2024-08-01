@@ -3038,6 +3038,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             ceilingImages: [
                 {
+                    key: "headquarters_second_floor_bottom",
+                    position: Vec.create(0, 12)
+                },
+                {
                     key: "headquarters_ceiling_1",
                     position: Vec.create(-0.725, -68)
                 },
