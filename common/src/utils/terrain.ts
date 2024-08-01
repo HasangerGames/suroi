@@ -172,10 +172,6 @@ export class Terrain {
         }
 
         for (const floor of cell.floors) {
-            /*  console.log("PLAYER LAYER: " + layer);
-            console.log("FLOOR LAYER: " + floor.layer);
-            console.log(layer === floor.layer) */
-
             if (floor.hitbox.isPointInside(position) && floor.layer === layer) {
                 return floor.type;
             }
