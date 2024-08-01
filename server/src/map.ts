@@ -559,7 +559,7 @@ export class GameMap {
                 continue;
             }
 
-            this.generateObstacle(definition, position, undefined, scale, variation);
+            this.generateObstacle(definition, position, undefined, Layer.Floor1, scale, variation);
         }
     }
 

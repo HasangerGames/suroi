@@ -322,12 +322,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "green_house_ceiling_1",
-                    position: Vec.create(22, -1.1), // x_arxiko=-2
+                    position: Vec.create(22, -1.1),
                     scale: Vec.create(2, 2)
                 },
                 {
                     key: "green_house_ceiling_2",
-                    position: Vec.create(-26, -1.1), // x_arxiko=-2
+                    position: Vec.create(-26, -1.1),
                     scale: Vec.create(2, 2)
                 }
             ],
@@ -1309,13 +1309,22 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 falloff: 2
             },
             floorImages: [
-                {
-                    key: "ship_floor_1",
-                    position: Vec.create(0, -65)
-                },
+
                 {
                     key: "ship_floor_2",
-                    position: Vec.create(0.02, 64.8)
+                    position: Vec.create(8.45, 64.8)
+                },
+                {
+                    key: "ship_floor_1",
+                    position: Vec.create(8.5, -65.05)
+                },
+                {
+                    key: "ship_stair",
+                    position: Vec.create(-39.15, -33.7)
+                },
+                {
+                    key: "ship_stair",
+                    position: Vec.create(-39.15, 43)
                 }
             ],
             ceilingImages: [
