@@ -42,7 +42,7 @@ export class Terrain {
     readonly height: number;
     readonly cellSize = 64;
 
-    readonly floors = new Map<Hitbox, string>();
+    readonly floors = new Map<Hitbox, { floorType: string, layer: number }>();
 
     readonly rivers: readonly River[];
 
@@ -54,7 +54,7 @@ export class Terrain {
     private readonly _grid: Array<
         Array<{
             readonly rivers: River[]
-            readonly floors: Array<{ readonly type: string, readonly hitbox: Hitbox }>
+            readonly floors: Array<{ readonly type: string, readonly hitbox: Hitbox, readonly layer: number }>
         }>
     > = [];
 
@@ -125,8 +125,8 @@ export class Terrain {
         }
     }
 
-    addFloor(type: string, hitbox: Hitbox): void {
-        this.floors.set(hitbox, type);
+    addFloor(type: string, hitbox: Hitbox, layer: number): void {
+        this.floors.set(hitbox, { floorType: type, layer: layer });
         // get the bounds of the hitbox
         const rect = hitbox.toRectangle();
         // round it to the grid cells
@@ -136,12 +136,13 @@ export class Terrain {
         // add it to all grid cells that it intersects
         for (let x = min.x; x <= max.x; x++) {
             for (let y = min.y; y <= max.y; y++) {
-                this._grid[x][y].floors.push({ type, hitbox });
+                this._grid[x][y].floors.push({ type, hitbox, layer });
             }
         }
+        console.log(`ADDED FLOOR WITH LAYER: ${layer}`);
     }
 
-    getFloor(position: Vector): string {
+    getFloor(position: Vector, layer: number): string {
         const pos = this._roundToCells(position);
         let floor = "water";
 
@@ -171,12 +172,17 @@ export class Terrain {
         }
 
         for (const floor of cell.floors) {
-            if (floor.hitbox.isPointInside(position)) {
+            /*  console.log("PLAYER LAYER: " + layer);
+            console.log("FLOOR LAYER: " + floor.layer);
+            console.log(layer === floor.layer) */
+
+            if (floor.hitbox.isPointInside(position) && floor.layer === layer) {
                 return floor.type;
             }
         }
 
         // assume if no floor was found at this position, it's in the ocean
+
         return floor;
     }
 

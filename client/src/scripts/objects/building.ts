@@ -211,11 +211,10 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.rotation = this.rotation;
 
             this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
+            this.layer = data.layer;
         }
 
         const definition = this.definition;
-
-        this.layer = data.layer;
 
         if (definition === undefined) {
             console.warn("Building partially updated before being fully updated");

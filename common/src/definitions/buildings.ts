@@ -45,7 +45,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap: boolean
     readonly isStair?: boolean
-    layer?: number
+    readonly layer?: number
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
@@ -104,6 +104,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly floors: ReadonlyArray<{
         readonly type: keyof typeof FloorTypes
         readonly hitbox: Hitbox
+        layer: number
     }>
 
     readonly groundGraphics: ReadonlyArray<{
@@ -2882,6 +2883,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
+            layer: -2,
             spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(40, -40)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
@@ -2907,6 +2909,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "headquarters_second_floor_top",
                     position: Vec.create(0, -73)
+                }
+            ],
+            floors: [
+                {
+                    type: "carpet",
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(1000, 1000, Vec.create(0, 0))
+                    )
                 }
             ],
             obstacles: [

@@ -3,7 +3,7 @@ import { type WebSocket } from "uWebSockets.js";
 
 import {
     AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType,
-    Layer, ObjectCategory, PlayerActions, SpectateActions
+    ObjectCategory, PlayerActions, SpectateActions
 } from "@common/constants";
 import {
     Ammos, Armors, ArmorType, Backpacks, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables,
@@ -719,8 +719,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             this.disableInvulnerability();
             this.setPartialDirty();
 
-            if (this.isMoving && this.layer === Layer.Floor1) {
-                this.floor = this.game.map.terrain.getFloor(this.position);
+            if (this.isMoving) {
+                this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
             }
         }
 

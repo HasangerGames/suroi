@@ -395,7 +395,7 @@ export class GameMap {
                     || [
                         Vec.addAdjust(position, Vec.create(0, landCheckDist), bestOrientation),
                         Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
-                    ].some(point => this.terrain.getFloor(point) === "water")
+                    ].some(point => this.terrain.getFloor(point, 0) === "water")
                 ) return;
 
                 // checks if the distance between this position and the new bridge's position is less than
@@ -519,7 +519,8 @@ export class GameMap {
         }
 
         for (const floor of definition.floors) {
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation));
+            console.log(building.layer);
+            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), (floor.layer ?? definition.layer ?? 0));
         }
 
         for (const decal of definition.decals) {

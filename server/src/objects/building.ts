@@ -54,8 +54,7 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
         this.definition = Buildings.reify(definition);
 
-        this.layer = layer ?? this.definition.layer ?? 0;
-        this.definition.layer = this.layer;
+        this.layer = this.definition.layer ?? layer ?? 0;
 
         this.rotation = orientation;
         this._wallsToDestroy = this.definition.wallsToDestroy;

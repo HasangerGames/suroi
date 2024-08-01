@@ -399,8 +399,8 @@ export class Minimap {
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
         debugGraphics.zIndex = 99;
-        for (const [hitbox, type] of this._terrain.floors) {
-            drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
+        for (const [hitbox, { floorType }] of this._terrain.floors) {
+            drawHitbox(hitbox, FloorTypes[floorType].debugColor, debugGraphics);
         }
 
         drawHitbox(this._terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
@@ -465,7 +465,7 @@ export class Minimap {
             if (object.type === ObjectCategory.Building) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
-                    this._terrain.addFloor(floor.type, hitbox);
+                    this._terrain.addFloor(floor.type, hitbox, (floor.layer ?? object.definition.layer ?? 0));
                 }
             }
         }
