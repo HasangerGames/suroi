@@ -175,7 +175,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         if (!remainAirborne) {
             this._airborne = false;
 
-            if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
+            if (FloorTypes[this.game.map.terrain.getFloor(this.position, 0)].overlay) {
                 this._currentDragConst = ThrowableProjectile._harshDragConstant;
             }
         }
