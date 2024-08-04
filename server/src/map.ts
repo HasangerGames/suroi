@@ -526,7 +526,7 @@ export class GameMap {
             this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.idString), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
         }
 
-        if (!definition.hideOnMap && building.layer === Layer.Floor1) this._packet.objects.push(building);
+        if (!definition.hideOnMap) this._packet.objects.push(building);
         this.game.grid.addObject(building);
         this.game.pluginManager.emit(Events.Building_Generated, building);
         return building;

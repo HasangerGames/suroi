@@ -68,7 +68,6 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             && object !== owner
                             && object.damageable
                             && object.hitbox
-                            && !(object instanceof Obstacle && object.definition.isStair)
                             && hitbox.collidesWith(object.hitbox)
                             && equalLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]

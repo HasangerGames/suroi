@@ -139,7 +139,6 @@ export class Terrain {
                 this._grid[x][y].floors.push({ type, hitbox, layer });
             }
         }
-        console.log(`ADDED FLOOR WITH LAYER: ${layer}`);
     }
 
     getFloor(position: Vector, layer: number): string {

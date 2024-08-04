@@ -447,8 +447,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        if (this.definition.isStair) return;
-
         this.hitSound?.stop();
         this.hitSound = this.game.soundManager.play(
             `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,

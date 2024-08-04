@@ -167,7 +167,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingZIndex: ZIndexes.BuildingsCeiling,
             floors: [],
             groundGraphics: [],
-            rotationMode: RotationMode.Limited
+            rotationMode: RotationMode.Limited,
+            isFloor: false
         }),
         container: (
             id: number,
@@ -2831,7 +2832,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
 
                 { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
-                //  { idString: "stair_thing", position: Vec.create(0.5, -0.7), rotation: 0, layer: -2 }, - BUGGED
+                { idString: "stair_thing", position: Vec.create(0.5, 10), rotation: 0, layer: -2 },
 
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
                 { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
@@ -2939,7 +2940,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: "metal",
-                    hitbox: RectangleHitbox.fromRect(10, 20.5, Vec.create(-40.25, -101.1))
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(10, 20.5, Vec.create(-40.25, -101.1)),
+                        RectangleHitbox.fromRect(10, 3, Vec.create(-52.5, -109)),
+                        RectangleHitbox.fromRect(22, 9, Vec.create(-46.5, -115))
+                    )
                 }
             ],
             obstacles: [
@@ -2950,6 +2955,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                   couch_corner
                 */
                 { idString: "stair_walls_big", position: Vec.create(-40.5, -100.5), rotation: 0 },
+                { idString: "stair_walls_big", position: Vec.create(-52.5, -100.5), rotation: 0 },
                 { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 },
 
@@ -3122,6 +3128,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8))
                     )
+                },
+                {
+                    type: "metal",
+                    hitbox: RectangleHitbox.fromRect(10, 20.5, Vec.create(-52.5, -89))
                 }
             ],
             obstacles: [
@@ -3274,7 +3284,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_second_floor", position: Vec.create(0, 0), orientation: 0, layer: -2 },
+                { idString: "headquarters_second_floor", position: Vec.create(0, 10), orientation: 0, layer: -2 },
                 { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 }
             ]

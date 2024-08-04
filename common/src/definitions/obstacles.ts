@@ -3834,7 +3834,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(1.75, 55, Vec.create(69.5, -22.5)),
                 RectangleHitbox.fromRect(1.75, 48, Vec.create(69.5, -84.25)),
                 RectangleHitbox.fromRect(45.5, 1.75, Vec.create(46, -107.4)),
-                RectangleHitbox.fromRect(71, 1.75, Vec.create(-23.5, -107.5)),
+                RectangleHitbox.fromRect(71.6, 1.75, Vec.create(-23.1, -107.5)),
                 RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58, -76.25)),
                 RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58, -35)),
                 RectangleHitbox.fromRect(24.9, 1.7, Vec.create(-59.5, -35)),

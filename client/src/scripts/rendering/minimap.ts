@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
-import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacketData } from "../../../../common/src/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "../../../../common/src/packets/updatePacket";
@@ -310,6 +310,7 @@ export class Minimap {
                 }
 
                 case ObjectCategory.Building: {
+                    if (mapObject.layer !== Layer.Floor1) continue;
                     const definition = mapObject.definition;
                     const rotation = Angle.orientationToRotation(mapObject.rotation);
 
@@ -391,6 +392,7 @@ export class Minimap {
         }
 
         if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
             this.renderMapDebug();
         }
     }

@@ -1,4 +1,4 @@
-import { ObjectCategory } from "../constants";
+import { Layer, ObjectCategory } from "../constants";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { type Variation } from "../typings";
@@ -16,6 +16,7 @@ export type MapObject = {
 } | {
     readonly type: ObjectCategory.Building
     readonly definition: BuildingDefinition
+    readonly layer: Layer
 });
 
 export type MapPacketData = {
@@ -61,6 +62,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                 case ObjectCategory.Building:
                     Buildings.writeToStream(stream, object.definition);
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
+                    stream.writeInt8(object.layer);
                     break;
             }
         });
@@ -107,13 +109,15 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     case ObjectCategory.Building: {
                         const definition = Buildings.readFromStream(stream);
                         const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
+                        const layer = stream.readInt8();
 
                         return {
                             position,
                             type,
                             definition,
                             rotation: orientation,
-                            scale: 1
+                            scale: 1,
+                            layer
                         };
                     }
                 }
