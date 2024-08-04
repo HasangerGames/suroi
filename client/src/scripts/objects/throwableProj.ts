@@ -17,12 +17,15 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
     radius?: number;
 
+    layer: number;
+
     floorType: keyof typeof FloorTypes = "grass";
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
         super(game, id);
 
         this.container.addChild(this.image, this.waterOverlay);
+        this.layer = data.layer;
         this.updateFromData(data);
     }
 
@@ -36,11 +39,12 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
         this.position = data.position;
         this.rotation = data.rotation;
+        this.layer = data.layer;
 
         if (data.airborne) {
             this.container.zIndex = ZIndexes.AirborneThrowables;
         } else {
-            const floorType = this.game.map.terrain.getFloor(this.position);
+            const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
             const doOverlay = FloorTypes[floorType].overlay;
 
             this.container.zIndex = doOverlay

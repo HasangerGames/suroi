@@ -3055,6 +3055,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
+            rotationMode: RotationMode.None,
             puzzle: {
                 triggerInteractOn: "metal_door",
                 solvedSound: true,

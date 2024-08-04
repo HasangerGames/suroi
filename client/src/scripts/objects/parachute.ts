@@ -61,9 +61,9 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         }
 
         if (data.height === 0) {
-            this.playSound(this.game.map.terrain.getFloor(this.position) === "water" ? "airdrop_land_water" : "airdrop_land");
+            const floor = this.game.map.terrain.getFloor(this.position, 0);
 
-            const floor = this.game.map.terrain.getFloor(this.position);
+            this.playSound(floor === "water" ? "airdrop_land_water" : "airdrop_land");
 
             if (FloorTypes[floor].particles) {
                 this.game.particleManager.spawnParticles(6, () => ({

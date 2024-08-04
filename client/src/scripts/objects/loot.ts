@@ -1,4 +1,4 @@
-import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
@@ -23,6 +23,8 @@ export class Loot extends GameObject {
         readonly item: SuroiSprite
     };
 
+    layer: number;
+
     private _count = 0;
     get count(): number { return this._count; }
 
@@ -37,6 +39,8 @@ export class Loot extends GameObject {
             background: new SuroiSprite(),
             item: new SuroiSprite()
         };
+
+        this.layer = data.layer;
 
         this.updateFromData(data, true);
     }
@@ -126,10 +130,10 @@ export class Loot extends GameObject {
         }
 
         this.position = data.position;
+        this.layer = data.layer;
         this.hitbox.position = this.position;
 
-        const isOnGround = (this.game.layer === Layer.Floor1);
-        const floorType = isOnGround ? "grass" : this.game.map.terrain.getFloor(this.position);
+        const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
 
         this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderWaterLoot : ZIndexes.Loot;
 
