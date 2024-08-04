@@ -21,6 +21,7 @@ export interface JSONCVar<Value extends Stringable> {
 
 export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
+
     cv_loadout_skin: Casters.toString,
     cv_loadout_badge: Casters.toString,
     cv_loadout_crosshair: Casters.toInt,
@@ -28,49 +29,57 @@ export const CVarCasters = Object.freeze({
     cv_loadout_right_emote: Casters.toString,
     cv_loadout_bottom_emote: Casters.toString,
     cv_loadout_left_emote: Casters.toString,
-    cv_loadout_win_emote: Casters.toString,
     cv_loadout_death_emote: Casters.toString,
-    cv_loop_scope_selection: Casters.toBoolean,
-    cv_anonymize_player_names: Casters.toBoolean,
-    cv_hide_emotes: Casters.toBoolean,
+    cv_loadout_win_emote: Casters.toString,
     cv_master_volume: Casters.toNumber,
     cv_music_volume: Casters.toNumber,
     cv_sfx_volume: Casters.toNumber,
-    cv_mute_audio: Casters.toBoolean,
+
+    cv_loop_scope_selection: Casters.toBoolean,
+    cv_anonymize_player_names: Casters.toBoolean,
+    cv_hide_emotes: Casters.toBoolean,
     cv_use_old_menu_music: Casters.toBoolean,
-    cv_language: Casters.toString,
     cv_region: Casters.toString,
     cv_camera_shake_fx: Casters.toBoolean,
     cv_killfeed_style: Casters.generateUnionCaster(["icon", "text"]),
     cv_weapon_slot_style: Casters.generateUnionCaster(["simple", "colored"]),
     cv_movement_smoothing: Casters.toBoolean,
     cv_responsive_rotation: Casters.toBoolean,
+
     cv_antialias: Casters.toBoolean,
     cv_renderer: Casters.generateUnionCaster(["webgl1", "webgl2", "webgpu"]),
     cv_renderer_res: Casters.generateUnionCaster(["auto", "0.5", "1", "2", "3"]),
     cv_high_res_textures: Casters.toBoolean,
     cv_cooler_graphics: Casters.toBoolean,
     cv_blur_splash: Casters.toBoolean,
-    cv_minimap_minimized: Casters.toBoolean,
-    cv_map_expanded: Casters.toBoolean,
-    cv_leave_warning: Casters.toBoolean,
-    cv_ui_scale: Casters.toNumber,
-    cv_minimap_transparency: Casters.toNumber,
-    cv_map_transparency: Casters.toNumber,
-    cv_draw_hud: Casters.toBoolean,
+
     cv_rules_acknowledged: Casters.toBoolean,
     cv_hide_rules_button: Casters.toBoolean,
+    cv_leave_warning: Casters.toBoolean,
+    cv_ui_scale: Casters.toNumber,
+    cv_draw_hud: Casters.toBoolean,
+
+    cv_map_expanded: Casters.toBoolean,
+    cv_minimap_minimized: Casters.toBoolean,
+    cv_minimap_transparency: Casters.toNumber,
+    cv_map_transparency: Casters.toNumber,
+
     cv_console_width: Casters.toNumber,
     cv_console_height: Casters.toNumber,
     cv_console_left: Casters.toNumber,
     cv_console_top: Casters.toNumber,
     cv_console_open: Casters.toBoolean,
+
     cv_crosshair_color: Casters.toString,
     cv_crosshair_size: Casters.toNumber,
     cv_crosshair_stroke_color: Casters.toString,
     cv_crosshair_stroke_size: Casters.toNumber,
+
     cv_autopickup: Casters.toBoolean,
     cv_autopickup_dual_guns: Casters.toBoolean,
+    cv_language: Casters.toString,
+
+    cv_mute_audio: Casters.toBoolean,
 
     pf_show_fps: Casters.toBoolean,
     pf_show_ping: Casters.toBoolean,
@@ -191,9 +200,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
 
     cv_autopickup: true,
     cv_autopickup_dual_guns: true,
+    cv_language: "en",
 
     // unused for now
-    cv_language: "en",
     cv_mute_audio: false,
     //
 

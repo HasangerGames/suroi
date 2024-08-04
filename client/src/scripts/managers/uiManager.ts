@@ -8,13 +8,14 @@ import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
-import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
-import { type PlayerData, type UpdatePacket } from "../../../../common/src/packets/updatePacket";
+import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
+import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
+import { type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
@@ -40,7 +41,7 @@ export class UIManager {
 
     readonly inventory: {
         activeWeaponIndex: number
-        weapons: PlayerData["inventory"]["weapons"] & object
+        weapons: (PlayerData["inventory"] & object)["weapons"] & object
         lockedSlots: number
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
@@ -52,9 +53,9 @@ export class UIManager {
             scope: DEFAULT_SCOPE
         };
 
-    emotes: Array<EmoteDefinition | undefined> = [];
+    emotes: ReadonlyArray<EmoteDefinition | undefined> = [];
 
-    teammates: (UpdatePacket["playerData"] & object)["teammates"] = [];
+    teammates: PlayerData["teammates"] & object = [];
 
     readonly debugReadouts = Object.freeze({
         fps: $<HTMLSpanElement>("#fps-counter"),
@@ -349,7 +350,7 @@ export class UIManager {
 
     gameOverScreenTimeout: number | undefined;
 
-    showGameOverScreen(packet: GameOverPacket): void {
+    showGameOverScreen(packet: GameOverData): void {
         const game = this.game;
 
         this.ui.interactMsg.hide();
@@ -393,8 +394,12 @@ export class UIManager {
 
         gameOverText.html(
             packet.won
-                ? "Winner winner chicken dinner!"
-                : `${this.game.spectating ? this.getPlayerName(packet.playerID) : "You"} died.`
+                ? getTranslatedString("msg_win")
+                : (this.game.spectating
+                    ? getTranslatedString("msg_player_died", {
+                        player: this.getPlayerName(packet.playerID)
+                    })
+                    : getTranslatedString("msg_you_died"))
         );
 
         gameOverPlayerName.html(playerName + playerBadgeText);
@@ -423,6 +428,13 @@ export class UIManager {
 
     updateEmoteWheel(): void {
         const { pingWheelActive } = this.game.inputManager;
+        if (this.game.teamMode) {
+            for (const ammo of Ammos) {
+                const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
+                if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
+                else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
+            }
+        }
         for (let i = 0; i < 4; i++) {
             const definition = (pingWheelActive ? this.mapPings : this.emotes)[i];
 
@@ -446,18 +458,30 @@ export class UIManager {
     private _oldHealth = 0;
 
     updateUI(data: PlayerData): void {
-        if (data.id !== undefined) this.game.activePlayerID = data.id;
+        const {
+            minMax,
+            health,
+            adrenaline,
+            zoom,
+            id,
+            teammates,
+            inventory,
+            lockedSlots,
+            items
+        } = data;
 
-        if (data.dirty.id) {
-            const spectating = data.spectating;
+        if (id !== undefined) this.game.activePlayerID = id.id;
+
+        if (id) {
+            const spectating = id.spectating;
             this.game.spectating = spectating;
 
             if (spectating) {
-                const badge = this.getPlayerBadge(data.id);
+                const badge = this.getPlayerBadge(id.id);
                 const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
-                this.ui.spectatingMsgPlayer.html(this.getPlayerName(data.id) + badgeText);
+                this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
             }
             this.ui.spectatingContainer.toggle(spectating);
             this.ui.spectatingMsg.toggle(spectating);
@@ -470,8 +494,8 @@ export class UIManager {
             }
         }
 
-        if (data.dirty.teammates && this.game.teamMode) {
-            this.teammates = data.teammates;
+        if (teammates && this.game.teamMode) {
+            this.teammates = teammates;
 
             const _teammateDataCache = this._teammateDataCache;
             const notVisited = new Set(_teammateDataCache.keys());
@@ -484,7 +508,7 @@ export class UIManager {
                     disconnected: false,
                     position: undefined
                 },
-                ...data.teammates
+                ...teammates
             ].forEach((player, index) => {
                 const { id } = player;
                 notVisited.delete(id);
@@ -531,12 +555,12 @@ export class UIManager {
             }
         }
 
-        if (data.zoom) this.game.camera.zoom = data.zoom;
+        if (zoom) this.game.camera.zoom = zoom;
 
-        if (data.dirty.maxMinStats) {
-            this.maxHealth = data.maxHealth;
-            this.minAdrenaline = data.minAdrenaline;
-            this.maxAdrenaline = data.maxAdrenaline;
+        if (minMax) {
+            this.maxHealth = minMax.maxHealth;
+            this.minAdrenaline = minMax.minAdrenaline;
+            this.maxAdrenaline = minMax.maxAdrenaline;
 
             if (this.maxHealth === GameConstants.player.defaultHealth) {
                 this.ui.maxHealth.text("").hide();
@@ -554,8 +578,8 @@ export class UIManager {
             }
         }
 
-        if (data.dirty.health) {
-            this.health = Numeric.remap(data.normalizedHealth, 0, 1, 0, this.maxHealth);
+        if (health !== undefined) {
+            this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
 
             const normalizedHealth = this.health / this.maxHealth;
             const realPercentage = 100 * normalizedHealth;
@@ -584,8 +608,8 @@ export class UIManager {
                 .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
-        if (data.dirty.adrenaline) {
-            this.adrenaline = Numeric.remap(data.normalizedAdrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
+        if (adrenaline !== undefined) {
+            this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
             const percentage = 100 * this.adrenaline / this.maxAdrenaline;
 
             this.ui.adrenalineBar.width(`${percentage}%`);
@@ -595,25 +619,23 @@ export class UIManager {
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
-        const inventory = data.inventory;
-
-        if (inventory.weapons) {
+        if (inventory?.weapons) {
             this.inventory.weapons = inventory.weapons;
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
         }
 
-        if (inventory.lockedSlots !== undefined) {
-            this.inventory.lockedSlots = inventory.lockedSlots;
+        if (lockedSlots !== undefined) {
+            this.inventory.lockedSlots = lockedSlots;
             this.updateSlotLocks();
         }
 
-        if (inventory.items) {
-            this.inventory.items = inventory.items;
-            this.inventory.scope = inventory.scope;
+        if (items) {
+            this.inventory.items = items.items;
+            this.inventory.scope = items.scope;
             this.updateItems();
         }
 
-        if (inventory.weapons || inventory.items) {
+        if (inventory?.weapons || items) {
             this.updateWeapons();
         }
     }
@@ -737,7 +759,9 @@ export class UIManager {
                         "color": ""
                     });
 
-                itemName.text(weapon.definition.name);
+                itemName.text(weapon.definition.idString.startsWith("dual_")
+                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length)) })
+                    : getTranslatedString(weapon.definition.idString));
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
@@ -826,18 +850,18 @@ export class UIManager {
 
     private _addKillMessage(
         message: (
-      {
-          readonly severity: KillfeedEventSeverity.Down
-      } | {
-          readonly severity: KillfeedEventSeverity.Kill
-          readonly kills: number
-          readonly streak?: number
-      }
-    ) & {
-        readonly type: KillfeedEventType
-        readonly victimName: string
-        readonly weaponUsed?: string
-    }
+            {
+                readonly severity: KillfeedEventSeverity.Down
+            } | {
+                readonly severity: KillfeedEventSeverity.Kill
+                readonly kills: number
+                readonly streak?: number
+            }
+        ) & {
+            readonly type: KillfeedEventType
+            readonly victimName: string
+            readonly weaponUsed?: string
+        }
     ): void {
         const { severity, victimName, weaponUsed, type } = message;
 
@@ -850,7 +874,7 @@ export class UIManager {
         switch (severity) {
             case KillfeedEventSeverity.Kill: {
                 const { streak, kills } = message;
-                headerUi.text(`Kills: ${kills}`);
+                headerUi.text(getTranslatedString("msg_kills", { kills: kills.toString() }));
                 killCounterUi.text(kills);
                 streakText = streak ? ` (streak: ${streak})` : "";
                 break;
@@ -861,11 +885,19 @@ export class UIManager {
             }
         }
 
-        this.ui.killMsgContainer.html(
-            `${UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML)
-            } ${weaponUsed !== undefined ? ` with ${weaponUsed}` : ""
-            }${streakText}`
-        );
+        let killModalMessage = UIManager._killModalEventDescription[type][severity]($<HTMLSpanElement>(victimName).addClass("kill-msg-player-name")[0].outerHTML, weaponUsed !== undefined ? weaponUsed : "");
+
+        // special case for languages like hungarian and greek
+        if (getTranslatedString("you") === "") {
+            // Remove useless spaces at start (from blank "you")
+            while (killModalMessage.startsWith(" ") || killModalMessage.startsWith("  ")) {
+                killModalMessage = killModalMessage.replace(killModalMessage[0], "");
+            }
+
+            killModalMessage = killModalMessage.replace(killModalMessage[0], killModalMessage[0].toUpperCase());
+        }
+
+        this.ui.killMsgContainer.html(`${killModalMessage}${streakText}`);
 
         this.ui.killMsgModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
@@ -962,7 +994,7 @@ export class UIManager {
             };
         });
     }
-
+    /* Womp Womp
     private static readonly _killfeedEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, string>>>({
         [KillfeedEventType.Suicide]: {
             [KillfeedEventSeverity.Kill]: "committed suicide",
@@ -992,61 +1024,76 @@ export class UIManager {
             [KillfeedEventSeverity.Kill]: "was fatally crushed",
             [KillfeedEventSeverity.Down]: "was knocked out"
         }
-    });
+    }); */
 
-    private static readonly _killModalEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, (victim: string) => string>>>({
+    private static readonly _killModalEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, (victim: string, weaponUsed: string) => string>>>({
         [KillfeedEventType.Suicide]: {
-            [KillfeedEventSeverity.Kill]: _ => "You committed suicide",
-            [KillfeedEventSeverity.Down]: _ => "You knocked yourself out"
+            [KillfeedEventSeverity.Kill]: (_, weapon_) => getTranslatedString("km_message", {
+                you: getTranslatedString("you"),
+                finally: "",
+                event: getTranslatedString("kf_suicide_kill", { player: "" }),
+                victim: "",
+                with: weapon_ === "" ? "" : getTranslatedString("with"),
+                weapon: weapon_
+            }),
+            [KillfeedEventSeverity.Down]: (_, weapon_) => getTranslatedString("km_message", {
+                you: getTranslatedString("you"),
+                finally: "",
+                event: getTranslatedString("km_knocked"),
+                victim: getTranslatedString("yourself"),
+                with: weapon_ === "" ? "" : getTranslatedString("with"),
+                weapon: weapon_
+            })
         },
         [KillfeedEventType.NormalTwoParty]: {
-            [KillfeedEventSeverity.Kill]: name => `You killed ${name}`,
-            [KillfeedEventSeverity.Down]: name => `You knocked out ${name}`
+            [KillfeedEventSeverity.Kill]: (name, weapon_) => getTranslatedString("km_message", {
+                you: getTranslatedString("you"),
+                finally: "",
+                event: getTranslatedString("km_killed"),
+                victim: name,
+                with: weapon_ === "" ? "" : getTranslatedString("with"),
+                weapon: weapon_
+            }),
+            [KillfeedEventSeverity.Down]: (name, weapon_) => getTranslatedString("km_message", {
+                you: getTranslatedString("you"),
+                finally: "",
+                event: getTranslatedString("km_knocked"),
+                victim: name,
+                with: weapon_ === "" ? "" : getTranslatedString("with"),
+                weapon: weapon_
+            })
         },
         [KillfeedEventType.BleedOut]: {
-            [KillfeedEventSeverity.Kill]: name => `${name} bled out`,
-            [KillfeedEventSeverity.Down]: name => `${name} bled out non-lethally` // should be impossible
+            [KillfeedEventSeverity.Kill]: name => getTranslatedString("kf_bleed_out_kill", { player: name }),
+            [KillfeedEventSeverity.Down]: name => getTranslatedString("kf_bleed_out_down", { player: name }) // should be impossible
         },
         [KillfeedEventType.FinishedOff]: {
-            [KillfeedEventSeverity.Kill]: name => `${name} was finished off`,
+            [KillfeedEventSeverity.Kill]: (name, weapon_) => getTranslatedString("km_message", {
+                you: getTranslatedString("you"),
+                finally: getTranslatedString("finally"),
+                event: getTranslatedString("km_killed"),
+                victim: name,
+                with: weapon_ === "" ? "" : getTranslatedString("with"),
+                weapon: weapon_
+            }),
             [KillfeedEventSeverity.Down]: name => `${name} was gently finished off` // should be impossible
         },
         [KillfeedEventType.FinallyKilled]: {
-            [KillfeedEventSeverity.Kill]: name => `${name} was finally killed`,
-            [KillfeedEventSeverity.Down]: name => `${name} was finally knocked out` // should be impossible
+            [KillfeedEventSeverity.Kill]: name => getTranslatedString("kf_finally_killed", { player: name }),
+            [KillfeedEventSeverity.Down]: name => getTranslatedString("kf_finally_down", { player: name }) // should be impossible
         },
         [KillfeedEventType.Gas]: {
-            [KillfeedEventSeverity.Kill]: name => `${name} died to the gas`,
-            [KillfeedEventSeverity.Down]: name => `${name} was knocked out by the gas`
+            [KillfeedEventSeverity.Kill]: name => getTranslatedString("kf_gas_kill", { player: name }),
+            [KillfeedEventSeverity.Down]: name => getTranslatedString("kf_gas_down", { player: name })
         },
         [KillfeedEventType.Airdrop]: {
-            [KillfeedEventSeverity.Kill]: name => `${name} was fatally crushed by an airdrop`,
-            [KillfeedEventSeverity.Down]: name => `${name} was knocked out by an airdrop`
+            [KillfeedEventSeverity.Kill]: name => getTranslatedString("kf_airdrop_kill", { player: name }),
+            [KillfeedEventSeverity.Down]: name => getTranslatedString("kf_airdrop_down", { player: name })
         }
     });
 
-    processKillFeedPacket(message: KillFeedPacket): void {
-        const {
-            messageType,
-            victimId,
-
-            eventType,
-            severity,
-
-            attackerId,
-            attackerKills = 0, // HACK this is mostly to get tooling to be quiet, the entire packet api's typings suck and need to be redone
-            weaponUsed,
-            killstreak,
-
-            hideFromKillfeed
-        } = {
-            eventType: KillfeedEventType.Suicide,
-            severity: KillfeedEventSeverity.Kill,
-            ...message
-        };
-
-        const weaponPresent = weaponUsed !== undefined;
-        const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
+    processKillFeedPacket(message: KillFeedPacketData): void {
+        const { messageType } = message;
 
         const getNameAndBadge = (id?: number): { readonly name: string, readonly badgeText: string } => {
             const hasId = id !== undefined;
@@ -1060,33 +1107,54 @@ export class UIManager {
             };
         };
 
-        const {
-            name: victimName,
-            badgeText: victimBadgeText
-        } = getNameAndBadge(victimId);
-
-        const {
-            name: attackerName,
-            badgeText: attackerBadgeText
-        } = getNameAndBadge(attackerId);
-
-        const victimText = victimName + victimBadgeText;
-        const attackerText = attackerName + attackerBadgeText;
-
         let messageText: string | undefined;
         const classes: string[] = [];
 
         switch (messageType) {
             case KillfeedMessageType.DeathOrDown: {
-                // `undefined > 1` returns `false` anyways
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const hasKillstreak = killstreak! > 1;
+                const {
+                    victimId,
+                    severity,
+                    eventType,
+                    weaponUsed
+                } = message;
+
+                const weaponPresent = weaponUsed !== undefined;
+                const isGrenadeImpactKill = weaponPresent && "itemType" in weaponUsed && weaponUsed.itemType === ItemType.Throwable;
+
+                const attackerId = "attackerId" in message ? message.attackerId : undefined;
+
+                const {
+                    name: victimName,
+                    badgeText: victimBadgeText
+                } = getNameAndBadge(victimId);
+
+                const {
+                    name: attackerName,
+                    badgeText: attackerBadgeText
+                } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
+
+                let victimText = victimName + victimBadgeText;
+
+                const attackerText = attackerName + attackerBadgeText;
+
+                const killstreak = "killstreak" in message ? message.killstreak : undefined;
+                const hasKillstreak = !!killstreak;
 
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         let killMessage = "";
 
-                        const description = UIManager._killfeedEventDescription[eventType][severity];
+                        let useSpecialSentence = false;
+
+                        // const description = UIManager._killfeedEventDescription[eventType][severity];
+
+                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString)) : "";
+
+                        // special case for turkish
+                        if (this.game.console.getBuiltInCVar("cv_language") === "tr") {
+                            victimText = victimText.replace("<span>", "<span style=\"display:contents;\">");
+                        }
 
                         outer:
                         switch (eventType) {
@@ -1094,48 +1162,77 @@ export class UIManager {
                                 switch (attackerId) {
                                     case undefined:
                                         /*
-                        this can happen if the player is knocked out by a non-player
-                        entity (like gas or airdrop) if their team is then wiped,
-                        then no one "finally" killed them, they just… finally died
-                    */
-                                        killMessage = `${victimText} finally died`;
+                                            this can happen if the player is knocked out by a non-player
+                                            entity (like gas or airdrop) if their team is then wiped,
+                                            then no one "finally" killed them, they just… finally died
+                                        */
+                                        killMessage = getTranslatedString("kf_finally_died", { player: victimText });
 
                                         break outer;
                                     case victimId:
                                         /*
-                        usually, a case where attacker and victim are the same would be
-                        counted under the "suicide" event type, but there was no easy
-                        way to route the event through the "suicide" type whilst having
-                        it retain the "finally killed" part; this is the best option
-                        until someone comes up with another
-                    */
-                                        killMessage = `${victimText} finally ended themselves`;
+                                            usually, a case where attacker and victim are the same would be
+                                            counted under the "suicide" event type, but there was no easy
+                                            way to route the event through the "suicide" type whilst having
+                                            it retain the "finally killed" part; this is the best option
+                                            until someone comes up with another
+                                        */
+                                        killMessage = getTranslatedString("kf_finally_ended_themselves", { player: victimText });
 
                                         break outer;
                                 }
                                 // fallthrough
                             case KillfeedEventType.NormalTwoParty:
+                                killMessage = getTranslatedString("kf_message", {
+                                    player: attackerText,
+                                    finally: "",
+                                    event: getTranslatedString("kf_killed"),
+                                    victim: victimText,
+                                    with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
+                                    weapon: fullyQualifiedName
+                                });
+                                useSpecialSentence = true;
+                                break;
                             case KillfeedEventType.FinishedOff:
-                                killMessage = `${attackerText} ${description} ${victimText}`;
+                                killMessage = getTranslatedString("kf_message", {
+                                    player: attackerText,
+                                    finally: "",
+                                    event: getTranslatedString("kf_finished_off"),
+                                    victim: victimText,
+                                    with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
+                                    weapon: fullyQualifiedName
+                                });
+                                useSpecialSentence = true;
                                 break;
                             case KillfeedEventType.Suicide:
+                                // Turkish and Estonian special condition ('i shouldn't appear in these messages)
+                                killMessage = getTranslatedString(`kf_message${this.game.console.getBuiltInCVar("cv_language") === "tr" || this.game.console.getBuiltInCVar("cv_language") === "et" ? "_grammar" : ""}`, {
+                                    player: victimText,
+                                    finally: "",
+                                    event: getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: "" }),
+                                    victim: "",
+                                    with: fullyQualifiedName === "" ? "" : getTranslatedString("with"),
+                                    weapon: fullyQualifiedName
+                                });
+
+                                useSpecialSentence = true;
+                                break;
                             case KillfeedEventType.BleedOut:
-                                killMessage = `${victimText} ${description}`;
+                                killMessage = getTranslatedString(`kf_bleed_out_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
                                 break;
                             case KillfeedEventType.Gas:
-                                killMessage = `${victimText} ${description} the gas`;
+                                killMessage = getTranslatedString(`kf_gas_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
                                 break;
                             case KillfeedEventType.Airdrop:
-                                killMessage = `${victimText} ${description} by an airdrop`;
+                                killMessage = getTranslatedString(`kf_airdrop_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: victimText });
                                 break;
                         }
 
-                        const fullyQualifiedName = weaponPresent ? weaponUsed.name : "";
                         /**
-             * English being complicated means that this will sometimes return bad results
-             * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
-             * a library off of somewhere, this'll have to do
-             */
+                         * English being complicated means that this will sometimes return bad results
+                         * (ex: "hour", "NSA", "one" and "university") but to be honest, short of downloading
+                         * a library off of somewhere, this'll have to do
+                         */
                         const article = `a${"aeiou".includes(fullyQualifiedName[0]) ? "n" : ""}`;
 
                         const weaponNameText = weaponPresent
@@ -1151,10 +1248,14 @@ export class UIManager {
                             }
                         })();
 
-                        messageText = `
-                        ${hasKillstreak && severity === KillfeedEventSeverity.Kill ? killstreak : ""}
-                        ${icon}
-                        ${killMessage}${weaponNameText}`;
+                        if (!useSpecialSentence) {
+                            messageText = `
+                            ${hasKillstreak && severity === KillfeedEventSeverity.Kill ? killstreak : ""}
+                            ${icon}
+                            ${killMessage}${weaponNameText}`;
+                        } else {
+                            messageText = `${icon}${killMessage}`;
+                        }
                         break;
                     }
                     case "icon": {
@@ -1231,8 +1332,8 @@ export class UIManager {
                 }
 
                 /**
-         * Whether the player pointed to by the given id is on the active player's team
-         */
+                 * Whether the player pointed to by the given id is on the active player's team
+                 */
                 const playerIsOnThisTeam = (id?: number): boolean | undefined => {
                     let target: GameObject | undefined;
 
@@ -1261,7 +1362,7 @@ export class UIManager {
                         if (attackerId === this.game.activePlayerID) {
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponUsed?.name,
+                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString) : "",
                                 type: eventType
                             };
 
@@ -1273,7 +1374,7 @@ export class UIManager {
                                         weaponUsed: eventType !== KillfeedEventType.FinallyKilled
                                             ? base.weaponUsed
                                             : undefined,
-                                        kills: attackerKills,
+                                        kills: "attackerKills" in message ? message.attackerKills : 0,
                                         streak: killstreak
                                     }
                                     : {
@@ -1295,17 +1396,30 @@ export class UIManager {
                     spectateKillLeader: spectateLeader
                 } = this.ui;
 
+                const {
+                    victimId,
+                    attackerKills,
+                    hideFromKillfeed
+                } = message;
+
+                const {
+                    name: victimName,
+                    badgeText: victimBadgeText
+                } = getNameAndBadge(victimId);
+
+                const victimText = victimName + victimBadgeText;
+
                 classes.push(
                     victimId === this.game.activePlayerID
                         ? "kill-feed-item-killer"
                         : "kill-feed-kill-leader"
                 );
 
-                leader.html(`${victimName}${victimBadgeText}`);
+                leader.html(victimText);
                 count.text(attackerKills);
 
                 if (!hideFromKillfeed) {
-                    messageText = html`<i class="fa-solid fa-crown"></i> ${victimName}${victimBadgeText} promoted to Kill Leader!`;
+                    messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", { player: victimText })}`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
 
@@ -1314,27 +1428,50 @@ export class UIManager {
             }
 
             case KillfeedMessageType.KillLeaderUpdated: {
+                const { attackerKills } = message;
+
                 this.ui.killLeaderCount.text(attackerKills);
                 break;
             }
 
-            case KillfeedMessageType.KillLeaderDead: {
+            case KillfeedMessageType.KillLeaderDeadOrDisconnected: {
                 const {
                     killLeaderLeader: leader,
                     killLeaderCount: count,
                     spectateKillLeader: spectateLeader
                 } = this.ui;
 
-                leader.text("Waiting for leader");
+                const {
+                    attackerId,
+                    victimId
+                } = message;
+
+                if (message.disconnected === true) {
+                    leader.text(getTranslatedString("msg_waiting_for_leader"));
+                    count.text("0");
+                    this.game.soundManager.play("kill_leader_dead");
+                    spectateLeader.addClass("btn-disabled");
+                    break;
+                }
+
+                const {
+                    name: attackerName,
+                    badgeText: attackerBadgeText
+                } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
+
+                const attackerText = attackerName + attackerBadgeText;
+
+                leader.text(getTranslatedString("msg_waiting_for_leader"));
                 count.text("0");
 
                 // noinspection HtmlUnknownTarget
                 messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
                     ? attackerId !== victimId
-                        ? `${attackerName}${attackerBadgeText} killed Kill Leader!`
-                        : "The Kill Leader is dead!"
-                    : "The Kill Leader killed themselves!"
+                        ? getTranslatedString("kf_kl_killed", { player: attackerText })
+                        : getTranslatedString("kf_kl_dead")
+                    : getTranslatedString("kf_kl_suicide")
                 }`;
+
                 switch (this.game.activePlayerID) {
                     case attackerId: {
                         classes.push("kill-feed-item-killer");
@@ -1354,6 +1491,11 @@ export class UIManager {
                 spectateLeader.addClass("btn-disabled");
                 break;
             }
+        }
+
+        // Disable spaces in chinese languages.
+        if (["zh", "tw", "hk_mo", "jp"].includes(this.game.console.getBuiltInCVar("cv_language"))) {
+            classes.push("no-spaces");
         }
 
         if (messageText) this._addKillFeedMessage(messageText, classes);
@@ -1501,9 +1643,9 @@ class PlayerHealthUI {
             ] as const).forEach(<K extends keyof UpdateDataType>(prop: K) => {
                 const value = data[prop];
                 if (prop in data && value !== null) {
-          type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
 
-          (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
                 }
             });
         }

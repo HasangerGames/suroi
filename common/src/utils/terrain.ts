@@ -41,7 +41,7 @@ export class Terrain {
 
     readonly floors = new Map<Hitbox, string>();
 
-    readonly rivers: River[];
+    readonly rivers: readonly River[];
 
     readonly beachHitbox: PolygonHitbox;
     readonly grassHitbox: PolygonHitbox;
@@ -61,7 +61,7 @@ export class Terrain {
         oceanSize: number,
         beachSize: number,
         seed: number,
-        rivers: River[]
+        rivers: readonly River[]
     ) {
         this.width = Math.floor(width / this.cellSize);
         this.height = Math.floor(height / this.cellSize);
@@ -223,17 +223,17 @@ function catmullRom(t: number, p0: number, p1: number, p2: number, p3: number): 
 }
 
 export class River {
-    readonly width: number;
     readonly bankWidth: number;
-    readonly points: Vector[];
 
     readonly waterHitbox: PolygonHitbox;
     readonly bankHitbox: PolygonHitbox;
 
-    constructor(width: number, points: Vector[], otherRivers: River[], bounds: RectangleHitbox) {
-        this.width = width;
-        this.points = points;
-
+    constructor(
+        readonly width: number,
+        readonly points: readonly Vector[],
+        otherRivers: readonly River[],
+        bounds: RectangleHitbox
+    ) {
         const length = this.points.length - 1;
 
         this.bankWidth = Numeric.clamp(this.width * 0.75, 12, 20);

@@ -83,7 +83,7 @@
         z-index: 1000;
         pointer-events: none;
       }
-      
+
       #loading-text {
         top: 215px;
         width: 100%;
@@ -135,7 +135,7 @@
           <h2>
             <a href="./news/">
               <i class="fa-solid fa-newspaper"></i>
-              News
+              <span translation="news"></span>
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
           </h2>
@@ -146,13 +146,12 @@
             <span id="splash-server-message-text"></span>
           </div>
           <div id="splash-rotate-message" style="display: none">
-            <i class="fa-solid fa-rotate"></i> For a better experience, please
-            rotate your device to landscape.
+            <i class="fa-solid fa-rotate"></i> <span translation="msg_rotate">For a better experience, please rotate your device to landscape.</span>
           </div>
 
           <div id="splash-options" class="loading">
             <img class="loading-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-26 -28 512 512' width='512' height='512'%3E%3Cdefs%3E%3CclipPath id='b'%3E%3Ccircle cy='-15' r='9.5'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(120)'/%3E%3Ccircle cy='-15' r='9.5' transform='rotate(-120)'/%3E%3C/clipPath%3E%3Cmask id='a' width='60' height='60' x='-30' y='-30' maskUnits='userSpaceOnUse'%3E%3Cpath fill='%23fff' d='M-27-27h54v54h-54Z'/%3E%3Cpath d='M2-23v-4h-4v4M-.5-6v4h1v-4'/%3E%3Ccircle cy='-15' r='10.5'/%3E%3Cg transform='rotate(120)'%3E%3Cpath d='M2-23v-4h-4v4M-.5-6v4h1v-4'/%3E%3Ccircle cy='-15' r='10.5'/%3E%3C/g%3E%3Cg transform='rotate(-120)'%3E%3Cpath d='M2-23v-4h-4v4M-.5-6v4h1v-4'/%3E%3Ccircle cy='-15' r='10.5'/%3E%3C/g%3E%3Ccircle r='3'/%3E%3C/mask%3E%3C/defs%3E%3Cg transform='matrix(8.16357 0 0 8.16357 191.355 205.682)'%3E%3Ccircle style='fill:%23000;fill-opacity:1;stroke:%23008af0;stroke-width:3.75;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' cx='4.734' cy='2.734' r='29.484'/%3E%3Ccircle style='fill:none;fill-opacity:1;stroke:%23ff7500;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' cx='4.734' cy='2.734' r='28.554'/%3E%3Cg transform='matrix(.93777 0 0 .93777 4.734 2.616)'%3E%3Cg mask='url(%23a)' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1'%3E%3Ccircle cy='-11' r='15' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1'/%3E%3Ccircle cy='-11' r='15' transform='rotate(120)' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1'/%3E%3Ccircle cy='-11' r='15' transform='rotate(-120)' style='fill:%23ff7500;fill-opacity:1;stroke:none;stroke-opacity:1'/%3E%3C/g%3E%3Ccircle r='11.75' fill='none' stroke='%23000' stroke-width='3.5' clip-path='url(%23b)' style='stroke:%23008aff;stroke-opacity:1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" />
-            <span id="loading-text">Connecting</span>
+            <span id="loading-text" translation="msg_loading"></span>
             <div id="splash-options-wrapper">
               <input
                 type="text"
@@ -182,14 +181,14 @@
                 <ul class="dropdown-content" id="server-list"></ul>
               </div>
 
-              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
+              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo" translation="play_solo"></button>
               <div class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button>
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button>
+                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo" translation="play_duo"></button>
+                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad" translation="play_squad"></button>
               </div>
               <div id="team-option-btns" class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team">Join Team</button>
-                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button>
+                <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team" translation="join_team"></button>
+                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
               </div>
 
               <span id="locked-msg" style="display: none">
@@ -198,9 +197,7 @@
                 <button id="locked-info">
                   <i class="fa-solid fa-info-circle"></i>
                 </button>
-                <div id="locked-tooltip" style="display: none">
-                  The game switches between solos and duos every 24 hours, as there aren't enough players for both.
-</div>
+                <div id="locked-tooltip" style="display: none" translation="msg_locked_tooltip"></div>
               </span>
 
               <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none">
@@ -208,44 +205,38 @@
               </button>
               <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
                 <div class="pulsating-circle" style="display: none"></div>
-                <span>Rules &amp; Tutorial</span>
+                <span translation="rules_and_tutorial"></span>
               </button>
             </div>
           </div>
           <div id="splash-socials">
             <a
               href="https://discord.suroi.io"
-              target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-discord"
             ></a>
             <a
               href="https://reddit.com/r/suroigame"
-              target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-reddit"
             ></a>
             <a
               href="https://twitter.com/suroigame"
-              target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-twitter"
             ></a>
             <a
               href="https://www.youtube.com/@suroigame"
-              target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-youtube"
             ></a>
             <a
               href="https://github.com/HasangerGames/suroi"
-              target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-github"
             ></a>
             <a
               href="https://wiki.suroi.io"
-              target="_blank"
               rel="noopener noreferrer"
               class="btn btn-darken btn-social btn-wiki"
             ></a>
@@ -263,20 +254,20 @@
               id="btn-customize"
             >
               <i class="fa-solid fa-shirt"></i>
-              Loadout
+              <span translation="loadout"></span>
             </button>
             <button
               class="btn btn-lg btn-darken btn-secondary"
               id="btn-settings"
             >
               <i class="fa-solid fa-gear"></i>
-              Settings
+              <span translation="settings"></span>
             </button>
           </div>
         </div>
         <div id="splash-featured-people">
           <div class="featured-container">
-            <p class="featured-heading">Featured YouTubr</p>
+            <p class="featured-heading" translation="featured_youtubr"></p>
             <a
               class="featured-content"
               id="youtube-featured-content"
@@ -292,7 +283,7 @@
             </a>
           </div>
           <div class="featured-container">
-            <p class="featured-heading">Featured Streamr</p>
+            <p class="featured-heading" translation="featured_streamr"></p>
             <a
               class="featured-content"
               id="twitch-featured-content"
@@ -341,7 +332,6 @@
         </div>
         <div id="splash-settings">
           <button
-            style="display: none"
             class="btn btn-darken btn-secondary"
             id="btn-language"
           >
@@ -395,20 +385,16 @@
             <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-left"></i>
             </button>
-            <button id="btn-report" class="btn btn-lg btn-danger">
-              Report
+            <button id="btn-report" class="btn btn-lg btn-danger" translation="btn_report">
             </button>
             <button id="btn-spectate-next" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">
-              Spectate Kill Leader
+            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader">
             </button>
-            <button id="btn-spectate-replay" class="btn btn-lg btn-primary">
-              Play Again
+            <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again">
             </button>
-            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary">
-              Menu
+            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu">
             </button>
           </div>
         </div>
@@ -419,7 +405,7 @@
         <div class="ui-leaderboard">
           <div id="ui-kill-leader">
             <div id="kill-leader-leader-container">
-              <span id="kill-leader-leader">Waiting for leader</span>
+              <span id="kill-leader-leader" translation="msg_waiting_for_leader"></span>
               <i
                 class="fa-solid fa-crown"
                 style="margin-left: 5px; margin-right: 5px"
@@ -494,7 +480,7 @@
         <div id="center-top-container">
           <div class="inventory-container" id="scopes-container"></div>
           <div id="spectating-msg">
-            Spectating <span id="spectating-msg-player"></span>
+            <spec translation="msg_spectating">Spectating</spec> <span id="spectating-msg-player"></span>
             <button id="btn-spectate-options" class="btn btn-lg btn-primary">
               <i id="btn-spectate-options-icon" class="fa-solid fa-eye-slash"></i>
             </button>
@@ -544,9 +530,9 @@
         <div id="game-over-overlay" style="display: none">
           <div id="game-over-top-screen">
             <img id="chicken-dinner" src="./img/game/emotes/chicken_dinner.svg" />
-            <h1 id="game-over-text" class="modal-item">You died.</h1>
+            <h1 id="game-over-text" class="modal-item" translation="msg_you_died"></h1>
             <div id="game-over-rank-container">
-              <span>Rank</span>
+              <span translation="msg_your_rank"></span>
               <span id="game-over-rank" class="modal-item"></span>
             </div>
           </div>
@@ -554,19 +540,19 @@
             <h1 id="game-over-player-name" class="modal-item">Player</h1>
             <div class="modal-item" id="game-over-stats">
               <div class="stat">
-                <span class="stat-name">Kills:</span>
+                <span class="stat-name" translation="go_kills">Kills:</span>
                 <span class="stat-value" id="game-over-kills"></span>
               </div>
               <div class="stat">
-                <span class="stat-name">Damage done:</span>
+                <span class="stat-name" translation="go_damage_done">Damage done:</span>
                 <span class="stat-value" id="game-over-damage-done"></span>
               </div>
               <div class="stat">
-                <span class="stat-name">Damage taken:</span>
+                <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
                 <span class="stat-value" id="game-over-damage-taken"></span>
               </div>
               <div class="stat">
-                <span class="stat-name">Time alive:</span>
+                <span class="stat-name" translation="go_time_alive">Time alive:</span>
                 <span class="stat-value" id="game-over-time"></span>
               </div>
             </div>
@@ -574,21 +560,21 @@
               <button
                 class="btn btn-lg btn-darken btn-primary"
                 id="btn-play-again"
+                translation="btn_play_again"
               >
-                Play Again
               </button>
               <div style="display: flex; gap: 8px">
                 <button
                   class="btn btn-lg btn-darken btn-primary"
                   id="btn-spectate"
+                  translation="btn_spectate"
                 >
-                  Spectate
                 </button>
                 <button
                   class="btn btn-lg btn-darken btn-secondary"
                   id="btn-menu"
+                  translation="btn_menu"
                 >
-                  Menu
                 </button>
               </div>
             </div>
@@ -601,40 +587,37 @@
   <div class="modal" id="game-menu" style="display: none">
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i>
-        Settings</button>
+        <span translation="settings"></span>
+      </button>
     </div>
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-secondary" id="btn-fullscreen"><i class="fa-solid fa-expand"></i>
-        Fullscreen</button>
+        <span translation="fullscreen"></span>
+      </button>
     </div>
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i>
-        Resume</button>
+        <span translation="resume"></span>
+      </button>
     </div>
     <div class="modal-item">
       <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i
-          class="fa-solid fa-arrow-right-from-bracket"></i> Quit</button>
+          class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span translation="quit"></span>
+      </button>
     </div>
   </div>
   <div class="modal dialog" id="report-modal" style="display: none">
     <div class="dialog-header">
-      <h3><span style="font-weight: 600">Reporting</span><span id="reporting-name"></span></h3>
+      <h3><span style="font-weight: 600" translation="report_reporting"></span><span id="reporting-name"></span></h3>
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
     </div>
     <div id="report-modal-content">
       <div id="report-id-container">
-        <span>Report ID:</span>
+        <span translation="report_id"></span>
         <span id="report-id"></span>
       </div>
-      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>
-      <h4>How to Submit a Report</h4>
-      <ol>
-        <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
-        <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            channel.</a></li>
-        <li>Read the report guidelines in the pinned post.</li>
-        <li>Submit your report as a post.</li>
-      </ol>
+      <span translation="report_instructions" use-html></span>
     </div>
   </div>
   <div class="modal dialog" id="warning-modal" style="display: none">
@@ -652,55 +635,55 @@
   </div>
   <div class="modal dialog" id="settings-menu" style="display: none">
     <div class="dialog-header">
-      <h3>Settings</h3>
+      <h3 translation="settings"></h3>
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
     </div>
     <div id="settings-tabs-container">
       <div class="tab-bar" id="settings-tab-bar">
-        <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i>Volume</button>
-        <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i>Keybinds</button>
-        <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i>Graphics</button>
-        <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i>Interface</button>
-        <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i>Save/Load</button>
-        <button class="tab" id="tab-mobile"><i class="fa-solid fa-mobile"></i>Mobile</button>
+        <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
+        <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
+        <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
+        <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface"></span></button>
+        <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
+        <button class="tab" id="tab-mobile"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
       </div>
       <div id="settings-tabs" class="persistent-scrollbar">
         <div class="tab-content active" id="tab-volume-content">
           <div class="modal-item">
             <label>
-              <span class="setting-title">Master volume</span>
+              <span class="setting-title" translation="settings_master_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">SFX volume</span>
+              <span class="setting-title" translation="settings_sfx_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Music volume</span>
+              <span class="setting-title" translation="settings_music_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Old menu music<i>*</i></span>
+              <span class="setting-title"><span translation="settings_old_menu_music"></span><i>*</i></span>
               <input type="checkbox" id="toggle-old-music">
             </label>
           </div>
-          <p style="color: red"><i>* Requires reload to apply</i></p>
+          <p style="color: red"><i translation="settings_require_reload"></i></p>
         </div>
         <div class="tab-content" id="tab-keybinds-content" style="display: none">
         </div>
         <div class="tab-content" id="tab-graphics-content" style="display: none">
           <div class="modal-item select-setting">
             <label>
-              <span class="setting-title">Render mode<i>*</i></span>
+              <span class="setting-title"><span translation="settings_render_mode"></span><i>*</i></span>
               <select id="render-mode-select">
                 <option value="webgl1">WebGL 1</option>
                 <option value="webgl2">WebGL 2</option>
@@ -710,9 +693,9 @@
           </div>
           <div class="modal-item select-setting">
             <label>
-              <span class="setting-title">Render resolution<i>*</i></span>
+              <span class="setting-title"><span translation="settings_render_resolution"></span><i>*</i></span>
               <select id="render-res-select">
-                <option value="auto">auto</option>
+                <option value="auto" translation="settings_render_resolution_auto">auto</option>
                 <option value="0.5">0.5</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -722,151 +705,151 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">High resolution textures<i>*</i></span>
+              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
               <input type="checkbox" id="toggle-high-res">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Cooler Graphics</span>
+              <span class="setting-title" translation="settings_cooler_graphics"></span>
               <input type="checkbox" id="toggle-cooler-graphics">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Anti-aliasing<i>*</i></span>
+              <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
               <input type="checkbox" id="toggle-antialias">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Movement smoothing</span>
+              <span class="setting-title" translation="settings_movement_smoothing">Movement smoothing</span>
               <input type="checkbox" id="toggle-movement-smoothing">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Responsive rotation</span>
+              <span class="setting-title" translation="settings_responsive_rotation">Responsive rotation</span>
               <input type="checkbox" id="toggle-responsive-rotation">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Camera shake</span>
+              <span class="setting-title" translation="settings_camera_shake"></span>
               <input type="checkbox" id="toggle-camera-shake">
             </label>
           </div>
-          <p style="color: red"><i>* Requires reload to apply</i></p>
+          <p style="color: red"><i translation="settings_require_reload"></i></p>
         </div>
         <div class="tab-content" id="tab-interface-content" style="display: none">
           <div class="modal-item" id="ui-scale-container">
             <label>
-              <span class="setting-title">Interface scale</span>
+              <span class="setting-title" translation="settings_interface_scale">Interface scale</span>
               <span class="range-input-value"></span>
               <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Minimap opacity</span>
+              <span class="setting-title" translation="settings_minimap_opacity">Minimap opacity</span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Fullscreen map opacity</span>
+              <span class="setting-title" translation="settings_fs_map_opacity">Fullscreen map opacity</span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Hide minimap</span>
+              <span class="setting-title" translation="settings_hide_minimap">Hide minimap</span>
               <input type="checkbox" id="toggle-hide-minimap">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Blur splash screen</span>
+              <span class="setting-title" translation="settings_blur_splash">Blur splash screen</span>
               <input type="checkbox" id="toggle-blur-splash">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Hide rules button</span>
+              <span class="setting-title" translation="settings_hide_rules">Hide rules button</span>
               <input type="checkbox" id="toggle-hide-rules">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Warn before leaving</span>
+              <span class="setting-title" translation="settings_warn_before_leaving">Warn before leaving</span>
               <input type="checkbox" id="toggle-leave-warning">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Show FPS</span>
+              <span class="setting-title" translation="settings_show_fps">Show FPS</span>
               <input type="checkbox" id="toggle-fps">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Show ping</span>
+              <span class="setting-title" translation="settings_show_ping">Show ping</span>
               <input type="checkbox" id="toggle-ping">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Show coordinates</span>
+              <span class="setting-title" translation="settings_show_coordinates">Show coordinates</span>
               <input type="checkbox" id="toggle-pos">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Anonymous player names</span>
+              <span class="setting-title" translation="settings_anon_names">Anonymous player names</span>
               <input type="checkbox" id="toggle-anonymous-player">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Hide emotes</span>
+              <span class="setting-title" translation="settings_hide_emotes">Hide emotes</span>
               <input type="checkbox" id="toggle-hide-emote">
             </label>
           </div>
-          <div class="modal-item checkbox-setting">
+          <div class="modal-item checkbox-setting" id="toggle-text-kill-feed-option">
             <label>
-              <span class="setting-title">Text-based killfeed</span>
+              <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
               <input type="checkbox" id="toggle-text-kill-feed">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Colored weapon slots</span>
+              <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
               <input type="checkbox" id="toggle-colored-slots">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Loop scope selection</span>
+              <span class="setting-title" translation="settings_scope_looping">Loop scope selection</span>
               <input type="checkbox" id="toggle-scope-looping">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Draw HUD</span>
+              <span class="setting-title" translation="settings_draw_hud">Draw HUD</span>
               <input type="checkbox" id="toggle-draw-hud">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Enable Autopickup</span>
+              <span class="setting-title" translation="settings_autopickup">Enable Autopickup</span>
               <input type="checkbox" id="toggle-autopickup">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Autopickup Dual Guns</span>
+              <span class="setting-title" translation="settings_autopickup_dual_guns">Autopickup Dual Guns</span>
               <input type="checkbox" id="toggle-autopickup-dual-guns">
             </label>
           </div>
@@ -875,77 +858,77 @@
           <div class="modal-item">
             <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
               <i class="fa-solid fa-file-import"></i>
-              Load settings
+              <span translation="settings_load_settings"></span>
             </button>
           </div>
           <div class="modal-item">
             <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
               <i class="fa-solid fa-file-export"></i>
-              Copy settings to clipboard
+              <span translation="settings_copy_settings"></span>
             </button>
           </div>
           <div class="modal-item">
             <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
               <i class="fa-solid fa-trash"></i>
-              Reset settings
+              <span translation="settings_reset_settings"></span>
             </button>
           </div>
         </div>
         <div class="tab-content" id="tab-mobile-content" style="display: none">
-          <i>Changing these settings requires reloading the page</i>
+          <i translation="settings_require_reload"></i>
           <div class="modal-item">
             <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
-              onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Reload</button>
+              onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i><span translation="settings_reload"></span></button>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Enable mobile controls</span>
+              <span class="setting-title" translation="settings_mobile_controls"></span>
               <input type="checkbox" id="toggle-mobile-controls">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Joystick size</span>
+              <span class="setting-title" translation="settings_joystick_size"></span>
               <span class="range-input-value"></span>
               <input type="range" max="400" min="25" id="slider-joystick-size" step="25">
             </label>
           </div>
           <div class="modal-item">
             <label>
-              <span class="setting-title">Joystick transparency</span>
+              <span class="setting-title" translation="settings_joystick_opacity"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Auto pickup items</span>
+              <span class="setting-title" translation="settings_autopickup"></span>
               <input type="checkbox" id="toggle-auto-pickup">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">High resolution textures<i>*</i></span>
+              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
               <input type="checkbox" id="toggle-high-res-mobile">
             </label>
           </div>
-          <p style="color: red"><i>* This setting can cause issues on some devices. Disable if you're unable to join the game.</i></p>
+          <p style="color: red"><i translation="settings_performance_warning"></i></p>
         </div>
       </div>
     </div>
   </div>
   <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
     <div class="dialog-header">
-      <h3>Loadout</h3>
+      <h3 translation="loadout"></h3>
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i>Skins</button>
-        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg">Emotes</button>
-        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg">Crosshairs</button>
-        <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i>Badges</button>
-        <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i>Special</button>
+        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
+        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
+        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
+        <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
+        <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
       </div>
       <div id="customize-tabs">
         <div class="tab-content active" id="tab-skins-content">
@@ -978,30 +961,30 @@
               <div id="crosshair-image"></div>
             </div>
             <div id="crosshair-controls">
-              <span id="crosshair-controls-disabled" style="display: none">System default</span>
+              <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Size:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_size"></span>
                   <span class="range-input-value"></span>
                   <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
                 </label>
               </div>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Color:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_color"></span>
                   <input type="color" id="crosshair-color-picker" value="#000000">
                 </label>
               </div>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Stroke Size:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
                   <span class="range-input-value"></span>
                   <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
                 </label>
               </div>
               <div class="modal-item">
                 <label>
-                  <span class="setting-title">Stroke Color:</span>
+                  <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
                   <input type="color" id="crosshair-stroke-picker" value="#000000">
                 </label>
               </div>
@@ -1058,7 +1041,7 @@
   </div>
   <div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
     <div class="dialog-header">
-      <h3>Create Team</h3>
+      <h3 translation="create_team"></h3>
       <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
     </div>
     <div id="create-team-container">
@@ -1074,22 +1057,34 @@
         />
         <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
           <i class="fa-solid fa-clipboard"></i>
-          Copy
+          <span translation="copy"></span>
         </button>
       </div>
       <div id="create-team-options">
         <div id="create-team-toggles">
           <label>
-            <span class="setting-title">Auto Fill</span>
+            <span class="setting-title" translation="create_team_autofill"></span>
             <input type="checkbox" id="create-team-toggle-auto-fill">
           </label>
           <label>
-            <span class="setting-title">Lock Team</span>
+            <span class="setting-title" translation="create_team_lock"></span>
             <input type="checkbox" id="create-team-toggle-lock">
           </label>
         </div>
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">Start Game</button>
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
+          <span translation="create_team_play"></span>
+        </button>
       </div>
+    </div>
+  </div>
+  <div class="modal dialog" id="select-language-menu" style="display: none">
+    <div class="dialog-header">
+      <h3 translation="languages"></h3>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-select-language"></span>
+    </div>
+    <div id="select-language-container" class="persistent-scrollbar">
+      <fieldset>
+      </fieldset>
     </div>
   </div>
   <script src="./src/index.ts" type="module"></script>

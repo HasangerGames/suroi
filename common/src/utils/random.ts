@@ -76,13 +76,11 @@ export function randomPointInsideCircle(position: Vector, maxRadius: number, min
  * @param items The elements to choose from.
  * @param weights A legend of the elements' relative weights.
  */
-export function weightedRandom<T>(items: readonly T[], weights: number[]): T {
-    let i: number;
-    for (i = 1; i < weights.length; i++) weights[i] += weights[i - 1];
-
-    const random = Math.random() * weights[weights.length - 1];
-    for (i = 0; i < weights.length; i++) { if (weights[i] > random) break; }
-    return items[i];
+export function weightedRandom<T>(items: readonly T[], weights: readonly number[]): T {
+    let pick = Math.random() * weights.reduce((acc, cur) => acc + cur, 0);
+    let i = 0;
+    while ((pick -= weights[i++]) > 0);
+    return items[--i];
 }
 
 export function pickRandomInArray<T>(items: readonly T[]): T {

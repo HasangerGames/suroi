@@ -10,22 +10,23 @@ import { Loots } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
-import { JoinPacket } from "../../../common/src/packets/joinPacket";
+import { JoinedPacket, type JoinedPacketData } from "../../../common/src/packets/joinedPacket";
+import { JoinPacket, type JoinPacketCreation } from "../../../common/src/packets/joinPacket";
 import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { type Packet } from "../../../common/src/packets/packet";
+import { type InputPacket, type OutputPacket } from "../../../common/src/packets/packet";
 import { PacketStream } from "../../../common/src/packets/packetStream";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { getTranslatedString, initTranslation } from "../translations";
 import { InputManager } from "./managers/inputManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -46,7 +47,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } from "./ui";
+import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, autoPickup } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -150,6 +151,7 @@ export class Game {
         Game._instantiated = true;
 
         this.console.readFromLocalStorage();
+        initTranslation(this);
         this.inputManager.setupInputs();
 
         const initPixi = async(): Promise<void> => {
@@ -270,32 +272,29 @@ export class Game {
                 ui.joystickContainer.show();
             }
 
-            this.sendPacket(new PingPacket());
+            this.sendPacket(PingPacket.create());
             this.lastPingDate = Date.now();
 
-            const joinPacket = new JoinPacket();
-            joinPacket.isMobile = this.inputManager.isMobile;
-            joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
-
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
-            joinPacket.skin = Loots.fromStringSafe(
-                this.console.getBuiltInCVar("cv_loadout_skin")
-            ) ?? Loots.fromString(
-                typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
-                    ? skin.value
-                    : skin
-            );
+            const joinPacket: JoinPacketCreation = {
+                isMobile: this.inputManager.isMobile,
+                name: this.console.getBuiltInCVar("cv_player_name"),
+                skin: Loots.fromStringSafe(
+                    this.console.getBuiltInCVar("cv_loadout_skin")
+                ) ?? Loots.fromString(
+                    typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
+                        ? skin.value
+                        : skin
+                ),
+                badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
+                emotes: emoteSlots.map(
+                    slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+                )
+            };
 
-            joinPacket.badge = Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge"));
-
-            joinPacket.emotes = emoteSlots.map(
-                slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
-            );
-
-            this.sendPacket(joinPacket);
+            this.sendPacket(JoinPacket.create(joinPacket));
 
             this.camera.addObject(this.gasRender.graphics);
-
             this.map.indicator.setFrame("player_indicator");
         };
 
@@ -317,7 +316,7 @@ export class Game {
 
         this._socket.onerror = (): void => {
             this.error = true;
-            ui.splashMsgText.html("Error joining game.");
+            ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
             resetPlayButtons();
         };
@@ -345,53 +344,54 @@ export class Game {
         };
     }
 
-    onPacket(packet: Packet): void {
+    onPacket(packet: OutputPacket): void {
         switch (true) {
             case packet instanceof JoinedPacket:
-                this.startGame(packet);
+                this.startGame(packet.output);
                 break;
             case packet instanceof MapPacket:
-                this.map.updateFromPacket(packet);
+                this.map.updateFromPacket(packet.output);
                 break;
             case packet instanceof UpdatePacket:
-                this.processUpdate(packet);
+                this.processUpdate(packet.output);
                 break;
             case packet instanceof GameOverPacket:
-                this.uiManager.showGameOverScreen(packet);
+                this.uiManager.showGameOverScreen(packet.output);
                 break;
             case packet instanceof KillFeedPacket:
-                this.uiManager.processKillFeedPacket(packet);
+                this.uiManager.processKillFeedPacket(packet.output);
                 break;
             case packet instanceof PingPacket: {
-                const ping = Date.now() - this.lastPingDate;
-                this.uiManager.debugReadouts.ping.text(`${ping} ms`);
+                this.uiManager.debugReadouts.ping.text(`${Date.now() - this.lastPingDate} ms`);
                 setTimeout((): void => {
-                    this.sendPacket(new PingPacket());
+                    this.sendPacket(PingPacket.create());
                     this.lastPingDate = Date.now();
                 }, 5000);
                 break;
             }
             case packet instanceof ReportPacket: {
                 const ui = this.uiManager.ui;
-                ui.reportingName.text(packet.playerName);
-                ui.reportingId.text(packet.reportID);
+                const { output } = packet;
+                ui.reportingName.text(output.playerName);
+                ui.reportingId.text(output.reportID);
                 ui.reportingModal.fadeIn(250);
                 break;
             }
             case packet instanceof PickupPacket: {
                 let soundID: string;
-                switch (packet.item.itemType) {
+                const { output } = packet;
+                switch (output.item.itemType) {
                     case ItemType.Ammo:
                         soundID = "ammo_pickup";
                         break;
                     case ItemType.Healing:
-                        soundID = `${packet.item.idString}_pickup`;
+                        soundID = `${output.item.idString}_pickup`;
                         break;
                     case ItemType.Scope:
                         soundID = "scope_pickup";
                         break;
                     case ItemType.Armor:
-                        if (packet.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
+                        if (output.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
                         else soundID = "vest_pickup";
                         break;
                     case ItemType.Backpack:
@@ -409,12 +409,12 @@ export class Game {
                 break;
             }
             case packet instanceof DisconnectPacket:
-                this.disconnectReason = packet.reason;
+                this.disconnectReason = packet.output.reason;
                 break;
         }
     }
 
-    startGame(packet: JoinedPacket): void {
+    startGame(packet: JoinedPacketData): void {
         // Sound which notifies the player that the
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
@@ -424,13 +424,14 @@ export class Game {
 
         const ui = this.uiManager.ui;
 
-        this.teamID = packet.teamID;
-        this.teamMode = packet.maxTeamSize > TeamSize.Solo;
+        if (this.teamMode = packet.maxTeamSize != TeamSize.Solo) {
+            this.teamID = packet.teamID;
+        }
 
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, resetPlayButtons);
 
-        ui.killLeaderLeader.html("Waiting for leader");
+        ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
@@ -453,7 +454,7 @@ export class Game {
                 ui.gameMenu.hide();
                 ui.gameOverOverlay.hide();
                 ui.canvas.removeClass("active");
-                ui.killLeaderLeader.text("Waiting for leader");
+                ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
                 ui.killLeaderCount.text("0");
 
                 this.gameStarted = false;
@@ -489,14 +490,14 @@ export class Game {
     }
 
     private readonly _packetStream = new PacketStream(new ArrayBuffer(1024));
-    sendPacket(packet: Packet): void {
+    sendPacket(packet: InputPacket): void {
         this._packetStream.stream.index = 0;
         this._packetStream.serializeClientPacket(packet);
         this.sendData(this._packetStream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
-        if (this._socket && this._socket.readyState === this._socket.OPEN) {
+        if (this._socket?.readyState === WebSocket.OPEN) {
             try {
                 this._socket.send(buffer);
             } catch (e) {
@@ -576,28 +577,28 @@ export class Game {
      */
     get serverDt(): number { return this._serverDt; }
 
-    processUpdate(updateData: UpdatePacket): void {
+    processUpdate(updateData: UpdatePacketDataOut): void {
         const now = Date.now();
         this._serverDt = now - this._lastUpdateTime;
         this._lastUpdateTime = now;
 
-        for (const newPlayer of updateData.newPlayers) {
-            this.playerNames.set(newPlayer.id, {
-                name: newPlayer.name,
-                hasColor: newPlayer.hasColor,
-                nameColor: new Color(newPlayer.nameColor),
-                badge: newPlayer.loadout.badge
+        for (const { id, name, hasColor, nameColor, badge } of updateData.newPlayers ?? []) {
+            this.playerNames.set(id, {
+                name: name,
+                hasColor: hasColor,
+                nameColor: new Color(nameColor),
+                badge: badge
             });
         }
 
         const playerData = updateData.playerData;
         if (playerData) this.uiManager.updateUI(playerData);
 
-        for (const deletedPlayerId of updateData.deletedPlayers) {
+        for (const deletedPlayerId of updateData.deletedPlayers ?? []) {
             this.playerNames.delete(deletedPlayerId);
         }
 
-        for (const { id, type, data } of updateData.fullDirtyObjects) {
+        for (const { id, type, data } of updateData.fullDirtyObjects ?? []) {
             const object: GameObject | undefined = this.objects.get(id);
 
             if (object === undefined || object.destroyed) {
@@ -613,7 +614,7 @@ export class Game {
             }
         }
 
-        for (const { id, data } of updateData.partialDirtyObjects) {
+        for (const { id, data } of updateData.partialDirtyObjects ?? []) {
             const object = this.objects.get(id);
             if (object === undefined) {
                 console.warn(`Trying to partially update non-existant object with ID ${id}`);
@@ -623,7 +624,7 @@ export class Game {
             (object as GameObject).updateFromData(data, false);
         }
 
-        for (const id of updateData.deletedObjects) {
+        for (const id of updateData.deletedObjects ?? []) {
             const object = this.objects.get(id);
             if (object === undefined) {
                 console.warn(`Trying to delete unknown object with ID ${id}`);
@@ -634,15 +635,15 @@ export class Game {
             this.objects.delete(object);
         }
 
-        for (const bullet of updateData.deserializedBullets) {
+        for (const bullet of updateData.deserializedBullets ?? []) {
             this.bullets.add(new Bullet(this, bullet));
         }
 
-        for (const explosionData of updateData.explosions) {
+        for (const explosionData of updateData.explosions ?? []) {
             explosion(this, explosionData.definition, explosionData.position);
         }
 
-        for (const emote of updateData.emotes) {
+        for (const emote of updateData.emotes ?? []) {
             if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
@@ -661,12 +662,12 @@ export class Game {
             ui.btnSpectate.toggle(updateData.aliveCount > 1);
         }
 
-        for (const plane of updateData.planes) {
+        for (const plane of updateData.planes ?? []) {
             this.planes.add(new Plane(this, plane.position, plane.direction));
         }
 
-        for (const ping of updateData.mapPings) {
-            this.map.addMapPing(ping.position, ping.definition, ping.playerId);
+        for (const ping of updateData.mapPings ?? []) {
+            this.map.addMapPing(ping);
         }
 
         this.tick();
@@ -812,24 +813,26 @@ export class Game {
                             case object instanceof Obstacle: {
                                 switch (object.definition.role) {
                                     case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0 ? "Open Door" : "Close Door";
+                                        text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
-                                        text = `${object.definition.interactText} ${object.definition.name}`;
+                                        text = getTranslatedString(`interact_${object.definition.idString}`);
                                         break;
                                 }
                                 break;
                             }
                             case object instanceof Loot: {
-                                text = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                text = `${object.definition.idString.startsWith("dual_")
+                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length)) })
+                                    : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object instanceof Player: {
-                                text = `Revive ${this.uiManager.getRawPlayerName(object.id)}`;
+                                text = getTranslatedString("action_revive", { player: this.uiManager.getRawPlayerName(object.id) });
                                 break;
                             }
                             case isAction: {
-                                text = "Cancel";
+                                text = getTranslatedString("action_cancel");
                                 break;
                             }
                         }
@@ -872,6 +875,7 @@ export class Game {
                     if (
                         this.console.getBuiltInCVar("cv_autopickup")
                         && object instanceof Loot
+                        && autoPickup
                         && (
                             (
                                 (

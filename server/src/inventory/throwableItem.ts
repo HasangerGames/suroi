@@ -1,8 +1,9 @@
-import { AnimationType } from "../../../common/src/constants";
-import { type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { Vec } from "../../../common/src/utils/vector";
+import { AnimationType } from "@common/constants";
+import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { type Timeout } from "@common/utils/misc";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { Vec } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";

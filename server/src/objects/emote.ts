@@ -1,5 +1,6 @@
-import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { type ReifiableDef } from "@common/utils/objectDefinitions";
+
 import { type Player } from "./player";
 
 export class Emote {

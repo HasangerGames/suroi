@@ -5,6 +5,7 @@ import { randomFloat, randomPointInsideCircle } from "../../../../common/src/uti
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector): void {
@@ -54,6 +55,15 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
     }
 
     game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+    if (game.console.getBuiltInCVar("cv_cooler_graphics")) {
+        game.camera.shockwave(
+            definition.cameraShake.duration * SHOCKWAVE_EXPLOSION_MULTIPLIERS.time,
+            pixiPos,
+            definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
+            definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
+            definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed
+        );
+    }
 
     if (definition.sound !== undefined) {
         game.soundManager.play(

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="1303.5012"
-   height="1237.4995"
-   viewBox="0 0 344.88469 327.42175"
+   width="651.75049"
+   height="618.74963"
+   viewBox="0 0 172.44231 163.71084"
    version="1.1"
    id="svg8"
-   sodipodi:docname="house_ceiling_small.svg"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   sodipodi:docname="red_house_ceiling.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,11 +24,11 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.49821948"
-     inkscape:cx="89.318065"
-     inkscape:cy="328.16862"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
+     inkscape:zoom="0.24910974"
+     inkscape:cx="-36.128656"
+     inkscape:cy="895.1878"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -148,7 +148,7 @@
   </metadata>
   <g
      id="g24072"
-     transform="translate(-6610.5822,-5458.7684)">
+     transform="matrix(0.4999999,0,0,0.4999999,-3305.2905,-2729.3836)">
     <path
        id="path15463-6-80-4"
        style="fill:#9e7437;stroke:#3f2e16;stroke-width:1.66017;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"

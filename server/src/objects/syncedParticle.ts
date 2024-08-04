@@ -1,11 +1,13 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { type Animated, type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "../../../common/src/definitions/syncedParticles";
-import { type Variation } from "../../../common/src/typings";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, EaseFunctions, Numeric, type EasingFunction } from "../../../common/src/utils/math";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { random, randomFloat } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { type Animated, type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "@common/definitions/syncedParticles";
+import { type Variation } from "@common/typings";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { Angle, EaseFunctions, Numeric, type EasingFunction } from "@common/utils/math";
+import { type SDeepMutable } from "@common/utils/misc";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { random, randomFloat } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
@@ -227,7 +229,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
     }
 
     override get data(): FullData<ObjectCategory.SyncedParticle> {
-        const data: FullData<ObjectCategory.SyncedParticle> = {
+        const data: SDeepMutable<FullData<ObjectCategory.SyncedParticle>> = {
             position: this.position,
             rotation: this.rotation,
             full: {

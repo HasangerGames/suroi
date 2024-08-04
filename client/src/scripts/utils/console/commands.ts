@@ -187,7 +187,7 @@ export function setUpCommands(game: Game): void {
 
     const createMovementCommand = (
         name: keyof InputManager["movement"],
-        spectateAction?: SpectateActions
+        spectateAction?: Exclude<SpectateActions, SpectateActions.SpectateSpecific>
     ): void => {
         Command.createInvertiblePair(
             name,
@@ -195,9 +195,11 @@ export function setUpCommands(game: Game): void {
                 ? function() {
                     this.inputManager.movement[name] = true;
                     if (this.spectating) {
-                        const packet = new SpectatePacket();
-                        packet.spectateAction = spectateAction;
-                        this.sendPacket(packet);
+                        this.sendPacket(
+                            SpectatePacket.create({
+                                spectateAction
+                            })
+                        );
                     }
                 }
                 : function() {

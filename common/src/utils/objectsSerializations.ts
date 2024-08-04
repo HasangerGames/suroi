@@ -10,6 +10,7 @@ import { Skins, type SkinDefinition } from "../definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
+import { type Mutable } from "./misc";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
@@ -33,123 +34,123 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     //
     // Player Data
     //
-    [ObjectCategory.Player]: {
-        position: Vector
-        rotation: number
-        animation?: AnimationType
-        action?: ({
-            type: Exclude<PlayerActions, PlayerActions.UseItem>
-            item?: undefined
+    readonly [ObjectCategory.Player]: {
+        readonly position: Vector
+        readonly rotation: number
+        readonly animation?: AnimationType
+        readonly action?: ({
+            readonly type: Exclude<PlayerActions, PlayerActions.UseItem>
+            readonly item?: undefined
         } | {
-            type: PlayerActions.UseItem
-            item: HealingItemDefinition
+            readonly type: PlayerActions.UseItem
+            readonly item: HealingItemDefinition
         })
-        full?: {
-            dead: boolean
-            downed: boolean
-            beingRevived: boolean
-            teamID: number
-            invulnerable: boolean
-            activeItem: WeaponDefinition
-            skin: SkinDefinition
-            helmet?: ArmorDefinition
-            vest?: ArmorDefinition
-            backpack: BackpackDefinition
+        readonly full?: {
+            readonly dead: boolean
+            readonly downed: boolean
+            readonly beingRevived: boolean
+            readonly teamID: number
+            readonly invulnerable: boolean
+            readonly activeItem: WeaponDefinition
+            readonly skin: SkinDefinition
+            readonly helmet?: ArmorDefinition
+            readonly vest?: ArmorDefinition
+            readonly backpack: BackpackDefinition
         }
     }
     //
     // Obstacle Data
     //
-    [ObjectCategory.Obstacle]: {
-        scale: number
-        dead: boolean
-        full?: {
-            definition: ObstacleDefinition
-            position: Vector
-            rotation: {
-                orientation: Orientation
-                rotation: number
+    readonly [ObjectCategory.Obstacle]: {
+        readonly scale: number
+        readonly dead: boolean
+        readonly full?: {
+            readonly definition: ObstacleDefinition
+            readonly position: Vector
+            readonly rotation: {
+                readonly orientation: Orientation
+                readonly rotation: number
             }
-            variation?: Variation
-            activated?: boolean
-            door?: {
-                offset: number
+            readonly variation?: Variation
+            readonly activated?: boolean
+            readonly door?: {
+                readonly offset: number
             }
         }
     }
     //
     // Loot Data
     //
-    [ObjectCategory.Loot]: {
-        position: Vector
-        full?: {
-            definition: LootDefinition
-            count: number
-            isNew: boolean
+    readonly [ObjectCategory.Loot]: {
+        readonly position: Vector
+        readonly full?: {
+            readonly definition: LootDefinition
+            readonly count: number
+            readonly isNew: boolean
         }
     }
     //
     // DeathMarker Data
     //
-    [ObjectCategory.DeathMarker]: {
-        position: Vector
-        playerID: number
-        isNew: boolean
+    readonly [ObjectCategory.DeathMarker]: {
+        readonly position: Vector
+        readonly playerID: number
+        readonly isNew: boolean
     }
     //
     // Building Data
     //
-    [ObjectCategory.Building]: {
-        dead: boolean
-        puzzle: undefined | {
-            solved: boolean
-            errorSeq: boolean
+    readonly [ObjectCategory.Building]: {
+        readonly dead: boolean
+        readonly puzzle: undefined | {
+            readonly solved: boolean
+            readonly errorSeq: boolean
         }
-        full?: {
-            definition: BuildingDefinition
-            position: Vector
-            rotation: Orientation
+        readonly full?: {
+            readonly definition: BuildingDefinition
+            readonly position: Vector
+            readonly rotation: Orientation
         }
     }
     //
     // Decal Data
     //
-    [ObjectCategory.Decal]: {
-        position: Vector
-        rotation: number
-        definition: DecalDefinition
+    readonly [ObjectCategory.Decal]: {
+        readonly position: Vector
+        readonly rotation: number
+        readonly definition: DecalDefinition
     }
     //
     // Parachute data
     //
-    [ObjectCategory.Parachute]: {
-        height: number
-        full?: {
-            position: Vector
+    readonly [ObjectCategory.Parachute]: {
+        readonly height: number
+        readonly full?: {
+            readonly position: Vector
         }
     }
     //
     // Throwable data
     //
-    [ObjectCategory.ThrowableProjectile]: {
-        position: Vector
-        rotation: number
-        airborne: boolean
-        full?: {
-            definition: ThrowableDefinition
+    readonly [ObjectCategory.ThrowableProjectile]: {
+        readonly position: Vector
+        readonly rotation: number
+        readonly airborne: boolean
+        readonly full?: {
+            readonly definition: ThrowableDefinition
         }
     }
     //
     // Synced particle data
     //
-    [ObjectCategory.SyncedParticle]: {
-        position: Vector
-        rotation: number
-        scale?: number
-        alpha?: number
-        full?: {
-            definition: SyncedParticleDefinition
-            variant?: Variation
+    readonly [ObjectCategory.SyncedParticle]: {
+        readonly position: Vector
+        readonly rotation: number
+        readonly scale?: number
+        readonly alpha?: number
+        readonly full?: {
+            readonly definition: SyncedParticleDefinition
+            readonly variant?: Variation
         }
     }
 }
@@ -220,14 +221,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
         },
         deserializePartial(stream) {
-            const data: ObjectsNetData[ObjectCategory.Player] = {
+            const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
                 animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
 
             if (stream.readBoolean()) { // action dirty
-                const action: NonNullable<ObjectsNetData[ObjectCategory.Player]["action"]> = {
+                const action: Mutable<NonNullable<ObjectsNetData[ObjectCategory.Player]["action"]>> = {
                     type: stream.readBits(PLAYER_ACTIONS_BITS),
                     item: undefined as HealingItemDefinition | undefined
                 };
@@ -242,7 +243,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return data;
         },
         deserializeFull(stream) {
-            const data: ObjectsNetData[ObjectCategory.Player]["full"] = {
+            const data: Mutable<ObjectsNetData[ObjectCategory.Player]["full"]> = {
                 dead: stream.readBoolean(),
                 downed: stream.readBoolean(),
                 beingRevived: stream.readBoolean(),
@@ -297,7 +298,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             const definition = Obstacles.readFromStream(stream);
 
-            const data: ObjectsNetData[ObjectCategory.Obstacle]["full"] = {
+            const data: Mutable<ObjectsNetData[ObjectCategory.Obstacle]["full"]> = {
                 definition,
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
@@ -490,7 +491,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
         },
         deserializePartial(stream) {
-            const data: ObjectsNetData[ObjectCategory.SyncedParticle] = {
+            const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(8)
             };

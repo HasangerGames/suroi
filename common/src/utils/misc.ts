@@ -1,3 +1,5 @@
+import type { ObjectDefinition } from "./objectDefinitions";
+
 declare global {
     // taken from https://github.com/microsoft/TypeScript/issues/45602#issuecomment-934427206
     interface Promise<T = void> {
@@ -18,7 +20,11 @@ export function isObject(item: unknown): item is Record<string, unknown> {
 
 // presumably because of variance, using unknown[] causes issues
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Fn = (...args: any[]) => any;
+type Fn = (...args: any[]) => unknown;
+
+// see above
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Constructor = new (...args: any[]) => unknown;
 
 export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;
@@ -36,9 +42,31 @@ export type DeepReadonly<T> = (T extends Fn ? T : unknown) & {
     readonly [K in keyof T]: DeepReadonly<T[K]>;
 };
 
-export type Mutable<T> = (T extends Fn ? T : unknown) & {
+export type Mutable<T> = (T extends ReadonlyArray<infer I> ? I[] : unknown) & (T extends Fn ? T : unknown) & {
     -readonly [K in keyof T]: T[K];
 };
+
+export type DeepMutable<T> = (T extends ReadonlyArray<infer I> ? Array<DeepMutable<I>> : unknown) & (T extends Fn ? T : unknown) & {
+    -readonly [K in keyof T]: DeepMutable<T[K]>;
+};
+
+/**
+ * Same as {@link Mutable} but descendants of {@link ObjectDefinition} remain untouched
+ */
+export type SMutable<T> = T extends ObjectDefinition
+    ? T
+    : (T extends ReadonlyArray<infer I> ? I[] : unknown) & (T extends Fn ? T : unknown) & {
+        -readonly [K in keyof T]: T[K];
+    };
+
+/**
+ * Same as {@link DeepMutable} but descendants of {@link ObjectDefinition} remain untouched
+ */
+export type SDeepMutable<T> = T extends ObjectDefinition
+    ? T
+    : (T extends ReadonlyArray<infer I> ? Array<SDeepMutable<I>> : unknown) & (T extends Fn ? T : unknown) & {
+        -readonly [K in keyof T]: SDeepMutable<T[K]>;
+    };
 
 /**
  * Represents a successful operation

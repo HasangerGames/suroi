@@ -1,12 +1,13 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { type Orientation, type Variation } from "../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
-import { Angle, calculateDoorHitboxes } from "../../../common/src/utils/math";
-import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { random } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { type Orientation, type Variation } from "@common/typings";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { Angle, calculateDoorHitboxes } from "@common/utils/math";
+import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { random } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
@@ -115,7 +116,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 this.game.addLoot(
                     item.idString,
                     this.position,
-                    { count: item.count, jitterSpawn: false }
+                    { count: item.count, pushVel: 0, jitterSpawn: false }
                 );
             }
         }
@@ -150,7 +151,10 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         if (
             definition.impenetrable
             && !(
-                (weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined)
+                (
+                    weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined
+                    && weaponDef?.canPierceMaterials?.includes(this.definition.material)
+                )
                 || source instanceof Obstacle
             )
         ) {

@@ -1,16 +1,18 @@
-import { ObjectCategory } from "../../common/src/constants";
-import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { Decals } from "../../common/src/definitions/decals";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { MapPacket } from "../../common/src/packets/mapPacket";
-import { PacketStream } from "../../common/src/packets/packetStream";
-import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { Angle, Collision, Geometry, Numeric, τ } from "../../common/src/utils/math";
-import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
-import { River, Terrain } from "../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Decals } from "@common/definitions/decals";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
+import { PacketStream } from "@common/packets/packetStream";
+import { type Orientation, type Variation } from "@common/typings";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
+import { type Mutable, type SMutable } from "@common/utils/misc";
+import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
+import { River, Terrain } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
@@ -42,7 +44,7 @@ export class GameMap {
 
     readonly terrain: Terrain;
 
-    readonly packet: MapPacket;
+    private readonly _packet: Omit<MapPacketData, "objects"> & { readonly objects: Mutable<MapPacketData["objects"]> };
 
     /**
     * A cached map packet buffer
@@ -52,11 +54,44 @@ export class GameMap {
 
     private readonly _beachPadding;
 
+    static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
+        switch (mode) {
+            case RotationMode.Full:
+                // @ts-expect-error not sure why ts thinks the return type should be 0
+                return randomRotation();
+            case RotationMode.Limited:
+                // @ts-expect-error see above
+                return random(0, 3);
+            case RotationMode.Binary:
+                // @ts-expect-error see above
+                return random(0, 1);
+            case RotationMode.None:
+            default:
+                return 0;
+        }
+    }
+
+    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]>): Orientation {
+        switch (mode) {
+            case RotationMode.Binary:
+                return pickRandomInArray([0, 2]);
+            default:
+                return GameMap.getRandomRotation(mode);
+        }
+    }
+
     constructor(game: Game, mapName: keyof typeof Maps) {
         this.game = game;
 
         const mapDef = Maps[mapName];
-        const packet = this.packet = new MapPacket();
+
+        // @ts-expect-error I don't know why this rule exists
+        type PacketType = this["_packet"];
+
+        const packet = {
+            objects: []
+        } as SMutable<PacketType>;
+        this._packet = packet;
 
         this.seed = packet.seed = random(0, 2 ** 31);
 
@@ -116,7 +151,7 @@ export class GameMap {
                     : randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth)
             ).sort((a, b) => b - a);
 
-            // extracted form loop
+            // extracted from loop
             const halfWidth = this.width / 2;
             const halfHeight = this.height / 2;
             const riverRect = new RectangleHitbox(
@@ -147,7 +182,7 @@ export class GameMap {
 
                 const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
 
-                this.generateRiver(
+                this._generateRiver(
                     start,
                     startAngle,
                     widths[rivers.length],
@@ -158,8 +193,7 @@ export class GameMap {
             }
         }
 
-        this.packet.rivers.length = 0;
-        this.packet.rivers.push(...rivers);
+        packet.rivers = rivers;
 
         this.terrain = new Terrain(
             this.width,
@@ -170,42 +204,39 @@ export class GameMap {
             rivers
         );
 
-        Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this.generateBuildings(building, count));
+        Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
 
         for (const clump of mapDef.obstacleClumps ?? []) {
-            this.generateObstacleClumps(clump);
+            this._generateObstacleClumps(clump);
         };
 
-        Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this.generateObstacles(obstacle, count));
+        Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle, count));
 
-        Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this.generateLoots(loot, count));
+        Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count));
 
         if (mapDef.genCallback) mapDef.genCallback(this);
 
         if (mapDef.places) {
-            for (const place of mapDef.places) {
-                const position = Vec.create(
-                    this.width * (place.position.x + randomFloat(-0.04, 0.04)),
-                    this.height * (place.position.y + randomFloat(-0.04, 0.04))
+            packet.places = mapDef.places.map(({ name, position }) => {
+                const absPosition = Vec.create(
+                    this.width * (position.x + randomFloat(-0.04, 0.04)),
+                    this.height * (position.y + randomFloat(-0.04, 0.04))
                 );
 
-                packet.places.push({
-                    name: place.name,
-                    position
-                });
-            }
+                return { name, position: absPosition };
+            });
         }
 
         const stream = new PacketStream(new ArrayBuffer(1 << 16));
-        stream.serializeServerPacket(packet);
+        stream.serializeServerPacket(MapPacket.create(packet));
         this.buffer = stream.getBuffer();
     }
 
-    addBuildingToQuad(quad: 1 | 2 | 3 | 4, idString: string): void {
+    private _addBuildingToQuad(quad: 1 | 2 | 3 | 4, idString: ReferenceTo<BuildingDefinition>): void {
         this.quadBuildings[quad].push(idString);
     }
 
-    generateRiver(
+    private _generateRiver(
         startPos: Vector,
         startAngle: number,
         width: number,
@@ -278,7 +309,7 @@ export class GameMap {
         }
     }
 
-    generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
+    private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
 
         if (!definition.bridgeSpawnOptions) {
@@ -318,7 +349,7 @@ export class GameMap {
                     }
 
                     this.generateBuilding(definition, position, orientation);
-                    this.addBuildingToQuad(quad, idString);
+                    this._addBuildingToQuad(quad, idString);
                     validPositionFound = true;
                 }
 
@@ -366,9 +397,38 @@ export class GameMap {
                         Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
                     ].some(point => this.terrain.getFloor(point) === "water")
                 ) return;
-                // checks if the distance between this position and the new bridge's position is less than bridgeSpawnOptions.minRiverWidth HOPEFULLY fixing the spawn problems
-                if (this.occupiedBridgePositions.some(pos => Math.sqrt((pos.x - position.x) ** 2 + (pos.y - position.y) ** 2) < bridgeSpawnOptions.minRiverWidth)) {
-                    return;
+
+                // checks if the distance between this position and the new bridge's position is less than
+                // bridgeSpawnOptions.minRiverWidth HOPEFULLY fixes the spawn problems
+                if (
+                    this.occupiedBridgePositions.some(
+                        pos => (pos.x - position.x) ** 2 + (pos.y - position.y) ** 2 < bridgeSpawnOptions.minRiverWidth ** 2
+                    )
+                ) return;
+
+                const spawnHitbox = definition.spawnHitbox.toRectangle();
+
+                // if the bridge is sideways it rotates the hitbox accordingly
+                if (bestOrientation % 2) {
+                    const { min, max } = spawnHitbox;
+
+                    [
+                        min.y, min.x,
+                        max.y, max.x
+                    ] = [
+                        min.x, min.y,
+                        max.x, max.y
+                    ];
+                }
+
+                const hitbox = spawnHitbox.transform(position);
+
+                // checks if the bridge hitbox collides with another object and if so does not spawn it
+                for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                    const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
+
+                    if (!objectHitbox) continue;
+                    if (hitbox.collidesWith(objectHitbox)) return;
                 }
 
                 this.occupiedBridgePositions.push(position);
@@ -461,13 +521,13 @@ export class GameMap {
             this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.idString), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
         }
 
-        if (!definition.hideOnMap) this.packet.objects.push(building);
+        if (!definition.hideOnMap) this._packet.objects.push(building);
         this.game.grid.addObject(building);
         this.game.pluginManager.emit(Events.Building_Generated, building);
         return building;
     }
 
-    generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
+    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
         definition = Obstacles.reify(definition);
 
         for (let i = 0; i < count; i++) {
@@ -529,14 +589,14 @@ export class GameMap {
             puzzlePiece
         );
 
-        if (!definition.hideOnMap && !definition.invisible) this.packet.objects.push(obstacle);
+        if (!definition.hideOnMap && !definition.invisible) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
         return obstacle;
     }
 
-    generateObstacleClumps(clumpDef: ObstacleClump): void {
+    private _generateObstacleClumps(clumpDef: ObstacleClump): void {
         const clumpAmount = clumpDef.clumpAmount;
         const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
 
@@ -571,7 +631,7 @@ export class GameMap {
         }
     }
 
-    generateLoots(table: keyof typeof LootTables, count: number): void {
+    private _generateLoots(table: keyof typeof LootTables, count: number): void {
         if (!(table in LootTables)) {
             throw new Error(`Unknown loot table: '${table}'`);
         }
@@ -794,34 +854,6 @@ export class GameMap {
             }
         }
         return attempts < maxAttempts ? position : undefined;
-    }
-
-    static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
-        switch (mode) {
-            case RotationMode.Full:
-                // @ts-expect-error not sure why ts thinks the return type should be 0
-                return randomRotation();
-            case RotationMode.Limited:
-                // @ts-expect-error see above
-                return random(0, 3);
-            case RotationMode.Binary:
-                // @ts-expect-error see above
-                return random(0, 1);
-            case RotationMode.None:
-            default:
-                return 0;
-        }
-    }
-
-    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]>): Orientation {
-        switch (mode) {
-            case RotationMode.Binary:
-                return pickRandomInArray([0, 2]);
-            case RotationMode.Limited:
-            case RotationMode.None:
-            default:
-                return GameMap.getRandomRotation(mode);
-        }
     }
 }
 

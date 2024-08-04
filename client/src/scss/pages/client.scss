@@ -50,3 +50,8 @@ body {
     display: inline-block;
   }
 }
+
+.modal-locked { // temporary
+  opacity: .25;
+  pointer-events: none;
+}

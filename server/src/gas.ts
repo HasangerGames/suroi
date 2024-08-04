@@ -1,9 +1,10 @@
-import { GasState } from "../../common/src/constants";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { Geometry, Numeric } from "../../common/src/utils/math";
-import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
-import { randomBoolean, randomPointInsideCircle } from "../../common/src/utils/random";
-import { Vec, type Vector } from "../../common/src/utils/vector";
+import { GasState } from "@common/constants";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { Geometry, Numeric } from "@common/utils/math";
+import { MapObjectSpawnMode } from "@common/utils/objectDefinitions";
+import { randomBoolean, randomPointInsideCircle } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";

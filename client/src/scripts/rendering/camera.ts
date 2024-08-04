@@ -1,10 +1,12 @@
+import { ShockwaveFilter } from "pixi-filters";
 import { Container, type Application } from "pixi.js";
 import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
 import { EaseFunctions } from "../../../../common/src/utils/math";
-import { randomFloat } from "../../../../common/src/utils/random";
+import { randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 
 export class Camera {
@@ -27,6 +29,8 @@ export class Camera {
     shakeDuration!: number;
     shakeIntensity!: number;
 
+    readonly shockwaves = new Set<Shockwave>();
+
     width = 1;
     height = 1;
 
@@ -40,7 +44,8 @@ export class Camera {
         this.pixi = game.pixi;
         this.container = new Container({
             isRenderGroup: true,
-            sortableChildren: true
+            sortableChildren: true,
+            filters: []
         });
     }
 
@@ -76,9 +81,12 @@ export class Camera {
         let position = this.position;
 
         if (this.shaking) {
-            const intensity = this.shakeIntensity;
-            position = Vec.addComponent(position, randomFloat(-intensity, intensity), randomFloat(-intensity, intensity));
+            position = Vec.add(position, randomPointInsideCircle(Vec.create(0, 0), this.shakeIntensity));
             if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
+        }
+
+        for (const shockwave of this.shockwaves) {
+            shockwave.update();
         }
 
         const cameraPos = Vec.add(
@@ -97,7 +105,75 @@ export class Camera {
         this.shakeIntensity = intensity;
     }
 
+    shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number): void {
+        if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
+        this.shockwaves.add(new Shockwave(this.game, duration, position, amplitude, wavelength, speed));
+    }
+
     addObject(...objects: Container[]): void {
         this.container.addChild(...objects);
+    }
+}
+
+export class Shockwave {
+    lifeStart: number;
+    lifeEnd: number;
+    filter: ShockwaveFilter;
+    anchorContainer: SuroiSprite;
+
+    constructor(
+        readonly game: Game,
+        lifetime: number,
+        position: Vector,
+        public amplitude: number,
+        public wavelength: number,
+        public speed: number
+    ) {
+        this.lifeStart = Date.now();
+        this.lifeEnd = this.lifeStart + lifetime;
+        this.anchorContainer = new SuroiSprite();
+        this.wavelength = wavelength;
+
+        this.game.camera.addObject(this.anchorContainer);
+        this.anchorContainer.setVPos(position);
+
+        this.filter = new ShockwaveFilter();
+
+        this.update();
+
+        this.game.camera.container.filters = [this.game.camera.container.filters].flat().concat(this.filter);
+    }
+
+    update(): void {
+        const now = Date.now();
+        if (now > this.lifeEnd) {
+            this.destroy();
+            return;
+        }
+
+        const scale = this.scale();
+
+        const position = this.anchorContainer.getGlobalPosition();
+
+        this.filter.centerX = position.x;
+        this.filter.centerY = position.y;
+
+        this.filter.wavelength = this.wavelength * scale;
+
+        this.filter.speed = this.speed * scale;
+
+        this.filter.time = now - this.lifeStart;
+
+        this.filter.amplitude = this.amplitude * EaseFunctions.linear(1 - ((now - this.lifeStart) / (this.lifeEnd - this.lifeStart)));
+    }
+
+    scale(): number {
+        return PIXI_SCALE / this.game.camera.zoom;
+    }
+
+    destroy(): void {
+        this.game.camera.container.filters = [this.game.camera.container.filters].flat().filter(filter => this.filter !== filter);
+        this.game.camera.shockwaves.delete(this);
+        this.anchorContainer.destroy();
     }
 }

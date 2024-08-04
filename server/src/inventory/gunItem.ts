@@ -1,11 +1,12 @@
-import { AnimationType, FireMode } from "../../../common/src/constants";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Geometry } from "../../../common/src/utils/math";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
-import { Vec } from "../../../common/src/utils/vector";
+import { AnimationType, FireMode } from "@common/constants";
+import { type GunDefinition } from "@common/definitions/guns";
+import { RectangleHitbox } from "@common/utils/hitbox";
+import { Angle, Geometry } from "@common/utils/math";
+import { type Timeout } from "@common/utils/misc";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
+import { Vec } from "@common/utils/vector";
+
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";

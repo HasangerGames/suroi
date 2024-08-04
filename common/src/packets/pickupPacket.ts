@@ -1,15 +1,18 @@
 import { Loots, type LootDefinition } from "../definitions/loots";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
-import { type Packet } from "./packet";
+import { createPacket } from "./packet";
 
-export class PickupPacket implements Packet {
-    item!: LootDefinition;
+export type PickupPacketData = {
+    readonly item: LootDefinition
+};
 
-    serialize(stream: SuroiBitStream): void {
-        Loots.writeToStream(stream, this.item);
+export const PickupPacket = createPacket("PickupPacket")<PickupPacketData>({
+    serialize(stream, data) {
+        Loots.writeToStream(stream, data.item);
+    },
+
+    deserialize(stream) {
+        return {
+            item: Loots.readFromStream(stream)
+        };
     }
-
-    deserialize(stream: SuroiBitStream): void {
-        this.item = Loots.readFromStream(stream);
-    }
-}
+});

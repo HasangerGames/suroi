@@ -26,6 +26,10 @@
         width: 15px;
     }
 
+    span, i {
+        pointer-events: none;
+    }
+
     &:focus {
         text-decoration: underline;
         text-decoration-color: $blue;

@@ -325,7 +325,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
             case HitboxType.Circle: {
                 const collision = Collision.rectCircleIntersection(this.min, this.max, that.position, that.radius);
                 if (collision) {
-                    const rect = this.transform(Vec.scale(collision.dir, collision.pen));
+                    const rect = this.transform(Vec.scale(collision.dir, -collision.pen));
                     this.min = rect.min;
                     this.max = rect.max;
                 }
@@ -334,7 +334,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
             case HitboxType.Rect: {
                 const collision = Collision.rectRectIntersection(this.min, this.max, that.min, that.max);
                 if (collision) {
-                    const rect = this.transform(Vec.scale(collision.dir, collision.pen));
+                    const rect = this.transform(Vec.scale(collision.dir, -collision.pen));
                     this.min = rect.min;
                     this.max = rect.max;
                 }
@@ -393,8 +393,8 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    override toRectangle(): this {
-        return this;
+    override toRectangle(): RectangleHitbox {
+        return this.clone();
     }
 
     override isPointInside(point: Vector): boolean {

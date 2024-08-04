@@ -9,7 +9,10 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "strictNullChecks": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@common/*": ["../common/src/*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": [
