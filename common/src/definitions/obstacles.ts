@@ -67,6 +67,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly noMeleeCollision: boolean
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
+    readonly anyLayer?: boolean
 
     readonly frames: {
         readonly base?: string
@@ -3676,6 +3677,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "Stair Walls",
             material: "metal",
             health: 1000,
+            anyLayer: true,
             indestructible: true,
             invisible: true,
             hitbox: new HitboxGroup(

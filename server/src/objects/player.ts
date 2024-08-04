@@ -702,7 +702,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 ) {
                     if (potential.definition.isStair && (sameLayer(potential.layer, this.layer))) {
                         this.layer = potential.definition.transportTo ?? 0;
-                    } else if (equalLayer(potential.layer, this.layer)) {
+                    } else if (equalLayer(potential.layer, this.layer) || potential.definition.anyLayer) {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
                     }
