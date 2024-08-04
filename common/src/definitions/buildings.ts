@@ -2883,6 +2883,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
+            layer: -2,
             spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(40, -40)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
