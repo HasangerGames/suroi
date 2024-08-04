@@ -2,7 +2,7 @@ import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { sameLayer } from "../../../../common/src/utils/layer";
+import { equalLayer, sameLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -70,7 +70,7 @@ export class Bullet extends BaseBullet {
                 const isObstacle = object.type === ObjectCategory.Obstacle;
                 const isPlayer = object.type === ObjectCategory.Player;
 
-                if ((isPlayer || (isObstacle && !object.definition.isStair)) && sameLayer((object.layer ?? 0), this.layer)) {
+                if ((isPlayer || (isObstacle && !object.definition.isStair)) && equalLayer((object.layer ?? 0), this.layer)) {
                     (object as Obstacle | Player).hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
                 }
 

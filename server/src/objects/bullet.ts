@@ -6,7 +6,7 @@ import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
 import { isAdjacent, randomFloat } from "@common/utils/random";
-import { sameLayer } from "@common/utils/layer";
+import { equalLayer, sameLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
@@ -166,7 +166,7 @@ export class Bullet extends BaseBullet {
                         this.dead = true;
                         break;
                     }
-                } else if (sameLayer(this.layer, object.layer) && !object.definition.isStair) {
+                } else if (equalLayer(this.layer, object.layer) && !object.definition.isStair) {
                     this.damagedIDs.add(object.id);
 
                     records.push({

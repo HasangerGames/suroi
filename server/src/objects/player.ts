@@ -426,7 +426,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // this.layer = -2;
         this.inventory.addOrReplaceWeapon(2, "fists");
         this.inventory.addOrReplaceWeapon(1, "m3k");
-        this.inventory.addOrReplaceWeapon(3, "c4");
+        this.inventory.addOrReplaceWeapon(3, "frag_grenade");
         this.inventory.items.setItem("12g", 15);
 
         this.inventory.items.setItem("4x_scope", 1);
