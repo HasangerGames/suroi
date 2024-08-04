@@ -25,7 +25,7 @@ import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/mi
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { isAdjacent, pickRandomInArray } from "@common/utils/random";
-import { sameLayer } from "@common/utils/layer";
+import { equalLayer, equalOrOneAboveLayer, isTransitionaryLayer, sameLayer } from "@common/utils/layer";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -863,16 +863,30 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
+            // When the player is in a transitionary layer (stairs), view the objects for the layer immediately above
+            // them.
+            // When a player is not in a transitionary layer (Basement, Floor1, or Floor2), then only view the objects
+            // in that layer.
+            const layerFilterFunc = isTransitionaryLayer(this.layer) ? equalLayer : equalOrOneAboveLayer;
+
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
-                    object => (((!newVisibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && (this.visibleObjects.delete(object), true)) && !(object.type === ObjectCategory.Obstacle && object.definition.isStair))
+                    object => (
+                        ((!newVisibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer))) 
+                            && (this.visibleObjects.delete(object), true))
+                            && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
+                    )
                 )
                 .map(({ id }) => id);
 
             newVisibleObjects
                 .forEach(
                     object => {
-                        if ((this.visibleObjects.has(object) || !(sameLayer(object.layer, this.layer))) && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)) return;
+                        if (
+                            (this.visibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
+                                && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
+                        )
+                            return;
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);
