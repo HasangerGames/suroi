@@ -98,6 +98,7 @@ const maps = {
             construction_site: 1,
             mobile_home: 9,
             porta_potty: 12,
+            riverside_house: 5,
             container_3: 2,
             container_4: 2,
             container_5: 2,
