@@ -707,8 +707,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }],
             gasParticles: gasParticlePresets.rifle,
             ballistics: {
-                damage: 129,
-                obstacleMultiplier: 1,
+                damage: 149,
+                obstacleMultiplier: 2,
                 speed: 0.45,
                 range: 300,
                 tracer: {
