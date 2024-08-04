@@ -3,7 +3,7 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
-import { equalLayer, sameLayer } from "@common/utils/layer";
+import { equalLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";

@@ -8,7 +8,7 @@ import { type CollidableGameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
-import { equalLayer, sameLayer } from "@common/utils/layer";
+import { equalLayer } from "@common/utils/layer";
 
 /**
  * A class representing a melee weapon

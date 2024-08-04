@@ -2,7 +2,7 @@ import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { equalLayer, sameLayer } from "../../../../common/src/utils/layer";
+import { equalLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";

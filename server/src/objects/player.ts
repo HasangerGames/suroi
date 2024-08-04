@@ -876,9 +876,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
-                        ((!newVisibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer))) 
-                            && (this.visibleObjects.delete(object), true))
-                            && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
+                        ((!newVisibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
+                        && (this.visibleObjects.delete(object), true))
+                        && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
                     )
                 )
                 .map(({ id }) => id);
@@ -888,9 +888,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     object => {
                         if (
                             (this.visibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
-                                && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
-                        )
-                            return;
+                            && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
+                        ) { return; }
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);
