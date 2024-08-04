@@ -689,16 +689,20 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
         for (let step = 0; step < 10; step++) {
             let collided = false;
+
+            // we use dedl0x's really cool function check
+            const layerFilterFunc = isTransitionaryLayer(this.layer) ? equalLayer : equalOrOneAboveLayer;
+
             for (const potential of this.nearObjects) {
                 if (
                     potential.type === ObjectCategory.Obstacle
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
-                    && (sameLayer(potential.layer, this.layer) || isAdjacent(potential.layer, this.layer))
+                    && (layerFilterFunc(potential.layer, this.layer) || isAdjacent(potential.layer, this.layer))
                 ) {
                     if (potential.definition.isStair && (sameLayer(potential.layer, this.layer))) {
                         this.layer = potential.definition.transportTo ?? 0;
-                    } else {
+                    } else if (equalLayer(potential.layer, this.layer)) {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
                     }
