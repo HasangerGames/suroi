@@ -104,7 +104,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly floors: ReadonlyArray<{
         readonly type: keyof typeof FloorTypes
         readonly hitbox: Hitbox
-        layer: number
+        readonly layer?: number
     }>
 
     readonly groundGraphics: ReadonlyArray<{
@@ -2883,7 +2883,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
-            layer: -2,
             spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(40, -40)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
@@ -2913,10 +2912,33 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "carpet",
+                    type: "wood",
                     hitbox: new HitboxGroup(
-                        RectangleHitbox.fromRect(1000, 1000, Vec.create(0, 0))
+                        RectangleHitbox.fromRect(55, 28, Vec.create(41.5, -55.5)),
+                        RectangleHitbox.fromRect(102.5, 50, Vec.create(18, -94.5)),
+                        RectangleHitbox.fromRect(47, 68, Vec.create(-47, -12)),
+
+                        // patches (basically small rectangles that go under walls)
+                        RectangleHitbox.fromRect(1.8, 16, Vec.create(13.3, -61.5)),
+                        RectangleHitbox.fromRect(20.5, 1.5, Vec.create(-47.5, -46.8)),
+                        RectangleHitbox.fromRect(33.4, 1.8, Vec.create(-17, -69))
                     )
+                },
+                {
+                    type: "stone",
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(69.5, 19.5, Vec.create(-22.5, -58)),
+                        RectangleHitbox.fromRect(33.9, 26.9, Vec.create(-4.5, -55)),
+                        RectangleHitbox.fromRect(22, 44, Vec.create(-46.4, -69)),
+
+                        // patches
+                        RectangleHitbox.fromRect(8.5, 28.5, Vec.create(8, -55.4)),
+                        RectangleHitbox.fromRect(1.8, 10.25, Vec.create(13.25, -48.5))
+                    )
+                },
+                {
+                    type: "metal",
+                    hitbox: RectangleHitbox.fromRect(10, 20.5, Vec.create(-40.25, -101.1))
                 }
             ],
             obstacles: [
@@ -2944,7 +2966,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "sword_case", position: Vec.create(-46, 18.5), rotation: 2 },
                 { idString: "water_cooler", position: Vec.create(-66.7, -42), rotation: 1 },
 
-                // todo: figure out why the hazel note doesn't get rendered (via the floor)
                 // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
                 { idString: "chair", position: Vec.create(-49, -28), rotation: 2 },
                 { idString: "chair", position: Vec.create(-49, 6.5), rotation: 0 },
@@ -3015,7 +3036,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0, layer: -2 }
+                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0 }
             ]
         },
         {

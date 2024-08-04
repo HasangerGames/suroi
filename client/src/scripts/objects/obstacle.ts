@@ -31,6 +31,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     variation?: Variation;
     locked = false;
 
+    layer = 0;
+
     /**
      * `undefined` if this obstacle hasn't been updated yet, or if it's not a door obstacle
      */
@@ -83,6 +85,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.orientation = full.rotation.orientation;
             this.variation = full.variation;
             this.locked = full.locked;
+            this.layer = full.layer;
 
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
                 this.playSound("detection", {
@@ -247,7 +250,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         }
         this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
-        if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
+        if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay) {
             this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
         }
 
@@ -444,6 +447,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     hitEffect(position: Vector, angle: number): void {
+        if (this.definition.isStair) return;
+
         this.hitSound?.stop();
         this.hitSound = this.game.soundManager.play(
             `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,

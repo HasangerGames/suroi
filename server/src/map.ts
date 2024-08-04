@@ -458,10 +458,6 @@ export class GameMap {
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer ?? 0);
 
-        if (building.definition.idString === "headquarters_second_floor") {
-            console.log(`HQ SECOND FLOOR LAYER: ${building.layer}`);
-        }
-
         for (const obstacleData of definition.obstacles) {
             const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
@@ -518,15 +514,12 @@ export class GameMap {
                 getRandomIDString(subBuilding.idString),
                 Vec.addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation,
-                subBuilding.layer
+                subBuilding.layer ?? definition.layer ?? 0
             );
         }
 
         for (const floor of definition.floors) {
-            if (building.definition.idString === "headquarters_second_floor") {
-                console.log(`FLOOR LAYER: ${definition.layer}`);
-            }
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), (floor.layer ?? definition.layer ?? 0));
+            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), (building.definition.layer ?? 0));
         }
 
         for (const decal of definition.decals) {

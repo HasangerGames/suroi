@@ -25,7 +25,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
 
-    layer = 0;
+    layer: number;
 
     orientation!: Orientation;
 
@@ -42,6 +42,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
         this.ceilingContainer = new Container();
         this.game.camera.addObject(this.ceilingContainer);
+
+        this.layer = data.layer;
 
         this.updateFromData(data, true);
     }
