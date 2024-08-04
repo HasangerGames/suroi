@@ -685,7 +685,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         }
 
         // Find and resolve collisions
-        this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
+        this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox, this.layer);
 
         for (let step = 0; step < 10; step++) {
             let collided = false;
