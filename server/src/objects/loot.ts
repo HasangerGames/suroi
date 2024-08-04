@@ -6,7 +6,8 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { randomRotation, sameLayer } from "@common/utils/random";
+import { randomRotation } from "@common/utils/random";
+import { sameLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";

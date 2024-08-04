@@ -55,20 +55,6 @@ export function randomRotation(): number {
     return randomFloat(-Math.PI, Math.PI);
 }
 
-//
-// Game objects can belong to the following layers:
-//   0: ground layer
-//   1: stairs
-//   2: ground and stairs (both)
-//   3: bunker and stairs (both)
-//
-// Objects on the same layer should interact with one another.
-export function sameLayer(num1: number, num2: number): boolean {
-    const n1 = num1 - 1;
-    const n2 = num1 + 1;
-    return ((n1 == num2) || (n2 == num2) || (num1 === num2));
-}
-
 /**
  * @return Checks if two numbers are adjacent or same;
  */

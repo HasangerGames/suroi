@@ -2,7 +2,8 @@ import { Explosions, type ExplosionDefinition } from "@common/definitions/explos
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { randomRotation, sameLayer } from "@common/utils/random";
+import { randomRotation } from "@common/utils/random";
+import { sameLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";

@@ -5,7 +5,8 @@ import { Loots } from "@common/definitions/loots";
 import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
-import { isAdjacent, randomFloat, sameLayer } from "@common/utils/random";
+import { isAdjacent, randomFloat } from "@common/utils/random";
+import { sameLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
