@@ -2507,10 +2507,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(90, 23.7)
                 }
             ],
-            /* ceilingImages: [{
+            ceilingImages: [{
                 key: "tugboat_red_ceiling",
                 position: Vec.create(90, 12.5)
-            }], */
+            }],
             floors: [
                 { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
                 { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
