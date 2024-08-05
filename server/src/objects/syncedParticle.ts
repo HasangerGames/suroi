@@ -79,10 +79,12 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         readonly duration: number
     };
 
-    constructor(game: Game, definition: SyncedParticleDefinition, position: Vector) {
+    constructor(game: Game, definition: SyncedParticleDefinition, position: Vector, layer?: number) {
         super(game, position);
         this._creationDate = game.now;
         this.definition = definition;
+
+        this.layer = layer ?? 0;
 
         this._lifetime = resolveNumericSpecifier(definition.lifetime);
 
