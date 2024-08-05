@@ -204,7 +204,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
             }
 
             if (definition.particlesOnDestroy !== undefined) {
-                this.game.addSyncedParticles(definition.particlesOnDestroy, this.position);
+                this.game.addSyncedParticles(definition.particlesOnDestroy, this.position, this.layer);
             }
 
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;

@@ -175,6 +175,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             tint: number,
             wallsId: number,
             open: "open2" | "open1" | "closed",
+            optimized = true,
             damaged?: boolean
         ) => {
             let spawnHitbox: Hitbox;
@@ -196,11 +197,26 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 name: `Container ${id}`,
                 spawnHitbox,
                 scopeHitbox: RectangleHitbox.fromRect(12, 27),
-                ceilingImages: [{
-                    key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
-                    position: Vec.create(0, 0),
-                    tint
-                }],
+                ceilingImages: optimized
+                    ? [
+                        {
+                            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}_2`,
+                            position: Vec.create(0, 6.95),
+                            tint
+                        },
+                        {
+                            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}_1`,
+                            position: Vec.create(0, -6.9),
+                            tint
+                        }
+                    ]
+                    : [
+                        {
+                            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
+                            position: Vec.create(0, 0),
+                            tint
+                        }
+                    ],
                 floors: [
                     {
                         type: "metal",
@@ -1279,11 +1295,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         simple("container", 1, ContainerTints.White, 1, "closed"),
         simple("container", 2, ContainerTints.Red, 1, "closed"),
         simple("container", 3, ContainerTints.Green, 2, "open1"),
-        simple("container", 4, ContainerTints.Green, 2, "open1", true),
+        simple("container", 4, ContainerTints.Green, 2, "open1", false, true),
         simple("container", 5, ContainerTints.Blue, 3, "open1"),
-        simple("container", 6, ContainerTints.Blue, 3, "open1", true),
+        simple("container", 6, ContainerTints.Blue, 3, "open1", false, true),
         simple("container", 7, ContainerTints.Blue, 4, "open2"),
-        simple("container", 8, ContainerTints.Blue, 4, "open2", true),
+        simple("container", 8, ContainerTints.Blue, 4, "open2", true, true),
         simple("container", 9, ContainerTints.Yellow, 5, "open1"),
         simple("container", 10, ContainerTints.Yellow, 6, "open2"),
         {
@@ -2491,10 +2507,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(90, 23.7)
                 }
             ],
-            /* ceilingImages: [{
+            ceilingImages: [{
                 key: "tugboat_red_ceiling",
                 position: Vec.create(90, 12.5)
-            }], */
+            }],
             floors: [
                 { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
                 { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
@@ -2638,10 +2654,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 maxRiverWidth: 20,
                 landCheckDist: 30
             },
-            floorImages: [{
-                key: "small_bridge",
-                position: Vec.create(0, 0)
-            }],
+            floorImages: [
+                {
+                    key: "small_bridge_1",
+                    position: Vec.create(0, -14.5)
+                },
+                {
+                    key: "small_bridge_2",
+                    position: Vec.create(0, 14.5)
+                }
+            ],
             floors: [
                 { type: "wood", hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec.create(0, 0)) }
             ],
@@ -2821,10 +2843,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             isStair: true,
             layer: -1,
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-            floorImages: [{
+            /* floorImages: [{ // it's already in the hq's svg
                 key: "stair_floor",
                 position: Vec.create(0, 0)
-            }],
+            }], */
             floors: [
                 { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],

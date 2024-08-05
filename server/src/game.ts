@@ -991,8 +991,8 @@ export class Game implements GameData {
         projectile.dead = true;
     }
 
-    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector): SyncedParticle {
-        const syncedParticle = new SyncedParticle(this, definition, position);
+    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: number): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, definition, position, layer);
         this.grid.addObject(syncedParticle);
         return syncedParticle;
     }
@@ -1002,7 +1002,7 @@ export class Game implements GameData {
         syncedParticle.dead = true;
     }
 
-    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector): void {
+    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector, layer: number): void {
         const particleDef = SyncedParticles.fromString(particles.type);
         const { spawnRadius, count, deployAnimation } = particles;
 
@@ -1022,7 +1022,8 @@ export class Game implements GameData {
                 setParticleTarget(
                     this.addSyncedParticle(
                         particleDef,
-                        position
+                        position,
+                        layer
                     ),
                     Vec.add(
                         Vec.fromPolar(

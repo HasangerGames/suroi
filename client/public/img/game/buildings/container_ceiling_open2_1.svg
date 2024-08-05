@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="281.18002"
-   height="559.30804"
-   viewBox="0 0 74.395546 147.98359"
+   width="281.29608"
+   height="287.58096"
+   viewBox="0 0 74.426253 76.089132"
    version="1.1"
    id="svg49750"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="container_ceiling_3.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="container_ceiling_open2_1.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,13 +24,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      showgrid="false"
-     inkscape:zoom="1.5233586"
-     inkscape:cx="11.159552"
-     inkscape:cy="313.12391"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="8.6174176"
+     inkscape:cx="8.3551713"
+     inkscape:cy="297.88507"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      inkscape:pageshadow="0"
@@ -42,16 +42,17 @@
   <g
      inkscape:label="Слой 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(0.03070332)">
     <path
        id="rect1049-9-7-5-1-7-8"
        style="fill:#a1a1a1;fill-opacity:1;stroke-width:8.12629;paint-order:markers stroke fill;stop-color:#000000"
-       d="M 0 0 L 0 559.30859 L 42.783203 559.30859 L 56.697266 535.30859 L 224.48242 535.30859 L 238.39648 559.30859 L 281.17969 559.30859 L 281.17969 0 L 238.39648 0 L 224.48242 24 L 56.697266 24 L 42.783203 0 L 0 0 z "
+       d="m 0,0 v 559.30859 h 42.783203 l 13.914063,-24 H 224.48242 l 13.91406,24 h 42.78321 V 0 H 238.39648 L 224.48242,24 H 56.697266 L 42.783203,0 Z"
        transform="scale(0.26458333)" />
     <path
        id="rect1049-9-7-2-9-5-4-02"
        style="fill:#e0e0e0;fill-opacity:1;stroke-width:7.46933;paint-order:markers stroke fill;stop-color:#000000"
-       d="M 12.666016 13.873047 L 12.666016 545.43555 L 28.117188 545.43555 L 44.117188 521.43555 L 237.0625 521.43555 L 253.0625 545.43555 L 268.51367 545.43555 L 268.51367 13.873047 L 253.0625 13.873047 L 237.0625 37.873047 L 44.117188 37.873047 L 28.117188 13.873047 L 12.666016 13.873047 z "
+       d="M 12.666016,13.873047 V 545.43555 h 15.451172 l 16,-24 H 237.0625 l 16,24 h 15.45117 V 13.873047 H 253.0625 l -16,24 H 44.117188 l -16,-24 z"
        transform="scale(0.26458333)" />
     <path
        id="rect24996-9-4-4-8"

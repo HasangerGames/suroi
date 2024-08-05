@@ -100,7 +100,7 @@ class GrenadeHandler {
         }
 
         if (particles !== undefined) {
-            game.addSyncedParticles(particles, referencePosition);
+            game.addSyncedParticles(particles, referencePosition, this._projectile ? this._projectile.layer : 0);
         }
     }
 
