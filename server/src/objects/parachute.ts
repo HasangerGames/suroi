@@ -53,7 +53,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                     }
                 },
                 spawnRadius: 10
-            }, crate.position);
+            }, crate.position, crate.layer);
 
             // Crush damage
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox)) {
