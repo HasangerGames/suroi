@@ -392,7 +392,6 @@ export class Minimap {
         }
 
         if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.clear();
             this.renderMapDebug();
         }
     }

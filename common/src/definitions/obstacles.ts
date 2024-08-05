@@ -3861,7 +3861,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(9.35, 1.6, Vec.create(-5.8, -13.5)),
-                RectangleHitbox.fromRect(1.6, 27, Vec.create(-9.7, 0))
+                RectangleHitbox.fromRect(1.6, 27, Vec.create(-9.7, 0)),
+                RectangleHitbox.fromRect(20, 1.6, Vec.create(0, 13))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
@@ -3889,7 +3890,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(48, 1.75, Vec.create(-47, 23)),
 
                 // inner
-                RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.1)),
+                RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.5)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
                 RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.1, -96)),
