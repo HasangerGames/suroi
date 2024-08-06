@@ -1394,7 +1394,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
 
             obstacles: [
-                { idString: "cargo_ship_front", position: Vec.create(23, -11.7), rotation: 0 },
+                { idString: "cargo_ship_front", position: Vec.create(23, -12.5), rotation: 0 },
                 { idString: "cargo_ship_walls", position: Vec.create(0, 0), rotation: 0 },
 
                 // vault/tango room
