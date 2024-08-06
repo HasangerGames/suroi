@@ -303,32 +303,30 @@ export const Collision = Object.freeze({
     /**
      * Determines the Vector describing the point in which two line segments, each described by a pair of Vector points,
      * intersect, if at all.
-     * 
+     *
      * This method uses the parametric definition of lines to quickly find a point of intersection.
-     * 
+     *
      * @param segmentAStart - A Vector describing the point at which the first line segment begins.
      * @param segmentAEnd - A Vector describing the point at which the first line segment ends.
      * @param segmentBStart - A Vector describing the point at which the second line segment begins.
      * @param segmentBEnd - A Vector describing the point at which the second line segment ends.
-     * 
+     *
      * @returns The point of intersection between the two line segments, if it exists. `null` if an intersection does
      * not exist.
      */
     lineSegmentIntersection(segmentAStart: Vector, segmentAEnd: Vector, segmentBStart: Vector, segmentBEnd: Vector): Vector | null {
-
         // Calculate the vectors representing the two line segments.
         // These vectors describe the direction and length of travel to go from the start to the end of the respective
         // line segments.
         const Sa: Vector = Vec.sub(segmentAEnd, segmentAStart);
         const Sb: Vector = Vec.sub(segmentBEnd, segmentBStart);
 
-
         // Calculate the determinate of these two vectors.
         // This value provides information about how the two line segment vectors relate to one another.
         //
         // | S_a.x  S_b.x |
         // | S_a.y  S_b.y | = (S_a.x * S_b.y) - (S_b.x * S_a.y)
-        // 
+        //
         const lineSegmentDeterminant = (Sa.x * Sb.y) - (Sb.x * Sa.y);
 
         // When the determinant is 0, it means that the lines are either parallel or collinear, and so we would not
@@ -345,7 +343,7 @@ export const Collision = Object.freeze({
         // Where `t` is a scalar value in the interval [0, 1].
         // This equation is saying that the line segment is described by the starting position and some progression
         // along the segment until the ending position.
-        
+
         // If there is a point of intersection between the two lines segments, then it must hold that...
         //   S_a_start + t_a * (S_a_end - S_a_start) = S_b_start + t_b * (S_b_end - S_b_start)
         // ...for some values of `t_a` and `t_b`.
@@ -355,7 +353,7 @@ export const Collision = Object.freeze({
         // This can be represented by in vector definitions...
         // t_a * S_a→ - t_b * S_b→ = R→
         // Where R→ is the vector S_a_start to S_b_start.
-        
+
         // dedl0x: This should be the other way around but it doesn't work when it is. Everything works when it's like
         // this. Still don't know why.
         const R = Vec.sub(segmentAStart, segmentBStart);
@@ -367,7 +365,7 @@ export const Collision = Object.freeze({
         // [ S_a_x  -S_b_x ] [ t_a ]   [ R_x ]
         // [ S_a_y  -S_b_y ] [ t_b ] = [ R_y ]
         // Cramer's rule states that for a system Ax→ = b→, where A is a matrix and x→ and b→ are vectors, the solution
-        // is given by... 
+        // is given by...
         // x_i = det(A_i) / det(A)
         // Where A_i is the matrix formed by replacing the i'th column of A with b→.
         // So to solve for `t_a` and `t_b`, we only need to calculate the determinants.

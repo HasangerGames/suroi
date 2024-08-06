@@ -3,7 +3,6 @@ import { Vec, Vector } from "@common/utils/vector";
 import { describe, expect, test } from "@jest/globals";
 
 describe("line segment intersection detection", () => {
-
     test("vertical parallel line segments report no intersection", () => {
         const lineSegmentAStart = Vec.create(10, -5);
         const lineSegmentAEnd = Vec.create(10, 5);
@@ -63,8 +62,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint as Vector).x).toBe(0);
-        expect((lineSegmentIntersectionPoint as Vector).y).toBe(0);
+        expect((lineSegmentIntersectionPoint!).x).toBe(0);
+        expect((lineSegmentIntersectionPoint!).y).toBe(0);
     });
 
     test("line segments that share an ending point intersect at that point", () => {
@@ -80,10 +79,10 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint as Vector).x).toBe(3);
-        expect((lineSegmentIntersectionPoint as Vector).y).toBe(2);
+        expect((lineSegmentIntersectionPoint!).x).toBe(3);
+        expect((lineSegmentIntersectionPoint!).y).toBe(2);
     });
-    
+
     test("line segments that are tip-to-tail intersect at the overlapping point", () => {
         // Goes from (1, 1) to (1, 5) or straight up.
         const lineSegmentAStart: Vector = Vec.create(1, 1);
@@ -99,8 +98,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint as Vector).x).toBe(1);
-        expect((lineSegmentIntersectionPoint as Vector).y).toBe(1);
+        expect((lineSegmentIntersectionPoint!).x).toBe(1);
+        expect((lineSegmentIntersectionPoint!).y).toBe(1);
     });
 
     test("line segments that form a T intersect at the junction", () => {
@@ -118,8 +117,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint as Vector).x).toBe(0);
-        expect((lineSegmentIntersectionPoint as Vector).y).toBe(5);
+        expect((lineSegmentIntersectionPoint!).x).toBe(0);
+        expect((lineSegmentIntersectionPoint!).y).toBe(5);
     });
 
     test("line segments that form a square X intersect in the middle", () => {
@@ -135,8 +134,7 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint as Vector).x).toBe(0);
-        expect((lineSegmentIntersectionPoint as Vector).y).toBe(0);
+        expect((lineSegmentIntersectionPoint!).x).toBe(0);
+        expect((lineSegmentIntersectionPoint!).y).toBe(0);
     });
-
 });

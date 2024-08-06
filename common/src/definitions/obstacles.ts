@@ -2668,11 +2668,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "metal_particle"
             },
-            hitbox: RectangleHitbox.fromRect(12, 25)
+            hitbox: RectangleHitbox.fromRect(28, 14)
         },
         {
-            idString: "ship",
-            name: "Ship",
+            idString: "cargo_ship_front",
+            name: "Cargo Ship",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -2684,56 +2684,91 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "metal_particle"
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1, 220, Vec.create(48, -20)), // Right wall
-
-                RectangleHitbox.fromRect(1, 66, Vec.create(-31, 4.8)), // Left wall (middle)
-                RectangleHitbox.fromRect(1, 40, Vec.create(-31, 69)), // Left wall (bottom)
-                RectangleHitbox.fromRect(1, 90, Vec.create(-31, -85)), // Left wall (top)
-
-                RectangleHitbox.fromRect(32.2, 2, Vec.create(31.7, 81.6)), // bottom
-                RectangleHitbox.fromRect(33, 2, Vec.create(-14.8, 81.6)), // bottom
-                RectangleHitbox.fromRect(80, 1, Vec.create(8, -128)), // top
-
-                // Captain's cabin
-                RectangleHitbox.fromRect(46, 2, Vec.create(9, -90.2)), // top
-                RectangleHitbox.fromRect(2, 38.6, Vec.create(-22.8, -70.2)), // left
-                RectangleHitbox.fromRect(2, 24, Vec.create(-13.1, -79.2)),
-                RectangleHitbox.fromRect(2, 9.9, Vec.create(31.1, -86.3)), // right
-                RectangleHitbox.fromRect(2, 20.2, Vec.create(31.1, -61)),
-                RectangleHitbox.fromRect(10, 2, Vec.create(36, -82.3)),
-                RectangleHitbox.fromRect(2, 32.4, Vec.create(40.5, -67)),
-
-                RectangleHitbox.fromRect(55, 2, Vec.create(4.4, -51.8)), // bottom
-
-                // Tango room bottom walls
-                RectangleHitbox.fromRect(60, 2, Vec.create(8, 104.5)),
-                RectangleHitbox.fromRect(2, 30, Vec.create(-18, 96)),
-                RectangleHitbox.fromRect(2, 30, Vec.create(35, 96)),
 
                 // bottom hitboxes
                 // HACK: refactor when we support collision with polygon hitboxes
-                new CircleHitbox(12, Vec.create(8, 118)),
+                new CircleHitbox(11.1, Vec.create(120.8, 12)),
                 ...Array.from({ length: 2 }, (_, i) => {
                     const a = i === 0 ? 1 : -1;
-                    const b = i === 0 ? 0 : 17;
+                    const b = i === 0 ? 0 : 25;
                     return [
-                        new CircleHitbox(4, Vec.create(0 * a + b, 125)),
-                        new CircleHitbox(4, Vec.create(-4 * a + b, 123.5)),
-                        new CircleHitbox(4, Vec.create(-6 * a + b, 122.5)),
-                        new CircleHitbox(4, Vec.create(-8 * a + b, 121)),
-                        new CircleHitbox(4, Vec.create(-10 * a + b, 120)),
-                        new CircleHitbox(4, Vec.create(-12 * a + b, 118.5)),
-                        new CircleHitbox(4, Vec.create(-14 * a + b, 116.5)),
-                        new CircleHitbox(4, Vec.create(-16 * a + b, 114.5)),
-                        new CircleHitbox(4, Vec.create(-18 * a + b, 113)),
-                        new CircleHitbox(4, Vec.create(-20 * a + b, 110.5)),
-                        new CircleHitbox(4, Vec.create(-22 * a + b, 108)),
-                        new CircleHitbox(4, Vec.create(-24 * a + b, 104)),
-                        new CircleHitbox(4, Vec.create(-26 * a + b, 99.5)),
-                        new CircleHitbox(4, Vec.create(-27 * a + b, 95)),
-                        new CircleHitbox(4, Vec.create(-28 * a + b, 91))
+                        new CircleHitbox(4, Vec.create(125, 0 * a + b)),
+                        new CircleHitbox(4, Vec.create(123.5, -4 * a + b)),
+                        new CircleHitbox(4, Vec.create(122.5, -6 * a + b)),
+                        new CircleHitbox(4, Vec.create(121, -8 * a + b)),
+                        new CircleHitbox(4, Vec.create(120, -10 * a + b)),
+                        new CircleHitbox(4, Vec.create(118.5, -12 * a + b)),
+                        new CircleHitbox(4, Vec.create(116.5, -14 * a + b)),
+                        new CircleHitbox(4, Vec.create(114.5, -16 * a + b)),
+                        new CircleHitbox(4, Vec.create(113, -18 * a + b)),
+                        new CircleHitbox(4, Vec.create(110.5, -20 * a + b)),
+                        new CircleHitbox(4, Vec.create(108, -22 * a + b)),
+                        new CircleHitbox(4, Vec.create(104, -24 * a + b)),
+                        new CircleHitbox(4, Vec.create(99.5, -26 * a + b)),
+                        new CircleHitbox(4, Vec.create(95, -27 * a + b)),
+                        new CircleHitbox(4, Vec.create(91, -28 * a + b)),
+                        new CircleHitbox(4, Vec.create(88, -29 * a + b)),
+                        new CircleHitbox(4, Vec.create(83, -30 * a + b))
                     ];
                 }).flat()
+            )
+        },
+        {
+            idString: "cargo_ship_walls",
+            name: "Cargo Ship Walls",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+
+                // outer walls
+                RectangleHitbox.fromRect(237, 3, Vec.create(-18.5, -45.5)),
+                RectangleHitbox.fromRect(3, 92, Vec.create(-135.5, 0)),
+                RectangleHitbox.fromRect(78.7, 3, Vec.create(-52.25, 45.5)),
+                RectangleHitbox.fromRect(35.5, 3, Vec.create(-119.5, 45.5)),
+                RectangleHitbox.fromRect(105.5, 3, Vec.create(50, 45.5)),
+
+                // inner walls
+
+                // cargo ship front
+                RectangleHitbox.fromRect(3.8, 17, Vec.create(99, -36.1)),
+                RectangleHitbox.fromRect(3.8, 17, Vec.create(99, 36.1)),
+
+                // vault
+                RectangleHitbox.fromRect(1.7, 19.5, Vec.create(98.3, 16.5)),
+                RectangleHitbox.fromRect(1.7, 19.5, Vec.create(98.3, -16.8)),
+                RectangleHitbox.fromRect(34, 1.7, Vec.create(114, -26.5)),
+                RectangleHitbox.fromRect(34, 1.7, Vec.create(114, 26.5)),
+                RectangleHitbox.fromRect(1.7, 53, Vec.create(130.65, 0)),
+
+                // gas can/control room?
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-21.5, 31.1)),
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-42.1, 31.1)),
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-21.5, -31.1)),
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-42.1, -31.1)),
+
+                // RectangleHitbox.fromRect(1.5, 61, Vec.create(-17, 0)),
+                RectangleHitbox.fromRect(1.5, 61, Vec.create(-46.5, 0)),
+
+                RectangleHitbox.fromRect(12.8, 0.9, Vec.create(-39, 42.35)),
+                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.9, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-32, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.5, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-46.1, 42.35)),
+
+                RectangleHitbox.fromRect(12.8, 0.9, Vec.create(-39, -42.35)),
+                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.9, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-32, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.5, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-46.1, -42.35))
+
             )
         },
         {

@@ -422,7 +422,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("headquarters", Vec.create(this.width / 2, this.height / 2 - 15), 0);
+            map.generateBuilding("cargo_ship", Vec.create(this.width / 2, this.height / 2 - 15), 0);
         },
         places: [
             { name: "Pumpkin Patch", position: Vec.create(0.23, 0.2) },

@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
-import { CircleHitbox, Hitbox, HitboxGroup, HitboxType, RectangleHitbox,  } from "@common/utils/hitbox";
+import { CircleHitbox, Hitbox, HitboxGroup, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
@@ -218,7 +218,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                 )
             ) continue;
 
-
             // This is a discrete collision detection that looks for overlap between geometries.
             const isGeometricCollision = object.hitbox.collidesWith(this.hitbox);
             // This is a continuous collision detection that looks for an intersection between this object's path of
@@ -230,10 +229,10 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
             // dedl0x: Leaving this here because it's very helpful for analyzing ray casting results.
             // if (isRayCastedCollision) {
-                // console.log(`Found a ray-casted collision!`);
-                // const movementVector: Vector = Vec.sub(this.hitbox.position, originalHitboxPosition);
-                // console.log(`Po: (${ originalHitboxPosition.x }, ${ originalHitboxPosition.y }), Pn: (${ this.hitbox.position.x }, ${ this.hitbox.position.y }), M: ${ Vec.length(movementVector) }`);
-                // console.log(`I: (${ rayCastCollisionPointWithObject.x}, ${ rayCastCollisionPointWithObject.y})`)
+            // console.log(`Found a ray-casted collision!`);
+            // const movementVector: Vector = Vec.sub(this.hitbox.position, originalHitboxPosition);
+            // console.log(`Po: (${ originalHitboxPosition.x }, ${ originalHitboxPosition.y }), Pn: (${ this.hitbox.position.x }, ${ this.hitbox.position.y }), M: ${ Vec.length(movementVector) }`);
+            // console.log(`I: (${ rayCastCollisionPointWithObject.x}, ${ rayCastCollisionPointWithObject.y})`)
             // }
 
             const collidingWithObject = isGeometricCollision || isRayCastedCollision;
@@ -294,7 +293,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             // hitbox position should be updated to be somewhere between this throwable's original position and the
             // intersection point.
             if (isRayCastedCollision && rayCastCollisionPointWithObject != null) {
-
                 // The path of travel is as follows.
                 // (S)----(I)-------------(E)
                 // Where...
@@ -340,7 +338,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     }
 
     /**
-     * Returns the point of intersection with the hitbox's boundary line segments that is closest to the start of 
+     * Returns the point of intersection with the hitbox's boundary line segments that is closest to the start of
      * travel or trajectory.
      * @param travelStart The point where the travel starts.
      * @param travelEnd The point where the travel ends.
@@ -348,7 +346,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
      * @returns The point of intersection closest to the starting position; `null` if no intersection exists.
      */
     private _travelCollidesWith(travelStart: Vector, travelEnd: Vector, hitbox: Hitbox): Vector | null {
-
         // Checks for an intersection between the path of travel and all of the provided boundary line segments.
         // The intersection that is closest to the trajectory's starting position is returned.
         const getClosestIntersection = (boundaryLineSegments: Vector[][]) => {
@@ -356,22 +353,19 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             let nearestIntersectionDistance: number = Number.MAX_SAFE_INTEGER;
 
             // Check each of the line segments for intersection with the path of travel.
-            for (let lineSegment of boundaryLineSegments) {
-                
+            for (const lineSegment of boundaryLineSegments) {
                 const intersection: Vector | null = Collision.lineSegmentIntersection(
                     travelStart, travelEnd, lineSegment[0], lineSegment[1]
                 );
 
                 if (intersection != null) {
-
                     // If a nearest intersection doesn't already exist, then this is the new nearest.
                     if (nearestIntersection == null) {
                         nearestIntersection = intersection;
-                    }
-                    else {
+                    } else {
                         // Create a new Vector from the starting position to this intersection position.
                         const startToIntersection: Vector = Vec.sub(intersection, travelStart);
-                        
+
                         // If the length of that Vector is less than nearest intersection encountered so far, then this
                         // intersection is closer, or precedes previosuly encountered intersections.
                         const startToIntersectionLength: number = Vec.length(startToIntersection);
@@ -384,7 +378,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             }
 
             return nearestIntersection;
-        }
+        };
 
         // Returns a list of point pairs for the line segments that comprise the boundaries of the rectangular hitbox.
         const getBoundaryLineSegmentsForRectangle = (hitbox: RectangleHitbox) => {
@@ -399,7 +393,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                 [hitboxTopLeftPoint, hitboxBottomLeftPoint],
                 [hitboxTopRightPoint, hitboxBottomRightPoint]
             ];
-        }
+        };
 
         const handleRectangle = (hitbox: RectangleHitbox) => {
             const boundaryLineSegments: Vector[][] = getBoundaryLineSegmentsForRectangle(hitbox);
@@ -413,7 +407,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                 .reduce((prev, cur) => prev.concat(cur), []);
 
             return getClosestIntersection(allRectangleHitboxBoundaryLineSegments);
-        }
+        };
 
         switch (hitbox.type) {
             // Not currently supported.
@@ -431,8 +425,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             default:
                 return null;
         }
-
-
     }
 
     handleCollision(object: GameObject): void {
@@ -466,7 +458,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             // dedl0x: I'm not sure why `this.position` was used instead of `this.hitbox.position`, but I get better
             // behavior using the latter.
             // const collision = Collision.rectCircleIntersection(hitbox.min, hitbox.max, this.position, this.hitbox.radius);
-            
+
             if (collision) {
                 this._velocity = Vec.add(
                     this._velocity,
@@ -490,9 +482,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                         // cause it makes the thingy work and rectCircleIntersection is goofy
                     )
                 );
-            }
-            else {
-                console.log("No collision in handleRectangle")
+            } else {
+                console.log("No collision in handleRectangle");
             }
         };
 

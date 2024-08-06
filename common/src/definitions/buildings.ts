@@ -1302,158 +1302,234 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         simple("container", 8, ContainerTints.Blue, 4, "open2", true, true),
         simple("container", 9, ContainerTints.Yellow, 5, "open1"),
         simple("container", 10, ContainerTints.Yellow, 6, "open2"),
+        simple("container", 12, ContainerTints.Green, 1, "closed"),
+        simple("container", 13, ContainerTints.Yellow, 1, "closed"),
+
         {
             idString: "container_11",
             name: "Invisible Container",
             spawnHitbox: RectangleHitbox.fromRect(16, 30)
         },
+
         {
-            idString: "ship",
-            name: "Ship",
-            spawnHitbox: RectangleHitbox.fromRect(110, 300, Vec.create(0, 0)),
-            scopeHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(44, 38, Vec.create(9.5, -70.5)),
-                RectangleHitbox.fromRect(10, 15, Vec.create(-17, -60)),
-                RectangleHitbox.fromRect(50, 24, Vec.create(8, 93.2))
-            ),
+            idString: "cargo_ship_center_roof",
+            name: "Cargo Ship Center Roof",
+            spawnHitbox: RectangleHitbox.fromRect(40, 95, Vec.create(0, 0)),
+            scopeHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)),
+            ceilingImages: [
+                {
+                    key: "cargo_ship_center_ceiling",
+                    position: Vec.create(1.25, 0),
+                    scale: Vec.create(1.07, 1.07)
+                }
+
+            ]
+        },
+        {
+            idString: "cargo_ship",
+            name: "Cargo Ship",
+            spawnHitbox: RectangleHitbox.fromRect(300, 110, Vec.create(0, 0)),
+            scopeHitbox: RectangleHitbox.fromRect(34, 51, Vec.create(115, 0)),
             puzzle: {
                 triggerInteractOn: "vault_door",
                 interactDelay: 2000
             },
             sounds: {
                 solved: "generator_running",
-                position: Vec.create(23, 75),
+                position: Vec.create(91, -18.5),
                 maxRange: 416,
                 falloff: 2
             },
-            floorImages: [
-
-                {
-                    key: "ship_floor_2",
-                    position: Vec.create(8.45, 64.8)
-                },
-                {
-                    key: "ship_floor_1",
-                    position: Vec.create(8.5, -65.05)
-                },
-                {
-                    key: "ship_stair",
-                    position: Vec.create(-39.15, -33.7)
-                },
-                {
-                    key: "ship_stair",
-                    position: Vec.create(-39.15, 43)
-                }
-            ],
             ceilingImages: [
                 {
-                    key: "ship_cabin_roof",
-                    position: Vec.create(4, -68),
-                    scale: Vec.create(2, 2)
+                    key: "cargo_ship_front_ceiling_1",
+                    position: Vec.create(126.5, -23.5),
+                    scale: Vec.create(1.07, 1.07)
                 },
                 {
-                    key: "ship_tango_room_roof",
-                    position: Vec.create(8.5, 101.75)
+                    key: "cargo_ship_front_ceiling_2",
+                    position: Vec.create(126.5, 23.5),
+                    scale: Vec.create(1.07, 1.07)
                 }
             ],
+            floorImages: [
+                {
+                    key: "cargo_ship_floor_1",
+                    position: Vec.create(-70, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "cargo_ship_floor_3",
+                    position: Vec.create(126.5, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "cargo_ship_floor_2",
+                    position: Vec.create(29, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "ship_stair",
+                    position: Vec.create(-8, 54.25)
+                },
+                {
+                    key: "ship_stair",
+                    position: Vec.create(-97, 54.25)
+                }
+            ],
+
             floors: [
                 {
-                    type: "stone",
-                    hitbox: RectangleHitbox.fromRect(82, 220, Vec.create(8.5, -20))
-                },
-                {
-                    type: "stone",
-                    hitbox: RectangleHitbox.fromRect(54, 20, Vec.create(8.5, 95))
-                },
-                {
                     type: "metal",
-                    hitbox: RectangleHitbox.fromRect(20, 14, Vec.create(-40.6, -33.7))
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(10, 20.25, Vec.create(-8, 54.25)), // stair right
+                        RectangleHitbox.fromRect(10, 20.25, Vec.create(-97, 54.25)), // stair left
+                        RectangleHitbox.fromRect(232, 88, Vec.create(-18.5, 0.05)) // main floor
+                    )
                 },
                 {
-                    type: "metal",
-                    hitbox: RectangleHitbox.fromRect(20, 14, Vec.create(-40.6, 43))
+                    type: "stone",
+                    hitbox: RectangleHitbox.fromRect(33, 52, Vec.create(114, 0.05)) // vault
                 }
             ],
+
             obstacles: [
-                // Tango room
-                { idString: "vault_door", position: Vec.create(7.45, 81.5), rotation: 0 },
-                { idString: "tango_crate", position: Vec.create(9, 93.5), rotation: 0 },
-                { idString: "super_barrel", position: Vec.create(-12, 89) },
-                { idString: "box", position: Vec.create(28.5, 87) },
-                { idString: "box", position: Vec.create(30, 93) },
-                { idString: "box", position: Vec.create(-12, 99) },
+                { idString: "cargo_ship_front", position: Vec.create(23, -11.7), rotation: 0 },
+                { idString: "cargo_ship_walls", position: Vec.create(0, 0), rotation: 0 },
 
-                // Main hitbox
-                { idString: "ship", position: Vec.create(0, 0), rotation: 0 },
+                // vault/tango room
+                { idString: "tango_crate", position: Vec.create(126.25, 0), rotation: 3 },
+                { idString: "regular_crate", position: Vec.create(105.5, -20) },
+                { idString: "barrel", position: Vec.create(118, -20) },
+                { idString: "barrel", position: Vec.create(125, -14) },
+                { idString: "box", position: Vec.create(126.5, 22) },
+                { idString: "box", position: Vec.create(120.5, 21.5) },
+                { idString: "box", position: Vec.create(126.8, 16) },
+                { idString: "grenade_crate", position: Vec.create(104, 21) },
 
-                { idString: "ship_oil_tank", position: Vec.create(-14, -111), rotation: 0 },
-                { idString: "generator", position: Vec.create(23, 75), rotation: 0, puzzlePiece: true },
-                { idString: "barrel", position: Vec.create(24, 66) },
-                {
-                    idString: { barrel: 1, super_barrel: 1 },
-                    position: Vec.create(21, 58)
-                },
-                { idString: "regular_crate", position: Vec.create(-6, 73) },
-                { idString: "regular_crate", position: Vec.create(-4, 61) },
+                // front
+                { idString: "vault_door", position: Vec.create(98.25, 0.8), rotation: 1 },
+                { idString: "aegis_crate", position: Vec.create(91, -29) },
+                { idString: "barrel", position: Vec.create(85, -39) },
+                { idString: "generator", position: Vec.create(91, -18.5), rotation: 0, puzzlePiece: true },
 
-                // Captain's cabin
-                { idString: "control_panel_small", position: Vec.create(14.5, -57), rotation: 2 },
-                { idString: "control_panel2", position: Vec.create(5, -57), rotation: 2 },
-                { idString: "regular_crate", position: Vec.create(-7, -84) },
-                { idString: "barrel", position: Vec.create(2, -85) },
-                { idString: "bookshelf", position: Vec.create(23.5, -86.5), rotation: 2 },
+                { idString: "regular_crate", position: Vec.create(35, -37) },
 
-                { idString: "window2", position: Vec.create(-16, -50.5), rotation: 1 },
-                { idString: "window2", position: Vec.create(-6, -50.5), rotation: 1 },
-                { idString: "window2", position: Vec.create(7, -50.5), rotation: 1 },
-                { idString: "window2", position: Vec.create(18, -50.5), rotation: 1 }
+                { idString: "regular_crate", position: Vec.create(91, 38.5) },
+                { idString: "regular_crate", position: Vec.create(80, 36.5) },
+                { idString: "sandbags", position: Vec.create(79.5, 21), rotation: 0 },
 
+                { idString: "sandbags", position: Vec.create(61, -5.25), rotation: 1 },
+                { idString: "gun_case", position: Vec.create(53.5, -7), rotation: 3 },
+                { idString: "regular_crate", position: Vec.create(66, 7.1) },
+                { idString: "regular_crate", position: Vec.create(55.5, 7.1) },
+                { idString: "ship_oil_tank", position: Vec.create(58, 20), rotation: 0 },
+
+                { idString: "sandbags", position: Vec.create(22, 22), rotation: 1 },
+                { idString: "regular_crate", position: Vec.create(12.5, 23) },
+                { idString: "sandbags", position: Vec.create(18, -5.5), rotation: 1 },
+                { idString: "grenade_crate", position: Vec.create(10, -7.8) },
+                { idString: "barrel", position: Vec.create(28, -7.8) },
+
+                // middle (gas can room)
+                { idString: "tear_gas_crate", position: Vec.create(-11.5, -3.8), rotation: 3 },
+                { idString: "bookshelf", position: Vec.create(-43.25, -23.5), rotation: 1 },
+                { idString: "barrel", position: Vec.create(-22.5, -26) },
+                { idString: "tugboat_control_panel", position: Vec.create(-23, -5.5), rotation: 1 },
+                { idString: "large_drawer", position: Vec.create(-22, 14.5), rotation: 3 },
+                { idString: "control_panel_small", position: Vec.create(-22.5, 26), rotation: 1 },
+                { idString: "life_preserver", position: Vec.create(-44, 25), rotation: 2 },
+                { idString: "life_preserver", position: Vec.create(-44, 15), rotation: 2 },
+                { idString: "window2", position: Vec.create(-16, -25), rotation: 0 },
+                { idString: "window2", position: Vec.create(-16, -15), rotation: 0 },
+                { idString: "window2", position: Vec.create(-16, -5), rotation: 0 },
+                { idString: "window2", position: Vec.create(-16, 5), rotation: 0 },
+                { idString: "window2", position: Vec.create(-16, 15), rotation: 0 },
+                { idString: "window2", position: Vec.create(-16, 25), rotation: 0 },
+
+                // back
+
+                { idString: "sandbags", position: Vec.create(-66.25, 5.5), rotation: 1 },
+
+                // top left corner
+                { idString: "aegis_crate", position: Vec.create(-126.5, -35) },
+                { idString: "barrel", position: Vec.create(-115, -38) },
+                { idString: "ship_oil_tank", position: Vec.create(-119.5, -20), rotation: 0 },
+
+                { idString: "aegis_crate", position: Vec.create(-69.5, -19.5) },
+                { idString: "regular_crate", position: Vec.create(-82.5, -22) },
+                { idString: "super_barrel", position: Vec.create(-80, -12.5) },
+
+                // bottom left
+                { idString: "regular_crate", position: Vec.create(-129, 7) },
+                { idString: "sandbags", position: Vec.create(-114, -5.5), rotation: 1 },
+                { idString: "gun_case", position: Vec.create(-124, -8.5), rotation: 0 }
             ],
+
             subBuildings: [
                 {
-                    idString: randomContainer1,
-                    position: Vec.create(19, -64),
-                    orientation: 2
+                    idString: "cargo_ship_center_roof",
+                    position: Vec.create(-32, 0),
+                    orientation: 0
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(-15, 20)
+                    position: Vec.create(-36.25, 58), // reversed coordinates moment
+                    orientation: 1
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(-16, -20),
-                    orientation: 2
+                    position: Vec.create(36.25, 58),
+                    orientation: 1
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(-31, -20),
-                    orientation: 2
+                    position: Vec.create(36.25, -74.9),
+                    orientation: 1
+                },
+                {
+                    idString: "container_2",
+                    position: Vec.create(19.9, 58),
+                    orientation: 1
+                },
+                {
+                    idString: "container_12",
+                    position: Vec.create(-36.2, -15.5),
+                    orientation: 3
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(16, -22)
+                    position: Vec.create(-19.9, -15.5),
+                    orientation: 3
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(15, 22),
-                    orientation: 2
+                    position: Vec.create(36.25, -15.5),
+                    orientation: 3
+                },
+                {
+                    idString: "container_13",
+                    position: Vec.create(-19.9, -74.9),
+                    orientation: 1
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(-1, 22),
-                    orientation: 2
+                    position: Vec.create(-36.25, -74.9),
+                    orientation: 1
+                },
+                {
+                    idString: "container_2",
+                    position: Vec.create(-36.25, -119.6),
+                    orientation: 1
                 },
                 {
                     idString: randomContainer1,
-                    position: Vec.create(16, -110)
-                },
-                {
-                    idString: randomContainer1,
-                    position: Vec.create(31, -110)
+                    position: Vec.create(-19.9, -119.6),
+                    orientation: 1
                 }
             ] as SubBuilding[],
             lootSpawners: [{
-                position: Vec.create(10, -73),
+                position: Vec.create(-35, 0),
                 table: "gas_can"
             }]
         },
@@ -2033,13 +2109,22 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
+            idString: "cargo_ship_rotated", // this until we redesign the oil tanker
+            name: "Cargo Ship Rotated",
+            spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
+            spawnMode: MapObjectSpawnMode.Beach,
+            subBuildings: [
+                { idString: "cargo_ship", position: Vec.create(100, -8), orientation: 3 }
+            ]
+        },
+        {
             idString: "port_complex",
             name: "Port Complex",
             spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
             subBuildings: [
                 { idString: "port", position: Vec.create(-120, 0) },
-                { idString: { ship: 1, oil_tanker_ship: 1 }, position: Vec.create(74, -65) }
+                { idString: { cargo_ship_rotated: 1, oil_tanker_ship: 1 }, position: Vec.create(74, -65) }
             ]
         },
         {
