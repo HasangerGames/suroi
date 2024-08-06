@@ -1340,7 +1340,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 maxRange: 416,
                 falloff: 2
             },
-            ceilingImages: [
+            ceilingI2mages: [
                 {
                     key: "cargo_ship_front_ceiling_1",
                     position: Vec.create(126.5, -23.5),
@@ -1359,8 +1359,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     scale: Vec.create(1.07, 1.07)
                 },
                 {
-                    key: "cargo_ship_floor_3",
-                    position: Vec.create(126.5, 0),
+                    key: "cargo_ship_floor_3_1",
+                    position: Vec.create(126.5, -23.75),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "cargo_ship_floor_3_2",
+                    position: Vec.create(126.5, 23.8),
                     scale: Vec.create(1.07, 1.07)
                 },
                 {

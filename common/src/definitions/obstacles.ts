@@ -2688,11 +2688,16 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 // bottom hitboxes
                 // HACK: refactor when we support collision with polygon hitboxes
                 new CircleHitbox(11.1, Vec.create(120.8, 12)),
+                new CircleHitbox(4, Vec.create(80, -30.8)),
+                new CircleHitbox(4, Vec.create(127.5, 5)),
+                new CircleHitbox(4, Vec.create(127.5, 20)),
+                new CircleHitbox(6, Vec.create(126, 10)),
+                new CircleHitbox(6, Vec.create(126, 15)),
                 ...Array.from({ length: 2 }, (_, i) => {
                     const a = i === 0 ? 1 : -1;
                     const b = i === 0 ? 0 : 25;
                     return [
-                        new CircleHitbox(4, Vec.create(125, 0 * a + b)),
+                        new CircleHitbox(4, Vec.create(126, 0 * a + b)),
                         new CircleHitbox(4, Vec.create(123.5, -4 * a + b)),
                         new CircleHitbox(4, Vec.create(122.5, -6 * a + b)),
                         new CircleHitbox(4, Vec.create(121, -8 * a + b)),
