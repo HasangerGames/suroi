@@ -348,7 +348,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     private _travelCollidesWith(travelStart: Vector, travelEnd: Vector, hitbox: Hitbox): Vector | null {
         // Checks for an intersection between the path of travel and all of the provided boundary line segments.
         // The intersection that is closest to the trajectory's starting position is returned.
-        const getClosestIntersection = (boundaryLineSegments: Vector[][]) => {
+        const getClosestIntersection = (boundaryLineSegments: Vector[][]): Vector | null => {
             let nearestIntersection: Vector | null = null;
             let nearestIntersectionDistance: number = Number.MAX_SAFE_INTEGER;
 
@@ -381,7 +381,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         };
 
         // Returns a list of point pairs for the line segments that comprise the boundaries of the rectangular hitbox.
-        const getBoundaryLineSegmentsForRectangle = (hitbox: RectangleHitbox) => {
+        const getBoundaryLineSegmentsForRectangle = (hitbox: RectangleHitbox): Array<[Vector, Vector]> => {
             const hitboxTopLeftPoint: Vector = Vec.clone(hitbox.min);
             const hitboxTopRightPoint: Vector = Vec.create(hitbox.max.x, hitbox.min.y);
             const hitboxBottomLeftPoint: Vector = Vec.create(hitbox.min.x, hitbox.max.y);
@@ -395,12 +395,12 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             ];
         };
 
-        const handleRectangle = (hitbox: RectangleHitbox) => {
+        const handleRectangle = (hitbox: RectangleHitbox): Vector | null => {
             const boundaryLineSegments: Vector[][] = getBoundaryLineSegmentsForRectangle(hitbox);
             return getClosestIntersection(boundaryLineSegments);
         };
 
-        const handleGroup = (hitbox: HitboxGroup) => {
+        const handleGroup = (hitbox: HitboxGroup): Vector | null => {
             const allRectangleHitboxBoundaryLineSegments = hitbox.hitboxes
                 .filter((hitbox: Hitbox) => hitbox instanceof RectangleHitbox)
                 .map((hitbox: Hitbox) => getBoundaryLineSegmentsForRectangle(hitbox as RectangleHitbox))
