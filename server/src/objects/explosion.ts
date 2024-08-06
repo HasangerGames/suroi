@@ -123,6 +123,7 @@ export class Explosion {
                     this.game,
                     this.definition.decal,
                     this.position,
+                    randomRotation(),
                     this.layer
                 )
             );

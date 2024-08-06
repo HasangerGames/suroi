@@ -2114,7 +2114,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
             subBuildings: [
-                { idString: "cargo_ship", position: Vec.create(100, -8), orientation: 3 }
+                { idString: "cargo_ship", position: Vec.create(100, -12), orientation: 3 }
             ]
         },
         {
