@@ -36,7 +36,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         }
     });
 
-    if (FloorTypes[game.map.terrain.getFloor(position)].particles) {
+    if (FloorTypes[game.map.terrain.getFloor(position, (game.layer as number))].particles) {
         game.particleManager.spawnParticles(4, () => ({
             frames: "ripple_particle",
             zIndex: ZIndexes.Ground,
