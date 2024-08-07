@@ -1592,7 +1592,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: "stone",
-                    hitbox: RectangleHitbox.fromRect(211, 80, Vec.create(31, 0))
+                    hitbox: RectangleHitbox.fromRect(212, 80, Vec.create(31, 0))
                 },
                 {
                     type: "metal",
@@ -1686,6 +1686,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port",
             name: "Port",
+            sounds: {
+                normal: "port_ambience",
+                position: Vec.create(250, 0),
+                maxRange: 300,
+                falloff: 0.05
+            },
             spawnHitbox: RectangleHitbox.fromRect(315, 290, Vec.create(-5, 0)),
             groundGraphics: [
                 {
