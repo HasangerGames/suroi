@@ -145,7 +145,7 @@ export class BaseBullet {
         Bullets.writeToStream(stream, this.definition);
         stream.writePosition(this.initialPosition);
         stream.writeRotation(this.rotation, 16);
-        stream.writeInt8(this.layer);
+        stream.writeLayer(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeBits(this.reflectionCount, 2);
         stream.writeObjectID(this.sourceID);
@@ -159,7 +159,7 @@ export class BaseBullet {
         const source = Bullets.readFromStream(stream);
         const position = stream.readPosition();
         const rotation = stream.readRotation(16);
-        const layer = stream.readInt8();
+        const layer = stream.readLayer();
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readBits(2);
         const sourceID = stream.readObjectID();

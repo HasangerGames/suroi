@@ -183,7 +183,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             stream.writePosition(position);
             stream.writeRotation(rotation, 16);
-            stream.writeInt8(layer);
+            stream.writeLayer(layer);
 
             const animationDirty = animation !== undefined;
             stream.writeBoolean(animationDirty);
@@ -236,7 +236,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
-                layer: stream.readInt8(),
+                layer: stream.readLayer(),
                 animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
 
@@ -292,7 +292,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             stream.writePosition(full.position);
             stream.writeObstacleRotation(full.rotation.rotation, full.definition.rotationMode);
-            stream.writeInt8(full.layer);
+            stream.writeLayer(full.layer);
             stream.writeBoolean(full.locked);
             if (full.definition.variations !== undefined && full.variation !== undefined) {
                 stream.writeVariation(full.variation);
@@ -318,7 +318,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition,
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
-                layer: stream.readInt8(),
+                layer: stream.readLayer(),
                 variation: definition.variations ? stream.readVariation() : undefined,
                 locked: stream.readBoolean(),
                 detectedMetal: definition.detector ? stream.readBoolean() : undefined
@@ -338,7 +338,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Loot]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
-            stream.writeInt8(data.layer);
+            stream.writeLayer(data.layer);
         },
         serializeFull(stream, data): void {
             Loots.writeToStream(stream, data.full.definition);
@@ -348,7 +348,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             return {
                 position: stream.readPosition(),
-                layer: stream.readInt8()
+                layer: stream.readLayer()
             };
         },
         deserializeFull(stream) {
@@ -365,14 +365,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.DeathMarker]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
-            stream.writeInt8(data.layer);
+            stream.writeLayer(data.layer);
             stream.writeBoolean(data.isNew);
             stream.writeObjectID(data.playerID);
         },
         serializeFull(): void { /* death markers have no full serialization */ },
         deserializePartial(stream) {
             const position = stream.readPosition();
-            const layer = stream.readInt8();
+            const layer = stream.readLayer();
             const isNew = stream.readBoolean();
             const playerID = stream.readObjectID();
 
@@ -396,7 +396,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 stream.writeBoolean(data.puzzle.solved);
                 stream.writeBoolean(data.puzzle.errorSeq);
             }
-            stream.writeInt8(data.layer);
+            stream.writeLayer(data.layer);
         },
         serializeFull(stream, data): void {
             Buildings.writeToStream(stream, data.full.definition);
@@ -412,7 +412,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                         errorSeq: stream.readBoolean()
                     }
                     : undefined,
-                layer: stream.readInt8()
+                layer: stream.readLayer()
             };
         },
         deserializeFull(stream) {
@@ -431,7 +431,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Decals.writeToStream(stream, data.definition);
             stream.writePosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
-            stream.writeInt8(data.layer);
+            stream.writeLayer(data.layer);
         },
         serializeFull(): void { /* decals have no full serialization */ },
         deserializePartial(stream) {
@@ -440,7 +440,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition,
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode).rotation,
-                layer: stream.readInt8()
+                layer: stream.readLayer()
             };
         },
         deserializeFull() { /* decals have no full serialization */ }
@@ -469,7 +469,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             stream.writePosition(data.position);
             stream.writeRotation(data.rotation, 16);
-            stream.writeInt8(data.layer);
+            stream.writeLayer(data.layer);
             stream.writeBoolean(data.airborne);
             stream.writeBoolean(data.activated);
         },
@@ -480,7 +480,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
-                layer: stream.readInt8(),
+                layer: stream.readLayer(),
                 airborne: stream.readBoolean(),
                 activated: stream.readBoolean()
             };
@@ -498,7 +498,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             stream.writePosition(position);
             stream.writeRotation(rotation, 8);
-            stream.writeInt8(layer);
+            stream.writeLayer(layer);
 
             const writeScale = scale !== undefined;
             stream.writeBoolean(writeScale);
@@ -526,7 +526,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(8),
-                layer: stream.readInt8()
+                layer: stream.readLayer()
             };
 
             if (stream.readBoolean()) { // scale

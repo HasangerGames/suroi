@@ -1,5 +1,5 @@
 import { BitStream, type BitView } from "@damienvesper/bit-buffer";
-import { GameConstants, ObjectCategory } from "../constants";
+import { GameConstants, Layer, ObjectCategory } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, Numeric } from "./math";
@@ -240,6 +240,22 @@ export class SuroiBitStream extends BitStream {
      */
     readVariation(): Variation {
         return this.readBits(VARIATION_BITS) as Variation;
+    }
+
+    /**
+     * Write a game object layer to the stream
+     * @param value The layer value to write
+     */
+    writeLayer(value: Layer): void {
+        this.writeBits(value + 2, 3);
+    }
+
+    /**
+     * Read a game object layer from the stream
+     * @return The object layer
+     */
+    readLayer(): Layer {
+        return this.readBits(3) - 2;
     }
 
     /**

@@ -62,7 +62,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                 case ObjectCategory.Building:
                     Buildings.writeToStream(stream, object.definition);
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
-                    stream.writeInt8(object.layer);
+                    stream.writeLayer(object.layer);
                     break;
             }
         });
@@ -109,7 +109,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     case ObjectCategory.Building: {
                         const definition = Buildings.readFromStream(stream);
                         const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
-                        const layer = stream.readInt8();
+                        const layer = stream.readLayer();
 
                         return {
                             position,
