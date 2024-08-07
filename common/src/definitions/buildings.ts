@@ -2933,10 +2933,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             isStair: true,
             layer: -1,
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-            /* floorImages: [{ // it's already in the hq's svg
-                key: "stair_floor",
-                position: Vec.create(0, 0)
-            }], */
             floors: [
                 { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
