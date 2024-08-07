@@ -41,7 +41,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 0.5 },
             { tier: "scopes", weight: 0.3 },
             { tier: "throwables", weight: 0.3 },
-            { tier: "melee", weight: 0.04 }
+            { tier: "melee", weight: 0.04 },
+            { tier: "rare_world_skins", weight: 0.04}
         ]
     },
     hazel_crate: {
@@ -81,6 +82,9 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             [
+                { item: "lily_lurker", weight: 1}
+            ],
+            [
                 { tier: "river_chest_guns", weight: 1 }
             ],
             [
@@ -104,7 +108,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_guns", weight: 1 },
             { tier: "special_healing_items", weight: 0.15 },
             { tier: "special_equipment", weight: 0.65 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { item: "aegis_jumpsuit", weight: 0.08 }
         ]
     },
     flint_crate: {
@@ -114,7 +119,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_guns", weight: 1 },
             { tier: "special_equipment", weight: 0.65 },
             { tier: "special_healing_items", weight: 0.15 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { item: "the_arrowhead", weight: 0.08, }
         ]
     },
     grenade_box: {
@@ -154,6 +160,9 @@ export const LootTables: Record<string, LootTable> = {
                 { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
                 { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
                 { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
+            ],
+            [
+                { item: "heavy_cargo", weight: .8 }
             ]
         ]
     },
@@ -313,6 +322,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { item: "lemon", weight: 1 },
             { item: "flamingo", weight: 1 },
+            { item: "tattered_rags", weight: 0.6 },
             { item: "verified", weight: 0.5 },
             { item: "no_kil_pls", weight: 0.5 },
             { item: "basic_outfit", weight: 0.001 }
@@ -566,6 +576,29 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 0.5 },
             { tier: "equipment", weight: 0.3 }
         ]
+    },
+    refinery_office_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "hazardous_materials", weight: .3 }
+        ]
+    },
+    armory_vault_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "battle_dress", spawnSeparately: true, count: 1, weight: 3.5 },
+            { item: "battle_dress", spawnSeparately: true, count: 2, weight: 0.8 },
+            { item: "battle_dress", spawnSeparately: true, count: 4, weight: 0.05 }
+        ]
+    },
+    oil_tanker_ship_vault_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "oil_dweller", weight: 1 }
+        ]
     }
 };
 
@@ -796,5 +829,8 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "stoner_63", weight: 0.08 },
         { item: "tango_51", weight: 0.08 },
         { item: "g19", weight: 0.08 }
+    ],
+    rare_world_skins: [
+        { item: "field_gray", weight: 1}
     ]
 };
