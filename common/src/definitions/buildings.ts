@@ -1541,105 +1541,114 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "oil_tanker_ship",
             name: "Oil Tanker",
-            spawnHitbox: RectangleHitbox.fromRect(110, 300),
-            scopeHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(65, 29, Vec.create(4.5, -102.5)),
-                RectangleHitbox.fromRect(7.5, 28, Vec.create(41.7, -101.5))
-            ),
+            spawnHitbox: RectangleHitbox.fromRect(370, 120),
+            scopeHitbox: RectangleHitbox.fromRect(38, 80, Vec.create(-94, 0)),
             puzzle: {
                 triggerInteractOn: "vault_door",
                 interactDelay: 1500
             },
-            floorImages: [
-                {
-                    key: "oil_tanker_ship_floor_1",
-                    position: Vec.create(0, -59.439)
-                },
-                {
-                    key: "oil_tanker_ship_floor_2",
-                    position: Vec.create(0, 59.439)
-                }
-            ],
             ceilingImages: [
                 {
-                    key: "oil_tanker_ship_ceiling",
-                    position: Vec.create(7, -99.5),
-                    scale: Vec.create(2, 2)
+                    key: "oil_tanker_ship_room_ceiling_1",
+                    position: Vec.create(-101.5, -20),
+                    scale: Vec.create(1.07, 1.07)
                 },
                 {
-                    key: "oil_tanker_ship_tank_ceiling",
-                    position: Vec.create(9.5, 20)
+                    key: "oil_tanker_ship_room_ceiling_2",
+                    position: Vec.create(-101.5, 20),
+                    scale: Vec.create(1.07, 1.07)
+                }
+            ],
+            floorImages: [
+                {
+                    key: "oil_tanker_ship_floor_2",
+                    position: Vec.create(57, -0.1),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "oil_tanker_ship_floor_3",
+                    position: Vec.create(153, -0.2),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "oil_tanker_ship_back",
+                    position: Vec.create(-116, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "oil_tanker_ship_floor_1",
+                    position: Vec.create(-57, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "ship_stair",
+                    position: Vec.create(-33.9, 50)
+                },
+                {
+                    key: "ship_stair",
+                    position: Vec.create(75.2, 50)
                 }
             ],
             floors: [
                 {
                     type: "stone",
-                    hitbox: RectangleHitbox.fromRect(82, 210, Vec.create(8.5, -13))
+                    hitbox: RectangleHitbox.fromRect(211, 80, Vec.create(31, 0))
                 },
                 {
                     type: "metal",
-                    hitbox: RectangleHitbox.fromRect(20, 10, Vec.create(-42, 18.5))
+                    hitbox: RectangleHitbox.fromRect(38, 76.5, Vec.create(-94, 0))
                 },
                 {
                     type: "metal",
-                    hitbox: RectangleHitbox.fromRect(20, 10, Vec.create(-42, 58.5))
+                    hitbox: RectangleHitbox.fromRect(10, 20.25, Vec.create(-33.9, 50))
+                },
+                {
+                    type: "metal",
+                    hitbox: RectangleHitbox.fromRect(10, 20.25, Vec.create(75.2, 50))
                 }
             ],
             obstacles: [
-                // Main Ship Hitbox
-                { idString: "oil_tanker_ship", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "oil_tanker_ship_front", position: Vec.create(60, -11), rotation: 0 },
+                { idString: "oil_tanker_ship_walls", position: Vec.create(0, 0), rotation: 0 },
 
-                // Oil Tanks
-                { idString: "large_oil_tank", position: Vec.create(9, -46.5), rotation: -Math.PI * 2 },
-                { idString: "large_oil_tank", position: Vec.create(9, 20), rotation: Math.PI / 2 },
-                { idString: "large_oil_tank", position: Vec.create(9, 88), rotation: -Math.PI / 2 },
+                // back
+                { idString: "regular_crate", position: Vec.create(-55.9, 32.7) },
+                { idString: "barrel", position: Vec.create(-62, 23) },
+                { idString: "aegis_crate", position: Vec.create(-59, -32.25) },
+                { idString: "grenade_crate", position: Vec.create(-50, -35) },
+                { idString: "flint_crate", position: Vec.create(-17.5, -35) },
+                { idString: "barrel", position: Vec.create(-8.5, -36) },
+                { idString: "regular_crate", position: Vec.create(1, 24) },
+                { idString: "super_barrel", position: Vec.create(11, 24) },
 
-                // Cabin Windows
-                { idString: "window2", position: Vec.create(-0.25, -87.5), rotation: 1 },
-                { idString: "window2", position: Vec.create(9.75, -87.5), rotation: 1 },
+                // front
+                { idString: "grenade_crate", position: Vec.create(128, -34) },
+                { idString: "aegis_crate", position: Vec.create(129.5, 34) },
+                { idString: "barrel", position: Vec.create(74.5, -35) },
+                { idString: "regular_crate", position: Vec.create(84.25, -34) },
+                { idString: "regular_crate", position: Vec.create(75, -6.5) },
+                { idString: "regular_crate", position: Vec.create(75, 4) },
 
-                { idString: "window2", position: Vec.create(22, -87.5), rotation: 1 },
-                { idString: "window2", position: Vec.create(31, -87.5), rotation: 1 },
+                // vault
+                { idString: "vault_door", position: Vec.create(-105.9, 17.7), rotation: 0 },
+                { idString: "barrel", position: Vec.create(-107, 33.25) },
+                { idString: "briefcase", position: Vec.create(-82.5, 33.3), rotation: 0 },
+                { idString: "regular_crate", position: Vec.create(-92.9, 32.7) },
+                { idString: "regular_crate", position: Vec.create(-81.9, 23.1) },
+                { idString: "gun_case", position: Vec.create(-109, -32.3), rotation: 1 },
+                { idString: "life_preserver", position: Vec.create(-110.1, -21.6), rotation: 2 },
+                { idString: "life_preserver", position: Vec.create(-110.1, -11.5), rotation: 2 },
+                { idString: "tugboat_control_panel", position: Vec.create(-81.5, 0), rotation: 1 },
+                { idString: "control_panel", position: Vec.create(-81, -19.25), rotation: 3, puzzlePiece: true },
+                { idString: "window2", position: Vec.create(-74.5, -21.5), rotation: 0 },
+                { idString: "window2", position: Vec.create(-74.5, -11.5), rotation: 0 },
+                { idString: "window2", position: Vec.create(-74.5, 1.3), rotation: 0 },
+                { idString: "window2", position: Vec.create(-74.5, 11.5), rotation: 0 }
 
-                // Cabin Furniture
-                { idString: "control_panel_small", position: Vec.create(-1, -93.8), rotation: 2 },
-                { idString: "large_drawer", position: Vec.create(9.5, -93.5), rotation: 2 },
-
-                { idString: "control_panel", position: Vec.create(22, -93.8), rotation: 2, puzzlePiece: true },
-                { idString: "control_panel_small", position: Vec.create(31.7, -93.8), rotation: 2 },
-
-                // Vector Vault
-                { idString: "vault_door", position: Vec.create(-6.5, -110), rotation: 3 },
-                { idString: "briefcase", position: Vec.create(-22.5, -94), rotation: 0 },
-                { idString: "regular_crate", position: Vec.create(-12.19, -94.34) },
-                { idString: "regular_crate", position: Vec.create(-23.1, -102.93) },
-
-                // Front of ship
-                { idString: "barrel", position: Vec.create(-27, 68) },
-                { idString: "regular_crate", position: Vec.create(-18, 66) },
-                { idString: "regular_crate", position: Vec.create(42, 66) },
-                {
-                    idString: {
-                        regular_crate: 2,
-                        aegis_crate: 1,
-                        flint_crate: 1
-                    },
-                    position: Vec.create(32, 60),
-                    rotation: 2
-                },
-
-                // Mid Ship
-                { idString: "sandbags", position: Vec.create(-22, 1), rotation: 2 },
-                { idString: "super_barrel", position: Vec.create(-27, -20) },
-                { idString: "barrel", position: Vec.create(-15, -15) },
-                { idString: "regular_crate", position: Vec.create(-25, -10) },
-                { idString: "sandbags", position: Vec.create(43, -20), rotation: 1 },
-                { idString: "super_barrel", position: Vec.create(43, -7.5) },
-                { idString: "sandbags", position: Vec.create(30, -16), rotation: 2 },
-                { idString: "flint_crate", position: Vec.create(41, -35) }
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "oil_tanker_ship_vault", position: Vec.create(-17.6, -102.6) }
+                { idString: "oil_tanker_ship_vault", position: Vec.create(-28, -94), orientation: 1 },
+                { idString: "oil_tanker_tanks", position: Vec.create(39, -5), orientation: 0 } // P A I N
             ]
         },
         {
@@ -1650,8 +1659,29 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [{
                 key: "oil_tanker_ship_vault_ceiling",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, 0),
+                scale: Vec.create(0.95, 1.3)
             }]
+        },
+        {
+            idString: "oil_tanker_tanks",
+            name: "Oil Tanker Tanks",
+            spawnHitbox: RectangleHitbox.fromRect(200, 90),
+            ceilingImages: [
+                {
+                    key: "oil_tanker_tanks_1",
+                    position: Vec.create(-52, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "oil_tanker_tanks_2",
+                    position: Vec.create(53.4, 0.06),
+                    scale: Vec.create(1.07, 1.07)
+                }
+            ],
+            obstacles: [
+                { idString: "oil_tanker_tanks_body", position: Vec.create(0, 0), rotation: 0 }
+            ] as BuildingObstacle[]
         },
         {
             idString: "port",
@@ -2114,12 +2144,21 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "cargo_ship_rotated", // this until we redesign the oil tanker
-            name: "Cargo Ship Rotated",
+            idString: "cargo_ship_holder",
+            name: "Cargo Ship (Holder)",
             spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
             subBuildings: [
-                { idString: "cargo_ship", position: Vec.create(100, -12), orientation: 3 }
+                { idString: "cargo_ship", position: Vec.create(40, -86), orientation: 3 }
+            ]
+        },
+        {
+            idString: "oil_tanker_ship_holder",
+            name: "Oil Tanker Ship (Holder)",
+            spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
+            spawnMode: MapObjectSpawnMode.Beach,
+            subBuildings: [
+                { idString: "oil_tanker_ship", position: Vec.create(-55, -81.8), orientation: 3 }
             ]
         },
         {
@@ -2129,7 +2168,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Beach,
             subBuildings: [
                 { idString: "port", position: Vec.create(-120, 0) },
-                { idString: { cargo_ship_rotated: 1, oil_tanker_ship: 1 }, position: Vec.create(74, -65) }
+                { idString: { cargo_ship_holder: 1, oil_tanker_ship_holder: 1 }, position: Vec.create(0, 0) }
             ]
         },
         {

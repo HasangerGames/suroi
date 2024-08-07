@@ -2183,19 +2183,35 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "large_oil_tank",
-            name: "Large Oil Tank",
+            idString: "oil_tanker_tanks_body",
+            name: "Large Oil Tanks (Hitbox)",
             material: "large_refinery_barrel",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
+            invisible: true,
+            noResidue: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
                 destroy: 0.5
             },
-            hitbox: new CircleHitbox(28),
-            rotationMode: RotationMode.Full,
+            hitbox: new HitboxGroup(
+                new CircleHitbox(31.25, Vec.create(-0.5, 4.4)),
+                new CircleHitbox(31.25, Vec.create(-72.25, 4.4)),
+                new CircleHitbox(31.25, Vec.create(73.1, 4.4)),
+                RectangleHitbox.fromRect(10.5, 16.3, Vec.create(-98.5, 5)),
+                RectangleHitbox.fromRect(17.5, 13, Vec.create(-74.7, -29.7)),
+                RectangleHitbox.fromRect(4.6, 37.8, Vec.create(-32.5, 4)),
+                RectangleHitbox.fromRect(4.6, 37.8, Vec.create(-39.9, 4)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(10.5, -13.3)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(10.25, 22.6)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(62, -13.3)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(62, 22.6)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(-61.25, -13.3)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(-60, 22))
+            ),
+            rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "barrel_particle"
@@ -2777,8 +2793,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             )
         },
         {
-            idString: "oil_tanker_ship",
-            name: "Oil Tanker",
+            idString: "oil_tanker_ship_front",
+            name: "Oil Tanker Front",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -2790,47 +2806,79 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "metal_particle"
             },
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1, 190, Vec.create(49, -22)), // Port
-                RectangleHitbox.fromRect(1, 130, Vec.create(-32, -51.5)), // Starboard Top
-                RectangleHitbox.fromRect(1, 30, Vec.create(-32, 39)), // Starboard middle
-                RectangleHitbox.fromRect(1, 10, Vec.create(-32, 69)), // Starboard middle
-                RectangleHitbox.fromRect(85, 1, Vec.create(8, -118.5)), // Stern
-                RectangleHitbox.fromRect(69, 1.5, Vec.create(3.3, -88.5)), // Front of the cabin
-                RectangleHitbox.fromRect(1.5, 17.5, Vec.create(37, -96.5)), // Left wall of the entrance to the cabin
-                RectangleHitbox.fromRect(1.5, 29, Vec.create(46.5, -102.5)), // Right wall of the entrance to the cabin
-                RectangleHitbox.fromRect(75, 1.5, Vec.create(9, -117)), // Back of the cabin
-                RectangleHitbox.fromRect(1.5, 29, Vec.create(-29, -102.5)), // Right wall of the cabin
-                RectangleHitbox.fromRect(1.5, 13, Vec.create(-6.2, -95.8)), // Right wall of the vector room
-
-                // Bottom Hitboxes
+                // bottom hitboxes
                 // HACK: refactor when we support collision with polygon hitboxes
-                new CircleHitbox(12, Vec.create(8, 107)),
+                new CircleHitbox(13.25, Vec.create(118.5, 12)),
+                new CircleHitbox(3, Vec.create(80, -30.8)),
+                new CircleHitbox(3, Vec.create(127.5, 5)),
+                new CircleHitbox(3, Vec.create(127.5, 20)),
                 ...Array.from({ length: 2 }, (_, i) => {
                     const a = i === 0 ? 1 : -1;
-                    const b = i === 0 ? 0 : 17;
-                    return [
-                        new CircleHitbox(4, Vec.create(0 * a + b, 114)),
-                        new CircleHitbox(4, Vec.create(-4 * a + b, 112.5)),
-                        new CircleHitbox(4, Vec.create(-6 * a + b, 111.5)),
-                        new CircleHitbox(4, Vec.create(-8 * a + b, 111)),
-                        new CircleHitbox(4, Vec.create(-10 * a + b, 109.8)),
-                        new CircleHitbox(4, Vec.create(-12 * a + b, 108.4)),
-                        new CircleHitbox(4, Vec.create(-14 * a + b, 106.9)),
-                        new CircleHitbox(4, Vec.create(-16 * a + b, 105.2)),
-                        new CircleHitbox(4, Vec.create(-18 * a + b, 103.4)),
-                        new CircleHitbox(4, Vec.create(-20 * a + b, 101.6)),
-                        new CircleHitbox(4, Vec.create(-22 * a + b, 99)),
-                        new CircleHitbox(4, Vec.create(-24 * a + b, 95.3)),
-                        new CircleHitbox(4, Vec.create(-26 * a + b, 92)),
-                        new CircleHitbox(4, Vec.create(-27 * a + b, 89.2)),
-                        new CircleHitbox(4, Vec.create(-28 * a + b, 86.5)),
-                        new CircleHitbox(4, Vec.create(-29 * a + b, 83.8)),
-                        new CircleHitbox(4, Vec.create(-30 * a + b, 80.2)),
-                        new CircleHitbox(4, Vec.create(-30 * a + b, 77))
-                    ];
-                }).flat(),
+                    const b = i === 0 ? 0 : 23;
 
-                RectangleHitbox.fromRect(85, 1.5, Vec.create(8.6, 73.6))
+                    const radius = 3;
+                    return [
+                        new CircleHitbox(radius, Vec.create(126, 0 * a + b)),
+                        new CircleHitbox(radius, Vec.create(123.5, -4 * a + b)),
+                        new CircleHitbox(radius, Vec.create(122.5, -6 * a + b)),
+                        new CircleHitbox(radius, Vec.create(121, -8 * a + b)),
+                        new CircleHitbox(radius, Vec.create(120, -10 * a + b)),
+                        new CircleHitbox(radius, Vec.create(118.5, -12 * a + b)),
+                        new CircleHitbox(radius, Vec.create(116.5, -14 * a + b)),
+                        new CircleHitbox(radius, Vec.create(114.5, -16 * a + b)),
+                        new CircleHitbox(radius, Vec.create(113, -18 * a + b)),
+                        new CircleHitbox(radius, Vec.create(110.5, -20 * a + b)),
+                        new CircleHitbox(radius, Vec.create(108, -22 * a + b)),
+                        new CircleHitbox(radius, Vec.create(104, -24 * a + b)),
+                        new CircleHitbox(radius, Vec.create(99.5, -26 * a + b)),
+                        new CircleHitbox(radius, Vec.create(95, -27 * a + b)),
+                        new CircleHitbox(radius, Vec.create(91, -28 * a + b)),
+                        new CircleHitbox(radius, Vec.create(88, -29 * a + b)),
+                        new CircleHitbox(radius, Vec.create(83, -30 * a + b))
+                    ];
+                }).flat()
+            )
+        },
+        {
+            idString: "oil_tanker_ship_walls",
+            name: "Oil Tanker Walls",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+
+                // outer walls
+                RectangleHitbox.fromRect(250, 4.5, Vec.create(14, -42.6)),
+                RectangleHitbox.fromRect(98.25, 4.5, Vec.create(20.5, 42.6)),
+                RectangleHitbox.fromRect(71.5, 4.5, Vec.create(-74.5, 42.6)),
+                RectangleHitbox.fromRect(3.8, 6.2, Vec.create(-111.6, 42.6)),
+                RectangleHitbox.fromRect(3.8, 6.2, Vec.create(-111.6, -42.6)),
+                RectangleHitbox.fromRect(60, 4.5, Vec.create(110, 42.6)),
+                RectangleHitbox.fromRect(4.5, 80.5, Vec.create(137.5, 0)),
+
+                // oil barrels (small)
+                new CircleHitbox(4.8, Vec.create(7, 39.8)),
+                new CircleHitbox(4.8, Vec.create(7, -39.8)),
+                new CircleHitbox(4.8, Vec.create(-67.8, 39.8)),
+                new CircleHitbox(4.8, Vec.create(-67.8, -39.8)),
+                new CircleHitbox(4.8, Vec.create(94.25, 39.8)),
+                new CircleHitbox(4.8, Vec.create(94.25, -39.8)),
+
+                // vault
+                RectangleHitbox.fromRect(2, 80, Vec.create(-112.9, 0)),
+                RectangleHitbox.fromRect(18.7, 2, Vec.create(-83.7, -27.25)),
+                RectangleHitbox.fromRect(22.8, 2, Vec.create(-85.8, 17)),
+                RectangleHitbox.fromRect(1.9, 21.25, Vec.create(-75.5, 28)),
+                RectangleHitbox.fromRect(1.9, 2.7, Vec.create(-75, -4.9)),
+                RectangleHitbox.fromRect(38, 2, Vec.create(-93, -38.8)),
+                RectangleHitbox.fromRect(38, 2, Vec.create(-93, 38.8))
             )
         },
         {
