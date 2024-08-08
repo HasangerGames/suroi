@@ -6,7 +6,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/s
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -449,7 +449,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     hitEffect(position: Vector, angle: number): void {
         this.hitSound?.stop();
         this.hitSound = this.game.soundManager.play(
-            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,
+            `${this.definition.material}_hit_${this.definition.hitSoundVariations ? JSON.stringify(random(1, this.definition.hitSoundVariations)) : randomBoolean() ? "1" : "2"}`,
             {
                 position,
                 falloff: 0.2,

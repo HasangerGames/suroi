@@ -68,6 +68,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
     readonly anyLayer?: boolean
+    readonly hitSoundVariations?: number
 
     readonly frames: {
         readonly base?: string
@@ -715,6 +716,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "Piano",
             material: "piano", // TODO: sounds
             health: 350,
+            hitSoundVariations: 8, // blus
             impenetrable: true,
             scale: {
                 spawnMin: 1,

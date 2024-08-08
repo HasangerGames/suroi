@@ -3026,13 +3026,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [{
                 key: "secret_room_ceiling",
                 position: Vec.create(0, 0),
-                scale: Vec.create(1.05, 1.05)
+                scale: Vec.create(1.05, 1.055)
             }],
             obstacles: [
                 // secret room
                 { idString: "headquarters_secret_room_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "secret_door", position: Vec.create(3.5, -13.5), rotation: 2 },
-                { idString: "aegis_golden_case", position: Vec.create(-4.8, 6.25), rotation: 1 }
+                { idString: "aegis_golden_case", position: Vec.create(0.25, 9), rotation: 2 }
             ] as BuildingObstacle[]
         },
         {
@@ -3059,11 +3059,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "headquarters_second_floor_bottom",
-                    position: Vec.create(0, 0)
+                    position: Vec.create(-0.85, 0)
                 },
                 {
                     key: "headquarters_second_floor_top",
-                    position: Vec.create(0, -73)
+                    position: Vec.create(-0.85, -73)
                 }
             ],
             floors: [
@@ -3252,8 +3252,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(15.25, 1.5, Vec.create(7.75, -26.3)),
                         RectangleHitbox.fromRect(35.5, 60.5, Vec.create(51.25, -57.5)),
                         RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -41.5)),
-                        RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -81)),
-                        RectangleHitbox.fromRect(22, 30.6, Vec.create(-59.5, -18.7))
+                        RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -81))
                     )
                 },
                 {
@@ -3286,7 +3285,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: "metal",
-                    hitbox: RectangleHitbox.fromRect(10, 20.5, Vec.create(-52.5, -89))
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(10, 20.5, Vec.create(-52.5, -89)),
+                        RectangleHitbox.fromRect(22, 30.6, Vec.create(-59.5, -18.7))
+                    )
                 }
             ],
             obstacles: [
