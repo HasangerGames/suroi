@@ -3039,10 +3039,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
             layer: -2,
-            spawnHitbox: RectangleHitbox.fromRect(0, 0, Vec.create(40, -40)),
+            spawnHitbox: RectangleHitbox.fromRect(180, 190, Vec.create(0, -35)),
             scopeHitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
-                RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
+                RectangleHitbox.fromRect(143, 72.5, Vec.create(-0.5, -12.5)),
+                RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -85))
             ),
             puzzle: {
                 triggerInteractOn: "speaker",
@@ -3441,7 +3441,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_second_floor", position: Vec.create(0, 10), orientation: 0, layer: -2 },
+                { idString: "headquarters_second_floor", position: Vec.create(0, 12), orientation: 0, layer: -2 },
                 { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 }
             ]
