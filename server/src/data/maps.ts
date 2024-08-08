@@ -81,7 +81,7 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        majorBuildings: ["armory", "port_complex", "refinery"],
+        majorBuildings: ["armory", "port_complex", "refinery", "headquarters"],
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
@@ -90,6 +90,7 @@ const maps = {
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
+            headquarters: 1,
             refinery: 1,
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
@@ -115,6 +116,7 @@ const maps = {
             porta_potty: 3,
             construction_site: 1,
             armory: 1,
+            headquarters: 1,
             port_complex: 1,
             refinery: 1
         },
