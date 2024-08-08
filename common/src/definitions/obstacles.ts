@@ -2882,6 +2882,27 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             )
         },
         {
+            idString: "oil_tanker_ship_back",
+            name: "Oil Tanker Back",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(10, 25, Vec.create(-120, -1)),
+                RectangleHitbox.fromRect(3, 40, Vec.create(-115.5, -1)),
+                RectangleHitbox.fromRect(3, 35.5, Vec.create(-120.5, -1)),
+                RectangleHitbox.fromRect(3, 25, Vec.create(-125.5, -0.5)),
+                RectangleHitbox.fromRect(3, 38, Vec.create(-118.5, -1))
+            )
+        },
+        {
             idString: "forklift",
             name: "Forklift",
             material: "metal",

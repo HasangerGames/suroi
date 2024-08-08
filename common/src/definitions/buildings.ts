@@ -1572,8 +1572,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "oil_tanker_ship_back",
-                    position: Vec.create(-116, 0),
-                    scale: Vec.create(1.07, 1.07)
+                    position: Vec.create(-120, -1.5),
+                    scale: Vec.create(1.1, 1.1)
                 },
                 {
                     key: "oil_tanker_ship_floor_1",
@@ -1610,6 +1610,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [
                 { idString: "oil_tanker_ship_front", position: Vec.create(60, -11), rotation: 0 },
                 { idString: "oil_tanker_ship_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "oil_tanker_ship_back", position: Vec.create(0, 0), rotation: 0 },
 
                 // back
                 { idString: "regular_crate", position: Vec.create(-55.9, 32.7) },
