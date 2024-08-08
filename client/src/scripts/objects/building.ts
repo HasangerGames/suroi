@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -25,7 +25,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
 
-    layer: number;
+    layer: Layer;
 
     orientation!: Orientation;
 

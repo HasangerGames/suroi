@@ -2986,7 +2986,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
 
                 { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
-                { idString: "stair_thing", position: Vec.create(0.5, 10), rotation: 0, layer: -2 },
+                { idString: "stair_thing", position: Vec.create(0.8, 11.5), rotation: 0, layer: -2 },
 
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
                 { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
@@ -3203,10 +3203,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters",
             name: "Headquarters",
-            spawnHitbox: RectangleHitbox.fromRect(165, 200, Vec.create(0, -40)),
+            spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
-                RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -70.75))
+                RectangleHitbox.fromRect(128, 72, Vec.create(5.75, -70.75)),
+                RectangleHitbox.fromRect(50, 25, Vec.create(-31, 47)) // ADJUST THIS! (not sure if its correct)
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             rotationMode: RotationMode.None,
