@@ -545,12 +545,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: Math.PI
                 }
             ],
-            ceilingImages: [{
-                key: "port_warehouse_ceiling",
-                position: Vec.create(0, 0),
-                tint: 0x813131,
-                scale: Vec.create(2, 2)
-            }],
+            ceilingImages: [
+                {
+                    key: "port_warehouse_ceiling_1",
+                    position: Vec.create(0, -30.3),
+                    tint: 0x813131,
+                    scale: Vec.create(1.065, 1.07)
+                },
+                {
+                    key: "port_warehouse_ceiling_2",
+                    position: Vec.create(0, 30.3),
+                    tint: 0x813131,
+                    scale: Vec.create(1.065, 1.07)
+                }
+            ],
             obstacles: [
                 {
                     idString: "port_warehouse_walls",
@@ -649,12 +657,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: Math.PI
                 }
             ],
-            ceilingImages: [{
-                key: "port_warehouse_ceiling",
-                position: Vec.create(0, 0),
-                tint: 0x2e2e6a,
-                scale: Vec.create(2, 2)
-            }],
+            ceilingImages: [
+                {
+                    key: "port_warehouse_ceiling_1",
+                    position: Vec.create(0, -30.3),
+                    tint: 0x2e2e6a,
+                    scale: Vec.create(1.065, 1.07)
+                },
+                {
+                    key: "port_warehouse_ceiling_2",
+                    position: Vec.create(0, 30.3),
+                    tint: 0x2e2e6a,
+                    scale: Vec.create(1.065, 1.07)
+                }
+            ],
             obstacles: [
                 {
                     idString: "port_warehouse_walls",
@@ -1318,11 +1334,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)),
             ceilingImages: [
                 {
-                    key: "cargo_ship_center_ceiling",
-                    position: Vec.create(1.25, 0),
+                    key: "cargo_ship_center_ceiling_1",
+                    position: Vec.create(1.25, -21.25),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "cargo_ship_center_ceiling_2",
+                    position: Vec.create(1.25, 21.25),
                     scale: Vec.create(1.07, 1.07)
                 }
-
             ]
         },
         {
@@ -1348,16 +1368,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "cargo_ship_front_ceiling_2",
-                    position: Vec.create(126.5, 23.5),
+                    position: Vec.create(126.5, 24),
                     scale: Vec.create(1.07, 1.07)
                 }
             ],
             floorImages: [
-                {
-                    key: "cargo_ship_floor_1",
-                    position: Vec.create(-70, 0),
-                    scale: Vec.create(1.07, 1.07)
-                },
                 {
                     key: "cargo_ship_floor_3_1",
                     position: Vec.create(126.5, -23.75),
@@ -1370,7 +1385,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "cargo_ship_floor_2",
-                    position: Vec.create(29, 0),
+                    position: Vec.create(41.5, 0.05),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "cargo_ship_floor_1",
+                    position: Vec.create(-70, 0),
                     scale: Vec.create(1.07, 1.07)
                 },
                 {
@@ -3437,7 +3457,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "metal_door", position: Vec.create(-47.5, -27.75), rotation: 1, locked: true },
                 { idString: "aegis_crate", position: Vec.create(-65, -9.25) },
                 { idString: { box: 9, grenade_box: 1 }, position: Vec.create(-67, -17.5) },
-                { idString: "gun_mount_mini_14", position: Vec.create(-68.8, -29), rotation: 1 },
+                { idString: "gun_mount_mini_14", position: Vec.create(-68.8, -29), lootSpawnOffset: Vec.create(5, 0), rotation: 1 },
                 { idString: "barrel", position: Vec.create(-53.5, -8.5) }
 
             ] as BuildingObstacle[],
