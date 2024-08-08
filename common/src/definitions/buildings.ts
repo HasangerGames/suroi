@@ -1690,7 +1690,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             sounds: {
                 normal: "port_ambience",
                 position: Vec.create(250, 0),
-                maxRange: 300,
+                maxRange: 350,
                 falloff: 0.05
             },
             spawnHitbox: RectangleHitbox.fromRect(315, 290, Vec.create(-5, 0)),
