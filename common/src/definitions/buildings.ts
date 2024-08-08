@@ -1648,7 +1648,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "oil_tanker_ship_vault", position: Vec.create(-28, -94), orientation: 1 },
+                { idString: "oil_tanker_ship_vault", position: Vec.create(-28.1, -94.25), orientation: 1 },
                 { idString: "oil_tanker_tanks", position: Vec.create(39, -5), orientation: 0 } // P A I N
             ]
         },
@@ -1661,7 +1661,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [{
                 key: "oil_tanker_ship_vault_ceiling",
                 position: Vec.create(0, 0),
-                scale: Vec.create(0.95, 1.3)
+                scale: Vec.create(0.895, 1.28)
             }]
         },
         {
