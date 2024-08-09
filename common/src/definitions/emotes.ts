@@ -114,7 +114,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Carrot",
             "Tomato",
             "Egg",
-            "Squid"
+            "Squid",
+            "Penguin"
         ].map(name => simple("emote_factory", name, EmoteCategory.Misc)),
         ...[
             ...Ammos.definitions.filter(a => !a.ephemeral),
