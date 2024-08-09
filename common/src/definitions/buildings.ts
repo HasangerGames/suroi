@@ -3023,7 +3023,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [
                 { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
 
-                { idString: "stair_thing", position: Vec.create(11, -8), rotation: 0, layer: 0 },
+                { idString: "stair_thing", position: Vec.create(11, -8.5), rotation: 0, layer: 0 },
                 { idString: "stair_thing", position: Vec.create(0.8, 11.5), rotation: 0, layer: -2 },
 
                 { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
@@ -3101,7 +3101,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "headquarters_second_floor_top",
-                    position: Vec.create(-0.85, -73)
+                    position: Vec.create(-0.85, -77.8)
                 }
             ],
             floors: [
