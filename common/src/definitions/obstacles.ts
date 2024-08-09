@@ -285,6 +285,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "briefcase_particle"
             },
+            wall: {
+                borderColor: 0x666666,
+                color: 0xbfbfbf
+            },
             role: ObstacleSpecialRoles.Wall
         }),
         containerWalls: (id: number, style: "open2" | "open1" | "closed") => {
@@ -3357,9 +3361,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 activated: "button_activated"
             }
         },
-        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(6.97, 1.68) }, "1"),
-        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(10.8, 1.68) }, "2"),
-        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.43, 1.68) }, "3"),
+        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(7.3, 1.68) }, "1"),
+        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.6, 1.68) }, "2"),
+        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.45, 1.68) }, "3"),
+        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(10.65, 1.68) }, "4"),
+
         {
             idString: "mobile_home_bed",
             name: "Mobile Home Bed",

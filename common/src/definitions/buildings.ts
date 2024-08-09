@@ -2601,50 +2601,52 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "mobile_home",
             name: "Mobile Home",
             spawnHitbox: RectangleHitbox.fromRect(65, 40),
-            scopeHitbox: RectangleHitbox.fromRect(42, 20, Vec.create(2, -1)),
-            floorImages: [{
-                key: "mobile_home_floor",
-                position: Vec.create(0, 0)
-            }],
+            scopeHitbox: RectangleHitbox.fromRect(43.5, 20, Vec.create(0, -1)),
+            floorImages: [
+                {
+                    key: "mobile_home_floor_1",
+                    position: Vec.create(-11, 0),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "mobile_home_floor_2",
+                    position: Vec.create(11, 0.01),
+                    scale: Vec.create(1.07, 1.07)
+                }
+            ],
             ceilingImages: [{
                 key: "mobile_home_ceiling",
-                position: Vec.create(2, -1),
-                residue: "mobile_home_residue"
+                position: Vec.create(0, -1),
+                residue: "mobile_home_residue",
+                scale: Vec.create(1.07, 1.07)
             }],
             floors: [
                 {
                     type: "wood",
-                    hitbox: RectangleHitbox.fromRect(43, 20, Vec.create(2, -1))
+                    hitbox: RectangleHitbox.fromRect(43.5, 20, Vec.create(0, -1))
                 },
                 {
                     type: "metal",
-                    hitbox: RectangleHitbox.fromRect(10, 4.5, Vec.create(6, 11))
-                },
-                {
-                    type: "metal",
-                    hitbox: RectangleHitbox.fromRect(4.5, 10, Vec.create(-21.3, -4.4))
+                    hitbox: RectangleHitbox.fromRect(9.8, 4, Vec.create(5, 11))
                 }
             ],
             wallsToDestroy: 2,
             obstacles: [
-                { idString: "door", position: Vec.create(-18.75, -4.05), rotation: 3 },
-                { idString: "door", position: Vec.create(5.5, 8.33), rotation: 2 },
-                { idString: "mobile_home_wall_1", position: Vec.create(-16, -10.43), rotation: 0 },
-                { idString: "mobile_home_wall_1", position: Vec.create(-18.65, 4.03), rotation: 1 },
-                { idString: "mobile_home_wall_2", position: Vec.create(16.45, 8.37), rotation: 0 },
-                { idString: "mobile_home_wall_3", position: Vec.create(22.7, -1.03), rotation: 1 },
-                { idString: "mobile_home_wall_3", position: Vec.create(11.65, -10.43), rotation: 0 },
-                { idString: "mobile_home_wall_3", position: Vec.create(-9.35, 8.32), rotation: 0 },
-                { idString: "mobile_home_bed", position: Vec.create(13.55, -5.72), rotation: 3 },
-                { idString: "small_drawer", position: Vec.create(17.45, 3.27), rotation: 3 },
-                { idString: "mobile_home_sink", position: Vec.create(-12.8, 3.4), rotation: 2 },
-                { idString: "mobile_home_stove", position: Vec.create(-3.75, 3.57), rotation: 2 },
-                { idString: "tire", position: Vec.create(-21.25, 4.85), rotation: 0 },
-                { idString: "mobile_home_window", position: Vec.create(-5.6, -10.42), rotation: 0 },
-
-                { idString: "box", position: Vec.create(26.2, -3.43), rotation: 0 },
-                { idString: "box", position: Vec.create(28, 1.52), rotation: 0 },
-                { idString: "barrel", position: Vec.create(-18.9, 14.62), rotation: 0 }
+                { idString: "small_drawer", position: Vec.create(8.5, -5.5), rotation: 0 },
+                { idString: "mobile_home_sink", position: Vec.create(-16.8, -4.4), rotation: 1 },
+                { idString: "mobile_home_stove", position: Vec.create(-16.8, 4.4), rotation: 1 },
+                { idString: "door", position: Vec.create(4.5, 8.45), rotation: 2 },
+                { idString: "mobile_home_wall_4", position: Vec.create(15.5, 8.45), rotation: 0 },
+                { idString: "mobile_home_wall_3", position: Vec.create(-10.5, 8.45), rotation: 0 },
+                { idString: "tire", position: Vec.create(-24.25, 4.85), rotation: 0 },
+                { idString: "mobile_home_bed", position: Vec.create(16.8, -1), rotation: 0 },
+                { idString: "mobile_home_window", position: Vec.create(-6.55, -10.5), rotation: 0 },
+                { idString: "mobile_home_wall_1", position: Vec.create(-17.25, -10.5), rotation: 0 },
+                { idString: "mobile_home_wall_2", position: Vec.create(21.7, -1), rotation: 1 },
+                { idString: "mobile_home_wall_2", position: Vec.create(-21.7, -1), rotation: 1 },
+                { idString: "mobile_home_wall_3", position: Vec.create(10.6, -10.5), rotation: 0 },
+                { idString: "box", position: Vec.create(25.7, -3.5), rotation: 0 },
+                { idString: "box", position: Vec.create(27.5, 1.55), rotation: 0 }
             ]
         },
         {
