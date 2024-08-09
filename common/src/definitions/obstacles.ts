@@ -873,7 +873,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 destroy: 0.5
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: new CircleHitbox(3.65),
+            hitbox: new CircleHitbox(3.6),
             rotationMode: RotationMode.Full,
             explosion: "super_barrel_explosion",
             reflectBullets: true
