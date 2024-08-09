@@ -1346,17 +1346,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "cargo_ship_sound_holder",
-            name: "Cargo Ship (Sound Holder)",
-            spawnHitbox: RectangleHitbox.fromRect(10, 10, Vec.create(0, 0)),
-            sounds: {
-                normal: "port_ambience",
-                position: Vec.create(0, 0),
-                maxRange: 350,
-                falloff: 0.05
-            }
-        },
-        {
             idString: "cargo_ship",
             name: "Cargo Ship",
             spawnHitbox: RectangleHitbox.fromRect(300, 110, Vec.create(0, 0)),
@@ -1509,11 +1498,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     orientation: 0
                 },
                 {
-                    idString: "cargo_ship_sound_holder",
-                    position: Vec.create(0, 0),
-                    orientation: 0
-                },
-                {
                     idString: randomContainer1,
                     position: Vec.create(-36.25, 58), // reversed coordinates moment
                     orientation: 1
@@ -1582,12 +1566,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             puzzle: {
                 triggerInteractOn: "vault_door",
                 interactDelay: 1500
-            },
-            sounds: {
-                normal: "port_ambience",
-                position: Vec.create(0, 0),
-                maxRange: 350,
-                falloff: 0.05
             },
             ceilingImages: [
                 {
@@ -1729,6 +1707,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port",
             name: "Port",
+            sounds: {
+                normal: "port_ambience",
+                position: Vec.create(240, 0),
+                maxRange: 380,
+                falloff: 1
+            },
             spawnHitbox: RectangleHitbox.fromRect(315, 290, Vec.create(-5, 0)),
             groundGraphics: [
                 {
