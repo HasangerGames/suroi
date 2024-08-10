@@ -537,26 +537,22 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(2, -30.2)
+                    position: Vec.create(2, -30.3),
+                    scale: Vec.create(2.4, 2.15)
                 },
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(-2, 30.2),
+                    position: Vec.create(-2, 30.3),
+                    scale: Vec.create(2.4, 2.15),
                     rotation: Math.PI
                 }
             ],
             ceilingImages: [
                 {
-                    key: "port_warehouse_ceiling_1",
-                    position: Vec.create(0, -30.3),
+                    key: "port_warehouse_ceiling",
+                    position: Vec.create(0, 0),
                     tint: 0x813131,
-                    scale: Vec.create(1.065, 1.07)
-                },
-                {
-                    key: "port_warehouse_ceiling_2",
-                    position: Vec.create(0, 30.3),
-                    tint: 0x813131,
-                    scale: Vec.create(1.065, 1.07)
+                    scale: Vec.create(2.01, 2.05)
                 }
             ],
             obstacles: [
@@ -649,26 +645,22 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(2, -30.2)
+                    position: Vec.create(2, -30.3),
+                    scale: Vec.create(2.4, 2.15)
                 },
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(-2, 30.2),
+                    position: Vec.create(-2, 30.3),
+                    scale: Vec.create(2.4, 2.15),
                     rotation: Math.PI
                 }
             ],
             ceilingImages: [
                 {
-                    key: "port_warehouse_ceiling_1",
-                    position: Vec.create(0, -30.3),
+                    key: "port_warehouse_ceiling",
+                    position: Vec.create(0, 0),
                     tint: 0x2e2e6a,
-                    scale: Vec.create(1.065, 1.07)
-                },
-                {
-                    key: "port_warehouse_ceiling_2",
-                    position: Vec.create(0, 30.3),
-                    tint: 0x2e2e6a,
-                    scale: Vec.create(1.065, 1.07)
+                    scale: Vec.create(2.01, 2.05)
                 }
             ],
             obstacles: [
@@ -1334,14 +1326,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)),
             ceilingImages: [
                 {
-                    key: "cargo_ship_center_ceiling_1",
-                    position: Vec.create(1.25, -21.25),
-                    scale: Vec.create(1.07, 1.07)
-                },
-                {
-                    key: "cargo_ship_center_ceiling_2",
-                    position: Vec.create(1.25, 21.25),
-                    scale: Vec.create(1.07, 1.07)
+                    key: "cargo_ship_center_ceiling",
+                    position: Vec.create(1.25, 0),
+                    scale: Vec.create(2.65, 2.65)
                 }
             ]
         },
@@ -1362,14 +1349,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             },
             ceilingImages: [
                 {
-                    key: "cargo_ship_front_ceiling_1",
-                    position: Vec.create(126.5, -23.5),
-                    scale: Vec.create(1.07, 1.07)
-                },
-                {
-                    key: "cargo_ship_front_ceiling_2",
-                    position: Vec.create(126.5, 24),
-                    scale: Vec.create(1.07, 1.07)
+                    key: "cargo_ship_front_ceiling",
+                    position: Vec.create(126.5, 0),
+                    scale: Vec.create(2.36, 2.095)
                 }
             ],
             floorImages: [
@@ -1569,14 +1551,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             },
             ceilingImages: [
                 {
-                    key: "oil_tanker_ship_room_ceiling_1",
-                    position: Vec.create(-101.5, -20),
-                    scale: Vec.create(1.07, 1.07)
-                },
-                {
-                    key: "oil_tanker_ship_room_ceiling_2",
-                    position: Vec.create(-101.5, 20),
-                    scale: Vec.create(1.07, 1.07)
+                    key: "oil_tanker_ship_room_ceiling",
+                    position: Vec.create(-101.5, 0),
+                    scale: Vec.create(1.8, 1.9)
                 }
             ],
             floorImages: [
@@ -1592,8 +1569,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "oil_tanker_ship_back",
-                    position: Vec.create(-120, -1.5),
-                    scale: Vec.create(1.1, 1.1)
+                    position: Vec.create(-120, 0),
+                    scale: Vec.create(2.1, 1.8)
                 },
                 {
                     key: "oil_tanker_ship_floor_1",
@@ -1630,7 +1607,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [
                 { idString: "oil_tanker_ship_front", position: Vec.create(60, -11), rotation: 0 },
                 { idString: "oil_tanker_ship_walls", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "oil_tanker_ship_back", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "oil_tanker_ship_back", position: Vec.create(0, 1), rotation: 0 },
 
                 // back
                 { idString: "regular_crate", position: Vec.create(-55.9, 32.7) },

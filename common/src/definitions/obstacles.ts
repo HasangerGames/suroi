@@ -277,6 +277,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: `Mobile Home Wall ${lengthNumber}`,
             material: "appliance",
             noResidue: true,
+            hideOnMap: true,
             health: 240,
             scale: {
                 spawnMin: 1,
@@ -2906,7 +2907,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 25, Vec.create(-120, -1)),
-                RectangleHitbox.fromRect(3, 40, Vec.create(-115.5, -1)),
+                RectangleHitbox.fromRect(3, 45, Vec.create(-115.5, -1)),
                 RectangleHitbox.fromRect(3, 35.5, Vec.create(-120.5, -1)),
                 RectangleHitbox.fromRect(3, 25, Vec.create(-125.5, -0.5)),
                 RectangleHitbox.fromRect(3, 38, Vec.create(-118.5, -1))
