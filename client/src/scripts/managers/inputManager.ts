@@ -440,11 +440,7 @@ export class InputManager {
                 } else query = ""; // If the action isn't invertible, then we do nothing
             }
 
-            // little exception for those without the loot bind bound
             this.game.console.handleQuery(query);
-            if (this.binds.getInputsBoundToAction("loot").length === 0 && query === "interact") {
-                this.game.console.handleQuery("loot");
-            }
         }
 
         return actions.length;
