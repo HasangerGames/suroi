@@ -3411,11 +3411,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "toilet", position: Vec.create(-10, -70), rotation: 2 },
                 { idString: "used_toilet", position: Vec.create(-25, -70), rotation: 2 },
                 { idString: "hq_toilet_paper_wall", position: Vec.create(-18, -74.7), rotation: 1 },
-                { idString: "headquarters_wall_8", position: Vec.create(-6.5, -83.4), rotation: 0 },
-                { idString: "headquarters_wall_8", position: Vec.create(-21.5, -83.4), rotation: 0 },
-                { idString: "porta_potty_door", position: Vec.create(2.25, -83.4), rotation: 0 },
-                { idString: "porta_potty_door", position: Vec.create(-12.7, -83.4), rotation: 0 },
-                { idString: "porta_potty_door", position: Vec.create(-27.7, -83.4), rotation: 0 },
+                { idString: "headquarters_wall_8", position: Vec.create(-6.55, -83.5), rotation: 0 },
+                { idString: "headquarters_wall_8", position: Vec.create(-21.65, -83.5), rotation: 0 },
+                { idString: "porta_potty_door", position: Vec.create(2.25, -83.5), rotation: 0 },
+                { idString: "porta_potty_door", position: Vec.create(-12.7, -83.5), rotation: 0 },
+                { idString: "porta_potty_door", position: Vec.create(-27.7, -83.5), rotation: 0 },
                 { idString: "trash_can", position: Vec.create(-30, -103) },
 
                 // bottom area (right bottom or something)

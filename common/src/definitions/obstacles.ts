@@ -249,9 +249,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "wall_particle"
             },
             wall: {
-                borderColor: 0x4a4134,
-                color: 0xafa08c,
-                rounded: true
+                borderColor: customHealth ? 0x23282a : 0x4a4134,
+                color: customHealth ? 0x74858b : 0xafa08c,
+                rounded: !customHealth
             },
             role: ObstacleSpecialRoles.Wall
         }),
@@ -1102,7 +1102,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(16.3, 2) }, 5),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.25, 2) }, 6),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 7),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3, 1.6) }, 8, true),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.1, 1.6) }, 8, true),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11, 2) }, 9),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(16, 2) }, 10),
 
