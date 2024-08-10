@@ -2221,7 +2221,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "armory_barracks_ceiling_2",
-                    position: Vec.create(0, 20.4),
+                    position: Vec.create(0, 20.6),
                     scale: Vec.create(2, 2)
                 }
             ],
@@ -2314,18 +2314,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(20.2, 0)
                 }
             ],
-            ceilingImages: [
-                {
-                    key: "armory_vault_ceiling_1",
-                    position: Vec.create(19, -2.5),
-                    scale: Vec.create(2, 2)
-                },
-                {
-                    key: "armory_vault_ceiling_2",
-                    position: Vec.create(-18.4, -2.5),
-                    scale: Vec.create(2, 2)
-                }
-            ],
+            ceilingImages: [{
+                key: "armory_vault_ceiling",
+                position: Vec.create(0, -2.5),
+                scale: Vec.create(2, 2)
+            }],
             ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
             floors: [{
                 type: "wood",
@@ -3097,9 +3090,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(47, 68, Vec.create(-47, -12)),
 
                         // patches (basically small rectangles that go under walls)
-                        RectangleHitbox.fromRect(1.8, 16, Vec.create(13.3, -61.5)),
-                        RectangleHitbox.fromRect(20.5, 1.5, Vec.create(-47.5, -46.8)),
-                        RectangleHitbox.fromRect(33.4, 1.8, Vec.create(-17, -69))
+                        RectangleHitbox.fromRect(1.8, 16, Vec.create(13.3, -61.5)), // P4
+                        RectangleHitbox.fromRect(20.5, 1.5, Vec.create(-47.5, -46.8)), // P3
+                        RectangleHitbox.fromRect(33.4, 1.8, Vec.create(-17, -69)), // P5
+                        RectangleHitbox.fromRect(1.8, 10.25, Vec.create(13.25, -48.5)) // P15
                     )
                 },
                 {
@@ -3108,10 +3102,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(69.5, 19.5, Vec.create(-22.5, -58)),
                         RectangleHitbox.fromRect(33.9, 26.9, Vec.create(-4.5, -55)),
                         RectangleHitbox.fromRect(22, 44, Vec.create(-46.4, -69)),
-
-                        // patches
-                        RectangleHitbox.fromRect(8.5, 28.5, Vec.create(8, -55.4)),
-                        RectangleHitbox.fromRect(1.8, 10.25, Vec.create(13.25, -48.5))
+                        RectangleHitbox.fromRect(8.5, 28.5, Vec.create(8, -55.4)) // P7
                     )
                 },
                 {
@@ -3229,7 +3220,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
                 RectangleHitbox.fromRect(128, 72, Vec.create(5.75, -70.75)),
-                RectangleHitbox.fromRect(50, 25, Vec.create(-31, 47)) // ADJUST THIS! (not sure if its correct)
+                RectangleHitbox.fromRect(50, 25, Vec.create(-31, 47)) // ADJUST THIS! (not sure if its correct) - pap
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             rotationMode: RotationMode.None,
@@ -3275,7 +3266,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(15.25, 1.5, Vec.create(7.75, -26.3)),
                         RectangleHitbox.fromRect(35.5, 60.5, Vec.create(51.25, -57.5)),
                         RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -41.5)),
-                        RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -81))
+                        RectangleHitbox.fromRect(1.5, 10, Vec.create(33.5, -81)),
+                        RectangleHitbox.fromRect(1.5, 80, Vec.create(32.5, -67)) // P2
                     )
                 },
                 {
@@ -3291,9 +3283,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(22.5, 42.5, Vec.create(-46, -57.5)),
                         RectangleHitbox.fromRect(50, 8.5, Vec.create(-12, -59)),
                         RectangleHitbox.fromRect(22.5, 16, Vec.create(-31, 43.15)),
-                        RectangleHitbox.fromRect(1.5, 80, Vec.create(32.5, -67)),
-                        RectangleHitbox.fromRect(1.67, 9.7, Vec.create(-41.8, 11.05)),
                         RectangleHitbox.fromRect(12, 19, Vec.create(-41.25, -88.35)),
+                        RectangleHitbox.fromRect(5, 10, Vec.create(-59.25, -41.5)), // D1
+                        RectangleHitbox.fromRect(10.5, 5, Vec.create(17.8, -108.8)), // D2
 
                         // TODO: new floor types for these (positions are done)
                         RectangleHitbox.fromRect(45, 43.5, Vec.create(-10.8, -85.25)), // toilet (grey and white tiles)
@@ -3303,6 +3295,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     type: "carpet",
                     hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(1.67, 9.7, Vec.create(-41.8, 11.05)), // P1
                         RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8))
                     )
                 },
@@ -3346,7 +3339,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // bottom left room
                 { idString: "gun_case", position: Vec.create(-48.5, 1.5), rotation: 0 },
                 { idString: "cabinet", position: Vec.create(-62.8, 1.5), rotation: 0 },
-                { idString: "door", position: Vec.create(-41.8, 10.6), rotation: 1 },
                 { idString: "door", position: Vec.create(-41.8, 10.6), rotation: 1 },
                 { idString: "grey_office_chair", position: Vec.create(-49.5, 24.5), rotation: 0 },
                 { idString: "grey_office_chair", position: Vec.create(-60.8, 23.5), rotation: 0 },
