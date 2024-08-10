@@ -81,6 +81,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly wall?: {
         readonly color: number
         readonly borderColor: number
+        readonly rounded?: boolean
     }
 
     readonly imageAnchor?: Vector
@@ -225,7 +226,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             wall: {
                 borderColor: 0x4a4134,
-                color: 0xafa08c
+                color: 0xafa08c,
+                rounded: true
             },
             role: ObstacleSpecialRoles.Wall
         }),
@@ -248,7 +250,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             wall: {
                 borderColor: 0x4a4134,
-                color: 0xafa08c
+                color: 0xafa08c,
+                rounded: true
             },
             role: ObstacleSpecialRoles.Wall
         }),
@@ -287,7 +290,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             wall: {
                 borderColor: 0x666666,
-                color: 0xbfbfbf
+                color: 0xbfbfbf,
+                rounded: false
             },
             role: ObstacleSpecialRoles.Wall
         }),
@@ -3361,9 +3365,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 activated: "button_activated"
             }
         },
-        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(7.3, 1.68) }, "1"),
+        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(7.5, 1.68) }, "1"),
         apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.6, 1.68) }, "2"),
-        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.45, 1.68) }, "3"),
+        apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.5, 1.68) }, "3"),
         apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(10.65, 1.68) }, "4"),
 
         {

@@ -298,9 +298,17 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             wallGraphics
                 .rect(x, y, w, h)
-                .fill({ color: definition.wall.borderColor })
-                .roundRect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2, WALL_STROKE_WIDTH)
-                .fill({ color: definition.wall.color });
+                .fill({ color: definition.wall.borderColor });
+
+            if (definition.wall.rounded) {
+                wallGraphics
+                    .roundRect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2, WALL_STROKE_WIDTH)
+                    .fill({ color: definition.wall.color });
+            } else {
+                wallGraphics
+                    .rect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2)
+                    .fill({ color: definition.wall.color });
+            }
 
             this.container.addChild(wallGraphics);
         }
