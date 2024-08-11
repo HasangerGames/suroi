@@ -319,10 +319,12 @@ export const LootTables: Record<string, LootTable> = {
         ]
     },
     hq_fridge: {
-        min: 3,
-        max: 4,
+        min: 2,
+        max: 3,
         loot: [
-            { item: "cola", weight: 1 }
+            { item: "cola", weight: 1 },
+            { item: "medikit", weight: 0.25 },
+            { item: "tablets", weight: 0.1 }
         ]
     },
     cooler: {
