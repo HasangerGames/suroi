@@ -89,15 +89,16 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             hideUnlessPresent: true
         },
         {
-            idString: "firework_rocket",
-            name: "Firework Rocket",
-            maxStackSize: 5,
+            idString: "44mag",
+            name: ".44 Magnum",
+            maxStackSize: 24,
+            itemType: ItemType.Ammo,
             characteristicColor: {
                 hue: 0,
-                saturation: 55,
-                lightness: 85
+                saturation: 0,
+                lightness: 17
             },
-            defaultCasingFrame: "casing_firework_rocket",
+            // TODO: default casing frame svg
             hideUnlessPresent: true
         },
         {
@@ -112,12 +113,18 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             defaultCasingFrame: "casing_curadell",
             hideUnlessPresent: true
         },
-        /*
         {
-            idString: "50ae",
-            name: ".50 AE",
-            itemType: ItemType.Ammo
-        }, */
+            idString: "firework_rocket",
+            name: "Firework Rocket",
+            maxStackSize: 5,
+            characteristicColor: {
+                hue: 0,
+                saturation: 55,
+                lightness: 85
+            },
+            defaultCasingFrame: "casing_firework_rocket",
+            hideUnlessPresent: true
+        },
 
         // Ephemeral ammo types below
 
