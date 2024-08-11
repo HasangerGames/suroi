@@ -98,7 +98,7 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
                 saturation: 0,
                 lightness: 17
             },
-            // TODO: default casing frame svg
+            defaultCasingFrame: "casing_44mag",
             hideUnlessPresent: true
         },
         {
