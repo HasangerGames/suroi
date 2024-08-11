@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="84.019455mm"
-   height="181.95175mm"
-   viewBox="0 0 84.019457 181.95175"
+   width="104.36336mm"
+   height="224.531555mm"
+   viewBox="0 0 208.72672 449.06311"
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="cargo_ship_center_ceiling_1.svg"
+   sodipodi:docname="cargo_ship_center_ceiling.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.4342733"
-     inkscape:cx="403.68876"
-     inkscape:cy="97.959017"
+     inkscape:zoom="0.25354609"
+     inkscape:cx="-27.608392"
+     inkscape:cy="1252.2378"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -38,10 +38,10 @@
      inkscape:label="Στρώση 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(218.01457,107.15833)">
+     transform="translate(194.99585,323.5875)">
     <g
        id="g11011"
-       transform="matrix(0.40253332,0,0,0.4051808,457.0071,-107.26308)">
+       transform="translate(1481.9378,-323.84602)">
       <g
          id="g10897">
         <path

@@ -1328,7 +1328,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "cargo_ship_center_ceiling",
                     position: Vec.create(1.25, 0),
-                    scale: Vec.create(2.65, 2.65)
+                    scale: Vec.create(2.15, 2.15)
                 }
             ]
         },
@@ -1350,8 +1350,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "cargo_ship_front_ceiling",
-                    position: Vec.create(126.5, 0),
-                    scale: Vec.create(2.36, 2.095)
+                    position: Vec.create(126.5, 0.1),
+                    scale: Vec.create(2.14, 2.14)
                 }
             ],
             floorImages: [
@@ -3051,11 +3051,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "headquarters_second_floor_bottom",
-                    position: Vec.create(-0.85, 0)
+                    position: Vec.create(-0.85, 0),
+                    scale: Vec.create(2, 2)
                 },
                 {
                     key: "headquarters_second_floor_top",
-                    position: Vec.create(-0.85, -77.8)
+                    position: Vec.create(-0.85, -77.8),
+                    scale: Vec.create(2, 2)
                 }
             ],
             floors: [
@@ -3223,15 +3225,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [
                 {
                     key: "headquarters_second_floor_bottom",
-                    position: Vec.create(-0.85, 12.1)
+                    position: Vec.create(-0.85, 12.1),
+                    scale: Vec.create(2, 2)
                 },
                 {
                     key: "headquarters_ceiling_1",
-                    position: Vec.create(-0.725, -68)
+                    position: Vec.create(-0.725, -68),
+                    scale: Vec.create(2, 2)
                 },
                 {
                     key: "headquarters_ceiling_2",
-                    position: Vec.create(-46.7, 4.5)
+                    position: Vec.create(-46.7, 4.5),
+                    scale: Vec.create(2, 2)
                 }
             ],
             groundGraphics: [],
