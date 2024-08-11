@@ -681,8 +681,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "barrett_m95",
             name: "Barrett M95",
-            ammoType: "127mm",
-            ammoSpawnAmount: 20,
+            ammoType: "50cal",
+            ammoSpawnAmount: 25,
             capacity: 5,
             reloadTime: 3.4,
             fireDelay: 1400,
@@ -1582,7 +1582,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "model_89",
             name: "Model 89",
-            ammoType: "127mm",
+            ammoType: "50cal",
             ammoSpawnAmount: 28,
             capacity: 7,
             reloadTime: 0.6,
@@ -1816,7 +1816,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "destroyer_of_worlds",
             name: "Destroyer Of Worlds",
-            ammoType: "127mm",
+            ammoType: "50cal",
             ammoSpawnAmount: 255,
             capacity: 255,
             reloadTime: 0.4,

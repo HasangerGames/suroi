@@ -77,8 +77,8 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             defaultCasingFrame: "casing_9x19mm"
         },
         {
-            idString: "127mm",
-            name: "12.7mm",
+            idString: "50cal",
+            name: ".50 Cal",
             maxStackSize: 10,
             characteristicColor: {
                 hue: 75,
