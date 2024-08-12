@@ -3123,7 +3123,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "bookshelf", position: Vec.create(-26, 1.5), rotation: 1 },
                 { idString: "potted_plant", position: Vec.create(-66.7, 18) },
                 { idString: "potted_plant", position: Vec.create(-27.5, 17.7) },
-                { idString: "sword_case", position: Vec.create(-46, 18.5), rotation: 2 },
+                { idString: "sword_case", position: Vec.create(-46, 18.5), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
                 { idString: "water_cooler", position: Vec.create(-66.7, -42), rotation: 1 },
 
                 // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group

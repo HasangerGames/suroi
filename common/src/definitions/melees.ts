@@ -380,6 +380,32 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 useAngle: 0,
                 lootScale: 0.7
             }
+        },
+        {
+            idString: "falchion",
+            name: "Falchion",
+            damage: 41,
+            swingSound: "soft_swing",
+            obstacleMultiplier: 1.1,
+            radius: 4.1,
+            offset: Vec.create(7.2, 0.5),
+            canPierceMaterials: ["cardboard", "crate"],
+            piercingMultiplier: 0.95,
+            cooldown: 450,
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(38, -35),
+                right: Vec.create(38.5, 41),
+                useLeft: Vec.create(38, -35),
+                useRight: Vec.create(80, 20)
+            },
+            image: {
+                position: Vec.create(40, 102),
+                usePosition: Vec.create(150, 11),
+                angle: 130,
+                useAngle: 25,
+                lootScale: 0.9
+            }
         }
     ]
 );

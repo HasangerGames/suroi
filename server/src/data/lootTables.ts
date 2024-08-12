@@ -533,6 +533,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "curadell", weight: 0.02 }
         ]
     },
+    sword_case: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "falchion", weight: 1 }
+        ]
+    },
     fire_hatchet_case: {
         min: 1,
         max: 1,

@@ -1283,6 +1283,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(13, 6, Vec.create(0, 0))
             ),
+            hasLoot: true,
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
             noResidue: true,
