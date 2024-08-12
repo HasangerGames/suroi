@@ -388,6 +388,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             swingSound: "soft_swing",
             obstacleMultiplier: 1.1,
             radius: 4.1,
+            // maxTargets: Infinity, - TODO: It must hit multiple targets at once, however enabling this causes melee through wall bug to appear
             offset: Vec.create(7.2, 0.5),
             canPierceMaterials: ["cardboard", "crate"],
             piercingMultiplier: 0.95,
