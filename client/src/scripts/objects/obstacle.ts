@@ -167,8 +167,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         texture = "airdrop_crate_unlocking";
 
                         this.addTimeout(() => {
-                            this.game.particleManager.spawnParticles(4, () => ({
+                            this.game.particleManager.spawnParticles(2, () => ({
                                 frames: "airdrop_particle_2",
+                                position: this.hitbox.randomPoint(),
+                                ...options(4, 9)
+                            } as ParticleOptions));
+                            this.game.particleManager.spawnParticles(2, () => ({
+                                frames: "airdrop_particle_3",
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
                             } as ParticleOptions));
