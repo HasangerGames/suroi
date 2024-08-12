@@ -1684,12 +1684,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port",
             name: "Port",
-            sounds: {
-                normal: "port_ambience",
-                position: Vec.create(240, 0),
-                maxRange: 380,
-                falloff: 1
-            },
             spawnHitbox: RectangleHitbox.fromRect(315, 290, Vec.create(-5, 0)),
             groundGraphics: [
                 {
@@ -2152,6 +2146,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Cargo Ship (Holder)",
             spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
+            sounds: {
+                normal: "port_ambience",
+                position: Vec.create(86, 40),
+                maxRange: 380,
+                falloff: 1
+            },
             subBuildings: [
                 { idString: "cargo_ship", position: Vec.create(40, -86), orientation: 3 }
             ]
@@ -2161,6 +2161,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Oil Tanker Ship (Holder)",
             spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
             spawnMode: MapObjectSpawnMode.Beach,
+            sounds: {
+                normal: "port_ambience",
+                position: Vec.create(81.8, -55),
+                maxRange: 380,
+                falloff: 1
+            },
             subBuildings: [
                 { idString: "oil_tanker_ship", position: Vec.create(-55, -81.8), orientation: 3 }
             ]
