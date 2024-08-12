@@ -1,4 +1,4 @@
-import { GameConstants, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, Layer, ZIndexes } from "../../../../common/src/constants";
 import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -58,6 +58,11 @@ export class Plane {
         if (Geometry.distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();
             this.game.planes.delete(this);
+        }
+
+        if (this.game.layer) {
+            this.image.visible = ![Layer.Floor2, Layer.Basement].includes(this.game.layer);
+            this.sound.maxRange = ![Layer.Floor2, Layer.Basement].includes(this.game.layer) ? 256 : 0;
         }
     }
 
