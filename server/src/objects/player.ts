@@ -1959,6 +1959,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                     && !object.door?.locked
                                     && object !== interactable.object
                                     && object.hitbox.collidesWith(detectionHitbox)
+                                    && object.layer === this.layer
                                 ) {
                                     object.interact(this);
                                 }
