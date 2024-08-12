@@ -134,7 +134,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             radius: 2.05,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
-            cooldown: 370,
+            cooldown: 410,
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -25),
