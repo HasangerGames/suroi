@@ -533,6 +533,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "curadell", weight: 0.02 }
         ]
     },
+    fire_hatchet_case: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "fire_hatchet", weight: 1 }
+        ]
+    },
     confetti_grenade_box: {
         min: 1,
         max: 2,

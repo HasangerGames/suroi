@@ -125,6 +125,32 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "fire_hatchet",
+            name: "Fire Hatchet",
+            damage: 38,
+            obstacleMultiplier: 2.7,
+            piercingMultiplier: 2,
+            canPierceMaterials: ["cardboard", "crate"],
+            radius: 2.05,
+            swingSound: "heavy_swing",
+            offset: Vec.create(5.4, -0.5),
+            cooldown: 370,
+            fists: {
+                animationDuration: 150,
+                left: Vec.create(40, -25),
+                right: Vec.create(40, 15),
+                useLeft: Vec.create(35, -35),
+                useRight: Vec.create(75, -20)
+            },
+            image: {
+                position: Vec.create(42, 20),
+                usePosition: Vec.create(80, -25),
+                angle: 135,
+                useAngle: 65,
+                lootScale: 0.7
+            }
+        },
+        {
             idString: "crowbar",
             name: "Crowbar",
             swingSound: "heavy_swing",
@@ -196,7 +222,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 usePosition: Vec.create(99, -5),
                 angle: 120,
                 useAngle: 5,
-                lootScale: 0.78
+                lootScale: 0.85
             }
         },
         {

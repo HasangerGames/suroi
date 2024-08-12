@@ -3357,7 +3357,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 0.8
             },
-            // hasLoot: true,
+            hasLoot: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
                 RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-4.25, 0)),
