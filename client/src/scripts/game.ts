@@ -450,9 +450,9 @@ export class Game {
 
             this.soundManager.stopAll();
 
-            void this.music.play();
-
             ui.splashUi.fadeIn(400, () => {
+                void this.music.play();
+
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();
