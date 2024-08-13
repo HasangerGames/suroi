@@ -822,6 +822,58 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
+            idString: "deagle", // TODO
+            name: "DEagle",
+            ammoType: "44mag",
+            ammoSpawnAmount: 48,
+            fireDelay: 110,
+            switchDelay: 250,
+            recoilMultiplier: 0.8,
+            recoilDuration: 90,
+            fireMode: FireMode.Single,
+            shotSpread: 7,
+            moveSpread: 14,
+            length: 4.7,
+            fists: {
+                left: Vec.create(40, 0),
+                right: Vec.create(40, 0),
+                leftZIndex: 4,
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            image: { position: Vec.create(65, 0) },
+            casingParticles: [{
+                position: Vec.create(3.5, 0.5),
+                velocity: {
+                    y: {
+                        min: 2,
+                        max: 18
+                    }
+                }
+            }],
+            gasParticles: gasParticlePresets.pistol,
+            capacity: 8,
+            reloadTime: 2.3,
+            ballistics: {
+                damage: 31,
+                obstacleMultiplier: 1.25,
+                speed: 0.5,
+                range: 200,
+                tracer: {
+                    color: 0xc2bb7a
+                }
+            },
+            dual: {
+                ammoSpawnAmount: 96,
+                leftRightOffset: 1.3,
+                fireDelay: 75,
+                shotSpread: 10,
+                moveSpread: 18,
+                capacity: 16,
+                reloadTime: 3.8
+            }
+        },
+        {
             idString: "radio",
             name: "Radio",
             summonAirdrop: true,

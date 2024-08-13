@@ -1249,7 +1249,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "aegis_golden_case", // TODO: add deagle loot and set hasLoot to true
+            idString: "aegis_golden_case",
             name: "Golden Aegis Case",
             material: "wood", // crate or wood?
             health: 150,
@@ -1266,6 +1266,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
             noResidue: true,
+            hasLoot: true,
             frames: {
                 particle: "furniture_particle"
             }
