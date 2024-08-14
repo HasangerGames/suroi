@@ -62,8 +62,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint!).x).toBe(0);
-        expect((lineSegmentIntersectionPoint!).y).toBe(0);
+        expect(lineSegmentIntersectionPoint?.x).toBe(0);
+        expect(lineSegmentIntersectionPoint?.y).toBe(0);
     });
 
     test("line segments that share an ending point intersect at that point", () => {
@@ -79,8 +79,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint!).x).toBe(3);
-        expect((lineSegmentIntersectionPoint!).y).toBe(2);
+        expect(lineSegmentIntersectionPoint?.x).toBe(3);
+        expect(lineSegmentIntersectionPoint?.y).toBe(2);
     });
 
     test("line segments that are tip-to-tail intersect at the overlapping point", () => {
@@ -98,8 +98,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint!).x).toBe(1);
-        expect((lineSegmentIntersectionPoint!).y).toBe(1);
+        expect(lineSegmentIntersectionPoint?.x).toBe(1);
+        expect(lineSegmentIntersectionPoint?.y).toBe(1);
     });
 
     test("line segments that form a T intersect at the junction", () => {
@@ -117,8 +117,8 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint!).x).toBe(0);
-        expect((lineSegmentIntersectionPoint!).y).toBe(5);
+        expect(lineSegmentIntersectionPoint?.x).toBe(0);
+        expect(lineSegmentIntersectionPoint?.y).toBe(5);
     });
 
     test("line segments that form a square X intersect in the middle", () => {
@@ -134,7 +134,7 @@ describe("line segment intersection detection", () => {
         );
 
         expect(lineSegmentIntersectionPoint).toBeDefined();
-        expect((lineSegmentIntersectionPoint!).x).toBe(0);
-        expect((lineSegmentIntersectionPoint!).y).toBe(0);
+        expect(lineSegmentIntersectionPoint?.x).toBe(0);
+        expect(lineSegmentIntersectionPoint?.y).toBe(0);
     });
 });
