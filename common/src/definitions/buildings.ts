@@ -1225,7 +1225,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             ceilingImages: [{
                 key: "red_house_ceiling",
-                position: Vec.create(0, -0.25),
+                position: Vec.create(-0.6, -0.25),
                 scale: Vec.create(2, 2)
             }],
             floors: [
@@ -1288,7 +1288,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "window", position: Vec.create(-15.2, 28.9), rotation: 1 },
                 { idString: "window", position: Vec.create(-15.6, -29.7), rotation: 1 }
             ],
-            lootSpawners: []
+            lootSpawners: [
+                { table: "ground_loot", position: Vec.create(0, 0) }
+            ]
         },
         {
             idString: "crane",
