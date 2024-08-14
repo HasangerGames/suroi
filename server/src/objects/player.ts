@@ -423,17 +423,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         this.joinTime = game.now;
         this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
 
-        // this.layer = -2;
         this.inventory.addOrReplaceWeapon(2, "fists");
-        this.inventory.addOrReplaceWeapon(1, "m3k");
-        this.inventory.addOrReplaceWeapon(3, "smoke_grenade");
-        this.inventory.items.setItem("12g", 15);
 
-        this.inventory.items.setItem("4x_scope", 1);
-        this.inventory.scope = "4x_scope";
-        this.effectiveScope = "4x_scope";
-
-        // this.effectiveScope = DEFAULT_SCOPE;
+        this.inventory.scope = "1x_scope";
+        this.effectiveScope = DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
