@@ -291,6 +291,14 @@ export class Game implements GameData {
                 }
 
                 //
+                // Prevent joining after the game is closed to new players
+                //
+                if (!This.allowJoin) {
+                    forbidden(res);
+                    return;
+                }
+
+                //
                 // Validate and parse role and name color
                 //
                 const password = searchParams.get("password");
