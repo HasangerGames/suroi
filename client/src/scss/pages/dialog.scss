@@ -578,10 +578,15 @@
             width: 102px;
             height: 102px;
             font-size: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             div {
                 position: relative;
-                width: 100%;
-                height: 100%;
+                align-items: center;
+                width: 84px;
+                height: 84px;
                 background-size: cover;
             }
         }

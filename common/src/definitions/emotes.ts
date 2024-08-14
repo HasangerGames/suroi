@@ -124,3 +124,5 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         ].map(({ idString }) => simple("team_emote", idString))
     ]
 );
+
+export const emoteIdStrings = Emotes.definitions.map(emote => emote.idString);

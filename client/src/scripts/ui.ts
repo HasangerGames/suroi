@@ -4,7 +4,7 @@ import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, emoteIdStrings, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
@@ -1279,11 +1279,12 @@ Video evidence is required.`)) {
         $("#badges-list").append(
             noBadgeItem,
             ...allowedBadges.map(({ idString, name }) => {
+                const location = emoteIdStrings.includes(idString) ? "emotes" : "badges";
                 // noinspection CssUnknownTarget
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/${location}/${idString}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
                     </div>`
