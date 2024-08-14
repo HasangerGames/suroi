@@ -27,7 +27,7 @@ export const Config = {
 
     plugins: [],
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxPlayersPerGame: 80,
     maxGames: 4,
