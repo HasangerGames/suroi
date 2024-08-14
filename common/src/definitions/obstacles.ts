@@ -138,6 +138,7 @@ export const Materials = [
     "fence"
 ] as const;
 
+/* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { base: string, tint: number, variants?: number }> = {
     aegis_crate_particle:        { base: "wood_particle",    tint: 0x2687d9 },
     airdrop_crate_particle:      { base: "wood_particle",    tint: 0x4059bf },
@@ -168,6 +169,7 @@ export const TintedParticles: Record<string, { base: string, tint: number, varia
     porta_potty_particle:        { base: "ceiling_particle", tint: 0xe7e7e7 },
     mobile_home_particle:        { base: "ceiling_particle", tint: 0xa8a8a8 }
 };
+/* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
 export enum RotationMode {
     /**
