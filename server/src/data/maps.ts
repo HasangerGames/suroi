@@ -95,7 +95,8 @@ const maps = {
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
             green_house: 2,
-            red_house: 6,
+            red_house: 3,
+            red_house_v2: 3,
             construction_site: 1,
             mobile_home: 9,
             porta_potty: 12,
@@ -109,7 +110,8 @@ const maps = {
             container_10: 2
         },
         quadBuildingLimit: {
-            red_house: 2,
+            red_house: 1,
+            red_house_v2: 1,
             warehouse: 2,
             green_house: 1,
             mobile_home: 3,
