@@ -21,7 +21,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "singleBuilding",
+    mapName: "main",
 
     tps: 40,
 
