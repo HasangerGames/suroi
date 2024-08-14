@@ -480,6 +480,10 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             this.inventory.scope = "8x_scope";
 
+            for (const scopeDef of Scopes.definitions) {
+                this.inventory.items.setItem(scopeDef.idString, 1);
+            }
+
             determinePreset(0, weaponA, killsA);
             determinePreset(1, weaponB, killB);
             determinePreset(2, melee, killsM);

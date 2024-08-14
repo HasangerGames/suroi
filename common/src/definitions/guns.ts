@@ -1782,7 +1782,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Single,
             shotSpread: 3,
             moveSpread: 7,
-            length: 4.7,
+            length: 6.15,
             fists: {
                 left: Vec.create(40, 0),
                 right: Vec.create(40, 0),
@@ -1790,7 +1790,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(65, 0) },
+            image: { position: Vec.create(88, 0) },
             casingParticles: [{
                 position: Vec.create(3.5, 0.5),
                 velocity: {
@@ -1814,7 +1814,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             },
             dual: {
                 ammoSpawnAmount: 96,
-                leftRightOffset: 1.3,
+                leftRightOffset: 1.4,
                 fireDelay: 115,
                 shotSpread: 5,
                 moveSpread: 9.5,
