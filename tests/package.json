@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "mathUnitTests": "jest ./src/math.test.ts",
+    "mathUnitTests": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cd dist/tests/src && jest",
     "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
     "stressTest": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/tests/src/stressTest.js"
   },
