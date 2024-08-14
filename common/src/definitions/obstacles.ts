@@ -1093,6 +1093,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.6, 2) }, 7),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(10.7, 2) }, 8),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(17.7, 2) }, 9),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.6, 2) }, 10),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(11.6, 2) }, 11),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(16.2, 2) }, 12),
 
         // HQ walls (headquarters)
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.5, 2) }, 1),
@@ -1548,6 +1551,31 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             ),
             rotationMode: RotationMode.Limited,
             frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "red_small_couch",
+            name: "Red Small Couch",
+            material: "wood",
+            health: 95,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            tint: 0x823323, // tints are so cool
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(5, 5, Vec.create(0, 0)),
+                RectangleHitbox.fromRect(2, 7, Vec.create(-3.5, 0)),
+                RectangleHitbox.fromRect(2, 7, Vec.create(3.5, 0)),
+                RectangleHitbox.fromRect(7, 2, Vec.create(0, -2.5))
+            ),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                base: "white_small_couch",
+                residue: "white_small_couch_residue",
                 particle: "furniture_particle"
             }
         },
@@ -2353,6 +2381,36 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
 
                 RectangleHitbox.fromRect(12.3, 2, Vec.create(25.8, -28.9)), // Bottom Left Wall
                 RectangleHitbox.fromRect(39.4, 2, Vec.create(-10.45, -28.9)) // Bottom Right Wall
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
+        {
+            idString: "red_house_v2_exterior",
+            name: "Small House V2 Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.8, 60.1, Vec.create(-31.25, -0.3)),
+                RectangleHitbox.fromRect(1.8, 40.5, Vec.create(30.1, -9)),
+                RectangleHitbox.fromRect(1.8, 6.5, Vec.create(30.1, 25.1)),
+
+                // Top walls
+                RectangleHitbox.fromRect(18.6, 1.8, Vec.create(21.6, -29.5)),
+                RectangleHitbox.fromRect(12, 1.8, Vec.create(-4.1, -29.5)),
+                RectangleHitbox.fromRect(10.5, 1.8, Vec.create(-26, -29.5)),
+
+                // Bottom Walls
+                RectangleHitbox.fromRect(18.6, 1.8, Vec.create(21.6, 28.7)),
+                RectangleHitbox.fromRect(12, 1.8, Vec.create(-4.1, 28.7)),
+                RectangleHitbox.fromRect(10.5, 1.8, Vec.create(-26, 28.7))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
