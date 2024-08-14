@@ -431,6 +431,7 @@
             border-radius: 10px;
             padding: 5px;
             background-color: $transparent_bg;
+            justify-content: center;
 
             &.selected {
                 border-color: $orange;
@@ -444,7 +445,6 @@
             margin-top: auto;
             width: 84px;
             height: 84px;
-            background-repeat: no-repeat;
             flex-shrink: 0;
         }
 
