@@ -33,7 +33,7 @@ export const Config = {
     maxGames: 4,
     preventJoinAfter: 60000,
 
-    gas: { mode: GasMode.Disabled },
+    gas: { mode: GasMode.Normal },
 
     disableBuildingCheck: false,
 
