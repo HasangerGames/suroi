@@ -1543,6 +1543,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // back
 
                 { idString: "sandbags", position: Vec.create(-66.25, 5.5), rotation: 1 },
+                { idString: "tear_gas_crate", position: Vec.create(-76, 8), rotation: 0 },
 
                 // top left corner
                 { idString: "aegis_crate", position: Vec.create(-126.5, -35) },
