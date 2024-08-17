@@ -1288,7 +1288,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true,
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
-            noResidue: true,
             frames: {
                 particle: "window_particle"
             }
@@ -1350,7 +1349,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             noResidue: true,
             role: ObstacleSpecialRoles.Door,
             hingeOffset: Vec.create(-5.5, 0),
-            zIndex: ZIndexes.ObstaclesLayer3,
+            zIndex: ZIndexes.ObstaclesLayer1,
             frames: {
                 particle: "furniture_particle"
             }
