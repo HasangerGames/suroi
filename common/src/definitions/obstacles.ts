@@ -3843,7 +3843,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.4)),
+            hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.1)),
             rotationMode: RotationMode.None,
             zIndex: ZIndexes.UnderwaterPlayers - 1,
             hasLoot: true,

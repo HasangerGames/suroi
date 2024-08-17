@@ -345,7 +345,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "green_house_ceiling_2",
-                    position: Vec.create(-26, -1.1),
+                    position: Vec.create(-27, -1.1),
                     scale: Vec.create(2, 2)
                 }
             ],
