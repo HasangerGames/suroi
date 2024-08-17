@@ -151,7 +151,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 1000
                 },
                 frame: "smoke_grenade_particle",
-                zIndex: ZIndexes.ObstaclesLayer5 - 1,
+                zIndex: ZIndexes.BuildingsCeiling - 1,
                 scopeOutPreMs: 3200
             })
         },
