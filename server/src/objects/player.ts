@@ -846,6 +846,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
 
         const player = this.spectating ?? this;
+        if (this.spectating) {
+            this.layer = this.spectating.layer;
+        }
         const game = this.game;
 
         const fullObjects = new Set<BaseGameObject>();
@@ -1005,6 +1008,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                         items: inventory.items.asRecord(),
                         scope: inventory.scope
                     } }
+                    : {}
+            ),
+            ...(
+                player.dirty.layer || forceInclude
+                    ? { layer: player.layer }
                     : {}
             ),
             ...(
