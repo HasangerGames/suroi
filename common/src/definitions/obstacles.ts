@@ -1067,7 +1067,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "folders_shelf",
             name: "Folder Shelf",
-            material: "wood",
+            material: "iron",
             health: 210,
             impenetrable: true,
             hideOnMap: true,
@@ -1080,8 +1080,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(11, 6.3, Vec.create(0, 0))
             ),
             rotationMode: RotationMode.Limited,
+            reflectBullets: true,
             frames: {
-                particle: "furniture_particle"
+                particle: "metal_particle"
             }
         },
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 1),
