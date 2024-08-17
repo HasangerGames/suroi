@@ -3085,6 +3085,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         // Headquarters.
         // -----------------------------------------------------------------------------------------------
         {
+            idString: "detector",
+            name: "Detector",
+            spawnHitbox: RectangleHitbox.fromRect(9, 3, Vec.create(0, 1)),
+            obstacles: [
+                { idString: "detector_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "detector_top", position: Vec.create(0, 1), rotation: 0 }
+            ]
+        },
+        {
             idString: "headquarters_mini_vault",
             name: "Headquarters Ship Vault",
             spawnHitbox: RectangleHitbox.fromRect(22, 30.6),
@@ -3409,8 +3418,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "water_cooler", position: Vec.create(28, -30.7), rotation: 2 },
                 { idString: "folders_shelf", position: Vec.create(-32.5, -19), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(-43, -12), rotation: 1 },
-                { idString: "detector", position: Vec.create(-36, 23.5), rotation: 0 },
-                { idString: "detector", position: Vec.create(-26, 23.5), rotation: 0 },
 
                 // bottom left room
                 { idString: "gun_case", position: Vec.create(-48.5, 1.5), rotation: 0 },
@@ -3534,7 +3541,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             subBuildings: [
                 { idString: "headquarters_second_floor", position: Vec.create(0, 12), orientation: 0, layer: -2 },
                 { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 },
-                { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 }
+                { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 },
+                { idString: "detector", position: Vec.create(-36, 23.5), orientation: 0 },
+                { idString: "detector", position: Vec.create(-26, 23.5), orientation: 0 }
             ]
         }
         // -----------------------------------------------------------------------------------------------
