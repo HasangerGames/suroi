@@ -554,19 +554,31 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer3
         },
         {
-            idString: "detector",
-            name: "Detector",
+            idString: "detector_walls",
+            name: "Detector Walls",
             material: "iron",
             health: 1000,
             detector: true,
             indestructible: true,
             noBulletCollision: true,
-            scale: {
-                spawnMin: 0.9,
-                spawnMax: 1.1,
-                destroy: 0.8
-            },
-            hitbox: RectangleHitbox.fromRect(9, 3, Vec.create(0, 0.5)),
+            hitbox: RectangleHitbox.fromRect(0, 0, Vec.create(0, 0)),
+            noCollisions: true,
+            noResidue: true,
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "detector_top",
+            name: "Detector Top",
+            material: "iron",
+            health: 1000,
+            detector: true,
+            indestructible: true,
+            noBulletCollision: true,
+            noMeleeCollision: true,
+            hitbox: RectangleHitbox.fromRect(9, 3, Vec.create(0, 0)),
             noCollisions: true,
             noResidue: true,
             rotationMode: RotationMode.Limited,
