@@ -3229,7 +3229,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "chair", position: Vec.create(-49, -28), rotation: 2 },
                 { idString: "chair", position: Vec.create(-49, 6.5), rotation: 0 },
 
-                { idString: "large_table_with_stuff", position: Vec.create(-49.25, -22), rotation: 0 },
+                { idString: "large_table", variation: 2, position: Vec.create(-49.25, -22), rotation: 0 },
                 { idString: "chair", position: Vec.create(-57.5, -22), rotation: 3 }, // rotation1=I_
                 { idString: "chair", position: Vec.create(-41, -22), rotation: 1 },
 
