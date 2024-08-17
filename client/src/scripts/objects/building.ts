@@ -14,6 +14,7 @@ import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { isTransitionaryLayer } from "../../../../common/src/utils/layer";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
@@ -55,8 +56,11 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
         let visible = false;
 
+        let duration = 150;
+
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
             visible = true;
+            duration = isTransitionaryLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 
@@ -179,7 +183,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
         this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
             to: { alpha: visible ? 0 : 1 },
-            duration: visible ? 150 : 300,
+            duration: visible ? duration : 300,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingTween = undefined;

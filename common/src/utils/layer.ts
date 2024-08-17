@@ -15,6 +15,7 @@ export function isTransitionaryLayer(layer: number | Layer): boolean {
  * @param evalLayer The layer to evaluate relative to the reference layer.
  * @returns `true` if the two layers are the same; `false` otherwise.
  */
+
 export function equalLayer(referenceLayer: number | Layer, evalLayer: number | Layer): boolean {
     return (referenceLayer === evalLayer);
 }
@@ -28,6 +29,17 @@ export function equalLayer(referenceLayer: number | Layer, evalLayer: number | L
  */
 export function equalOrOneAboveLayer(referenceLayer: number | Layer, evalLayer: number | Layer): boolean {
     return (referenceLayer === evalLayer) || (referenceLayer + 1 === evalLayer);
+}
+
+/**
+ * Returns whether or not the layer being evaluted is at the same level, or one level immediately below, the reference
+ * layer.
+ * @param focusLayer The reference layer.
+ * @param evalLayer The layer to evaluate relative to the reference layer.
+ * @returns `true` if the evaluated layer is the same, or one layer above, the reference layer.
+ */
+export function equalOrOneBelowLayer(referenceLayer: number | Layer, evalLayer: number | Layer): boolean {
+    return (referenceLayer === evalLayer) || (referenceLayer - 1 === evalLayer);
 }
 
 //

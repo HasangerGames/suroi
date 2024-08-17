@@ -25,7 +25,7 @@ import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/mi
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { isAdjacent, pickRandomInArray } from "@common/utils/random";
-import { equalLayer, equalOrOneAboveLayer, isTransitionaryLayer, sameLayer } from "@common/utils/layer";
+import { equalLayer, equalOrOneAboveLayer, equalOrOneBelowLayer, isTransitionaryLayer, sameLayer } from "@common/utils/layer";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -869,7 +869,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             // them.
             // When a player is not in a transitionary layer (Basement, Floor1, or Floor2), then only view the objects
             // in that layer.
-            const layerFilterFunc = isTransitionaryLayer(this.layer) ? equalLayer : equalOrOneAboveLayer;
+            const layerFilterFunc = isTransitionaryLayer(this.layer) ? equalOrOneAboveLayer : equalOrOneBelowLayer;
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
