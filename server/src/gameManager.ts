@@ -111,9 +111,7 @@ export interface GameData {
 export function findGame(): GetGameResponse {
     for (let gameID = 0; gameID < Config.maxGames; gameID++) {
         const game = games[gameID];
-        if (canJoin(game) && game?.data.allowJoin) {
-            return { success: true, gameID };
-        }
+        if (canJoin(game)) return { success: true, gameID };
     }
 
     // Create a game if there's a free slot
@@ -123,7 +121,7 @@ export function findGame(): GetGameResponse {
     } else {
         // Join the game that most recently started
         const game = games
-            .filter((g => g && !g.data.over) as (g?: GameContainer) => g is GameContainer)
+            .filter((g => g && !g.data.allowJoin && !g.data.over) as (g?: GameContainer) => g is GameContainer)
             .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
 
         return game
@@ -161,6 +159,13 @@ export function endGame(id: number, createNewGame: boolean): void {
     else games[id] = undefined;
 }
 
-export function canJoin(game?: GameContainer): boolean {
-    return game?.data !== undefined && game.data.aliveCount < Config.maxPlayersPerGame && !game.data.over;
+/**
+ * Whether a game is joinable.
+ * @param game The (nullable) game in question.
+ */
+export function canJoin(game: GameContainer | undefined): boolean {
+    return game?.data !== undefined
+        && game.data.aliveCount < Config.maxPlayersPerGame
+        && !game.data.over
+        && game?.data.allowJoin;
 }

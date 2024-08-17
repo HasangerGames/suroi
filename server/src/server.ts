@@ -146,7 +146,7 @@ if (isMainThread) {
          * Upgrade the connection to WebSocket.
          */
         upgrade(res, req, context) {
-            res.onAborted((): void => { /* (why is this handler here?) */ });
+            res.onAborted((): void => { /* Handle errors in WS connection */ });
 
             const searchParams = new URLSearchParams(req.getQuery());
 

@@ -186,7 +186,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     mean: 500,
                     deviation: 0
                 },
-                frame: "c4_particle",
+                frame: "metal_particle",
                 zIndex: ZIndexes.ObstaclesLayer1
             })
         }
@@ -258,7 +258,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 }
             },
             [],
-            ["c4_particle"]
+            ["metal_particle"]
         )
     ]
 );

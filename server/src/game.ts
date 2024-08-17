@@ -252,7 +252,7 @@ export class Game implements GameData {
              * Upgrade the connection to WebSocket.
              */
             upgrade(res, req, context) {
-                res.onAborted((): void => { /* do nothing…? */ });
+                res.onAborted((): void => { /* Handle errors in WS connection */ });
 
                 const ip = getIP(res, req);
 
@@ -288,6 +288,14 @@ export class Game implements GameData {
                 // Ensure IP is allowed
                 //
                 if ((This.allowedIPs.get(ip) ?? Infinity) < This.now) {
+                    forbidden(res);
+                    return;
+                }
+
+                //
+                // Prevent joining after the game is closed to new players
+                //
+                if (!This.allowJoin) {
                     forbidden(res);
                     return;
                 }
