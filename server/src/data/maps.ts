@@ -233,7 +233,7 @@ const maps = {
             // Generate all Loots
             const itemPos = Vec.create(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(item, itemPos, { count: Infinity, pushVel: 0, jitterSpawn: false });
+                map.game.addLoot(item, itemPos, 0, { count: Infinity, pushVel: 0, jitterSpawn: false });
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -343,7 +343,7 @@ const maps = {
                         || item.itemType === ItemType.Skin
                     ) continue;
 
-                    game.addLoot(item, itemPos, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
+                    game.addLoot(item, itemPos, 0, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
 
                     itemPos.x += xOff;
                     if (
@@ -426,16 +426,8 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("headquarters", Vec.create(this.width / 2, this.height / 2 - 15), 0);
-        },
-        places: [
-            { name: "Pumpkin Patch", position: Vec.create(0.23, 0.2) },
-            { name: "Reaper", position: Vec.create(0.23, 0.8) },
-            { name: "Spøkelsesfelt", position: Vec.create(0.75, 0.2) },
-            { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
-            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
-        ]
+            map.generateBuilding("refinery", Vec.create(this.width / 2, this.height / 2 - 15), 0);
+        }
     },
     singleObstacle: {
         width: 256,
@@ -452,8 +444,8 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.game.addLoot("radio", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("curadell", Vec.create(this.width / 2, this.height / 2 - 10), { count: Infinity });
+            map.game.addLoot("radio", Vec.create(this.width / 2, this.height / 2 - 10), 0);
+            map.game.addLoot("curadell", Vec.create(this.width / 2, this.height / 2 - 10), 0, { count: Infinity });
         }
     },
     gunsTest: (() => {
@@ -478,8 +470,8 @@ const maps = {
                     player.inventory.items.setItem(gun.ammoType, Infinity);
                     player.disableInvulnerability();
                     // setInterval(() => player.activeItem.useItem(), 30);
-                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));
-                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), { count: Infinity });
+                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)), 0);
+                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), 0, { count: Infinity });
                     map.game.grid.addObject(player);
                 }
             }

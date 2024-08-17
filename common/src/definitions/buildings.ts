@@ -392,8 +392,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "tv", position: Vec.create(2.43, -4.51), rotation: 1 },
                 { idString: "large_drawer", position: Vec.create(28.24, 20), rotation: 3 },
                 { idString: "couch", position: Vec.create(2.36, 22.18), rotation: 1 },
-                { idString: "green_house_small_table", position: Vec.create(2.02, 11.51), rotation: 1 },
-                { idString: "green_house_large_table", position: Vec.create(-15.91, 16.87), rotation: 0 },
+                { idString: "small_table", position: Vec.create(2.02, 11.51), rotation: 1, variation: 1 },
+                { idString: "large_table", position: Vec.create(-15.91, 16.87), rotation: 0, variation: 1 },
                 { idString: "chair", position: Vec.create(-21.87, 20.61), rotation: 3 },
                 { idString: "chair", position: Vec.create(-21.87, 13.45), rotation: 3 },
                 { idString: "chair", position: Vec.create(-16.02, 8.25), rotation: 2 },
@@ -814,9 +814,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: 0
                 },
                 {
-                    idString: "table",
+                    idString: "small_table",
                     position: Vec.create(-22, 28),
-                    rotation: 0
+                    rotation: 0,
+                    variation: 0
                 },
                 {
                     idString: "chair",
@@ -1149,9 +1150,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 // Dining Room Table
                 {
-                    idString: "table",
+                    idString: "small_table",
                     position: Vec.create(25, 0),
-                    rotation: 2
+                    rotation: 2,
+                    variation: 0
                 },
                 // Backdoor Drawer
                 {
@@ -1259,7 +1261,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "tv", position: Vec.create(-29.8, -19.4), rotation: 2 },
 
                 // under bathroom (right)
-                { idString: "table", position: Vec.create(24.85, 2), rotation: 0 },
+                { idString: "small_table", position: Vec.create(24.85, 2), rotation: 0, variation: 0 },
                 { idString: "chair", position: Vec.create(24.85, 7.5), rotation: 0 },
                 { idString: "chair", position: Vec.create(21, 0), rotation: 3 },
                 { idString: "bookshelf", position: Vec.create(22.5, 25.5), rotation: 0 },
@@ -1375,9 +1377,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: 1
                 },
                 {
-                    idString: "table",
+                    idString: "small_table",
                     position: Vec.create(2.2, -10.35),
-                    rotation: 1
+                    rotation: 1,
+                    variation: 0
                 },
                 {
                     idString: "chair",
@@ -2355,7 +2358,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "armory_center_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "door", position: Vec.create(-13.9, -12.43), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(12.45, -11.6), rotation: 3 },
-                { idString: "table", position: Vec.create(8.85, 1.6), rotation: 1 },
+                { idString: "small_table", position: Vec.create(8.85, 1.6), rotation: 1, variation: 0 },
                 { idString: "chair", position: Vec.create(3, 1.7), rotation: 3 },
                 { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-9.2, 16.8), rotation: 2 },
@@ -2854,7 +2857,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "aegis_crate", position: Vec.create(13.27, -23.45) },
                 { idString: "life_preserver", position: Vec.create(-17.63, -2.6), rotation: 2 },
                 { idString: "life_preserver", position: Vec.create(-17.63, 7.05), rotation: 2 },
-                { idString: "table", position: Vec.create(13.47, 13.95), rotation: 2 },
+                { idString: "small_table", position: Vec.create(13.47, 13.95), rotation: 2, variation: 0 },
                 { idString: "control_panel_activated", position: Vec.create(-5.75, -24.7), rotation: 0 },
                 { idString: "control_panel_small", position: Vec.create(3.81, -24.7), rotation: 0 },
                 { idString: "control_panel_small", position: Vec.create(-15.34, -24.7), rotation: 0 },
@@ -3251,7 +3254,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "water_cooler", position: Vec.create(-30, -80), rotation: 1 },
                 { idString: "chair", position: Vec.create(-24, -107), rotation: 2 },
                 { idString: "chair", position: Vec.create(-24, -93), rotation: 0 },
-                { idString: "green_house_large_table", position: Vec.create(-23.5, -100), rotation: 1 },
+                { idString: "large_table", position: Vec.create(-23.5, -100), rotation: 1, variation: 1 },
                 { idString: "cabinet", position: Vec.create(-25.7, -116.25), rotation: 0 },
                 { idString: "door", position: Vec.create(-17.7, -69.05), rotation: 2 },
                 { idString: "headquarters_wall_9", position: Vec.create(-27.8, -69), rotation: 0 },
@@ -3264,7 +3267,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "small_drawer", position: Vec.create(65.5, -45.25), rotation: 2 },
                 { idString: "couch_end_left", position: Vec.create(58, -45.25), rotation: 1 },
                 { idString: "couch_part", position: Vec.create(51.5, -44.95), rotation: 1 },
-                { idString: "green_house_small_table", position: Vec.create(51.5, -54), rotation: 1 },
+                { idString: "small_table", position: Vec.create(51.5, -54), rotation: 1, variation: 1 },
                 { idString: "tv", position: Vec.create(51, -68.8), rotation: 1 },
                 { idString: "trash_can", position: Vec.create(39.5, -66.5) },
                 { idString: "couch_end_right", position: Vec.create(45, -45.25), rotation: 2 },
@@ -3453,13 +3456,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "trash_can", position: Vec.create(37.5, -60) },
 
                 // tables (right)
-                { idString: "green_house_large_table", position: Vec.create(60, -70), rotation: 1 },
+                { idString: "large_table", position: Vec.create(60, -70), rotation: 1, variation: 1 },
                 { idString: "chair", position: Vec.create(64, -63.5), rotation: 0 },
                 { idString: "chair", position: Vec.create(56.5, -63.5), rotation: 0 },
                 { idString: "chair", position: Vec.create(64, -76.5), rotation: 2 },
                 { idString: "chair", position: Vec.create(56.5, -76.5), rotation: 2 },
 
-                { idString: "green_house_large_table", position: Vec.create(60, -40), rotation: 1 },
+                { idString: "large_table", position: Vec.create(60, -40), rotation: 1, variation: 1 },
                 { idString: "chair", position: Vec.create(64, -33.5), rotation: 0 },
                 { idString: "chair", position: Vec.create(56.5, -33.5), rotation: 0 },
                 { idString: "chair", position: Vec.create(64, -46.5), rotation: 2 },

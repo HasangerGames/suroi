@@ -1728,8 +1728,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "table",
-            name: "Table",
+            idString: "small_table",
+            name: "Small Table",
             material: "wood",
             health: 100,
             scale: {
@@ -1737,27 +1737,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 0.9
             },
+            variations: 2,
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(8.3, 12.2),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle"
-            },
-            zIndex: ZIndexes.ObstaclesLayer3,
-            noCollisions: true
-        },
-        {
-            idString: "green_house_large_table",
-            name: "Green House Large Table",
-            material: "wood",
-            health: 100,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
-            hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(12, 16.6),
+            hitbox: RectangleHitbox.fromRect(8.3, 12.3),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
@@ -1776,48 +1758,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 0.9
             },
+            variations: 2,
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(16.6, 12),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle"
-            },
-            zIndex: ZIndexes.ObstaclesLayer3,
-            noCollisions: true,
-            noResidue: true
-        },
-        {
-            idString: "large_table_with_stuff",
-            name: "Large Table Thing",
-            material: "wood",
-            health: 100,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
-            hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(16.6, 12),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle"
-            },
-            zIndex: ZIndexes.ObstaclesLayer3,
-            noCollisions: true,
-            noResidue: true
-        },
-        {
-            idString: "green_house_small_table",
-            name: "Green House Small Table",
-            material: "wood",
-            health: 100,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
-            hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(8.3, 12.3),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
