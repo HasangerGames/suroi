@@ -684,11 +684,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "crate",
             health: 350,
             impenetrable: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.95
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(18.25, 5.25, Vec.create(0, -3)),
                 RectangleHitbox.fromRect(4.5, 11, Vec.create(-6.8, 0))
@@ -705,11 +700,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "crate",
             health: 350,
             impenetrable: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.95
-            },
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(18.25, 5.25, Vec.create(0, -3)),
                 RectangleHitbox.fromRect(4.5, 11, Vec.create(6.8, 0))
