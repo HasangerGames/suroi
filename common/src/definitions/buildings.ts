@@ -1501,7 +1501,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "grenade_crate", position: Vec.create(104, 21) },
 
                 // front
-                { idString: "vault_door", position: Vec.create(98.25, 0.8), rotation: 1 },
+                { idString: "vault_door", position: Vec.create(98.25, 1), rotation: 1 },
                 { idString: "aegis_crate", position: Vec.create(91, -29) },
                 { idString: "barrel", position: Vec.create(85, -39) },
                 { idString: "generator", position: Vec.create(91, -18.5), rotation: 0, puzzlePiece: true },
@@ -3399,7 +3399,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // main area (hallway/where unbreakable large desk is)
                 { idString: "headquarters_main_desk", position: Vec.create(-11, -52), rotation: 0 },
-                { idString: "metal_door", position: Vec.create(17.4, -107.8), rotation: 2 },
+                { idString: "metal_door", position: Vec.create(17.5, -107.8), rotation: 2 },
                 { idString: "potted_plant", position: Vec.create(-33, -57.5) },
                 { idString: "potted_plant", position: Vec.create(10.9, -57.5) },
                 { idString: "metal_small_drawer", position: Vec.create(-16.5, -31.5), rotation: 2 },
