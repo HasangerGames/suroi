@@ -591,7 +591,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "Detector Walls",
             material: "iron",
             health: 1000,
-            detector: true,
             indestructible: true,
             noBulletCollision: true,
             hitbox: RectangleHitbox.fromRect(0, 0, Vec.create(0, 0)),
