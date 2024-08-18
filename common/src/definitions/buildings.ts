@@ -1566,8 +1566,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             subBuildings: [
                 {
                     idString: "cargo_ship_center_roof",
-                    position: Vec.create(-32, 0),
-                    orientation: 0
+                    position: Vec.create(-32, 0)
                 },
                 {
                     idString: randomContainer1,
@@ -1737,7 +1736,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "oil_tanker_ship_vault", position: Vec.create(-28.1, -94.25), orientation: 1 },
-                { idString: "oil_tanker_tanks", position: Vec.create(39, -5), orientation: 0 } // P A I N
+                { idString: "oil_tanker_tanks", position: Vec.create(39, -5) } // P A I N
             ]
         },
         {
@@ -3144,7 +3143,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ),
             puzzle: {
                 triggerInteractOn: "speaker",
-                solvedSound: false,
                 interactDelay: 500
             },
             sounds: {
@@ -3295,7 +3293,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84), orientation: 0 }
+                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84) }
             ]
         },
         {
@@ -3542,11 +3540,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_second_floor", position: Vec.create(0, 12), orientation: 0, layer: -2 },
-                { idString: "stairToBasement", position: Vec.create(-52.5, -90), orientation: 0 },
-                { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7), orientation: 0 },
-                { idString: "detector", position: Vec.create(-36, 23.5), orientation: 0 },
-                { idString: "detector", position: Vec.create(-26, 23.5), orientation: 0 }
+                { idString: "headquarters_second_floor", position: Vec.create(0, 12), layer: -2 },
+                { idString: "stairToBasement", position: Vec.create(-52.5, -90) },
+                { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7) },
+                { idString: "detector", position: Vec.create(-36, 23.5) },
+                { idString: "detector", position: Vec.create(-26, 23.5) }
             ]
         }
         // -----------------------------------------------------------------------------------------------
