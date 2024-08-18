@@ -3281,7 +3281,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "white_small_couch", position: Vec.create(-53.4, -71.8), rotation: 1 },
 
                 // secret room + near secret room
-                { idString: "large_drawer", position: Vec.create(9.5, -115), rotation: 0 },
+                { idString: "large_drawer", position: Vec.create(9.5, -115), lootSpawnOffset: Vec.create(0, 3), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(64, -115) },
                 { idString: "office_chair", position: Vec.create(25.5, -110.5), rotation: 2 },
                 { idString: "office_chair", position: Vec.create(34, -110.5), rotation: 2 },
