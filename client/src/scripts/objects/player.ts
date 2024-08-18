@@ -910,9 +910,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     changeLayer(layer: Layer): void {
         switch (layer) {
-            case Layer.StairsToBasement:
             case Layer.Basement: {
                 this.game.pixi.renderer.background.color = COLORS.dirt;
+
+                this.game.map.terrainGraphics.visible = false;
+
+                break;
+            }
+
+            case Layer.StairsToBasement: {
+                this.game.pixi.renderer.background.color = COLORS.grass;
 
                 this.game.map.terrainGraphics.visible = false;
 

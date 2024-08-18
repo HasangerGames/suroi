@@ -118,6 +118,10 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 this.hitbox.resolveCollision(object.hitbox);
             }
 
+            if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox) && object.definition.isStair) {
+                this.layer = object.definition.transportTo ?? 0;
+            }
+
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {

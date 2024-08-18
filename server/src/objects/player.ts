@@ -688,7 +688,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             let collided = false;
 
             // we use dedl0x's really cool function check
-            const layerFilterFunc = isTransitionaryLayer(this.layer) ? equalLayer : equalOrOneAboveLayer;
+            const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : equalOrOneAboveLayer;
 
             for (const potential of this.nearObjects) {
                 if (
@@ -872,7 +872,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             // them.
             // When a player is not in a transitionary layer (Basement, Floor1, or Floor2), then only view the objects
             // in that layer.
-            const layerFilterFunc = isTransitionaryLayer(this.layer) ? equalOrOneAboveLayer : equalOrOneBelowLayer;
+            const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : (equalOrOneAboveLayer || equalOrOneBelowLayer);
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(

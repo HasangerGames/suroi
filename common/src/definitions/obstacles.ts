@@ -3870,8 +3870,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(0.1, 18.5, Vec.create(5, 0)),
-                RectangleHitbox.fromRect(0.1, 18.5, Vec.create(-5, 0))
+                RectangleHitbox.fromRect(1, 18.5, Vec.create(5, 0)),
+                RectangleHitbox.fromRect(1, 18.5, Vec.create(-5, 0))
             ),
             frames: {
                 particle: "metal_particle"
@@ -3886,8 +3886,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(0.1, 20, Vec.create(5, 0)),
-                RectangleHitbox.fromRect(0.1, 20, Vec.create(-5, 0))
+                RectangleHitbox.fromRect(1, 20, Vec.create(5, 0)),
+                RectangleHitbox.fromRect(1, 20, Vec.create(-5, 0))
             ),
             frames: {
                 particle: "metal_particle"
@@ -3902,7 +3902,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             indestructible: true,
             invisible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(12, 0.25, Vec.create(0, 0))
+                RectangleHitbox.fromRect(12, 1, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"
