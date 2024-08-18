@@ -921,7 +921,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case Layer.StairsToBasement: {
                 this.game.pixi.renderer.background.color = COLORS.grass;
 
-                this.game.map.terrainGraphics.visible = false;
+                this.game.map.terrainGraphics.visible = true;
 
                 break;
             }

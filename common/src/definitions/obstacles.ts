@@ -192,7 +192,9 @@ export const TintedParticles: Record<string, { base: string, tint: number, varia
     hq_stone_wall_particle_1:    { base: "stone_particle_1", tint: 0x591919 },
     hq_stone_wall_particle_2:    { base: "stone_particle_2", tint: 0x591919 },
     headquarters_desk_particle:  { base: "wood_particle",    tint: 0x61341a },
-    gold_aegis_case_particle:    { base: "wood_particle",    tint: 0x1a1a1a }
+    gold_aegis_case_particle:    { base: "wood_particle",    tint: 0x1a1a1a },
+    hq_tp_wall_particle:         { base: "wood_particle",    tint: 0x74858b },
+    white_small_couch_particle:  { base: "wood_particle",    tint: 0xcfc1af }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
@@ -288,7 +290,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
-                particle: "wall_particle"
+                particle: customHealth ? "hq_tp_wall_particle" : "wall_particle"
             },
             wall: {
                 borderColor: customHealth ? 0x23282a : 0x4a4134,
@@ -1193,7 +1195,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
-                particle: "metal_particle"
+                particle: "briefcase_particle"
             },
             reflectBullets: true
         },
@@ -1598,7 +1600,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             ),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle"
+                particle: "white_small_couch_particle"
             }
         },
         {
@@ -2059,7 +2061,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
-                particle: "wall_particle"
+                particle: "hq_tp_wall_particle"
             }
         },
         apply(
@@ -4130,7 +4132,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Always,
             invisible: true,
             frames: {
-                particle: "furniture_particle"
+                particle: "headquarters_desk_particle"
             }
         },
         {
