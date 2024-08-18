@@ -163,6 +163,7 @@ export const TintedParticles: Record<string, { base: string, tint: number, varia
     crate_particle:              { base: "wood_particle",    tint: 0x9e7437 },
     flint_crate_particle:        { base: "wood_particle",    tint: 0xda6a0b },
     furniture_particle:          { base: "wood_particle",    tint: 0x785a2e },
+    couch_part_particle:         { base: "wood_particle",    tint: 0x6a330b },
     grenade_crate_particle:      { base: "wood_particle",    tint: 0x4c4823 },
     gun_case_particle:           { base: "wood_particle",    tint: 0x2e3726 },
     hazel_crate_particle:        { base: "wood_particle",    tint: 0x6ba371 },
@@ -172,8 +173,8 @@ export const TintedParticles: Record<string, { base: string, tint: number, varia
     wall_particle:               { base: "wood_particle",    tint: 0xafa08c },
     flint_stone_particle_1:      { base: "stone_particle_1", tint: 0x26272c },
     flint_stone_particle_2:      { base: "stone_particle_2", tint: 0x26272c },
-    gold_rock_particle_1:        { base: "stone_particle_1", tint: 0x25262a },
-    gold_rock_particle_2:        { base: "stone_particle_2", tint: 0x25262a },
+    gold_rock_particle_1:        { base: "stone_particle_1", tint: 0xaa8534 },
+    gold_rock_particle_2:        { base: "stone_particle_2", tint: 0xd3a440 },
     rock_particle_1:             { base: "stone_particle_1", tint: 0x8e8e8e },
     rock_particle_2:             { base: "stone_particle_2", tint: 0x8e8e8e },
     river_rock_particle_1:       { base: "stone_particle_1", tint: 0x626471 },
@@ -185,7 +186,13 @@ export const TintedParticles: Record<string, { base: string, tint: number, varia
     porta_potty_particle:        { base: "ceiling_particle", tint: 0xe7e7e7 },
     mobile_home_particle:        { base: "ceiling_particle", tint: 0xa8a8a8 },
     metal_small_drawer_particle: { base: "wood_particle",    tint: 0x7f714d },
-    folders_shelf_particle:      { base: "wood_particle",    tint: 0x404040 }
+    folders_shelf_particle:      { base: "wood_particle",    tint: 0x404040 },
+    grey_office_chair_particle:  { base: "wood_particle",    tint: 0x616161 },
+    office_chair_particle:       { base: "wood_particle",    tint: 0x7d2b2b },
+    hq_stone_wall_particle_1:    { base: "stone_particle_1", tint: 0x591919 },
+    hq_stone_wall_particle_2:    { base: "stone_particle_2", tint: 0x591919 },
+    headquarters_desk_particle:  { base: "wood_particle",    tint: 0x61341a },
+    gold_aegis_case_particle:    { base: "wood_particle",    tint: 0x1a1a1a }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
@@ -737,7 +744,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "furniture_particle"
+                particle: "headquarters_desk_particle"
             }
         },
         {
@@ -753,7 +760,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "furniture_particle"
+                particle: "headquarters_desk_particle"
             }
         },
         {
@@ -1309,7 +1316,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             noResidue: true,
             hasLoot: true,
             frames: {
-                particle: "furniture_particle"
+                particle: "gold_aegis_case_particle"
             }
         },
         {
@@ -1637,7 +1644,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             ),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle",
+                particle: "couch_part_particle",
                 residue: "brown_couch_part_residue"
             }
         },
@@ -1660,7 +1667,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             ),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle",
+                particle: "couch_part_particle",
                 residue: "brown_couch_part_residue"
             }
         },
@@ -1685,7 +1692,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             ),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle",
+                particle: "couch_part_particle",
                 residue: "brown_couch_part_residue"
             }
         },
@@ -1710,7 +1717,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             ),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle",
+                particle: "couch_part_particle",
                 residue: "brown_couch_part_residue"
             }
         },
@@ -3623,7 +3630,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(4.5, 5.3, Vec.create(0, -0.14)),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle"
+                particle: "office_chair_particle"
             }
         },
         {
@@ -3640,7 +3647,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(5, 5.1, Vec.create(0, 0)),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "furniture_particle"
+                particle: "grey_office_chair_particle"
             }
         },
         {
@@ -4031,7 +4038,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             invisible: true,
             particleVariations: 2,
             frames: {
-                particle: "rock_particle"
+                particle: "hq_stone_wall_particle"
             }
         },
         {
@@ -4051,7 +4058,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             invisible: true,
             particleVariations: 2,
             frames: {
-                particle: "rock_particle"
+                particle: "hq_stone_wall_particle"
             }
         },
         {
@@ -4085,7 +4092,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             invisible: true,
             particleVariations: 2,
             frames: {
-                particle: "rock_particle"
+                particle: "hq_stone_wall_particle"
             }
         },
         {
@@ -4108,7 +4115,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(4.6, 8, Vec.create(-9.5, -1.5))
             ),
             frames: {
-                particle: "furniture_particle"
+                particle: "headquarters_desk_particle"
             }
         },
         {
@@ -4141,7 +4148,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Always,
             invisible: true,
             frames: {
-                particle: "furniture_particle"
+                particle: "headquarters_desk_particle"
             }
         },
         {
@@ -4190,7 +4197,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             invisible: true,
             particleVariations: 2,
             frames: {
-                particle: "rock_particle"
+                particle: "hq_stone_wall_particle"
             }
         },
         // --------------------------------------------------------------------------------------------
