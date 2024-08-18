@@ -842,6 +842,8 @@ logger.indent("Validating building definitions", () => {
                                                 field: "variation",
                                                 min: 0,
                                                 max: def.variations - 1,
+                                                includeMin: true,
+                                                includeMax: true,
                                                 baseErrorPath: errorPath
                                             });
                                         }
