@@ -387,12 +387,14 @@
 
     #kill-counter {
         position: relative;
-        bottom: 81px;
+        bottom: 81.5px;
         right: 110px;
+        margin: 5px;
     
         @media screen and (max-width: $screen_large)  {
             bottom: 0;
             right: 0;
+            margin: 0;
         }
     }
 
