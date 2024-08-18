@@ -149,6 +149,7 @@ export class Bullet extends BaseBullet {
                     start: randomFloat(trail.alpha.min, trail.alpha.max),
                     end: 0
                 },
+                layer: this.layer,
                 tint: trail.tint === -1
                     ? new Color({ h: random(0, 6) * 60, s: 60, l: 70 }).toNumber()
                     : trail.tint

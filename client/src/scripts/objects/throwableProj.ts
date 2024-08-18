@@ -115,6 +115,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
                 return {
                     frames: "metal_particle",
                     position,
+                    layer: this.layer,
                     zIndex: Math.max(ZIndexes.Players + 1, 4),
                     lifetime: 600,
                     scale: { start: 0.9, end: 0.2 },

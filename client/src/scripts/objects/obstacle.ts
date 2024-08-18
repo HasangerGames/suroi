@@ -233,6 +233,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
+                    layer: this.layer,
                     zIndex: (definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1,
                     lifetime: 1500,
                     rotation: {
@@ -475,6 +476,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             position,
             zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
             lifetime: 600,
+            layer: this.layer,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
             speed: Vec.fromPolar((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))

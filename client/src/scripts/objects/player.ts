@@ -286,6 +286,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             zIndex: ZIndexes.Players,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
+                            layer: this.layer,
                             scale: {
                                 start: 0.8,
                                 end: 0.4
@@ -412,6 +413,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         zIndex: ZIndexes.Ground,
                         position: this.hitbox.randomPoint(),
                         lifetime: 1000,
+                        layer: this.layer,
                         speed: Vec.create(0, 0)
                     };
 
@@ -552,6 +554,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         frames: "blood_particle",
                         lifetime: random(1000, 3000),
                         position: this.position,
+                        layer: this.layer,
                         alpha: {
                             start: 1,
                             end: 0
@@ -1260,6 +1263,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     this.game.particleManager.spawnParticles(gas.amount, () => ({
                         frames: "small_gas",
+                        layer: this.layer,
                         lifetime: random(gas.minLife, gas.maxSize),
                         scale: {
                             start: 0, end: randomFloat(gas.minSize, gas.maxSize)
@@ -1411,6 +1415,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         frames: def.animation.leverImage,
                         lifetime: 600,
                         position: this.position,
+                        layer: this.layer,
                         zIndex: ZIndexes.Players + 1,
                         speed: Vec.rotate(Vec.create(8, 8), this.rotation),
                         rotation: this.rotation,
@@ -1479,6 +1484,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
+                        layer: this.layer,
                         position: this.position,
                         zIndex: ZIndexes.Players + 1,
                         speed: Vec.rotate(Vec.create(8, 8), this.rotation),
@@ -1580,6 +1586,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.game.particleManager.spawnParticle({
                     frames: "blood_particle",
                     zIndex: ZIndexes.Decals,
+                    layer: this.layer,
                     position: randomPointInsideCircle(position, 2.5),
                     lifetime: 60000 * (this.floorType === "water" ? 0.1 : 1),
                     scale: randomFloat(0.8, 1.6),
