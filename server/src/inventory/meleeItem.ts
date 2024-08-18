@@ -1,4 +1,4 @@
-import { AnimationType, FireMode } from "@common/constants";
+import { AnimationType, FireMode, ObjectCategory } from "@common/constants";
 import { type MeleeDefinition } from "@common/definitions/melees";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
@@ -9,6 +9,7 @@ import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
 import { equalLayer } from "@common/utils/layer";
+import { ThrowableProjectile } from "../objects";
 
 /**
  * A class representing a melee weapon
@@ -60,13 +61,12 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 const hitbox = new CircleHitbox(definition.radius, position);
 
                 // Damage the closest object
-
                 const damagedObjects: readonly CollidableGameObject[] = (
                     [...owner.game.grid.intersectsHitbox(hitbox)]
                         .filter(
                             object => !object.dead
                             && object !== owner
-                            && object.damageable
+                            && (object.damageable || (object.type === ObjectCategory.ThrowableProjectile && object.definition.c4))
                             && object.hitbox
                             && hitbox.collidesWith(object.hitbox)
                             && equalLayer(object.layer, this.owner.layer)
@@ -89,11 +89,16 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             : definition.obstacleMultiplier;
                     }
 
-                    closestObject.damage({
-                        amount: definition.damage * multiplier,
-                        source: owner,
-                        weaponUsed: this
-                    });
+                    if (closestObject instanceof ThrowableProjectile) { // C4
+                        // Currently this code treats C4 as if it is an obstacle in terms of melee damage.
+                        closestObject.damageC4(definition.damage * definition.obstacleMultiplier);
+                    } else {
+                        closestObject.damage({
+                            amount: definition.damage * multiplier,
+                            source: owner,
+                            weaponUsed: this
+                        });
+                    }
 
                     if (closestObject instanceof Obstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);
