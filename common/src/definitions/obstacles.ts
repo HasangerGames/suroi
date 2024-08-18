@@ -877,6 +877,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "barrel_explosion",
+            frames: {
+                particle: "metal_particle"
+            },
             reflectBullets: true
         },
         {
@@ -1023,6 +1026,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
+            particleVariations: 2,
             rotationMode: RotationMode.Full,
             hasLoot: true
         },
@@ -3149,7 +3153,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Full,
             allowFlyover: FlyoverPref.Never,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
