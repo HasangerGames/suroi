@@ -1424,7 +1424,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "cargo_ship",
             name: "Cargo Ship",
-            spawnHitbox: RectangleHitbox.fromRect(300, 110, Vec.create(0, 0)),
+            spawnHitbox: RectangleHitbox.fromRect(320, 130, Vec.create(5, 5)),
             scopeHitbox: RectangleHitbox.fromRect(34, 51, Vec.create(115, 0)),
             puzzle: {
                 triggerInteractOn: "vault_door",
@@ -1632,7 +1632,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "oil_tanker_ship",
             name: "Oil Tanker",
-            spawnHitbox: RectangleHitbox.fromRect(370, 120),
+            spawnHitbox: RectangleHitbox.fromRect(360, 130, Vec.create(30, 0)),
             scopeHitbox: RectangleHitbox.fromRect(38, 80, Vec.create(-94, 0)),
             puzzle: {
                 triggerInteractOn: "vault_door",
