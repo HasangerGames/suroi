@@ -385,6 +385,17 @@
     top: 10px;
     right: 10px;
 
+    #kill-counter {
+        position: relative;
+        bottom: 81px;
+        right: 110px;
+    
+        @media screen and (max-width: $screen_large)  {
+            bottom: 0;
+            right: 0;
+        }
+    }
+
     @media screen and (max-width: $screen_large) {
         top: 5px;
         right: 5px;
