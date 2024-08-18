@@ -183,7 +183,9 @@ export const TintedParticles: Record<string, { base: string, tint: number, varia
     porta_potty_toilet_particle: { base: "plastic_particle", tint: 0x5e5e5e },
     porta_potty_wall_particle:   { base: "plastic_particle", tint: 0x1c71d8 },
     porta_potty_particle:        { base: "ceiling_particle", tint: 0xe7e7e7 },
-    mobile_home_particle:        { base: "ceiling_particle", tint: 0xa8a8a8 }
+    mobile_home_particle:        { base: "ceiling_particle", tint: 0xa8a8a8 },
+    metal_small_drawer_particle: { base: "wood_particle",    tint: 0x7f714d },
+    folders_shelf_particle:      { base: "wood_particle",    tint: 0x404040 }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
@@ -1120,7 +1122,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             frames: {
-                particle: "metal_particle"
+                particle: "folders_shelf_particle"
             }
         },
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 1),
@@ -1534,7 +1536,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Always,
             hasLoot: true,
             frames: {
-                particle: "metal_particle"
+                particle: "metal_small_drawer_particle"
             }
         },
         {
