@@ -1131,8 +1131,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             [...this.game.objects].filter(
                                 object => !object.dead
                                 && object !== this
-                                && object.damageable
-                                && (object instanceof Obstacle || object instanceof Player)
+                                && (
+                                    (
+                                        object.damageable
+                                        && (object instanceof Obstacle || object instanceof Player)
+                                    ) || (object.type === ObjectCategory.ThrowableProjectile && object.c4)
+                                )
                                 && object.hitbox.collidesWith(hitbox)
                             ) as Array<Player | Obstacle>
                         ).sort(
