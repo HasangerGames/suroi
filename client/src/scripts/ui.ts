@@ -1966,7 +1966,7 @@ Video evidence is required.`)) {
     }
 
     const interactKey = $<HTMLDivElement>("#detonate-key");
-    const bind: string = inputManager.binds.getInputsBoundToAction("explodeC4")[0];
+    const bind: string = inputManager.binds.getInputsBoundToAction("explode_c4")[0];
     const bindImg = InputManager.getIconFromInputName(bind);
 
     if (bindImg === undefined) {

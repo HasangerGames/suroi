@@ -727,7 +727,7 @@ export function setUpCommands(game: Game): void {
     );
 
     Command.createCommand(
-        "explodeC4",
+        "explode_c4",
         function() {
             game.inputManager.addAction(InputActions.ExplodeC4);
             this.uiManager.ui.c4Button.hide();
