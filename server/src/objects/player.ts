@@ -1900,17 +1900,17 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     const detectionHitbox = new CircleHitbox(3, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
+                    const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : (this.layer < Layer.Floor1 ? equalOrOneBelowLayer : equalOrOneAboveLayer);
                     for (const object of nearObjects) {
                         if (
                             (object instanceof Loot)
                             && object.hitbox.collidesWith(detectionHitbox)
-                            && sameLayer(object.layer, this.layer)
+                            && layerFilterFunc(this.layer, object.layer)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (
                                 object instanceof Loot
                                 && dist < uninteractable.minDist
-                                && sameLayer(object.layer, this.layer)
                             ) {
                                 uninteractable.minDist = dist;
                                 uninteractable.object = object;
