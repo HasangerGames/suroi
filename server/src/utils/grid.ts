@@ -7,6 +7,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 import { Logger } from "./misc";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 
 /**
  * A Grid to filter collision detection of game objects
@@ -119,13 +120,14 @@ export class Grid {
      * @param hitbox The hitbox
      * @return A set with the objects near this hitbox
      */
-    intersectsHitbox(hitbox: Hitbox, layer: Layer | null = null): Set<GameObject> {
+    intersectsHitbox(hitbox: Hitbox, layer?: Layer): Set<GameObject> {
         const rect = hitbox.toRectangle();
 
         const min = this._roundToCells(rect.min);
         const max = this._roundToCells(rect.max);
 
         const objects = new Set<GameObject>();
+        const includeAll = layer === undefined;
 
         for (
             let x = min.x, maxX = max.x;
@@ -143,13 +145,12 @@ export class Grid {
 
                 for (const object of objectsMap.values()) {
                     // Only filter intersecting objects by their layer if a layer was specified.
-                    if (layer != null) {
-                        if (object.layer != null) {
-                            // Only include adjacent layers.
-                            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-                            if (object.layer >= layer - 1 && object.layer <= layer + 1) { objects.add(object); }
-                        }
-                    } else {
+                    if (includeAll) {
+                        objects.add(object);
+                        continue;
+                    }
+
+                    if (object.layer !== undefined && adjacentOrEqualLayer(object.layer, layer)) {
                         objects.add(object);
                     }
                 }

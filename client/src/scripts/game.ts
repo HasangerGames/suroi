@@ -106,6 +106,9 @@ export class Game {
 
     teamMode = false;
 
+    /**
+     * proxy for `activePlayer`'s layer
+     */
     get layer(): Layer | undefined {
         return this.activePlayer?.layer;
     }
@@ -428,7 +431,7 @@ export class Game {
 
         const ui = this.uiManager.ui;
 
-        if (this.teamMode = packet.maxTeamSize != TeamSize.Solo) {
+        if (this.teamMode = packet.maxTeamSize !== TeamSize.Solo) {
             this.teamID = packet.teamID;
         }
 

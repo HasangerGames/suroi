@@ -33,6 +33,7 @@ export default tseslint.config(
             ["prefer-arrow-callback"]: "warn",
             ["prefer-template"]: "warn",
             yoda: ["error", "never", { onlyEquality: true }],
+            eqeqeq: "error",
 
             // Stylistic
             ["@stylistic/arrow-parens"]: ["warn", "as-needed"],

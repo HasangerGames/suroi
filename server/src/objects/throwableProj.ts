@@ -225,7 +225,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             const rayCastCollisionPointWithObject: Vector | null = this._travelCollidesWith(
                 originalHitboxPosition, this.hitbox.position, object.hitbox
             );
-            const isRayCastedCollision = rayCastCollisionPointWithObject != null;
+            const isRayCastedCollision = rayCastCollisionPointWithObject !== null;
 
             // dedl0x: Leaving this here because it's very helpful for analyzing ray casting results.
             // if (isRayCastedCollision) {
@@ -258,8 +258,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     }
 
                     if (object.definition.isStair) {
-                        // console.log(`Colliding with a stair-type object! TransportTo: ${object.definition.transportTo}`)
-                        if (object.definition?.transportTo != null) {
+                        // console.log(`Colliding with a stair-type object! TransportTo: ${object.definition.transportTo}`);
+                        if (object.definition?.transportTo !== undefined) {
                             this.layer = object.definition.transportTo;
                         }
                     }
@@ -292,7 +292,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             // If ray casting has identified an intersection with the boundary line segments of this obstacle, then the
             // hitbox position should be updated to be somewhere between this throwable's original position and the
             // intersection point.
-            if (isRayCastedCollision && rayCastCollisionPointWithObject != null) {
+            if (isRayCastedCollision && rayCastCollisionPointWithObject !== null) {
                 // The path of travel is as follows.
                 // (S)----(I)-------------(E)
                 // Where...
@@ -358,21 +358,21 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     travelStart, travelEnd, lineSegment[0], lineSegment[1]
                 );
 
-                if (intersection != null) {
+                if (intersection !== null) {
                     // If a nearest intersection doesn't already exist, then this is the new nearest.
-                    if (nearestIntersection == null) {
-                        nearestIntersection = intersection;
-                    } else {
-                        // Create a new Vector from the starting position to this intersection position.
-                        const startToIntersection: Vector = Vec.sub(intersection, travelStart);
+                    if ((nearestIntersection ??= intersection) === intersection) {
+                        continue;
+                    }
 
-                        // If the length of that Vector is less than nearest intersection encountered so far, then this
-                        // intersection is closer, or precedes previosuly encountered intersections.
-                        const startToIntersectionLength: number = Vec.length(startToIntersection);
-                        if (startToIntersectionLength < nearestIntersectionDistance) {
-                            nearestIntersection = intersection;
-                            nearestIntersectionDistance = startToIntersectionLength;
-                        }
+                    // Create a new Vector from the starting position to this intersection position.
+                    const startToIntersection: Vector = Vec.sub(intersection, travelStart);
+
+                    // If the length of that Vector is less than nearest intersection encountered so far, then this
+                    // intersection is closer, or precedes previously encountered intersections.
+                    const startToIntersectionLength: number = Vec.length(startToIntersection);
+                    if (startToIntersectionLength < nearestIntersectionDistance) {
+                        nearestIntersection = intersection;
+                        nearestIntersectionDistance = startToIntersectionLength;
                     }
                 }
             }

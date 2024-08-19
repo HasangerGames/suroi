@@ -671,8 +671,8 @@ export class Game implements GameData {
                 newKillLeader = player;
             }
         }
-        this._killLeader = newKillLeader;
-        if (this._killLeader != undefined) {
+
+        if ((this._killLeader = newKillLeader) !== undefined) {
             this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
         }
     }
