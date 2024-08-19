@@ -3894,11 +3894,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "Bunker Entrance",
             material: "metal",
             health: 1000,
+            reflectBullets: true,
             indestructible: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(19.5, 13.25, Vec.create(0, -3.25)),
-                RectangleHitbox.fromRect(1.75, 12.75, Vec.create(8.85, 3.8)),
-                RectangleHitbox.fromRect(1.75, 12.75, Vec.create(-8.85, 3.8))
+                RectangleHitbox.fromRect(13, 16.9, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"
