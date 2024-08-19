@@ -2,6 +2,14 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: Date.now(),
+        author: "pap",
+        title: "The Gate Of v0.19",
+        bannerImage: "todo",
+        content: "TODO",
+        longContent: "TODO"
+    },
+    {
         date: 1717870665000,
         author: "HAZEL",
         title: "Back in the Saddle",
