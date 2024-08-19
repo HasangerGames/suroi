@@ -660,7 +660,7 @@ export enum ItemType {
     Skin
 }
 
-export const enum ObstacleSpecialRoles {
+export enum ObstacleSpecialRoles {
     Door,
     Wall,
     Window,
