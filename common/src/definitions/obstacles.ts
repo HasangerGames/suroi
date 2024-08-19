@@ -251,7 +251,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(9.2, 9.2),
             hasLoot: true
         }),
-        houseWall: (lengthNumber: number) => ({
+        houseWall: (lengthNumber: number, tintProperties?: { color: number, border: number, particle: string }) => ({
             idString: `house_wall_${lengthNumber}`,
             name: `House Wall ${lengthNumber}`,
             material: "wood",
@@ -266,11 +266,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
-                particle: "wall_particle"
+                particle: (tintProperties?.particle) ?? "wall_particle"
             },
             wall: {
-                borderColor: 0x4a4134,
-                color: 0xafa08c,
+                borderColor: (tintProperties?.border) ?? 0x4a4134,
+                color: (tintProperties?.color) ?? 0xafa08c,
                 rounded: true
             },
             role: ObstacleSpecialRoles.Wall
@@ -1146,6 +1146,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.6, 2) }, 10),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(11.6, 2) }, 11),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(16.2, 2) }, 12),
+
+        // small bunker special wall
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(13, 2) }, 13, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }),
 
         // HQ walls (headquarters)
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.5, 2) }, 1),
@@ -2711,6 +2714,45 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
+            idString: "small_bunker_walls",
+            name: "Small Bunker Walls",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            reflectBullets: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(44.5, 1.7, Vec.create(0, -18)),
+                RectangleHitbox.fromRect(1.7, 37.9, Vec.create(21.5, 0)),
+                RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
+                RectangleHitbox.fromRect(16, 1.7, Vec.create(-13.1, 18)),
+                RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18)),
+                RectangleHitbox.fromRect(1.7, 15.9, Vec.create(-6, 25)),
+                RectangleHitbox.fromRect(1.7, 15.9, Vec.create(6, 25))
+            )
+        },
+        {
+            idString: "small_bunker_desk",
+            name: "Small Bunker Desk",
+            material: "wood",
+            health: 150,
+            indestructible: true,
+            invisible: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "headquarters_desk_particle"
+            },
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(13.7, 4.7, Vec.create(-12.9, 13.9))
+            )
+        },
+        {
             idString: "generator",
             name: "Generator",
             material: "metal",
@@ -3874,6 +3916,23 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1, 18.5, Vec.create(5, 0)),
                 RectangleHitbox.fromRect(1, 18.5, Vec.create(-5, 0))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "bunker_stair_walls",
+            name: "Bunker Stair Walls",
+            material: "metal",
+            health: 1000,
+            anyLayer: true,
+            indestructible: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1, 17, Vec.create(6, 0)),
+                RectangleHitbox.fromRect(1, 17, Vec.create(-6, 0))
             ),
             frames: {
                 particle: "metal_particle"

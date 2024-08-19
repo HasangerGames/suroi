@@ -3546,7 +3546,100 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "detector", position: Vec.create(-36, 23.5) },
                 { idString: "detector", position: Vec.create(-26, 23.5) }
             ]
-        }
+        },
         // -----------------------------------------------------------------------------------------------
+
+        {
+            idString: "small_bunker_entrance",
+            name: "Small Bunker Entrance",
+            isStair: true,
+            layer: -1,
+            spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
+            ceilingZIndex: ZIndexes.ObstaclesLayer3,
+            ceilingImages: [{
+                key: "small_bunker_entrance_ceiling",
+                position: Vec.create(0, -2.4),
+                scale: Vec.create(2.07, 2.07)
+            }],
+            floorImages: [{
+                key: "small_bunker_entrance",
+                position: Vec.create(0, 0)
+            }],
+            floors: [
+                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
+            ],
+            obstacles: [
+                { idString: "bunker_stair_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "stair_thing", position: Vec.create(0, -8), rotation: 0 },
+                { idString: "stair_top", position: Vec.create(0, 9), rotation: 0, layer: 0 },
+                { idString: "stair_middle", position: Vec.create(0, 3), rotation: 0, layer: -1 },
+                { idString: "stair_bottom", position: Vec.create(0, -6.5), rotation: 0, layer: -2 }
+            ],
+            lootSpawners: []
+        },
+        {
+            idString: "small_bunker_main",
+            name: "Small Bunker",
+            layer: -2,
+            spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
+            scopeHitbox: RectangleHitbox.fromRect(42, 34.5),
+            floorImages: [
+                {
+                    key: "small_bunker_floor",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2.2, 2.2)
+                },
+                {
+                    key: "small_bunker_floor_path",
+                    position: Vec.create(-0.025, 26),
+                    scale: Vec.create(2.2, 2.2)
+                }
+            ],
+            floors: [
+                {
+                    type: "carpet",
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(42, 34.5),
+                        RectangleHitbox.fromRect(10, 4.5, Vec.create(0, 19))
+                    )
+                },
+                {
+                    type: "metal",
+                    hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27))
+                }
+            ],
+            obstacles: [
+                { idString: "small_bunker_walls", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "small_bunker_desk", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "control_panel2", position: Vec.create(-14.5, -12.6), rotation: 0 },
+                { idString: "box", position: Vec.create(-17, -2) },
+                { idString: "box", position: Vec.create(-15, 3.5) },
+                { idString: "small_drawer", position: Vec.create(-5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                { idString: "house_wall_13", position: Vec.create(0, -10.5), rotation: 1 },
+                { idString: "fridge", position: Vec.create(6.5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                { idString: "mobile_home_bed", position: Vec.create(16, -8.5), rotation: 0 },
+                { idString: "mobile_home_sink", position: Vec.create(15, 12.8), rotation: 2 }
+            ],
+            lootSpawners: [
+                { table: "ground_loot", position: Vec.create(0, 0.5) }
+            ]
+        },
+        {
+            idString: "small_bunker",
+            name: "Small Bunker",
+            rotationMode: RotationMode.None,
+            spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
+            scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
+            obstacles: [
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
+                { idString: "barrel", position: Vec.create(-5, 35) }
+            ],
+            subBuildings: [
+                { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
+                { idString: "small_bunker_entrance", position: Vec.create(0, 20) }
+            ]
+        }
 
     ]);

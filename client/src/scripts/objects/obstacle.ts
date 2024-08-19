@@ -114,6 +114,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     spawnOptions: () => ({
                         frames: "smoke_particle",
                         position: this.position,
+                        layer: this.layer,
                         zIndex: Math.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
                         lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
