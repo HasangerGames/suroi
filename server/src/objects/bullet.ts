@@ -5,7 +5,7 @@ import { Loots } from "@common/definitions/loots";
 import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
-import { isAdjacent, randomFloat } from "@common/utils/random";
+import { randomFloat } from "@common/utils/random";
 import { equalLayer, sameLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
@@ -103,7 +103,7 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player && sameLayer(this.layer, object.layer)) {
+            if (object.type === ObjectCategory.Player && equalLayer(this.layer, object.layer)) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -123,7 +123,7 @@ export class Bullet extends BaseBullet {
                 // FOR THE LOVE OF GOD IMPROVE THIS ABOMINATION
                 // isAdjacent(this.layer, object.layer) makes it so that you cant shoot through walls while on stairs (-1 layer)
 
-                if (isAdjacent(this.layer, object.layer) && object.definition.isStair) { // stair
+                if (sameLayer(this.layer, object.layer) && object.definition.isStair) { // stair
                     this.damagedIDs.add(object.id);
 
                     records.push({

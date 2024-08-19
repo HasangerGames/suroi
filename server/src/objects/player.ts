@@ -3,6 +3,7 @@ import { type WebSocket } from "uWebSockets.js";
 
 import {
     AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType,
+    Layer,
     ObjectCategory, PlayerActions, SpectateActions
 } from "@common/constants";
 import {
@@ -872,7 +873,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             // them.
             // When a player is not in a transitionary layer (Basement, Floor1, or Floor2), then only view the objects
             // in that layer.
-            const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : (equalOrOneAboveLayer || equalOrOneBelowLayer);
+            const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : (this.layer < Layer.Floor1 ? equalOrOneBelowLayer : equalOrOneAboveLayer);
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
