@@ -1480,7 +1480,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(10, 20.25, Vec.create(-8, 54.25)), // stair right
                         RectangleHitbox.fromRect(10, 20.25, Vec.create(-97, 54.25)), // stair left
-                        RectangleHitbox.fromRect(232, 88, Vec.create(-18.5, 0.05)) // main floor
+                        RectangleHitbox.fromRect(232, 88.5, Vec.create(-18.5, 0.05)) // main floor
                     )
                 },
                 {

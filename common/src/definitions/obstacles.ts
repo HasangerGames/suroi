@@ -2838,15 +2838,15 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(1.5, 61, Vec.create(-46.5, 0)),
 
                 RectangleHitbox.fromRect(12.8, 0.9, Vec.create(-39, 42.35)),
-                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.9, 42.35)),
+                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.7, 42.35)),
                 RectangleHitbox.fromRect(1.5, 2, Vec.create(-32, 42.35)),
-                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.5, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.3, 42.35)),
                 RectangleHitbox.fromRect(1.5, 2, Vec.create(-46.1, 42.35)),
 
                 RectangleHitbox.fromRect(12.8, 0.9, Vec.create(-39, -42.35)),
-                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.9, -42.35)),
+                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.7, -42.35)),
                 RectangleHitbox.fromRect(1.5, 2, Vec.create(-32, -42.35)),
-                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.5, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.3, -42.35)),
                 RectangleHitbox.fromRect(1.5, 2, Vec.create(-46.1, -42.35))
 
             )
