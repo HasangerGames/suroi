@@ -12,12 +12,12 @@ export enum TeamSize {
     Squad = 4
 }
 
-export enum Layer {
-    Basement = -2,
-    StairsToBasement = -1,
-    Floor1 = 0,
-    StairsToFloor1 = 1,
-    Floor2 = 2
+export const enum Layer {
+    Basement1 = -2,
+    ToBasement1 = -1,
+    Ground = 0,
+    ToFloor1 = 1,
+    Floor1 = 2
 }
 
 export enum ObjectCategory {

@@ -1,4 +1,5 @@
 import { GameConstants, Layer, ZIndexes } from "../../../../common/src/constants";
+import { adjacentOrEqualLayer as adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -61,8 +62,8 @@ export class Plane {
         }
 
         if (this.game.layer) {
-            this.image.visible = ![Layer.Floor2, Layer.Basement].includes(this.game.layer);
-            this.sound.maxRange = ![Layer.Floor2, Layer.Basement].includes(this.game.layer) ? 256 : 0;
+            this.image.visible = adjacentOrEqualLayer(Layer.Ground, this.game.layer);
+            this.sound.maxRange = adjacentOrEqualLayer(Layer.Ground, this.game.layer) ? 256 : 0;
         }
     }
 

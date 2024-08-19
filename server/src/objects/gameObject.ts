@@ -63,7 +63,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     damageable = false;
     dead = false;
 
-    private _layer: Layer = Layer.Floor1;
+    private _layer: Layer = Layer.Ground;
     public get layer(): Layer {
         return this._layer;
     }

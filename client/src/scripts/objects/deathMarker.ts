@@ -19,8 +19,6 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     readonly image: SuroiSprite;
     playerNameText: Text;
 
-    layer = 0;
-
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 

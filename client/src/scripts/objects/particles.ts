@@ -1,6 +1,6 @@
 import { Layer } from "../../../../common/src/constants";
 import { TintedParticles } from "../../../../common/src/definitions/obstacles";
-import { sameLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -21,7 +21,7 @@ export class ParticleManager {
 
     update(delta: number): void {
         for (const particle of this.particles) {
-            particle.update(delta, this.game.layer ?? Layer.Floor1);
+            particle.update(delta, this.game.layer ?? Layer.Ground);
 
             if (particle.dead) {
                 this.particles.delete(particle);
@@ -109,7 +109,7 @@ export class Particle {
     constructor(readonly manager: ParticleManager, options: ParticleOptions) {
         this._deathTime = this._spawnTime + options.lifetime;
         this.position = options.position;
-        this.layer = options.layer ?? Layer.Floor1;
+        this.layer = options.layer ?? Layer.Ground;
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
         const tintedParticle = TintedParticles[frame];
@@ -149,7 +149,7 @@ export class Particle {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
-        if (sameLayer(visibleLayer, this.layer)) {
+        if (adjacentOrEqualLayer(visibleLayer, this.layer)) {
             this.image.setVisible(true);
             this.image.position.copyFrom(toPixiCoords(this.position));
             this.image.scale.set(this.scale);

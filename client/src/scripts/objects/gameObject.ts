@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { type ObjectCategory } from "../../../../common/src/constants";
+import { Layer, type ObjectCategory } from "../../../../common/src/constants";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -17,6 +17,8 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     damageable = false;
     destroyed = false;
+
+    layer: Layer = Layer.Ground;
 
     debugGraphics!: Graphics;
 

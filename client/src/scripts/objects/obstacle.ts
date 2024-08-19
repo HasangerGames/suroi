@@ -31,8 +31,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     variation?: Variation;
     locked = false;
 
-    layer = 0;
-
     /**
      * `undefined` if this obstacle hasn't been updated yet, or if it's not a door obstacle
      */

@@ -47,7 +47,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         };
 
     distTraveled = 0;
-    layer: Layer = 0;
 
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
@@ -407,7 +406,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles && this.layer >= Layer.Floor1) {
+                if (FloorTypes[floorType].particles && this.layer >= Layer.Ground) {
                     const options = {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,
@@ -910,7 +909,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     changeLayer(layer: Layer): void {
         switch (layer) {
-            case Layer.Basement: {
+            case Layer.Basement1: {
                 this.game.pixi.renderer.background.color = COLORS.dirt;
 
                 this.game.map.terrainGraphics.visible = false;
@@ -918,7 +917,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
 
-            case Layer.StairsToBasement: {
+            case Layer.ToBasement1: {
                 this.game.pixi.renderer.background.color = COLORS.grass;
 
                 this.game.map.terrainGraphics.visible = true;
@@ -926,7 +925,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
 
-            case Layer.Floor1: {
+            case Layer.Ground: {
                 this.game.pixi.renderer.background.color = COLORS.grass;
 
                 this.game.map.terrainGraphics.visible = true;

@@ -1,36 +1,21 @@
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
 
-import {
-    AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType,
-    Layer,
-    ObjectCategory, PlayerActions, SpectateActions
-} from "@common/constants";
-import {
-    Ammos, Armors, ArmorType, Backpacks, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables,
-    DEFAULT_SCOPE,
-    type BadgeDefinition, type EmoteDefinition, type GunDefinition, type WeaponDefinition, type PlayerPing,
-    type MeleeDefinition, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition,
-    type ThrowableDefinition
-} from "@common/definitions";
-import {
-    DisconnectPacket, GameOverPacket, KillFeedPacket, ReportPacket, UpdatePacket,
-    type GameOverData, type InputPacket, type ForEventType, type UpdatePacketDataIn,
-    type PlayerData, type UpdatePacketDataCommon,
-    NoMobile, PlayerInputData, PacketStream, SpectatePacketData
-} from "@common/packets";
+import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
+import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
+import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer, equalOrOneAboveLayer, equalOrOneBelowLayer, isGroundLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, ObstacleSpecialRoles, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { isAdjacent, pickRandomInArray } from "@common/utils/random";
-import { equalLayer, equalOrOneAboveLayer, equalOrOneBelowLayer, isTransitionaryLayer, sameLayer } from "@common/utils/layer";
+import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-
+import { BaseGameObject, Building, DamageParams, DeathMarker, Emote, Explosion, Loot, SyncedParticle, ThrowableProjectile, type GameObject, type Obstacle } from ".";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -43,12 +28,6 @@ import { Events } from "../pluginManager";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
-
-import {
-    Building, DeathMarker, Emote, Explosion, BaseGameObject, DamageParams,
-    type GameObject, Loot, type Obstacle, SyncedParticle,
-    ThrowableProjectile
-} from ".";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -688,17 +667,14 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         for (let step = 0; step < 10; step++) {
             let collided = false;
 
-            // we use dedl0x's really cool function check
-            const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : equalOrOneAboveLayer;
-
             for (const potential of this.nearObjects) {
                 if (
                     potential.type === ObjectCategory.Obstacle
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
-                    && (layerFilterFunc(potential.layer, this.layer) || isAdjacent(potential.layer, this.layer))
+                    && adjacentOrEqualLayer(potential.layer, this.layer)
                 ) {
-                    if (potential.definition.isStair && (sameLayer(potential.layer, this.layer))) {
+                    if (potential.definition.role === ObstacleSpecialRoles.Stair) {
                         this.layer = potential.definition.transportTo ?? 0;
                     } else if (equalLayer(potential.layer, this.layer) || potential.definition.anyLayer) {
                         collided = true;
@@ -706,6 +682,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     }
                 }
             }
+
             if (!collided) break;
         }
 
@@ -869,18 +846,18 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
-            // When the player is in a transitionary layer (stairs), view the objects for the layer immediately above
-            // them.
-            // When a player is not in a transitionary layer (Basement, Floor1, or Floor2), then only view the objects
-            // in that layer.
-            const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : (this.layer < Layer.Floor1 ? equalOrOneBelowLayer : equalOrOneAboveLayer);
+            /*
+                When the player is in a transitionary layer (stairs), view the objects for the layer immediately above them.
+                When a player is not in a transitionary layer (Basement1, Ground, or Floor1), then only view the objects in that layer.
+            */
+            const layerFilterFunc = isGroundLayer(this.layer) ? adjacentOrEqualLayer : (this.layer < Layer.Ground ? equalOrOneBelowLayer : equalOrOneAboveLayer);
 
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
                         ((!newVisibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
                         && (this.visibleObjects.delete(object), true))
-                        && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
+                        && !(object.type === ObjectCategory.Obstacle && object.definition.role === ObstacleSpecialRoles.Stair)
                     )
                 )
                 .map(({ id }) => id);
@@ -890,7 +867,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     object => {
                         if (
                             (this.visibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
-                            && !(object.type === ObjectCategory.Obstacle && object.definition.isStair)
+                            && !(object.type === ObjectCategory.Obstacle && object.definition.role === ObstacleSpecialRoles.Stair)
                         ) { return; }
 
                         this.visibleObjects.add(object);
@@ -1047,7 +1024,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         packet.explosions = game.explosions.filter(
             ({ position, layer }) => (this.screenHitbox.isPointInside(position)
             || Geometry.distanceSquared(position, this.position) < maxDistSquared)
-            && sameLayer(layer, this.layer)
+            && adjacentOrEqualLayer(layer, this.layer)
         );
 
         // Emotes
@@ -1900,7 +1877,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     const detectionHitbox = new CircleHitbox(3, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
-                    const layerFilterFunc = isTransitionaryLayer(this.layer) ? sameLayer : (this.layer < Layer.Floor1 ? equalOrOneBelowLayer : equalOrOneAboveLayer);
+                    const layerFilterFunc = isGroundLayer(this.layer) ? adjacentOrEqualLayer : (this.layer < Layer.Ground ? equalOrOneBelowLayer : equalOrOneAboveLayer);
                     for (const object of nearObjects) {
                         if (
                             (object instanceof Loot)

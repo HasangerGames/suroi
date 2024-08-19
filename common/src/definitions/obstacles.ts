@@ -37,9 +37,6 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible: boolean
-    readonly isStair?: boolean
-    readonly transportTo?: number
-    readonly returnTo?: number
     readonly impenetrable: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
@@ -131,7 +128,12 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly role: ObstacleSpecialRoles.Window
         readonly noCollisionAfterDestroyed?: boolean
     } | {
-        readonly role?: ObstacleSpecialRoles.Wall
+        readonly role: ObstacleSpecialRoles.Wall
+    } | {
+        readonly role: ObstacleSpecialRoles.Stair
+        readonly transportTo: number
+    } | {
+        readonly role?: undefined
     }
 );
 
@@ -3975,7 +3977,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "metal",
             health: 1000,
             indestructible: true,
-            isStair: true,
+            role: ObstacleSpecialRoles.Stair,
             transportTo: 0,
             invisible: true,
             hitbox: new HitboxGroup(
@@ -3992,7 +3994,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "metal",
             health: 1000,
             indestructible: true,
-            isStair: true,
+            role: ObstacleSpecialRoles.Stair,
             transportTo: -1,
             invisible: true,
             hitbox: new HitboxGroup(
@@ -4009,7 +4011,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "metal",
             health: 1000,
             indestructible: true,
-            isStair: true,
+            role: ObstacleSpecialRoles.Stair,
             transportTo: -2,
             invisible: true,
             hitbox: new HitboxGroup(

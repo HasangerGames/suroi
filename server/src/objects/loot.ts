@@ -4,10 +4,10 @@ import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, LootRadius, ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
-import { sameLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
@@ -112,17 +112,19 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 object instanceof Obstacle
                 && object.collidable
                 && object.hitbox.collidesWith(this.hitbox)
-                && sameLayer(object.layer, this.layer)
-                && !object.definition?.isStair
             ) {
-                this.hitbox.resolveCollision(object.hitbox);
+                if (object.definition.role === ObstacleSpecialRoles.Stair) {
+                    this.layer = object.definition.transportTo ?? 0;
+                } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
+                    this.hitbox.resolveCollision(object.hitbox);
+                }
             }
 
-            if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox) && object.definition.isStair) {
-                this.layer = object.definition.transportTo ?? 0;
-            }
-
-            if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
+            if (
+                object instanceof Loot
+                && object !== this
+                && object.hitbox.collidesWith(this.hitbox)
+            ) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
                     this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));

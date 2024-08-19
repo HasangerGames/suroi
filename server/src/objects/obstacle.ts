@@ -277,7 +277,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     }
 
     isStair(): boolean {
-        return this.definition.isStair ?? false;
+        return this.definition.role === ObstacleSpecialRoles.Stair;
     }
 
     interact(player?: Player): void {

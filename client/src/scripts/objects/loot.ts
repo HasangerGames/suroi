@@ -23,8 +23,6 @@ export class Loot extends GameObject {
         readonly item: SuroiSprite
     };
 
-    layer: number;
-
     private _count = 0;
     get count(): number { return this._count; }
 

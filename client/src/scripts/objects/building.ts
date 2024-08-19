@@ -1,8 +1,9 @@
 import { Container, Graphics } from "pixi.js";
-import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -14,7 +15,6 @@ import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { isTransitionaryLayer } from "../../../../common/src/utils/layer";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
@@ -25,8 +25,6 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
-
-    layer: Layer;
 
     orientation!: Orientation;
 
@@ -60,7 +58,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
             visible = true;
-            duration = isTransitionaryLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
+            duration = isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 

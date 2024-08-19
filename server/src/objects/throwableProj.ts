@@ -13,6 +13,7 @@ import { dragConst } from "../utils/misc";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
+import { ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
 
 export class ThrowableProjectile extends BaseGameObject<ObjectCategory.ThrowableProjectile> {
     override readonly type = ObjectCategory.ThrowableProjectile;
@@ -249,7 +250,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                         // current layer, then this throwable appears to have been thrown up the stairs.
                         // To emulate the difficulty of throwing something up the stairs, apply a higher drag coefficient
                         // to slow it down.
-                        if (object.definition?.isStair && object.layer > this.layer) {
+                        if (object.definition?.role === ObstacleSpecialRoles.Stair && object.layer > this.layer) {
                             // console.log(`Colliding with higher layer object. Object: ${ object.layer }, Throwable: ${ this.layer }`);
                             this._currentDragConst = ThrowableProjectile._extraHarshDragConstant;
                         }
@@ -257,11 +258,9 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                         this._currentDragConst = ThrowableProjectile._harshDragConstant;
                     }
 
-                    if (object.definition.isStair) {
+                    if (object.definition.role === ObstacleSpecialRoles.Stair) {
                         // console.log(`Colliding with a stair-type object! TransportTo: ${object.definition.transportTo}`);
-                        if (object.definition?.transportTo !== undefined) {
-                            this.layer = object.definition.transportTo;
-                        }
+                        this.layer = object.definition.transportTo;
                     }
 
                     if (isAbove || this._currentlyAbove.has(object)) {

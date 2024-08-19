@@ -56,15 +56,6 @@ export function randomRotation(): number {
 }
 
 /**
- * @return Checks if two numbers are adjacent or same;
- */
-export function isAdjacent(num1: number, num2: number): boolean {
-    const n1 = num1 - 1;
-    const n2 = num1 + 1;
-    return ((n1 == num2) || (n2 == num2));
-}
-
-/**
  * Generate a random point inside of a circle.
  * @param position The center of the circle.
  * @param maxRadius The maximum radius of the circle.

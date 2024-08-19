@@ -23,8 +23,6 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
     hitbox: CircleHitbox;
     hitSound?: GameSound;
 
-    layer: number;
-
     c4?: boolean;
 
     floorType: keyof typeof FloorTypes = "grass";

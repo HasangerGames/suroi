@@ -4,11 +4,11 @@ import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { Angle } from "@common/utils/math";
+import { ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
 import { randomFloat } from "@common/utils/random";
-import { equalLayer, sameLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { type Explosion } from "./explosion";
@@ -56,7 +56,9 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const reference = source instanceof GunItem && source.definition.isDual ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant) : source.definition;
+        const reference = source instanceof GunItem && source.definition.isDual
+            ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant)
+            : source.definition;
         const definition = Bullets.fromString(`${reference.idString}_bullet`);
         const variance = definition.rangeVariance;
 
@@ -103,7 +105,10 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player && equalLayer(this.layer, object.layer)) {
+            if (
+                object.type === ObjectCategory.Player
+                && equalLayer(this.layer, object.layer)
+            ) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -123,7 +128,20 @@ export class Bullet extends BaseBullet {
                 // FOR THE LOVE OF GOD IMPROVE THIS ABOMINATION
                 // isAdjacent(this.layer, object.layer) makes it so that you cant shoot through walls while on stairs (-1 layer)
 
-                if (sameLayer(this.layer, object.layer) && object.definition.isStair) { // stair
+                const obsDef = object.definition;
+                const isStair = obsDef.role === ObstacleSpecialRoles.Stair;
+
+                if (
+                    /*
+                        for stairs, honor any collision that's on an equal or adjacent layer (to allow layer transitions);
+                        for everyone else, only honor collisions on the same layer
+                    */
+                    (
+                        isStair
+                            ? adjacentOrEqualLayer
+                            : equalLayer
+                    )(this.layer, object.layer)
+                ) {
                     this.damagedIDs.add(object.id);
 
                     records.push({
@@ -134,65 +152,24 @@ export class Bullet extends BaseBullet {
                         position: collision.intersection.point
                     });
 
-                    if (object.definition.isStair) {
-                        this.changeLayer(object.definition.transportTo ?? this.originalLayer, this.position);
-                    }
+                    isStair && this.changeLayer(obsDef.transportTo, this.position);
 
                     if (definition.penetration.obstacles) continue;
 
-                    if (!object.definition.noCollisions) {
+                    if (!obsDef.noCollisions) {
                         const { point, normal } = collision.intersection;
                         this.position = point;
 
-                        if (object.definition.reflectBullets && this.reflectionCount < 3) {
+                        if (obsDef.reflectBullets && this.reflectionCount < 3) {
                             /*
-                                    no matter what, nudge the bullet
+                                no matter what, nudge the bullet
 
-                                    if the bullet reflects, we do this to ensure that it doesn't re-collide
-                                    with the same obstacle instantly
+                                if the bullet reflects, we do this to ensure that it doesn't re-collide
+                                with the same obstacle instantly
 
-                                    if it doesn't, then we do this to avoid having the obstacle eat the
-                                    explosion, thereby shielding others from its effects
-                                */
-                            const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                            this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
-
-                            if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
-                                this.reflect(rotation);
-                                this.reflected = true;
-                            }
-                        }
-
-                        this.dead = true;
-                        break;
-                    }
-                } else if (equalLayer(this.layer, object.layer) && !object.definition.isStair) {
-                    this.damagedIDs.add(object.id);
-
-                    records.push({
-                        object: object as Obstacle,
-                        damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
-                        weapon: this.sourceGun,
-                        source: this.shooter,
-                        position: collision.intersection.point
-                    });
-
-                    if (definition.penetration.obstacles) continue;
-
-                    if (!object.definition.noCollisions) {
-                        const { point, normal } = collision.intersection;
-                        this.position = point;
-
-                        if (object.definition.reflectBullets && this.reflectionCount < 3) {
-                            /*
-                                    no matter what, nudge the bullet
-
-                                    if the bullet reflects, we do this to ensure that it doesn't re-collide
-                                    with the same obstacle instantly
-
-                                    if it doesn't, then we do this to avoid having the obstacle eat the
-                                    explosion, thereby shielding others from its effects
-                                */
+                                if it doesn't, then we do this to avoid having the obstacle eat the
+                                explosion, thereby shielding others from its effects
+                            */
                             const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
                             this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
 

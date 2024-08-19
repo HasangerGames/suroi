@@ -2,7 +2,7 @@ import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { sameLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -11,6 +11,7 @@ import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -66,21 +67,34 @@ export class Bullet extends BaseBullet {
 
             for (const collision of collisions) {
                 const object = collision.object;
+                const type = object.type;
 
-                const isObstacle = object.type === ObjectCategory.Obstacle;
-                const isPlayer = object.type === ObjectCategory.Player;
+                const isObstacle = type === ObjectCategory.Obstacle;
+                const isPlayer = type === ObjectCategory.Player;
 
-                if ((isPlayer || (isObstacle && !object.definition.isStair)) && sameLayer((object.layer ?? 0), this.layer)) {
-                    (object as Obstacle | Player).hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
+                if (
+                    (
+                        isPlayer || (isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair)
+                    ) && adjacentOrEqualLayer((object.layer ?? 0), this.layer)
+                ) {
+                    (object as Obstacle | Player).hitEffect(
+                        collision.intersection.point,
+                        Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x)
+                    );
                 }
 
                 this.damagedIDs.add(object.id);
 
                 if (isObstacle) {
-                    if (this.definition.penetration.obstacles && !object.definition.impenetrable) continue;
-                    if (object.definition.noBulletCollision || object.definition.noCollisions) continue;
-                    if (object.definition.isStair && this.game.activePlayer && this.game.activePlayer.layer === this.layer) {
-                        this.layer = object.definition.transportTo ?? 0;
+                    const definition = object.definition;
+                    if (
+                        (this.definition.penetration.obstacles && !definition.impenetrable)
+                        || definition.noBulletCollision
+                        || definition.noCollisions
+                    ) continue;
+
+                    if (definition.role === ObstacleSpecialRoles.Stair && this.game.activePlayer && this.game.activePlayer.layer === this.layer) {
+                        this.layer = definition.transportTo ?? 0;
                         continue;
                     }
                 }

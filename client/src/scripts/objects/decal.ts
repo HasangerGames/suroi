@@ -11,8 +11,6 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
 
     definition!: DecalDefinition;
 
-    layer: number;
-
     readonly image: SuroiSprite;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Decal]) {

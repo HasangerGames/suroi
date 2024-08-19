@@ -559,7 +559,7 @@ export class GameMap {
                 continue;
             }
 
-            this.generateObstacle(definition, position, undefined, Layer.Floor1, scale, variation);
+            this.generateObstacle(definition, position, undefined, Layer.Ground, scale, variation);
         }
     }
 
@@ -598,7 +598,7 @@ export class GameMap {
             locked
         );
 
-        if (!definition.hideOnMap && !definition.invisible && obstacle.layer === Layer.Floor1) this._packet.objects.push(obstacle);
+        if (!definition.hideOnMap && !definition.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);

@@ -310,7 +310,7 @@ export class Minimap {
                 }
 
                 case ObjectCategory.Building: {
-                    if (mapObject.layer !== Layer.Floor1) continue;
+                    if (mapObject.layer !== Layer.Ground) continue;
                     const definition = mapObject.definition;
                     const rotation = Angle.orientationToRotation(mapObject.rotation);
 
