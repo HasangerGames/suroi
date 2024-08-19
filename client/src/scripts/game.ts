@@ -720,6 +720,11 @@ export class Game {
          */
         let bindChangeAcknowledged = false;
 
+        // same idea as above
+        const funnyDetonateButtonCache: {
+            bind?: string
+        } = {};
+
         return () => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.inputManager.update();
@@ -932,6 +937,25 @@ export class Game {
                     ) {
                         this.inputManager.addAction(InputActions.Interact);
                     }
+                }
+            }
+
+            // funny detonate button stuff
+            const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
+
+            if (funnyDetonateButtonCache.bind !== boomBind) {
+                funnyDetonateButtonCache.bind = bind;
+
+                if (boomBind !== undefined) {
+                    const bindImg = InputManager.getIconFromInputName(boomBind);
+
+                    if (bindImg === undefined) {
+                        this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                    } else {
+                        this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                    }
+                } else {
+                    this.uiManager.ui.detonateKey.hide();
                 }
             }
         };

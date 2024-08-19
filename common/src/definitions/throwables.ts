@@ -42,7 +42,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly animation: {
         readonly pinImage?: string
         readonly liveImage: string
-        readonly leverImage: string
+        readonly leverImage?: string
         readonly activatedImage?: string
         readonly cook: {
             readonly cookingImage?: string
@@ -213,7 +213,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             },
             animation: {
                 liveImage: "proj_c4",
-                leverImage: "proj_frag_lever",
                 activatedImage: "proj_c4_activated",
                 cook: {
                     leftFist: Vec.create(2, -1),

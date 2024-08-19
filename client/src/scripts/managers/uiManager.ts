@@ -260,7 +260,8 @@ export class UIManager {
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 
-        c4Button: $<HTMLButtonElement>("#c4-detonate-btn")
+        c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
+        detonateKey: $<HTMLButtonElement>("#detonate-key")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -648,7 +649,7 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        activeC4s ? this.ui.c4Button.show() : this.ui.c4Button.hide();
+        this.ui.c4Button.toggle(activeC4s);
         if (activeC4s !== undefined) this.hasC4s = activeC4s;
     }
 

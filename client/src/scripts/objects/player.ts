@@ -1417,7 +1417,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 });
 
-                if (def.cookable) {
+                if (def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
@@ -1487,7 +1487,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 projImage.visible = false;
                 projImage.setFrame(def.idString);
 
-                if (!def.cookable) {
+                if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,

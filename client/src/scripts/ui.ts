@@ -3,8 +3,9 @@ import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
+import type { ArmorDefinition } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { EmoteCategory, emoteIdStrings, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes, emoteIdStrings, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
@@ -23,8 +24,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import type { ArmorDefinition } from "../../../common/src/definitions/armors";
-import { InputManager } from "./managers/inputManager";
 
 /*
     eslint-disable
@@ -1965,18 +1964,7 @@ Video evidence is required.`)) {
         });
     }
 
-    const interactKey = $<HTMLDivElement>("#detonate-key");
-    const bind: string = inputManager.binds.getInputsBoundToAction("explode_c4")[0];
-    const bindImg = InputManager.getIconFromInputName(bind);
-
-    if (bindImg === undefined) {
-        interactKey.text(bind ?? "");
-    } else {
-        interactKey.html(`<img src="${bindImg}" alt="${bind}"/>`);
-    }
-
-    const c4Button = $<HTMLDivElement>("#c4-detonate-btn");
-    slotListener(c4Button, button => {
+    slotListener($<HTMLDivElement>("#c4-detonate-btn"), button => {
         const isPrimary = button === 0;
 
         if (isPrimary) {

@@ -734,8 +734,8 @@ export function setUpCommands(game: Game): void {
         },
         game,
         {
-            short: "Explodes all of your c4s",
-            long: "When invoked, the game will attempt to explode all the c4s the player owns",
+            short: "Explodes all deployed pieces of C4 belonging to this player",
+            long: "When invoked, the game will attempt to detonate all pieces of C4 this player has deployed.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }

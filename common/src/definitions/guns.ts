@@ -329,7 +329,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             shotSpread: 2,
             moveSpread: 7,
             noMuzzleFlash: true,
-            length: 6.2,
+            length: 6.4,
             fists: {
                 left: Vec.create(95, -2),
                 right: Vec.create(40, 0),
@@ -1690,7 +1690,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 zIndex: 4
             },
             casingParticles: [{
-                position: Vec.create(4, 0.6)
+                position: Vec.create(0.5, 3),
+                ejectionDelay: 800
             }],
             gasParticles: {
                 spread: 360,
@@ -1782,7 +1783,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Single,
             shotSpread: 3,
             moveSpread: 7,
-            length: 5.95,
+            length: 4.9,
             fists: {
                 left: Vec.create(40, 0),
                 right: Vec.create(40, 0),
@@ -1790,9 +1791,9 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 rightZIndex: 4,
                 animationDuration: 100
             },
-            image: { position: Vec.create(85, 0) },
+            image: { position: Vec.create(65, 0) },
             casingParticles: [{
-                position: Vec.create(3.5, 0.5),
+                position: Vec.create(3.5, 0.3),
                 velocity: {
                     y: {
                         min: 2,
@@ -1809,7 +1810,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 speed: 0.22,
                 range: 130,
                 tracer: {
-                    color: 0xc2bb7a
+                    color: 0xE2C910
                 }
             },
             dual: {
@@ -1879,7 +1880,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             fireMode: FireMode.Auto,
             shotSpread: 0.5,
             moveSpread: 4,
-            length: 18,
+            length: 14,
             noMuzzleFlash: true,
             fists: {
                 left: Vec.create(145, -4),

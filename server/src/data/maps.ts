@@ -376,10 +376,10 @@ const maps = {
                 const { id, pos } = obstacle;
                 const { x: posX, y: posY } = pos;
 
-                map.generateObstacle(id, Vec.add(center, pos), 0, 1, 1);
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), 0, 1);
-                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), 0, 1);
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), 0, 1);
+                map.generateObstacle(id, Vec.add(center, pos));
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)));
+                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)));
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)));
             }
 
             genLoots(Vec.add(center, Vec.create(-67, 90)), 8, 8);
@@ -411,7 +411,7 @@ const maps = {
 
                     if (!pos) continue;
 
-                    map.generateObstacle(definition, pos, 0, 1);
+                    map.generateObstacle(definition, pos);
                 }
             }
         },
