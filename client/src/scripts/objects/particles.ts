@@ -1,5 +1,6 @@
 import { Layer } from "../../../../common/src/constants";
 import { TintedParticles } from "../../../../common/src/definitions/obstacles";
+import { sameLayer } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -148,7 +149,7 @@ export class Particle {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
-        if (this.layer === visibleLayer) {
+        if (sameLayer(visibleLayer, this.layer)) {
             this.image.setVisible(true);
             this.image.position.copyFrom(toPixiCoords(this.position));
             this.image.scale.set(this.scale);

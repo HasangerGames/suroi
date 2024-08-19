@@ -1575,6 +1575,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
             zIndex: ZIndexes.Players + 0.5,
+            layer: this.layer,
             position,
             lifetime: 1000,
             scale: {
