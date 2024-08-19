@@ -3549,6 +3549,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         },
         // -----------------------------------------------------------------------------------------------
 
+        // --------------------------------------------------------------------------------------------------
+        // Small HAZEL Bunker (To tease the next update)
+        // --------------------------------------------------------------------------------------------------
         {
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
@@ -3571,8 +3574,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [
                 { idString: "bunker_stair_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "stair_thing", position: Vec.create(0, -8), rotation: 0 },
-                { idString: "stair_top", position: Vec.create(0, 9), rotation: 0, layer: 0 },
-                { idString: "stair_middle", position: Vec.create(0, 3), rotation: 0, layer: -1 },
+                { idString: "stair_top", position: Vec.create(0, 7.5), rotation: 0, layer: 0 },
+                { idString: "bunker_stair_middle", position: Vec.create(0, 3), rotation: 0, layer: -1 },
                 { idString: "stair_bottom", position: Vec.create(0, -6.5), rotation: 0, layer: -2 }
             ],
             lootSpawners: []
@@ -3582,7 +3585,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Small Bunker",
             layer: -2,
             spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
-            scopeHitbox: RectangleHitbox.fromRect(42, 34.5),
+            scopeHitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(42, 34.5),
+                RectangleHitbox.fromRect(10, 5, Vec.create(0, 19))
+            ),
             floorImages: [
                 {
                     key: "small_bunker_floor",
@@ -3611,17 +3617,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [
                 { idString: "small_bunker_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "small_bunker_desk", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "metal_door", position: Vec.create(0.25, 18), rotation: 0 },
                 { idString: "control_panel2", position: Vec.create(-14.5, -12.6), rotation: 0 },
-                { idString: "box", position: Vec.create(-17, -2) },
-                { idString: "box", position: Vec.create(-15, 3.5) },
+                { idString: "box", position: Vec.create(-17, -2), lootSpawnOffset: Vec.create(2, 0) },
+                { idString: "box", position: Vec.create(-15, 3.5), lootSpawnOffset: Vec.create(2, 0) },
                 { idString: "small_drawer", position: Vec.create(-5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
-                { idString: "house_wall_13", position: Vec.create(0, -10.5), rotation: 1 },
+                { idString: "house_wall_13", position: Vec.create(0, -12.5), rotation: 1 },
                 { idString: "fridge", position: Vec.create(6.5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                 { idString: "mobile_home_bed", position: Vec.create(16, -8.5), rotation: 0 },
-                { idString: "mobile_home_sink", position: Vec.create(15, 12.8), rotation: 2 }
+                { idString: "small_drawer", position: Vec.create(16, 3.3), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
+                { idString: "regular_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2), rotation: 0 }
             ],
             lootSpawners: [
-                { table: "ground_loot", position: Vec.create(0, 0.5) }
+                { table: "ground_loot", position: Vec.create(0, -0.5), jitterSpawn: false }
             ]
         },
         {
@@ -3634,12 +3642,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-                { idString: "barrel", position: Vec.create(-5, 35) }
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 35) }
             ],
             subBuildings: [
                 { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
                 { idString: "small_bunker_entrance", position: Vec.create(0, 20) }
             ]
         }
+        // --------------------------------------------------------------------------------------------------
 
     ]);

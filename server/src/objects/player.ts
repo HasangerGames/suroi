@@ -676,7 +676,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 ) {
                     if (potential.definition.role === ObstacleSpecialRoles.Stair) {
                         this.layer = potential.definition.transportTo ?? 0;
-                    } else if (equalLayer(potential.layer, this.layer) || potential.definition.anyLayer) {
+                    } else if (isGroundLayer(potential.layer) || potential.definition.anyLayer) {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
                     }

@@ -1150,7 +1150,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(16.2, 2) }, 12),
 
         // small bunker special wall
-        apply("houseWall", { hitbox: RectangleHitbox.fromRect(13, 2) }, 13, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 13, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }),
 
         // HQ walls (headquarters)
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.5, 2) }, 1),
@@ -3999,6 +3999,23 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             invisible: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(10, 10, Vec.create(0, 0))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "bunker_stair_middle",
+            name: "Bunker Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            role: ObstacleSpecialRoles.Stair,
+            transportTo: -1,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(10, 6, Vec.create(0, 0))
             ),
             frames: {
                 particle: "metal_particle"

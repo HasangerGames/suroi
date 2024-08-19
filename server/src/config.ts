@@ -33,7 +33,7 @@ export const Config = {
     maxGames: 4,
     preventJoinAfter: 60000,
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Disabled },
 
     movementSpeed: 0.02655,
 
