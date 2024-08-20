@@ -160,12 +160,12 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
             applier: () => ({
                 scale: {
                     start: {
-                        min: 1.5,
-                        max: 2
+                        min: 0.5,
+                        max: 1
                     },
                     end: {
-                        min: 1.75,
-                        max: 2.25
+                        min: 0.1,
+                        max: 0.7
                     }
                 },
                 angularVelocity: {
