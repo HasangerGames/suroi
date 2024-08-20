@@ -3535,12 +3535,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-            ceilingZIndex: ZIndexes.ObstaclesLayer3,
-            ceilingImages: [{
-                key: "small_bunker_entrance_ceiling",
-                position: Vec.create(0, -2.4),
-                scale: Vec.create(2.07, 2.07)
-            }],
             floorImages: [{
                 key: "small_bunker_entrance",
                 position: Vec.create(0, 0)
@@ -3608,6 +3602,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "small_bunker",
             name: "Small Bunker",
+            ceilingZIndex: ZIndexes.ObstaclesLayer3,
+            ceilingImages: [{
+                key: "small_bunker_entrance_ceiling",
+                position: Vec.create(0, 17.7),
+                scale: Vec.create(2.07, 2.07)
+            }],
             rotationMode: RotationMode.None,
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
             scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
@@ -3618,7 +3618,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 35) }
             ],
             subBuildings: [
-                { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
+                { idString: "small_bunker_main", position: Vec.create(0, -4.6), layer: -2 },
                 { idString: "small_bunker_entrance", position: Vec.create(0, 20) }
             ]
         }
