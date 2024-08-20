@@ -3605,8 +3605,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
-                position: Vec.create(0, 17.7),
-                scale: Vec.create(2.07, 2.07)
+                position: Vec.create(0, 17.8),
+                scale: Vec.create(2.1, 2.1)
             }],
             rotationMode: RotationMode.None,
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
