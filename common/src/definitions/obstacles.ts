@@ -1794,7 +1794,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             variations: 2,
             hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(16.6, 12),
+            hitbox: RectangleHitbox.fromRect(12, 16.6),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
