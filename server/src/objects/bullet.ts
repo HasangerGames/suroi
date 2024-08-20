@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { ObjectCategory, type Layer } from "@common/constants";
 import { Bullets } from "@common/definitions/bullets";
 import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
@@ -44,7 +44,6 @@ export class Bullet extends BaseBullet {
     readonly clipDistance: number;
 
     reflected = false;
-    layer = 0;
 
     readonly finalPosition: Vector;
 
@@ -76,7 +75,7 @@ export class Bullet extends BaseBullet {
         this.shooter = shooter;
         this.originalLayer = shooter.layer;
 
-        this.layer = options.layer ?? shooter.layer;
+        this._layer = options.layer ?? shooter.layer;
 
         this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
     }
@@ -85,8 +84,7 @@ export class Bullet extends BaseBullet {
         const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, this.game.dt)));
         const { grid, dt, map: { width: mapWidth, height: mapHeight } } = this.game;
 
-        const objects = grid.intersectsHitbox(lineRect);
-        const collisions = this.updateAndGetCollisions(dt, objects);
+        const collisions = this.updateAndGetCollisions(dt, grid.intersectsHitbox(lineRect));
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
@@ -107,7 +105,7 @@ export class Bullet extends BaseBullet {
 
             if (
                 object.type === ObjectCategory.Player
-                && equalLayer(this.layer, object.layer)
+                && equalLayer(this._layer, object.layer)
             ) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
@@ -125,9 +123,6 @@ export class Bullet extends BaseBullet {
             }
 
             if (object.type === ObjectCategory.Obstacle) {
-                // FOR THE LOVE OF GOD IMPROVE THIS ABOMINATION
-                // isAdjacent(this.layer, object.layer) makes it so that you cant shoot through walls while on stairs (-1 layer)
-
                 const obsDef = object.definition;
                 const isStair = obsDef.role === ObstacleSpecialRoles.Stair;
 
@@ -140,7 +135,7 @@ export class Bullet extends BaseBullet {
                         isStair
                             ? adjacentOrEqualLayer
                             : equalLayer
-                    )(this.layer, object.layer)
+                    )(this._layer, object.layer)
                 ) {
                     this.damagedIDs.add(object.id);
 
@@ -152,7 +147,7 @@ export class Bullet extends BaseBullet {
                         position: collision.intersection.point
                     });
 
-                    isStair && this.changeLayer(obsDef.transportTo, this.position);
+                    isStair && (object as Obstacle).handleStairInteraction(this);
 
                     if (definition.penetration.obstacles) continue;
 
@@ -205,7 +200,7 @@ export class Bullet extends BaseBullet {
             {
                 position: Vec.clone(this.position),
                 rotation: direction,
-                layer: this.layer,
+                layer: this._layer,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance
@@ -213,14 +208,16 @@ export class Bullet extends BaseBullet {
         );
     }
 
-    changeLayer(layer: number, position: Vector): void {
+    changeLayer(layer: Layer): void {
+        if (layer === this._layer) { return; }
+
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
             {
-                position: Vec.clone(position),
+                position: this.position,
                 rotation: this.rotation,
-                layer: layer,
+                layer,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance
             }

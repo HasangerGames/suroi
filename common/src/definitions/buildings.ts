@@ -12,6 +12,7 @@ interface BuildingObstacle {
     readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>
     readonly position: Vector
     readonly rotation?: number
+    // specified as an _offset_ relative to the layer of the building in which this obstacle is placed
     readonly layer?: number
     readonly variation?: Variation
     readonly scale?: number
@@ -29,6 +30,7 @@ interface SubBuilding {
     readonly idString: ReferenceTo<BuildingDefinition> | Record<ReferenceTo<BuildingDefinition>, number>
     readonly position: Vector
     readonly orientation?: Orientation
+    // specified as an _offset_ relative to the layer of the building in which this building appears
     readonly layer?: number
 }
 
@@ -44,8 +46,6 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
     readonly hideOnMap: boolean
-    readonly isStair?: boolean
-    readonly layer?: number
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
@@ -104,6 +104,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly floors: ReadonlyArray<{
         readonly type: keyof typeof FloorTypes
         readonly hitbox: Hitbox
+        // specified as an offset relative to the building in which this floor appears
         readonly layer?: number
     }>
 
@@ -3061,27 +3062,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             lootSpawners: []
         },
-        {
-            idString: "stairToBasement",
-            name: "Stairs to Basement",
-            isStair: true,
-            layer: -1,
-            spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-            floors: [
-                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
-            ],
-            obstacles: [
-                { idString: "stair_walls", position: Vec.create(0, 0), rotation: 0 },
-
-                { idString: "stair_thing", position: Vec.create(11, -8.5), rotation: 0, layer: 0 },
-                { idString: "stair_thing", position: Vec.create(0.8, 11.5), rotation: 0, layer: -2 },
-
-                { idString: "stair_top", position: Vec.create(0, 10), rotation: 0, layer: 0 },
-                { idString: "stair_middle", position: Vec.create(0, 0), rotation: 0, layer: -1 },
-                { idString: "stair_bottom", position: Vec.create(0, -10), rotation: 0, layer: -2 }
-            ],
-            lootSpawners: []
-        },
 
         // -----------------------------------------------------------------------------------------------
         // Headquarters.
@@ -3135,7 +3115,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
-            layer: -2,
             spawnHitbox: RectangleHitbox.fromRect(180, 190, Vec.create(0, -35)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(143, 72.5, Vec.create(-0.5, -12.5)),
@@ -3204,8 +3183,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                   couch_part
                   couch_corner
                 */
-                { idString: "stair_walls_big", position: Vec.create(-40.5, -100.5), rotation: 0 },
-                { idString: "stair_walls_big", position: Vec.create(-52.5, -100.5), rotation: 0 },
+                { idString: "hq_stair_upper_wall", position: Vec.create(-46.5, -100.5), rotation: 0 },
                 { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 },
 
@@ -3343,7 +3321,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     scale: Vec.create(2, 2)
                 }
             ],
-            groundGraphics: [],
             floors: [
                 {
                     type: "wood",
@@ -3404,8 +3381,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // main entrance
                 { idString: "planted_bushes", position: Vec.create(-47, 44), rotation: 0 },
                 { idString: "planted_bushes", position: Vec.create(-15, 44), rotation: 0 },
-                { idString: "glass_door", position: Vec.create(-35.5, 35.5), rotation: 0 },
-                { idString: "glass_door", position: Vec.create(-26.25, 35.5), rotation: 2 },
+                { idString: "glass_door", position: Vec.create(-35.5, 35), rotation: 0 },
+                { idString: "glass_door", position: Vec.create(-26.25, 35), rotation: 2 },
 
                 // main area (hallway/where unbreakable large desk is)
                 { idString: "headquarters_main_desk", position: Vec.create(-11, -52), rotation: 0 },
@@ -3536,12 +3513,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "aegis_crate", position: Vec.create(-65, -9.25) },
                 { idString: { box: 9, grenade_box: 1 }, position: Vec.create(-67, -17.5) },
                 { idString: "gun_mount_mini_14", position: Vec.create(-68.8, -29), lootSpawnOffset: Vec.create(5, 0), rotation: 1 },
-                { idString: "barrel", position: Vec.create(-53.5, -8.5) }
+                { idString: "barrel", position: Vec.create(-53.5, -8.5) },
 
+                // staircase
+                { idString: "hq_stair_lower_wall", position: Vec.create(-47.5, -88.5), rotation: 0 },
+                { idString: "hq_stair", position: Vec.create(-52.75, -88.5), layer: 1, rotation: 0 }
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "headquarters_second_floor", position: Vec.create(0, 12), layer: -2 },
-                { idString: "stairToBasement", position: Vec.create(-52.5, -90) },
+                { idString: "headquarters_second_floor", position: Vec.create(0, 12), layer: 2 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-59.5, -18.7) },
                 { idString: "detector", position: Vec.create(-36, 23.5) },
                 { idString: "detector", position: Vec.create(-26, 23.5) }
@@ -3555,8 +3534,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
-            isStair: true,
-            layer: -1,
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
             ceilingImages: [{
@@ -3573,17 +3550,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "bunker_stair_walls", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "stair_thing", position: Vec.create(0, -8), rotation: 0 },
-                { idString: "stair_top", position: Vec.create(0, 7.5), rotation: 0, layer: 0 },
-                { idString: "bunker_stair_middle", position: Vec.create(0, 3), rotation: 0, layer: -1 },
-                { idString: "stair_bottom", position: Vec.create(0, -6.5), rotation: 0, layer: -2 }
+                { idString: "bunker_stair", position: Vec.create(0, 1), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
         },
         {
             idString: "small_bunker_main",
             name: "Small Bunker",
-            layer: -2,
             spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(42, 34.5),
@@ -3650,5 +3623,4 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         }
         // --------------------------------------------------------------------------------------------------
-
     ]);

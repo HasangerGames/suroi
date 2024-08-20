@@ -795,8 +795,28 @@ export const validators = Object.freeze({
             }
             case HitboxType.Group: {
                 logger.indent("Validating hitbox group", () => {
+                    const hitboxes = hitbox.hitboxes;
+                    switch (hitboxes.length) {
+                        case 0: {
+                            tester.assert(
+                                false,
+                                "Received hitbox group with no hitboxes",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                        case 1: {
+                            tester.assertWarn(
+                                false,
+                                "Received hitbox group with only 1 hitbox",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                    }
+
                     tester.runTestOnArray(
-                        hitbox.hitboxes,
+                        hitboxes,
                         (hitbox, errorPath) => this.hitbox(errorPath, hitbox),
                         baseErrorPath
                     );
@@ -805,8 +825,36 @@ export const validators = Object.freeze({
             }
             case HitboxType.Polygon: {
                 logger.indent("Validating polygonal hitbox", () => {
+                    const points = hitbox.points;
+                    switch (points.length) {
+                        case 0: {
+                            tester.assert(
+                                false,
+                                "Received polygonal hitbox with no points",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                        case 1: {
+                            tester.assertWarn(
+                                false,
+                                "Received polygonal hitbox with only 1 point",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                        case 2: {
+                            tester.assertWarn(
+                                false,
+                                "Received polygonal hitbox with only 2 points",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                    }
+
                     tester.runTestOnArray(
-                        hitbox.points,
+                        points,
                         (point, errorPath) => this.vector(errorPath, point),
                         baseErrorPath
                     );

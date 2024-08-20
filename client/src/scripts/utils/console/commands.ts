@@ -1,6 +1,6 @@
 // noinspection JSConstantReassignment
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
+import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
@@ -11,7 +11,7 @@ import { Numeric } from "../../../../../common/src/utils/math";
 import { handleResult, type Result } from "../../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
-import { Config } from "../../config";
+import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
 import { type InputManager } from "../../managers/inputManager";
 import { COLORS } from "../constants";
@@ -1791,7 +1791,7 @@ export function setUpCommands(game: Game): void {
                     language: navigator.language,
                     online: navigator.onLine
                 },
-                regions: Config.regions,
+                regions: Config.regions as unknown as Record<string, ServerInfo>,
                 mode: Config.mode,
                 default_region: Config.defaultRegion
             };
@@ -1808,14 +1808,28 @@ export function setUpCommands(game: Game): void {
 
                         for (const [key, value] of Object.entries(obj)) {
                             retVal += `<li><b>${key}</b>: ${
-                                typeof value === "object" && value !== null
+                                typeof value === "object" && value !== null && !(value instanceof Date)
                                     ? construct(value as Record<string, unknown>)
                                     : String(value)
                             }</li>`;
                         }
 
                         return `${retVal}</ul>`;
-                    })(data)
+                    })({
+                        ...data,
+                        regions: Object.fromEntries(
+                            Object.entries(data.regions).map(
+                                ([k, v]) => [
+                                    k,
+                                    {
+                                        ...v,
+                                        ...(typeof v.nextSwitchTime === "number" ? { nextSwitchTime: new Date(v.nextSwitchTime) } : {}),
+                                        ...(typeof v.maxTeamSize === "number" ? { maxTeamSize: TeamSize[v.maxTeamSize] } : {})
+                                    }
+                                ]
+                            )
+                        )
+                    })
                 );
             }
         },

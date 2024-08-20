@@ -348,7 +348,7 @@ export class GameMap {
                         }
                     }
 
-                    this.generateBuilding(definition, position, orientation, (definition.layer ?? 0));
+                    this.generateBuilding(definition, position, orientation);
                     this._addBuildingToQuad(quad, idString);
                     validPositionFound = true;
                 }
@@ -432,7 +432,7 @@ export class GameMap {
                 }
 
                 this.occupiedBridgePositions.push(position);
-                this.generateBuilding(definition, position, bestOrientation, (definition.layer ?? 0));
+                this.generateBuilding(definition, position, bestOrientation);
                 spawnedCount++;
             };
 
@@ -455,8 +455,9 @@ export class GameMap {
     ): Building {
         definition = Buildings.reify(definition);
         orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
+        layer ??= 0;
 
-        const building = new Building(this.game, definition, Vec.clone(position), orientation, layer ?? 0);
+        const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles) {
             const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
@@ -474,7 +475,7 @@ export class GameMap {
                 obstacleDef,
                 Vec.addAdjust(position, obstacleData.position, orientation),
                 obstacleRotation,
-                obstacleData.layer ?? building.layer ?? definition.layer,
+                layer + (obstacleData.layer ?? 0),
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
                 lootSpawnOffset,
@@ -483,8 +484,10 @@ export class GameMap {
                 obstacleData.locked
             );
 
-            if (obstacleDef.role === ObstacleSpecialRoles.Activatable
-                || obstacleDef.role === ObstacleSpecialRoles.Door) {
+            if (
+                obstacleDef.role === ObstacleSpecialRoles.Activatable
+                || obstacleDef.role === ObstacleSpecialRoles.Door
+            ) {
                 building.interactableObstacles.add(obstacle);
             }
         }
@@ -496,13 +499,13 @@ export class GameMap {
             for (
                 const item of Array.from(
                     { length: random(table.min, table.max) },
-                    () => getLootTableLoot(drops as WeightedItem[]) // fixme This will break if multiple tables are specified
+                    () => getLootTableLoot(drops as WeightedItem[]) // FIXME This will break if multiple tables are specified
                 ).flat()
             ) {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
-                    definition.layer ?? 0,
+                    layer,
                     { count: item.count, jitterSpawn: false }
                 );
             }
@@ -514,16 +517,23 @@ export class GameMap {
                 getRandomIDString(subBuilding.idString),
                 Vec.addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation,
-                subBuilding.layer ?? definition.layer ?? 0
+                layer + (subBuilding.layer ?? 0)
             );
         }
 
         for (const floor of definition.floors) {
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), (building.definition.layer ?? 0));
+            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), layer);
         }
 
         for (const decal of definition.decals) {
-            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.idString), Vec.addAdjust(position, decal.position, orientation), Numeric.addOrientations(orientation, decal.orientation ?? 0)));
+            this.game.grid.addObject(
+                new Decal(
+                    this.game,
+                    Decals.reify(decal.idString),
+                    Vec.addAdjust(position, decal.position, orientation),
+                    Numeric.addOrientations(orientation, decal.orientation ?? 0)
+                )
+            );
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);
@@ -576,6 +586,7 @@ export class GameMap {
         locked?: boolean
     ): Obstacle {
         definition = Obstacles.reify(definition);
+        layer ??= 0;
 
         scale ??= randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
         if (variation === undefined && definition.variations) {

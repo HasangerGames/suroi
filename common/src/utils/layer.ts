@@ -16,7 +16,7 @@ export function isGroundLayer(layer: number | Layer): boolean {
  * @returns `true` if the layer is a "stair" layer; `false` otherwise.
  */
 export function isStairLayer(layer: number | Layer): boolean {
-    return layer % 2 === 1;
+    return layer % 2 !== 0;
 }
 
 /**

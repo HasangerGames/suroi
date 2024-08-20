@@ -14,7 +14,6 @@ import type { Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
-import { Logger } from "../utils/misc";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
@@ -395,7 +394,6 @@ export class Inventory {
         toDrop: ReifiableDef<LootDefinition>,
         options?: Parameters<Game["addLoot"]>[3] & { readonly position?: Vector }
     ): void {
-        Logger.log(`${this.owner.layer}`);
         this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, this.owner.layer, { jitterSpawn: false, ...options });
     }
 

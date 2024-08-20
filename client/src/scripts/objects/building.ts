@@ -215,7 +215,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.rotation = this.rotation;
 
             this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
-            this.layer = full.definition.layer ?? data.layer;
+            this.layer = data.layer;
         }
 
         const definition = this.definition;

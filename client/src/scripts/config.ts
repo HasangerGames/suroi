@@ -1,3 +1,5 @@
+import type { TeamSize } from "../../../common/src/constants";
+
 export const Config = {
     regions: {
         dev: {
@@ -54,3 +56,10 @@ export interface Region {
      */
     readonly gameAddress: string
 }
+
+export interface ServerInfo {
+    readonly protocolVersion: number
+    readonly playerCount: number
+    readonly maxTeamSize: TeamSize
+    readonly nextSwitchTime: number
+};

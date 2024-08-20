@@ -45,7 +45,10 @@ export class BaseBullet {
     readonly initialPosition: Vector;
 
     readonly rotation: number;
-    layer: Layer;
+
+    protected _layer: Layer;
+    get layer(): Layer { return this._layer; }
+
     readonly velocity: Vector;
     readonly direction: Vector;
 
@@ -70,7 +73,7 @@ export class BaseBullet {
         this.initialPosition = Vec.clone(options.position);
         this.position = options.position;
         this.rotation = options.rotation;
-        this.layer = options.layer;
+        this._layer = options.layer;
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
         this.rangeVariance = options.variance ?? 0;
@@ -95,8 +98,8 @@ export class BaseBullet {
     /**
      * Update the bullet and check for collisions
      * @param delta The delta time between ticks
-     * @param objects A set containing objects to check for collision
-     * @returns An array containing the objects that the bullet collided and the intersection data
+     * @param objects An iterable containing objects to check for collision
+     * @returns An array containing the objects that the bullet collided and the intersection data for each
      */
     updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): Collision[] {
         const oldPosition = Vec.clone(this.position);
@@ -116,8 +119,9 @@ export class BaseBullet {
             if (object.type === ObjectCategory.Obstacle && object.definition.noBulletCollision) continue;
 
             if (
-                object.damageable && !object.dead
-                && !(!this.canHitShooter && object.id === this.sourceID)
+                object.damageable
+                && !object.dead
+                && (object.id !== this.sourceID || this.canHitShooter)
                 && !this.damagedIDs.has(object.id)
             ) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
@@ -145,7 +149,7 @@ export class BaseBullet {
         Bullets.writeToStream(stream, this.definition);
         stream.writePosition(this.initialPosition);
         stream.writeRotation(this.rotation, 16);
-        stream.writeLayer(this.layer);
+        stream.writeLayer(this._layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeBits(this.reflectionCount, 2);
         stream.writeObjectID(this.sourceID);

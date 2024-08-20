@@ -34,6 +34,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
         speedMultiplier: 0.7,
         overlay: true,
         particles: true
+    },
+    void: {
+        debugColor: 0x77390d
     }
 };
 
@@ -147,10 +150,18 @@ export class Terrain {
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
-            floor = "sand";
+            if (layer) {
+                floor = "sand";
 
-            if (this.grassHitbox.isPointInside(position)) {
-                floor = "grass";
+                if (this.grassHitbox.isPointInside(position)) {
+                    floor = "grass";
+                }
+            } else {
+                /*
+                    grass and sand only exist on layer 0; on other
+                    layers, it's the void
+                */
+                floor = "void";
             }
         }
 
@@ -176,9 +187,11 @@ export class Terrain {
             }
         }
 
-        // assume if no floor was found at this position, it's in the ocean
-
-        return floor;
+        /*
+            if no floor was found at this position, then it's either the ocean (layer 0)
+            or the void (all other floors)
+        */
+        return layer ? "void" : floor;
     }
 
     /**

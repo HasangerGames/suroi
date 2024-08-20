@@ -401,7 +401,8 @@ export class Minimap {
         debugGraphics.clear();
         debugGraphics.zIndex = 99;
         for (const [hitbox, { floorType }] of this._terrain.floors) {
-            drawHitbox(hitbox, FloorTypes[floorType].debugColor, debugGraphics);
+            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics);
+            //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
         }
 
         drawHitbox(this._terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
@@ -466,7 +467,7 @@ export class Minimap {
             if (object.type === ObjectCategory.Building) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
-                    this._terrain.addFloor(floor.type, hitbox, (object.definition.layer ?? 0));
+                    this._terrain.addFloor(floor.type, hitbox, object.layer ?? 0);
                 }
             }
         }

@@ -75,7 +75,7 @@ export class Bullet extends BaseBullet {
                 if (
                     (
                         isPlayer || (isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair)
-                    ) && adjacentOrEqualLayer((object.layer ?? 0), this.layer)
+                    ) && adjacentOrEqualLayer((object.layer ?? 0), this._layer)
                 ) {
                     (object as Obstacle | Player).hitEffect(
                         collision.intersection.point,
@@ -93,8 +93,11 @@ export class Bullet extends BaseBullet {
                         || definition.noCollisions
                     ) continue;
 
-                    if (definition.role === ObstacleSpecialRoles.Stair && this.game.activePlayer && this.game.activePlayer.layer === this.layer) {
-                        this.layer = definition.transportTo ?? 0;
+                    if (
+                        definition.role === ObstacleSpecialRoles.Stair
+                        && this.game.activePlayer?.layer === this._layer
+                    ) {
+                        this._layer = object.layer;
                         continue;
                     }
                 }
@@ -163,7 +166,7 @@ export class Bullet extends BaseBullet {
                     start: randomFloat(trail.alpha.min, trail.alpha.max),
                     end: 0
                 },
-                layer: this.layer,
+                layer: this._layer,
                 tint: trail.tint === -1
                     ? new Color({ h: random(0, 6) * 60, s: 60, l: 70 }).toNumber()
                     : trail.tint

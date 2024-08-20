@@ -16,7 +16,7 @@ import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefi
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
-import { Config } from "./config";
+import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
@@ -247,13 +247,6 @@ export async function setUpUI(game: Game): Promise<void> {
         const pingStartTime = Date.now();
 
         try {
-            interface ServerInfo {
-                readonly protocolVersion: number
-                readonly playerCount: number
-                readonly maxTeamSize: TeamSize
-                readonly nextSwitchTime: number
-            };
-
             const serverInfo = await (
                 await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(5000) })
             )?.json() as ServerInfo;

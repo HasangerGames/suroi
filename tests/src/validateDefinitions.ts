@@ -1,3 +1,4 @@
+import { isStairLayer } from "@common/utils/layer";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
@@ -29,6 +30,7 @@ import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, LootTiers } from "../../server/src/data/lootTables";
 import { Maps } from "../../server/src/data/maps";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
+import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 
 const testStart = Date.now();
 
@@ -823,7 +825,23 @@ logger.indent("Validating building definitions", () => {
                                                 break;
                                             }
                                         }
+
+                                        if (reference.role === ObstacleSpecialRoles.Stair) {
+                                            tester.assert(
+                                                isStairLayer(obstacle.layer ?? 0),
+                                                `Obstacle with role "Stair" must be placed on a stair layer (given layer is ${obstacle.layer})`,
+                                                errorPath
+                                            );
+                                        }
                                     }
+                                }
+
+                                if (obstacle.layer !== undefined) {
+                                    tester.assertInt({
+                                        obj: obstacle,
+                                        field: "layer",
+                                        baseErrorPath: errorPath2
+                                    });
                                 }
 
                                 if (obstacle.variation !== undefined) {
@@ -2301,6 +2319,23 @@ logger.indent("Validating obstacles", () => {
                                     });
                                 });
                             }
+                            break;
+                        }
+                        case ObstacleSpecialRoles.Stair: {
+                            tester.assert(
+                                obstacle.activeEdges.high !== obstacle.activeEdges.low,
+                                "Stair obstacle specified both high and low edge at the same spot",
+                                errorPath
+                            );
+
+                            // invalid hitboxes shouldn't type-check, but this is more of a sanity check thing
+                            const hitbox = obstacle.hitbox;
+                            tester.assert(
+                                hitbox.type === HitboxType.Rect || hitbox instanceof RectangleHitbox,
+                                `Stair obstacle must have a rectangular hitbox (received hitbox of type ${HitboxType[hitbox.type] ?? hitbox.constructor?.name})`,
+                                errorPath
+                            );
+                            break;
                         }
                     }
                 });

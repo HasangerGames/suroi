@@ -1,12 +1,9 @@
-import { randomBytes } from "crypto";
-import { type WebSocket } from "uWebSockets.js";
-
-import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
+import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, equalOrOneAboveLayer, equalOrOneBelowLayer, isGroundLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, isGroundLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, ObstacleSpecialRoles, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -15,6 +12,8 @@ import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
+import { randomBytes } from "crypto";
+import { type WebSocket } from "uWebSockets.js";
 import { BaseGameObject, Building, DamageParams, DeathMarker, Emote, Explosion, Loot, SyncedParticle, ThrowableProjectile, type GameObject, type Obstacle } from ".";
 import { Config } from "../config";
 import { type Game } from "../game";
@@ -364,8 +363,9 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     private readonly _mapPings: Game["mapPings"] = [];
 
-    public c4s: ThrowableProjectile[] = [];
-    public updatedC4Button = false;
+    c4s: ThrowableProjectile[] = [];
+    // this should probably be on the dirty object
+    updatedC4Button = false;
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
         super(game, position);
@@ -629,15 +629,15 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }
         }
 
-        const speed = this.baseSpeed                        // Base speed
-            * (FloorTypes[this.floor].speedMultiplier ?? 1) // Speed multiplier from floor player is standing in
-            * recoilMultiplier                              // Recoil from items
-            * (this.action?.speedMultiplier ?? 1)           // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                // Linear speed boost from adrenaline
-            * (this.downed ? 1 : this.activeItemDefinition.speedMultiplier)     // Active item speed modifier
-            * (this.downed ? 0.5 : 1)                       // Knocked out speed multiplier
-            * (this.beingRevivedBy ? 0.5 : 1)               // Being revived speed multiplier
-            * this.modifiers.baseSpeed;                     // Current on-wearer modifier
+        const speed = this.baseSpeed                                        // Base speed
+            * (FloorTypes[this.floor].speedMultiplier ?? 1)                 // Speed multiplier from floor player is standing in
+            * recoilMultiplier                                              // Recoil from items
+            * (this.action?.speedMultiplier ?? 1)                           // Speed modifier from performing actions
+            * (1 + (this.adrenaline / 1000))                                // Linear speed boost from adrenaline
+            * (this.downed ? 1 : this.activeItemDefinition.speedMultiplier) // Active item speed modifier
+            * (this.downed ? 0.5 : 1)                                       // Knocked out speed multiplier
+            * (this.beingRevivedBy ? 0.5 : 1)                               // Being revived speed multiplier
+            * this.modifiers.baseSpeed;                                     // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
@@ -675,7 +675,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     && adjacentOrEqualLayer(potential.layer, this.layer)
                 ) {
                     if (potential.definition.role === ObstacleSpecialRoles.Stair) {
-                        this.layer = potential.definition.transportTo ?? 0;
+                        potential.handleStairInteraction(this);
                     } else if (isGroundLayer(potential.layer) || potential.definition.anyLayer) {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
@@ -762,7 +762,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             if (
                 object instanceof SyncedParticle
                 && object.hitbox?.collidesWith(this.hitbox)
-                && equalLayer(object.layer, this.layer)
+                && adjacentOrEqualLayer(object.layer, this.layer)
             ) {
                 depleters.add(object);
             }
@@ -846,18 +846,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
-            /*
-                When the player is in a transitionary layer (stairs), view the objects for the layer immediately above them.
-                When a player is not in a transitionary layer (Basement1, Ground, or Floor1), then only view the objects in that layer.
-            */
-            const layerFilterFunc = isGroundLayer(this.layer) ? adjacentOrEqualLayer : (this.layer < Layer.Ground ? equalOrOneBelowLayer : equalOrOneAboveLayer);
-
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
-                        ((!newVisibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
-                        && (this.visibleObjects.delete(object), true))
-                        && !(object.type === ObjectCategory.Obstacle && object.definition.role === ObstacleSpecialRoles.Stair)
+                        (!newVisibleObjects.has(object) || !adjacentOrEqualLayer(this.layer, object.layer))
+                        && (this.visibleObjects.delete(object), true)
+                        && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                     )
                 )
                 .map(({ id }) => id);
@@ -866,8 +860,8 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 .forEach(
                     object => {
                         if (
-                            (this.visibleObjects.has(object) || !(layerFilterFunc(this.layer, object.layer)))
-                            && !(object.type === ObjectCategory.Obstacle && object.definition.role === ObstacleSpecialRoles.Stair)
+                            (this.visibleObjects.has(object) || !adjacentOrEqualLayer(this.layer, object.layer))
+                            && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                         ) { return; }
 
                         this.visibleObjects.add(object);
@@ -1011,7 +1005,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max
-            ) && layer === (this.layer as number)
+            ) && adjacentOrEqualLayer(layer, this.layer)
         );
 
         /**
@@ -1877,12 +1871,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     const detectionHitbox = new CircleHitbox(3, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
-                    const layerFilterFunc = isGroundLayer(this.layer) ? adjacentOrEqualLayer : (this.layer < Layer.Ground ? equalOrOneBelowLayer : equalOrOneAboveLayer);
                     for (const object of nearObjects) {
                         if (
-                            (object instanceof Loot)
+                            object instanceof Loot
                             && object.hitbox.collidesWith(detectionHitbox)
-                            && layerFilterFunc(this.layer, object.layer)
+                            && adjacentOrEqualLayer(this.layer, object.layer)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (
@@ -1972,7 +1965,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     for (const c4 of this.c4s) {
                         c4.detonate(750);
                     }
-                    this.c4s = [];
+                    this.c4s.length = 0;
                     this.updatedC4Button = false;
                     break;
             }

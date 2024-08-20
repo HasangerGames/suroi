@@ -8,6 +8,7 @@ export const HITBOX_DEBUG_MODE = false;
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),
     obstacleNoCollision: new Color("yellow"),
+    stair: new Color("white"),
     spawnHitbox: new Color("orange"),
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),

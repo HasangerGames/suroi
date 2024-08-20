@@ -131,7 +131,21 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly role: ObstacleSpecialRoles.Wall
     } | {
         readonly role: ObstacleSpecialRoles.Stair
-        readonly transportTo: number
+        /**
+         * A stair is a rectangular collider with two active edges (or sides):
+         * one of the edges functions as the origin (the foot of the stairs) and the
+         * other functions as the target (the top of the stairs). The stair always runs
+         * between the two ground layers neighboring its indicated stair layer in a building.
+         *
+         * The edges allowing for transition are numbered 0 through 3, with 0 being top,
+         * 1 being right, 2 being bottom, and 3 being right (before any orientation adjustments
+         * are made)
+         */
+        readonly hitbox: RectangleHitbox
+        readonly activeEdges: {
+            readonly high: 0 | 1 | 2 | 3
+            readonly low: 0 | 1 | 2 | 3
+        }
     } | {
         readonly role?: undefined
     }
@@ -1422,7 +1436,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             noResidue: true,
             role: ObstacleSpecialRoles.Door,
-            hingeOffset: Vec.create(-5.5, 0),
+            operationStyle: "slide",
+            slideFactor: 0.9,
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "window_particle"
@@ -3898,8 +3913,24 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             health: 1000,
             reflectBullets: true,
             indestructible: true,
+            hitbox: RectangleHitbox.fromRect(13, 16.9, Vec.create(0, 0)),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "hq_stair_upper_wall",
+            name: "HQ Stair Wall (upper)",
+            material: "metal",
+            health: 1000,
+            anyLayer: true,
+            indestructible: true,
+            invisible: true,
+            reflectBullets: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(13, 16.9, Vec.create(0, 0))
+                RectangleHitbox.fromRect(1, 21, Vec.create(-1, 0)),
+                RectangleHitbox.fromRect(1, 21, Vec.create(1, 0))
             ),
             frames: {
                 particle: "metal_particle"
@@ -3907,16 +3938,17 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
-            idString: "stair_walls",
-            name: "Stair Walls",
+            idString: "hq_stair_lower_wall",
+            name: "HQ Stair Wall (lower)",
             material: "metal",
             health: 1000,
             anyLayer: true,
             indestructible: true,
             invisible: true,
+            reflectBullets: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1, 18.5, Vec.create(5, 0)),
-                RectangleHitbox.fromRect(1, 18.5, Vec.create(-5, 0))
+                RectangleHitbox.fromRect(1, 21),
+                RectangleHitbox.fromRect(12, 1, Vec.create(6.5, -10.02))
             ),
             frames: {
                 particle: "metal_particle"
@@ -3931,9 +3963,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             anyLayer: true,
             indestructible: true,
             invisible: true,
+            reflectBullets: true,
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1, 17, Vec.create(6, 0)),
-                RectangleHitbox.fromRect(1, 17, Vec.create(-6, 0))
+                RectangleHitbox.fromRect(12, 1, Vec.create(0, -8)),
+                RectangleHitbox.fromRect(1.5, 16.9, Vec.create(5.8, 0)),
+                RectangleHitbox.fromRect(1.5, 16.9, Vec.create(-5.8, 0))
             ),
             frames: {
                 particle: "metal_particle"
@@ -3941,99 +3975,36 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
-            idString: "stair_walls_big",
-            name: "Stair Walls big",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1, 20, Vec.create(5, 0)),
-                RectangleHitbox.fromRect(1, 20, Vec.create(-5, 0))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
-            idString: "stair_thing",
-            name: "Stair thing",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(12, 1, Vec.create(0, 0))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
-            idString: "stair_top",
-            name: "Stair",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            role: ObstacleSpecialRoles.Stair,
-            transportTo: 0,
-            invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
-            idString: "stair_middle",
-            name: "Stair",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            role: ObstacleSpecialRoles.Stair,
-            transportTo: -1,
-            invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 10, Vec.create(0, 0))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
-            idString: "bunker_stair_middle",
+            idString: "bunker_stair",
             name: "Bunker Stair",
             material: "metal",
             health: 1000,
             indestructible: true,
             role: ObstacleSpecialRoles.Stair,
-            transportTo: -1,
+            activeEdges: {
+                high: 2,
+                low: 0
+            },
             invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 6, Vec.create(0, 0))
-            ),
+            hitbox: RectangleHitbox.fromRect(10, 12),
             frames: {
                 particle: "metal_particle"
             },
             rotationMode: RotationMode.Limited
         },
         {
-            idString: "stair_bottom",
-            name: "Stair",
+            idString: "hq_stair",
+            name: "HQ Stair",
             material: "metal",
             health: 1000,
             indestructible: true,
             role: ObstacleSpecialRoles.Stair,
-            transportTo: -2,
+            activeEdges: {
+                high: 0,
+                low: 2
+            },
             invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(10, 1, Vec.create(0, 0))
-            ),
+            hitbox: RectangleHitbox.fromRect(9.5, 21),
             frames: {
                 particle: "metal_particle"
             },

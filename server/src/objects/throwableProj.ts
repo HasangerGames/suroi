@@ -193,16 +193,20 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         };
 
         const canFlyOver = (obstacle: Obstacle): boolean => {
-            // If the obstacle is a door, and the door is not open, then the throwable cannot fly over it.
-            if (obstacle.door?.isOpen === false) return false;
-            // If the obstacle is of a lower layer than this throwable, then the throwable can fly over it.
-            // This allows throwables to go down stairs with ease.
-            if (obstacle?.layer < this.layer) {
-                // console.log(`Flying over lower layer object. Object: ${ obstacle.layer }, Throwable: ${ this.layer }`);
-                return true;
-            }
-
-            return flyoverCondMap[obstacle.definition.allowFlyover];
+            /*
+                Closed doors can never be flown over
+            */
+            return obstacle.door?.isOpen !== false && (
+                /*
+                    If the obstacle is of a lower layer than this throwable, then the throwable can fly over it.
+                    This allows throwables to go down stairs with ease.
+                */
+                obstacle.layer < this.layer
+                /*
+                    Otherwise, check conditions as normal
+                */
+                || flyoverCondMap[obstacle.definition.allowFlyover]
+            );
         };
 
         const damagedThisTick = new Set<GameObject>();
@@ -246,10 +250,14 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     if (isAbove = canFlyOver(object)) {
                         this._currentlyAbove.add(object);
 
-                        // If the colliding object is a stair-type object, and its layer is greater than this throwable's
-                        // current layer, then this throwable appears to have been thrown up the stairs.
-                        // To emulate the difficulty of throwing something up the stairs, apply a higher drag coefficient
-                        // to slow it down.
+                        /*
+                            If the colliding object is a stair-type object, and its layer is greater than this throwable's
+                            current layer, then this throwable appears to have been thrown up the stairs.
+                            To emulate the difficulty of throwing something up the stairs, apply a higher drag coefficient
+                            to slow it down.
+
+                            TODO discuss removal
+                        */
                         if (object.definition?.role === ObstacleSpecialRoles.Stair && object.layer > this.layer) {
                             // console.log(`Colliding with higher layer object. Object: ${ object.layer }, Throwable: ${ this.layer }`);
                             this._currentDragConst = ThrowableProjectile._extraHarshDragConstant;
@@ -259,8 +267,9 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     }
 
                     if (object.definition.role === ObstacleSpecialRoles.Stair) {
-                        // console.log(`Colliding with a stair-type object! TransportTo: ${object.definition.transportTo}`);
-                        this.layer = object.definition.transportTo;
+                        // console.log(`Colliding with a stair-type object! TransportTo: ${object.layer}`);
+                        object.handleStairInteraction(this);
+                        continue;
                     }
 
                     if (isAbove || this._currentlyAbove.has(object)) {
@@ -513,12 +522,14 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
 
         this.health = this.health - amount;
         if (this.health <= 0) {
+            // use a Set instead
             this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
             this.game.removeProjectile(this);
             this.source.owner.updatedC4Button = false;
 
             const { particles } = this.definition.detonation;
             const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+            // what?? why are these synced particles?
             if (particles !== undefined) this.game.addSyncedParticles(particles, referencePosition, this.source.owner.layer);
         }
     }
@@ -530,8 +541,8 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
             position: this.position,
             rotation: this.rotation,
             layer: this.layer,
-            airborne: this.airborne,
-            activated: this.activated,
+            airborne: this._airborne,
+            activated: this._activated,
             full: {
                 definition: this.definition
             }

@@ -27,6 +27,9 @@ function internalLog(...message: string[]): void {
 export const dragConst = (aggressiveness: number, base?: number): number => Math.pow(
     base ?? Math.E,
     -(aggressiveness + 1 / (1.78734 * Config.tps ** 2.32999)) / Config.tps
+    // yes these are all empirical constants
+    // i'd link the desmos graph i used, but i… lost it
+    // lmao
 );
 
 export class LootItem {

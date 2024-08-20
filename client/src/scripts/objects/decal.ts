@@ -38,7 +38,10 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;
 
-        if (FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay && definition.zIndex === undefined) {
+        if (
+            FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay
+            && definition.zIndex === undefined
+        ) {
             this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
         }
     }

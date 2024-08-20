@@ -326,13 +326,70 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
-            drawHitbox(
-                this.hitbox,
-                definition.noCollisions || this.dead
-                    ? HITBOX_COLORS.obstacleNoCollision
-                    : HITBOX_COLORS.obstacle,
-                this.debugGraphics
-            );
+
+            if (definition.role === ObstacleSpecialRoles.Stair) {
+                const hitbox = this.hitbox as RectangleHitbox;
+
+                drawHitbox(
+                    hitbox,
+                    definition.noCollisions || this.dead
+                        ? HITBOX_COLORS.obstacleNoCollision
+                        : HITBOX_COLORS.stair,
+                    this.debugGraphics
+                );
+
+                const min = toPixiCoords(hitbox.min);
+                const max = toPixiCoords(hitbox.max);
+                const graphics = this.debugGraphics;
+
+                // using the same numebring system as server-side, but with array indexes
+                const drawSide = [
+                    () => {
+                        graphics
+                            .moveTo(min.x, min.y)
+                            .lineTo(max.x, min.y);
+                    },
+                    () => {
+                        graphics
+                            .moveTo(max.x, min.y)
+                            .lineTo(max.x, max.y);
+                    },
+                    () => {
+                        graphics
+                            .moveTo(max.x, max.y)
+                            .lineTo(min.x, max.y);
+                    },
+                    () => {
+                        graphics
+                            .moveTo(min.x, max.y)
+                            .lineTo(min.x, min.y);
+                    }
+                ];
+
+                const { high, low } = definition.activeEdges;
+
+                graphics
+                    .setStrokeStyle({ color: 0xff0000, width: 4 })
+                    .beginPath();
+                drawSide[high]();
+                graphics
+                    .closePath()
+                    .stroke()
+                    .setStrokeStyle({ color: 0x00ff00, width: 4 })
+                    .beginPath();
+                drawSide[low]();
+                graphics
+                    .closePath()
+                    .stroke();
+            } else {
+                drawHitbox(
+                    this.hitbox,
+                    definition.noCollisions || this.dead
+                        ? HITBOX_COLORS.obstacleNoCollision
+                        : HITBOX_COLORS.obstacle,
+                    this.debugGraphics
+                );
+            }
 
             if (definition.role === ObstacleSpecialRoles.Door && definition.operationStyle !== "slide") {
                 drawHitbox(

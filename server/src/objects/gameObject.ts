@@ -64,13 +64,8 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     dead = false;
 
     private _layer: Layer = Layer.Ground;
-    public get layer(): Layer {
-        return this._layer;
-    }
-
-    public set layer(value: Layer) {
-        this._layer = value;
-    }
+    get layer(): Layer { return this._layer; }
+    set layer(value: Layer) { this._layer = value; }
 
     hitbox?: Hitbox;
 

@@ -1,11 +1,11 @@
+import { Layer } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
 import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
-import { type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
-import { equalLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -13,7 +13,6 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
-import { Layer } from "@common/constants";
 
 export class Explosion {
     readonly game: Game;
@@ -27,7 +26,7 @@ export class Explosion {
         this.definition = Explosions.reify(definition);
         this.position = position;
         this.source = source;
-        this.layer = layer ?? 0;
+        this.layer = layer;
     }
 
     explode(): void {
@@ -79,7 +78,7 @@ export class Explosion {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if ((object instanceof Player || object instanceof Obstacle) && equalLayer(object.layer, this.layer)) {
+                    if ((object instanceof Player || object instanceof Obstacle) && adjacentOrEqualLayer(object.layer, this.layer)) {
                         object.damage({
                             amount: this.definition.damage
                             * (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1)
@@ -90,7 +89,7 @@ export class Explosion {
                         });
                     }
 
-                    if ((object instanceof Loot || object instanceof ThrowableProjectile) && equalLayer(object.layer, this.layer)) {
+                    if ((object instanceof Loot || object instanceof ThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
                         if (object instanceof ThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
                         else {
                             object.push(
@@ -101,7 +100,20 @@ export class Explosion {
                     }
                 }
 
-                if (object instanceof Obstacle && !object.definition.noCollisions) break;
+                if (
+                    object instanceof Obstacle
+                    && !object.definition.noCollisions
+                    && object.definition.role !== ObstacleSpecialRoles.Stair
+                ) {
+                    /*
+                        an Obstacle with collisions will "eat" an explosion, protecting
+                        the objects further from the explosion than itself ("behind" it;
+                        this is what the break statement achieves); however, this is not
+                        the case for stairs. stairs have collisions, but do not protect
+                        those within them. and so for stairs, the show must go on
+                    */
+                    break;
+                }
             }
         }
 
