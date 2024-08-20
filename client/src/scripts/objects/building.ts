@@ -58,7 +58,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
             visible = true;
-            duration = isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
+            duration = !isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 
