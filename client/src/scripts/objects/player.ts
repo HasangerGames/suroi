@@ -17,7 +17,7 @@ import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
@@ -127,7 +127,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     hitbox = new CircleHitbox(GameConstants.player.radius);
 
-    floorType: keyof typeof FloorTypes = "grass";
+    floorType: FloorNames = FloorNames.Grass;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
@@ -1583,21 +1583,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         });
 
         if (this.game.console.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
+            const isOnWater = this.floorType === FloorNames.Water;
             this._bloodDecals.add(
                 this.game.particleManager.spawnParticle({
                     frames: "blood_particle",
                     zIndex: ZIndexes.Decals,
                     layer: this.layer,
                     position: randomPointInsideCircle(position, 2.5),
-                    lifetime: 60000 * (this.floorType === "water" ? 0.1 : 1),
+                    lifetime: 60000 * (isOnWater ? 0.1 : 1),
                     scale: randomFloat(0.8, 1.6),
                     alpha: {
-                        start: this.floorType !== "water" ? 1 : 0.5,
+                        start: isOnWater ? 0.5 : 1,
                         end: 0,
                         ease: EaseFunctions.expoIn
                     },
                     speed: Vec.create(0, 0),
-                    tint: this.floorType !== "water" ? 0xeeeeee : 0xaaffff,
+                    tint: isOnWater ? 0xaaffff : 0xeeeeee,
                     onDeath: self => {
                         this._bloodDecals.delete(self);
                     }

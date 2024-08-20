@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
@@ -63,7 +63,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         if (data.height === 0) {
             const floor = this.game.map.terrain.getFloor(this.position, 0);
 
-            this.playSound(floor === "water" ? "airdrop_land_water" : "airdrop_land");
+            this.playSound(floor === FloorNames.Water ? "airdrop_land_water" : "airdrop_land");
 
             if (FloorTypes[floor].particles) {
                 this.game.particleManager.spawnParticles(6, () => ({

@@ -10,7 +10,18 @@ export interface FloorDefinition {
     readonly particles?: boolean
 }
 
-export const FloorTypes: Record<string, FloorDefinition> = {
+export const enum FloorNames {
+    Grass = "grass",
+    Stone = "stone",
+    Wood = "wood",
+    Sand = "sand",
+    Metal = "metal",
+    Carpet = "carpet",
+    Water = "water",
+    Void = "void"
+}
+
+export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     grass: {
         debugColor: 0x005500
     },
@@ -45,7 +56,7 @@ export class Terrain {
     readonly height: number;
     readonly cellSize = 64;
 
-    readonly floors = new Map<Hitbox, { floorType: string, layer: number }>();
+    readonly floors = new Map<Hitbox, { readonly floorType: FloorNames, readonly layer: number }>();
 
     readonly rivers: readonly River[];
 
@@ -57,7 +68,7 @@ export class Terrain {
     private readonly _grid: Array<
         Array<{
             readonly rivers: River[]
-            readonly floors: Array<{ readonly type: string, readonly hitbox: Hitbox, readonly layer: number }>
+            readonly floors: Array<{ readonly type: FloorNames, readonly hitbox: Hitbox, readonly layer: number }>
         }>
     > = [];
 
@@ -128,8 +139,8 @@ export class Terrain {
         }
     }
 
-    addFloor(type: string, hitbox: Hitbox, layer: number): void {
-        this.floors.set(hitbox, { floorType: type, layer: layer });
+    addFloor(type: FloorNames, hitbox: Hitbox, layer: number): void {
+        this.floors.set(hitbox, { floorType: type, layer });
         // get the bounds of the hitbox
         const rect = hitbox.toRectangle();
         // round it to the grid cells
@@ -144,24 +155,24 @@ export class Terrain {
         }
     }
 
-    getFloor(position: Vector, layer: number): string {
+    getFloor(position: Vector, layer: number): FloorNames {
         const pos = this._roundToCells(position);
-        let floor = "water";
+        let floor: FloorNames = FloorNames.Water;
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
             if (layer) {
-                floor = "sand";
+                floor = FloorNames.Sand;
 
                 if (this.grassHitbox.isPointInside(position)) {
-                    floor = "grass";
+                    floor = FloorNames.Grass;
                 }
             } else {
                 /*
                     grass and sand only exist on layer 0; on other
                     layers, it's the void
                 */
-                floor = "void";
+                floor = FloorNames.Void;
             }
         }
 
@@ -171,11 +182,11 @@ export class Terrain {
         if (isInsideMap) {
             for (const river of cell.rivers) {
                 if (river.bankHitbox.isPointInside(position)) {
-                    floor = "sand";
+                    floor = FloorNames.Sand;
                 }
 
                 if (river.waterHitbox.isPointInside(position)) {
-                    floor = "water";
+                    floor = FloorNames.Water;
                     break;
                 }
             }
@@ -191,7 +202,7 @@ export class Terrain {
             if no floor was found at this position, then it's either the ocean (layer 0)
             or the void (all other floors)
         */
-        return layer ? "void" : floor;
+        return layer ? FloorNames.Void : floor;
     }
 
     /**

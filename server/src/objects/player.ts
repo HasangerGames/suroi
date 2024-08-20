@@ -10,7 +10,7 @@ import { ItemType, ObstacleSpecialRoles, type ExtendedWearerAttributes, type Ref
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
-import { FloorTypes } from "@common/utils/terrain";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
@@ -336,7 +336,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
     isInsideBuilding = false;
 
-    floor = "water";
+    floor = FloorNames.Water;
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 

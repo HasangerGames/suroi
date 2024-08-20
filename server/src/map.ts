@@ -10,7 +10,7 @@ import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
-import { River, Terrain } from "@common/utils/terrain";
+import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -395,7 +395,7 @@ export class GameMap {
                     || [
                         Vec.addAdjust(position, Vec.create(0, landCheckDist), bestOrientation),
                         Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
-                    ].some(point => this.terrain.getFloor(point, 0) === "water")
+                    ].some(point => this.terrain.getFloor(point, 0) === FloorNames.Water)
                 ) return;
 
                 // checks if the distance between this position and the new bridge's position is less than

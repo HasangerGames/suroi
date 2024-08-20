@@ -3,7 +3,7 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { ContainerTints, MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomSign, randomVector } from "../utils/random";
-import { type FloorTypes } from "../utils/terrain";
+import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
 import { RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -102,7 +102,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly wallsToDestroy: number
 
     readonly floors: ReadonlyArray<{
-        readonly type: keyof typeof FloorTypes
+        readonly type: FloorNames
         readonly hitbox: Hitbox
         // specified as an offset relative to the building in which this floor appears
         readonly layer?: number
@@ -220,7 +220,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     ],
                 floors: [
                     {
-                        type: "metal",
+                        type: FloorNames.Metal,
                         hitbox: RectangleHitbox.fromRect(14, 28)
                     }
                 ],
@@ -275,11 +275,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             wallsToDestroy: 2,
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: RectangleHitbox.fromRect(14, 18)
                 },
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: RectangleHitbox.fromRect(9.8, 3.5, Vec.create(1.5, 10.6))
                 }
             ],
@@ -352,7 +352,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
                         RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1)),
@@ -360,7 +360,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(10.3, 5, Vec.create(-35.7, 30.2))
                 }
             ],
@@ -447,7 +447,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
                 }
             ],
@@ -501,7 +501,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(40, 88)
                 }
             ],
@@ -787,11 +787,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: RectangleHitbox.fromRect(33.50, 27, Vec.create(-32.75, 22.50))
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(176, 123, Vec.create(35, 21.50))
                 }
             ],
@@ -1062,16 +1062,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: RectangleHitbox.fromRect(62, 58.50, Vec.create(0, -0.25))
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(-10.10, 4.70, Vec.create(16.55, -31.75))
 
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(10.10, -4.70, Vec.create(-14.45, 31.75))
                 }
             ],
@@ -1233,16 +1233,16 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: RectangleHitbox.fromRect(62, 59, Vec.create(0, -0.25))
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(-10.10, 4.70, Vec.create(7.15, -31.75))
 
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(10.10, -4.70, Vec.create(7.15, 31.75))
                 }
             ],
@@ -1477,7 +1477,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             floors: [
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(10, 20.25, Vec.create(-8, 54.25)), // stair right
                         RectangleHitbox.fromRect(10, 20.25, Vec.create(-97, 54.25)), // stair left
@@ -1485,7 +1485,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(33, 52, Vec.create(114, 0.05)) // vault
                 }
             ],
@@ -1678,19 +1678,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(212, 80, Vec.create(31, 0))
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(38, 76.5, Vec.create(-94, 0))
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(10, 20.25, Vec.create(-33.9, 50))
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(10, 20.25, Vec.create(75.2, 50))
                 }
             ],
@@ -1820,7 +1820,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             floors: [{
-                type: "stone",
+                type: FloorNames.Stone,
                 hitbox: RectangleHitbox.fromRect(300, 270, Vec.create(-5, 0))
             }],
             decals: [
@@ -2300,7 +2300,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             floors: [{
-                type: "wood",
+                type: FloorNames.Wood,
                 hitbox: RectangleHitbox.fromRect(50, 84)
             }],
             obstacles: [
@@ -2351,7 +2351,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             floors: [{
-                type: "wood",
+                type: FloorNames.Wood,
                 hitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0))
             }],
             obstacles: [
@@ -2395,7 +2395,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
             floors: [{
-                type: "wood",
+                type: FloorNames.Wood,
                 hitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2))
             }],
             subBuildings: [{
@@ -2548,7 +2548,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             floors: [{
-                type: "stone",
+                type: FloorNames.Stone,
                 hitbox: new PolygonHitbox([
                     Vec.create(5.54, -80.63),
                     Vec.create(62.37, -80.63),
@@ -2689,11 +2689,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: RectangleHitbox.fromRect(43.5, 20, Vec.create(0, -1))
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(9.8, 4, Vec.create(5, 11))
                 }
             ],
@@ -2737,10 +2737,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(90, 12.5)
             }],
             floors: [
-                { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
-                { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
-                { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
-                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
+                { type: FloorNames.Wood, hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
                 { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
@@ -2788,10 +2788,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(90, 12.5)
             }],
             floors: [
-                { type: "wood", hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
-                { type: "metal", hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
-                { type: "metal", hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
-                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
+                { type: FloorNames.Wood, hitbox: RectangleHitbox.fromRect(29, 71.5, Vec.create(90, -7)) },
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(39.5, 75, Vec.create(90, -8)) },
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(9.7, 10, Vec.create(71, -23.7)) },
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
                 { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
@@ -2837,8 +2837,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 scale: Vec.create(2, 2)
             }],
             floors: [
-                { type: "wood", hitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)) },
-                { type: "stone", hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
+                { type: FloorNames.Wood, hitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)) },
+                { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
             ],
             obstacles: [
                 { idString: "sea_traffic_control", position: Vec.create(0, 0), rotation: 0 },
@@ -2890,7 +2890,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             floors: [
-                { type: "wood", hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec.create(0, 0)) }
+                { type: FloorNames.Wood, hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec.create(0, 0)) }
             ],
             obstacles: [
                 { idString: "small_bridge", position: Vec.create(0, 0), rotation: 0 }
@@ -2955,7 +2955,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "smoke_explosion_decal", position: Vec.create(11.09, 75.08) }
             ],
             floors: [
-                { type: "stone", hitbox: RectangleHitbox.fromRect(45, 210, Vec.create(0, 0)) }
+                { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(45, 210, Vec.create(0, 0)) }
             ],
             obstacles: [
                 { idString: "large_bridge", position: Vec.create(0, 0), rotation: 0 },
@@ -3030,7 +3030,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             floors: [
-                { type: "sand", hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) }
+                { type: FloorNames.Sand, hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) }
             ],
             obstacles: [
                 { idString: "bunker_entrance", position: Vec.create(-10, -16), rotation: 0 },
@@ -3145,7 +3145,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(55, 28, Vec.create(41.5, -55.5)),
                         RectangleHitbox.fromRect(102.5, 50, Vec.create(18, -94.5)),
@@ -3159,7 +3159,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(69.5, 19.5, Vec.create(-22.5, -58)),
                         RectangleHitbox.fromRect(33.9, 26.9, Vec.create(-4.5, -55)),
@@ -3168,7 +3168,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(10, 20.5, Vec.create(-40.25, -101.1)),
                         RectangleHitbox.fromRect(10, 3, Vec.create(-52.5, -109)),
@@ -3323,7 +3323,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "wood",
+                    type: FloorNames.Wood,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(88.3, 59.5, Vec.create(25.1, 4.125)),
                         RectangleHitbox.fromRect(15.25, 1.5, Vec.create(7.75, -26.3)),
@@ -3334,7 +3334,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 },
                 {
-                    type: "stone",
+                    type: FloorNames.Stone,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(15.25, 1, Vec.create(7.75, -27.5)),
                         RectangleHitbox.fromRect(20, 50, Vec.create(-30.85, 10)),
@@ -3356,14 +3356,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 },
                 {
-                    type: "carpet",
+                    type: FloorNames.Carpet,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(1.67, 9.7, Vec.create(-41.8, 11.05)), // P1
                         RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8))
                     )
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(10, 20.5, Vec.create(-52.5, -89)),
                         RectangleHitbox.fromRect(22, 30.6, Vec.create(-59.5, -18.7))
@@ -3546,7 +3546,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(0, 0)
             }],
             floors: [
-                { type: "metal", hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
+                { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
                 { idString: "bunker_stair_walls", position: Vec.create(0, 0), rotation: 0 },
@@ -3576,14 +3576,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: "carpet",
+                    type: FloorNames.Carpet,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(42, 34.5),
                         RectangleHitbox.fromRect(10, 4.5, Vec.create(0, 19))
                     )
                 },
                 {
-                    type: "metal",
+                    type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27))
                 }
             ],

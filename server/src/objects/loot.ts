@@ -17,6 +17,7 @@ import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import { FloorNames } from "@common/utils/terrain";
 
 export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     override readonly type = ObjectCategory.Loot;
@@ -74,7 +75,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
-        if (terrain.getFloor(this.position, this.layer) === "water" && terrain.groundRect.isPointInside(this.position)) {
+        if (terrain.getFloor(this.position, this.layer) === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
             for (const river of terrain.getRiversInPosition(this.position)) {
                 if (river.waterHitbox.isPointInside(this.position)) {
                     const tangent = river.getTangent(
