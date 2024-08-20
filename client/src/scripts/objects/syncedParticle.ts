@@ -1,4 +1,4 @@
-import { ObjectCategory } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory } from "../../../../common/src/constants";
 import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -62,7 +62,7 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
 
             this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
-            this.container.zIndex = definition.zIndex;
+            this.container.zIndex = getEffectiveZIndex(definition.zIndex, this.layer);
         }
 
         this.position = data.position;

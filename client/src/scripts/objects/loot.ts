@@ -1,4 +1,4 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
@@ -52,7 +52,7 @@ export class Loot extends GameObject {
 
             this.container.addChild(this.images.background, this.images.item);
 
-            this.container.zIndex = ZIndexes.Loot;
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.Loot, this.layer);
 
             // Set the loot texture based on the type
             let backgroundTexture: string | undefined;
@@ -133,7 +133,7 @@ export class Loot extends GameObject {
 
         const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
 
-        this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderWaterLoot : ZIndexes.Loot;
+        this.container.zIndex = getEffectiveZIndex(FloorTypes[floorType].overlay ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer);
 
         if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);

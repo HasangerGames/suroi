@@ -1,4 +1,4 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
@@ -23,7 +23,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         super(game, id);
 
         this.container.addChild(this.image);
-        this.container.zIndex = ZIndexes.ObstaclesLayer5;
+        this.container.zIndex = getEffectiveZIndex(ZIndexes.ObstaclesLayer5, this.layer);
 
         this.updateFromData(data, true);
     }

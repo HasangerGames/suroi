@@ -1,4 +1,4 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type DecalDefinition } from "../../../../common/src/definitions/decals";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
@@ -32,7 +32,7 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
 
         this.image.setFrame(definition.image);
         this.container.addChild(this.image);
-        this.container.zIndex = definition.zIndex ?? ZIndexes.Decals;
+        this.container.zIndex = getEffectiveZIndex(definition.zIndex ?? ZIndexes.Decals, this.layer);
         this.container.scale.set(definition.scale);
 
         this.container.position.copyFrom(toPixiCoords(this.position));
@@ -42,7 +42,7 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
             FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay
             && definition.zIndex === undefined
         ) {
-            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer);
         }
     }
 

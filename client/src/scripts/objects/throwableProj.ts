@@ -1,4 +1,4 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { PI } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -53,14 +53,16 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
         this.layer = data.layer;
 
         if (data.airborne) {
-            this.container.zIndex = ZIndexes.AirborneThrowables;
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.AirborneThrowables, this.layer);
         } else {
             const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
             const doOverlay = FloorTypes[floorType].overlay;
 
-            this.container.zIndex = doOverlay
+            const zIndex = doOverlay
                 ? ZIndexes.UnderwaterGroundedThrowables
                 : ZIndexes.GroundedThrowables;
+
+            this.container.zIndex = getEffectiveZIndex(zIndex, this.layer);
 
             if (floorType !== this.floorType) {
                 if (doOverlay) this.waterOverlay.setVisible(true);

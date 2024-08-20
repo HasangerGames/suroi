@@ -204,6 +204,12 @@ export enum ZIndexes {
     Gas
 }
 
+const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
+
+export const getEffectiveZIndex = (orig: ZIndexes, layer = 0): number => {
+    return orig + layer * layerCount;
+};
+
 // i'm putting this here because placing it in objectDefinitions.ts or
 // in bullets.ts causes circular imports
 export const defaultBulletTemplate = {

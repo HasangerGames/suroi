@@ -1,6 +1,6 @@
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
@@ -56,7 +56,7 @@ export class Bullet extends BaseBullet {
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this.image.tint = color;
-        this.image.zIndex = tracerStats.zIndex;
+        this.image.zIndex = getEffectiveZIndex(tracerStats.zIndex, this.layer);
 
         this.game.camera.addObject(this.image);
     }
@@ -160,7 +160,7 @@ export class Bullet extends BaseBullet {
                 ),
                 position: this.position,
                 lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                zIndex: ZIndexes.Bullets - 1,
+                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this.layer),
                 scale: randomFloat(trail.scale.min, trail.scale.max),
                 alpha: {
                     start: randomFloat(trail.alpha.min, trail.alpha.max),

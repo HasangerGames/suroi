@@ -1,4 +1,4 @@
-import { Layer } from "../../../../common/src/constants";
+import { getEffectiveZIndex, Layer } from "../../../../common/src/constants";
 import { TintedParticles } from "../../../../common/src/definitions/obstacles";
 import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
@@ -115,7 +115,7 @@ export class Particle {
         const tintedParticle = TintedParticles[frame];
         this.image = new SuroiSprite(tintedParticle?.base ?? frame);
         this.image.tint = options.tint ?? tintedParticle?.tint ?? 0xffffff;
-        this.image.setZIndex(options.zIndex);
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer));
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;
         this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
@@ -148,6 +148,8 @@ export class Particle {
         if (typeof options.rotation === "object") {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
+
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer));
 
         if (adjacentOrEqualLayer(visibleLayer, this.layer)) {
             this.image.setVisible(true);

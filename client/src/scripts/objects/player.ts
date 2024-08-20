@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Container, Text, TilingSprite } from "pixi.js";
-import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { AnimationType, GameConstants, getEffectiveZIndex, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -165,7 +165,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.blood
         );
 
-        this.images.blood.zIndex = 4;
+        this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer);
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence
@@ -187,7 +187,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = ZIndexes.Emotes;
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.game.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -332,6 +332,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         const { uiManager } = this.game;
 
+        let previousLayer: Layer = this.layer;
+
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
@@ -344,6 +346,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
         if (this.isActivePlayer) {
+            previousLayer = this.layer;
             this.layer = data.layer;
             this.changeLayer(this.layer);
 
@@ -362,7 +365,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
 
         const doOverlay = FloorTypes[floorType].overlay;
-        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
+        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || previousLayer !== this.layer;
 
         if (floorType !== this.floorType) {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
@@ -506,7 +509,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     container.addChild(badge);
                 }
 
-                container.zIndex = ZIndexes.DeathMarkers;
+                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer);
                 this.game.camera.addObject(container);
             }
 
@@ -629,13 +632,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (updateContainerZIndex) {
             // i love ternary spam
-            this.container.zIndex = doOverlay
+            const zIndex = doOverlay
                 ? this.downed
                     ? ZIndexes.UnderwaterDownedPlayers
                     : ZIndexes.UnderwaterPlayers
                 : this.downed
                     ? ZIndexes.DownedPlayers
                     : ZIndexes.Players;
+
+            this.container.zIndex = getEffectiveZIndex(zIndex, this.layer);
         }
 
         if (data.action !== undefined) {

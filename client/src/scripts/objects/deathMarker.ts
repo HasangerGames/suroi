@@ -1,5 +1,5 @@
 import { Text, type Container } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
@@ -53,9 +53,9 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
 
         this.container.position.copyFrom(toPixiCoords(this.position));
 
-        this.container.zIndex = ZIndexes.DeathMarkers;
+        this.container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.layer);
         if (FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay) {
-            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer);
         }
 
         const player = this.game.playerNames.get(data.playerID);

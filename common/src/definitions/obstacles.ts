@@ -4003,12 +4003,12 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 high: 0,
                 low: 2
             },
-            invisible: true,
             hitbox: RectangleHitbox.fromRect(9.5, 21),
             frames: {
                 particle: "metal_particle"
             },
-            rotationMode: RotationMode.Limited
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.BuildingsFloor - 1
         },
 
         // --------------------------------------------------------------------------------------------

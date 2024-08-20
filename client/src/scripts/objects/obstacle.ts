@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -253,10 +253,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 }));
             }
         }
-        this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+
+        const obstacleZIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+        this.container.zIndex = getEffectiveZIndex(obstacleZIndex, this.layer);
 
         if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay) {
-            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer);
         }
 
         if (this._door === undefined) {

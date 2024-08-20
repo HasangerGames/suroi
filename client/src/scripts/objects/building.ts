@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -37,12 +37,11 @@ export class Building extends GameObject<ObjectCategory.Building> {
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
 
-        this.container.zIndex = ZIndexes.BuildingsFloor;
-
         this.ceilingContainer = new Container();
         this.game.camera.addObject(this.ceilingContainer);
 
         this.layer = data.layer;
+        this.container.zIndex = getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer);
 
         this.updateFromData(data, true);
     }
@@ -207,7 +206,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
-            this.ceilingContainer.zIndex = this.definition.ceilingZIndex;
+            this.ceilingContainer.zIndex = getEffectiveZIndex(this.definition.ceilingZIndex, this.layer);
 
             this.orientation = full.rotation;
             this.rotation = Angle.orientationToRotation(this.orientation);
@@ -282,7 +281,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 );
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = ZIndexes.DeadObstacles;
+            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer);
             this.ceilingContainer.alpha = 1;
 
             this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
