@@ -1772,7 +1772,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             // justice for dual s_g17 when™
         },
         {
-            idString: "deagle", // TODO
+            idString: "deagle",
             name: "DEagle",
             ammoType: "44mag",
             ammoSpawnAmount: 48,
@@ -1821,6 +1821,55 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 moveSpread: 9.5,
                 capacity: 16,
                 reloadTime: 3.8
+            }
+        },
+        {
+            idString: "bfr",
+            name: "BFR",
+            ammoType: "44mag",
+            ammoSpawnAmount: 28,
+            fireDelay: 400,
+            switchDelay: 250,
+            recoilMultiplier: 0.75,
+            recoilDuration: 135,
+            fireMode: FireMode.Single,
+            shotSpread: 2,
+            moveSpread: 5,
+            length: 5.8,
+            fists: {
+                left: Vec.create(40, 0),
+                right: Vec.create(40, 0),
+                leftZIndex: 4,
+                rightZIndex: 4,
+                animationDuration: 100
+            },
+            casingParticles: [{
+                position: Vec.create(3.5, 0.3),
+                velocity: {
+                    y: {
+                        min: 2,
+                        max: 18
+                    }
+                }
+            }],
+            image: { position: Vec.create(75, 0) },
+            gasParticles: gasParticlePresets.pistol,
+            capacity: 5,
+            reloadTime: 0.95,
+            singleReload: true,
+            ballistics: {
+                damage: 35,
+                obstacleMultiplier: 1.5,
+                speed: 0.26,
+                range: 160
+            },
+            dual: {
+                leftRightOffset: 1.3,
+                fireDelay: 200.5,
+                shotSpread: 3,
+                moveSpread: 6,
+                capacity: 10,
+                reloadTime: 1.65
             }
         },
         // only dev weapons below this point

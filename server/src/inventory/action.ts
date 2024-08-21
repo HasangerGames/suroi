@@ -80,7 +80,7 @@ export class ReloadAction extends Action {
         const difference = Math.min(
             items.getItem(definition.ammoType),
             definition.singleReload
-                ? 1
+                ? (definition.isDual && this.item.ammo !== (this.item.definition.capacity - 1)) ? 2 : 1
                 : this.item.definition.capacity - this.item.ammo
         );
         this.item.ammo += difference;
