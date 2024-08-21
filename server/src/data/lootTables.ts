@@ -545,7 +545,9 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "deagle", weight: 1 },
-            { item: "dual_deagle", weight: 0.05 }
+            { item: "bfr", weight: 0.5 },
+            { item: "dual_deagle", weight: 0.05 },
+            { item: "dual_bfr", weight: 0.025 }
         ]
     },
     fire_hatchet_case: {

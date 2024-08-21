@@ -1827,7 +1827,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "bfr",
             name: "BFR",
             ammoType: "44mag",
-            ammoSpawnAmount: 28,
+            ammoSpawnAmount: 30,
             fireDelay: 400,
             switchDelay: 250,
             recoilMultiplier: 0.75,
@@ -1865,6 +1865,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             },
             dual: {
                 leftRightOffset: 1.3,
+                ammoSpawnAmount: 60,
                 fireDelay: 200.5,
                 shotSpread: 3,
                 moveSpread: 6,
