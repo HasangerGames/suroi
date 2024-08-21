@@ -9,6 +9,7 @@ import * as PixiSound from "@pixi/sound";
 export interface SoundOptions {
     position?: Vector
     falloff: number
+    applyFilter: boolean
     maxRange: number
     loop: boolean
     /**
@@ -27,6 +28,7 @@ export class GameSound {
     name: string;
     position?: Vector;
     fallOff: number;
+    applyFilter: boolean;
     maxRange: number;
     onEnd?: () => void;
 
@@ -34,18 +36,24 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
+    readonly telephoneFilter?: PixiSound.filters.TelephoneFilter;
 
     ended = false;
 
     constructor(name: string, options: SoundOptions, manager: SoundManager) {
         this.name = name;
         this.manager = manager;
+        this.applyFilter = options.applyFilter;
         this.position = options.position;
         this.fallOff = options.falloff;
         this.maxRange = options.maxRange;
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
+
+        if (this.applyFilter) {
+            this.telephoneFilter = new PixiSound.filters.TelephoneFilter();
+        }
 
         if (!PixiSound.sound.exists(name)) {
             console.warn(`Unknown sound with name ${name}`);
@@ -56,7 +64,7 @@ export class GameSound {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: [this.stereoFilter],
+            filters: [(this.applyFilter && this.telephoneFilter) ? this.telephoneFilter : this.stereoFilter],
             loop: options.loop,
             volume: this.manager.volume
         });
@@ -125,6 +133,7 @@ export class SoundManager {
             falloff: 1,
             maxRange: 256,
             dynamic: false,
+            applyFilter: false,
             loop: false,
             ...options
         }, this);

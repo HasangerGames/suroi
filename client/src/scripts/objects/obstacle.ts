@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -16,6 +16,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
+import { equalLayer } from "../../../../common/src/utils/layer";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -88,7 +89,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
                 this.playSound("detection", {
                     falloff: 0.25,
-                    maxRange: 180
+                    maxRange: 180,
+                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                 });
                 this.notOnCoolDown = false;
                 setTimeout(() => {
@@ -209,7 +211,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
                         falloff: 0.2,
-                        maxRange: 96
+                        maxRange: 96,
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                     });
                 };
                 playSound(`${definition.material}_destroyed`);
@@ -479,7 +482,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 `${soundName}_${offset ? "open" : "close"}`,
                 {
                     falloff: 0.3,
-                    maxRange: 48
+                    maxRange: 48,
+                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                 }
             );
 
@@ -520,12 +524,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     hitEffect(position: Vector, angle: number): void {
         this.hitSound?.stop();
+
         this.hitSound = this.game.soundManager.play(
             `${this.definition.material}_hit_${this.definition.hitSoundVariations ? JSON.stringify(random(1, this.definition.hitSoundVariations)) : randomBoolean() ? "1" : "2"}`,
             {
-                position,
                 falloff: 0.2,
-                maxRange: 96
+                maxRange: 96,
+                applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
             }
         );
 

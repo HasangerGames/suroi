@@ -3,7 +3,7 @@ import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, Heali
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, isGroundLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, ObstacleSpecialRoles, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -1914,6 +1914,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                             )
                             || !object.canInteract(this)
                             || !object.hitbox?.collidesWith(detectionHitbox)
+                            || !equalLayer(object.layer, this.layer)
                         ) continue;
 
                         const dist = Geometry.distanceSquared(object.position, this.position);
@@ -1935,7 +1936,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                                     && !object.door?.locked
                                     && object !== interactable.object
                                     && object.hitbox.collidesWith(detectionHitbox)
-                                    && object.layer === this.layer
+                                    && adjacentOrEqualLayer(this.layer, object.layer)
                                 ) {
                                     object.interact(this);
                                 }

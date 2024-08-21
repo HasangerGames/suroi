@@ -28,6 +28,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import { getTranslatedString } from "../../translations";
+import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -187,7 +188,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.game.layer);
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer > Layer.Ground ? this.game.layer : this.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -402,7 +403,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     `${this.floorType}_step_${random(1, 2)}`,
                     {
                         falloff: 0.6,
-                        maxRange: 48
+                        maxRange: 48,
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                     }
                 );
 
@@ -701,7 +703,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     actionSoundName,
                     {
                         falloff: 0.6,
-                        maxRange: 48
+                        maxRange: 48,
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                     }
                 );
             }
@@ -1023,7 +1026,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             "emote",
             {
                 falloff: 0.4,
-                maxRange: 128
+                maxRange: 128,
+                applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
             }
         );
         this.emote.image.setFrame(type.idString);
@@ -1120,7 +1124,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     weaponDef.swingSound,
                     {
                         falloff: 0.4,
-                        maxRange: 96
+                        maxRange: 96,
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                     }
                 );
 
@@ -1145,6 +1150,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                     ) || (object.type === ObjectCategory.ThrowableProjectile && object.c4)
                                 )
                                 && object.hitbox.collidesWith(hitbox)
+                                && adjacentOrEqualLayer(object.layer, this.layer)
                             ) as Array<Player | Obstacle>
                         ).sort(
                             (a, b) => {
@@ -1234,7 +1240,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.playSound(
                     `${idString}_fire`,
                     {
-                        falloff: 0.5
+                        falloff: 0.5,
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                     }
                 );
 
@@ -1242,7 +1249,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.playSound(
                         `${idString}_last_shot`,
                         {
-                            falloff: 0.5
+                            falloff: 0.5,
+                            applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                         }
                     );
                 }
@@ -1358,7 +1366,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     "gun_click",
                     {
                         falloff: 0.8,
-                        maxRange: 48
+                        maxRange: 48,
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
                     }
                 );
                 break;
@@ -1369,7 +1378,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     return;
                 }
 
-                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin");
+                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) });
 
                 const def = this.activeItem;
                 const projImage = this.images.weapon;
@@ -1475,7 +1484,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     console.warn(`Attempted to play throwable throwing animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }
-                this.playSound("throwable_throw");
+                this.playSound("throwable_throw", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) });
 
                 const def = this.activeItem;
 
@@ -1564,9 +1573,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.soundManager.play(
             sound ?? (randomBoolean() ? "player_hit_1" : "player_hit_2"),
             {
-                position,
                 falloff: 0.2,
-                maxRange: 96
+                maxRange: 96,
+                applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
             });
 
         this.game.particleManager.spawnParticle({

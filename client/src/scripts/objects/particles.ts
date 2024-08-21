@@ -151,14 +151,10 @@ export class Particle {
 
         this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer));
 
-        if (adjacentOrEqualLayer(visibleLayer, this.layer)) {
-            this.image.setVisible(true);
-            this.image.position.copyFrom(toPixiCoords(this.position));
-            this.image.scale.set(this.scale);
-            this.image.setRotation(this.rotation).setAlpha(this.alpha);
-        } else {
-            this.image.setVisible(false);
-        }
+        this.image.position.copyFrom(toPixiCoords(this.position));
+        this.image.scale.set(this.scale);
+        this.image.setRotation(this.rotation).setAlpha(this.alpha);
+        this.image.setVisible(adjacentOrEqualLayer((this.layer > Layer.Ground ? visibleLayer : this.layer), this.layer));
     }
 
     kill(): void {
