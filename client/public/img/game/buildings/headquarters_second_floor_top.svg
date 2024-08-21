@@ -6337,9 +6337,9 @@
      id="g2"
      transform="translate(277.06668,368.09757)"><path
        style="fill:#696969;fill-opacity:1;stroke:#696969;stroke-width:0.978927"
-       d="m 197.60209,-428.58917 v -21.74154 H 135.977 77.526906 v 20.99192 20.99193 l 32.639514,-0.11689 32.63951,-0.11689 0.74543,0.86651 0.74543,0.86651 v 142.46552 h 25.06515 28.24015 z"
+       d="m 197.37928,-408.06319 -54.98372,0.008 1.90123,1.20768 v 142.46552 h 25.06515 28.24015 z"
        id="path1-2"
-       sodipodi:nodetypes="cccccccccccccc"
+       sodipodi:nodetypes="ccccccc"
        transform="translate(-277.06668,94.994481)" /><path
        fill="#7caee4"
        fill-opacity="0.3671"

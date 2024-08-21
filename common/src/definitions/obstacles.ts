@@ -3930,7 +3930,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1, 21, Vec.create(-1, 0)),
-                RectangleHitbox.fromRect(1, 21, Vec.create(1, 0))
+                RectangleHitbox.fromRect(1, 21, Vec.create(1, 0)),
+                RectangleHitbox.fromRect(11, 1, Vec.create(-6.5, 10))
             ),
             frames: {
                 particle: "metal_particle"
@@ -4003,12 +4004,12 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 high: 0,
                 low: 2
             },
-            hitbox: RectangleHitbox.fromRect(9.5, 21),
+            hitbox: RectangleHitbox.fromRect(9.5, 17),
             frames: {
                 particle: "metal_particle"
             },
             rotationMode: RotationMode.Limited,
-            zIndex: ZIndexes.BuildingsFloor - 1
+            zIndex: ZIndexes.BuildingsFloor
         },
 
         // --------------------------------------------------------------------------------------------

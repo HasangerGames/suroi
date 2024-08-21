@@ -3370,6 +3370,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     )
                 }
             ],
+            groundGraphics: [
+                {
+                    color: 0x696969,
+                    hitbox: RectangleHitbox.fromRect(23, 8.4, Vec.create(-46.5, -103))
+                },
+                {
+                    color: 0x878787,
+                    hitbox: RectangleHitbox.fromRect(9.6, 7, Vec.create(-52.65, -80.5))
+                },
+                {
+                    color: 0x7a7a7a,
+                    hitbox: RectangleHitbox.fromRect(11.6, 20.2, Vec.create(-41.05, -88.8))
+                }
+            ],
             obstacles: [
                 { idString: "headquarters_bottom_entrance", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_outer_walls", position: Vec.create(0, 0), rotation: 0 },
@@ -3517,7 +3531,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // staircase
                 { idString: "hq_stair_lower_wall", position: Vec.create(-47.5, -88.5), rotation: 0 },
-                { idString: "hq_stair", position: Vec.create(-52.75, -88.5), layer: 1, rotation: 0 }
+                { idString: "hq_stair", position: Vec.create(-52.65, -90.5), layer: 1, rotation: 0 }
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "headquarters_second_floor", position: Vec.create(0, 12), layer: 2 },

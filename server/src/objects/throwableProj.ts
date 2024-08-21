@@ -58,8 +58,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
      */
     private static readonly _harshDragConstant = dragConst(5.4, 1.6);
 
-    private static readonly _extraHarshDragConstant = dragConst(6.7, 1.6);
-
     override get position(): Vector { return this.hitbox.position; }
 
     private _airborne = true;
@@ -249,19 +247,6 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                     let isAbove = false;
                     if (isAbove = canFlyOver(object)) {
                         this._currentlyAbove.add(object);
-
-                        /*
-                            If the colliding object is a stair-type object, and its layer is greater than this throwable's
-                            current layer, then this throwable appears to have been thrown up the stairs.
-                            To emulate the difficulty of throwing something up the stairs, apply a higher drag coefficient
-                            to slow it down.
-
-                            TODO discuss removal
-                        */
-                        if (object.definition?.role === ObstacleSpecialRoles.Stair && object.layer > this.layer) {
-                            // console.log(`Colliding with higher layer object. Object: ${ object.layer }, Throwable: ${ this.layer }`);
-                            this._currentDragConst = ThrowableProjectile._extraHarshDragConstant;
-                        }
                     } else {
                         this._currentDragConst = ThrowableProjectile._harshDragConstant;
                     }
