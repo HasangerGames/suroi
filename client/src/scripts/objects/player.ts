@@ -188,7 +188,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer > Layer.Ground ? this.game.layer : this.layer);
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.game.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -1573,9 +1573,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.soundManager.play(
             sound ?? (randomBoolean() ? "player_hit_1" : "player_hit_2"),
             {
+                position,
                 falloff: 0.2,
-                maxRange: 96,
-                applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
+                maxRange: 96
             });
 
         this.game.particleManager.spawnParticle({

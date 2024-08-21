@@ -54,6 +54,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { equalLayer } from "../../../common/src/utils/layer";
 
 /* eslint-disable @stylistic/indent */
 
@@ -766,7 +767,7 @@ export class Game {
             for (const object of this.objects) {
                 if (
                     (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player)))
-                    && object.hitbox.collidesWith(detectionHitbox)
+                    && object.hitbox.collidesWith(detectionHitbox) && equalLayer(object.layer, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
                     if ((object.canInteract(player) || object instanceof Obstacle || object instanceof Player) && dist < interactable.minDist) {

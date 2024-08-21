@@ -528,9 +528,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.hitSound = this.game.soundManager.play(
             `${this.definition.material}_hit_${this.definition.hitSoundVariations ? JSON.stringify(random(1, this.definition.hitSoundVariations)) : randomBoolean() ? "1" : "2"}`,
             {
+                position,
                 falloff: 0.2,
-                maxRange: 96,
-                applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
+                maxRange: 96
             }
         );
 

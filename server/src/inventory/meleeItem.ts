@@ -8,7 +8,7 @@ import { type CollidableGameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
-import { equalLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { ThrowableProjectile } from "../objects";
 
 /**
@@ -69,7 +69,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             && (object.damageable || (object.type === ObjectCategory.ThrowableProjectile && object.definition.c4))
                             && object.hitbox
                             && hitbox.collidesWith(object.hitbox)
-                            && equalLayer(object.layer, this.owner.layer)
+                            && adjacentOrEqualLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
                     if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
