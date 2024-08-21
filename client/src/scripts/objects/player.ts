@@ -188,7 +188,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.game.layer);
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -333,7 +333,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         const { uiManager } = this.game;
 
-        let previousLayer: Layer = this.layer;
+        const previousLayer: Layer = this.layer;
 
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
@@ -346,10 +346,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
-        previousLayer = this.layer;
         this.layer = data.layer;
-        this.changeLayer(this.layer);
+
         if (this.isActivePlayer) {
+            this.changeLayer(this.layer);
+
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
@@ -642,6 +643,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     : ZIndexes.Players;
 
             this.container.zIndex = getEffectiveZIndex(zIndex, this.layer);
+            this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer);
         }
 
         if (data.action !== undefined) {

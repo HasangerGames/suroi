@@ -91,7 +91,7 @@ const maps = {
             tugboat_white: 5,
             armory: 1,
             headquarters: 1,
-            // small_bunker: 1, - FIXME: really broken building :'(
+            small_bunker: 1,
             refinery: 1,
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode

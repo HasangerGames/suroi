@@ -3558,7 +3558,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "bunker_stair_walls", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "bunker_stair", position: Vec.create(0, 1), rotation: 0, layer: -1 }
+                { idString: "bunker_stair", position: Vec.create(0, 9), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
         },
@@ -3568,7 +3568,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(42, 34.5),
-                RectangleHitbox.fromRect(10, 5, Vec.create(0, 19))
+                RectangleHitbox.fromRect(10, 20, Vec.create(0, 20))
             ),
             floorImages: [
                 {

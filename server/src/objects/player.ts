@@ -849,7 +849,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
-                        (!newVisibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && object.layer > Layer.Ground))
+                        (!newVisibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
                         && (this.visibleObjects.delete(object), true)
                         && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                     )
@@ -860,7 +860,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 .forEach(
                     object => {
                         if (
-                            (this.visibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && object.layer > Layer.Ground))
+                            (this.visibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
                             && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                         ) { return; }
 
