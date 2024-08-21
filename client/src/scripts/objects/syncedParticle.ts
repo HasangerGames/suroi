@@ -4,12 +4,10 @@ import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Game } from "../game";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
-export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
-    readonly type = ObjectCategory.SyncedParticle;
-
+export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
 
     private _alpha = 1;

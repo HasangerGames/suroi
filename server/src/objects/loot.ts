@@ -3,13 +3,14 @@ import { ArmorType } from "@common/definitions/armors";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ItemType, LootRadius, ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Vec, type Vector } from "@common/utils/vector";
 
+import { FloorNames } from "@common/utils/terrain";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Events } from "../pluginManager";
@@ -17,10 +18,8 @@ import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { FloorNames } from "@common/utils/terrain";
 
-export class Loot extends BaseGameObject<ObjectCategory.Loot> {
-    override readonly type = ObjectCategory.Loot;
+export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 
@@ -46,7 +45,14 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
      */
     private static readonly _dragConstant = dragConst(3.69);
 
-    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, layer: number, count?: number, pushVel = 0.003) {
+    constructor(
+        game: Game,
+        definition: ReifiableDef<LootDefinition>,
+        position: Vector,
+        layer: number,
+        count?: number,
+        pushVel = 0.003
+    ) {
         super(game, position);
 
         this.definition = Loots.reify(definition);
@@ -114,7 +120,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 && object.collidable
                 && object.hitbox.collidesWith(this.hitbox)
             ) {
-                if (object.definition.role === ObstacleSpecialRoles.Stair) {
+                if (object.definition.isStair) {
                     object.handleStairInteraction(this);
                 } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
                     this.hitbox.resolveCollision(object.hitbox);

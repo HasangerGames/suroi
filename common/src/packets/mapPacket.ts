@@ -1,7 +1,8 @@
-import { Layer, ObjectCategory } from "../constants";
-import { Buildings, type BuildingDefinition } from "../definitions/buildings";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
+import { ObjectCategory } from "../constants";
+import { Buildings } from "../definitions/buildings";
+import { Obstacles, RotationMode } from "../definitions/obstacles";
 import { type Variation } from "../typings";
+import type { CommonGameObject } from "../utils/gameObject";
 import { type Vector } from "../utils/vector";
 import { createPacket } from "./packet";
 
@@ -10,14 +11,7 @@ export type MapObject = {
     readonly rotation: number
     readonly scale?: number
     readonly variation?: Variation
-} & ({
-    readonly type: ObjectCategory.Obstacle
-    readonly definition: ObstacleDefinition
-} | {
-    readonly type: ObjectCategory.Building
-    readonly definition: BuildingDefinition
-    readonly layer: Layer
-});
+} & CommonGameObject;
 
 export type MapPacketData = {
     readonly seed: number
@@ -103,7 +97,8 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                             definition,
                             scale,
                             rotation,
-                            variation
+                            variation,
+                            isObstacle: true
                         };
                     }
                     case ObjectCategory.Building: {
@@ -117,7 +112,8 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                             definition,
                             rotation: orientation,
                             scale: 1,
-                            layer
+                            layer,
+                            isBuilding: true
                         };
                     }
                 }

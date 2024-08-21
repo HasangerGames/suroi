@@ -11,7 +11,6 @@ import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/s
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { type Mutable } from "./misc";
-import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 
@@ -297,9 +296,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             if (full.definition.variations !== undefined && full.variation !== undefined) {
                 stream.writeVariation(full.variation);
             }
-            if (full.definition.role === ObstacleSpecialRoles.Door && full.door) {
+            if (full.definition.isDoor && full.door) {
                 stream.writeBits(full.door.offset, 2);
-            } else if (full.definition.role === ObstacleSpecialRoles.Activatable) {
+            } else if (full.definition.isActivatable) {
                 stream.writeBoolean(full.activated ?? false);
             }
             if (full.definition.detector && full.detectedMetal) stream.writeBoolean(full.detectedMetal);
@@ -324,9 +323,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 detectedMetal: definition.detector ? stream.readBoolean() : undefined
             };
 
-            if (definition.role === ObstacleSpecialRoles.Door) {
+            if (definition.isDoor) {
                 data.door = { offset: stream.readBits(2) };
-            } else if (definition.role === ObstacleSpecialRoles.Activatable) {
+            } else if (definition.isActivatable) {
                 data.activated = stream.readBoolean();
             }
             return data;

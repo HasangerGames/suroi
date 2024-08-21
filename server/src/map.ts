@@ -8,7 +8,7 @@ import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
-import { MapObjectSpawnMode, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -485,8 +485,8 @@ export class GameMap {
             );
 
             if (
-                obstacleDef.role === ObstacleSpecialRoles.Activatable
-                || obstacleDef.role === ObstacleSpecialRoles.Door
+                obstacleDef.isActivatable
+                || obstacleDef.isDoor
             ) {
                 building.interactableObstacles.add(obstacle);
             }
@@ -543,33 +543,36 @@ export class GameMap {
     }
 
     private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
-        definition = Obstacles.reify(definition);
+        // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
+        const def = Obstacles.reify(definition);
+
+        const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+        const { spawnMin, spawnMax } = scale;
+        const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
         for (let i = 0; i < count; i++) {
-            const scale = randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
-            const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-            const rotation = GameMap.getRandomRotation(definition.rotationMode);
+            const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+            const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
+            const rotation = GameMap.getRandomRotation(rotationMode);
 
             let orientation: Orientation = 0;
 
-            if (definition.rotationMode === RotationMode.Limited) {
+            if (rotationMode === RotationMode.Limited) {
                 orientation = rotation as Orientation;
             }
 
-            const hitbox = definition.spawnHitbox ?? definition.hitbox;
-
-            const position = this.getRandomPosition(hitbox, {
+            const position = this.getRandomPosition(effSpawnHitbox, {
                 scale,
                 orientation,
-                spawnMode: definition.spawnMode
+                spawnMode: def.spawnMode
             });
 
             if (!position) {
-                Logger.warn(`Failed to find valid position for obstacle ${definition.idString}`);
+                Logger.warn(`Failed to find valid position for obstacle ${def.idString}`);
                 continue;
             }
 
-            this.generateObstacle(definition, position, undefined, Layer.Ground, scale, variation);
+            this.generateObstacle(def, position, undefined, Layer.Ground, scale, variation);
         }
     }
 
@@ -585,19 +588,19 @@ export class GameMap {
         puzzlePiece?: string | boolean,
         locked?: boolean
     ): Obstacle {
-        definition = Obstacles.reify(definition);
+        const def = Obstacles.reify(definition);
         layer ??= 0;
 
-        scale ??= randomFloat(definition.scale?.spawnMin ?? 1, definition.scale?.spawnMax ?? 1);
-        if (variation === undefined && definition.variations) {
-            variation = random(0, definition.variations - 1) as Variation;
+        scale ??= randomFloat(def.scale?.spawnMin ?? 1, def.scale?.spawnMax ?? 1);
+        if (variation === undefined && def.variations) {
+            variation = random(0, def.variations - 1) as Variation;
         }
 
-        rotation ??= GameMap.getRandomRotation(definition.rotationMode);
+        rotation ??= GameMap.getRandomRotation(def.rotationMode);
 
         const obstacle = new Obstacle(
             this.game,
-            definition,
+            def,
             Vec.clone(position),
             rotation,
             layer,
@@ -609,7 +612,7 @@ export class GameMap {
             locked
         );
 
-        if (!definition.hideOnMap && !definition.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
+        if (!def.hideOnMap && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);

@@ -18,8 +18,7 @@ import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
 import type { Bullet } from "./bullet";
 
-export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
-    override readonly type = ObjectCategory.Obstacle;
+export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
     override readonly damageable = true;
@@ -134,7 +133,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         }
 
         // noinspection JSAssignmentUsedAsCondition
-        if (this.isDoor = (definition.role === ObstacleSpecialRoles.Door)) {
+        if (this.isDoor = (definition.isDoor === true)) {
             const hitboxes = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
 
             this.door = {
@@ -194,7 +193,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 amount
             });
 
-            if (!(this.definition.role === ObstacleSpecialRoles.Window && !this.definition.noCollisionAfterDestroyed)) this.collidable = false;
+            if (!(this.definition.isWindow && !this.definition.noCollisionAfterDestroyed)) this.collidable = false;
 
             this.scale = definition.scale?.spawnMin ?? 1;
 
@@ -225,13 +224,13 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
                 );
             }
 
-            if (this.definition.role === ObstacleSpecialRoles.Wall) {
+            if (this.definition.isWall) {
                 this.parentBuilding?.damageCeiling();
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
                     if (
                         object instanceof Obstacle
-                        && object.definition.role === ObstacleSpecialRoles.Door
+                        && object.definition.isDoor
                     ) {
                         const definition = object.definition;
                         switch (definition.operationStyle) {
@@ -270,7 +269,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
         return !this.dead && (
             (this.isDoor && (!this.door?.locked || player === undefined) && !this.locked)
             || (
-                this.definition.role === ObstacleSpecialRoles.Activatable
+                this.definition.isActivatable === true
                 && (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem)
                 && !this.activated
             )
@@ -280,7 +279,7 @@ export class Obstacle extends BaseGameObject<ObjectCategory.Obstacle> {
     /**
      * Resolves the interaction between a given game object or bullet and this stair by shifting the object's layer as appropriate.
      * Two things are assumed and are prerequisite:
-     * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.role === ObstacleSpecialRoles.Stair`)
+     * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
      * - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
      */
     handleStairInteraction(object: GameObject | Bullet): void {

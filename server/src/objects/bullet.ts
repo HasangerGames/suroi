@@ -1,4 +1,4 @@
-import { ObjectCategory, type Layer } from "@common/constants";
+import { type Layer } from "@common/constants";
 import { Bullets } from "@common/definitions/bullets";
 import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
@@ -6,7 +6,6 @@ import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { Angle } from "@common/utils/math";
-import { ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
 import { randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -104,7 +103,7 @@ export class Bullet extends BaseBullet {
             const object = collision.object;
 
             if (
-                object.type === ObjectCategory.Player
+                object.isPlayer
                 && equalLayer(this._layer, object.layer)
             ) {
                 this.position = collision.intersection.point;
@@ -122,9 +121,8 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle) {
+            if (object.isObstacle) {
                 const obsDef = object.definition;
-                const isStair = obsDef.role === ObstacleSpecialRoles.Stair;
 
                 if (
                     /*
@@ -132,7 +130,7 @@ export class Bullet extends BaseBullet {
                         for everyone else, only honor collisions on the same layer
                     */
                     (
-                        isStair
+                        obsDef.isStair
                             ? adjacentOrEqualLayer
                             : equalLayer
                     )(this._layer, object.layer)
@@ -147,7 +145,7 @@ export class Bullet extends BaseBullet {
                         position: collision.intersection.point
                     });
 
-                    isStair && (object as Obstacle).handleStairInteraction(this);
+                    obsDef.isStair && (object as Obstacle).handleStairInteraction(this);
 
                     if (definition.penetration.obstacles) continue;
 
@@ -182,7 +180,8 @@ export class Bullet extends BaseBullet {
         }
 
         for (const object of grid.intersectsHitbox(lineRect)) {
-            if (object.type === ObjectCategory.ThrowableProjectile
+            if (
+                object.isThrowableProjectile
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {

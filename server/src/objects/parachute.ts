@@ -12,8 +12,7 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
-export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
-    override readonly type = ObjectCategory.Parachute;
+export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 

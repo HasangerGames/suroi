@@ -10,9 +10,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
-export class Parachute extends GameObject<ObjectCategory.Parachute> {
-    override readonly type = ObjectCategory.Parachute;
-
+export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private readonly image = new SuroiSprite("airdrop_parachute");
 
     private scaleAnim?: Tween<Vector>;

@@ -16,9 +16,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
-export class Building extends GameObject<ObjectCategory.Building> {
-    override readonly type = ObjectCategory.Building;
-
+export class Building extends GameObject.derive(ObjectCategory.Building) {
     readonly ceilingContainer: Container;
 
     definition!: BuildingDefinition;

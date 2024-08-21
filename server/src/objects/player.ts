@@ -41,8 +41,7 @@ export interface PlayerContainer {
     readonly weaponPreset: string
 }
 
-export class Player extends BaseGameObject<ObjectCategory.Player> {
-    override readonly type = ObjectCategory.Player;
+export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 4;
     override readonly damageable = true;
@@ -669,12 +668,12 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
 
             for (const potential of this.nearObjects) {
                 if (
-                    potential.type === ObjectCategory.Obstacle
+                    potential.isObstacle
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
                     && adjacentOrEqualLayer(potential.layer, this.layer)
                 ) {
-                    if (potential.definition.role === ObstacleSpecialRoles.Stair) {
+                    if (potential.definition.isStair) {
                         potential.handleStairInteraction(this);
                     } else if (isGroundLayer(potential.layer) || potential.definition.anyLayer) {
                         collided = true;
@@ -851,7 +850,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     object => (
                         (!newVisibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
                         && (this.visibleObjects.delete(object), true)
-                        && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
+                        && (!object.isObstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                     )
                 )
                 .map(({ id }) => id);
@@ -861,7 +860,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     object => {
                         if (
                             (this.visibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
-                            && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
+                            && (!object.isObstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                         ) { return; }
 
                         this.visibleObjects.add(object);
@@ -1910,7 +1909,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     for (const object of nearObjects) {
                         if (
                             (
-                                object.type !== ObjectCategory.Obstacle && object.type !== ObjectCategory.Player
+                                !object.isObstacle && !object.isPlayer
                             )
                             || !object.canInteract(this)
                             || !object.hitbox?.collidesWith(detectionHitbox)
@@ -1927,11 +1926,11 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                     if (interactable.object) {
                         interactable.object.interact(this);
 
-                        if (interactable.object.type === ObjectCategory.Obstacle && interactable.object.isDoor) {
+                        if (interactable.object.isObstacle && interactable.object.isDoor) {
                             // If the closest object is a door, interact with other doors within range
                             for (const object of nearObjects) {
                                 if (
-                                    object.type === ObjectCategory.Obstacle
+                                    object.isObstacle
                                     && object.isDoor
                                     && !object.door?.locked
                                     && object !== interactable.object

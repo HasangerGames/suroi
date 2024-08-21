@@ -214,7 +214,7 @@ export class Minimap {
         ctx.stroke();
 
         for (const building of this._objects) {
-            if (building.type !== ObjectCategory.Building) continue;
+            if (!building.isBuilding) continue;
 
             const definition = building.definition;
             const drawGroundGraphics = (hitbox: Hitbox): void => {
@@ -464,7 +464,7 @@ export class Minimap {
         );
 
         for (const object of this._objects) {
-            if (object.type === ObjectCategory.Building) {
+            if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
                     this._terrain.addFloor(floor.type, hitbox, object.layer ?? 0);

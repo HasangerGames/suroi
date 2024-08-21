@@ -826,7 +826,7 @@ logger.indent("Validating building definitions", () => {
                                             }
                                         }
 
-                                        if (reference.role === ObstacleSpecialRoles.Stair) {
+                                        if (reference.isStair) {
                                             tester.assert(
                                                 isStairLayer(obstacle.layer ?? 0),
                                                 `Obstacle with role "Stair" must be placed on a stair layer (given layer is ${obstacle.layer})`,
@@ -1214,14 +1214,14 @@ logger.indent("Validating building definitions", () => {
                     ({ idString: other }) => typeof self === "string"
                         ? self === other
                         : Object.keys(self).length === 1 && other in self
-                )?.role === ObstacleSpecialRoles.Wall
+                )?.isWall
             ).length ?? Infinity;
 
             const maxPossibleMatches = (
                 building.obstacles?.filter(
                     ({ idString: self }) => Obstacles.definitions.find(
                         ({ idString: other }) => typeof self === "object" && Object.keys(self).length > 1 && Object.keys(self).includes(other)
-                    )?.role === ObstacleSpecialRoles.Wall
+                    )?.isWall
                 ).length ?? Infinity
             ) + definiteMatches;
 
@@ -2186,14 +2186,39 @@ logger.indent("Validating obstacles", () => {
             if (obstacle.role !== undefined) {
                 const role = obstacle.role;
                 logger.indent("Validating role-specific fields", () => {
+                    const roleName = ObstacleSpecialRoles[role] as keyof typeof ObstacleSpecialRoles;
+
                     tester.assert(
                         obstacle.rotationMode !== RotationMode.Full,
-                        `An obstacle whose role is '${ObstacleSpecialRoles[role]}' cannot specify a rotation mode of 'Full'`,
+                        `An obstacle whose role is '${roleName}' cannot specify a rotation mode of 'Full'`,
+                        errorPath
+                    );
+
+                    tester.runTestOnArray(
+                        Object.keys(ObstacleSpecialRoles)
+                            // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+                            .filter(k => Number.isNaN(+k)) as ReadonlyArray<keyof typeof ObstacleSpecialRoles & string>,
+                        (key, errorPath) => {
+                            const prop = `is${key}` as const;
+                            const expected = role === ObstacleSpecialRoles[key];
+
+                            tester.assert(
+                                obstacle[prop] === expected || obstacle[prop] === undefined,
+                                `An obstacle whose role is '${roleName}' should have property '${prop}' set to ${expected ? "true" : "false, or absent (undefined"}`,
+                                errorPath
+                            );
+                        },
                         errorPath
                     );
 
                     switch (role) {
                         case ObstacleSpecialRoles.Door: {
+                            tester.assert(
+                                obstacle.isDoor,
+                                "An obstacle whose role is 'Door' must also have isDoor set to true",
+                                errorPath
+                            );
+
                             if (obstacle.operationStyle !== "slide") {
                                 validators.vector(tester.createPath(errorPath, "hinge offset"), obstacle.hingeOffset);
                             } else {

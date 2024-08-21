@@ -1,9 +1,9 @@
-import { KillfeedEventType, Layer, type ObjectCategory } from "@common/constants";
+import { KillfeedEventType, Layer, ObjectCategory } from "@common/constants";
+import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { type Hitbox } from "@common/utils/hitbox";
 import { ObjectSerializations, type FullData } from "@common/utils/objectsSerializations";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
@@ -44,8 +44,10 @@ export type CollidableGameObject<
     HitboxType extends Hitbox = Hitbox
 > = BaseGameObject<Cat> & { readonly hitbox: HitboxType };
 
-export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
-    abstract readonly type: Cat;
+export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
+    declare readonly abstract type: Cat;
+    // doesn't get forwarded from makeGameObjectTemplate
+
     readonly abstract fullAllocBytes: number;
     readonly abstract partialAllocBytes: number;
 
@@ -75,7 +77,9 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     private _partialStream?: SuroiBitStream | undefined;
     get partialStream(): SuroiBitStream { return this._partialStream ??= SuroiBitStream.alloc(this.partialAllocBytes * 8); }
 
-    protected constructor(game: Game, position: Vector) {
+    constructor(game: Game, position: Vector) {
+        super();
+
         this.id = game.nextObjectID;
         this.game = game;
         this._position = position;

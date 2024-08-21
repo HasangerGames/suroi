@@ -20,11 +20,15 @@ export function isObject(item: unknown): item is Record<string, unknown> {
 
 // presumably because of variance, using unknown[] causes issues
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Fn = (...args: any[]) => unknown;
+export type Fn<Out = unknown> = (...args: any) => Out;
 
 // see above
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Constructor = new (...args: any[]) => unknown;
+export type Constructor<Out = unknown> = new (...args: any) => Out;
+
+// see above
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AbstractConstructor<Out = unknown> = abstract new (...args: any) => Out;
 
 export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;
@@ -67,6 +71,10 @@ export type SDeepMutable<T> = T extends ObjectDefinition
     : (T extends ReadonlyArray<infer I> ? Array<SDeepMutable<I>> : unknown) & (T extends Fn ? T : unknown) & {
         -readonly [K in keyof T]: SDeepMutable<T[K]>;
     };
+
+export type GetEnumMemberName<Enum extends Record<string | number, unknown>, Member extends number> = {
+    [K in keyof Enum]: Enum[K] extends Member ? K : never
+}[keyof Enum];
 
 /**
  * Represents a successful operation

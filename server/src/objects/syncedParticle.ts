@@ -44,8 +44,7 @@ interface InternalAnimation<T> {
     readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
 }
 
-export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle> {
-    override readonly type = ObjectCategory.SyncedParticle;
+export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 8;
 

@@ -12,6 +12,7 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/s
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
@@ -19,20 +20,17 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
-import { getTranslatedString } from "../../translations";
-import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 
-export class Player extends GameObject<ObjectCategory.Player> {
-    override readonly type = ObjectCategory.Player;
-
+export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
@@ -126,7 +124,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     vestLevel = NaN;
     backpackLevel = NaN;
 
-    hitbox = new CircleHitbox(GameConstants.player.radius);
+    readonly hitbox = new CircleHitbox(GameConstants.player.radius);
 
     floorType: FloorNames = FloorNames.Grass;
 
@@ -1149,7 +1147,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                     (
                                         object.damageable
                                         && (object instanceof Obstacle || object instanceof Player)
-                                    ) || (object.type === ObjectCategory.ThrowableProjectile && object.c4)
+                                    ) || (object.isThrowableProjectile && object.c4)
                                 )
                                 && object.hitbox.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.layer)

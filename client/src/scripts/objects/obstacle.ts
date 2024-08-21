@@ -18,9 +18,7 @@ import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
 import { equalLayer } from "../../../../common/src/utils/layer";
 
-export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
-    override readonly type = ObjectCategory.Obstacle;
-
+export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
 
     readonly image: SuroiSprite;
@@ -133,7 +131,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.activated = full.activated;
 
                 if (!isNew && !this.destroyed) {
-                    if (definition.role === ObstacleSpecialRoles.Activatable && definition.sound) {
+                    if (definition.isActivatable && definition.sound) {
                         if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
                         else this.playSound(definition.sound.name, definition.sound);
                     }
@@ -332,7 +330,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
 
-            if (definition.role === ObstacleSpecialRoles.Stair) {
+            if (definition.isStair) {
                 const hitbox = this.hitbox as RectangleHitbox;
 
                 drawHitbox(
@@ -396,7 +394,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 );
             }
 
-            if (definition.role === ObstacleSpecialRoles.Door && definition.operationStyle !== "slide") {
+            if (definition.isDoor && definition.operationStyle !== "slide") {
                 drawHitbox(
                     new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
                     HITBOX_COLORS.obstacleNoCollision,
@@ -515,7 +513,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         return !this.dead && (
             (this._door !== undefined && !this._door.locked && !this.locked)
             || (
-                this.definition.role === ObstacleSpecialRoles.Activatable
+                this.definition.isActivatable === true
                 && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem)
                 && !this.activated
             )

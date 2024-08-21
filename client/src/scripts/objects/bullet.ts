@@ -1,9 +1,10 @@
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
+import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -11,7 +12,6 @@ import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -67,14 +67,10 @@ export class Bullet extends BaseBullet {
 
             for (const collision of collisions) {
                 const object = collision.object;
-                const type = object.type;
-
-                const isObstacle = type === ObjectCategory.Obstacle;
-                const isPlayer = type === ObjectCategory.Player;
 
                 if (
                     (
-                        isPlayer || (isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair)
+                        object.isPlayer || (object.isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair)
                     ) && adjacentOrEqualLayer((object.layer ?? 0), this._layer)
                 ) {
                     (object as Obstacle | Player).hitEffect(
@@ -85,7 +81,7 @@ export class Bullet extends BaseBullet {
 
                 this.damagedIDs.add(object.id);
 
-                if (isObstacle) {
+                if (object.isObstacle) {
                     const definition = object.definition;
                     if (
                         (this.definition.penetration.obstacles && !definition.impenetrable)
@@ -95,14 +91,14 @@ export class Bullet extends BaseBullet {
                     ) continue;
 
                     if (
-                        definition.role === ObstacleSpecialRoles.Stair
+                        definition.isStair
                         && this.game.activePlayer?.layer === this._layer
                     ) {
                         this._layer = object.layer;
                         continue;
                     }
                 }
-                if (this.definition.penetration.players && isPlayer) continue;
+                if (this.definition.penetration.players && object.isPlayer) continue;
 
                 this.dead = true;
                 this.position = collision.intersection.point;

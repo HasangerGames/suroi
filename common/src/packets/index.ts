@@ -28,5 +28,4 @@ export {
     ReportPacketData, ReportPacket,
     SpectatePacketData, SpectatePacket,
     UpdatePacket, UpdatePacketDataIn, UpdatePacketDataCommon, PlayerData
-
 };

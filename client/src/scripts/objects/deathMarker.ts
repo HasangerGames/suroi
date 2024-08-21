@@ -9,9 +9,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
-export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
-    override readonly type = ObjectCategory.DeathMarker;
-
+export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
     nameColor = 0xdcdcdc;
     playerBadge!: BadgeDefinition;

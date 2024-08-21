@@ -1,9 +1,10 @@
 import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import type { ThrowableDefinition } from "../../../../common/src/definitions";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { PI } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import type { GameSound } from "../managers/soundManager";
@@ -12,11 +13,13 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
-export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProjectile> {
-    override readonly type = ObjectCategory.ThrowableProjectile;
-
+export class ThrowableProjectile extends GameObject.derive(ObjectCategory.ThrowableProjectile) {
     readonly image = new SuroiSprite();
     readonly waterOverlay = new SuroiSprite("water_overlay").setVisible(false).setScale(0.75).setTint(COLORS.water);
+
+    private _definition!: ThrowableDefinition;
+    get definition(): ThrowableDefinition { return this._definition; }
+
     private _waterAnim?: Tween<SuroiSprite>;
 
     radius?: number;
@@ -25,7 +28,7 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
     c4?: boolean;
 
-    floorType: keyof typeof FloorTypes = "grass";
+    floorType: FloorNames = FloorNames.Grass;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
         super(game, id);
@@ -39,12 +42,12 @@ export class ThrowableProjectile extends GameObject<ObjectCategory.ThrowableProj
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.ThrowableProjectile], isNew = false): void {
         if (data.full) {
-            this.image.setFrame(data.full.definition.animation.liveImage);
-            this.radius = data.full.definition.hitboxRadius;
+            this.image.setFrame((this._definition ??= data.full.definition).animation.liveImage);
+            this.radius = this._definition.hitboxRadius;
             this.c4 = true;
         }
 
-        if (data.activated && data.full?.definition.animation.activatedImage) this.image.setFrame(data.full.definition.animation.activatedImage);
+        if (data.activated && this._definition?.animation.activatedImage) this.image.setFrame(this._definition.animation.activatedImage);
 
         this.position = data.position;
         this.rotation = data.rotation;

@@ -1,7 +1,8 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { ContainerTints, MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import type { GetEnumMemberName, Mutable } from "../utils/misc";
+import { ContainerTints, MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo, type StageZeroDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
@@ -33,7 +34,27 @@ export enum FlyoverPref {
     Never
 }
 
-export type ObstacleDefinition = ObjectDefinition & {
+// yes these two types are mostly copied from ./utils/gameObject.ts
+// when ts adds hkt's and better enum type support, i'll rewrite it to reduce repetition
+
+type PredicateFor<Role extends ObstacleSpecialRoles | undefined = ObstacleSpecialRoles | undefined> = ObstacleSpecialRoles extends Role
+    ? {
+        // if Cat === ObstacleSpecialRoles, then they should all be boolean | undefined; if not, narrow as appropriate
+        // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+        readonly [K in (keyof typeof ObstacleSpecialRoles & string) as `is${K}`]?: boolean | undefined
+    }
+    : Role extends undefined
+        ? {
+            // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+            readonly [K in (keyof typeof ObstacleSpecialRoles & string) as `is${K}`]?: false | undefined
+        }
+        : Readonly<Record<`is${GetName<NonNullable<Role>>}`, true>> & {
+            readonly [K in Exclude<ObstacleSpecialRoles, Role> as `is${GetName<K>}`]?: K extends GetName<NonNullable<Role>> ? never : false
+        };
+
+type GetName<Member extends number> = GetEnumMemberName<typeof ObstacleSpecialRoles, Member>;
+
+type RawObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible: boolean
@@ -121,7 +142,7 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly interactText?: string
         readonly emitParticles?: boolean
         readonly replaceWith?: {
-            readonly idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
+            readonly idString: Record<ReferenceTo<RawObstacleDefinition>, number> | ReferenceTo<RawObstacleDefinition>
             readonly delay: number
         }
     } | {
@@ -151,6 +172,13 @@ export type ObstacleDefinition = ObjectDefinition & {
     }
 );
 
+export type ObstacleDefinition = RawObstacleDefinition & (
+    {
+        [K in ObstacleSpecialRoles]: PredicateFor<K> & { readonly role: K }
+    }[ObstacleSpecialRoles]
+    | ({ readonly role?: undefined } & PredicateFor<undefined>)
+);
+
 export const Materials = [
     "tree",
     "stone",
@@ -171,7 +199,7 @@ export const Materials = [
 ] as const;
 
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
-export const TintedParticles: Record<string, { base: string, tint: number, variants?: number }> = {
+export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     aegis_crate_particle:        { base: "wood_particle",    tint: 0x2687d9 },
     airdrop_crate_particle:      { base: "wood_particle",    tint: 0x4059bf },
     chest_particle:              { base: "wood_particle",    tint: 0xa87e5a },
@@ -234,26 +262,28 @@ export enum RotationMode {
     None
 }
 
+const defaultObstacle = {
+    indestructible: false,
+    impenetrable: false,
+    noResidue: false,
+    invisible: false,
+    hideOnMap: false,
+    noCollisions: false,
+    allowFlyover: FlyoverPref.Sometimes,
+    hasLoot: false,
+    spawnWithLoot: false,
+    noMeleeCollision: false,
+    noBulletCollision: false,
+    reflectBullets: false,
+    frames: {},
+    imageAnchor: Vec.create(0, 0),
+    spawnMode: MapObjectSpawnMode.Grass,
+    additionalDestroySounds: []
+};
+
 export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
     defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            indestructible: false,
-            impenetrable: false,
-            noResidue: false,
-            invisible: false,
-            hideOnMap: false,
-            noCollisions: false,
-            allowFlyover: FlyoverPref.Sometimes,
-            hasLoot: false,
-            spawnWithLoot: false,
-            noMeleeCollision: false,
-            noBulletCollision: false,
-            reflectBullets: false,
-            frames: {},
-            imageAnchor: Vec.create(0, 0),
-            spawnMode: MapObjectSpawnMode.Grass,
-            additionalDestroySounds: []
-        }),
+        [defaultTemplate]: () => defaultObstacle,
         crate: () => ({
             material: "crate",
             health: 80,
@@ -423,7 +453,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         })
     })
 )(
-    apply => [
+    apply => ([
         {
             idString: "oak_tree",
             name: "Oak Tree",
@@ -4265,5 +4295,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 borderColor: 0xff0000
             }
         }
-    ]
+    ] as ReadonlyArray<StageZeroDefinition<RawObstacleDefinition, () => typeof defaultObstacle>>).map(
+        o => {
+            if (o.role !== undefined) (o as Mutable<ObstacleDefinition>)[`is${ObstacleSpecialRoles[o.role] as keyof typeof ObstacleSpecialRoles}`] = true;
+            return o;
+        }
+    ) as ReadonlyArray<StageZeroDefinition<ObstacleDefinition, () => typeof defaultObstacle>>
 );

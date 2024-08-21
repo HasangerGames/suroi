@@ -14,8 +14,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
-export class Loot extends GameObject {
-    override readonly type = ObjectCategory.Loot;
+export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
 
     readonly images: {

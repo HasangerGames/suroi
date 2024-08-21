@@ -13,8 +13,7 @@ import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 
-export class Building extends BaseGameObject<ObjectCategory.Building> {
-    override readonly type = ObjectCategory.Building;
+export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 

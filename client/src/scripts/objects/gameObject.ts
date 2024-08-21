@@ -8,10 +8,10 @@ import { type Game } from "../game";
 import { type GameSound, type SoundOptions } from "../managers/soundManager";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
+import { makeGameObjectTemplate } from "../../../../common/src/utils/gameObject";
 
-export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
+export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     id: number;
-    abstract readonly type: Cat;
 
     readonly game: Game;
 
@@ -96,7 +96,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         return timeout;
     }
 
-    protected constructor(game: Game, id: number) {
+    constructor(game: Game, id: number) {
+        super();
+
         this.game = game;
         this.id = id;
 

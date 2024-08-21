@@ -13,10 +13,8 @@ import { dragConst } from "../utils/misc";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
-import { ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
 
-export class ThrowableProjectile extends BaseGameObject<ObjectCategory.ThrowableProjectile> {
-    override readonly type = ObjectCategory.ThrowableProjectile;
+export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.ThrowableProjectile) {
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 4;
 
@@ -251,7 +249,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
                         this._currentDragConst = ThrowableProjectile._harshDragConstant;
                     }
 
-                    if (object.definition.role === ObstacleSpecialRoles.Stair) {
+                    if (object.definition.isStair) {
                         // console.log(`Colliding with a stair-type object! TransportTo: ${object.layer}`);
                         object.handleStairInteraction(this);
                         continue;
@@ -341,32 +339,34 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
     private _travelCollidesWith(travelStart: Vector, travelEnd: Vector, hitbox: Hitbox): Vector | null {
         // Checks for an intersection between the path of travel and all of the provided boundary line segments.
         // The intersection that is closest to the trajectory's starting position is returned.
-        const getClosestIntersection = (boundaryLineSegments: Vector[][]): Vector | null => {
+        const getClosestIntersection = (boundaryLineSegments: ReadonlyArray<readonly [Vector, Vector]>): Vector | null => {
             let nearestIntersection: Vector | null = null;
-            let nearestIntersectionDistance: number = Number.MAX_SAFE_INTEGER;
+            let nearestIntersectionSqDist = Infinity;
 
             // Check each of the line segments for intersection with the path of travel.
             for (const lineSegment of boundaryLineSegments) {
                 const intersection: Vector | null = Collision.lineSegmentIntersection(
-                    travelStart, travelEnd, lineSegment[0], lineSegment[1]
+                    travelStart, travelEnd,
+                    lineSegment[0], lineSegment[1]
                 );
 
-                if (intersection !== null) {
+                if (
+                    intersection === null
                     // If a nearest intersection doesn't already exist, then this is the new nearest.
-                    if ((nearestIntersection ??= intersection) === intersection) {
-                        continue;
-                    }
+                    || (nearestIntersection ??= intersection) === intersection
+                ) {
+                    continue;
+                }
 
-                    // Create a new Vector from the starting position to this intersection position.
-                    const startToIntersection: Vector = Vec.sub(intersection, travelStart);
+                // Create a new Vector from the starting position to this intersection position.
+                const startToIntersection = Vec.sub(intersection, travelStart);
 
-                    // If the length of that Vector is less than nearest intersection encountered so far, then this
-                    // intersection is closer, or precedes previously encountered intersections.
-                    const startToIntersectionLength: number = Vec.length(startToIntersection);
-                    if (startToIntersectionLength < nearestIntersectionDistance) {
-                        nearestIntersection = intersection;
-                        nearestIntersectionDistance = startToIntersectionLength;
-                    }
+                // If the length of that Vector is less than nearest intersection encountered so far, then this
+                // intersection is closer, or precedes previously encountered intersections.
+                const startToIntersectionLength = Vec.squaredLength(startToIntersection);
+                if (startToIntersectionLength < nearestIntersectionSqDist) {
+                    nearestIntersection = intersection;
+                    nearestIntersectionSqDist = startToIntersectionLength;
                 }
             }
 
@@ -374,7 +374,7 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         };
 
         // Returns a list of point pairs for the line segments that comprise the boundaries of the rectangular hitbox.
-        const getBoundaryLineSegmentsForRectangle = (hitbox: RectangleHitbox): Array<[Vector, Vector]> => {
+        const getBoundaryLineSegmentsForRectangle = (hitbox: RectangleHitbox): ReadonlyArray<readonly [Vector, Vector]> => {
             const hitboxTopLeftPoint: Vector = Vec.clone(hitbox.min);
             const hitboxTopRightPoint: Vector = Vec.create(hitbox.max.x, hitbox.min.y);
             const hitboxBottomLeftPoint: Vector = Vec.create(hitbox.min.x, hitbox.max.y);
@@ -389,34 +389,27 @@ export class ThrowableProjectile extends BaseGameObject<ObjectCategory.Throwable
         };
 
         const handleRectangle = (hitbox: RectangleHitbox): Vector | null => {
-            const boundaryLineSegments: Vector[][] = getBoundaryLineSegmentsForRectangle(hitbox);
-            return getClosestIntersection(boundaryLineSegments);
+            return getClosestIntersection(getBoundaryLineSegmentsForRectangle(hitbox));
         };
 
         const handleGroup = (hitbox: HitboxGroup): Vector | null => {
-            const allRectangleHitboxBoundaryLineSegments = hitbox.hitboxes
-                .filter((hitbox: Hitbox) => hitbox instanceof RectangleHitbox)
-                .map((hitbox: Hitbox) => getBoundaryLineSegmentsForRectangle(hitbox as RectangleHitbox))
-                .reduce((prev, cur) => prev.concat(cur), []);
-
-            return getClosestIntersection(allRectangleHitboxBoundaryLineSegments);
+            return getClosestIntersection(
+                hitbox.hitboxes
+                    .filter(hitbox => hitbox instanceof RectangleHitbox) // FIXME remove when circles are supported
+                    .flatMap(rect => getBoundaryLineSegmentsForRectangle(rect))
+            );
         };
 
         switch (hitbox.type) {
             // Not currently supported.
+            // look into using Collision.lineIntersectsCircle
             // case HitboxType.Circle: {
             //     handleCircle(hitbox);
             //     break;
             // }
-            case HitboxType.Rect: {
-                return handleRectangle(hitbox);
-            }
-            // Not currently supported (missing circle).
-            case HitboxType.Group: {
-                return handleGroup(hitbox);
-            }
-            default:
-                return null;
+            case HitboxType.Rect: return handleRectangle(hitbox);
+            case HitboxType.Group: return handleGroup(hitbox);
+            default: return null;
         }
     }
 

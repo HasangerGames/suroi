@@ -1,6 +1,6 @@
-import { Layer, ObjectCategory } from "../constants";
+import { Layer } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
-import { type ObstacleDefinition } from "../definitions/obstacles";
+import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
@@ -25,12 +25,7 @@ type GameObject = {
     readonly dead: boolean
     readonly damageable: boolean
     readonly id: number
-} & ({
-    readonly type: ObjectCategory.Obstacle
-    readonly definition: ObstacleDefinition
-} | {
-    readonly type: Exclude<ObjectCategory, ObjectCategory.Obstacle>
-});
+} & CommonGameObject;
 
 interface Collision {
     readonly intersection: {
@@ -116,7 +111,7 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if (object.type === ObjectCategory.Obstacle && object.definition.noBulletCollision) continue;
+            if (object.isObstacle && object.definition.noBulletCollision) continue;
 
             if (
                 object.damageable

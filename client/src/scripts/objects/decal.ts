@@ -6,9 +6,7 @@ import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
-export class Decal extends GameObject<ObjectCategory.Decal> {
-    override readonly type = ObjectCategory.Decal;
-
+export class Decal extends GameObject.derive(ObjectCategory.Decal) {
     definition!: DecalDefinition;
 
     readonly image: SuroiSprite;

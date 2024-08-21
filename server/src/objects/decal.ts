@@ -8,8 +8,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
-export class Decal extends BaseGameObject<ObjectCategory.Decal> {
-    override readonly type = ObjectCategory.Decal;
+export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
     override readonly fullAllocBytes = 4;
     override readonly partialAllocBytes = 4;
 

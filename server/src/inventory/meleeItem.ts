@@ -1,15 +1,15 @@
-import { AnimationType, FireMode, ObjectCategory } from "@common/constants";
+import { AnimationType, FireMode } from "@common/constants";
 import { type MeleeDefinition } from "@common/definitions/melees";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { ThrowableProjectile } from "../objects";
 import { type CollidableGameObject } from "../objects/gameObject";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
-import { ThrowableProjectile } from "../objects";
 
 /**
  * A class representing a melee weapon
@@ -66,7 +66,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         .filter(
                             object => !object.dead
                             && object !== owner
-                            && (object.damageable || (object.type === ObjectCategory.ThrowableProjectile && object.definition.c4))
+                            && (object.damageable || (object.isThrowableProjectile && object.definition.c4))
                             && object.hitbox
                             && hitbox.collidesWith(object.hitbox)
                             && adjacentOrEqualLayer(object.layer, this.owner.layer)

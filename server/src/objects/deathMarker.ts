@@ -4,8 +4,7 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
-export class DeathMarker extends BaseGameObject<ObjectCategory.DeathMarker> {
-    override readonly type = ObjectCategory.DeathMarker;
+export class DeathMarker extends BaseGameObject.derive(ObjectCategory.DeathMarker) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
     readonly player: Player;
