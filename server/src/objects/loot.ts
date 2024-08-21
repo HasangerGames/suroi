@@ -115,7 +115,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                 && object.hitbox.collidesWith(this.hitbox)
             ) {
                 if (object.definition.role === ObstacleSpecialRoles.Stair) {
-                    this.layer = object.layer;
+                    object.handleStairInteraction(this);
                 } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
                     this.hitbox.resolveCollision(object.hitbox);
                 }
