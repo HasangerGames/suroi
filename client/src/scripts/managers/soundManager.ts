@@ -56,11 +56,12 @@ export class GameSound {
             return;
         }
 
+        const filter = this.applyFilter ? this.telephoneFilter : this.stereoFilter;
         const instanceOrPromise = PixiSound.sound.play(name, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: this.applyFilter ? [this.telephoneFilter] : [this.stereoFilter],
+            filters: [filter],
             loop: options.loop,
             volume: this.manager.volume
         });
