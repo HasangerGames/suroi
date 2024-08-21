@@ -1,4 +1,4 @@
-import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
+import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
@@ -849,7 +849,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
-                        (!newVisibleObjects.has(object) || !adjacentOrEqualLayer(this.layer, object.layer))
+                        (!newVisibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && object.layer > Layer.Ground))
                         && (this.visibleObjects.delete(object), true)
                         && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                     )
@@ -860,7 +860,7 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
                 .forEach(
                     object => {
                         if (
-                            (this.visibleObjects.has(object) || !adjacentOrEqualLayer(this.layer, object.layer))
+                            (this.visibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && object.layer > Layer.Ground))
                             && (object.type !== ObjectCategory.Obstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
                         ) { return; }
 

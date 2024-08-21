@@ -345,11 +345,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
+        previousLayer = this.layer;
+        this.layer = data.layer;
+        this.changeLayer(this.layer);
         if (this.isActivePlayer) {
-            previousLayer = this.layer;
-            this.layer = data.layer;
-            this.changeLayer(this.layer);
-
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 

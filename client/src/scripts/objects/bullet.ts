@@ -2,7 +2,7 @@ import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
 import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -91,6 +91,7 @@ export class Bullet extends BaseBullet {
                         (this.definition.penetration.obstacles && !definition.impenetrable)
                         || definition.noBulletCollision
                         || definition.noCollisions
+                        || !equalLayer(object.layer, this.layer)
                     ) continue;
 
                     if (
