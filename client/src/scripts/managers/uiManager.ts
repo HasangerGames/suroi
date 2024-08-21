@@ -488,7 +488,7 @@ export class UIManager {
 
             if (spectating) {
                 const badge = this.getPlayerBadge(id.id);
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
