@@ -3551,7 +3551,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             floorImages: [{
                 key: "small_bunker_entrance",
-                position: Vec.create(0, 0)
+                position: Vec.create(0, 0.1),
+                scale: Vec.create(1.1, 1)
             }],
             floors: [
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
@@ -3619,8 +3620,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
-                position: Vec.create(0, 17.8),
-                scale: Vec.create(2.1, 2.1)
+                position: Vec.create(0, 17.9),
+                scale: Vec.create(2.2, 2.1)
             }],
             rotationMode: RotationMode.None,
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
