@@ -161,24 +161,18 @@ export class Terrain {
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
-            /* if (layer) { // Keeping this commented out until a solution is found
+            if (layer) { // Keeping this commented out until a solution is found
+                /*
+                    grass and sand only exist on layer 0; on other
+                    layers, it's the void
+                */
+                floor = FloorNames.Void;
+            } else {
                 floor = FloorNames.Sand;
 
                 if (this.grassHitbox.isPointInside(position)) {
                     floor = FloorNames.Grass;
                 }
-            } else {
-                /*
-                    grass and sand only exist on layer 0; on other
-                    layers, it's the void
-
-                floor = FloorNames.Void;
-            } */
-            // Do we really need to check for layer when we know that grass and ocean is at 0 by default generation
-            floor = FloorNames.Sand;
-
-            if (this.grassHitbox.isPointInside(position)) {
-                floor = FloorNames.Grass;
             }
         }
 
