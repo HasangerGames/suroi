@@ -4152,7 +4152,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "small_bunker_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "small_bunker_desk", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "metal_door", position: Vec.create(0.25, 18), rotation: 0 },
                 { idString: "control_panel2", position: Vec.create(-14.5, -12.6), rotation: 0 },
