@@ -4180,7 +4180,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(0, 17.9),
                 scale: Vec.create(2.2, 2.1)
             }],
-            rotationMode: RotationMode.None,
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
             scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
             obstacles: [
@@ -4211,7 +4210,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "blue_house",
             name: "Blue House",
-            rotationMode: RotationMode.None,
             hitbox: new HitboxGroup(
                 // Left.
                 RectangleHitbox.fromRect(2, 11, Vec.create(-34.4, 18.25)),

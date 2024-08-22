@@ -405,7 +405,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 usePosition: Vec.create(150, 11),
                 angle: 130,
                 useAngle: 25,
-                lootScale: 0.9
+                lootScale: 0.6
             }
         }
     ]
