@@ -2,7 +2,7 @@ import { Reskins } from "../../../../common/src/definitions/modes";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { MODE } from "../utils/constants";
+import { MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
@@ -36,7 +36,7 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    readonly telephoneFilter: PixiSound.filters.TelephoneFilter;
+    readonly telephoneFilter?: PixiSound.filters.TelephoneFilter;
 
     ended = false;
 
@@ -50,14 +50,17 @@ export class GameSound {
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
-        this.telephoneFilter = new PixiSound.filters.TelephoneFilter();
+
+        if (SOUND_FILTER_FOR_LAYERS) {
+            this.telephoneFilter = new PixiSound.filters.TelephoneFilter();
+        }
 
         if (!PixiSound.sound.exists(name)) {
             console.warn(`Unknown sound with name ${name}`);
             return;
         }
 
-        const filter = this.applyFilter ? this.telephoneFilter : this.stereoFilter;
+        const filter = (this.applyFilter && this.telephoneFilter) ? this.telephoneFilter : this.stereoFilter;
         const instanceOrPromise = PixiSound.sound.play(name, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);

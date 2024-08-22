@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { getEffectiveZIndex, Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -16,7 +16,6 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
-import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -87,8 +86,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
                 this.playSound("detection", {
                     falloff: 0.25,
-                    maxRange: 180,
-                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                    maxRange: 180
                 });
                 this.notOnCoolDown = false;
                 setTimeout(() => {
@@ -209,8 +207,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
                         falloff: 0.2,
-                        maxRange: 96,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        maxRange: 96
                     });
                 };
                 playSound(`${definition.material}_destroyed`);
@@ -480,8 +477,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 `${soundName}_${offset ? "open" : "close"}`,
                 {
                     falloff: 0.3,
-                    maxRange: 48,
-                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                    maxRange: 48
                 }
             );
 

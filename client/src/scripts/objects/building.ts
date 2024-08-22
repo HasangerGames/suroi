@@ -1,9 +1,9 @@
 import { Container, Graphics } from "pixi.js";
-import { getEffectiveZIndex, Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
+import { isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -274,8 +274,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     "ceiling_collapse",
                     {
                         falloff: 0.5,
-                        maxRange: 96,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        maxRange: 96
                     }
                 );
             }
@@ -289,12 +288,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (data.puzzle) {
             if (!isNew && data.puzzle.errorSeq !== this.errorSeq) {
-                this.playSound("puzzle_error", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) });
+                this.playSound("puzzle_error");
             }
             this.errorSeq = data.puzzle.errorSeq;
 
             if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
-                this.playSound("puzzle_solved", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) });
+                this.playSound("puzzle_solved");
             }
         }
 

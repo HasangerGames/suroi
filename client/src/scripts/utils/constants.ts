@@ -4,6 +4,7 @@ import { Config } from "../config";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
+export const SOUND_FILTER_FOR_LAYERS = true; // TODO: test this, unsure if it glitches the sound manager. From testing in test server most of the times the sound would cut off and glitch.
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),

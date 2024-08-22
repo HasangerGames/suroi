@@ -12,7 +12,7 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/s
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
@@ -402,8 +402,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     `${this.floorType}_step_${random(1, 2)}`,
                     {
                         falloff: 0.6,
-                        maxRange: 48,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        maxRange: 48
                     }
                 );
 
@@ -703,8 +702,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     actionSoundName,
                     {
                         falloff: 0.6,
-                        maxRange: 48,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        maxRange: 48
                     }
                 );
             }
@@ -1026,8 +1024,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             "emote",
             {
                 falloff: 0.4,
-                maxRange: 128,
-                applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                maxRange: 128
             }
         );
         this.emote.image.setFrame(type.idString);
@@ -1124,8 +1121,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     weaponDef.swingSound,
                     {
                         falloff: 0.4,
-                        maxRange: 96,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        maxRange: 96
                     }
                 );
 
@@ -1240,8 +1236,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.playSound(
                     `${idString}_fire`,
                     {
-                        falloff: 0.5,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        falloff: 0.5
                     }
                 );
 
@@ -1249,8 +1244,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.playSound(
                         `${idString}_last_shot`,
                         {
-                            falloff: 0.5,
-                            applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                            falloff: 0.5
                         }
                     );
                 }
@@ -1366,8 +1360,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     "gun_click",
                     {
                         falloff: 0.8,
-                        maxRange: 48,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                        maxRange: 48
                     }
                 );
                 break;
@@ -1378,7 +1371,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     return;
                 }
 
-                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) });
+                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin");
 
                 const def = this.activeItem;
                 const projImage = this.images.weapon;
@@ -1484,7 +1477,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     console.warn(`Attempted to play throwable throwing animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }
-                this.playSound("throwable_throw", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) });
+                this.playSound("throwable_throw");
 
                 const def = this.activeItem;
 
