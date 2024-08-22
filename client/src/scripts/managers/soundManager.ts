@@ -36,7 +36,7 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    readonly telephoneFilter: PixiSound.filters.TelephoneFilter = new PixiSound.filters.TelephoneFilter();
+    readonly telephoneFilter: PixiSound.filters.TelephoneFilter;
 
     ended = false;
 
@@ -50,6 +50,7 @@ export class GameSound {
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
+        this.telephoneFilter = new PixiSound.filters.TelephoneFilter();
 
         if (!PixiSound.sound.exists(name)) {
             console.warn(`Unknown sound with name ${name}`);

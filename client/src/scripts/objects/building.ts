@@ -275,7 +275,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     {
                         falloff: 0.5,
                         maxRange: 96,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
                     }
                 );
             }
@@ -289,12 +289,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (data.puzzle) {
             if (!isNew && data.puzzle.errorSeq !== this.errorSeq) {
-                this.playSound("puzzle_error", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) });
+                this.playSound("puzzle_error", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) });
             }
             this.errorSeq = data.puzzle.errorSeq;
 
             if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
-                this.playSound("puzzle_solved", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) });
+                this.playSound("puzzle_solved", { applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) });
             }
         }
 

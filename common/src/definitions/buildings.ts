@@ -3585,7 +3585,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             floors: [
                 {
-                    type: FloorNames.Carpet,
+                    type: FloorNames.Stone,
                     hitbox: new HitboxGroup(
                         RectangleHitbox.fromRect(42, 34.5),
                         RectangleHitbox.fromRect(10, 4.5, Vec.create(0, 19))

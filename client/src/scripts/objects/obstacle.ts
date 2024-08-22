@@ -16,7 +16,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
-import { equalLayer } from "../../../../common/src/utils/layer";
+import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -88,7 +88,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.playSound("detection", {
                     falloff: 0.25,
                     maxRange: 180,
-                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
+                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
                 });
                 this.notOnCoolDown = false;
                 setTimeout(() => {
@@ -210,7 +210,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.playSound(name, {
                         falloff: 0.2,
                         maxRange: 96,
-                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
+                        applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
                     });
                 };
                 playSound(`${definition.material}_destroyed`);
@@ -481,7 +481,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 {
                     falloff: 0.3,
                     maxRange: 48,
-                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground)
+                    applyFilter: !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
                 }
             );
 
