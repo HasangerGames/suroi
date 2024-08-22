@@ -96,6 +96,7 @@ const maps = {
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
             green_house: 2,
+            blue_house: 2,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
@@ -115,6 +116,7 @@ const maps = {
             red_house_v2: 1,
             warehouse: 2,
             green_house: 1,
+            blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
             construction_site: 1,

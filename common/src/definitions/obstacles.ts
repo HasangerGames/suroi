@@ -1192,6 +1192,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(20.6, 2) }, 10),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(11.6, 2) }, 11),
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(16.2, 2) }, 12),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(17, 2) }, 14),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(12.1, 2) }, 15),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(10.5, 2) }, 16),
+        apply("houseWall", { hitbox: RectangleHitbox.fromRect(22.5, 2) }, 17),
 
         // small bunker special wall
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 13, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }),
@@ -2459,6 +2463,59 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             noResidue: true,
             frames: {
                 particle: "wall_particle"
+            }
+        },
+        {
+            idString: "blue_house_exterior",
+            name: "Blue House Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                // Left.
+                RectangleHitbox.fromRect(2, 11, Vec.create(-34.4, 18.25)),
+                RectangleHitbox.fromRect(2, 32.55, Vec.create(-34.4, -14.6)),
+
+                // Right.
+                RectangleHitbox.fromRect(2, 20.5, Vec.create(34.5, 13.1)),
+                RectangleHitbox.fromRect(2, 21.5, Vec.create(34.5, -19)),
+
+                // Center and corners.
+                RectangleHitbox.fromRect(10, 2, Vec.create(-29.25, -29.9)), // TL
+                RectangleHitbox.fromRect(6, 2, Vec.create(-10.8, -29.9)),
+                RectangleHitbox.fromRect(58, 2, Vec.create(5.6, 22.5)),
+                RectangleHitbox.fromRect(33.4, 2, Vec.create(18.9, -29.9)) // TR
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
+        {
+            idString: "blue_house_mini_vault_walls",
+            name: "Blue House Vault Walls",
+            material: "metal",
+            health: 1000,
+            reflectBullets: true,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(2, 14.8, Vec.create(8.4, 14)),
+                RectangleHitbox.fromRect(2, 15.5, Vec.create(32.4, 12)),
+                RectangleHitbox.fromRect(25, 2, Vec.create(21, 20.4)),
+                RectangleHitbox.fromRect(2, 4, Vec.create(20.5, 6.5)),
+                RectangleHitbox.fromRect(11, 2, Vec.create(14.5, 7.5))
+            ),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
             }
         },
         {

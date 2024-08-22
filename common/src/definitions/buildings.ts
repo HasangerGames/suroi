@@ -3636,6 +3636,121 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "small_bunker_main", position: Vec.create(0, -4.6), layer: -2 },
                 { idString: "small_bunker_entrance", position: Vec.create(0, 20) }
             ]
-        }
+        },
         // --------------------------------------------------------------------------------------------------
+
+        {
+            idString: "blue_house_mini_vault_ceiling",
+            name: "Blue House Mini Vault Ceiling",
+            spawnHitbox: RectangleHitbox.fromRect(22.73, 28.32),
+            scopeHitbox: RectangleHitbox.fromRect(14, 24),
+            ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+            ceilingImages: [{
+                key: "oil_tanker_ship_vault_ceiling",
+                position: Vec.create(0, 0),
+                scale: Vec.create(0.649, 0.9)
+            }]
+        },
+        {
+            idString: "blue_house",
+            name: "Blue House",
+            spawnHitbox: RectangleHitbox.fromRect(90, 90),
+            scopeHitbox: RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
+            floorImages: [
+                {
+                    key: "blue_house_floor_2_1",
+                    position: Vec.create(-18.67, 18),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "blue_house_floor_2_2",
+                    position: Vec.create(18.4, 18),
+                    scale: Vec.create(1.07, 1.07)
+                },
+                {
+                    key: "blue_house_floor_1",
+                    position: Vec.create(0, -17),
+                    scale: Vec.create(1.07, 1.07)
+                }
+            ],
+            ceilingImages: [{
+                key: "blue_house_ceiling",
+                position: Vec.create(0, 1.5),
+                scale: Vec.create(2.3, 2.3)
+            }],
+            floors: [
+                {
+                    type: FloorNames.Stone,
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(11, 5.5, Vec.create(-3.25, -32.6)),
+                        RectangleHitbox.fromRect(71, 11, Vec.create(0, 29)),
+                        // mini vault
+                        RectangleHitbox.fromRect(22.5, 11, Vec.create(20.5, 14)),
+                        RectangleHitbox.fromRect(10, 14, Vec.create(26.5, 12))
+                    )
+                },
+                {
+                    type: FloorNames.Wood,
+                    hitbox: new HitboxGroup(
+                        RectangleHitbox.fromRect(41, 52, Vec.create(-13.5, -3.6)),
+                        RectangleHitbox.fromRect(41, 34, Vec.create(13.5, -12)),
+
+                        // patches
+                        RectangleHitbox.fromRect(12, 2, Vec.create(-28, 22.5)),
+                        RectangleHitbox.fromRect(12, 2, Vec.create(-3.3, -30)),
+                        RectangleHitbox.fromRect(14, 2, Vec.create(13, 6))
+                    )
+                }
+            ],
+            obstacles: [
+                { idString: "blue_house_exterior", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "blue_house_mini_vault_walls", position: Vec.create(0, 0), rotation: 0 },
+
+                // door fun
+                { idString: "door", position: Vec.create(-3.3, -29.9), rotation: 2 },
+                { idString: "door", position: Vec.create(-29, 22.6), rotation: 2 },
+
+                // outside part
+                { idString: "barrel", position: Vec.create(-7, 29) },
+                { idString: "box", position: Vec.create(25, 27) },
+                { idString: "box", position: Vec.create(19, 28.5) },
+
+                // top right
+                { idString: "house_wall_6", position: Vec.create(7.5, -21.5), rotation: 1 },
+                { idString: "house_column", position: Vec.create(7.5, -12.5) },
+                { idString: "small_drawer", position: Vec.create(30.25, -25), rotation: 0 },
+                { idString: "fridge", position: Vec.create(21.5, -25.1), rotation: 0 },
+                { idString: "mobile_home_stove", position: Vec.create(12.5, -25), rotation: 0 },
+                // { idString: "bookshelf", position: Vec.create(4.25, -22), rotation: 1 },
+
+                // bottom right (mini vault ig)
+                { idString: "house_wall_15", position: Vec.create(13.4, 5.6), rotation: 0 },
+                { idString: "house_wall_14", position: Vec.create(6.4, 13.1), rotation: 1 },
+                { idString: "metal_door", position: Vec.create(26.15, 5.2), rotation: 2 },
+                { idString: "box", position: Vec.create(12.5, 11.5) },
+                { idString: "box", position: Vec.create(14, 16.5) },
+                { idString: "box", position: Vec.create(16, 1.7) },
+
+                // bathroom
+                { idString: "house_wall_3", position: Vec.create(-10.2, 5.6), rotation: 0 },
+                { idString: { toilet: 2, used_toilet: 1 }, position: Vec.create(-11.25, 10.1), rotation: 1 },
+                { idString: "small_drawer", position: Vec.create(-11.6, 17.5), rotation: 1 },
+                { idString: "door", position: Vec.create(0, 5.6), rotation: 2 },
+                { idString: "house_wall_14", position: Vec.create(-16.8, 13.15), rotation: 1 },
+                { idString: "bookshelf", position: Vec.create(-20.25, 15), rotation: 1 },
+
+                // top left
+                { idString: "house_wall_16", position: Vec.create(-10, -13.65), rotation: 1 },
+                { idString: "door", position: Vec.create(-10, -23.5), rotation: 3 },
+                { idString: "house_wall_17", position: Vec.create(-22.3, -9.4), rotation: 0 },
+                { idString: "small_drawer", position: Vec.create(-14.7, -14.5), rotation: 2 },
+                { idString: "mobile_home_bed", position: Vec.create(-29.25, -19.9), rotation: 2 },
+                { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
+                { idString: "potted_plant", position: Vec.create(-29, -4) }
+            ],
+            lootSpawners: [
+                { table: "ground_loot", position: Vec.create(23.5, 14.4) }
+            ],
+            subBuildings: [{ idString: "blue_house_mini_vault_ceiling", position: Vec.create(-14.1, 20.5), orientation: 1 }]
+        }
     ]);
