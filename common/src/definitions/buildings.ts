@@ -3654,8 +3654,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "blue_house",
             name: "Blue House",
+            rotationMode: RotationMode.None,
             spawnHitbox: RectangleHitbox.fromRect(90, 90),
-            scopeHitbox: RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
+            scopeHitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
+                RectangleHitbox.fromRect(11, 10, Vec.create(-28, 27))
+            ),
             floorImages: [
                 {
                     key: "blue_house_floor_2_1",
@@ -3705,6 +3709,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [
                 { idString: "blue_house_exterior", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "blue_house_mini_vault_walls", position: Vec.create(0, 0), rotation: 0 },
+
+                // windows
+                { idString: "window", position: Vec.create(-34.5, 7.4), rotation: 0 },
+                { idString: "window", position: Vec.create(34.6, -2.5), rotation: 0 },
+                { idString: "window", position: Vec.create(-19, -30), rotation: 1 },
 
                 // door fun
                 { idString: "door", position: Vec.create(-3.3, -29.9), rotation: 2 },
