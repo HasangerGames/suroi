@@ -11,6 +11,7 @@ import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
+import { Building } from "../objects";
 
 /**
  * A class representing a firearm
@@ -123,7 +124,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             if (
                 object.dead
                 || object.hitbox === undefined
-                || !(object instanceof Obstacle)
+                || !(object instanceof Obstacle || object instanceof Building)
                 || object.definition.noCollisions
             ) continue;
 
@@ -134,7 +135,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 if (
                     object.dead
                     || object.hitbox === undefined
-                    || !(object instanceof Obstacle)
+                    || !(object instanceof Obstacle || object instanceof Building)
                     || object.definition.noCollisions
                 ) continue;
 

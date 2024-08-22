@@ -29,6 +29,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import { Building } from "./building";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1142,21 +1143,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 && (
                                     (
                                         object.damageable
-                                        && (object instanceof Obstacle || object instanceof Player)
+                                        && (object instanceof Obstacle || object instanceof Player || (object instanceof Building && object.hitbox))
                                     ) || (object.isThrowableProjectile && object.c4)
                                 )
                                 && object.hitbox.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.layer)
                             ) as Array<Player | Obstacle>
-                        ).sort(
-                            (a, b) => {
-                                if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
-                                if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
+                        ).sort((a, b) => {
+                            if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
+                            if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 
-                                return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
-                            }
-                        )
-                            .slice(0, weaponDef.maxTargets)
+                            return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
+                        }).slice(0, weaponDef.maxTargets)
                     ) target.hitEffect(position, angleToPos);
                 }, 50);
 

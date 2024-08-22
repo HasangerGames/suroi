@@ -121,20 +121,14 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.isObstacle) {
-                const obsDef = object.definition;
+            if (object.isObstacle || object.isBuilding) {
+                const def = object.definition;
 
-                if (
-                    /*
-                        for stairs, honor any collision that's on an equal or adjacent layer (to allow layer transitions);
-                        for everyone else, only honor collisions on the same layer
-                    */
-                    (
-                        obsDef.isStair
-                            ? adjacentOrEqualLayer
-                            : equalLayer
-                    )(this._layer, object.layer)
-                ) {
+                /*
+                    for stairs, honor any collision that's on an equal or adjacent layer (to allow layer transitions);
+                    for everyone else, only honor collisions on the same layer
+                */
+                if ((def.isStair ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
                     this.damagedIDs.add(object.id);
 
                     records.push({
@@ -145,15 +139,15 @@ export class Bullet extends BaseBullet {
                         position: collision.intersection.point
                     });
 
-                    obsDef.isStair && (object as Obstacle).handleStairInteraction(this);
+                    def.isStair && (object as Obstacle).handleStairInteraction(this);
 
                     if (definition.penetration.obstacles) continue;
 
-                    if (!obsDef.noCollisions) {
+                    if (!def.noCollisions) {
                         const { point, normal } = collision.intersection;
                         this.position = point;
 
-                        if (obsDef.reflectBullets && this.reflectionCount < 3) {
+                        if (def.reflectBullets && this.reflectionCount < 3) {
                             /*
                                 no matter what, nudge the bullet
 

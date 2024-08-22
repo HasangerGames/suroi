@@ -7,12 +7,12 @@ import { isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec } from "../../../../common/src/utils/vector";
+import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
@@ -20,6 +20,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     readonly ceilingContainer: Container;
 
     definition!: BuildingDefinition;
+
+    hitbox?: Hitbox;
+
+    graphics?: Graphics;
 
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
@@ -31,6 +35,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     errorSeq?: boolean;
 
     sound?: GameSound;
+
+    particleFrames!: string[];
+
+    hitSound?: GameSound;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
@@ -147,17 +155,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         }
 
                         if (!(
-                            collided ||= [...this.game.objects.getCategory(ObjectCategory.Obstacle)]
-                                .some(
-                                    ({
-                                        damageable,
-                                        dead,
-                                        definition: { role },
-                                        hitbox
-                                    }) => damageable
-                                    && !dead
-                                    && role !== ObstacleSpecialRoles.Window
-                                    && hitbox?.intersectsLine(player.position, end)
+                            collided ||=
+                                [
+                                    ...this.game.objects.getCategory(ObjectCategory.Obstacle),
+                                    ...this.game.objects.getCategory(ObjectCategory.Building)
+                                ].some(
+                                    ({ damageable, dead, definition, hitbox }) =>
+                                        damageable
+                                        && !dead
+                                        && (!("role" in definition) || definition.role !== ObstacleSpecialRoles.Window)
+                                        && hitbox?.intersectsLine(player.position, end)
                                 )
                         )) break;
                     }
@@ -189,10 +196,17 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {
         if (data.full) {
             const full = data.full;
-            this.definition = full.definition;
+            const definition = this.definition = full.definition;
             this.position = full.position;
 
-            for (const image of this.definition.floorImages) {
+            // If there are multiple particle variations, generate a list of variation image names
+            const particleImage = definition.particle ?? `${definition.idString}_particle`;
+
+            this.particleFrames = definition.particleVariations !== undefined
+                ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
+                : [particleImage];
+
+            for (const image of definition.floorImages) {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(toPixiCoords(image.position));
                 if (image.tint !== undefined) sprite.setTint(image.tint);
@@ -204,14 +218,28 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
-            this.ceilingContainer.zIndex = getEffectiveZIndex(this.definition.ceilingZIndex, this.layer);
+            this.ceilingContainer.zIndex = getEffectiveZIndex(definition.ceilingZIndex, this.layer);
 
             this.orientation = full.rotation;
             this.rotation = Angle.orientationToRotation(this.orientation);
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;
 
-            this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
+            if (definition.graphics.length) {
+                this.graphics = new Graphics();
+                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex, this.layer);
+                for (const graphics of definition.graphics) {
+                    this.graphics.beginPath();
+                    drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
+                    this.graphics.closePath();
+                    this.graphics.fill(graphics.color);
+                }
+                this.game.camera.container.addChild(this.graphics);
+            }
+
+            this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
+            this.damageable = !!definition.hitbox;
+            this.ceilingHitbox = (definition.scopeHitbox ?? definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
             this.layer = data.layer;
         }
 
@@ -253,7 +281,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (data.dead) {
             if (!this.dead && !isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${this.definition.idString}_particle`,
+                    frames: `${definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: 10,
                     lifetime: 2000,
@@ -315,7 +343,15 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
 
-            if (this.ceilingHitbox !== undefined) {
+            if (this.hitbox) {
+                drawHitbox(
+                    this.hitbox,
+                    HITBOX_COLORS.obstacle,
+                    this.debugGraphics
+                );
+            }
+
+            if (this.ceilingHitbox) {
                 drawHitbox(
                     this.ceilingHitbox,
                     HITBOX_COLORS.buildingScopeCeiling,
@@ -329,7 +365,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 this.debugGraphics
             );
 
-            if (definition.scopeHitbox !== undefined) {
+            if (definition.scopeHitbox) {
                 drawHitbox(
                     definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,
@@ -339,9 +375,32 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
     }
 
+    hitEffect(position: Vector, angle: number): void {
+        this.hitSound?.stop();
+        this.hitSound = this.game.soundManager.play(
+            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,
+            {
+                position,
+                falloff: 0.2,
+                maxRange: 96
+            }
+        );
+
+        this.game.particleManager.spawnParticle({
+            frames: this.particleFrames,
+            position,
+            zIndex: ZIndexes.Players + 1,
+            lifetime: 600,
+            scale: { start: 0.9, end: 0.2 },
+            alpha: { start: 1, end: 0.65 },
+            speed: Vec.fromPolar((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
+        });
+    }
+
     override destroy(): void {
         super.destroy();
 
+        this.graphics?.destroy();
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();

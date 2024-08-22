@@ -145,12 +145,7 @@ export class Grid {
 
                 for (const object of objectsMap.values()) {
                     // Only filter intersecting objects by their layer if a layer was specified.
-                    if (includeAll) {
-                        objects.add(object);
-                        continue;
-                    }
-
-                    if (object.layer !== undefined && adjacentOrEqualLayer(object.layer, layer)) {
+                    if (includeAll || (object.layer !== undefined && adjacentOrEqualLayer(object.layer, layer))) {
                         objects.add(object);
                     }
                 }

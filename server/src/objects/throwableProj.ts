@@ -13,6 +13,7 @@ import { dragConst } from "../utils/misc";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
+import { Building } from "./building";
 
 export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.ThrowableProjectile) {
     override readonly fullAllocBytes = 16;
@@ -210,21 +211,24 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         for (const object of this.game.grid.intersectsHitbox(this.hitbox, this.layer)) {
             const isObstacle = object instanceof Obstacle;
             const isPlayer = object instanceof Player;
+            const isBuilding = object instanceof Building;
 
             if (
                 object.dead
                 || (
-                    (!isObstacle || !object.collidable)
+                    (!(isObstacle || isBuilding) || !object.collidable)
                     && (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
                 )
             ) continue;
 
+            const hitbox = object.hitbox!;
+
             // This is a discrete collision detection that looks for overlap between geometries.
-            const isGeometricCollision = object.hitbox.collidesWith(this.hitbox);
+            const isGeometricCollision = hitbox.collidesWith(this.hitbox);
             // This is a continuous collision detection that looks for an intersection between this object's path of
             // travel and the boundaries of the object.
             const rayCastCollisionPointWithObject: Vector | null = this._travelCollidesWith(
-                originalHitboxPosition, this.hitbox.position, object.hitbox
+                originalHitboxPosition, this.hitbox.position, hitbox
             );
             const isRayCastedCollision = rayCastCollisionPointWithObject !== null;
 
@@ -416,19 +420,19 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     handleCollision(object: GameObject): void {
         const isObstacle = object instanceof Obstacle;
         const isPlayer = object instanceof Player;
+        const isBuilding = object instanceof Building;
 
         if (
             object.dead
             || (
-                (!isObstacle || !object.collidable)
+                (!(isObstacle || isBuilding) || !object.collidable)
                 && (!isPlayer || (!this._collideWithOwner && object === this.source.owner))
             )
         ) return;
 
-        const hitbox = object.hitbox;
-        const collidingWithObject = object.hitbox.collidesWith(this.hitbox);
+        const hitbox = object.hitbox!;
 
-        if (!collidingWithObject) return;
+        if (!hitbox.collidesWith(this.hitbox)) return;
 
         const handleCircle = (hitbox: CircleHitbox): void => {
             const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);

@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { Circle } from "pixi.js";
     import {
-    CircleHitbox,
+  CircleHitbox,
         HitboxGroup,
         HitboxType,
         RectangleHitbox
@@ -12,32 +11,21 @@
 
     let hitboxes = [
         ...new HitboxGroup(
-                // Right walls
-                // Above window
-                RectangleHitbox.fromRect(2, 10.5, Vec.create(-31, 21.3)),
-                // First below window
-                RectangleHitbox.fromRect(2, 8.5, Vec.create(-31, 1.9)),
-                // Second below window
-                RectangleHitbox.fromRect(2, 14, Vec.create(-31, -20)),
-
-                // Top walls
-                // Left of window
-                RectangleHitbox.fromRect(20, 2, Vec.create(37, 27.3)),
-                // Right of window
-                RectangleHitbox.fromRect(48.7, 2, Vec.create(-7.5, 27.3)),
-
-                // Left Wall
-                // Whole side of building
-                RectangleHitbox.fromRect(2, 55.2, Vec.create(46.5, 0)),
-
-                // Bottom Walls
-                // Left of back door
-                RectangleHitbox.fromRect(9, 2, Vec.create(43, -26.5)),
-                // Right of back door
-                RectangleHitbox.fromRect(39.6, 2, Vec.create(8, -26.5)),
-                // Right of window
-                RectangleHitbox.fromRect(10.2, 2, Vec.create(-26.7, -26.5))
-            ).transform(Vec.create(0, 0), 1.076, 3).toJSON().hitboxes
+            RectangleHitbox.fromRect(1.02, 56, Vec.create(6.39, 0)),
+                RectangleHitbox.fromRect(1.02, 56, Vec.create(-6.39, 0)),
+                ...Array.from({ length: 2 }, (_, i) => {
+                    const a = i === 0 ? 1 : -1;
+                    return Array.from({ length: 2 }, (_, i) => {
+                        const b = i === 0 ? 1 : -1;
+                        return [
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 0)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 9.54 * b)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 19.17 * b)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 27.97 * b))
+                        ];
+                    }).flat();
+                }).flat()
+        ).transform(Vec.create(90, 0), 1, 0).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -84,7 +72,7 @@
     }
 
     function mouseWheel(e: WheelEvent) {
-        scale = Numeric.clamp(scale - e.deltaY / 1000, 0.1, 5);
+        scale = Numeric.clamp(scale - e.deltaY / 1000, 0.1, 10);
     }
 
     function updateSelected() {
@@ -128,7 +116,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/green_house_floor.svg");
+    const bgImage = loadImage("/img/game/buildings/container_floor_open1.svg");
 
 </script>
 

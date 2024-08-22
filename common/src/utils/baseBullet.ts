@@ -1,4 +1,5 @@
-import { Layer } from "../constants";
+import { Layer, ObjectCategory } from "../constants";
+import { BuildingDefinition } from "../definitions/buildings";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
@@ -103,7 +104,7 @@ export class BaseBullet {
 
         if (Geometry.distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
             this.dead = true;
-            this.position = Vec.add(this.initialPosition, (Vec.scale(this.direction, this.maxDistance)));
+            this.position = Vec.add(this.initialPosition, Vec.scale(this.direction, this.maxDistance));
         }
 
         if (this.definition.noCollision) return [];

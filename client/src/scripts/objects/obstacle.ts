@@ -520,7 +520,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.hitSound?.stop();
 
         this.hitSound = this.game.soundManager.play(
-            `${this.definition.material}_hit_${this.definition.hitSoundVariations ? JSON.stringify(random(1, this.definition.hitSoundVariations)) : randomBoolean() ? "1" : "2"}`,
+            `${this.definition.material}_hit_${this.definition.hitSoundVariations ? random(1, this.definition.hitSoundVariations).toString() : randomBoolean() ? "1" : "2"}`,
             {
                 position,
                 falloff: 0.2,

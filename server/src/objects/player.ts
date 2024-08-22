@@ -404,8 +404,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        this.inventory.scope = "1x_scope";
-        this.effectiveScope = DEFAULT_SCOPE;
+        this.inventory.scope = "4x_scope";
+        this.effectiveScope = "4x_scope"; //DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
@@ -668,7 +668,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             for (const potential of this.nearObjects) {
                 if (
-                    potential.isObstacle
+                    (potential.isObstacle || potential.isBuilding)
                     && potential.collidable
                     && this.hitbox.collidesWith(potential.hitbox)
                     && adjacentOrEqualLayer(potential.layer, this.layer)
@@ -677,7 +677,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         potential.handleStairInteraction(this);
                     } else if (isGroundLayer(potential.layer) || potential.definition.anyLayer) {
                         collided = true;
-                        this.hitbox.resolveCollision(potential.hitbox);
+                        this.hitbox.resolveCollision(potential.hitbox!);
                     }
                 }
             }
@@ -861,7 +861,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (this.visibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
                             && (!object.isObstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
-                        ) { return; }
+                        ) return;
 
                         this.visibleObjects.add(object);
                         fullObjects.add(object);

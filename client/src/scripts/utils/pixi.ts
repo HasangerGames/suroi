@@ -160,6 +160,39 @@ export function toPixiCoords(pos: Vector): Vector {
     return Vec.scale(pos, PIXI_SCALE);
 }
 
+export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = PIXI_SCALE): void {
+    switch (hitbox.type) {
+        case HitboxType.Rect: {
+            graphics.rect(
+                hitbox.min.x * scale,
+                hitbox.min.y * scale,
+                (hitbox.max.x - hitbox.min.x) * scale,
+                (hitbox.max.y - hitbox.min.y) * scale
+            );
+            break;
+        }
+        case HitboxType.Circle:
+            graphics.arc(
+                hitbox.position.x * scale,
+                hitbox.position.y * scale,
+                hitbox.radius * scale,
+                0,
+                Math.PI * 2
+            );
+            break;
+        case HitboxType.Polygon:
+            graphics.poly(
+                hitbox.points.map(v => Vec.scale(v, scale))
+            );
+            break;
+        case HitboxType.Group:
+            for (const hitBox of hitbox.hitboxes) {
+                drawGroundGraphics(hitBox, graphics);
+            }
+            break;
+    }
+};
+
 export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
     graphics.setStrokeStyle({
         color,

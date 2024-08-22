@@ -1,12 +1,12 @@
 import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { ContainerTints, MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
-import { RotationMode, type ObstacleDefinition } from "./obstacles";
+import { Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {
     readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>
@@ -42,6 +42,15 @@ interface BuildingDecal {
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
+    readonly noCollisions?: boolean
+    readonly noBulletCollision?: boolean
+    readonly reflectBullets?: boolean
+    readonly anyLayer?: boolean
+    readonly material?: typeof Materials[number]
+    readonly particle?: string
+    readonly particleVariations?: number
+
+    readonly hitbox?: Hitbox
     readonly spawnHitbox: Hitbox
     readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
@@ -85,6 +94,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly scale?: Vector
         readonly tint?: number | `#${string}`
     }>
+    readonly floorZIndex: ZIndexes
 
     readonly ceilingImages: ReadonlyArray<{
         readonly key: string
@@ -107,6 +117,12 @@ export interface BuildingDefinition extends ObjectDefinition {
         // specified as an offset relative to the building in which this floor appears
         readonly layer?: number
     }>
+
+    readonly graphics: ReadonlyArray<{
+        readonly color: number | `#${string}`
+        readonly hitbox: Hitbox
+    }>
+    readonly graphicsZIndex: ZIndexes
 
     readonly groundGraphics: ReadonlyArray<{
         readonly color: number | `#${string}`
@@ -153,6 +169,107 @@ const randomBarrel = {
     barrel: 2
 };
 
+const ContainerTints = {
+    White: 0xc0c0c0,
+    Red: 0xa32900,
+    Green: 0x00a30e,
+    Blue: 0x005fa3,
+    Yellow: 0xcccc00
+};
+
+const ContainerWallOutlineTints = {
+    White: 0x797979,
+    Red: 0x661900,
+    Green: 0x006608,
+    Blue: 0x003b66,
+    Yellow: 0x808000
+};
+
+const ContainerWallTints = {
+    White: 0xa8a8a8,
+    Red: 0x8f2400,
+    Green: 0x008f0c,
+    Blue: 0x00538f,
+    Yellow: 0xb3b300
+}
+
+const portWarehouseHitbox = new HitboxGroup(
+    // Outer corners
+    RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, -51.54)),
+    RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, 51.54)),
+    RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, 51.54)),
+    RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, -51.54)),
+
+    // Top and bottom
+    RectangleHitbox.fromRect(60, 2, Vec.create(0, -59.79)),
+    RectangleHitbox.fromRect(60, 2, Vec.create(0, 59.79)),
+
+    // Sides
+    RectangleHitbox.fromRect(2, 35.55, Vec.create(-29.53, 0)),
+    RectangleHitbox.fromRect(2, 35.55, Vec.create(29.53, 0)),
+
+    // Inner corners
+    RectangleHitbox.fromRect(13, 2, Vec.create(22.34, -16.85)),
+    RectangleHitbox.fromRect(13, 2, Vec.create(-22.34, 16.85)),
+
+    // Doors
+    RectangleHitbox.fromRect(1.74, 24.52, Vec.create(-29.65, -29.82)),
+    RectangleHitbox.fromRect(1.74, 24.52, Vec.create(29.65, 29.82))
+);
+
+const tugboatHitbox = new HitboxGroup(
+    RectangleHitbox.fromRect(8.93, 2.09, Vec.create(80.47, -4.78)),
+    RectangleHitbox.fromRect(8.93, 2.09, Vec.create(99.51, -4.78)),
+    RectangleHitbox.fromRect(2.21, 35.83, Vec.create(104.37, 12.09)),
+    RectangleHitbox.fromRect(2.14, 35.83, Vec.create(75.67, 12.09)),
+    RectangleHitbox.fromRect(30.88, 1.98, Vec.create(90.04, 29.78)),
+    RectangleHitbox.fromRect(0.99, 14, Vec.create(69.21, -38)),
+    RectangleHitbox.fromRect(12, 1, Vec.create(76, -46.2)),
+    RectangleHitbox.fromRect(13, 1, Vec.create(103.5, -46.2)),
+    RectangleHitbox.fromRect(1, 73, Vec.create(110.59, -8.5)),
+    RectangleHitbox.fromRect(0.99, 45, Vec.create(69.21, 5.5)),
+    new CircleHitbox(1.45, Vec.create(70.1, -45.5)),
+    new CircleHitbox(1.45, Vec.create(81.7, -45.5)),
+    new CircleHitbox(1.45, Vec.create(97.4, -45.5)),
+    new CircleHitbox(1.45, Vec.create(109.7, -45.5)),
+    new CircleHitbox(1.45, Vec.create(109.7, -30.8)),
+    new CircleHitbox(1.45, Vec.create(70.1, -30.8)),
+    new CircleHitbox(1.45, Vec.create(109.7, -16.6)),
+    new CircleHitbox(1.45, Vec.create(70.1, -16.6)),
+    new CircleHitbox(1.45, Vec.create(109.7, -1.6)),
+    new CircleHitbox(1.45, Vec.create(70.1, -1.6)),
+    new CircleHitbox(1.45, Vec.create(109.7, 13.4)),
+    new CircleHitbox(1.45, Vec.create(70.1, 13.4)),
+    new CircleHitbox(1.45, Vec.create(109.7, 27.6)),
+    new CircleHitbox(1.45, Vec.create(70.1, 27.6)),
+    new CircleHitbox(2, Vec.create(90, 45)),
+    new CircleHitbox(2, Vec.create(91.5, 44.99)),
+    new CircleHitbox(2, Vec.create(93, 44.95)),
+    new CircleHitbox(2, Vec.create(94.5, 44.84)),
+    new CircleHitbox(2, Vec.create(96, 44.61)),
+    new CircleHitbox(2, Vec.create(97.5, 44.23)),
+    new CircleHitbox(2, Vec.create(99, 43.65)),
+    new CircleHitbox(2, Vec.create(100.5, 42.8)),
+    new CircleHitbox(2, Vec.create(102, 41.61)),
+    new CircleHitbox(2, Vec.create(103.5, 39.99)),
+    new CircleHitbox(2, Vec.create(105, 37.78)),
+    new CircleHitbox(2, Vec.create(106.5, 34.72)),
+    new CircleHitbox(2, Vec.create(108, 30.23)),
+    new CircleHitbox(2, Vec.create(90, 45)),
+    new CircleHitbox(2, Vec.create(88.5, 44.99)),
+    new CircleHitbox(2, Vec.create(87, 44.95)),
+    new CircleHitbox(2, Vec.create(85.5, 44.84)),
+    new CircleHitbox(2, Vec.create(84, 44.61)),
+    new CircleHitbox(2, Vec.create(82.5, 44.23)),
+    new CircleHitbox(2, Vec.create(81, 43.65)),
+    new CircleHitbox(2, Vec.create(79.5, 42.8)),
+    new CircleHitbox(2, Vec.create(78, 41.61)),
+    new CircleHitbox(2, Vec.create(76.5, 39.99)),
+    new CircleHitbox(2, Vec.create(75, 37.78)),
+    new CircleHitbox(2, Vec.create(73.5, 34.72)),
+    new CircleHitbox(2, Vec.create(72, 30.23))
+);
+
 export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
     defaultTemplate => ({
         [defaultTemplate]: () => ({
@@ -164,40 +281,77 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             decals: [],
             wallsToDestroy: Infinity,
             floorImages: [],
+            floorZIndex: ZIndexes.BuildingsFloor,
             ceilingImages: [],
             ceilingZIndex: ZIndexes.BuildingsCeiling,
             floors: [],
+            graphics: [],
+            graphicsZIndex: ZIndexes.BuildingsFloor,
             groundGraphics: [],
             rotationMode: RotationMode.Limited,
             isFloor: false
         }),
         container: (
             id: number,
-            tint: number,
-            wallsId: number,
+            tintName: "White" | "Red" | "Green" | "Blue" | "Yellow",
             open: "open2" | "open1" | "closed",
             optimized = true,
             damaged?: boolean
         ) => {
+            const tint = ContainerTints[tintName];
+
+            let hitbox: Hitbox;
+            let wallHitbox: Hitbox | undefined;
             let spawnHitbox: Hitbox;
             switch (open) {
                 case "open2":
+                    hitbox = new HitboxGroup(
+                        RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
+                        RectangleHitbox.fromRect(1.85, 28, Vec.create(-6.1, 0))
+                    );
+                    wallHitbox = new HitboxGroup(
+                        RectangleHitbox.fromRect(0.91, 27.05, Vec.create(-6.11, 0)),
+                        RectangleHitbox.fromRect(0.91, 27.05, Vec.create(6.11, 0))
+                    );
                     spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
                     break;
                 case "open1":
+                    hitbox = new HitboxGroup(
+                        RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
+                        RectangleHitbox.fromRect(1.85, 28, Vec.create(-6.1, 0)),
+                        RectangleHitbox.fromRect(14, 1.85, Vec.create(0, -13.07))
+                    );
+                    wallHitbox = new HitboxGroup(
+                        RectangleHitbox.fromRect(0.91, 27.05, Vec.create(-6.11, 0)),
+                        RectangleHitbox.fromRect(0.91, 27.05, Vec.create(6.11, 0)),
+                        RectangleHitbox.fromRect(13.13, 0.92, Vec.create(0, -13.07))
+                    );
                     spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec.create(0, 2));
                     break;
                 case "closed":
                 default:
+                    hitbox = RectangleHitbox.fromRect(14, 28);
                     spawnHitbox = RectangleHitbox.fromRect(16, 30);
                     break;
             }
 
+            const closed = open === "closed";
+
             return {
                 idString: `container_${id}`,
                 name: `Container ${id}`,
+                hitbox,
+                reflectBullets: true,
+                material: "metal",
+                particle: "metal_particle",
                 spawnHitbox,
                 scopeHitbox: RectangleHitbox.fromRect(12, 27),
+                graphics: closed ? [] : [
+                    { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
+                    { color: ContainerWallOutlineTints[tintName], hitbox },
+                    { color: ContainerWallTints[tintName], hitbox: wallHitbox }
+                ],
+                graphicsZIndex: ZIndexes.BuildingsFloor + 1,
                 ceilingImages: optimized
                     ? [
                         {
@@ -218,25 +372,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                             tint
                         }
                     ],
-                floors: [
-                    {
-                        type: FloorNames.Metal,
-                        hitbox: RectangleHitbox.fromRect(14, 28)
-                    }
-                ],
-                obstacles: [
-                    {
-                        idString: `container_walls_${wallsId}`,
-                        position: Vec.create(0, 0),
-                        rotation: 0
-                    }
-                ],
-                lootSpawners: open === "closed"
-                    ? []
-                    : [{
-                        position: Vec.create(0, 0),
-                        table: "ground_loot"
-                    }]
+                floors: [{
+                    type: FloorNames.Metal,
+                    hitbox: RectangleHitbox.fromRect(14, 28)
+                }],
+                lootSpawners: closed ? [] : [{
+                    position: Vec.create(0, 0),
+                    table: "ground_loot"
+                }]
             };
         }
     })
@@ -323,6 +466,21 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "green_house",
             name: "Green House",
+            material: "stone",
+            particle: "wall_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(21.8, 1.88, Vec.create(-39.9, -30.2)),
+                RectangleHitbox.fromRect(51.88, 1.88, Vec.create(8, -30.2)),
+                RectangleHitbox.fromRect(1.88, 9.3, Vec.create(33, -2.55)),
+                RectangleHitbox.fromRect(10.78, 1.87, Vec.create(28.55, 27.46)),
+                RectangleHitbox.fromRect(1.88, 58, Vec.create(-49.86, -1)),
+                RectangleHitbox.fromRect(42.74, 1.87, Vec.create(-9.3, 27.46)),
+                RectangleHitbox.fromRect(10.02, 1.87, Vec.create(-45.79, 27.46)),
+                RectangleHitbox.fromRect(1.88, 15.98, Vec.create(33, 20.22)),
+                RectangleHitbox.fromRect(1.88, 11.08, Vec.create(33, -23.88)),
+                RectangleHitbox.fromRect(3.5, 3.5, Vec.create(42.75, -0.67)),
+                RectangleHitbox.fromRect(3.5, 3.5, Vec.create(42.75, 14.8))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(110, 70),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
@@ -365,7 +523,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "green_house_exterior", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "window", position: Vec.create(32.99, -12.81), rotation: 0 },
                 { idString: "window", position: Vec.create(17.59, 27.52), rotation: 1 },
                 { idString: "window", position: Vec.create(-23.44, -30.22), rotation: 1 },
@@ -412,6 +569,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "firework_warehouse",
             name: "Firework Warehouse",
+            material: "stone",
+            particle: "wall_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, -23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, 23)),
+                RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, 23)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, 15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, -15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, 15)),
+                RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, -15))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(110, 70),
             scopeHitbox: RectangleHitbox.fromRect(65, 48),
             floorImages: [
@@ -452,7 +621,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "firework_warehouse_exterior", position: Vec.create(0, 0), rotation: 0 },
                 { idString: randomBarrel, position: Vec.create(-27, 18) },
                 { idString: randomBarrel, position: Vec.create(27, -18) },
                 { idString: "window", position: Vec.create(32.4, 0), rotation: 2 },
@@ -475,7 +643,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "warehouse",
             name: "Warehouse",
-            spawnHitbox: RectangleHitbox.fromRect(60, 88),
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.7, 70.6, Vec.create(-19.8, 0)),
+                RectangleHitbox.fromRect(12, 1.7, Vec.create(-14.2, -34.5)),
+                RectangleHitbox.fromRect(12, 1.7, Vec.create(-14.2, 34.5)),
+                RectangleHitbox.fromRect(1.7, 70.6, Vec.create(19.8, 0)),
+                RectangleHitbox.fromRect(12, 1.7, Vec.create(14.2, -34.5)),
+                RectangleHitbox.fromRect(12, 1.7, Vec.create(14.2, 34.5))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(50, 92),
             scopeHitbox: RectangleHitbox.fromRect(40, 70),
             floorImages: [
                 {
@@ -506,9 +685,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "warehouse_walls", position: Vec.create(-19.8, 0), rotation: 0 },
-                { idString: "warehouse_walls", position: Vec.create(19.8, 0), rotation: 2 },
-
                 { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
                 { idString: "regular_crate", position: Vec.create(-14, -28.5) },
                 { idString: "regular_crate", position: Vec.create(14, 28.5) },
@@ -533,18 +709,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port_warehouse_red",
             name: "Red Port Warehouse",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: portWarehouseHitbox,
             spawnHitbox: RectangleHitbox.fromRect(72, 130),
             scopeHitbox: RectangleHitbox.fromRect(58, 118),
             floorImages: [
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(2, -30.3),
-                    scale: Vec.create(2.4, 2.15)
+                    position: Vec.create(2.04, -30.38)
                 },
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(-2, 30.3),
-                    scale: Vec.create(2.4, 2.15),
+                    position: Vec.create(-2.04, 30.38),
                     rotation: Math.PI
                 }
             ],
@@ -557,16 +735,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                {
-                    idString: "port_warehouse_walls",
-                    position: Vec.create(2, -30.2),
-                    rotation: 0
-                },
-                {
-                    idString: "port_warehouse_walls",
-                    position: Vec.create(-2, 30.2),
-                    rotation: 2
-                },
                 {
                     idString: "super_barrel",
                     position: Vec.create(-10, -52)
@@ -641,18 +809,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "port_warehouse_blue",
             name: "Blue Port Warehouse",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: portWarehouseHitbox,
             spawnHitbox: RectangleHitbox.fromRect(72, 130),
             scopeHitbox: RectangleHitbox.fromRect(58, 118),
             floorImages: [
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(2, -30.3),
-                    scale: Vec.create(2.4, 2.15)
+                    position: Vec.create(2.04, -30.38)
                 },
                 {
                     key: "port_warehouse_floor",
-                    position: Vec.create(-2, 30.3),
-                    scale: Vec.create(2.4, 2.15),
+                    position: Vec.create(-2.04, 30.38),
                     rotation: Math.PI
                 }
             ],
@@ -665,16 +835,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                {
-                    idString: "port_warehouse_walls",
-                    position: Vec.create(2, -30.2),
-                    rotation: 0
-                },
-                {
-                    idString: "port_warehouse_walls",
-                    position: Vec.create(-2, 30.2),
-                    rotation: 2
-                },
                 {
                     idString: "super_barrel",
                     position: Vec.create(-10, -52)
@@ -749,6 +909,22 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "refinery",
             name: "Refinery",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(57, 1.8, Vec.create(-22, -36.1)), // First topmost wall
+                RectangleHitbox.fromRect(30.75, 1.8, Vec.create(35.38, -36.1)), // Wall after the hole
+                RectangleHitbox.fromRect(2, 33.5, Vec.create(49.75, -22.25)), // Wall from top right to bottom right
+                RectangleHitbox.fromRect(16.25, 2.05, Vec.create(42.63, -6.53)), // Wall to the right of the entrance
+                RectangleHitbox.fromRect(38.5, 2.05, Vec.create(2.25, -6.53)), // Wall to the left of the entrance
+                RectangleHitbox.fromRect(2, 21.55, Vec.create(-16, 3.23)), // Wall on top of the window
+                RectangleHitbox.fromRect(2, 13.5, Vec.create(-16, 30.25)), // Wall bellow the window
+                RectangleHitbox.fromRect(35.5, 2, Vec.create(-32.75, 36.25)), // Bottommost wall
+                RectangleHitbox.fromRect(2, 74, Vec.create(-49.5, 0)), // Wall from topmost to bottommost
+                RectangleHitbox.fromRect(13.3, 2, Vec.create(-43.35, 9)), // inner door walls
+                RectangleHitbox.fromRect(10.5, 2, Vec.create(-21.25, 9))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(33.50, 72, Vec.create(-32.75, 0)),
@@ -796,11 +972,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                {
-                    idString: "refinery_walls",
-                    position: Vec.create(0, 0),
-                    rotation: 0
-                },
                 //
                 // Inner room obstacles
                 //
@@ -1043,6 +1214,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "red_house",
             name: "Red House",
+            material: "stone",
+            particle: "wall_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(2, 9, Vec.create(30.8, -26)),
+                RectangleHitbox.fromRect(2, 22, Vec.create(30.8, -0.2)),
+                RectangleHitbox.fromRect(2, 9.8, Vec.create(30.8, 25)),
+                RectangleHitbox.fromRect(19.8, 2, Vec.create(-22, -29.5)),
+                RectangleHitbox.fromRect(8.2, 2, Vec.create(26, -29.5)),
+                RectangleHitbox.fromRect(14, 2, Vec.create(4.6, -29.5)),
+                RectangleHitbox.fromRect(2, 32, Vec.create(-30.9, -13.5)),
+                RectangleHitbox.fromRect(2, 16, Vec.create(-30.9, 20.5)),
+                RectangleHitbox.fromRect(12.3, 2, Vec.create(-25.8, 28.9)),
+                RectangleHitbox.fromRect(39.4, 2, Vec.create(10.45, 28.9))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(80, 80),
             scopeHitbox: RectangleHitbox.fromRect(60, 56),
             floorImages: [
@@ -1198,11 +1383,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(31, -15.9),
                     rotation: 2
                 },
-                {
-                    idString: "red_house_exterior",
-                    position: Vec.create(0, 0),
-                    rotation: 2
-                }
             ],
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(16.44, -15.64) },
@@ -1212,6 +1392,23 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "red_house_v2",
             name: "Red House Variation 2",
+            material: "stone",
+            particle: "wall_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.8, 60.1, Vec.create(-31.25, -0.3)),
+                RectangleHitbox.fromRect(1.8, 40.5, Vec.create(30.1, -9)),
+                RectangleHitbox.fromRect(1.8, 6.5, Vec.create(30.1, 25.1)),
+
+                // Top walls
+                RectangleHitbox.fromRect(18.6, 1.8, Vec.create(21.6, -29.5)),
+                RectangleHitbox.fromRect(12, 1.8, Vec.create(-4.1, -29.5)),
+                RectangleHitbox.fromRect(10.5, 1.8, Vec.create(-26, -29.5)),
+
+                // Bottom Walls
+                RectangleHitbox.fromRect(18.6, 1.8, Vec.create(21.6, 28.7)),
+                RectangleHitbox.fromRect(12, 1.8, Vec.create(-4.1, 28.7)),
+                RectangleHitbox.fromRect(10.5, 1.8, Vec.create(-26, 28.7))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(80, 80),
             scopeHitbox: RectangleHitbox.fromRect(60, 56),
             floorImages: [
@@ -1247,8 +1444,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "red_house_v2_exterior", position: Vec.create(0, 0), rotation: 0 }, // body
-
                 { idString: "door", position: Vec.create(7.6, -29.6), rotation: 0 },
                 { idString: "door", position: Vec.create(6.7, 28.8), rotation: 2 },
 
@@ -1298,70 +1493,94 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "crane",
             name: "Crane",
-            spawnHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
-            ceilingHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
-            ceilingImages: [
-                {
-                    key: "crane_ceiling_4",
-                    position: Vec.create(131, -60),
-                    scale: Vec.create(2, 2)
-                },
-                {
-                    key: "crane_ceiling_2",
-                    position: Vec.create(77.5, -60),
-                    scale: Vec.create(2, 2)
-                },
-                {
-                    key: "crane_ceiling_1",
-                    position: Vec.create(31, -60),
-                    scale: Vec.create(2, 2)
-                },
-                {
-                    key: "crane_ceiling_3",
-                    position: Vec.create(-20, -60),
-                    scale: Vec.create(2, 2)
-                }
-            ],
-            ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
-            obstacles: [
-                { idString: "crane_base_part", position: Vec.create(-31.55, -87.3), rotation: 0 },
-                { idString: "crane_base_part", position: Vec.create(-31.55, -35.6), rotation: 0 },
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                // base ends
+                RectangleHitbox.fromRect(4.82, 1.8, Vec.create(32, -6.42)),
+                RectangleHitbox.fromRect(4.82, 1.8, Vec.create(-31.5, -6.42)),
+                RectangleHitbox.fromRect(4.82, 1.8, Vec.create(32, -135.5)),
+                RectangleHitbox.fromRect(4.82, 1.8, Vec.create(-31.5, -135.5)),
 
-                { idString: "crane_base_part", position: Vec.create(32, -87.3), rotation: 0 },
-                { idString: "crane_base_part", position: Vec.create(32, -35.6), rotation: 0 }
-            ]
+                // base parts
+
+                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(-31.55, -87.3)),
+                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(-31.55, -87.3)),
+                RectangleHitbox.fromRect(4.29, 31.46, Vec.create(-31.55, -87.3)),
+
+                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(-31.55, -35.6)),
+                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(-31.55, -35.6)),
+                RectangleHitbox.fromRect(4.29, 31.46, Vec.create(-31.55, -35.6)),
+
+                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(32, -87.3)),
+                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(32, -87.3)),
+                RectangleHitbox.fromRect(4.29, 31.46, Vec.create(32, -87.3)),
+
+                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(32, -35.6)),
+                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(32, -35.6)),
+                RectangleHitbox.fromRect(4.29, 31.46, Vec.create(32, -35.6))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(210, 140, Vec.create(55, -72)),
+            ceilingHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
+            floorImages: [
+                { key: "crane_base_part", position: Vec.create(-31.55, -87.3) },
+                { key: "crane_base_part", position: Vec.create(-31.55, -35.6) },
+
+                { key: "crane_base_part", position: Vec.create(32, -87.3) },
+                { key: "crane_base_part", position: Vec.create(32, -35.6) },
+
+                { key: "crane_base_end", position: Vec.create(32, -6.42) },
+                { key: "crane_base_end", position: Vec.create(-31.5, -6.42) },
+
+                { key: "crane_base_end", position: Vec.create(32, -135.5) },
+                { key: "crane_base_end", position: Vec.create(-31.5, -135.5) }
+            ],
+            floorZIndex: ZIndexes.ObstaclesLayer4,
+            ceilingImages: [
+                { key: "crane_ceiling_1", position: Vec.create(31, -60), scale: Vec.create(2, 2) },
+                { key: "crane_ceiling_2", position: Vec.create(77.5, -60), scale: Vec.create(2, 2) },
+                { key: "crane_ceiling_3", position: Vec.create(-20, -60), scale: Vec.create(2, 2) },
+                { key: "crane_ceiling_4", position: Vec.create(131, -60), scale: Vec.create(2, 2) }
+            ],
+            ceilingZIndex: ZIndexes.BuildingsCeiling + 1 // makes the crane ceiling render above container ceilings
         },
         {
-            idString: "port_shed",
-            name: "Port Shed",
+            idString: "shed",
+            name: "Shed",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.75, 29.5, Vec.create(-11.03, -1.7)), // Left wall
+                RectangleHitbox.fromRect(1.75, 9.2, Vec.create(9.43, -11.9)), // Right wall above window
+                RectangleHitbox.fromRect(1.75, 10.7, Vec.create(9.43, 7.6)), // Right wall below window
+                RectangleHitbox.fromRect(20, 1.75, Vec.create(-0.8, -15.56)), // Top wall
+                RectangleHitbox.fromRect(9, 1.75, Vec.create(-6.05, 12.19)) // Bottom wall
+            ),
             spawnHitbox: RectangleHitbox.fromRect(27, 37, Vec.create(-0.8, 0)),
             scopeHitbox: RectangleHitbox.fromRect(20, 27.5, Vec.create(-0.8, -1.5)),
             floorImages: [
                 {
-                    key: "port_shed_floor_1",
+                    key: "shed_floor_1",
                     position: Vec.create(0, -8.3)
                 },
                 {
-                    key: "port_shed_floor_2",
+                    key: "shed_floor_2",
                     position: Vec.create(0, 8.1)
                 }
             ],
             ceilingImages: [
                 {
-                    key: "port_shed_ceiling_1",
+                    key: "shed_ceiling_1",
                     position: Vec.create(-0.8, -9.025)
                 },
                 {
-                    key: "port_shed_ceiling_2",
+                    key: "shed_ceiling_2",
                     position: Vec.create(-0.8, 5.9)
                 }
             ],
             obstacles: [
-                {
-                    idString: "port_shed_exterior",
-                    position: Vec.create(-0.8, 0),
-                    rotation: 0
-                },
                 {
                     idString: "door",
                     position: Vec.create(3.95, 12.15),
@@ -1390,18 +1609,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ]
         },
-        simple("container", 1, ContainerTints.White, 1, "closed"),
-        simple("container", 2, ContainerTints.Red, 1, "closed"),
-        simple("container", 3, ContainerTints.Green, 2, "open1"),
-        simple("container", 4, ContainerTints.Green, 2, "open1", false, true),
-        simple("container", 5, ContainerTints.Blue, 3, "open1"),
-        simple("container", 6, ContainerTints.Blue, 3, "open1", false, true),
-        simple("container", 7, ContainerTints.Blue, 4, "open2"),
-        simple("container", 8, ContainerTints.Blue, 4, "open2", true, true),
-        simple("container", 9, ContainerTints.Yellow, 5, "open1"),
-        simple("container", 10, ContainerTints.Yellow, 6, "open2"),
-        simple("container", 12, ContainerTints.Green, 1, "closed"),
-        simple("container", 13, ContainerTints.Yellow, 1, "closed"),
+        simple("container", 1, "White", "closed"),
+        simple("container", 2, "Red", "closed"),
+        simple("container", 3, "Green", "open1"),
+        simple("container", 4, "Green", "open1", false, true),
+        simple("container", 5, "Blue", "open1"),
+        simple("container", 6, "Blue", "open1", false, true),
+        simple("container", 7, "Blue", "open2"),
+        simple("container", 8, "Blue", "open2", true, true),
+        simple("container", 9, "Yellow", "open1"),
+        simple("container", 10, "Yellow", "open2"),
+        simple("container", 12, "Green", "closed"),
+        simple("container", 13, "Yellow", "closed"),
 
         {
             idString: "container_11",
@@ -1425,6 +1644,93 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "cargo_ship",
             name: "Cargo Ship",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+
+                // outer walls
+                RectangleHitbox.fromRect(237, 3, Vec.create(-18.5, -45.5)),
+                RectangleHitbox.fromRect(3, 92, Vec.create(-135.5, 0)),
+                RectangleHitbox.fromRect(78.7, 3, Vec.create(-52.25, 45.5)),
+                RectangleHitbox.fromRect(35.5, 3, Vec.create(-119.5, 45.5)),
+                RectangleHitbox.fromRect(105.5, 3, Vec.create(50, 45.5)),
+
+                // inner walls
+
+                // cargo ship front
+                RectangleHitbox.fromRect(3.8, 17, Vec.create(99, -36.1)),
+                RectangleHitbox.fromRect(3.8, 17, Vec.create(99, 36.1)),
+
+                // vault
+                RectangleHitbox.fromRect(1.8, 19.5, Vec.create(98, 16.5)),
+                RectangleHitbox.fromRect(1.8, 19.5, Vec.create(98, -16.8)),
+                RectangleHitbox.fromRect(34, 1.7, Vec.create(114, -26.5)),
+                RectangleHitbox.fromRect(34, 1.7, Vec.create(114, 26.5)),
+                RectangleHitbox.fromRect(1.7, 53, Vec.create(130.65, 0)),
+
+                // gas can/control room?
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-21.5, 31.1)),
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-42.1, 31.1)),
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-21.5, -31.1)),
+                RectangleHitbox.fromRect(10.5, 1.6, Vec.create(-42.1, -31.1)),
+
+                // RectangleHitbox.fromRect(1.5, 61, Vec.create(-17, 0)),
+                RectangleHitbox.fromRect(1.5, 61, Vec.create(-46.5, 0)),
+
+                RectangleHitbox.fromRect(12.8, 0.9, Vec.create(-39, 42.35)),
+                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.7, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-32, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.3, 42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-46.1, 42.35)),
+
+                RectangleHitbox.fromRect(12.8, 0.9, Vec.create(-39, -42.35)),
+                RectangleHitbox.fromRect(13.15, 0.9, Vec.create(-24.7, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-32, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-17.3, -42.35)),
+                RectangleHitbox.fromRect(1.5, 2, Vec.create(-46.1, -42.35)),
+
+                new CircleHitbox(11.1, Vec.create(143.8, -0.5)),
+                new CircleHitbox(4, Vec.create(103, -43.3)),
+                new CircleHitbox(4, Vec.create(150.5, -7.5)),
+                new CircleHitbox(4, Vec.create(150.5, 7.5)),
+                new CircleHitbox(6, Vec.create(149, -2.5)),
+                new CircleHitbox(6, Vec.create(149, 2.5)),
+                new CircleHitbox(4, Vec.create(149, -12.5)),
+                new CircleHitbox(4, Vec.create(146.5, -16.5)),
+                new CircleHitbox(4, Vec.create(145.5, -18.5)),
+                new CircleHitbox(4, Vec.create(144, -20.5)),
+                new CircleHitbox(4, Vec.create(143, -22.5)),
+                new CircleHitbox(4, Vec.create(141.5, -24.5)),
+                new CircleHitbox(4, Vec.create(139.5, -26.5)),
+                new CircleHitbox(4, Vec.create(137.5, -28.5)),
+                new CircleHitbox(4, Vec.create(136, -30.5)),
+                new CircleHitbox(4, Vec.create(133.5, -32.5)),
+                new CircleHitbox(4, Vec.create(131, -34.5)),
+                new CircleHitbox(4, Vec.create(127, -36.5)),
+                new CircleHitbox(4, Vec.create(122.5, -38.5)),
+                new CircleHitbox(4, Vec.create(118, -39.5)),
+                new CircleHitbox(4, Vec.create(114, -40.5)),
+                new CircleHitbox(4, Vec.create(111, -41.5)),
+                new CircleHitbox(4, Vec.create(106, -42.5)),
+                new CircleHitbox(4, Vec.create(149, 12.5)),
+                new CircleHitbox(4, Vec.create(146.5, 16.5)),
+                new CircleHitbox(4, Vec.create(145.5, 18.5)),
+                new CircleHitbox(4, Vec.create(144, 20.5)),
+                new CircleHitbox(4, Vec.create(143, 22.5)),
+                new CircleHitbox(4, Vec.create(141.5, 24.5)),
+                new CircleHitbox(4, Vec.create(139.5, 26.5)),
+                new CircleHitbox(4, Vec.create(137.5, 28.5)),
+                new CircleHitbox(4, Vec.create(136, 30.5)),
+                new CircleHitbox(4, Vec.create(133.5, 32.5)),
+                new CircleHitbox(4, Vec.create(131, 34.5)),
+                new CircleHitbox(4, Vec.create(127, 36.5)),
+                new CircleHitbox(4, Vec.create(122.5, 38.5)),
+                new CircleHitbox(4, Vec.create(118, 39.5)),
+                new CircleHitbox(4, Vec.create(114, 40.5)),
+                new CircleHitbox(4, Vec.create(111, 41.5)),
+                new CircleHitbox(4, Vec.create(106, 42.5))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(320, 130, Vec.create(5, 5)),
             scopeHitbox: RectangleHitbox.fromRect(34, 51, Vec.create(115, 0)),
             puzzle: {
@@ -1491,9 +1797,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
 
             obstacles: [
-                { idString: "cargo_ship_front", position: Vec.create(23, -12.5), rotation: 0 },
-                { idString: "cargo_ship_walls", position: Vec.create(0, 0), rotation: 0 },
-
                 // vault/tango room
                 { idString: "tango_crate", position: Vec.create(126.25, 0), rotation: 3 },
                 { idString: "regular_crate", position: Vec.create(105.5, -20) },
@@ -1633,6 +1936,83 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "oil_tanker_ship",
             name: "Oil Tanker",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                // outer walls
+                RectangleHitbox.fromRect(250, 4.5, Vec.create(14, -42.6)),
+                RectangleHitbox.fromRect(98.25, 4.5, Vec.create(20.5, 42.6)),
+                RectangleHitbox.fromRect(71.5, 4.5, Vec.create(-74.5, 42.6)),
+                RectangleHitbox.fromRect(3.8, 6.2, Vec.create(-111.6, 42.6)),
+                RectangleHitbox.fromRect(3.8, 6.2, Vec.create(-111.6, -42.6)),
+                RectangleHitbox.fromRect(60, 4.5, Vec.create(110, 42.6)),
+                RectangleHitbox.fromRect(4.5, 80.5, Vec.create(137.5, 0)),
+
+                // oil barrels (small)
+                new CircleHitbox(4.8, Vec.create(7, 39.8)),
+                new CircleHitbox(4.8, Vec.create(7, -39.8)),
+                new CircleHitbox(4.8, Vec.create(-67.8, 39.8)),
+                new CircleHitbox(4.8, Vec.create(-67.8, -39.8)),
+                new CircleHitbox(4.8, Vec.create(94.25, 39.8)),
+                new CircleHitbox(4.8, Vec.create(94.25, -39.8)),
+
+                // vault
+                RectangleHitbox.fromRect(2, 80, Vec.create(-112.9, 0)),
+                RectangleHitbox.fromRect(18.7, 2, Vec.create(-83.7, -27.25)),
+                RectangleHitbox.fromRect(22.8, 2, Vec.create(-85.8, 17)),
+                RectangleHitbox.fromRect(1.9, 21.25, Vec.create(-75.5, 28)),
+                RectangleHitbox.fromRect(1.9, 2.7, Vec.create(-75, -4.9)),
+                RectangleHitbox.fromRect(38, 2, Vec.create(-93, -38.8)),
+                RectangleHitbox.fromRect(38, 2, Vec.create(-93, 38.8)),
+
+                // back
+                RectangleHitbox.fromRect(10, 25, Vec.create(-120, 0)),
+                RectangleHitbox.fromRect(3, 45, Vec.create(-115.5, 0)),
+                RectangleHitbox.fromRect(3, 35.5, Vec.create(-120.5, 0)),
+                RectangleHitbox.fromRect(3, 25, Vec.create(-125.5, 0.5)),
+                RectangleHitbox.fromRect(3, 38, Vec.create(-118.5, 0)),
+
+                // front
+                new CircleHitbox(13.25, Vec.create(178.5, 1)),
+                new CircleHitbox(3, Vec.create(140, -41.8)),
+                new CircleHitbox(3, Vec.create(187.5, -6)),
+                new CircleHitbox(3, Vec.create(187.5, 9)),
+                new CircleHitbox(3, Vec.create(186, -11)),
+                new CircleHitbox(3, Vec.create(183.5, -15)),
+                new CircleHitbox(3, Vec.create(182.5, -17)),
+                new CircleHitbox(3, Vec.create(181, -19)),
+                new CircleHitbox(3, Vec.create(180, -21)),
+                new CircleHitbox(3, Vec.create(178.5, -23)),
+                new CircleHitbox(3, Vec.create(176.5, -25)),
+                new CircleHitbox(3, Vec.create(174.5, -27)),
+                new CircleHitbox(3, Vec.create(173, -29)),
+                new CircleHitbox(3, Vec.create(170.5, -31)),
+                new CircleHitbox(3, Vec.create(168, -33)),
+                new CircleHitbox(3, Vec.create(164, -35)),
+                new CircleHitbox(3, Vec.create(159.5, -37)),
+                new CircleHitbox(3, Vec.create(155, -38)),
+                new CircleHitbox(3, Vec.create(151, -39)),
+                new CircleHitbox(3, Vec.create(148, -40)),
+                new CircleHitbox(3, Vec.create(143, -41)),
+                new CircleHitbox(3, Vec.create(186, 12)),
+                new CircleHitbox(3, Vec.create(183.5, 16)),
+                new CircleHitbox(3, Vec.create(182.5, 18)),
+                new CircleHitbox(3, Vec.create(181, 20)),
+                new CircleHitbox(3, Vec.create(180, 22)),
+                new CircleHitbox(3, Vec.create(178.5, 24)),
+                new CircleHitbox(3, Vec.create(176.5, 26)),
+                new CircleHitbox(3, Vec.create(174.5, 28)),
+                new CircleHitbox(3, Vec.create(173, 30)),
+                new CircleHitbox(3, Vec.create(170.5, 32)),
+                new CircleHitbox(3, Vec.create(168, 34)),
+                new CircleHitbox(3, Vec.create(164, 36)),
+                new CircleHitbox(3, Vec.create(159.5, 38)),
+                new CircleHitbox(3, Vec.create(155, 39)),
+                new CircleHitbox(3, Vec.create(151, 40)),
+                new CircleHitbox(3, Vec.create(148, 41)),
+                new CircleHitbox(3, Vec.create(143, 42))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(360, 130, Vec.create(30, 0)),
             scopeHitbox: RectangleHitbox.fromRect(38, 80, Vec.create(-94, 0)),
             puzzle: {
@@ -1695,10 +2075,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "oil_tanker_ship_front", position: Vec.create(60, -11), rotation: 0 },
-                { idString: "oil_tanker_ship_walls", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "oil_tanker_ship_back", position: Vec.create(0, 1), rotation: 0 },
-
                 // back
                 { idString: "regular_crate", position: Vec.create(-55.9, 32.7) },
                 { idString: "barrel", position: Vec.create(-62, 23) },
@@ -1755,6 +2131,24 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "oil_tanker_tanks",
             name: "Oil Tanker Tanks",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                new CircleHitbox(31.25, Vec.create(-0.5, 4.4)),
+                new CircleHitbox(31.25, Vec.create(-72.25, 4.4)),
+                new CircleHitbox(31.25, Vec.create(73.1, 4.4)),
+                RectangleHitbox.fromRect(10.5, 16.3, Vec.create(-98.5, 5)),
+                RectangleHitbox.fromRect(17.5, 13, Vec.create(-74.7, -29.7)),
+                RectangleHitbox.fromRect(4.6, 37.8, Vec.create(-32.5, 4)),
+                RectangleHitbox.fromRect(4.6, 37.8, Vec.create(-39.9, 4)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(10.5, -13.3)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(10.25, 22.6)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(62, -13.3)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(62, 22.6)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(-61.25, -13.3)),
+                RectangleHitbox.fromRect(30, 20, Vec.create(-60, 22))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(200, 90),
             ceilingImages: [
                 {
@@ -1767,10 +2161,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(53.4, 0.06),
                     scale: Vec.create(1.07, 1.07)
                 }
-            ],
-            obstacles: [
-                { idString: "oil_tanker_tanks_body", position: Vec.create(0, 0), rotation: 0 }
-            ] as BuildingObstacle[]
+            ]
         },
         {
             idString: "port",
@@ -2099,19 +2490,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         rotation: 0
                     })
                 ))(),
-                { idString: "port_fence_side", position: Vec.create(139.95, -131.59), rotation: 1 },
-
-                { idString: "crane_base_end", position: Vec.create(65.5, 18.59), rotation: 0 },
-                { idString: "crane_base_end", position: Vec.create(129, -110.46), rotation: 0 },
-                { idString: "crane_base_end", position: Vec.create(129, 18.59), rotation: 0 },
-                { idString: "crane_base_end", position: Vec.create(65.5, -110.46), rotation: 0 }
+                { idString: "port_fence_side", position: Vec.create(139.95, -131.59), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "container_1", position: Vec.create(-40, 40), orientation: 1 },
                 { idString: "crane", position: Vec.create(97, 25) },
                 { idString: "port_warehouse_red", position: Vec.create(-95, -59), orientation: 1 },
                 { idString: "port_warehouse_blue", position: Vec.create(-97, 15), orientation: 3 },
-                { idString: "port_shed", position: Vec.create(-25, -134), orientation: 1 },
+                { idString: "shed", position: Vec.create(-25, -134), orientation: 1 },
                 // Below port shed
                 { idString: "porta_potty", position: Vec.create(-47, -140.8), orientation: 1 },
                 // Top left corner above crane
@@ -2275,6 +2661,24 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "armory_barracks",
             name: "Armory Barracks",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                new RectangleHitbox(Vec.create(23.44, -41), Vec.create(25.54, -15.1)),
+                new RectangleHitbox(Vec.create(23.44, -4), Vec.create(25.54, 23.13)),
+                new RectangleHitbox(Vec.create(23.44, 34.23), Vec.create(25.54, 41)),
+                new RectangleHitbox(Vec.create(-25.51, -42.34), Vec.create(-1.91, -40.25)),
+                new RectangleHitbox(Vec.create(7, 16.1), Vec.create(24, 18.2)),
+                new RectangleHitbox(Vec.create(8.18, -42.34), Vec.create(25.54, -40.25)),
+                new RectangleHitbox(Vec.create(-25.51, -41), Vec.create(-23.42, 17.54)),
+                new RectangleHitbox(Vec.create(-25.51, 28.57), Vec.create(-23.42, 42.35)),
+                new RectangleHitbox(Vec.create(-24, 40.25), Vec.create(-4.33, 42.35)),
+                new RectangleHitbox(Vec.create(5.76, 40.25), Vec.create(25.54, 42.35)),
+                new RectangleHitbox(Vec.create(4.05, 15.59), Vec.create(7.06, 18.77)),
+                new RectangleHitbox(Vec.create(-4.12, -21.39), Vec.create(-1.11, -18.21)),
+                new RectangleHitbox(Vec.create(-24, -20.85), Vec.create(-4, -18.76))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(50, 84),
             scopeHitbox: RectangleHitbox.fromRect(50, 84),
             floorImages: [
@@ -2304,7 +2708,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 hitbox: RectangleHitbox.fromRect(50, 84)
             }],
             obstacles: [
-                { idString: "armory_barracks_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "door", position: Vec.create(2.7, -41.3), rotation: 2 },
                 { idString: "fridge", position: Vec.create(-19.8, -35.5), rotation: 1 },
                 { idString: "stove", position: Vec.create(-19.8, -26.1), rotation: 1 },
@@ -2326,6 +2729,17 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "armory_center",
             name: "Armory Center",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(2.09, 42, Vec.create(16.38, 0)),
+                RectangleHitbox.fromRect(32.34, 2.08, Vec.create(1.24, -21.87)),
+                RectangleHitbox.fromRect(2.09, 3.97, Vec.create(-13.88, -19.01)),
+                RectangleHitbox.fromRect(2.09, 8.27, Vec.create(-13.88, 16.87)),
+                RectangleHitbox.fromRect(2.09, 8.58, Vec.create(-13.88, -2.64)),
+                RectangleHitbox.fromRect(32.34, 2.07, Vec.create(1.24, 21.88))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
             scopeHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
             floorImages: [
@@ -2355,7 +2769,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 hitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0))
             }],
             obstacles: [
-                { idString: "armory_center_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "door", position: Vec.create(-13.9, -12.43), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(12.45, -11.6), rotation: 3 },
                 { idString: "small_table", position: Vec.create(8.85, 1.6), rotation: 1, variation: 0 },
@@ -2369,6 +2782,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "armory_vault",
             name: "Armory Vault",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
+                RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
+                RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
+                RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
+                RectangleHitbox.fromRect(2.09, 11.07, Vec.create(-13.96, 10.47)),
+                RectangleHitbox.fromRect(29, 2.09, Vec.create(21.9, -6.66)),
+                RectangleHitbox.fromRect(2.07, 37, Vec.create(-36.01, -2.5)),
+                RectangleHitbox.fromRect(35.39, 2.09, Vec.create(-19.35, 16.52)),
+                RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
             scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
             puzzle: {
@@ -2403,7 +2830,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(-25, -2.25)
             }],
             obstacles: [
-                { idString: "armory_vault_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "door", position: Vec.create(3.8, 16.5), rotation: 0 },
                 { idString: "window", position: Vec.create(18.1, 16.5), rotation: 1 },
                 { idString: "gun_case", position: Vec.create(31.9, 10), rotation: 3 },
@@ -2454,7 +2880,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "armory_barracks", position: Vec.create(-41.31, 27.86) },
                 { idString: "armory_center", position: Vec.create(55.4, 15.07) },
                 { idString: "armory_vault", position: Vec.create(-35.03, -58.37) },
-                { idString: "port_shed", position: Vec.create(-60.9, -65.63), orientation: 2 },
+                { idString: "shed", position: Vec.create(-60.9, -65.63), orientation: 2 },
                 { idString: "porta_potty", position: Vec.create(31.87, -60.35), orientation: 1 }
             ],
             groundGraphics: [
@@ -2719,6 +3145,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "tugboat_red",
             name: "Tugboat",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: tugboatHitbox,
             spawnMode: MapObjectSpawnMode.Beach,
             spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
             scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
@@ -2743,7 +3173,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
-                { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
                 { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
                 { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
                 { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
@@ -2770,6 +3199,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "tugboat_white",
             name: "Tugboat",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: tugboatHitbox,
             spawnMode: MapObjectSpawnMode.Beach,
             spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
             scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
@@ -2794,7 +3227,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
-                { idString: "tugboat", position: Vec.create(90, 0), rotation: 0 },
                 { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
                 { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
                 { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
@@ -2818,6 +3250,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "sea_traffic_control",
             name: "Sea Traffic Control",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.87, 20.8, Vec.create(19.6, -20.4)),
+                RectangleHitbox.fromRect(2.37, 1.52, Vec.create(19.85, 1.62)),
+                RectangleHitbox.fromRect(17.25, 1.74, Vec.create(11.91, 25.14)),
+                RectangleHitbox.fromRect(1.78, 55, Vec.create(-20.19, -2.5)),
+                RectangleHitbox.fromRect(2.4, 1.51, Vec.create(19.87, 13.27)),
+                RectangleHitbox.fromRect(14.31, 1.78, Vec.create(-13.93, 25.12)),
+                RectangleHitbox.fromRect(40.08, 1.78, Vec.create(-1.04, -29.91))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(48, 98, Vec.create(0, 15)),
             scopeHitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)),
             spawnMode: MapObjectSpawnMode.Beach,
@@ -2841,7 +3285,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
             ],
             obstacles: [
-                { idString: "sea_traffic_control", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "sandbags", position: Vec.create(-16.79, 33.53), rotation: 1 },
                 { idString: "sandbags", position: Vec.create(-16.79, 47.1), rotation: 1 },
                 { idString: "sandbags", position: Vec.create(-14.15, 58.27), rotation: 2 },
@@ -2873,6 +3316,25 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "small_bridge",
             name: "Small Bridge",
+            noBulletCollision: true,
+            material: "wood",
+            particle: "furniture_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(1.02, 56, Vec.create(6.39, 0)),
+                RectangleHitbox.fromRect(1.02, 56, Vec.create(-6.39, 0)),
+                ...Array.from({ length: 2 }, (_, i) => {
+                    const a = i === 0 ? 1 : -1;
+                    return Array.from({ length: 2 }, (_, i) => {
+                        const b = i === 0 ? 1 : -1;
+                        return [
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 0)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 9.54 * b)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 19.17 * b)),
+                            new CircleHitbox(1.1, Vec.create(6.39 * a, 27.97 * b))
+                        ];
+                    }).flat();
+                }).flat()
+            ),
             spawnHitbox: RectangleHitbox.fromRect(20, 62),
             bridgeSpawnOptions: {
                 minRiverWidth: 0,
@@ -2892,9 +3354,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 { type: FloorNames.Wood, hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec.create(0, 0)) }
             ],
-            obstacles: [
-                { idString: "small_bridge", position: Vec.create(0, 0), rotation: 0 }
-            ],
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(0, 0) }
             ]
@@ -2902,6 +3361,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "large_bridge",
             name: "Large Bridge",
+            material: "stone",
+            particle: "rock_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                // Main Bridge Sides
+                RectangleHitbox.fromRect(4, 136, Vec.create(21.5, -1.5)),
+                RectangleHitbox.fromRect(4, 136, Vec.create(-21.5, -1.5)),
+
+                // Cinder Blocks on Edge of Bridge
+                RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, -72)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(21.5, -72)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, 69)),
+                RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(105, 230),
             bridgeSpawnOptions: {
                 minRiverWidth: 20,
@@ -2958,8 +3431,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(45, 210, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "large_bridge", position: Vec.create(0, 0), rotation: 0 },
-
                 // North End of Bridge
                 { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
 
@@ -3002,8 +3473,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             subBuildings: [
                 // North West Shed
-                { idString: "port_shed", position: Vec.create(-36, -95) },
-                { idString: "port_shed", position: Vec.create(-36, -95), orientation: 2 }
+                { idString: "shed", position: Vec.create(-36, -95) },
+                { idString: "shed", position: Vec.create(-36, -95), orientation: 2 }
             ]
         },
         {
@@ -3097,6 +3568,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_secret_room",
             name: "Headquarters Secret Room",
+            material: "stone",
+            particle: "hq_stone_wall_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(9.35, 1.6, Vec.create(-5.8, -13.5)),
+                RectangleHitbox.fromRect(1.6, 27, Vec.create(-9.7, 0)),
+                RectangleHitbox.fromRect(20, 1.6, Vec.create(0, 13))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(19, 26),
             scopeHitbox: RectangleHitbox.fromRect(19, 26),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
@@ -3107,7 +3586,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             obstacles: [
                 // secret room
-                { idString: "headquarters_secret_room_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "secret_door", position: Vec.create(3.5, -13.5), rotation: 2 },
                 { idString: "aegis_golden_case", position: Vec.create(0.25, 9), lootSpawnOffset: Vec.create(0, -2), rotation: 2 }
             ] as BuildingObstacle[]
@@ -3115,6 +3593,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
+            material: "stone",
+            particle: "hq_stone_wall_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                // outer
+                RectangleHitbox.fromRect(1.75, 81.8, Vec.create(69.85, -80)),
+                RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.9)),
+                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.15, -83)),
+                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-64.5, -46.7)),
+                RectangleHitbox.fromRect(1.75, 71.5, Vec.create(-71.1, -12)),
+                RectangleHitbox.fromRect(1.75, 71, Vec.create(-22.5, -12)),
+                RectangleHitbox.fromRect(48, 1.75, Vec.create(-47, 23)),
+
+                // inner
+                RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.5)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
+                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.1, -96)),
+                RectangleHitbox.fromRect(92, 1.8, Vec.create(23, -40.2)),
+                RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
+                RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(180, 190, Vec.create(0, -35)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(143, 72.5, Vec.create(-0.5, -12.5)),
@@ -3185,7 +3685,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 */
                 { idString: "hq_stair_upper_wall", position: Vec.create(-46.5, -100.5), rotation: 0 },
                 { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "headquarters_walls_second_floor", position: Vec.create(0, 0), rotation: 0 },
 
                 // ---------------------------------------------------------------------------------------------------------------
                 // discussion room? (bottom left)
@@ -3277,6 +3776,44 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters",
             name: "Headquarters",
+            material: "stone",
+            particle: "hq_stone_wall_particle",
+            particleVariations: 2,
+            hitbox: new HitboxGroup(
+                // Outer walls
+                RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25)),
+                RectangleHitbox.fromRect(1.75, 55, Vec.create(69.5, -22.5)),
+                RectangleHitbox.fromRect(1.75, 48, Vec.create(69.5, -84.25)),
+                RectangleHitbox.fromRect(45.6, 1.75, Vec.create(46.02, -107.4)),
+                RectangleHitbox.fromRect(71.6, 1.75, Vec.create(-23.1, -107.5)),
+                RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58, -76.25)),
+                RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58, -35)),
+                RectangleHitbox.fromRect(24.9, 1.7, Vec.create(-59.5, -35)),
+                RectangleHitbox.fromRect(1.75, 70, Vec.create(-71, 0.5)),
+                RectangleHitbox.fromRect(30, 1.75, Vec.create(-55.9, 34.65)),
+                RectangleHitbox.fromRect(18, 1.75, Vec.create(-11.5, 34.75)),
+                RectangleHitbox.fromRect(12.25, 1.75, Vec.create(14.75, 34.75)),
+                RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75)),
+
+
+                // Inner walls
+
+                RectangleHitbox.fromRect(1.55, 61, Vec.create(-19.7, 3.5)),
+                RectangleHitbox.fromRect(20.5, 1.55, Vec.create(-10.25, -26.3)),
+                RectangleHitbox.fromRect(53.5, 1.55, Vec.create(42.1, -26.4)),
+
+                RectangleHitbox.fromRect(2, 18.6, Vec.create(-47.4, -12.65)),
+                RectangleHitbox.fromRect(29.5, 1.51, Vec.create(-55.6, -2.6)),
+                RectangleHitbox.fromRect(1.51, 8, Vec.create(-41.6, 2)),
+                RectangleHitbox.fromRect(1.51, 18, Vec.create(-41.6, 25)),
+                RectangleHitbox.fromRect(1.5, 40.5, Vec.create(-34.1, -86.3)),
+
+                // squares
+                RectangleHitbox.fromRect(4, 4.8, Vec.create(-47.3, -34.6)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(32.5, -64.1)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(10.9, -64.1)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(-33.5, -64))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
@@ -3386,8 +3923,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "headquarters_bottom_entrance", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "headquarters_outer_walls", position: Vec.create(0, 0), rotation: 0 },
-                { idString: "headquarters_inner_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_wood_obstacles", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_sinks", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_alarm_barriers", position: Vec.create(0, 0), rotation: 0 },
@@ -3548,6 +4083,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
+            reflectBullets: true,
+            anyLayer: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(12, 1, Vec.create(0, -8)),
+                RectangleHitbox.fromRect(1.5, 16.9, Vec.create(5.8, 0)),
+                RectangleHitbox.fromRect(1.5, 16.9, Vec.create(-5.8, 0))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             floorImages: [{
                 key: "small_bunker_entrance",
@@ -3558,7 +4102,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "bunker_stair_walls", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "bunker_stair", position: Vec.create(0, 9), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
@@ -3566,6 +4109,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "small_bunker_main",
             name: "Small Bunker",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(44.5, 1.7, Vec.create(0, -18)),
+                RectangleHitbox.fromRect(1.7, 37.9, Vec.create(21.5, 0)),
+                RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
+                RectangleHitbox.fromRect(16, 1.7, Vec.create(-13.1, 18)),
+                RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18)),
+                RectangleHitbox.fromRect(1.7, 15.9, Vec.create(-6, 25)),
+                RectangleHitbox.fromRect(1.7, 15.9, Vec.create(6, 25))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(42, 34.5),
@@ -3655,6 +4210,23 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "blue_house",
             name: "Blue House",
             rotationMode: RotationMode.None,
+            hitbox: new HitboxGroup(
+                // Left.
+                RectangleHitbox.fromRect(2, 11, Vec.create(-34.4, 18.25)),
+                RectangleHitbox.fromRect(2, 32.55, Vec.create(-34.4, -14.6)),
+
+                // Right.
+                RectangleHitbox.fromRect(2, 20.5, Vec.create(34.5, 13.1)),
+                RectangleHitbox.fromRect(2, 21.5, Vec.create(34.5, -19)),
+
+                // Center and corners.
+                RectangleHitbox.fromRect(10, 2, Vec.create(-29.25, -29.9)), // TL
+                RectangleHitbox.fromRect(6, 2, Vec.create(-10.8, -29.9)),
+                RectangleHitbox.fromRect(58, 2, Vec.create(5.6, 22.5)),
+                RectangleHitbox.fromRect(33.4, 2, Vec.create(18.9, -29.9)) // TR
+            ),
+            material: "stone",
+            particle: "wall_particle",
             spawnHitbox: RectangleHitbox.fromRect(90, 90),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
@@ -3707,7 +4279,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "blue_house_exterior", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "blue_house_mini_vault_walls", position: Vec.create(0, 0), rotation: 0 },
 
                 // windows

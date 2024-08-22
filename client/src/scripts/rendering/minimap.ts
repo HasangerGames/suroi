@@ -12,7 +12,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
 export class Minimap {
@@ -217,42 +217,9 @@ export class Minimap {
             if (!building.isBuilding) continue;
 
             const definition = building.definition;
-            const drawGroundGraphics = (hitbox: Hitbox): void => {
-                switch (hitbox.type) {
-                    case HitboxType.Rect: {
-                        ctx.rect(
-                            hitbox.min.x * scale,
-                            hitbox.min.y * scale,
-                            (hitbox.max.x - hitbox.min.x) * scale,
-                            (hitbox.max.y - hitbox.min.y) * scale
-                        );
-                        break;
-                    }
-                    case HitboxType.Circle:
-                        ctx.arc(
-                            hitbox.position.x * scale,
-                            hitbox.position.y * scale,
-                            hitbox.radius * scale,
-                            0,
-                            Math.PI * 2
-                        );
-                        break;
-                    case HitboxType.Polygon:
-                        ctx.poly(
-                            hitbox.points.map(v => Vec.scale(v, scale))
-                        );
-                        break;
-                    case HitboxType.Group:
-                        for (const hitBox of hitbox.hitboxes) {
-                            drawGroundGraphics(hitBox);
-                        }
-                        break;
-                }
-            };
-
             for (const ground of definition.groundGraphics) {
                 ctx.beginPath();
-                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
+                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation), ctx, scale);
                 ctx.closePath();
                 ctx.fill(ground.color);
             }
@@ -336,6 +303,18 @@ export class Minimap {
                         sprite.scale.y *= image.scale?.y ?? 1;
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         mapRender.addChild(sprite);
+                    }
+
+                    if (definition.graphics.length) {
+                        const ctx = new Graphics();
+                        ctx.zIndex = definition.graphicsZIndex;
+                        for (const graphics of definition.graphics) {
+                            ctx.beginPath();
+                            drawGroundGraphics(graphics.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation), ctx, 1);
+                            ctx.closePath();
+                            ctx.fill(graphics.color);
+                        }
+                        mapRender.addChild(ctx);
                     }
                     break;
                 }

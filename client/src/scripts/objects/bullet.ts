@@ -12,6 +12,7 @@ import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import type { Building } from "./building";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -67,13 +68,16 @@ export class Bullet extends BaseBullet {
 
             for (const collision of collisions) {
                 const object = collision.object;
+                const type = object.type;
+
+                const { isObstacle, isPlayer, isBuilding } = object;
 
                 if (
                     (
-                        object.isPlayer || (object.isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair)
+                        isPlayer || (isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair) || isBuilding
                     ) && adjacentOrEqualLayer((object.layer ?? 0), this._layer)
                 ) {
-                    (object as Obstacle | Player).hitEffect(
+                    (object as Obstacle | Player | Building).hitEffect(
                         collision.intersection.point,
                         Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x)
                     );
@@ -97,8 +101,10 @@ export class Bullet extends BaseBullet {
                         this._layer = object.layer;
                         continue;
                     }
-                }
-                if (this.definition.penetration.players && object.isPlayer) continue;
+                } else if (
+                    (isPlayer && this.definition.penetration.players)
+                    || (isBuilding && object.definition.noBulletCollision)
+                ) continue;
 
                 this.dead = true;
                 this.position = collision.intersection.point;

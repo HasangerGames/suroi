@@ -21,7 +21,9 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
     readonly scopeHitbox?: Hitbox;
     readonly spawnHitbox: Hitbox;
-    readonly hitbox: Hitbox;
+    readonly hitbox?: Hitbox;
+
+    readonly collidable: boolean;
 
     private _wallsToDestroy: number;
 
@@ -58,7 +60,8 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         this.rotation = orientation;
         this._wallsToDestroy = this.definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
-        this.hitbox = this.spawnHitbox;
+        this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation);
+        this.collidable = this.damageable = !!this.definition.hitbox;
 
         if (this.definition.scopeHitbox !== undefined) {
             this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);

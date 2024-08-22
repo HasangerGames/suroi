@@ -834,11 +834,3 @@ export interface InventoryItemDefinition extends ItemDefinition {
         }
     }
 }
-
-export const ContainerTints = {
-    White: 0xc0c0c0,
-    Red: 0xa32900,
-    Green: 0x00a30e,
-    Blue: 0x005fa3,
-    Yellow: 0xcccc00
-};
