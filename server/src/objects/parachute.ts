@@ -82,12 +82,12 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
 
             // loop again to make sure loot added by destroyed obstacles is checked
             for (const loot of this.game.grid.intersectsHitbox(this.hitbox)) {
-                if (loot instanceof Loot && this.hitbox.collidesWith(loot.hitbox)) {
+                if (loot.isLoot && this.hitbox.collidesWith(loot.hitbox)) {
                     if (loot.hitbox.collidesWith(crate.hitbox)) {
                         loot.hitbox.resolveCollision(crate.hitbox);
                     }
 
-                    loot.push(
+                    (loot as Loot).push(
                         Angle.betweenPoints(this.position, loot.position),
                         -0.03
                     );

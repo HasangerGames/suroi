@@ -654,7 +654,7 @@ export class Game {
         for (const emote of updateData.emotes ?? []) {
             if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
-            if (player instanceof Player) {
+            if (player?.isPlayer) {
                 player.sendEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
@@ -765,15 +765,16 @@ export class Game {
             const detectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
+                const { isLoot, isObstacle, isPlayer } = object;
                 if (
-                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player)))
+                    (isLoot || ((isObstacle || isPlayer) && object.canInteract(player)))
                     && object.hitbox.collidesWith(detectionHitbox) && equalLayer(object.layer, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object.canInteract(player) || object instanceof Obstacle || object instanceof Player) && dist < interactable.minDist) {
+                    if ((object.canInteract(player) || isObstacle || isPlayer) && dist < interactable.minDist) {
                         interactable.minDist = dist;
                         interactable.object = object;
-                    } else if (object instanceof Loot && dist < uninteractable.minDist) {
+                    } else if (isLoot && dist < uninteractable.minDist) {
                         uninteractable.minDist = dist;
                         uninteractable.object = object;
                     }
@@ -781,7 +782,7 @@ export class Game {
             }
 
             const object = interactable.object ?? uninteractable.object;
-            const offset = object instanceof Obstacle ? object.door?.offset : undefined;
+            const offset = object?.isObstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
 
             const bind: string | undefined = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
@@ -815,7 +816,7 @@ export class Game {
                     interactMsg,
                     interactText
                 } = this.uiManager.ui;
-                const type = object instanceof Loot ? object.definition.itemType : undefined;
+                const type = object?.isLoot ? object.definition.itemType : undefined;
 
                 // Update interact message
                 if (object !== undefined || (isAction && showCancel)) {
@@ -887,7 +888,7 @@ export class Game {
                     // Auto pickup (top 10 conditionals)
                     if (
                         this.console.getBuiltInCVar("cv_autopickup")
-                        && object instanceof Loot
+                        && object?.isLoot
                         && autoPickup
                         && (
                             (
@@ -934,7 +935,7 @@ export class Game {
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
-                        object instanceof Obstacle
+                        object?.isObstacle
                         && object.canInteract(player)
                         && object.definition.isDoor
                         && object.door?.offset === 0

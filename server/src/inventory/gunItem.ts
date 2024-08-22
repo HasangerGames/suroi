@@ -121,10 +121,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
             const object of
             this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))
         ) {
+            const notObstacleOrBuilding = !(object.isObstacle || object.isBuilding);
             if (
                 object.dead
                 || object.hitbox === undefined
-                || !(object instanceof Obstacle || object instanceof Building)
+                || notObstacleOrBuilding
                 || object.definition.noCollisions
             ) continue;
 
@@ -135,8 +136,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 if (
                     object.dead
                     || object.hitbox === undefined
-                    || !(object instanceof Obstacle || object instanceof Building)
-                    || object.definition.noCollisions
+                    || notObstacleOrBuilding
+                    || (object as Obstacle | Building).definition.noCollisions
                 ) continue;
 
                 const intersection = object.hitbox.intersectsLine(owner.position, position);

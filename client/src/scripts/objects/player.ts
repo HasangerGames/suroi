@@ -1143,15 +1143,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 && (
                                     (
                                         object.damageable
-                                        && (object instanceof Obstacle || object instanceof Player || (object instanceof Building && object.hitbox))
+                                        && (object.isObstacle || object.isPlayer || (object.isBuilding && object.hitbox))
                                     ) || (object.isThrowableProjectile && object.c4)
                                 )
-                                && object.hitbox.collidesWith(hitbox)
+                                && object.hitbox!.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.layer)
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
-                            if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
-                            if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
+                            if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
+                            if (b.isObstacle && b.definition.noMeleeCollision) return -Infinity;
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)

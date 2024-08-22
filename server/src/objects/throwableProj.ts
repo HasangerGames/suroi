@@ -209,9 +209,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         const damagedThisTick = new Set<GameObject>();
 
         for (const object of this.game.grid.intersectsHitbox(this.hitbox, this.layer)) {
-            const isObstacle = object instanceof Obstacle;
-            const isPlayer = object instanceof Player;
-            const isBuilding = object instanceof Building;
+            const { isObstacle, isPlayer, isBuilding } = object;
 
             if (
                 object.dead

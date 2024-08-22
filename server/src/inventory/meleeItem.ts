@@ -72,8 +72,8 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             && adjacentOrEqualLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
-                    if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
-                    if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
+                    if (a.isObstacle && (a as Obstacle).definition.noMeleeCollision) return Infinity;
+                    if (b.isObstacle && (b as Obstacle).definition.noMeleeCollision) return -Infinity;
 
                     return a.hitbox.distanceTo(this.owner.hitbox).distance - b.hitbox.distanceTo(this.owner.hitbox).distance;
                 });
@@ -83,15 +83,15 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     const closestObject = damagedObjects[i];
                     let multiplier = 1;
 
-                    if (closestObject instanceof Obstacle) {
-                        multiplier = definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
+                    if (closestObject.isObstacle) {
+                        multiplier = definition.piercingMultiplier !== undefined && (closestObject as Obstacle).definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
                     }
 
-                    if (closestObject instanceof ThrowableProjectile) { // C4
+                    if (closestObject.isThrowableProjectile) { // C4
                         // Currently this code treats C4 as if it is an obstacle in terms of melee damage.
-                        closestObject.damageC4(definition.damage * definition.obstacleMultiplier);
+                        (closestObject as ThrowableProjectile).damageC4(definition.damage * definition.obstacleMultiplier);
                     } else {
                         closestObject.damage({
                             amount: definition.damage * multiplier,
@@ -100,8 +100,8 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         });
                     }
 
-                    if (closestObject instanceof Obstacle && !closestObject.dead) {
-                        closestObject.interact(this.owner);
+                    if (closestObject.isObstacle && !closestObject.dead) {
+                        (closestObject as Obstacle).interact(this.owner);
                     }
                 }
 

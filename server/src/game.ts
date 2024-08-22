@@ -765,10 +765,10 @@ export class Game implements GameData {
                     const radiusHitbox = new CircleHitbox(60, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (
-                            object instanceof Player
+                            object.isPlayer
                             // teamMode should guarantee the `team` object's existence
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            && (!this.teamMode || !team!.players.includes(object))
+                            && (!this.teamMode || !team!.players.includes(object as Player))
                         ) {
                             foundPosition = false;
                         }
@@ -1191,7 +1191,7 @@ export class Game implements GameData {
                 // second loop, buildings
                 for (const object of this.grid.intersectsHitbox(thisHitbox)) {
                     if (
-                        object instanceof Building
+                        object.isBuilding
                         && object.scopeHitbox
                         && object.definition.wallsToDestroy === Infinity
                     ) {

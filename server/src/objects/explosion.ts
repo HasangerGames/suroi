@@ -73,15 +73,16 @@ export class Explosion {
             const { min, max } = this.definition.radius;
             for (const collision of lineCollisions) {
                 const object = collision.object;
+                const { isPlayer, isObstacle, isLoot, isThrowableProjectile } = object;
 
                 if (!damagedObjects.has(object.id)) {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if ((object instanceof Player || object instanceof Obstacle) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                    if ((isPlayer || isObstacle) && adjacentOrEqualLayer(object.layer, this.layer)) {
                         object.damage({
                             amount: this.definition.damage
-                            * (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1)
+                            * (isObstacle ? this.definition.obstacleMultiplier : 1)
                             * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
@@ -89,10 +90,10 @@ export class Explosion {
                         });
                     }
 
-                    if ((object instanceof Loot || object instanceof ThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
-                        if (object instanceof ThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
+                    if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                        if (isThrowableProjectile && (object as ThrowableProjectile).definition.health) (object as ThrowableProjectile).damageC4(this.definition.damage);
                         else {
-                            object.push(
+                            (object as Loot).push(
                                 Angle.betweenPoints(object.position, this.position),
                                 (max - dist) * 0.01
                             );
@@ -101,9 +102,9 @@ export class Explosion {
                 }
 
                 if (
-                    object instanceof Obstacle
+                    isObstacle
                     && !object.definition.noCollisions
-                    && object.definition.role !== ObstacleSpecialRoles.Stair
+                    && (object as Obstacle).definition.role !== ObstacleSpecialRoles.Stair
                 ) {
                     /*
                         an Obstacle with collisions will "eat" an explosion, protecting
