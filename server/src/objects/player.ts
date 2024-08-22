@@ -404,8 +404,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        this.inventory.scope = "4x_scope";
-        this.effectiveScope = "4x_scope"; // DEFAULT_SCOPE;
+        this.inventory.scope = "1x_scope";
+        this.effectiveScope = DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
