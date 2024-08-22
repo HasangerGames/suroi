@@ -3,7 +3,7 @@ import { Explosions, type ExplosionDefinition } from "@common/definitions/explos
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
-import { ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -91,7 +91,7 @@ export class Explosion {
                     }
 
                     if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
-                        if (isThrowableProjectile && (object as ThrowableProjectile).definition.health) (object as ThrowableProjectile).damageC4(this.definition.damage);
+                        if (isThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
                         else {
                             (object as Loot).push(
                                 Angle.betweenPoints(object.position, this.position),
@@ -104,7 +104,7 @@ export class Explosion {
                 if (
                     isObstacle
                     && !object.definition.noCollisions
-                    && (object as Obstacle).definition.role !== ObstacleSpecialRoles.Stair
+                    && !object.definition.isStair
                 ) {
                     /*
                         an Obstacle with collisions will "eat" an explosion, protecting

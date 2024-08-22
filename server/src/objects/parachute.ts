@@ -8,7 +8,6 @@ import { type Airdrop, type Game } from "../game";
 import { Events } from "../pluginManager";
 import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
-import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
@@ -87,7 +86,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                         loot.hitbox.resolveCollision(crate.hitbox);
                     }
 
-                    (loot as Loot).push(
+                    loot.push(
                         Angle.betweenPoints(this.position, loot.position),
                         -0.03
                     );

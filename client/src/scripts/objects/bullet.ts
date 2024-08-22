@@ -4,15 +4,14 @@ import { getEffectiveZIndex, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import type { Building } from "./building";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -68,13 +67,12 @@ export class Bullet extends BaseBullet {
 
             for (const collision of collisions) {
                 const object = collision.object;
-                const type = object.type;
 
                 const { isObstacle, isPlayer, isBuilding } = object;
 
                 if (
                     (
-                        isPlayer || (isObstacle && object.definition.role !== ObstacleSpecialRoles.Stair) || isBuilding
+                        isPlayer || (isObstacle && !object.definition.isStair) || isBuilding
                     ) && adjacentOrEqualLayer((object.layer ?? 0), this._layer)
                 ) {
                     (object as Obstacle | Player | Building).hitEffect(

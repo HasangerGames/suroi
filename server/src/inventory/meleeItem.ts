@@ -5,9 +5,7 @@ import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
 import { adjacentOrEqualLayer } from "@common/utils/layer";
-import { ThrowableProjectile } from "../objects";
 import { type CollidableGameObject } from "../objects/gameObject";
-import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
 
@@ -67,13 +65,12 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             object => !object.dead
                             && object !== owner
                             && (object.damageable || (object.isThrowableProjectile && object.definition.c4))
-                            && object.hitbox
-                            && hitbox.collidesWith(object.hitbox)
+                            && object.hitbox?.collidesWith(hitbox)
                             && adjacentOrEqualLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
-                    if (a.isObstacle && (a as Obstacle).definition.noMeleeCollision) return Infinity;
-                    if (b.isObstacle && (b as Obstacle).definition.noMeleeCollision) return -Infinity;
+                    if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
+                    if (b.isObstacle && b.definition.noMeleeCollision) return -Infinity;
 
                     return a.hitbox.distanceTo(this.owner.hitbox).distance - b.hitbox.distanceTo(this.owner.hitbox).distance;
                 });
@@ -84,14 +81,14 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     let multiplier = 1;
 
                     if (closestObject.isObstacle) {
-                        multiplier = definition.piercingMultiplier !== undefined && (closestObject as Obstacle).definition.impenetrable
+                        multiplier = definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
                     }
 
                     if (closestObject.isThrowableProjectile) { // C4
                         // Currently this code treats C4 as if it is an obstacle in terms of melee damage.
-                        (closestObject as ThrowableProjectile).damageC4(definition.damage * definition.obstacleMultiplier);
+                        closestObject.damageC4(definition.damage * definition.obstacleMultiplier);
                     } else {
                         closestObject.damage({
                             amount: definition.damage * multiplier,
@@ -101,7 +98,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     }
 
                     if (closestObject.isObstacle && !closestObject.dead) {
-                        (closestObject as Obstacle).interact(this.owner);
+                        closestObject.interact(this.owner);
                     }
                 }
 

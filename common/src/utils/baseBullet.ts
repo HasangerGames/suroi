@@ -1,5 +1,4 @@
-import { Layer, ObjectCategory } from "../constants";
-import { BuildingDefinition } from "../definitions/buildings";
+import { Layer } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";

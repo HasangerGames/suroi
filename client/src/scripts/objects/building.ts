@@ -5,14 +5,13 @@ import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
@@ -155,15 +154,15 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         }
 
                         if (!(
-                            collided ||=
-                                [
+                            collided
+                                ||= [
                                     ...this.game.objects.getCategory(ObjectCategory.Obstacle),
                                     ...this.game.objects.getCategory(ObjectCategory.Building)
                                 ].some(
                                     ({ damageable, dead, definition, hitbox }) =>
                                         damageable
                                         && !dead
-                                        && (!("role" in definition) || definition.role !== ObstacleSpecialRoles.Window)
+                                        && (!("role" in definition) || !definition.isWindow)
                                         && hitbox?.intersectsLine(player.position, end)
                                 )
                         )) break;

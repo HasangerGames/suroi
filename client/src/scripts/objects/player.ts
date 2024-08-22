@@ -29,7 +29,6 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
-import { Building } from "./building";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1143,10 +1142,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 && (
                                     (
                                         object.damageable
-                                        && (object.isObstacle || object.isPlayer || (object.isBuilding && object.hitbox))
+                                        && (object.isObstacle || object.isPlayer || object.isBuilding)
                                     ) || (object.isThrowableProjectile && object.c4)
                                 )
-                                && object.hitbox!.collidesWith(hitbox)
+                                && object.hitbox?.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.layer)
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {

@@ -191,7 +191,7 @@ const ContainerWallTints = {
     Green: 0x008f0c,
     Blue: 0x00538f,
     Yellow: 0xb3b300
-}
+};
 
 const portWarehouseHitbox = new HitboxGroup(
     // Outer corners
@@ -346,11 +346,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 particle: "metal_particle",
                 spawnHitbox,
                 scopeHitbox: RectangleHitbox.fromRect(12, 27),
-                graphics: closed ? [] : [
-                    { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
-                    { color: ContainerWallOutlineTints[tintName], hitbox },
-                    { color: ContainerWallTints[tintName], hitbox: wallHitbox }
-                ],
+                graphics: closed
+                    ? []
+                    : [
+                        { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
+                        { color: ContainerWallOutlineTints[tintName], hitbox },
+                        { color: ContainerWallTints[tintName], hitbox: wallHitbox }
+                    ],
                 graphicsZIndex: ZIndexes.BuildingsFloor + 1,
                 ceilingImages: optimized
                     ? [
@@ -376,10 +378,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(14, 28)
                 }],
-                lootSpawners: closed ? [] : [{
-                    position: Vec.create(0, 0),
-                    table: "ground_loot"
-                }]
+                lootSpawners: closed
+                    ? []
+                    : [{
+                        position: Vec.create(0, 0),
+                        table: "ground_loot"
+                    }]
             };
         }
     })
@@ -1382,7 +1386,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: "window",
                     position: Vec.create(31, -15.9),
                     rotation: 2
-                },
+                }
             ],
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(16.44, -15.64) },
@@ -3794,7 +3798,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(18, 1.75, Vec.create(-11.5, 34.75)),
                 RectangleHitbox.fromRect(12.25, 1.75, Vec.create(14.75, 34.75)),
                 RectangleHitbox.fromRect(39, 1.75, Vec.create(51, 34.75)),
-
 
                 // Inner walls
 

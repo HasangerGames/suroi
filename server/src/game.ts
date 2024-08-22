@@ -32,7 +32,6 @@ import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
-import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
@@ -768,7 +767,7 @@ export class Game implements GameData {
                             object.isPlayer
                             // teamMode should guarantee the `team` object's existence
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            && (!this.teamMode || !team!.players.includes(object as Player))
+                            && (!this.teamMode || !team!.players.includes(object))
                         ) {
                             foundPosition = false;
                         }

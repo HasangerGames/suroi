@@ -2,6 +2,7 @@ import { type Layer } from "@common/constants";
 import { Bullets } from "@common/definitions/bullets";
 import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
+import type { ObstacleDefinition } from "@common/definitions/obstacles";
 import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
@@ -124,11 +125,12 @@ export class Bullet extends BaseBullet {
             if (object.isObstacle || object.isBuilding) {
                 const def = object.definition;
 
+                const objectIsStair = object.isObstacle && (def as ObstacleDefinition).isStair;
                 /*
                     for stairs, honor any collision that's on an equal or adjacent layer (to allow layer transitions);
                     for everyone else, only honor collisions on the same layer
                 */
-                if ((def.isStair ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
+                if ((objectIsStair ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
                     this.damagedIDs.add(object.id);
 
                     records.push({
@@ -139,7 +141,7 @@ export class Bullet extends BaseBullet {
                         position: collision.intersection.point
                     });
 
-                    def.isStair && (object as Obstacle).handleStairInteraction(this);
+                    objectIsStair && (object as Obstacle).handleStairInteraction(this);
 
                     if (definition.penetration.obstacles) continue;
 

@@ -8,16 +8,14 @@ import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
+import { FloorNames } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Events } from "../pluginManager";
 import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
-import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { FloorNames } from "@common/utils/terrain";
-import { Building } from "./building";
 
 export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     override readonly fullAllocBytes = 8;
@@ -116,14 +114,14 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
             if (
-                (object instanceof Obstacle || object instanceof Building)
+                (object.isObstacle || object.isBuilding)
                 && object.collidable
-                && object.hitbox!.collidesWith(this.hitbox)
+                && object.hitbox?.collidesWith(this.hitbox)
             ) {
-                if (object.definition.isStair) {
+                if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
                 } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
-                    this.hitbox.resolveCollision(object.hitbox!);
+                    this.hitbox.resolveCollision(object.hitbox);
                 }
             }
 

@@ -5,7 +5,7 @@ import { type MapPingDefinition } from "../../../../common/src/definitions/mapPi
 import { type MapPacketData } from "../../../../common/src/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "../../../../common/src/packets/updatePacket";
 import { type Orientation } from "../../../../common/src/typings";
-import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";

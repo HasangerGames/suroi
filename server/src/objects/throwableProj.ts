@@ -211,14 +211,25 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         for (const object of this.game.grid.intersectsHitbox(this.hitbox, this.layer)) {
             const { isObstacle, isPlayer, isBuilding } = object;
 
+            // ignore this object if…
             if (
-                object.dead
-                || (
-                    (!(isObstacle || isBuilding) || !object.collidable)
-                    && (!isPlayer || !shouldDealImpactDamage || (!this._collideWithOwner && object === this.source.owner))
+                object.dead // …it's dead (duh)
+                || ( // or…
+                    (
+                        !(isObstacle || isBuilding) // if it's neither an obstacle nor a building
+                        || !object.collidable // or if it's not collidable
+                        || !object.hitbox // or if it doesn't have a hitbox
+                    )
+                    && (
+                        !isPlayer // and it's not a player
+                        || !shouldDealImpactDamage // or impact damage isn't active
+                        || (!this._collideWithOwner && object === this.source.owner) // or collisions with owner are off
+                    )
                 )
             ) continue;
 
+            // do a little cfa above to see why the conditional does filter out null-ish hitboxes (left as an exercise to the reader)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const hitbox = object.hitbox!;
 
             // This is a discrete collision detection that looks for overlap between geometries.
@@ -420,17 +431,26 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         const isPlayer = object instanceof Player;
         const isBuilding = object instanceof Building;
 
+        // bail early if…
         if (
-            object.dead
-            || (
-                (!(isObstacle || isBuilding) || !object.collidable)
-                && (!isPlayer || (!this._collideWithOwner && object === this.source.owner))
+            object.dead // the object is dead
+            || ( // or
+                (
+                    !(isObstacle || isBuilding) // it's neither an obstacle nor building
+                    || !object.collidable // or it's not collidable
+                    || !object.hitbox // or it has not hitbox
+                )
+                && ( // and
+                    !isPlayer // it's not a player
+                    || (!this._collideWithOwner && object === this.source.owner) // or owner collision is off
+                )
             )
         ) return;
 
-        const hitbox = object.hitbox!;
+        // nna could be used here, but there's a cleaner way to get rid of undefined with the optional chain below, so lol
+        const hitbox = object.hitbox;
 
-        if (!hitbox.collidesWith(this.hitbox)) return;
+        if (!hitbox?.collidesWith(this.hitbox)) return;
 
         const handleCircle = (hitbox: CircleHitbox): void => {
             const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);

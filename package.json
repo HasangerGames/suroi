@@ -7,19 +7,27 @@
     "build": "pnpm -r build",
     "build:client": "cd client && pnpm build",
     "build:server": "cd server && pnpm build",
+
     "start": "node --enable-source-maps server/dist/server/src/server.js",
+
     "moderation": "node --enable-source-maps server/dist/server/src/moderation.js",
     "warn": "pnpm moderation warn",
     "ban": "pnpm moderation ban",
     "unban": "pnpm moderation unban",
+
     "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm stressTest",
+
+    "typecheck": "tsc -v --noEmit",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "lint:ci": "eslint . --max-warnings 0",
+
     "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
+    "sanity-check": "pnpm lint:check & pnpm typecheck & pnpm validateDefinitions",
+
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install"
   },
   "engines": {

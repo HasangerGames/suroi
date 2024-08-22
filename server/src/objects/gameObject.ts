@@ -42,11 +42,11 @@ export interface DamageParams {
 export type CollidableGameObject<
     Cat extends ObjectCategory = ObjectCategory,
     HitboxType extends Hitbox = Hitbox
-> = BaseGameObject<Cat> & { readonly hitbox: HitboxType };
+> = ObjectMapping[Cat] & { readonly hitbox: HitboxType };
 
 export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     declare readonly abstract type: Cat;
-    // doesn't get forwarded from makeGameObjectTemplate
+    // doesn't get forwarded from makeGameObjectTemplate for some reason
 
     readonly abstract fullAllocBytes: number;
     readonly abstract partialAllocBytes: number;

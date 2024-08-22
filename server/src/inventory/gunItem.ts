@@ -7,11 +7,9 @@ import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
 
-import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
-import { Building } from "../objects";
 
 /**
  * A class representing a firearm
@@ -121,11 +119,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
             const object of
             this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))
         ) {
-            const notObstacleOrBuilding = !(object.isObstacle || object.isBuilding);
             if (
                 object.dead
                 || object.hitbox === undefined
-                || notObstacleOrBuilding
+                || !(object.isObstacle || object.isBuilding)
                 || object.definition.noCollisions
             ) continue;
 
@@ -136,8 +133,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 if (
                     object.dead
                     || object.hitbox === undefined
-                    || notObstacleOrBuilding
-                    || (object as Obstacle | Building).definition.noCollisions
+                    || !(object.isObstacle || object.isBuilding)
+                    || object.definition.noCollisions
                 ) continue;
 
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
