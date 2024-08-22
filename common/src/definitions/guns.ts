@@ -1845,6 +1845,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             },
             casingParticles: [{
                 position: Vec.create(3.5, 0.3),
+                on: "reload",
                 velocity: {
                     y: {
                         min: 2,
@@ -1854,7 +1855,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }],
             image: { position: Vec.create(75, 0) },
             gasParticles: gasParticlePresets.pistol,
-            capacity: 5,
+            capacity: 6,
             reloadTime: 0.95,
             singleReload: true,
             ballistics: {
@@ -1869,7 +1870,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 fireDelay: 265,
                 shotSpread: 3,
                 moveSpread: 6,
-                capacity: 10,
+                capacity: 12,
                 reloadTime: 1.65
             }
         },
