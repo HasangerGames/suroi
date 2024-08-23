@@ -1,8 +1,8 @@
-import { ObjectCategory, type Layer } from "@common/constants";
+import { ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { Angle, calculateDoorHitboxes } from "@common/utils/math";
+import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
 import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { random } from "@common/utils/random";
@@ -14,9 +14,9 @@ import { InventoryItem } from "../inventory/inventoryItem";
 import { Events } from "../pluginManager";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
+import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import type { Bullet } from "./bullet";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -281,159 +281,16 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
      * Two things are assumed and are prerequisite:
      * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
      * - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
+     *
+     note that setters will be called _even if the new layer and old layer match_.
      */
     handleStairInteraction(object: GameObject | Bullet): void {
-        const definition = this.definition;
-        if (definition.role !== ObstacleSpecialRoles.Stair) {
-            console.error("Tried to handle a stair interaction as a non-stair obstacle");
-            return;
-        }
-
-        const { activeEdges: { high, low } } = definition;
-
-        /*
-            reminder for the numbering system used:
-                 0
-              ┌─────┐
-            3 │     │ 1
-              └─────┘
-                 2
-
-            checking to see if high and low are opposites is thus
-            as simple as checking to see if the absolute difference
-            between them is 2 (and checking for adjacency requires
-            a check for an absolute difference of 1)
-
-            having them be opposite is really cool cuz it's the most
-            intuitive case.
-
-            if they're opposite, then we can basically project the
-            object's position onto an axis that runs between the two
-            sides, and do a bounds check. for example, let's say that
-            low = 3 and high = 1; we therefore have a staircase going
-            from, let's say, layer 0 on the left up to layer 2 on the
-            right.
-
-            to know what layer to place an object on, we just consider
-            where it is in relation to sides 3 and 1; if it's left of
-            3, we put it on layer 0; right of 1 and it's on layer 2;
-            in between is on layer 1.
-
-            layer 0│  1  │layer 2
-            ←──────│←───→│──────→
-                   ┌─────┐
-                   │     │
-                   └─────┘
-        */
-
-        const pos = object.position;
-        const { min, max } = this.hitbox as RectangleHitbox;
-
-        const doLayerChange = object instanceof BaseGameObject
-            ? (layer: Layer) => {
-                object.layer = layer;
-            }
-            : (layer: Layer) => {
-                object.changeLayer(layer);
-            };
-
-        if (Math.abs(high - low) === 2) {
-            // the odd-numbered sides lie on the horizontal
-            const prop = high % 2 !== 0 ? "x" : "y";
-            // where the "low" side is
-            const minIsLow = low === 0 || low === 3;
-            const objComponent = pos[prop];
-
-            if (objComponent <= min[prop]) {
-                doLayerChange(this.layer + (minIsLow ? -1 : 1));
-            } else if (objComponent >= max[prop]) {
-                doLayerChange(this.layer + (minIsLow ? 1 : -1));
-            } else {
-                doLayerChange(this.layer);
-            }
-
-            return;
-        }
-
-        /*
-            Otherwise, they're adjacent, which is slightly harder to
-            reason about. We'll divide the world into a few sections,
-            and assign a layer consequently, as visualized below.
-            For the diagram, assume that low = 0 and that high = 1.
-
-                         ╱ ←─ (imagine this line is at 45° lol)
-                        ╱
-         layer 0       ╱
-                ┌─────┐
-                │  1  │
-                └─────┘   layer 2
-               ╱
-              ╱
-             ╱  ←─ (this one's at 45° too, trust me)
-
-            in theory, only two sides of the stair would be accessible,
-            and the other two would be clipped off with walls, but it's
-            not too much expensive to extend our diagram and computations,
-            so we do it.
-        */
-
-        const objIsLeft = pos.x <= min.x;
-        const objIsRight = pos.x >= max.x;
-        const objIsAbove = pos.y <= min.y;
-        const objIsBelow = pos.y >= max.y;
-
-        const intersectX = !objIsLeft && !objIsRight;
-        const intersectY = !objIsAbove && !objIsBelow;
-
-        if (intersectX && intersectY) {
-            // if it's inside the stair, then the high/low isn't relevant: we match the stair's layer
-            doLayerChange(this.layer);
-            return;
-        }
-
-        // otherwise we gotta figure out a) which way the line cuts b) what region the game object is in
-
-        /*
-            bl/tr
-            high === 0 && low === 1
-            high === 1 && low === 0
-            high === 2 && low === 3
-            high === 3 && low === 2
-
-            br/tl
-            high === 0 && low === 3
-            high === 1 && low === 2
-            high === 2 && low === 1
-            high === 3 && low === 0
-
-            as can be seen here, all the pairs that yield a bottom-right/top-left
-            diagonal have the sum of high and low equal to 3.
-        */
-        const isBottomRightToTopLeft = high + low === 3;
-
-        if (isBottomRightToTopLeft) {
-            const topRightIsHigh = high < 2;
-            if (
-                objIsRight // trivial rhs check
-                || (objIsBelow && !objIsLeft) // below the box (and neither to its left nor its right)
-                || (pos.x - max.x) > (pos.y - max.y) // on the right of the 45° diagonal
-            ) {
-                doLayerChange(this.layer + (topRightIsHigh ? 1 : -1));
-            } else {
-                doLayerChange(this.layer + (topRightIsHigh ? -1 : 1));
-            }
-        } else {
-            const topLeftIsHigh = high === 0 || high === 3;
-            if (
-                objIsLeft // trivial lhs check
-                || (objIsAbove && !objIsRight) // above the box (and neither to its left nor its right)
-                || (pos.x - max.x) < (pos.y - min.y) // on the left of the 45° diagonal
-            ) {
-                doLayerChange(this.layer + (topLeftIsHigh ? 1 : -1));
-            } else {
-                doLayerChange(this.layer + (topLeftIsHigh ? -1 : 1));
-            }
-        }
+        object.layer = resolveStairInteraction(
+            this.definition,
+            this.hitbox as RectangleHitbox,
+            this.layer,
+            object.position
+        );
     }
 
     interact(player?: Player): void {

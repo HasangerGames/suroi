@@ -49,6 +49,14 @@ export class Bullet extends BaseBullet {
 
     readonly originalLayer: number;
 
+    // getter must be forwarded because there's a setter
+    override get layer(): Layer { return this._layer; }
+    set layer(layer: Layer) {
+        if (layer === this._layer) return;
+
+        this._layer = layer;
+    }
+
     constructor(
         game: Game,
         source: Weapon,
@@ -131,21 +139,23 @@ export class Bullet extends BaseBullet {
                     for everyone else, only honor collisions on the same layer
                 */
                 if ((objectIsStair ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
-                    this.damagedIDs.add(object.id);
+                    if (objectIsStair) {
+                        (object as Obstacle).handleStairInteraction(this);
+                    } else {
+                        this.damagedIDs.add(object.id);
 
-                    records.push({
-                        object: object as Obstacle,
-                        damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
-                        weapon: this.sourceGun,
-                        source: this.shooter,
-                        position: collision.intersection.point
-                    });
-
-                    objectIsStair && (object as Obstacle).handleStairInteraction(this);
+                        records.push({
+                            object: object as Obstacle,
+                            damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
+                            weapon: this.sourceGun,
+                            source: this.shooter,
+                            position: collision.intersection.point
+                        });
+                    }
 
                     if (definition.penetration.obstacles) continue;
 
-                    if (!def.noCollisions) {
+                    if (!def.noCollisions && !objectIsStair) {
                         const { point, normal } = collision.intersection;
                         this.position = point;
 
@@ -197,22 +207,6 @@ export class Bullet extends BaseBullet {
                 rotation: direction,
                 layer: this._layer,
                 reflectionCount: this.reflectionCount + 1,
-                variance: this.rangeVariance,
-                rangeOverride: this.clipDistance
-            }
-        );
-    }
-
-    changeLayer(layer: Layer): void {
-        if (layer === this._layer) { return; }
-
-        this.game.addBullet(
-            this.sourceGun,
-            this.shooter,
-            {
-                position: this.position,
-                rotation: this.rotation,
-                layer,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance
             }

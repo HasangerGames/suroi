@@ -6,7 +6,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, ObstacleSpecialRoles, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
@@ -848,9 +848,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
-                        (!newVisibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
+                        (
+                            !newVisibleObjects.has(object)
+                            || (
+                                !adjacentOrEqualLayer(this.layer, object.layer)
+                                && (
+                                    object.layer > this.layer
+                                    || (object.layer < Layer.Ground && this.layer >= Layer.Ground)
+                                )
+                            )
+                        )
                         && (this.visibleObjects.delete(object), true)
-                        && (!object.isObstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
+                        && (!object.isObstacle || !object.definition.isStair)
                     )
                 )
                 .map(({ id }) => id);
@@ -859,8 +868,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 .forEach(
                     object => {
                         if (
-                            (this.visibleObjects.has(object) || (!adjacentOrEqualLayer(this.layer, object.layer) && !(object.layer <= Layer.Ground && this.layer === Layer.Floor1)))
-                            && (!object.isObstacle || object.definition.role !== ObstacleSpecialRoles.Stair)
+                            (
+                                this.visibleObjects.has(object)
+                                || (
+                                    !adjacentOrEqualLayer(this.layer, object.layer)
+                                    && (
+                                        object.layer > this.layer
+                                        || (object.layer < Layer.Ground && this.layer >= Layer.Ground)
+                                    )
+                                )
+                            )
+                            && (!object.isObstacle || !object.definition.isStair)
                         ) return;
 
                         this.visibleObjects.add(object);
@@ -998,13 +1016,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (!this.updatedC4Button) this.updatedC4Button = true;
 
         // Cull bullets
+        /*
+            oversight: this works by checking if the bullet's trajectory overlaps the player's
+                       viewing port; if it does, the player will eventually see the bullet,
+                       and we should thus send it. however, it overlooks the fact that the
+                       viewing port can move as the bullet travels. this causes a potential
+                       for ghost bullets, but since most projectiles travel their range within
+                       well under a second (usually between 0.3–0.8 seconds), the chance of this
+                       happening is quite low (except with slow-projectile weapons like the radio
+                       and firework launcher).
+
+                       fixing this is therefore not worth the performance penalty
+        */
         packet.bullets = game.newBullets.filter(
             ({ initialPosition, finalPosition, layer }) => Collision.lineIntersectsRectTest(
                 initialPosition,
                 finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max
-            ) && adjacentOrEqualLayer(layer, this.layer)
+            )
         );
 
         /**
