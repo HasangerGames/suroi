@@ -1399,7 +1399,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 1
             },
-            hitbox: RectangleHitbox.fromRect(10.55, 1.9, Vec.create(-0.44, 0)),
+            hitbox: RectangleHitbox.fromRect(10.46, 1.69, Vec.create(-0.25, 0)),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             animationDuration: 80,
@@ -2237,29 +2237,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 name: "Gun Mount HP18"
             }
         ),
-        {
-            idString: "blue_house_mini_vault_walls",
-            name: "Blue House Vault Walls",
-            material: "metal",
-            health: 1000,
-            reflectBullets: true,
-            indestructible: true,
-            hideOnMap: true,
-            invisible: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(2, 14.8, Vec.create(8.4, 14)),
-                RectangleHitbox.fromRect(2, 15.5, Vec.create(32.4, 12)),
-                RectangleHitbox.fromRect(25, 2, Vec.create(21, 20.4)),
-                RectangleHitbox.fromRect(2, 4, Vec.create(20.5, 6.5)),
-                RectangleHitbox.fromRect(11, 2, Vec.create(14.5, 7.5))
-            ),
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
-            noResidue: true,
-            frames: {
-                particle: "metal_particle"
-            }
-        },
         {
             idString: "truck",
             name: "Truck",

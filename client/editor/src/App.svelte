@@ -1,6 +1,5 @@
 <script lang="ts">
     import {
-  CircleHitbox,
         HitboxGroup,
         HitboxType,
         RectangleHitbox
@@ -11,21 +10,12 @@
 
     let hitboxes = [
         ...new HitboxGroup(
-            RectangleHitbox.fromRect(1.02, 56, Vec.create(6.39, 0)),
-                RectangleHitbox.fromRect(1.02, 56, Vec.create(-6.39, 0)),
-                ...Array.from({ length: 2 }, (_, i) => {
-                    const a = i === 0 ? 1 : -1;
-                    return Array.from({ length: 2 }, (_, i) => {
-                        const b = i === 0 ? 1 : -1;
-                        return [
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 0)),
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 9.54 * b)),
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 19.17 * b)),
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 27.97 * b))
-                        ];
-                    }).flat();
-                }).flat()
-        ).transform(Vec.create(90, 0), 1, 0).toJSON().hitboxes
+                RectangleHitbox.fromRect(2, 14.8, Vec.create(8.4, 14)),
+                RectangleHitbox.fromRect(2, 15.5, Vec.create(32.4, 12)),
+                RectangleHitbox.fromRect(25, 2, Vec.create(21, 20.4)),
+                RectangleHitbox.fromRect(2, 4, Vec.create(20.5, 6.5)),
+                RectangleHitbox.fromRect(11, 2, Vec.create(14.5, 7.5))
+            ).transform(Vec.create(14.1, -20.5), 1, 3).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -87,9 +77,9 @@
         convertHitboxes();
     }
 
-    async function loadImage(src: string): Promise<{ width: number, height: number}> {
-        const img = new Image()
-        img.src = src
+    async function loadImage(src: string): Promise<{ width: number, height: number, src: string }> {
+        const img = new Image();
+        img.src = src;
 
         return new Promise((resolve) => {
             img.onload = () => {
@@ -201,6 +191,7 @@
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
+                <!-- svelte-ignore empty-block -->
                 {#await bgImage}
                 {:then img}
                     <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" onmousedown="return false"></image>
