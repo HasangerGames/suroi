@@ -3933,8 +3933,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // main entrance
                 { idString: "planted_bushes", position: Vec.create(-47, 44), rotation: 0 },
                 { idString: "planted_bushes", position: Vec.create(-15, 44), rotation: 0 },
-                { idString: "glass_door", position: Vec.create(-35.8, 35), rotation: 0 },
-                { idString: "glass_door", position: Vec.create(-25.7, 35), rotation: 2 },
+                { idString: "glass_door", position: Vec.create(-35.8, 34.85), rotation: 0 },
+                { idString: "glass_door", position: Vec.create(-25.7, 34.85), rotation: 2 },
+                { idString: "hq_door_occluder", position: Vec.create(-30.77, 34.77), rotation: 0 },
 
                 // main area (hallway/where unbreakable large desk is)
                 { idString: "headquarters_main_desk", position: Vec.create(-11, -52), rotation: 0 },
@@ -4105,7 +4106,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "bunker_stair", position: Vec.create(0, 9), rotation: 0, layer: -1 }
+                { idString: "bunker_stair", position: Vec.create(0, 3), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
         },

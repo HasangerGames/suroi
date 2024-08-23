@@ -252,7 +252,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             }
         }
 
-        const obstacleZIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+        const obstacleZIndex = this.dead
+            ? ZIndexes.DeadObstacles
+            : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+
         this.container.zIndex = getEffectiveZIndex(obstacleZIndex, this.layer);
 
         if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay) {

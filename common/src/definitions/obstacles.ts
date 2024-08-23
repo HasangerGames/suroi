@@ -1375,7 +1375,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 1
             },
-            hitbox: RectangleHitbox.fromRect(10.25, 1.25, Vec.create(-0.6, 0)),
+            hitbox: RectangleHitbox.fromRect(10.25, 1.25),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             role: ObstacleSpecialRoles.Door,
@@ -3175,7 +3175,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 low: 0
             },
             invisible: true,
-            hitbox: RectangleHitbox.fromRect(10, 3),
+            hitbox: RectangleHitbox.fromRect(10, 11),
             frames: {
                 particle: "metal_particle"
             },
@@ -3198,6 +3198,17 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.BuildingsFloor
+        },
+        {
+            idString: "hq_door_occluder",
+            name: "HQ Door Occluder",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            noCollisions: true,
+            hitbox: RectangleHitbox.fromRect(0, 0),
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer4
         },
 
         // --------------------------------------------------------------------------------------------

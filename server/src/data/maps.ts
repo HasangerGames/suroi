@@ -318,8 +318,8 @@ const maps = {
         oceanSize: 40,
         genCallback: map => {
             // Function to generate all game loot items
-            const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
-                const width = 70;
+            const genLoots = (pos: Vector, ySpacing: number, xSpacing: number): void => {
+                const width = 73;
 
                 const startPos = Vec.clone(pos);
                 startPos.x -= width / 2;
@@ -348,13 +348,13 @@ const maps = {
 
                     game.addLoot(item, itemPos, 0, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
 
-                    itemPos.x += xOff;
+                    itemPos.x += xSpacing;
                     if (
-                        (xOff > 0 && itemPos.x > startPos.x + width)
-                        || (xOff < 0 && itemPos.x < startPos.x - width)
+                        (xSpacing > 0 && itemPos.x > startPos.x + width)
+                        || (xSpacing < 0 && itemPos.x < startPos.x - width)
                     ) {
                         itemPos.x = startPos.x;
-                        itemPos.y -= yOff;
+                        itemPos.y -= ySpacing;
                     }
                 }
             };
@@ -379,16 +379,16 @@ const maps = {
                 const { id, pos } = obstacle;
                 const { x: posX, y: posY } = pos;
 
-                map.generateObstacle(id, Vec.add(center, pos));
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)));
-                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)));
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)));
+                map.generateObstacle(id, Vec.add(center, pos), 0);
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), 0);
+                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), 0);
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), 0);
             }
 
-            genLoots(Vec.add(center, Vec.create(-67, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(67, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-67, -90)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(67, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -90)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
