@@ -295,7 +295,7 @@ export const LootTables: Record<string, LootTable> = {
     },
     small_desk: {
         min: 1,
-        max: 2,
+        max: 1,
         loot: [
             [
                 { tier: "healing_items", weight: 0.8 },

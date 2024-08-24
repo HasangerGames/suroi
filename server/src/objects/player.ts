@@ -14,7 +14,7 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
-import { BaseGameObject, Building, DamageParams, DeathMarker, Emote, Explosion, Loot, SyncedParticle, ThrowableProjectile, type GameObject, type Obstacle } from ".";
+import { BaseGameObject, DamageParams, DeathMarker, Emote, Explosion, Loot, SyncedParticle, ThrowableProjectile, type GameObject, type Obstacle } from ".";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -750,7 +750,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const object of this.nearObjects) {
             if (
                 !isInsideBuilding
-                && object instanceof Building
+                && object?.isBuilding
                 && !object.dead
                 && object.scopeHitbox?.collidesWith(this.hitbox)
                 && !Config.disableBuildingCheck

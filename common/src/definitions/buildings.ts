@@ -1782,7 +1782,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "cargo_ship_center_roof",
             name: "Cargo Ship Center Roof",
             spawnHitbox: RectangleHitbox.fromRect(40, 95, Vec.create(0, 0)),
-            scopeHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)),
+            scopeHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)), // why doesn't this work well? (you have to go in full center?)
             ceilingImages: [
                 {
                     key: "cargo_ship_center_ceiling",
@@ -1919,7 +1919,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "cargo_ship_floor_1",
                     position: Vec.create(-70, 0),
-                    scale: Vec.create(1.07, 1.07)
+                    scale: Vec.create(2.139, 2.139)
                 },
                 {
                     key: "ship_stair",
