@@ -97,6 +97,7 @@ export class Bullet extends BaseBullet {
                         this.setLayer(
                             resolveStairInteraction(
                                 definition,
+                                (object as Obstacle).orientation,
                                 object.hitbox as RectangleHitbox,
                                 object.layer,
                                 this.position

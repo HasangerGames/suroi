@@ -786,6 +786,7 @@ export function calculateDoorHitboxes<
 */
 export function resolveStairInteraction(
     definition: ObstacleDefinition,
+    obstacleOrientation: Orientation,
     obstacleHitbox: RectangleHitbox,
     obstacleLayer: number,
     targetPosition: Vector
@@ -795,7 +796,11 @@ export function resolveStairInteraction(
         return obstacleLayer;
     }
 
-    const { activeEdges: { high, low } } = definition;
+    const { activeEdges: { high: highDef, low: lowDef } } = definition;
+    const [high, low] = [
+        Numeric.absMod(highDef - obstacleOrientation, 4),
+        Numeric.absMod(lowDef - obstacleOrientation, 4)
+    ];
 
     /*
        reminder for the numbering system used:

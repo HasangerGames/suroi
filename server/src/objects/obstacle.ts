@@ -282,11 +282,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
      * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
      * - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
      *
-     note that setters will be called _even if the new layer and old layer match_.
+     * note that setters will be called _even if the new layer and old layer match_.
      */
     handleStairInteraction(object: GameObject | Bullet): void {
         object.layer = resolveStairInteraction(
             this.definition,
+            this.rotation as Orientation, // stairs cannot have full rotation mode
             this.hitbox as RectangleHitbox,
             this.layer,
             object.position

@@ -70,7 +70,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly hitbox: Hitbox
     readonly spawnHitbox?: Hitbox
     readonly noCollisions: boolean
-    readonly rotationMode: RotationMode
+    readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly variations?: Exclude<Variation, 0>
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes

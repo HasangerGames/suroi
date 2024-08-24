@@ -345,7 +345,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 const max = toPixiCoords(hitbox.max);
                 const graphics = this.debugGraphics;
 
-                // using the same numebring system as server-side, but with array indexes
+                // using the same numbering system as server-side, but with array indexes
                 const drawSide = [
                     () => {
                         graphics
@@ -369,7 +369,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     }
                 ];
 
-                const { high, low } = definition.activeEdges;
+                const { high: highDef, low: lowDef } = definition.activeEdges;
+                const [high, low] = [
+                    Numeric.absMod(highDef - this.orientation, 4),
+                    Numeric.absMod(lowDef - this.orientation, 4)
+                ];
 
                 graphics
                     .setStrokeStyle({ color: 0xff0000, width: 4 })
