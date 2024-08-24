@@ -1494,6 +1494,54 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { table: "ground_loot", position: Vec.create(-23.91, -18.07) }
             ]
         },
+
+        // -------------------------------------------------------------------------
+        {
+            idString: "blue_house_vault_layout_1",
+            name: "Blue House Vault Layout 1",
+            spawnHitbox: RectangleHitbox.fromRect(20, 20),
+            obstacles: [
+                { idString: "box", position: Vec.create(12.5, 11.5) },
+                { idString: "box", position: Vec.create(14, 16.5) },
+            ]
+        },
+        {
+            idString: "blue_house_vault_layout_2",
+            name: "Blue House Vault Layout 2",
+            spawnHitbox: RectangleHitbox.fromRect(20, 20),
+            obstacles: [
+                {
+                    idString: {
+                        regular_crate: 1.5,
+                        aegis_crate: 0.33,
+                        flint_crate: 0.33
+                    }, 
+                    position: Vec.create(15, 14)
+                },
+            ]
+        },
+        {
+            idString: "blue_house_vault_layout_3",
+            name: "Blue House Vault Layout 3",
+            spawnHitbox: RectangleHitbox.fromRect(20, 20),
+            obstacles: [
+                { idString: "box", position: Vec.create(12.5, 11.5) },
+                { idString: "box", position: Vec.create(12.5, 16.5) },
+                { idString: "box", position: Vec.create(17.5, 11.5) },
+                { idString: "box", position: Vec.create(17.5, 16.5) }
+            ]
+        },
+        {
+            idString: "blue_house_vault_layout_4",
+            name: "Blue House Vault Layout 4",
+            spawnHitbox: RectangleHitbox.fromRect(20, 20),
+            obstacles: [
+                { idString: "gun_case", position: Vec.create(12.5, 14), rotation: 1 },
+                { idString: "box", position: Vec.create(18.1, 11.5) },
+            ]
+        },
+        // -------------------------------------------------------------------------
+
         {
             idString: "blue_house",
             name: "Blue House",
@@ -1592,8 +1640,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_15", position: Vec.create(13.4, 5.6), rotation: 0 },
                 { idString: "house_wall_14", position: Vec.create(6.4, 13.1), rotation: 1 },
                 { idString: "metal_door", position: Vec.create(26.15, 4.8), rotation: 2 },
-                { idString: "box", position: Vec.create(12.5, 11.5) },
-                { idString: "box", position: Vec.create(14, 16.5) },
                 { idString: "box", position: Vec.create(16, 1.7) },
 
                 // bathroom
@@ -1616,7 +1662,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             lootSpawners: [
                 { table: "ground_loot", position: Vec.create(23.5, 14.4) }
             ],
-            subBuildings: [{ idString: "blue_house_mini_vault", position: Vec.create(-14.1, 20.5), orientation: 1 }]
+            subBuildings: [
+                { idString: "blue_house_mini_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
+                { 
+                    idString: {
+                        blue_house_vault_layout_1: 1,
+                        blue_house_vault_layout_2: 1,
+                        blue_house_vault_layout_3: 1,
+                        blue_house_vault_layout_4: 1
+                    }, 
+                    position: Vec.create(0, 0), 
+                    orientation: 0 
+                }
+            ]
         },
         {
             idString: "blue_house_mini_vault",
