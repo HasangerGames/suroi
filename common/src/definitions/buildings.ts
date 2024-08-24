@@ -1502,7 +1502,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(20, 20),
             obstacles: [
                 { idString: "box", position: Vec.create(12.5, 11.5) },
-                { idString: "box", position: Vec.create(14, 16.5) },
+                { idString: "box", position: Vec.create(14, 16.5) }
             ]
         },
         {
@@ -1515,9 +1515,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         regular_crate: 1.5,
                         aegis_crate: 0.33,
                         flint_crate: 0.33
-                    }, 
+                    },
                     position: Vec.create(15, 14)
-                },
+                }
             ]
         },
         {
@@ -1537,7 +1537,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(20, 20),
             obstacles: [
                 { idString: "gun_case", position: Vec.create(12.5, 14), rotation: 1 },
-                { idString: "box", position: Vec.create(18.1, 11.5) },
+                { idString: "box", position: Vec.create(18.1, 11.5) }
             ]
         },
         // -------------------------------------------------------------------------
@@ -1664,15 +1664,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             subBuildings: [
                 { idString: "blue_house_mini_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
-                { 
+                {
                     idString: {
                         blue_house_vault_layout_1: 1,
                         blue_house_vault_layout_2: 1,
                         blue_house_vault_layout_3: 1,
                         blue_house_vault_layout_4: 1
-                    }, 
-                    position: Vec.create(0, 0), 
-                    orientation: 0 
+                    },
+                    position: Vec.create(0, 0),
+                    orientation: 0
                 }
             ]
         },
