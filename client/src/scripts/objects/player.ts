@@ -1147,6 +1147,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 )
                                 && object.hitbox?.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.layer)
+                                && (!object.isObstacle || (!object.definition.isStair))
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
                             if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
