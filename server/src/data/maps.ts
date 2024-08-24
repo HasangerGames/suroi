@@ -2,17 +2,18 @@ import { type WebSocket } from "uWebSockets.js";
 
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Loots } from "@common/definitions/loots";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type Variation } from "@common/typings";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { Orientation, type Variation } from "@common/typings";
 import { Collision } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
-import { random } from "@common/utils/random";
+import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type GunItem } from "../inventory/gunItem";
-import { type GameMap } from "../map";
+import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { type LootTables } from "./lootTables";
+import { Layer } from "@common/constants";
 
 export interface MapDefinition {
     readonly width: number
@@ -570,6 +571,124 @@ const maps = {
             rock: 30,
             barrel: 15
         }
+    },
+    gallery: {
+        width: 1024,
+        height: 1024,
+        oceanSize: 64,
+        beachSize: 32,
+        genCallback(map) {
+            const targetBuildingIdString = "headquarters";
+            map.generateBuilding(targetBuildingIdString, Vec.create(this.width / 2, this.height / 2), 0);
+
+            const buildings = {
+                red_house: 1,
+                blue_house: 1,
+                green_house: 1,
+                red_house_v2: 1,
+                mobile_home: 4,
+                porta_potty: 4,
+                warehouse: 1,
+                container_3: 1,
+                container_4: 1,
+                container_5: 1,
+                container_6: 1,
+                container_7: 1,
+                container_8: 1,
+                container_9: 1,
+                container_10: 1
+            };
+
+            const obstacles = {
+                oil_tank: 5,
+                oak_tree: 20,
+                birch_tree: 20,
+                box: 50,
+                pine_tree: 20,
+                regular_crate: 25,
+                flint_crate: 6,
+                aegis_crate: 6,
+                grenade_crate: 20,
+                rock: 30,
+                bush: 25,
+                blueberry_bush: 25,
+                barrel: 40,
+                super_barrel: 15,
+                melee_crate: 4,
+                gold_rock: 1,
+                loot_tree: 1,
+                loot_barrel: 1
+            };
+
+            Object.entries(buildings).forEach(([building, count]) => {
+                const definition = Buildings.reify(building);
+
+                const { rotationMode } = definition;
+                let attempts = 0;
+
+                for (let i = 0; i < count; i++) {
+                    let validPositionFound = false;
+
+                    while (!validPositionFound && attempts < 100) {
+                        let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
+
+                        const position = map.getRandomPosition(definition.spawnHitbox, {
+                            orientation,
+                            spawnMode: definition.spawnMode,
+                            getOrientation: (newOrientation: Orientation) => {
+                                orientation = newOrientation;
+                            },
+                            maxAttempts: 400
+                        });
+
+                        if (!position) {
+                            attempts++;
+                            continue;
+                        }
+
+                        map.generateBuilding(definition, position, orientation);
+                        validPositionFound = true;
+                    }
+
+                    attempts = 0; // Reset attempts counter for the next building
+                }
+            });
+
+            Object.entries(obstacles).forEach(([obstacle, count]) => {
+                const def = Obstacles.reify(obstacle);
+
+                const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+                const { spawnMin, spawnMax } = scale;
+                const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
+
+                for (let i = 0; i < count; i++) {
+                    const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+                    const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
+                    const rotation = GameMap.getRandomRotation(rotationMode);
+
+                    let orientation: Orientation = 0;
+
+                    if (rotationMode === RotationMode.Limited) {
+                        orientation = rotation as Orientation;
+                    }
+
+                    const position = map.getRandomPosition(effSpawnHitbox, {
+                        scale,
+                        orientation,
+                        spawnMode: def.spawnMode
+                    });
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    map.generateObstacle(def, position, undefined, Layer.Ground, scale, variation);
+                }
+            });
+        },
+        places: [
+            { name: "pap's lonely place", position: Vec.create(0.5, 0.5) }
+        ]
     }
 } satisfies Record<string, MapDefinition>;
 
