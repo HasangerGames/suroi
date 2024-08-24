@@ -293,6 +293,22 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "scopes", weight: 0.3 }
         ]
     },
+    small_desk: {
+        min: 1,
+        max: 2,
+        loot: [
+            [
+                { tier: "healing_items", weight: 0.8 },
+                { tier: "equipment", weight: 1 },
+                { tier: "guns", weight: 1 },
+                { tier: "scopes", weight: 0.4 }
+            ],
+            [
+                { tier: "healing_items", weight: 1 },
+                { tier: "scopes", weight: 1 }
+            ]
+        ]
+    },
     bookshelf: {
         min: 1,
         max: 2,

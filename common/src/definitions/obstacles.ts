@@ -2383,20 +2383,23 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "small_bunker_desk",
-            name: "Small Bunker Desk",
+            idString: "small_desk",
+            name: "Small Desk",
             material: "wood",
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.79
+            },
+            noResidue: true, // TODO
             health: 150,
-            indestructible: true,
-            invisible: true,
+            hasLoot: true,
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "headquarters_desk_particle"
             },
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(13.7, 4.7, Vec.create(-12.9, 13.9))
-            )
+            hitbox: RectangleHitbox.fromRect(12.5, 5)
         },
         {
             idString: "generator",

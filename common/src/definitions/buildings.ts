@@ -4302,7 +4302,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             obstacles: [
-                { idString: "small_bunker_desk", position: Vec.create(0, 0), rotation: 0 },
+                { idString: "small_desk", position: Vec.create(-12.9, 13.9), rotation: 0 },
                 { idString: "metal_door", position: Vec.create(0.25, 18), rotation: 0 },
                 { idString: "control_panel2", position: Vec.create(-14.5, -12.6), rotation: 0 },
                 { idString: "box", position: Vec.create(-17, -2), lootSpawnOffset: Vec.create(2, 0) },
@@ -4322,6 +4322,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker",
             name: "Small Bunker",
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
+            rotationMode: RotationMode.None, // TODO: fix stairs' hitboxes not being able to rotate.
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
                 position: Vec.create(0, 17.9),
