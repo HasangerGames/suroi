@@ -430,7 +430,7 @@ const maps = {
         oceanSize: 64,
         genCallback(map) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("headquarters", Vec.create(this.width / 2, this.height / 2 - 15), 0);
+            map.generateBuilding("headquarters", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -577,17 +577,21 @@ const maps = {
         height: 1024,
         oceanSize: 64,
         beachSize: 32,
+        loots: {
+            ground_loot: 40,
+            regular_crate: 40
+        },
         genCallback(map) {
             const targetBuildingIdString = "headquarters";
             map.generateBuilding(targetBuildingIdString, Vec.create(this.width / 2, this.height / 2), 0);
 
             const buildings = {
-                red_house: 1,
-                blue_house: 1,
-                green_house: 1,
-                red_house_v2: 1,
-                mobile_home: 4,
-                porta_potty: 4,
+                red_house: ~~Math.random(),
+                blue_house: ~~Math.random(),
+                green_house: ~~Math.random(),
+                red_house_v2: ~~Math.random(),
+                mobile_home: ~~(Math.random() * 5) + 3,
+                porta_potty: ~~(Math.random() * 5) + 3,
                 warehouse: 1,
                 container_3: 1,
                 container_4: 1,
@@ -601,23 +605,31 @@ const maps = {
 
             const obstacles = {
                 oil_tank: 5,
-                oak_tree: 20,
-                birch_tree: 20,
+                oak_tree: 40,
+                birch_tree: 40,
                 box: 50,
-                pine_tree: 20,
-                regular_crate: 25,
-                flint_crate: 6,
-                aegis_crate: 6,
-                grenade_crate: 20,
-                rock: 30,
+                pine_tree: 30,
+                regular_crate: 75,
+                fridge: 40,
+                flint_crate: 12,
+                aegis_crate: 12,
+                grenade_crate: 30,
+                rock: 45,
                 bush: 25,
                 blueberry_bush: 25,
                 barrel: 40,
+                gun_case: 15,
                 super_barrel: 15,
+                briefcase: 4,
                 melee_crate: 4,
                 gold_rock: 1,
                 loot_tree: 1,
-                loot_barrel: 1
+                loot_barrel: 1,
+
+                viking_chest: Math.random() > 0.9 ? 1 : 0,
+                river_chest: Math.random() > 0.9 ? 1 : 0,
+                tango_crate: Math.random() > 0.8 ? 1 : 0,
+                lux_crate: Math.random() > 0.8 ? 1 : 0
             };
 
             Object.entries(buildings).forEach(([building, count]) => {
