@@ -165,7 +165,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             definition.impenetrable
             && !(
                 (
-                    weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined
+                    weaponDef?.itemType === ItemType.Melee
+                    && weaponDef.piercingMultiplier !== undefined
                     && weaponDef?.canPierceMaterials?.includes(this.definition.material)
                 )
                 || source instanceof Obstacle

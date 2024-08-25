@@ -863,7 +863,7 @@ export function resolveStairInteraction(
         and assign a layer consequently, as visualized below.
         For the diagram, assume that low = 0 and that high = 1.
 
-                        ╱ ←─ (imagine this line is at 45° lol)
+                        ╱
                     ╱
         layer 0       ╱
             ┌─────┐
@@ -871,7 +871,7 @@ export function resolveStairInteraction(
             └─────┘   layer 2
             ╱
             ╱
-            ╱  ←─ (this one's at 45° too, trust me)
+            ╱
 
         in theory, only two sides of the stair would be accessible,
         and the other two would be clipped off with walls, but it's
@@ -911,13 +911,14 @@ export function resolveStairInteraction(
         diagonal have the sum of high and low equal to 3.
     */
     const isBottomRightToTopLeft = high + low === 3;
+    const ratio = (max.y - min.y) / (max.x - min.x);
 
     if (isBottomRightToTopLeft) {
         const topRightIsHigh = high < 2;
         if (
             objIsRight // trivial rhs check
-            || (objIsBelow && !objIsLeft) // below the box (and neither to its left nor its right)
-            || (targetPosition.x - max.x) > (targetPosition.y - max.y) // on the right of the 45° diagonal
+            || (objIsAbove && !objIsLeft) // above the box (and neither to its left nor its right)
+            || ratio * (targetPosition.x - max.x) > (targetPosition.y - max.y) // on the right of the diagonal
         ) {
             newLayer += topRightIsHigh ? 1 : -1;
         } else {
@@ -928,7 +929,7 @@ export function resolveStairInteraction(
         if (
             objIsLeft // trivial lhs check
             || (objIsAbove && !objIsRight) // above the box (and neither to its left nor its right)
-            || (targetPosition.x - max.x) < (targetPosition.y - min.y) // on the left of the 45° diagonal
+            || ratio * (targetPosition.x - max.x) > (targetPosition.y - min.y) // on the left of the diagonal
         ) {
             newLayer += topLeftIsHigh ? 1 : -1;
         } else {

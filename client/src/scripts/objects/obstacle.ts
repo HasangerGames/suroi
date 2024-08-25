@@ -333,38 +333,26 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             if (definition.isStair) {
                 const hitbox = this.hitbox as RectangleHitbox;
 
-                drawHitbox(
-                    hitbox,
-                    definition.noCollisions || this.dead
-                        ? HITBOX_COLORS.obstacleNoCollision
-                        : HITBOX_COLORS.stair,
-                    this.debugGraphics
-                );
-
                 const min = toPixiCoords(hitbox.min);
                 const max = toPixiCoords(hitbox.max);
-                const graphics = this.debugGraphics;
+                const gphx = this.debugGraphics;
 
                 // using the same numbering system as server-side, but with array indexes
                 const drawSide = [
                     () => {
-                        graphics
-                            .moveTo(min.x, min.y)
+                        gphx.moveTo(min.x, min.y)
                             .lineTo(max.x, min.y);
                     },
                     () => {
-                        graphics
-                            .moveTo(max.x, min.y)
+                        gphx.moveTo(max.x, min.y)
                             .lineTo(max.x, max.y);
                     },
                     () => {
-                        graphics
-                            .moveTo(max.x, max.y)
+                        gphx.moveTo(max.x, max.y)
                             .lineTo(min.x, max.y);
                     },
                     () => {
-                        graphics
-                            .moveTo(min.x, max.y)
+                        gphx.moveTo(min.x, max.y)
                             .lineTo(min.x, min.y);
                     }
                 ];
@@ -375,19 +363,81 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     Numeric.absMod(lowDef - this.orientation, 4)
                 ];
 
-                graphics
-                    .setStrokeStyle({ color: 0xff0000, width: 4 })
-                    .beginPath();
-                drawSide[high]();
-                graphics
-                    .closePath()
-                    .stroke()
-                    .setStrokeStyle({ color: 0x00ff00, width: 4 })
-                    .beginPath();
-                drawSide[low]();
-                graphics
-                    .closePath()
-                    .stroke();
+                if (Math.abs(high - low) === 1) {
+                    for (let i = 0; i < 4; i++) {
+                        let color: 0xff0000 | 0x00ff00 = 0xff0000;
+                        let width = 4;
+                        switch (true) {
+                            case i === high: { // active edge
+                                color = 0xff0000;
+                                break;
+                            }
+                            case i === low: { // active edge
+                                color = 0x00ff00;
+                                break;
+                            }
+                            case Math.abs(i - low) === 2: { // opposite of low edge -> high edge
+                                color = 0xff0000;
+                                width = 2;
+                                break;
+                            }
+                            case Math.abs(i - high) === 2: { // opposite of high edge -> low edge
+                                color = 0x00ff00;
+                                width = 2;
+                                break;
+                            }
+                        }
+
+                        gphx.setStrokeStyle({ color, width })
+                            .beginPath();
+                        drawSide[i]();
+                        gphx.closePath()
+                            .stroke();
+                    }
+
+                    // determine the line's endpoints
+                    const [vertexA, vertexB] = high + low === 3
+                        ? [min, max]
+                        : [
+                            { x: max.x, y: min.y },
+                            { x: min.x, y: max.y }
+                        ];
+                    const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
+                    const protrusion = Math.min(50, 50 / ratio);
+
+                    gphx.setStrokeStyle({ color: 0xffff00, width: 2 })
+                        .beginPath()
+                        .moveTo(vertexA.x - protrusion, vertexA.y - protrusion * ratio)
+                        .lineTo(vertexA.x, vertexA.y)
+                        .moveTo(vertexB.x, vertexB.y)
+                        .lineTo(vertexB.x + protrusion, vertexB.y + protrusion * ratio)
+                        .stroke()
+                        .setStrokeStyle({ color: 0xffff00, alpha: 0.25, width: 2 })
+                        .beginPath()
+                        .moveTo(vertexA.x, vertexA.y)
+                        .lineTo(vertexB.x, vertexB.y)
+                        .closePath()
+                        .stroke();
+                } else {
+                    drawHitbox(
+                        hitbox,
+                        definition.noCollisions || this.dead
+                            ? HITBOX_COLORS.obstacleNoCollision
+                            : HITBOX_COLORS.stair,
+                        this.debugGraphics
+                    );
+
+                    gphx.setStrokeStyle({ color: 0xff0000, width: 4 })
+                        .beginPath();
+                    drawSide[high]();
+                    gphx.closePath()
+                        .stroke()
+                        .setStrokeStyle({ color: 0x00ff00, width: 4 })
+                        .beginPath();
+                    drawSide[low]();
+                    gphx.closePath()
+                        .stroke();
+                }
             } else {
                 drawHitbox(
                     this.hitbox,
