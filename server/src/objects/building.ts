@@ -60,8 +60,10 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         this.rotation = orientation;
         this._wallsToDestroy = this.definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
-        this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation);
+        this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation) ?? this.spawnHitbox;
         this.collidable = this.damageable = !!this.definition.hitbox;
+
+        if (this.hitbox === this.spawnHitbox) this.collidable = false; // We NEED a hitbox no matter what. Just remove collisions in this case.
 
         if (this.definition.scopeHitbox !== undefined) {
             this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
