@@ -9,11 +9,11 @@ import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData
 import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
-import { type GameSettings } from "../utils/console/gameConsole";
+import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
-import { getTranslatedString } from "../../translations";
 import { html } from "../utils/misc";
 
 export class InputManager {
@@ -432,15 +432,31 @@ export class InputManager {
 
     private fireAllEventsAtKey(input: string, down: boolean): number {
         const actions = this.binds.getActionsBoundToInput(input) ?? [];
+
         for (const action of actions) {
             let query = action;
-            if (!down) {
-                if (query.startsWith("+")) { // Invertible action
-                    query = query.replace("+", "-");
-                } else query = ""; // If the action isn't invertible, then we do nothing
+            if (down) {
+                if (typeof query !== "string" && typeof query !== "function") {
+                    query = query[0]; // fn pair & "down" -> pick first
+                }
+            } else {
+                if (typeof query === "string") {
+                    if (query.startsWith("+")) { // Invertible action
+                        query = query.replace("+", "-");
+                    } else continue; // If the action isn't invertible, then we do nothing
+                } else {
+                    if (typeof query === "function") continue; // single function & not invertible -> do nothing
+                    query = query[1]; // pick invertible version
+                }
             }
 
-            this.game.console.handleQuery(query);
+            if (typeof query === "string") {
+                const { compiled } = this.game.console.handleQuery(query);
+
+                if (compiled !== undefined) {
+                    this.binds.overrideWithCompiled(input, query, compiled);
+                }
+            } else query();
         }
 
         return actions.length;
@@ -693,24 +709,33 @@ export class InputManager {
     }
 }
 
+export type CompiledAction = (() => void) & { readonly original: string };
+export type CompiledTuple = readonly [CompiledAction, CompiledAction];
+
 class InputMapper {
     // These two maps must be kept in sync!!
-    private readonly _inputToAction = new Map<string, Set<string>>();
+    private readonly _inputToAction = new Map<
+        string,
+        Set<string | CompiledAction | CompiledTuple>
+    >();
+
     private readonly _actionToInput = new Map<string, Set<string>>();
 
     private static readonly _generateGetAndSetIfAbsent
-        = <K, V>(map: Map<K, V>, defaultValue: V) =>
+        = <K, V>(map: Map<K, V>, defaultValue: () => V) =>
             (key: K) =>
-                map.get(key) ?? (() => (map.set(key, defaultValue), defaultValue))();
+                // trivially safe
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                map.get(key) ?? map.set(key, defaultValue()).get(key)!;
 
     private static readonly _generateAdder
         = <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
             (key: K, ...values: V[]): T => {
-                const forwardSet = InputMapper._generateGetAndSetIfAbsent(forwardsMap, new Set())(key);
+                const forwardSet = InputMapper._generateGetAndSetIfAbsent(forwardsMap, () => new Set())(key);
 
                 for (const value of values) {
                     forwardSet.add(value);
-                    InputMapper._generateGetAndSetIfAbsent(backwardsMap, new Set())(value).add(key);
+                    InputMapper._generateGetAndSetIfAbsent(backwardsMap, () => new Set())(value).add(key);
                 }
 
                 return thisValue;
@@ -802,6 +827,19 @@ class InputMapper {
      * @returns An array of actions bound to the input
      */
     readonly getActionsBoundToInput = InputMapper._generateGetter(this._inputToAction);
+
+    overrideWithCompiled(input: string, query: string, compiled: CompiledAction | CompiledTuple): PossibleError<string> {
+        const actions = this._inputToAction.get(input);
+        if (!actions) {
+            return { err: `Input '${input}' is not bound` };
+        }
+
+        if (!actions.delete(query)) {
+            return { err: `Input '${input}' is not bound to query 'query'` };
+        }
+
+        actions.add(compiled);
+    }
 
     private static readonly _generateLister
         = <K, V>(map: Map<K, V>) =>

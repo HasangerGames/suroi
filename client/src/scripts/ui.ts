@@ -1961,8 +1961,8 @@ Video evidence is required.`)) {
     }
 
     const interactKey = $<HTMLDivElement>("#detonate-key");
-    const bind: string = inputManager.binds.getInputsBoundToAction("explodeC4")[0];
-    const bindImg = InputManager.getIconFromInputName(bind);
+    const bind: string | undefined = inputManager.binds.getInputsBoundToAction("explodeC4")[0];
+    const bindImg = bind === undefined ? undefined : InputManager.getIconFromInputName(bind);
 
     if (bindImg === undefined) {
         interactKey.text(bind ?? "");
