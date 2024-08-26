@@ -91,15 +91,19 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             this.container.rotation = this.rotation;
         }
 
-        if (HITBOX_DEBUG_MODE && this.radius) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
 
-            drawHitbox(
-                this.hitbox,
-                HITBOX_COLORS.obstacle,
-                this.debugGraphics
-            );
-        }
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE || !this.radius) return;
+
+        this.debugGraphics.clear();
+
+        drawHitbox(
+            this.hitbox,
+            HITBOX_COLORS.obstacle,
+            this.debugGraphics
+        );
     }
 
     hitEffect(position: Vector, angle: number): void {

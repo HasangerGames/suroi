@@ -8,7 +8,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -138,10 +138,14 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             this.container.position = toPixiCoords(this.position);
         }
 
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.clear();
-            drawHitbox(this.hitbox, HITBOX_COLORS.loot, this.debugGraphics);
-        }
+        this.updateDebugGraphics();
+    }
+
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
+
+        this.debugGraphics.clear();
+        drawHitbox(this.hitbox, HITBOX_COLORS.loot, this.debugGraphics, this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY);
     }
 
     destroy(): void {

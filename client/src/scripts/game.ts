@@ -21,6 +21,7 @@ import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { equalLayer } from "../../../common/src/utils/layer";
 import { Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
@@ -47,14 +48,13 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, autoPickup } from "./ui";
+import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { equalLayer } from "../../../common/src/utils/layer";
 
 /* eslint-disable @stylistic/indent */
 

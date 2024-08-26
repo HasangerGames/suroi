@@ -23,7 +23,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -364,7 +364,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
 
         const doOverlay = FloorTypes[floorType].overlay;
-        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || previousLayer !== this.layer;
+        const layerChanged = previousLayer !== this.layer || this.game.activePlayer?.layer !== this.layer || isNew;
+        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || layerChanged;
 
         if (floorType !== this.floorType) {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
@@ -711,43 +712,58 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.action = action;
         }
 
-        if (HITBOX_DEBUG_MODE) {
-            const ctx = this.debugGraphics;
-            ctx.clear();
+        if (this.isActivePlayer && layerChanged && HITBOX_DEBUG_MODE) {
+            this.game.addTimeout(() => {
+                for (const object of this.game.objects) {
+                    object.updateDebugGraphics();
+                }
+            }, 0);
+        }
 
-            drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx);
+        this.updateDebugGraphics();
+    }
 
-            if (this.downed) {
-                drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx);
-                // revival range
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
+
+        const ctx = this.debugGraphics;
+        ctx.clear();
+        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+
+        drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx, alpha);
+
+        if (this.downed) {
+            drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx, alpha);
+            // revival range
+        }
+
+        switch (this.activeItem.itemType) {
+            case ItemType.Gun: {
+                ctx.setStrokeStyle({
+                    color: HITBOX_COLORS.playerWeapon,
+                    width: 4,
+                    alpha
+                });
+                ctx.moveTo(this.container.position.x, this.container.position.y);
+                const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
+                ctx.lineTo(lineEnd.x, lineEnd.y);
+                ctx.stroke();
+                break;
             }
-
-            switch (this.activeItem.itemType) {
-                case ItemType.Gun: {
-                    ctx.setStrokeStyle({
-                        color: HITBOX_COLORS.playerWeapon,
-                        width: 4
-                    });
-                    ctx.moveTo(this.container.position.x, this.container.position.y);
-                    const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
-                    ctx.lineTo(lineEnd.x, lineEnd.y);
-                    ctx.stroke();
-                    break;
-                }
-                case ItemType.Melee: {
-                    drawHitbox(
-                        new CircleHitbox(
-                            this.activeItem.radius,
-                            Vec.add(
-                                this.position,
-                                Vec.rotate(this.activeItem.offset, this.rotation)
-                            )
-                        ),
-                        HITBOX_COLORS.playerWeapon,
-                        ctx
-                    );
-                    break;
-                }
+            case ItemType.Melee: {
+                drawHitbox(
+                    new CircleHitbox(
+                        this.activeItem.radius,
+                        Vec.add(
+                            this.position,
+                            Vec.rotate(this.activeItem.offset, this.rotation)
+                        )
+                    ),
+                    HITBOX_COLORS.playerWeapon,
+                    ctx,
+                    alpha
+                );
+                break;
             }
         }
     }

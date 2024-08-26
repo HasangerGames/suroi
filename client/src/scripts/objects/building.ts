@@ -3,14 +3,14 @@ import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -214,6 +214,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 this.container.addChild(sprite);
             }
 
+            this.layer = data.layer;
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
@@ -239,7 +240,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
             this.damageable = !!definition.hitbox;
             this.ceilingHitbox = (definition.scopeHitbox ?? definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
-            this.layer = data.layer;
         }
 
         const definition = this.definition;
@@ -339,38 +339,46 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             this.ceilingContainer.addChild(sprite);
         }
 
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
 
-            if (this.hitbox) {
-                drawHitbox(
-                    this.hitbox,
-                    HITBOX_COLORS.obstacle,
-                    this.debugGraphics
-                );
-            }
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
 
-            if (this.ceilingHitbox) {
-                drawHitbox(
-                    this.ceilingHitbox,
-                    HITBOX_COLORS.buildingScopeCeiling,
-                    this.debugGraphics
-                );
-            }
+        const definition = this.definition;
+        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+        this.debugGraphics.clear();
 
+        if (this.hitbox) {
             drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
+                this.hitbox,
+                HITBOX_COLORS.obstacle,
+                this.debugGraphics,
+                this.game.activePlayer !== undefined && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this.layer, this.game.activePlayer.layer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            );
+        }
+
+        if (this.ceilingHitbox) {
+            drawHitbox(
+                this.ceilingHitbox,
+                HITBOX_COLORS.buildingScopeCeiling,
                 this.debugGraphics
             );
+        }
 
-            if (definition.scopeHitbox) {
-                drawHitbox(
-                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.buildingZoomCeiling,
-                    this.debugGraphics
-                );
-            }
+        drawHitbox(
+            definition.spawnHitbox.transform(this.position, 1, this.orientation),
+            HITBOX_COLORS.spawnHitbox,
+            this.debugGraphics,
+            alpha
+        );
+
+        if (definition.scopeHitbox) {
+            drawHitbox(
+                definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.buildingZoomCeiling,
+                this.debugGraphics
+            );
         }
     }
 

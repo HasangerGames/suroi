@@ -3,7 +3,7 @@ import { type SyncedParticleDefinition } from "../../../../common/src/definition
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Game } from "../game";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
@@ -74,15 +74,20 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
             this.container.scale.set(this._scale);
         }
 
-        if (HITBOX_DEBUG_MODE && this.definition.hitbox) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
 
-            drawHitbox(
-                this.definition.hitbox.transform(this.position, this._scale),
-                HITBOX_COLORS.obstacleNoCollision,
-                this.debugGraphics
-            );
-        }
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE || !this.definition.hitbox) return;
+
+        this.debugGraphics.clear();
+
+        drawHitbox(
+            this.definition.hitbox.transform(this.position, this._scale),
+            HITBOX_COLORS.obstacleNoCollision,
+            this.debugGraphics,
+            this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+        );
     }
 
     override destroy(): void {

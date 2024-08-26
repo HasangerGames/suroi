@@ -45,7 +45,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
-    readonly anyLayer?: boolean
+    readonly spanAdjacentLayers?: boolean
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -4292,7 +4292,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
             reflectBullets: true,
-            anyLayer: true,
+            spanAdjacentLayers: true,
             material: "metal",
             particle: "metal_particle",
             hitbox: new HitboxGroup(

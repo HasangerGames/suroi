@@ -134,4 +134,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     }
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
+
+    /**
+     * subclasses are free to override this method to draw debug graphics if they wish
+     */
+    updateDebugGraphics(): void { /* no-op */ }
 }

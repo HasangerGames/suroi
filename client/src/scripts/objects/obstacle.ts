@@ -11,11 +11,12 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
+import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -320,6 +321,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
             this.container.addChild(wallGraphics);
         }
+
         if (definition.wall && this.dead) {
             this.container.removeChildren();
             if (!definition.noResidue) this.container.addChild(this.image);
@@ -327,142 +329,152 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.rotation = this.rotation;
 
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
 
-            if (definition.isStair) {
-                const hitbox = this.hitbox as RectangleHitbox;
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
 
-                const min = toPixiCoords(hitbox.min);
-                const max = toPixiCoords(hitbox.max);
-                const gphx = this.debugGraphics;
+        const definition = this.definition;
+        this.debugGraphics.clear();
+        const alpha = this.game.activePlayer !== undefined && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this.layer, this.game.activePlayer.layer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
-                // using the same numbering system as server-side, but with array indexes
-                const drawSide = [
-                    () => {
-                        gphx.moveTo(min.x, min.y)
-                            .lineTo(max.x, min.y);
-                    },
-                    () => {
-                        gphx.moveTo(max.x, min.y)
-                            .lineTo(max.x, max.y);
-                    },
-                    () => {
-                        gphx.moveTo(max.x, max.y)
-                            .lineTo(min.x, max.y);
-                    },
-                    () => {
-                        gphx.moveTo(min.x, max.y)
-                            .lineTo(min.x, min.y);
-                    }
-                ];
+        if (definition.isStair) {
+            const hitbox = this.hitbox as RectangleHitbox;
 
-                const { high: highDef, low: lowDef } = definition.activeEdges;
-                const [high, low] = [
-                    Numeric.absMod(highDef - this.orientation, 4),
-                    Numeric.absMod(lowDef - this.orientation, 4)
-                ];
+            const min = toPixiCoords(hitbox.min);
+            const max = toPixiCoords(hitbox.max);
+            const gphx = this.debugGraphics;
 
-                if (Math.abs(high - low) === 1) {
-                    for (let i = 0; i < 4; i++) {
-                        let color: 0xff0000 | 0x00ff00 = 0xff0000;
-                        let width = 4;
-                        switch (true) {
-                            case i === high: { // active edge
-                                color = 0xff0000;
-                                break;
-                            }
-                            case i === low: { // active edge
-                                color = 0x00ff00;
-                                break;
-                            }
-                            case Math.abs(i - low) === 2: { // opposite of low edge -> high edge
-                                color = 0xff0000;
-                                width = 2;
-                                break;
-                            }
-                            case Math.abs(i - high) === 2: { // opposite of high edge -> low edge
-                                color = 0x00ff00;
-                                width = 2;
-                                break;
-                            }
+            // using the same numbering system as server-side, but with array indexes
+            const drawSide = [
+                () => {
+                    gphx.moveTo(min.x, min.y)
+                        .lineTo(max.x, min.y);
+                },
+                () => {
+                    gphx.moveTo(max.x, min.y)
+                        .lineTo(max.x, max.y);
+                },
+                () => {
+                    gphx.moveTo(max.x, max.y)
+                        .lineTo(min.x, max.y);
+                },
+                () => {
+                    gphx.moveTo(min.x, max.y)
+                        .lineTo(min.x, min.y);
+                }
+            ];
+
+            const { high: highDef, low: lowDef } = definition.activeEdges;
+            const [high, low] = [
+                Numeric.absMod(highDef - this.orientation, 4),
+                Numeric.absMod(lowDef - this.orientation, 4)
+            ];
+
+            if (Math.abs(high - low) === 1) {
+                for (let i = 0; i < 4; i++) {
+                    let color: 0xff0000 | 0x00ff00 = 0xff0000;
+                    let width = 4;
+                    switch (true) {
+                        case i === high: { // active edge
+                            color = 0xff0000;
+                            break;
                         }
-
-                        gphx.setStrokeStyle({ color, width })
-                            .beginPath();
-                        drawSide[i]();
-                        gphx.closePath()
-                            .stroke();
+                        case i === low: { // active edge
+                            color = 0x00ff00;
+                            break;
+                        }
+                        case Math.abs(i - low) === 2: { // opposite of low edge -> high edge
+                            color = 0xff0000;
+                            width = 2;
+                            break;
+                        }
+                        case Math.abs(i - high) === 2: { // opposite of high edge -> low edge
+                            color = 0x00ff00;
+                            width = 2;
+                            break;
+                        }
                     }
 
-                    // determine the line's endpoints
-                    const [vertexA, vertexB] = high + low === 3
-                        ? [min, max]
-                        : [
-                            { x: max.x, y: min.y },
-                            { x: min.x, y: max.y }
-                        ];
-                    const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
-                    const protrusion = Math.min(50, 50 / ratio);
-
-                    gphx.setStrokeStyle({ color: 0xffff00, width: 2 })
-                        .beginPath()
-                        .moveTo(vertexA.x - protrusion, vertexA.y - protrusion * ratio)
-                        .lineTo(vertexA.x, vertexA.y)
-                        .moveTo(vertexB.x, vertexB.y)
-                        .lineTo(vertexB.x + protrusion, vertexB.y + protrusion * ratio)
-                        .stroke()
-                        .setStrokeStyle({ color: 0xffff00, alpha: 0.25, width: 2 })
-                        .beginPath()
-                        .moveTo(vertexA.x, vertexA.y)
-                        .lineTo(vertexB.x, vertexB.y)
-                        .closePath()
-                        .stroke();
-                } else {
-                    drawHitbox(
-                        hitbox,
-                        definition.noCollisions || this.dead
-                            ? HITBOX_COLORS.obstacleNoCollision
-                            : HITBOX_COLORS.stair,
-                        this.debugGraphics
-                    );
-
-                    gphx.setStrokeStyle({ color: 0xff0000, width: 4 })
+                    gphx.setStrokeStyle({ color, width, alpha })
                         .beginPath();
-                    drawSide[high]();
-                    gphx.closePath()
-                        .stroke()
-                        .setStrokeStyle({ color: 0x00ff00, width: 4 })
-                        .beginPath();
-                    drawSide[low]();
+                    drawSide[i]();
                     gphx.closePath()
                         .stroke();
                 }
+
+                // determine the line's endpoints
+                const [vertexA, vertexB] = high + low === 3
+                    ? [min, max]
+                    : [
+                        { x: max.x, y: min.y },
+                        { x: min.x, y: max.y }
+                    ];
+                const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
+                const protrusion = Math.min(50, 50 / ratio);
+
+                gphx.setStrokeStyle({ color: 0xffff00, width: 2, alpha })
+                    .beginPath()
+                    .moveTo(vertexA.x - protrusion, vertexA.y - protrusion * ratio)
+                    .lineTo(vertexA.x, vertexA.y)
+                    .moveTo(vertexB.x, vertexB.y)
+                    .lineTo(vertexB.x + protrusion, vertexB.y + protrusion * ratio)
+                    .stroke()
+                    .setStrokeStyle({ color: 0xffff00, alpha: 0.25 * alpha, width: 2 })
+                    .beginPath()
+                    .moveTo(vertexA.x, vertexA.y)
+                    .lineTo(vertexB.x, vertexB.y)
+                    .closePath()
+                    .stroke();
             } else {
                 drawHitbox(
-                    this.hitbox,
+                    hitbox,
                     definition.noCollisions || this.dead
                         ? HITBOX_COLORS.obstacleNoCollision
-                        : HITBOX_COLORS.obstacle,
-                    this.debugGraphics
+                        : HITBOX_COLORS.stair,
+                    this.debugGraphics,
+                    alpha
                 );
-            }
 
-            if (definition.isDoor && definition.operationStyle !== "slide") {
-                drawHitbox(
-                    new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
-                    HITBOX_COLORS.obstacleNoCollision,
-                    this.debugGraphics
-                );
+                gphx.setStrokeStyle({ color: 0xff0000, width: 4 })
+                    .beginPath();
+                drawSide[high]();
+                gphx.closePath()
+                    .stroke()
+                    .setStrokeStyle({ color: 0x00ff00, width: 4 })
+                    .beginPath();
+                drawSide[low]();
+                gphx.closePath()
+                    .stroke();
             }
+        } else {
+            drawHitbox(
+                this.hitbox,
+                definition.noCollisions || this.dead
+                    ? HITBOX_COLORS.obstacleNoCollision
+                    : HITBOX_COLORS.obstacle,
+                this.debugGraphics,
+                alpha
+            );
+        }
 
-            if (definition.spawnHitbox) {
-                drawHitbox(
-                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.spawnHitbox,
-                    this.debugGraphics
-                );
-            }
+        if (definition.isDoor && definition.operationStyle !== "slide") {
+            drawHitbox(
+                new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
+                HITBOX_COLORS.obstacleNoCollision,
+                this.debugGraphics,
+                alpha
+            );
+        }
+
+        if (definition.spawnHitbox) {
+            drawHitbox(
+                definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics,
+                alpha
+            );
         }
     }
 

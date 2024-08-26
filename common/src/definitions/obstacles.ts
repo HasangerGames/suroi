@@ -85,7 +85,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly noMeleeCollision: boolean
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
-    readonly anyLayer?: boolean
+    readonly spanAdjacentLayers?: boolean
     readonly hitSoundVariations?: number
 
     readonly frames: {
@@ -3111,7 +3111,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "HQ Stair Wall (upper)",
             material: "metal",
             health: 1000,
-            anyLayer: true,
+            spanAdjacentLayers: true,
             indestructible: true,
             invisible: true,
             reflectBullets: true,
@@ -3130,7 +3130,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "HQ Stair Wall (lower)",
             material: "metal",
             health: 1000,
-            anyLayer: true,
+            spanAdjacentLayers: true,
             indestructible: true,
             invisible: true,
             reflectBullets: true,

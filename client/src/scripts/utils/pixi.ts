@@ -193,10 +193,11 @@ export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = P
     }
 };
 
-export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
+export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
     graphics.setStrokeStyle({
         color,
-        width: 2
+        width: 2,
+        alpha
     });
     graphics.beginPath();
 
@@ -218,7 +219,7 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
             break;
         }
         case HitboxType.Group:
-            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
+            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics, alpha);
             break;
         case HitboxType.Polygon:
             graphics.poly(hitbox.points.map(point => toPixiCoords(point)));
