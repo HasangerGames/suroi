@@ -1,4 +1,4 @@
-import { Layer, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, Layer, ZIndexes } from "../../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { EaseFunctions } from "../../../../common/src/utils/math";
@@ -20,6 +20,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
     image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
 
+    image.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, layer); // TODO: find a proper zindex for explosions lol
     image.setVisible(isOnSameLayer);
 
     game.camera.addObject(image);
