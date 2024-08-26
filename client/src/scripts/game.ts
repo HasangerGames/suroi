@@ -648,7 +648,7 @@ export class Game {
         }
 
         for (const explosionData of updateData.explosions ?? []) {
-            explosion(this, explosionData.definition, explosionData.position);
+            explosion(this, explosionData.definition, explosionData.position, explosionData.layer);
         }
 
         for (const emote of updateData.emotes ?? []) {

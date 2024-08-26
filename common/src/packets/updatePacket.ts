@@ -1,5 +1,5 @@
 import { type BitStream } from "@damienvesper/bit-buffer";
-import { DEFAULT_INVENTORY, GameConstants, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, Layer, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
@@ -261,6 +261,7 @@ export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
 export type ExplosionSerialization = {
     readonly definition: ExplosionDefinition
     readonly position: Vector
+    readonly layer: Layer
 };
 
 export type EmoteSerialization = {
@@ -418,6 +419,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             stream.writeArray(data.explosions, 8, explosion => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
+                stream.writeInt8(explosion.layer);
             });
             flags |= UpdateFlags.Explosions;
         }
@@ -558,7 +560,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         if (flags & UpdateFlags.Explosions) {
             data.explosions = stream.readAndCreateArray(8, () => ({
                 definition: Explosions.readFromStream(stream),
-                position: stream.readPosition()
+                position: stream.readPosition(),
+                layer: stream.readInt8()
             }));
         }
 
