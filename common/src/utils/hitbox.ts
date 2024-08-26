@@ -409,19 +409,19 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
 }
 
-export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
+export class HitboxGroup<GroupType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
-    hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>;
+    hitboxes: GroupType;
 
-    static simple(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>): HitboxJSONMapping[HitboxType.Group] {
+    static simple<ChildType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>>(...hitboxes: ChildType): HitboxJSONMapping[HitboxType.Group] {
         return {
             type: HitboxType.Group,
             hitboxes: hitboxes.map(h => h.toJSON())
         };
     }
 
-    constructor(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>) {
+    constructor(...hitboxes: GroupType) {
         super();
         // yes? no? maybe?
         // if (hitboxes.length === 0) throw new class StupidityError extends Error {} ("you're stupid");

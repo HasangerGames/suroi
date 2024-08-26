@@ -57,15 +57,20 @@ export class Grid {
         this._removeFromGrid(object);
         const cells: Vector[] = [];
 
-        if (object.hitbox === undefined) {
+        const hasSpawnHitbox = "spawnHitbox" in object;
+        const hitbox = object.hitbox;
+
+        if (hitbox === undefined && !hasSpawnHitbox) {
             const pos = this._roundToCells(object.position);
             (this._grid[pos.x][pos.y] ??= new Map()).set(object.id, object);
             cells.push(pos);
         } else {
             const rect = (
-                "spawnHitbox" in object
+                hasSpawnHitbox
                     ? object.spawnHitbox
-                    : object.hitbox
+                    // can't be undefined cuz then hasSpawnHitbox would be true, meaning we'd pick the ternary's other branch
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    : hitbox!
             ).toRectangle();
 
             // Get the bounds of the hitbox

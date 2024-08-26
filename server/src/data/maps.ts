@@ -224,7 +224,7 @@ const maps = {
             for (const obstacle of Obstacles.definitions) {
                 if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
+                    map.generateObstacle(obstacle.idString, obstaclePos, { variation: i as Variation });
 
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {
@@ -380,10 +380,10 @@ const maps = {
                 const { id, pos } = obstacle;
                 const { x: posX, y: posY } = pos;
 
-                map.generateObstacle(id, Vec.add(center, pos), 0);
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), 0);
-                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), 0);
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), 0);
+                map.generateObstacle(id, Vec.add(center, pos));
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)));
+                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)));
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)));
             }
 
             genLoots(Vec.add(center, Vec.create(-70, 90)), 8, 8);
@@ -490,7 +490,7 @@ const maps = {
             for (let i = 0; i < Obstacles.definitions.length; i++) {
                 const obstacle = Obstacles.definitions[i];
                 // setInterval(() => player.activeItem.useItem(), 30);
-                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), 0, 1, i as Variation);
+                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), { variation: i as Variation });
             }
         }
     },
@@ -647,7 +647,7 @@ const maps = {
                         const position = map.getRandomPosition(definition.spawnHitbox, {
                             orientation,
                             spawnMode: definition.spawnMode,
-                            getOrientation: (newOrientation: Orientation) => {
+                            orientationConsumer: (newOrientation: Orientation) => {
                                 orientation = newOrientation;
                             },
                             maxAttempts: 400
@@ -694,7 +694,7 @@ const maps = {
                         continue;
                     }
 
-                    map.generateObstacle(def, position, undefined, Layer.Ground, scale, variation);
+                    map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
                 }
             });
         },
