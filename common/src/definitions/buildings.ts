@@ -291,17 +291,23 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             rotationMode: RotationMode.Limited,
             isFloor: false
         }),
-        blueHouseVaultLayout: (id: number, obstacles: BuildingObstacle[], special?: boolean) => {
+        blueHouseVaultLayout: (id: number, obstacles: BuildingObstacle[], subBuildings?: SubBuilding[]) => {
             return {
                 idString: `blue_house_vault_layout_${id}`,
                 name: "Blue House Vault Layout",
                 spawnHitbox: RectangleHitbox.fromRect(20, 20),
                 floorImages: [{
-                    key: special ? "blue_house_floor_2_2_special" : "blue_house_floor_2_2",
+                    key: subBuildings ? "blue_house_floor_2_2_special" : "blue_house_floor_2_2",
                     position: Vec.create(18.4, 18),
                     scale: Vec.create(1.07, 1.07)
                 }],
-                obstacles: obstacles
+                obstacles: obstacles,
+                subBuildings: subBuildings ?? [],
+                lootSpawners: subBuildings
+                    ? []
+                    : [
+                        { table: "ground_loot", position: Vec.create(23.5, 14.4) }
+                    ]
             };
         },
         container: (
@@ -1516,21 +1522,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             { idString: "box", position: Vec.create(14, 16.5) }
         ]),
 
-        simple("blueHouseVaultLayout", 2, [
-            {
-                idString: {
-                    regular_crate: 1.5,
-                    aegis_crate: 0.33,
-                    flint_crate: 0.33
-                },
-                position: Vec.create(15, 14)
-            }
-        ]),
+        /* simple("blueHouseVaultLayout", 2,
+            [
+                { idString: "blue_house_stair", position: Vec.create(16, 14), layer: -1, rotation: 0 },
+                { idString: "blue_house_stair_walls", position: Vec.create(16, 14), layer: -1, rotation: 0 }
+            ],
+            [
+                { idString: "blue_house_basement", position: Vec.create(-2, 14), orientation: 0, layer: -2 }
+            ]
+        ), */ // TODO: add on v0.19.1 and rework layout
 
         simple("blueHouseVaultLayout", 3, [
             { idString: "box", position: Vec.create(12.5, 11.5) },
             { idString: "box", position: Vec.create(12.5, 16.5) },
-            { idString: "box", position: Vec.create(17.5, 11.5) },
             { idString: "box", position: Vec.create(17.5, 16.5) }
         ]),
 
@@ -1539,9 +1543,44 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             { idString: "box", position: Vec.create(18.1, 11.5) }
         ]),
 
-        // simple("blueHouseVaultLayout", 5, [], true), // TODO
+        simple("blueHouseVaultLayout", 5, [
+            { idString: "box", position: Vec.create(14, 11.5) },
+            { idString: "bookshelf", position: Vec.create(16, 17), rotation: 0 }
+        ]),
         // -------------------------------------------------------------------------
 
+        /*  {
+            idString: "blue_house_basement",
+            name: "Blue House Basement",
+            reflectBullets: true,
+            material: "metal",
+            particle: "metal_particle",
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(48, 1.7, Vec.create(0, -6)),
+                RectangleHitbox.fromRect(48, 1.7, Vec.create(0, 6)),
+                RectangleHitbox.fromRect(1.7, 11, Vec.create(-23, 0))
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(50.5, 16, Vec.create(0, 0)),
+            scopeHitbox: RectangleHitbox.fromRect(48, 10.1),
+            floorImages: [
+                {
+                    key: "blue_house_basement",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2, 2)
+                }
+            ],
+            floors: [
+                {
+                    type: FloorNames.Stone,
+                    hitbox: RectangleHitbox.fromRect(47, 10.1)
+                }
+            ],
+            obstacles: [
+                { idString: { aegis_crate: 1, flint_crate: 1 }, position: Vec.create(-17, 0) },
+                { idString: "box", position: Vec.create(-7, -2.1) },
+                { idString: "box", position: Vec.create(2, 2.2) }
+            ]
+        }, */ // TODO: add on v0.19.1 and rework layout
         {
             idString: "blue_house",
             name: "Blue House",
@@ -1654,17 +1693,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(-29, -4) }
             ],
-            lootSpawners: [
-                { table: "ground_loot", position: Vec.create(23.5, 14.4) }
-            ],
             subBuildings: [
                 { idString: "blue_house_mini_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
                 {
                     idString: {
                         blue_house_vault_layout_1: 1,
-                        blue_house_vault_layout_2: 1,
+                        //  blue_house_vault_layout_2: 3, // TODO: add on v0.19.1 and rework layout
                         blue_house_vault_layout_3: 1,
-                        blue_house_vault_layout_4: 1
+                        blue_house_vault_layout_4: 1,
+                        blue_house_vault_layout_5: 1
                     },
                     position: Vec.create(0, 0),
                     orientation: 0
@@ -4375,7 +4412,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker",
             name: "Small Bunker",
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
-            rotationMode: RotationMode.None, // TODO: fix stairs' hitboxes not being able to rotate.
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
                 position: Vec.create(0, 17.9),

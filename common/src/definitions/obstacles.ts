@@ -3161,6 +3161,44 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             rotationMode: RotationMode.Limited
         },
+        /*   {
+            idString: "blue_house_stair",
+            name: "Blue House Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            role: ObstacleSpecialRoles.Stair,
+            activeEdges: {
+                high: 1,
+                low: 3
+            },
+            invisible: true,
+            hitbox: RectangleHitbox.fromRect(9, 11),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        },
+        {
+            idString: "blue_house_stair_walls", // to block -1 layer collision funnies
+            name: "Blue House Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            activeEdges: {
+                high: 1,
+                low: 3
+            },
+            invisible: true,
+            hitbox: new HitboxGroup(
+                RectangleHitbox.fromRect(10, 1.7, Vec.create(0, -6)),
+                RectangleHitbox.fromRect(10, 1.7, Vec.create(0, 6))
+            ),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited
+        }, */
         {
             idString: "hq_stair",
             name: "HQ Stair",
