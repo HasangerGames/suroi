@@ -291,6 +291,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             rotationMode: RotationMode.Limited,
             isFloor: false
         }),
+        blueHouseVaultLayout: (id: number, obstacles: BuildingObstacle[], special?: boolean) => {
+            return {
+                idString: `blue_house_vault_layout_${id}`,
+                name: "Blue House Vault Layout",
+                spawnHitbox: RectangleHitbox.fromRect(20, 20),
+                floorImages: [{
+                    key: special ? "blue_house_floor_2_2_special" : "blue_house_floor_2_2",
+                    position: Vec.create(18.4, 18),
+                    scale: Vec.create(1.07, 1.07)
+                }],
+                obstacles: obstacles
+            };
+        },
         container: (
             id: number,
             tintName: "White" | "Red" | "Green" | "Blue" | "Yellow",
@@ -1496,50 +1509,37 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         },
 
         // -------------------------------------------------------------------------
-        {
-            idString: "blue_house_vault_layout_1",
-            name: "Blue House Vault Layout 1",
-            spawnHitbox: RectangleHitbox.fromRect(20, 20),
-            obstacles: [
-                { idString: "box", position: Vec.create(12.5, 11.5) },
-                { idString: "box", position: Vec.create(14, 16.5) }
-            ]
-        },
-        {
-            idString: "blue_house_vault_layout_2",
-            name: "Blue House Vault Layout 2",
-            spawnHitbox: RectangleHitbox.fromRect(20, 20),
-            obstacles: [
-                {
-                    idString: {
-                        regular_crate: 1.5,
-                        aegis_crate: 0.33,
-                        flint_crate: 0.33
-                    },
-                    position: Vec.create(15, 14)
-                }
-            ]
-        },
-        {
-            idString: "blue_house_vault_layout_3",
-            name: "Blue House Vault Layout 3",
-            spawnHitbox: RectangleHitbox.fromRect(20, 20),
-            obstacles: [
-                { idString: "box", position: Vec.create(12.5, 11.5) },
-                { idString: "box", position: Vec.create(12.5, 16.5) },
-                { idString: "box", position: Vec.create(17.5, 11.5) },
-                { idString: "box", position: Vec.create(17.5, 16.5) }
-            ]
-        },
-        {
-            idString: "blue_house_vault_layout_4",
-            name: "Blue House Vault Layout 4",
-            spawnHitbox: RectangleHitbox.fromRect(20, 20),
-            obstacles: [
-                { idString: "gun_case", position: Vec.create(12.5, 14), rotation: 1 },
-                { idString: "box", position: Vec.create(18.1, 11.5) }
-            ]
-        },
+        // Vault layout variations for blue house.
+        // -------------------------------------------------------------------------
+        simple("blueHouseVaultLayout", 1, [
+            { idString: "box", position: Vec.create(12.5, 11.5) },
+            { idString: "box", position: Vec.create(14, 16.5) }
+        ]),
+
+        simple("blueHouseVaultLayout", 2, [
+            {
+                idString: {
+                    regular_crate: 1.5,
+                    aegis_crate: 0.33,
+                    flint_crate: 0.33
+                },
+                position: Vec.create(15, 14)
+            }
+        ]),
+
+        simple("blueHouseVaultLayout", 3, [
+            { idString: "box", position: Vec.create(12.5, 11.5) },
+            { idString: "box", position: Vec.create(12.5, 16.5) },
+            { idString: "box", position: Vec.create(17.5, 11.5) },
+            { idString: "box", position: Vec.create(17.5, 16.5) }
+        ]),
+
+        simple("blueHouseVaultLayout", 4, [
+            { idString: "gun_case", position: Vec.create(12.5, 14), rotation: 1 },
+            { idString: "box", position: Vec.create(18.1, 11.5) }
+        ]),
+
+        // simple("blueHouseVaultLayout", 5, [], true), // TODO
         // -------------------------------------------------------------------------
 
         {
@@ -1571,11 +1571,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "blue_house_floor_2_1",
                     position: Vec.create(-18.67, 18),
-                    scale: Vec.create(1.07, 1.07)
-                },
-                {
-                    key: "blue_house_floor_2_2",
-                    position: Vec.create(18.4, 18),
                     scale: Vec.create(1.07, 1.07)
                 },
                 {
