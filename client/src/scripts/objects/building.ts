@@ -226,7 +226,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 )
             );
 
-            this.orientation = full.rotation;
+            this.orientation = full.orientation;
             this.rotation = Angle.orientationToRotation(this.orientation);
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;

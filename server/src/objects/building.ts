@@ -104,7 +104,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
             full: {
                 definition: this.definition,
                 position: this.position,
-                rotation: this.orientation
+                orientation: this.orientation
             }
         };
     }

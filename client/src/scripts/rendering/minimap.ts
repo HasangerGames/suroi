@@ -4,9 +4,8 @@ import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "../../
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacketData } from "../../../../common/src/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "../../../../common/src/packets/updatePacket";
-import { type Orientation } from "../../../../common/src/typings";
 import { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, Numeric } from "../../../../common/src/utils/math";
+import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
@@ -219,7 +218,7 @@ export class Minimap {
             const definition = building.definition;
             for (const ground of definition.groundGraphics) {
                 ctx.beginPath();
-                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation), ctx, scale);
+                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
                 ctx.fill(ground.color);
             }
@@ -279,11 +278,11 @@ export class Minimap {
                 case ObjectCategory.Building: {
                     if (mapObject.layer !== Layer.Ground) continue;
                     const definition = mapObject.definition;
-                    const rotation = Angle.orientationToRotation(mapObject.rotation);
+                    const rotation = mapObject.rotation;
 
                     for (const image of definition.floorImages) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
                             .setRotation(rotation + (image.rotation ?? 0))
                             .setZIndex(ZIndexes.BuildingsFloor);
 
@@ -294,7 +293,7 @@ export class Minimap {
 
                     for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
                             .setRotation(rotation)
                             .setZIndex(definition.ceilingZIndex);
 
@@ -310,7 +309,7 @@ export class Minimap {
                         ctx.zIndex = definition.graphicsZIndex;
                         for (const graphics of definition.graphics) {
                             ctx.beginPath();
-                            drawGroundGraphics(graphics.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation), ctx, 1);
+                            drawGroundGraphics(graphics.hitbox.transform(mapObject.position, 1, mapObject.orientation), ctx, 1);
                             ctx.closePath();
                             ctx.fill(graphics.color);
                         }
@@ -447,7 +446,7 @@ export class Minimap {
         for (const object of this._objects) {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
-                    const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
+                    const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
                     this._terrain.addFloor(floor.type, hitbox, object.layer ?? 0);
                 }
             }

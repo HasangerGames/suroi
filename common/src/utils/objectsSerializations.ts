@@ -115,7 +115,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: BuildingDefinition
             readonly position: Vector
-            readonly rotation: Orientation
+            readonly orientation: Orientation
         }
     }
     //
@@ -285,8 +285,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeScale(data.scale);
             stream.writeBoolean(data.dead);
         },
-        serializeFull(stream, data): void {
-            const full = data.full;
+        serializeFull(stream, { full }): void {
             Obstacles.writeToStream(stream, full.definition);
 
             stream.writePosition(full.position);
@@ -339,10 +338,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writePosition(data.position);
             stream.writeLayer(data.layer);
         },
-        serializeFull(stream, data): void {
-            Loots.writeToStream(stream, data.full.definition);
-            stream.writeBits(data.full.count, 9);
-            stream.writeBoolean(data.full.isNew);
+        serializeFull(stream, { full }): void {
+            Loots.writeToStream(stream, full.definition);
+            stream.writeBits(full.count, 9);
+            stream.writeBoolean(full.isNew);
         },
         deserializePartial(stream) {
             return {
@@ -397,10 +396,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
             stream.writeLayer(data.layer);
         },
-        serializeFull(stream, data): void {
-            Buildings.writeToStream(stream, data.full.definition);
-            stream.writePosition(data.full.position);
-            stream.writeBits(data.full.rotation, 2);
+        serializeFull(stream, { full }): void {
+            Buildings.writeToStream(stream, full.definition);
+            stream.writePosition(full.position);
+            stream.writeBits(full.orientation, 2);
         },
         deserializePartial(stream) {
             return {
@@ -418,7 +417,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition: Buildings.readFromStream(stream),
                 position: stream.readPosition(),
-                rotation: stream.readBits(2) as Orientation
+                orientation: stream.readBits(2) as Orientation
             };
         }
     },
@@ -448,8 +447,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             stream.writeFloat(data.height, 0, 1, 8);
         },
-        serializeFull(stream, data) {
-            stream.writePosition(data.full.position);
+        serializeFull(stream, { full }) {
+            stream.writePosition(full.position);
         },
         deserializePartial(stream) {
             return {
@@ -472,8 +471,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBoolean(data.airborne);
             stream.writeBoolean(data.activated);
         },
-        serializeFull(stream, data) {
-            Loots.writeToStream(stream, data.full.definition);
+        serializeFull(stream, { full }) {
+            Loots.writeToStream(stream, full.definition);
         },
         deserializePartial(stream) {
             return {
@@ -511,8 +510,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 stream.writeFloat(alpha, 0, 1, 8);
             }
         },
-        serializeFull(stream, data) {
-            const full = data.full;
+        serializeFull(stream, { full }) {
             SyncedParticles.writeToStream(stream, full.definition);
 
             const variant = full.variant;

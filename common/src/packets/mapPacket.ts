@@ -3,12 +3,11 @@ import { Buildings } from "../definitions/buildings";
 import { Obstacles, RotationMode } from "../definitions/obstacles";
 import { type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
+import { Angle } from "../utils/math";
 import { type Vector } from "../utils/vector";
 import { createPacket } from "./packet";
 
 export type MapObject = {
-    readonly position: Vector
-    readonly rotation: number
     readonly scale?: number
     readonly variation?: Variation
 } & CommonGameObject;
@@ -55,7 +54,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                 }
                 case ObjectCategory.Building:
                     Buildings.writeToStream(stream, object.definition);
-                    stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
+                    stream.writeObstacleRotation(object.orientation, RotationMode.Limited);
                     stream.writeLayer(object.layer);
                     break;
             }
@@ -94,6 +93,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                         return {
                             position,
                             type,
+                            dead: false,
                             definition,
                             scale,
                             rotation,
@@ -109,8 +109,10 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                         return {
                             position,
                             type,
+                            dead: false,
                             definition,
-                            rotation: orientation,
+                            rotation: Angle.orientationToRotation(orientation),
+                            orientation,
                             scale: 1,
                             layer,
                             isBuilding: true
