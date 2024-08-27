@@ -19,10 +19,7 @@ export interface BulletOptions {
 }
 
 type GameObject = {
-    readonly position: Vector
-    readonly layer: Layer
     readonly hitbox?: Hitbox
-    readonly dead: boolean
     readonly damageable: boolean
     readonly id: number
 } & CommonGameObject;
@@ -36,6 +33,7 @@ interface Collision {
 }
 
 export class BaseBullet {
+    protected _oldPosition: Vector;
     position: Vector;
     readonly initialPosition: Vector;
 
@@ -66,7 +64,7 @@ export class BaseBullet {
 
     constructor(options: BulletOptions) {
         this.initialPosition = Vec.clone(options.position);
-        this.position = options.position;
+        this._oldPosition = this.position = options.position;
         this.rotation = options.rotation;
         this._layer = options.layer;
         this.reflectionCount = options.reflectionCount ?? 0;
@@ -94,10 +92,11 @@ export class BaseBullet {
      * Update the bullet and check for collisions
      * @param delta The delta time between ticks
      * @param objects An iterable containing objects to check for collision
-     * @returns An array containing the objects that the bullet collided and the intersection data for each
+     * @returns An array containing the objects that the bullet collided and the intersection data for each,
+     * sorted by closest to furthest
      */
     updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): Collision[] {
-        const oldPosition = Vec.clone(this.position);
+        const oldPosition = this._oldPosition = Vec.clone(this.position);
 
         this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
 

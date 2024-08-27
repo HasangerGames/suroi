@@ -3,8 +3,10 @@ import type { LootDefinition, SyncedParticleDefinition, ThrowableDefinition } fr
 import type { BuildingDefinition } from "../definitions/buildings";
 import type { DecalDefinition } from "../definitions/decals";
 import type { ObstacleDefinition } from "../definitions/obstacles";
+import type { Orientation } from "../typings";
 import type { CircleHitbox } from "./hitbox";
 import type { AbstractConstructor, Constructor, GetEnumMemberName } from "./misc";
+import type { Vector } from "./vector";
 
 export type BaseGameObject = InstanceType<ReturnType<typeof makeGameObjectTemplate>>;
 
@@ -43,6 +45,9 @@ type GetName<Member extends number> = GetEnumMemberName<typeof ObjectCategory, M
  */
 export type CommonObjectMapping = {
     [K in ObjectCategory]: PredicateFor<K> & {
+        position: Vector
+        rotation: number
+        dead: boolean
         layer: Layer
     }
 } & {
@@ -58,6 +63,7 @@ export type CommonObjectMapping = {
     }
     [ObjectCategory.Building]: {
         readonly definition: BuildingDefinition
+        orientation: Orientation
     }
     [ObjectCategory.Decal]: {
         readonly definition: DecalDefinition

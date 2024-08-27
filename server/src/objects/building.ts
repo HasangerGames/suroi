@@ -12,6 +12,7 @@ import { Events } from "../pluginManager";
 import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
+import { Angle } from "@common/utils/math";
 
 export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
@@ -29,8 +30,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
     interactableObstacles = new Set<Obstacle>();
 
-    // @ts-expect-error it makes the typings work :3
-    declare rotation: Orientation;
+    orientation: Orientation;
 
     private readonly _puzzle?: {
         inputOrder: string[]
@@ -57,7 +57,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
         this.layer = layer;
 
-        this.rotation = orientation;
+        this.rotation = Angle.orientationToRotation(this.orientation = orientation);
         this._wallsToDestroy = this.definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
         this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation);
@@ -104,7 +104,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
             full: {
                 definition: this.definition,
                 position: this.position,
-                rotation: this.rotation
+                rotation: this.orientation
             }
         };
     }

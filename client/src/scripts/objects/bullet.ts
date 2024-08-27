@@ -1,9 +1,9 @@
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { getEffectiveZIndex, Layer, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, isVisibleFromLayer } from "../../../../common/src/utils/layer";
 import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -56,14 +56,15 @@ export class Bullet extends BaseBullet {
         );
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
+        this.setLayer(this._layer);
         this._image.tint = new Color(color);
         this._image.zIndex = tracerStats.zIndex;
-        if (this._layer !== Layer.Ground) this.setLayer(this._layer); // really broken for some reason (gaming)
 
         this.game.camera.addObject(this._image);
     }
 
     update(delta: number): void {
+        const oldLayer = this._layer;
         if (!this.dead) {
             const collisions = this.updateAndGetCollisions(delta, this.game.objects);
 
@@ -91,7 +92,7 @@ export class Bullet extends BaseBullet {
                         (this.definition.penetration.obstacles && !definition.impenetrable)
                         || definition.noBulletCollision
                         || definition.noCollisions
-                        || !adjacentOrEqualLayer(object.layer, this._layer)
+                        || !(definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
                     ) continue;
 
                     if (definition.isStair) {
@@ -108,8 +109,12 @@ export class Bullet extends BaseBullet {
                     }
                 } else if (
                     (isPlayer && this.definition.penetration.players)
-                    || (isBuilding && object.definition.noBulletCollision)
-                    || (isBuilding && !equalLayer(object.layer, this._layer) && isGroundLayer(this._layer)) // Here we basically make sure that the building hitbox's layer is EQUAL to the bullet's so we have proper collision
+                    || (
+                        isBuilding && (
+                            object.definition.noBulletCollision
+                            || !(object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
+                        )
+                    )
                 ) continue;
 
                 this.dead = true;
@@ -150,6 +155,8 @@ export class Bullet extends BaseBullet {
 
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
+        } else if (this._layer === oldLayer) {
+            this.updateVisibility();
         }
     }
 
@@ -187,8 +194,19 @@ export class Bullet extends BaseBullet {
 
     private setLayer(layer: number): void {
         this._layer = layer;
-        this.game.activePlayer && (this._image.visible = adjacentOrEqualLayer(this._layer, this.game.activePlayer.layer));
+        this.updateVisibility();
         this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer);
+    }
+
+    private updateVisibility(): void {
+        if (!this.game.activePlayer) return;
+
+        this._image.visible = isVisibleFromLayer(
+            this.game.activePlayer.layer,
+            this,
+            [...this.game.objects],
+            hitbox => hitbox.intersectsLine(this._oldPosition, this.position) !== null
+        );
     }
 
     destroy(): void {

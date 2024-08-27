@@ -1,4 +1,6 @@
 import { Layer } from "../constants";
+import type { CommonGameObject } from "./gameObject";
+import type { Hitbox } from "./hitbox";
 
 /**
  * Returns whether or not the provided layer is a "ground" layer.
@@ -69,3 +71,57 @@ export function isAdjacent(num1: number, num2: number): boolean {
 export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number): boolean {
     return (referenceLayer - 1 === evalLayer) || (referenceLayer + 1 === evalLayer) || (referenceLayer === evalLayer);
 }
+
+/**
+ * Determines whether a given object is visible from layer `observerLayer`, whilst taking into account any
+ * visibility overrides in any buildings specified in `collisionCandidates`
+ * @param observerLayer The layer from which we are attempting to observe the object
+ * @param object The object which we are trying to observe
+ * @param collisionCandidates A list of objects the observer is colliding with (or more generally, a list of
+ * objects in which the visibility overrides to be honored will be contained). Omitting this parameter simply
+ * leads to no visibility overrides being considered
+ * @param colliderPredicate A function that, given a collider, determines whether `object` is within it. If
+ * omitted, it defaults to `object.hitbox?.collidesWith(collider)`
+ */
+export function isVisibleFromLayer(
+    observerLayer: Layer,
+    object: { isBuilding?: boolean, layer: Layer, hitbox?: Hitbox },
+    collisionCandidates?: readonly CommonGameObject[],
+    colliderPredicate?: (collider: Hitbox) => boolean
+): boolean {
+    const objectLayer = object.layer;
+    const objectHitbox = object.hitbox;
+
+    return ( // the object is visible if…
+        adjacentOrEqualLayer(observerLayer, objectLayer) // the layers are adjacent.
+        || ( // otherwise…
+            objectLayer < observerLayer // it must be below us
+            && ( // and the ground layer mustn't be between us and it (aka object on -1, us on 1).
+                objectLayer >= Layer.Ground
+                || observerLayer < Layer.Ground
+            )
+        )
+        || ( // other- otherwise…
+            !object.isBuilding // the object isn't a building (vis overrides don't apply to those)
+            && !!collisionCandidates?.some( // and there exists a building 'bu' such that
+                o => o.isBuilding
+                && !o.dead // bu is not dead
+                && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
+                    override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
+                    && (colliderPredicate ??= c => !!objectHitbox?.collidesWith(c))(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
+                    && override.allow?.includes(observerLayer) // and the player's layer is whitelisted.
+                )
+            )
+        )
+    )/* && ( // and…
+        || !collisionCandidates?.some( // there is no building 'bu' such that
+            o => o.isBuilding
+            && !o.dead // bu is not dead
+            && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
+                override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
+                && (colliderPredicate ??= c => !!objectHitbox?.collidesWith(c))(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
+                && override.deny?.includes(observerLayer) // and the player's layer is blacklisted
+            )
+        )
+    ) */; // blacklisting code commented out since it's unused rn (uncomment the collidingObjects var too)
+};
