@@ -1,9 +1,9 @@
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { getEffectiveZIndex, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex, Layer, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -57,7 +57,8 @@ export class Bullet extends BaseBullet {
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this._image.tint = new Color(color);
-        this.setLayer(this._layer);
+        this._image.zIndex = tracerStats.zIndex;
+        if (this._layer !== Layer.Ground) this.setLayer(this._layer); // really broken for some reason (gaming)
 
         this.game.camera.addObject(this._image);
     }
@@ -108,6 +109,7 @@ export class Bullet extends BaseBullet {
                 } else if (
                     (isPlayer && this.definition.penetration.players)
                     || (isBuilding && object.definition.noBulletCollision)
+                    || (isBuilding && !equalLayer(object.layer, this._layer) && isGroundLayer(this._layer)) // Here we basically make sure that the building hitbox's layer is EQUAL to the bullet's so we have proper collision
                 ) continue;
 
                 this.dead = true;

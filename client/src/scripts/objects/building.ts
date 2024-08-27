@@ -282,7 +282,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: `${definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
-                    zIndex: 10,
+                    zIndex: Math.max(ZIndexes.Players + 1, 4),
+                    layer: this.layer,
                     lifetime: 2000,
                     rotation: {
                         start: randomRotation(),
@@ -397,6 +398,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             frames: this.particleFrames,
             position,
             zIndex: ZIndexes.Players + 1,
+            layer: this.layer,
             lifetime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
