@@ -177,6 +177,7 @@ export enum ZIndexes {
     Decals,
     DeadObstacles,
     DeathMarkers,
+    Explosions,
     /**
      * This is the default layer for obstacles
      */

@@ -20,7 +20,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
     image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
 
-    image.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, layer); // TODO: find a proper zindex for explosions lol
+    image.zIndex = getEffectiveZIndex(ZIndexes.Explosions, layer);
     image.setVisible(isOnSameLayer);
 
     game.camera.addObject(image);
