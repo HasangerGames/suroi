@@ -845,18 +845,55 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
+            const isVisibleFromLayer = (object: GameObject): boolean => {
+                const objectLayer = object.layer;
+                let objectHitbox: Hitbox | undefined;
+                // let collidingObjects: readonly GameObject[];
+
+                return ( // the object is visible if…
+                    adjacentOrEqualLayer(this.layer, objectLayer) // the layers are adjacent.
+                    || ( // otherwise…
+                        objectLayer < this.layer // it must be below us
+                        && ( // and the ground layer mustn't be between us and it (aka object on -1, us on 1).
+                            objectLayer >= Layer.Ground
+                            || this.layer < Layer.Ground
+                        )
+                    )
+                    || ( // other- otherwise…
+                        !object.isBuilding // the object isn't a building (vis overrides don't apply to those)
+                        && (
+                            (objectHitbox = object.hitbox) !== undefined // it needs to have a hitbox
+                            && (/* collidingObjects =  */[...game.grid.intersectsHitbox(objectHitbox)]).some( // and there must exist a building 'bu' such that
+                                o => o.isBuilding
+                                && !o.dead // bu is not dead
+                                && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
+                                    override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
+                                    && override.collider.transform(o.position, 1, o.rotation).collidesWith(objectHitbox) // ov's collider collides with the object's hitbox
+                                    && override.allow?.includes(this.layer) // and the player's layer is whitelisted.
+                                )
+                            )
+                        )
+                    )
+                )/* && ( // and…
+                    (objectHitbox = object.hitbox) === undefined // it doesn't have a hitbox
+                    || !(collidingObjects ??= [...game.grid.intersectsHitbox(objectHitbox)]).some( // or there is no building 'bu' such that
+                        o => o.isBuilding
+                        && !o.dead // bu is not dead
+                        && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
+                            override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
+                            && override.collider.collidesWith(objectHitbox) // ov's collider collides with the object's hitbox
+                            && override.deny?.includes(this.layer) // and the player's layer is blacklisted
+                        )
+                    )
+                ) */; // blacklisting code commented out since it's unused rn (uncomment the collidingObjects var too)
+            };
+
             packet.deletedObjects = [...this.visibleObjects]
                 .filter(
                     object => (
                         (
                             !newVisibleObjects.has(object)
-                            || (
-                                !adjacentOrEqualLayer(this.layer, object.layer)
-                                && (
-                                    object.layer > this.layer
-                                    || (object.layer < Layer.Ground && this.layer >= Layer.Ground)
-                                )
-                            )
+                            || !isVisibleFromLayer(object)
                         )
                         && (this.visibleObjects.delete(object), true)
                         && (!object.isObstacle || !object.definition.isStair)
@@ -870,13 +907,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (
                                 this.visibleObjects.has(object)
-                                || (
-                                    !adjacentOrEqualLayer(this.layer, object.layer)
-                                    && (
-                                        object.layer > this.layer
-                                        || (object.layer < Layer.Ground && this.layer >= Layer.Ground)
-                                    )
-                                )
+                                || !isVisibleFromLayer(object)
                             )
                             && (!object.isObstacle || !object.definition.isStair)
                         ) return;

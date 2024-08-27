@@ -1,6 +1,7 @@
 import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
@@ -105,6 +106,25 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly tint?: number | `#${string}`
     }>
     readonly ceilingZIndex: ZIndexes
+
+    // players within these zones are subjected to the override
+    readonly visibilityOverrides?: ReadonlyArray<{
+        readonly collider: Hitbox
+        // specified as an offset relative to the building in which this floor appears
+        readonly layer?: number
+        /**
+         * list out layers (relative to the building) which would normally be unable to see
+         * players in the collider, but that should be visible
+         */
+        readonly allow?: readonly number[]
+        /**
+         * list out layers (relative to the building) which would normally be able to see
+         * players in the collider, but that should be invisible
+         */
+        // readonly deny?: readonly number[]
+        // note: this feature is functional, just remember to uncomment its implementation
+        // in server::Player#secondUpdate (find the comment concerning blacklisting)
+    }>
 
     /**
      * How many walls need to be broken to destroy the ceiling
@@ -288,9 +308,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             graphics: [],
             graphicsZIndex: ZIndexes.BuildingsFloor,
             groundGraphics: [],
-            rotationMode: RotationMode.Limited,
-            isFloor: false
-        }),
+            rotationMode: RotationMode.Limited
+        } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>),
         blueHouseVaultLayout: (id: number, obstacles: BuildingObstacle[], subBuildings?: SubBuilding[]) => {
             return {
                 idString: `blue_house_vault_layout_${id}`,
@@ -3659,7 +3678,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             decals: [
                 { idString: "floor_oil_02", position: Vec.create(5.28, -66.1) },
-                { idString: "floor_oil_03", position: Vec.create(-12.06, 23.49), rotation: 1 },
+                { idString: "floor_oil_03", position: Vec.create(-12.06, 23.49), orientation: 1 },
                 { idString: "smoke_explosion_decal", position: Vec.create(-12.96, -49.37) },
                 { idString: "explosion_decal", position: Vec.create(15.91, -2.56) },
                 { idString: "explosion_decal", position: Vec.create(-8.65, 42.84) },
@@ -3708,9 +3727,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 { idString: "grenade_crate", position: Vec.create(-27.5, 85.5) }
             ],
-            lootSpawners: [
-
-            ],
+            lootSpawners: [],
             subBuildings: [
                 // North West Shed
                 { idString: "shed", position: Vec.create(-36, -95) },
@@ -3840,9 +3857,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // outer
                 RectangleHitbox.fromRect(1.75, 81.8, Vec.create(69.85, -80)),
                 RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.9)),
-                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.15, -83)),
+                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.41, -83)),
                 RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-64.5, -46.7)),
-                RectangleHitbox.fromRect(1.75, 71.5, Vec.create(-71.1, -12)),
+                RectangleHitbox.fromRect(1.75, 71.5, Vec.create(-71.34, -12)),
                 RectangleHitbox.fromRect(1.75, 71, Vec.create(-22.5, -12)),
                 RectangleHitbox.fromRect(48, 1.75, Vec.create(-47, 23)),
 
@@ -3850,7 +3867,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.5)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
-                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.1, -96)),
+                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.3, -96)),
                 RectangleHitbox.fromRect(92, 1.8, Vec.create(23, -40.2)),
                 RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
                 RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6))
@@ -4025,9 +4042,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.75, 55, Vec.create(69.5, -22.5)),
                 RectangleHitbox.fromRect(1.75, 48, Vec.create(69.5, -84.25)),
                 RectangleHitbox.fromRect(45.6, 1.75, Vec.create(46.02, -107.4)),
-                RectangleHitbox.fromRect(71.6, 1.75, Vec.create(-23.1, -107.5)),
-                RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58, -76.25)),
-                RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58, -35)),
+                RectangleHitbox.fromRect(71.6, 1.75, Vec.create(-23.1, -107.75)),
+                RectangleHitbox.fromRect(1.75, 60.5, Vec.create(-58.4, -76.5)),
+                RectangleHitbox.fromRect(1.75, 2.2, Vec.create(-58.4, -35.1)),
                 RectangleHitbox.fromRect(24.9, 1.7, Vec.create(-59.5, -35)),
                 RectangleHitbox.fromRect(1.75, 70, Vec.create(-71, 0.5)),
                 RectangleHitbox.fromRect(30, 1.75, Vec.create(-55.9, 34.65)),
@@ -4053,6 +4070,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(4, 4, Vec.create(10.9, -64.1)),
                 RectangleHitbox.fromRect(4, 4, Vec.create(-33.5, -64))
             ),
+            spanAdjacentLayers: true,
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
@@ -4160,6 +4178,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     hitbox: RectangleHitbox.fromRect(11.6, 20.2, Vec.create(-41.05, -88.8))
                 }
             ],
+            visibilityOverrides: [{
+                collider: new HitboxGroup(
+                    RectangleHitbox.fromRect(11.2, 8, Vec.create(-51.5, -103.1)),
+                    RectangleHitbox.fromRect(11.2, 4, Vec.create(-40.3, -105.1))
+                ),
+                layer: 2,
+                allow: [0]
+            }],
             obstacles: [
                 { idString: "headquarters_bottom_entrance", position: Vec.create(0, 0), rotation: 0 },
                 { idString: "headquarters_wood_obstacles", position: Vec.create(0, 0), rotation: 0 },
@@ -4405,7 +4431,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "regular_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2), rotation: 0 }
             ],
             lootSpawners: [
-                { table: "ground_loot", position: Vec.create(0, -0.5), jitterSpawn: false }
+                { table: "ground_loot", position: Vec.create(0, -0.5) }
             ]
         },
         {

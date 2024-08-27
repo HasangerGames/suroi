@@ -123,6 +123,7 @@ export class Grid {
      * and gets all objects intersecting it after rounding it to grid cells
      *
      * @param hitbox The hitbox
+     * @param layer An optional layer to filter by; if omitted, all objects intersecting the hitbox—regardless of their layer—are returned
      * @return A set with the objects near this hitbox
      */
     intersectsHitbox(hitbox: Hitbox, layer?: Layer): Set<GameObject> {

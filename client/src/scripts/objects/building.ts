@@ -218,7 +218,13 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
-            this.ceilingContainer.zIndex = getEffectiveZIndex(definition.ceilingZIndex, this.layer);
+            this.ceilingContainer.zIndex = getEffectiveZIndex(
+                definition.ceilingZIndex,
+                this.layer + Math.max( // make sure the ceiling appears over everything else
+                    ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
+                    ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
+                )
+            );
 
             this.orientation = full.rotation;
             this.rotation = Angle.orientationToRotation(this.orientation);
@@ -379,6 +385,15 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 definition.scopeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingZoomCeiling,
                 this.debugGraphics
+            );
+        }
+
+        for (const { collider, layer } of definition.visibilityOverrides ?? []) {
+            drawHitbox(
+                collider.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.buildingVisOverride,
+                this.debugGraphics,
+                layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
     }
