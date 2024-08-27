@@ -4328,21 +4328,21 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "metal",
             particle: "metal_particle",
             hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(12, 1, Vec.create(0, -8)),
-                RectangleHitbox.fromRect(1.5, 16.9, Vec.create(5.8, 0)),
-                RectangleHitbox.fromRect(1.5, 16.9, Vec.create(-5.8, 0))
+                RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
+                RectangleHitbox.fromRect(1.5, 16.6, Vec.create(6.1, 0.15)),
+                RectangleHitbox.fromRect(1.5, 16.6, Vec.create(-6.1, 0.15))
             ),
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             floorImages: [{
-                key: "small_bunker_entrance",
-                position: Vec.create(0, 0.1),
-                scale: Vec.create(1.1, 1)
+                key: "small_bunker_entrance_floor",
+                position: Vec.create(-0.025, 0.5),
+                scale: Vec.create(2.2, 2.2)
             }],
             floors: [
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "bunker_stair", position: Vec.create(0, 3), rotation: 0, layer: -1 }
+                { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0, layer: -1 }
             ],
             lootSpawners: []
         },
@@ -4414,8 +4414,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
-                position: Vec.create(0, 17.9),
-                scale: Vec.create(2.2, 2.1)
+                position: Vec.create(0, 18),
+                scale: Vec.create(2.35, 2.1)
             }],
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
             scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
