@@ -8,6 +8,10 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Ühendumine",
     "msg_err_joining": "Viga mänguga ühinemisel.",
     "msg_err_finding": "Viga mängu otsimisel.",
+    "msg_spectating": "Jälgite",
+    "msg_enter_team_code": "Sisesta tiimi kood:",
+    "msg_lost_team_connection": "Ühendus tiimiga katkes.",
+    "msg_error_joining_team": "Viga tiimiga liitumisel.<br>Seda ei pruugi olla olemas või see on täis.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Palun proovige uuesti.",
     "msg_warning": "Teid on hoiatatud!",
     "msg_warning_msg": "Te olete saanud mängu moderaatoritelt hoiatuse põhjusega: <reason>",
@@ -186,8 +190,6 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> tegi enesetapu",
     "kf_suicide_down": "<player> lõi iseennast maha",
-    "kf_two_party_kill": "<player> tappis <victim>",
-    "kf_two_party_down": "<player> lõi <victim> maha",
     "kf_bleed_out_kill": "<player> jooksis verest tühjaks",
     "kf_bleed_out_down": "<player> jooksis mittesurmavalt verest tühjaks",
     "kf_finished_off_kill": "<player> lõpetas <victim> elu",
@@ -204,6 +206,28 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> tappis Tapmiste Liidri",
     "kf_kl_dead": "Tapmiste Liider on surnud!",
     "kf_kl_suicide": "Tapmiste Liider tappis iseennast!",
+
+    // ------------------------------------------------------------------
+    "finally": "lõpuks",
+    "with": "kasutades",
+
+    // Kill modal only
+    "you": "Sa",
+    "yourself": "ise ennast",
+    "km_killed": "tapsid",
+    "km_knocked": "lõid maha",
+
+    "km_message": "<you> <finally> <event> <victim>`i <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "tappis",
+    "kf_knocked": "lõi maha",
+    "kf_finished_off": "lõpetas",
+    "themselves": "ise ennast",
+
+    "kf_message": "<player> <finally> <event> <victim>`i <with> <weapon>",
+    "kf_message_grammar": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> taastab <amount> <type>",
     "tt_reduces": "<item> vähendab saadud kahju <percent>% võrra",
@@ -282,6 +306,37 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "firework_launcher": "Ilutulestiku Heitja",
     "s_g17": "G17 (sihikuga)",
     "arena_closer": "Maailmade Hävitaja",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "usas12": "USAS-12",
+    "revitalizer": "Revitalizer",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     // For dual guns
     "dual_template": "Topelt <gun>",

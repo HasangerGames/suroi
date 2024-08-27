@@ -299,6 +299,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
             if (this.dead && image.residue) key = image.residue;
             const sprite = new SuroiSprite(key);
             sprite.setVPos(toPixiCoords(image.position));
+            if (image.rotation) sprite.setRotation(image.rotation);
+            if (image.scale) sprite.scale = image.scale;
             if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
         }

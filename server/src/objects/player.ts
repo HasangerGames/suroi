@@ -1,38 +1,34 @@
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
-import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory, PlayerActions, SpectateActions } from "../../../common/src/constants";
-import { Ammos } from "../../../common/src/definitions/ammos";
-import { Armors, ArmorType } from "../../../common/src/definitions/armors";
-import { Backpacks } from "../../../common/src/definitions/backpacks";
-import { type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { Guns, type GunDefinition } from "../../../common/src/definitions/guns";
-import { HealingItems } from "../../../common/src/definitions/healingItems";
-import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { type PlayerPing } from "../../../common/src/definitions/mapPings";
-import { Melees, type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { type SkinDefinition } from "../../../common/src/definitions/skins";
-import { type SyncedParticleDefinition } from "../../../common/src/definitions/syncedParticles";
-import { Throwables, type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import { GameOverPacket, type GameOverData } from "../../../common/src/packets/gameOverPacket";
-import type { NoMobile, PlayerInputData } from "../../../common/src/packets/inputPacket";
-import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "../../../common/src/packets/killFeedPacket";
-import { type InputPacket } from "../../../common/src/packets/packet";
-import { PacketStream } from "../../../common/src/packets/packetStream";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import type { SpectatePacketData } from "../../../common/src/packets/spectatePacket";
-import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
-import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
-import { type SDeepMutable, type SMutable, type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { FloorTypes } from "../../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+
+import {
+    AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType,
+    ObjectCategory, PlayerActions, SpectateActions
+} from "@common/constants";
+import {
+    Ammos, Armors, ArmorType, Backpacks, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables,
+    DEFAULT_SCOPE,
+    type BadgeDefinition, type EmoteDefinition, type GunDefinition, type WeaponDefinition, type PlayerPing,
+    type MeleeDefinition, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition,
+    type ThrowableDefinition
+} from "@common/definitions";
+import {
+    DisconnectPacket, GameOverPacket, KillFeedPacket, ReportPacket, UpdatePacket,
+    type GameOverData, type InputPacket, type ForEventType, type UpdatePacketDataIn,
+    type PlayerData, type UpdatePacketDataCommon,
+    NoMobile, PlayerInputData, PacketStream, SpectatePacketData
+} from "@common/packets";
+import { createKillfeedMessage } from "@common/packets/killFeedPacket";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { Collision, Geometry, Numeric } from "@common/utils/math";
+import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
+import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { pickRandomInArray } from "@common/utils/random";
+import { SuroiBitStream } from "@common/utils/suroiBitStream";
+import { FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -45,14 +41,12 @@ import { Events } from "../pluginManager";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
-import { Building } from "./building";
-import { DeathMarker } from "./deathMarker";
-import { Emote } from "./emote";
-import { Explosion } from "./explosion";
-import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
-import { Loot } from "./loot";
-import { type Obstacle } from "./obstacle";
-import { SyncedParticle } from "./syncedParticle";
+
+import {
+    Building, DeathMarker, Emote, Explosion, BaseGameObject, DamageParams,
+    type GameObject, Loot, type Obstacle, SyncedParticle
+} from ".";
+
 export interface PlayerContainer {
     readonly teamID?: string
     readonly autoFill: boolean
@@ -1018,6 +1012,13 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
         // killfeed messages
         const killLeader = game.killLeader;
 
+        packet.planes = game.planes;
+        packet.mapPings = [...game.mapPings, ...this._mapPings];
+        this._mapPings.length = 0;
+
+        // serialize and send update packet
+        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
+
         if (this._firstPacket && killLeader) {
             this._packets.push(KillFeedPacket.create({
                 messageType: KillfeedMessageType.KillLeaderAssigned,
@@ -1027,12 +1028,6 @@ export class Player extends BaseGameObject<ObjectCategory.Player> {
             }));
         }
 
-        packet.planes = game.planes;
-        packet.mapPings = [...game.mapPings, ...this._mapPings];
-        this._mapPings.length = 0;
-
-        // serialize and send update packet
-        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
         this._firstPacket = false;
 
         this._packetStream.stream.index = 0;

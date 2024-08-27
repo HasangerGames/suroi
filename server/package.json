@@ -4,27 +4,29 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node dist/server/src/server.js",
     "moderation": "node dist/server/src/moderation.js",
     "validateDefinitions": "node dist/server/src/validateDefinitions.js",
-    "dev": "node -r ts-node/register --watch --watch-path=./src --watch-path=../common src/server.ts",
-    "dev:test": "tsc && node --enable-source-maps dist/server/src/stressTest.js"
+    "dev": "node -r ts-node/register -r tsconfig-paths/register --watch --watch-path=./src --watch-path=../common src/server.ts",
+    "dev:test": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/server/src/stressTest.js"
   },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.10",
     "@types/sanitize-html": "^2.11.0",
-    "@types/ws": "^8.5.10",
-    "typescript": "^5.4.5"
+    "@types/ws": "^8.5.11",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
-    "croner": "^8.0.2",
+    "croner": "^8.1.0",
     "dotenv": "^16.4.5",
     "ts-node": "^10.9.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.43.0",
-    "ws": "^8.17.0"
+    "ws": "^8.18.0"
   }
 }

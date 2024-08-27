@@ -1,11 +1,12 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { type Orientation } from "../../../common/src/typings";
-import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type Timeout } from "../../../common/src/utils/misc";
-import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../common/src/utils/vector";
+import { ObjectCategory } from "@common/constants";
+import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { type Orientation } from "@common/typings";
+import { type Hitbox } from "@common/utils/hitbox";
+import { type Timeout } from "@common/utils/misc";
+import { type ReifiableDef } from "@common/utils/objectDefinitions";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { Events } from "../pluginManager";
 import { Logger } from "../utils/misc";

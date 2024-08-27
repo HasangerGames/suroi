@@ -1,8 +1,9 @@
-import { GameConstants, KillfeedEventType, ObjectCategory } from "../../../common/src/constants";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Angle, Numeric } from "../../../common/src/utils/math";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { type Vector } from "../../../common/src/utils/vector";
+import { GameConstants, KillfeedEventType, ObjectCategory } from "@common/constants";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { Angle, Numeric } from "@common/utils/math";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { type Vector } from "@common/utils/vector";
+
 import { type Airdrop, type Game } from "../game";
 import { Events } from "../pluginManager";
 import { Building } from "./building";

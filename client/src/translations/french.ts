@@ -4,15 +4,19 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "name": "Français",
     "flag": "🇫🇷",
 
-    "msg_rotate": "Pour une meilleure expérience, passez en mode paysage..",
+    "msg_rotate": "Pour une meilleure expérience, passez en mode paysage.",
     "msg_loading": "Connexion",
     "msg_err_joining": "Erreur rencontrée en rejoignant la partie.",
     "msg_err_finding": "Erreur rencontrée en cherchant la partie.",
-    "msg_try_again": "Réessayez.",
+    "msg_spectating": "En spectateur",
+    "msg_enter_team_code": "Entrez un code d'équipe:",
+    "msg_lost_team_connection": "Connexion à l'équipe perdue",
+    "msg_error_joining_team": "Erreur en rejoignant l'équipe.<br>Elle n'existe pas ou est déja remplie.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE. I will move the br
+    "msg_try_again": "Réessayez",
     "msg_warning": "Vous avez reçu un avertissement!",
     "msg_warning_msg": "Vous avez reçu un avertissement des modérateurs pour : <reason>",
     "msg_temp_ban": "Vous avez été temporairement banni de suroi!",
-    "msg_temp_ban_msg": "Les modérateurs de jeu vous ont banni pour: <reason>",
+    "msg_temp_ban_msg": "Vous avez été banni pour : <reason>",
     "msg_perma_ban": "Vous avez été banni!",
     "msg_perma_ban_msg": "Vous avez été banni pour : <reason>",
     "msg_no_reason": "Pas de raison donnée.",
@@ -116,7 +120,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "En attente d'un leader",
     "msg_you_died": "Vous êtes mort",
     "msg_player_died": "<player> est mort.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rang",
 
     "msg_kills": "Kills : <kills>",
@@ -187,27 +191,48 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> s'est suicidé",
     "kf_suicide_down": "<player> s'est assommé",
-    "kf_two_party_kill": "<player> a tué <victim>",
-    "kf_two_party_down": "<player> a assommé <victim>",
+
     "kf_bleed_out_kill": "<player> a saigné à mort",
     "kf_bleed_out_down": "<player> a rencontré un bug",
+
     "kf_finished_off_kill": "<player> a exécuté <victim>",
-    "kf_finished_off_down": "<victim> a rencontré un bug grâce à <player>",
-    "kf_finally_died": "<player> est mort.",
-    "kf_finally_ended_themselves": "<player> s'est suicidé",
-    "kf_finally_killed": "<player> a été tué.",
+    "kf_finished_off_down": "<player> a rencontré un bug avec l'aide de <victim>",
+
+    "kf_finally_died": "<player> a expiré",
+    "kf_finally_ended_themselves": "<player> s'est self-éxécuté",
+
+    "kf_finally_killed": "<player>  a été exécuté",
     "kf_finally_down": "<player> a rencontré un bug",
+
     "kf_gas_kill": "<player> a été asphyxié par le gas",
     "kf_gas_down": "<player> a été assommé par le gas",
-    "kf_airdrop_kill": "<player> s'est transformé en pancake sous un airdrop",
-    "kf_airdrop_down": "<player> s'est fait assommer par un airdrop",
-    "kf_kl_promotion": "<player> est devenu le Kill Leader!",
-    "kf_kl_killed": "<player> a tué le Kill Leader",
-    "kf_kl_dead": "Le Kill Leader est mort!",
-    "kf_kl_suicide": "Le Kill Leader s'est suicidé!",
 
-    "tt_restores": "<item> restore <amount> <type>",
-    "tt_reduces": "<item> réduit <percent>% de dégâts",
+    "kf_airdrop_kill": "<player> s'est fait aplatir par un airdrop",
+    "kf_airdrop_down": "<player> s'est fait assommer par un airdrop",
+
+    // ------------------------------------------------------------------
+    "finally": "enfin",
+    "with": "avec",
+
+    // Kill modal only
+    "you": "Vous",
+    "yourself": "vous-même",
+    "km_killed": "avez tué",
+    "km_knocked": "avez assommé",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "a tué",
+    "kf_knocked": "a assommé",
+    "kf_finished_off": "a exécuté",
+    "themselves": "lui-même",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
+    "tt_restores": "<item> : restore <amount> <type>",
+    "tt_reduces": "<item> : nullifie <percent>% des dégâts",
 
     "go_kills": "Kills:",
     "go_damage_done": "Dégâts faits:",
@@ -265,20 +290,59 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "maul": "Masse",
     "gas_can": "Jerrycan",
     "heap_sword": "Épée HE-AP",
-    "steelfang": "Dent d'argent'",
+    "steelfang": "Dent d'argent",
     "ice_pick": "Pic à glace",
     "seax": "Scramasaxe",
+    "crowbar": "Pied de Biche",
+    "sickle": "Faucille",
+
+    "mosin": "Mosin-Nagant",
+    "radio": "Radio",
+    "lewis_gun": "Mitraillette Lewis",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "deathray": "Super Laser",
+    "usas12": "USAS-12",
+    "firework_launcher": "Lance-Confetti",
+    "arena_closer": "Supernova",
+    "revitalizer": "Revitalizer",
+    "s_g17": "G17 (à lunette)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Modèle 37",
+    "model_89": "Modèle 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     "frag_grenade": "Grenade à frag",
     "smoke_grenade": "Fumigène",
     "confetti_grenade": "Grenade à confettis",
 
-    "radio": "Radio",
-    "deathray": "Super Laser",
-
     // For dual guns
     "dual_template": "Double <gun>",
 
+    // Regions
     "region_dev": "Serveur Localhost",
     "region_na": "Amérique du Nord",
     "region_eu": "Europe",

@@ -187,6 +187,7 @@
         padding: 10px;
         overflow-y: scroll;
         overflow-x: hidden;
+        margin-bottom: 15px;
 
         fieldset {
             border: none;
@@ -222,6 +223,10 @@
                 label:hover {
                     transition-duration: 0.25s;
                     background-color: $orange;
+                }
+
+                img {
+                    vertical-align: middle;
                 }
             }
         }

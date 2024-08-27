@@ -1,6 +1,8 @@
 import path from "node:path";
 import { Worker } from "node:worker_threads";
-import { type GetGameResponse } from "../../common/src/typings";
+
+import { type GetGameResponse } from "@common/typings";
+
 import { Config } from "./config";
 import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";

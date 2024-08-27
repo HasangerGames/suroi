@@ -4,20 +4,21 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
-    "stressTest": "tsc && node --enable-source-maps dist/tests/src/stressTest.js"
+    "stressTest": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/tests/src/stressTest.js"
   },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.12.12",
-    "@types/ws": "^8.5.10",
-    "typescript": "^5.4.5"
+    "@types/node": "^20.14.10",
+    "@types/ws": "^8.5.11",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
     "nanotimer": "^0.3.15",
-    "ws": "^8.17.0"
+    "ws": "^8.18.0"
   }
 }

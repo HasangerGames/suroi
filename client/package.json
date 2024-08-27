@@ -17,27 +17,27 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tsconfig/svelte": "^5.0.4",
     "@types/jquery": "^3.5.30",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.10",
     "canvas": "^2.11.2",
     "chokidar": "^3.6.0",
     "maxrects-packer": "^2.7.3",
-    "minimatch": "^9.0.4",
-    "postcss": "^8.4.38",
+    "minimatch": "^9.0.5",
+    "postcss": "^8.4.39",
     "postcss-import": "^16.1.0",
     "postcss-loader": "^8.1.1",
-    "postcss-preset-env": "^9.5.13",
-    "sass": "^1.77.1",
+    "postcss-preset-env": "^9.6.0",
+    "sass": "^1.77.8",
     "sirv-cli": "^2.0.2",
-    "svelte": "^4.2.17",
+    "svelte": "^4.2.18",
     "svgo": "^3.3.2",
     "ts-node": "^10.9.2",
-    "tslib": "^2.6.2",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11",
-    "vite-plugin-image-optimizer": "^1.1.7"
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
+    "vite-plugin-image-optimizer": "^1.1.8"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
@@ -45,6 +45,6 @@
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.2",
     "pixi-filters": "^6.0.4",
-    "pixi.js": "^8.1.2"
+    "pixi.js": "^8.2.5"
   }
 }

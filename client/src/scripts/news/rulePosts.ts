@@ -14,9 +14,9 @@ export const rules: RulesPost[] = [
         content: "By playing Suroi, you agree to abide by the following rules. Breaking the rules may result in a ban.",
         longContent: `<ul>
   <li><strong>No teaming in solo.</strong> Allying with other solo players for extended periods of time is not allowed.</li>
-  <li><strong>No hacking.</strong> The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.</li>
-  <li><strong>No inappropriate usernames.</strong> Our blocklists are very lenient, but some things are still blocked. Trying to evade filters for these specific words may incur consequences.</li>
-  <li><strong>No presence in cheat related servers.</strong> Attempting to "minimod" or "go undercover" in any cheat related servers is strictly prohibited and can get your discord, as well as your connection <strong>banned.</strong></li>
+  <li><strong>No hacking.</strong> The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden. An advantage is anything that reveals information that would not be available to a normal player or anything that automates player actions.</li>
+  <li><strong>No inappropriate usernames.</strong> Our blocklists are very lenient, but some words or phrases are still blocked. Trying to evade filters for these specific words will incur consequences.</li>
+  <li><strong>No presence in cheat related servers.</strong> Attempting to "minimod" or "go undercover" in any cheat related servers is strictly prohibited and will get your discord, as well as your connection <strong>banned.</strong></li>
 </ul>`
     },
     {

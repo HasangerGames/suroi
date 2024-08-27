@@ -8,6 +8,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Подключение",
     "msg_err_joining": "Ошибка при заходе в игру.",
     "msg_err_finding": "Ошибка при поиске игры.",
+
     "msg_try_again": "Пожалуйста, попробуйте еще раз.",
     "msg_warning": "Вы были предупреждены!",
     "msg_warning_msg": "Вы получили предупреждение по причине: <reason>",
@@ -16,7 +17,11 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "msg_perma_ban": "Вы были перманентно заблокированы!",
     "msg_perma_ban_msg": "Вас заблокировали по причине: <reason>",
     "msg_no_reason": "Никакой причины не предоставлено.",
-
+    "msg_spectating": "Наблюдение",
+    "msg_enter_team_code": "Введите код группы:",
+    "msg_lost_team_connection": "Потеряно соединение с группой.",
+    "msg_error_joining_team": "Ошибка при заходе в группу.<br>Скорее всего ее не существует либо она уже полная.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
+    "enter_nickname": "Введите ваш ник",
     "play_solo": "Одиночный",
     "play_duo": "Напарники",
     "play_squad": "Отряд",
@@ -31,6 +36,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "quit": "Выйти",
     "none": "Никакой",
     "copy": "Копировать",
+    "copied": "Скопировано",
 
     "health": "здоровья",
     "adrenaline": "адреналина",
@@ -121,8 +127,8 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
 
     "msg_kills": "Количество убийств: <kills>",
 
-    "gas_waiting": "Токсичный газ будет сужаться через <time>!",
-    "gas_advancing": "Токсичный газ приближается! Быстрее бегите к безопасной зоне.",
+    "gas_waiting": "Опасный газ будет сужаться через <time>!",
+    "gas_advancing": "Опасный газ приближается! Быстрее бегите к безопасной зоне.",
     "gas_inactive": "Ожидание игроков...",
 
     "action_open_door": "Открыть дверь",
@@ -187,8 +193,6 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> совершил суицид",
     "kf_suicide_down": "<player> сбил с ног сам себя",
-    "kf_two_party_kill": "<player> убил <victim>",
-    "kf_two_party_down": "<player> сбил с ног <victim>",
     "kf_bleed_out_kill": "<player> истек кровью",
     "kf_bleed_out_down": "<player истек кровью, но не потерял сознание",
     "kf_finally_died": "<player> наконец-то умер",
@@ -205,29 +209,27 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_suicide": "Лидер по убийствам покончил с собой!",
     "kf_you_killed": "Вы убили <player>",
     "kf_you_downed": "Вы повалили на землю <player>",
-    "kf_finished_off_kill_2": "<player> был убит",
-    "kf_finished_off_down_2": "<player> был убит элегантно",
-    "kf_with_gun": "<player_killed_player> с помощью <gun>",
-    "kf_impact": "осколком от",
-    "kf_weapon_name": "<impact> <gun>",
 
-    // -----------------------------------------------------
-    // Killfeed stuff (New strings)
-    // -----------------------------------------------------
-    "kf_with": "с помощью",
+    // ------------------------------------------------------------------
+    "finally": "наконец-то",
+    "with": "с помощью",
+
+    // Kill modal only
+    "you": "Вы",
+    "yourself": "себя",
+    "km_killed": "убили",
+    "km_knocked": "сбили с ног",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
     "kf_killed": "убил",
-    "kf_knocked_out": "сбил с ног",
-    "kf_finished_off_kill": "замочил",
-    "kf_finished_off_down": "элегантно уничтожил",
+    "kf_knocked": "сбил с ног",
+    "kf_finished_off": "закончил жизнь",
+    "themselves": "себя",
 
-    // kill modal only
-    "kf_you": "Ты",
-    "kf_you_finally_killed": "наконец-то убил",
-    "kf_you_finally_down": "наконец-то сбил с ног",
-
-    "kf_message": "<player> <event> <victim> <with> <gun>", // adjust these in your language's order
-    "kill_modal_message": "<you> <event> <victim> <with> <gun>", // adjust these in your language's order
-    // -----------------------------------------------------
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> восстанавливает <amount> <type>",
     "tt_reduces": "<item> уменьшает <percent>% входящего урона",
@@ -292,16 +294,17 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "steelfang": "Крутой керамбит",
     "ice_pick": "Ледоруб",
     "seax": "Пиратский меч",
-
-    "radio": "Рация",
+    "sickle": "Серп",
+    "crowbar": "Фомка",
     "deathray": "Луч смерти",
+    "radio": "Рация",
 
     "frag_grenade": "Осколочная граната",
     "smoke_grenade": "Дымовая граната",
     "confetti_grenade": "Граната с конфетти",
 
     // For dual guns
-    "dual_template": "Двойные <gun>",
+    "dual_template": "Двойной <gun>",
 
     // Regions
     "region_dev": "Локальный сервер",
@@ -313,9 +316,9 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "vss": 'ВСС "Винторез"',
     "pp19": 'ПП-19 "Витязь"',
     "vepr12": 'Вепрь-12 "Молот"',
-    "mosin": "Винтовка Мосина-Нагана",
+    "mosin": "В. Мосина-Нагана",
     "flues": "Обрез двустволки",
-    "m1895": "Револьвер Наган",
+    "m1895": "Наган",
     "lewis_gun": "Пулемет Льюиса",
-    "ak47": "Автомат Калашникова"
+    "ak47": "А. Калашникова"
 };

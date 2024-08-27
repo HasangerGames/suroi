@@ -1,12 +1,14 @@
 import { type WebSocket } from "uWebSockets.js";
-import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { Loots } from "../../../common/src/definitions/loots";
-import { Obstacles, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { type Variation } from "../../../common/src/typings";
-import { Collision } from "../../../common/src/utils/math";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { random } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+
+import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Loots } from "@common/definitions/loots";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { type Variation } from "@common/typings";
+import { Collision } from "@common/utils/math";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { random } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type GunItem } from "../inventory/gunItem";
 import { type GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";

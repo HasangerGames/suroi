@@ -1,28 +1,30 @@
 import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
-import { GameConstants, KillfeedMessageType, ObjectCategory, TeamSize } from "../../common/src/constants";
-import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { type LootDefinition } from "../../common/src/definitions/loots";
-import { MapPings, type MapPing } from "../../common/src/definitions/mapPings";
-import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "../../common/src/definitions/syncedParticles";
-import { type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { PlayerInputPacket } from "../../common/src/packets/inputPacket";
-import { JoinPacket, type JoinPacketData } from "../../common/src/packets/joinPacket";
-import { JoinedPacket } from "../../common/src/packets/joinedPacket";
-import { KillFeedPacket, type KillFeedPacketData } from "../../common/src/packets/killFeedPacket";
-import { type InputPacket, type OutputPacket } from "../../common/src/packets/packet";
-import { PacketStream } from "../../common/src/packets/packetStream";
-import { PingPacket } from "../../common/src/packets/pingPacket";
-import { SpectatePacket } from "../../common/src/packets/spectatePacket";
-import { type PingSerialization } from "../../common/src/packets/updatePacket";
-import { CircleHitbox } from "../../common/src/utils/hitbox";
-import { EaseFunctions, Geometry, Numeric } from "../../common/src/utils/math";
-import { Timeout } from "../../common/src/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { Vec, type Vector } from "../../common/src/utils/vector";
+
+import { GameConstants, KillfeedMessageType, ObjectCategory, TeamSize } from "@common/constants";
+import { type ExplosionDefinition } from "@common/definitions/explosions";
+import { type LootDefinition } from "@common/definitions/loots";
+import { MapPings, type MapPing } from "@common/definitions/mapPings";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
+import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { PlayerInputPacket } from "@common/packets/inputPacket";
+import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
+import { JoinedPacket } from "@common/packets/joinedPacket";
+import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
+import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { PacketStream } from "@common/packets/packetStream";
+import { PingPacket } from "@common/packets/pingPacket";
+import { SpectatePacket } from "@common/packets/spectatePacket";
+import { type PingSerialization } from "@common/packets/updatePacket";
+import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { Timeout } from "@common/utils/misc";
+import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
+import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
@@ -635,7 +637,7 @@ export class Game implements GameData {
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDead, { attackerId: killer?.id });
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -646,10 +648,25 @@ export class Game implements GameData {
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
     }
 
+    killLeaderDisconnected(leader: Player): void {
+        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
+        let newKillLeader: Player | undefined;
+        for (const player of this.livingPlayers) {
+            if (player === leader) continue;
+            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+                newKillLeader = player;
+            }
+        }
+        this._killLeader = newKillLeader;
+        if (this._killLeader != undefined) {
+            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
+        }
+    }
+
     private _sendKillLeaderKFPacket<
         Message extends
             | KillfeedMessageType.KillLeaderAssigned
-            | KillfeedMessageType.KillLeaderDead
+            | KillfeedMessageType.KillLeaderDeadOrDisconnected
             | KillfeedMessageType.KillLeaderUpdated
     >(
         messageType: Message,
@@ -842,6 +859,10 @@ export class Game implements GameData {
     }
 
     removePlayer(player: Player): void {
+        if (player === this.killLeader) {
+            this.killLeaderDisconnected(player);
+        }
+
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
@@ -1035,59 +1056,140 @@ export class Game implements GameData {
     }
 
     summonAirdrop(position: Vector): void {
+        const paddingFactor = 1.25;
+
         const crateDef = Obstacles.fromString("airdrop_crate_locked");
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 
         let collided = true;
         let attempts = 0;
+        let randomInt: number | undefined;
 
-        while (collided && attempts < 500) {
+        while (collided) {
+            if (attempts === 500) {
+                switch (true) {
+                    case position.x < this.map.height / 2 && position.y < this.map.height / 2:
+                        randomInt = [1, 2, 3][Math.floor(Math.random() * 3)];
+                        break;
+                    case position.x > this.map.height / 2 && position.y < this.map.height / 2:
+                        randomInt = [1, 4, 5][Math.floor(Math.random() * 3)];
+                        break;
+                    case position.x < this.map.height / 2 && position.y > this.map.height / 2:
+                        randomInt = [3, 6, 7][Math.floor(Math.random() * 3)];
+                        break;
+                    case position.x > this.map.height / 2 && position.y > this.map.height / 2:
+                        randomInt = [4, 6, 8][Math.floor(Math.random() * 3)];
+                        break;
+                }
+            }
+
+            if (randomInt !== undefined) {
+                const distance = crateHitbox.toRectangle().max.x * 2 * paddingFactor;
+
+                switch (randomInt) {
+                    case 1:
+                        position.y = position.y + distance;
+                        break;
+                    case 2:
+                        position.x = position.x + distance;
+                        position.y = position.y + distance;
+                        break;
+                    case 3:
+                        position.x = position.x + distance;
+                        break;
+                    case 4:
+                        position.x = position.x - distance;
+                        break;
+                    case 5:
+                        position.x = position.x - distance;
+                        position.y = position.y + distance;
+                        break;
+                    case 6:
+                        position.y = position.y - distance;
+                        break;
+                    case 7:
+                        position.y = position.y - distance;
+                        position.x = position.x + distance;
+                        break;
+                    case 8:
+                        position.y = position.y - distance;
+                        position.x = position.x - distance;
+                        break;
+                }
+            }
+
             attempts++;
             collided = false;
 
             for (const airdrop of this.airdrops) {
                 thisHitbox = crateHitbox.transform(position);
                 const thatHitbox = (airdrop.type.spawnHitbox ?? airdrop.type.hitbox).transform(airdrop.position);
+                thatHitbox.scale(paddingFactor);
+
+                if (Vec.equals(thisHitbox.getCenter(), thatHitbox.getCenter())) {
+                    /*
+                        when dealing with airdrops exactly superimposed, the normal collision
+                        method makes them line up all in one direction; ideally, we'd want them
+                        to scatter around the original point. to influence the collider, we'll
+                        nudge one of the hitboxes
+                    */
+                    thisHitbox = thisHitbox.transform(Vec.fromPolar(randomRotation(), 0.01));
+                }
 
                 if (thisHitbox.collidesWith(thatHitbox)) {
                     collided = true;
+                    if (attempts >= 500) continue;
                     thisHitbox.resolveCollision(thatHitbox);
                 }
                 position = thisHitbox.getCenter();
-                if (collided) break;
             }
 
             thisHitbox = crateHitbox.transform(position);
 
-            for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (
-                    object instanceof Obstacle
-                    && !object.dead
-                    && object.definition.indestructible
-                    && object.spawnHitbox.collidesWith(thisHitbox)
-                ) {
-                    collided = true;
-                    thisHitbox.resolveCollision(object.spawnHitbox);
+            {
+                const padded = thisHitbox.clone();
+                padded.scale(paddingFactor);
+                for (const object of this.grid.intersectsHitbox(padded)) {
+                    let hitbox: Hitbox;
+                    if (
+                        object instanceof Obstacle
+                        && !object.dead
+                        && object.definition.indestructible
+                        && ((hitbox = object.spawnHitbox.clone()).scale(paddingFactor), hitbox.collidesWith(thisHitbox))
+                    ) {
+                        collided = true;
+                        if (attempts >= 500) continue;
+                        thisHitbox.resolveCollision(object.spawnHitbox);
+                    }
+                    position = thisHitbox.getCenter();
                 }
-                position = thisHitbox.getCenter();
             }
 
-            // second loop, buildings
-            for (const object of this.grid.intersectsHitbox(thisHitbox)) {
-                if (
-                    object instanceof Building
-                    && object.scopeHitbox
-                    && object.definition.wallsToDestroy === Infinity
-                ) {
-                    const hitbox = object.scopeHitbox.clone();
-                    hitbox.scale(1.5);
-                    if (!thisHitbox.collidesWith(hitbox)) continue;
-                    collided = true;
-                    thisHitbox.resolveCollision(object.scopeHitbox);
+            thisHitbox = crateHitbox.transform(position);
+
+            {
+                const padded = thisHitbox.clone();
+                padded.scale(paddingFactor);
+                // second loop, buildings
+                for (const object of this.grid.intersectsHitbox(thisHitbox)) {
+                    if (
+                        object instanceof Building
+                        && object.scopeHitbox
+                        && object.definition.wallsToDestroy === Infinity
+                    ) {
+                        const hitbox = object.scopeHitbox.clone();
+                        hitbox.scale(paddingFactor);
+                        if (!thisHitbox.collidesWith(hitbox)) continue;
+                        collided = true;
+                        if (attempts >= 500) continue;
+                        thisHitbox.resolveCollision(object.scopeHitbox);
+                    }
+                    position = thisHitbox.getCenter();
                 }
-                position = thisHitbox.getCenter();
             }
+
+            thisHitbox = crateHitbox.transform(position);
 
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;

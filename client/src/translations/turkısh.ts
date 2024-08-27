@@ -1,14 +1,18 @@
 import type { TranslationMap } from "../translations";
 
 export const TURKISH_TRANSLATIONS: TranslationMap = {
-    "name": "Türkçe",
+    "name": "Turkısh",
     "flag": "🇹🇷",
 
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
     "msg_loading": "Bağlanılıyor",
+    "msg_spectating": "İzleniyor",
+    "msg_enter_team_code": "Takım kodu gir:",
+    "msg_lost_team_connection": "Takımla bağlantı kaybedildi.",
+    "msg_error_joining_team": "Takıma katılma hatası.<br>takım mevcut olmayabilir veya dolu olabilir.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_err_joining": "Oyuna katılma hatası.",
     "msg_err_finding": "Oyun bulma hatası.",
-    "msg_try_again": "Please try again.",
+    "msg_try_again": "Lütfen yeniden deneyin.",
     "msg_warning": "Uyarıldın!",
     "msg_warning_msg": "Moderatörler tarafından bir sebepten dolayı uyarı aldınız: <reason>",
     "msg_temp_ban": "Geçici olarak yasaklandınız!",
@@ -31,6 +35,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "quit": "Çık",
     "none": "Hiçbiri",
     "copy": "Kopyala",
+    "copied": "Kopyalandı",
 
     "health": "Can",
     "adrenaline": "Adrenalin",
@@ -97,7 +102,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "loadout_crosshairs_stroke_size": "Kontur Boyutu:",
     "loadout_crosshairs_stroke_color": "Kontur Rengi:",
 
-    "emotes_category_People": "İnsanlar",
+    "emotes_category_People": "Emojiler",
     "emotes_category_Text": "Metin",
     "emotes_category_Memes": "Mizah",
     "emotes_category_Icons": "Simgeler",
@@ -115,7 +120,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "Lider bekleniyor",
     "msg_you_died": "Öldün.",
     "msg_player_died": "<player> öldü.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rütbe",
 
     "msg_kills": "Öldürmeler: <kills>",
@@ -131,10 +136,10 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "action_reloading": "Yeniden dolduruluyor...",
     "action_reviving": "Hayata döndürülüyor...",
     "action_being_revived": "Hayata döndürülüyorsun...",
-    "action_gauze_use": "Uygulanıyor <item>",
-    "action_medikit_use": "Kullanılıyor <item>",
-    "action_cola_use": "İçiliyor <item>",
-    "action_tablets_use": "Alınılıyor <item>",
+    "action_gauze_use": "<item> Kullanılıyor",
+    "action_medikit_use": "<item> Kullanılıyor",
+    "action_cola_use": "<item> İçiliyor",
+    "action_tablets_use": "<item> Kullanılıyor",
 
     "interact_airdrop_crate_locked": "Hava Yardımını Aç",
     "interact_control_panel": "Kontrol Panelini Aktive Et",
@@ -186,10 +191,8 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> intihar etti",
     "kf_suicide_down": "<player> kendini bayılttı",
-    "kf_two_party_kill": "<player> öldürdü <victim>",
-    "kf_two_party_down": "<player> bayılttı <victim>",
     "kf_bleed_out_kill": "<player> kanayarak öldü",
-    "kf_bleed_out_down": "<player> kanayarak bayıldı",
+    "kf_bleed_out_down": "<player kanayarak bayıldı",
     "kf_finished_off_kill": "<player> işini bitirdi <victim>",
     "kf_finished_off_down": "<player> yavaşça işini bitirdi <victim>",
     "kf_finally_died": "<player> sonunda öldü",
@@ -204,6 +207,28 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> Öldürme liderini öldürdü",
     "kf_kl_dead": "Öldürme Lideri Öldü!",
     "kf_kl_suicide": "Öldürme lideri kendini öldürdü!",
+
+    // ------------------------------------------------------------------
+    "finally": "sonunda",
+    "with": "ile",
+
+    // Kill modal only
+    "you": "Sen",
+    "yourself": "Kendin",
+    "km_killed": "öldürdün",
+    "km_knocked": "bayılttın",
+
+    "km_message": "<you> <victim> <finally> <weapon> <with> <event>",
+
+    // Killfeed.
+    "kf_killed": "öldürdü",
+    "kf_knocked": "bayılttı",
+    "kf_finished_off": "işini bitirdi",
+    "themselves": "kendilerinin",
+
+    "kf_message": "<player> <finally> <victim>'i <weapon> <with> <event>",
+    "kf_message_grammar": "<player> <finally> <victim> <weapon> <with> <event>", // used for special reason
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> yeniler <amount> <type>",
     "tt_reduces": "<item> azaltır <percent>% damage",
@@ -222,15 +247,15 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Raporlanıyor",
     "report_id": "Raporlama Kimliği:",
     "report_instructions": `
-      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>
-      <h4>How to Submit a Report</h4>
-      <ol>
-        <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
-        <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            channel.</a></li>
-        <li>Read the report guidelines in the pinned post.</li>
-        <li>Submit your report as a post.</li>
-      </ol>`,
+    <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>
+    <h4>How to Submit a Report</h4>
+    <ol>
+      <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
+      <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          channel.</a></li>
+      <li>Read the report guidelines in the pinned post.</li>
+      <li>Submit your report as a post.</li>
+    </ol>`,
 
     "languages": "Diller",
 
@@ -268,6 +293,8 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Çelik Diş",
     "ice_pick": "Dağcı Kazması",
     "seax": "Seax",
+    "crowbar": "Levye",
+    "sickle": "Orak",
 
     "frag_grenade": "El Bombası",
     "smoke_grenade": "Sis Bombası",
@@ -275,14 +302,49 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "radio": "Radyo",
     "deathray": "Ölüm Işını",
+    "lewis_gun": "Lewis Gun",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "usas12": "USAS-12",
+    "firework_launcher": "Havai Fişek Fırlatıcısı",
+    "arena_closer": "Dünyaların Yok Edicisi",
+    "revitalizer": "Canlandırıcı",
+    "s_g17": "G17 (Dürbünlü)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     // For dual guns
     "dual_template": "Çift <gun>",
 
+    // regions
     "region_dev": "Yerel ana bilgisayar sunucusu",
     "region_na": "Kuzey Amerika",
     "region_eu": "Avrupa",
     "region_sa": "Güney Amerika",
     "region_as": "Asya"
-
 };

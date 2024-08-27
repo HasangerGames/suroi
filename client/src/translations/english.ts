@@ -8,6 +8,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Connecting",
     "msg_err_joining": "Error joining game.",
     "msg_err_finding": "Error finding game.",
+    "msg_spectating": "Spectating",
+    "msg_enter_team_code": "Enter a team code:",
+    "msg_lost_team_connection": "Lost connection to team.",
+    "msg_error_joining_team": "Error joining team.<br>It may not exist or it is full.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Please try again.",
     "msg_warning": "You have been warned!",
     "msg_warning_msg": "You have received a warning by the moderators for reason: <reason>",
@@ -31,6 +35,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "quit": "Quit",
     "none": "None",
     "copy": "Copy",
+    "copied": "Copied",
 
     "health": "health",
     "adrenaline": "adrenaline",
@@ -116,7 +121,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "Waiting for leader",
     "msg_you_died": "You died.",
     "msg_player_died": "<player> died.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rank",
 
     "msg_kills": "Kills: <kills>",
@@ -187,20 +192,47 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> committed suicide",
     "kf_suicide_down": "<player> knocked themselves out",
-    "kf_two_party_kill": "<player> killed <victim>",
-    "kf_two_party_down": "<player> knocked out <victim>",
+
     "kf_bleed_out_kill": "<player> bled out",
     "kf_bleed_out_down": "<player> bled out non-lethally",
+
     "kf_finished_off_kill": "<player> finished off <victim>",
     "kf_finished_off_down": "<player> gently finished off <victim>",
+
     "kf_finally_died": "<player> finally died",
     "kf_finally_ended_themselves": "<player> finally ended themselves",
+
     "kf_finally_killed": "<player> was finally killed",
     "kf_finally_down": "<player> was finally knocked out",
+
     "kf_gas_kill": "<player> died to the gas",
     "kf_gas_down": "<player> was knocked out by the gas",
+
     "kf_airdrop_kill": "<player> was fatally crushed by an airdrop",
     "kf_airdrop_down": "<player> was knocked out by an airdrop",
+
+    // ------------------------------------------------------------------
+    "finally": "finally",
+    "with": "with",
+
+    // Kill modal only
+    "you": "You",
+    "yourself": "yourself",
+    "km_killed": "killed",
+    "km_knocked": "knocked out",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "killed",
+    "kf_knocked": "knocked out",
+    "kf_finished_off": "finished off",
+    "themselves": "themselves",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
+    // Kill Leader stuff
     "kf_kl_promotion": "<player> is promoted to the Kill Leader!",
     "kf_kl_killed": "<player> killed the Kill Leader",
     "kf_kl_dead": "The Kill Leader is dead!",
@@ -269,15 +301,47 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Ice Pick",
     "seax": "Seax",
+    "crowbar": "Crowbar",
+    "sickle": "Sickle",
 
     "mosin": "Mosin-Nagant",
     "radio": "Radio",
     "lewis_gun": "Lewis Gun",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
     "deathray": "Death Ray",
+    "usas12": "USAS-12",
     "firework_launcher": "Firework Launcher",
     "arena_closer": "Destroyer Of Worlds",
     "revitalizer": "Revitalizer",
     "s_g17": "G17 (Scoped)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     "frag_grenade": "Frag Grenade",
     "smoke_grenade": "Smoke Grenade",

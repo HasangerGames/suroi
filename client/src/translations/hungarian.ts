@@ -8,6 +8,10 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Csatlakozás",
     "msg_err_joining": "Hiba a játékhoz csatlakozáskor.",
     "msg_err_finding": "Hiba a játék kereséskor.",
+    "msg_spectating": "Szemlélt játékos:",
+    "msg_enter_team_code": "Adj meg egy csapat kódot:",
+    "msg_lost_team_connection": "A csapathoz való csatlakozás elveszett.",
+    "msg_error_joining_team": "Hiba a csapathoz csatlakozáskor.<br>Lehet hogy nem létezik, vagy már tele van.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Próbálkozz újra!",
     "msg_warning": "Figyelmeztetve lettél!",
     "msg_warning_msg": "Kaptál egy figyelmeztetést a moderátoroktól emiatt: <reason>",
@@ -31,6 +35,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "quit": "Kilépés",
     "none": "Semmi",
     "copy": "Másolás",
+    "copied": "Másolva",
 
     "health": "élet",
     "adrenaline": "adrenalin",
@@ -116,7 +121,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "msg_waiting_for_leader": "Várakozás leader-re",
     "msg_you_died": "Meghaltál.",
     "msg_player_died": "<player> meghalt.",
-    "msg_win": "Winner Winner Chicken Dinner!",
+    "msg_win": "Megnyerted a játékot!",
     "msg_your_rank": "Rang",
 
     "msg_kills": "Ölések: <kills>",
@@ -185,14 +190,12 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "bindings_toggle_console": "Konzol vált.",
     "bindings_toggle_slot_lock": "Slot zárás vált.",
 
-    "kf_suicide_kill": "<player> öngyilkos lett",
+    "kf_suicide_kill": "<player> megölte magát",
     "kf_suicide_down": "<player> kiütötte magát",
-    "kf_two_party_kill": "<player> megölte <victim>-t",
-    "kf_two_party_down": "<player> kiütötte <victim>-t",
     "kf_bleed_out_kill": "<player> kivérzett",
     "kf_bleed_out_down": "<player> kivérzett nem halálosan",
-    "kf_finished_off_kill": "<player> kivégezte <victim>-t",
-    "kf_finished_off_down": "<player> finoman kivégezte <victim>-t",
+    "kf_finished_off_kill": "<player> kivégezte őt: <victim>",
+    "kf_finished_off_down": "<player> finoman kivégezte őt: <victim>",
     "kf_finally_died": "<player> végleg meghalt",
     "kf_finally_ended_themselves": "<player> végleg megölte magát",
     "kf_finally_killed": "<player>-t végleg megölték",
@@ -205,6 +208,27 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> megölte a Kill Leadert",
     "kf_kl_dead": "A Kill Leader halott!",
     "kf_kl_suicide": "A Kill Leader megölte magát!",
+
+    // ------------------------------------------------------------------
+    "finally": "végleg",
+    "with": "ezzel:",
+
+    // Kill modal only
+    "you": "",
+    "yourself": "magadat",
+    "km_killed": "megölted őt:",
+    "km_knocked": "kiütötted őt:",
+
+    "km_message": "<you><finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "megölte őt:",
+    "kf_knocked": "kiütötte őt:",
+    "kf_finished_off": "kivégezte őt:",
+    "themselves": "magát",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
 
     "tt_restores": "<item> visszatölt <amount> <type>-t",
     "tt_reduces": "<item> <percent>%-kal csökkenti a sérülést",
@@ -223,15 +247,15 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Jelentése:",
     "report_id": "Jelentési azonosító:",
     "report_instructions": `
-      <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>
-      <h4>Hogyan kell Beküldeni egy Jelentést</h4>
-      <ol>
-        <li>Csatlakozz a <a href="https://discord.suroi.io">Discord szerverhez</a>!</li>
-        <li>Menj a <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            csatornához</a>!</li>
-        <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>
-        <li>Küldd be a jelentésedet posztként!</li>
-      </ol>`,
+    <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>
+    <h4>Hogyan kell Beküldeni egy Jelentést</h4>
+    <ol>
+      <li>Csatlakozz a <a href="https://discord.suroi.io">Discord szerverhez</a>!</li>
+      <li>Menj a <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          csatornához</a>!</li>
+      <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>
+      <li>Küldd be a jelentésedet posztként!</li>
+    </ol>`,
 
     "languages": "Nyelvek",
 
@@ -269,17 +293,51 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Jégcsákány",
     "seax": "Seax",
+    "sickle": "Sarló",
+    "crowbar": "Feszítővas",
 
     "frag_grenade": "Repeszgránát",
     "smoke_grenade": "Füstgránát",
     "confetti_grenade": "Konfetti Gránát",
 
+    "mosin": "Moszin-Nagant",
     "radio": "Rádió",
+    "lewis_gun": "Lewis golyószóró",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
     "deathray": "Halálsugár",
-    "arena_closer": "Világok elpusztítója",
+    "usas12": "USAS-12",
     "firework_launcher": "Tüzijáték kilövő",
+    "arena_closer": "Világok elpusztítója",
     "revitalizer": "Revitalizáló",
     "s_g17": "G17 (távcsővel)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     // For dual guns
     "dual_template": "Dupla <gun>",

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="77.5"
+   height="77.5"
+   viewBox="0 0 20.505207 20.505209"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="game_managr.svg"
+   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:export-filename="game_managr.png"
+   inkscape:export-xdpi="634.21936"
+   inkscape:export-ydpi="634.21936"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="5.9918768"
+     inkscape:cx="-31.20892"
+     inkscape:cy="12.600393"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter2"
+       x="-0.24442191"
+       y="-0.25653719"
+       width="1.4888438"
+       height="1.5130744">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,255,0)"
+         id="feFlood1" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="3.000000"
+         id="feGaussianBlur1" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset1" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="offset"
+         in2="flood"
+         id="feComposite1" />
+      <feComposite
+         result="fbSourceGraphic"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite2" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix2" />
+      <feFlood
+         id="feFlood2"
+         result="flood"
+         in="fbSourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,255,0)" />
+      <feGaussianBlur
+         id="feGaussianBlur2"
+         result="blur"
+         in="fbSourceGraphic"
+         stdDeviation="3.000000" />
+      <feOffset
+         id="feOffset2"
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000" />
+      <feComposite
+         id="feComposite3"
+         result="comp1"
+         operator="in"
+         in="offset"
+         in2="flood" />
+      <feComposite
+         id="feComposite4"
+         result="comp2"
+         operator="over"
+         in="fbSourceGraphic"
+         in2="comp1" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter9"
+       x="-0.026782454"
+       y="-0.024601988"
+       width="1.0535649"
+       height="1.0492043">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,255,0)"
+         id="feFlood8" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="5.000000"
+         id="feGaussianBlur8" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset8" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="offset"
+         in2="flood"
+         id="feComposite8" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite9" />
+    </filter>
+    <mask
+       id="a"
+       width="60"
+       height="60"
+       x="-30"
+       y="-30"
+       maskUnits="userSpaceOnUse">
+      <path
+         fill="#ffffff"
+         d="M -27,-27 H 27 V 27 H -27 Z"
+         id="path907" />
+      <path
+         d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+         id="path909" />
+      <circle
+         cy="-15"
+         r="10.5"
+         id="circle911"
+         cx="0" />
+      <g
+         transform="rotate(120)"
+         id="g917">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path913" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle915"
+           cx="0" />
+      </g>
+      <g
+         transform="rotate(-120)"
+         id="g923">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path919" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle921"
+           cx="0" />
+      </g>
+      <circle
+         r="3"
+         id="circle925"
+         cx="0"
+         cy="0" />
+    </mask>
+    <clipPath
+       id="b">
+      <circle
+         cy="-15"
+         r="9.5"
+         id="circle900"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(120)"
+         id="circle902"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(-120)"
+         id="circle904"
+         cx="0" />
+    </clipPath>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-34.697216,-113.73666)">
+    <g
+       id="g2"
+       transform="matrix(0.24999973,0,0,0.24999973,25.857569,84.529157)">
+      <g
+         id="g1"
+         style="filter:url(#filter2)">
+        <circle
+           style="display:inline;fill:#7e3a00;fill-opacity:1;stroke:#ff7500;stroke-width:2.89555;stroke-dasharray:none;stroke-opacity:1"
+           id="path1-56"
+           cx="76.57769"
+           cy="155.40854"
+           r="28.455809" />
+        <path
+           style="display:inline;fill:#7e3a00;fill-opacity:1;stroke:#ff7500;stroke-width:2.89555;stroke-dasharray:none;stroke-opacity:1"
+           id="path1-5-2"
+           d="m 64.277163,178.56498 c 0,5.61314 -4.550347,10.16349 -10.163484,10.16349 -5.613137,0 -10.163484,-4.55035 -10.163484,-10.16349 0,-5.61313 4.550347,-10.16348 10.163484,-10.16348 5.613137,0 10.163484,4.55035 10.163484,10.16348 z m 24.183855,0 c 0,5.61314 4.55034,10.16349 10.16348,10.16349 5.613142,0 10.163482,-4.55035 10.163482,-10.16349 0,-5.61313 -4.55034,-10.16348 -10.163482,-10.16348 -5.61314,0 -10.16348,4.55035 -10.16348,10.16348 z" />
+      </g>
+    </g>
+    <g
+       id="g2312"
+       transform="matrix(0.19224374,0,0,0.19224374,44.180845,122.54644)">
+      <g
+         mask="url(#a)"
+         id="g936"
+         style="fill:#ff7500;fill-opacity:1;stroke:none;stroke-opacity:1"
+         transform="matrix(0.97854222,0,0,0.97853768,4,4.6909786)">
+        <circle
+           cy="-11"
+           r="15"
+           id="circle930"
+           style="fill:#ff7500;fill-opacity:1;stroke:none;stroke-opacity:1"
+           cx="0" />
+        <circle
+           cy="-11"
+           r="15"
+           transform="rotate(120)"
+           id="circle932"
+           style="fill:#ff7500;fill-opacity:1;stroke:none;stroke-opacity:1"
+           cx="0" />
+        <circle
+           cy="-11"
+           r="15"
+           transform="rotate(-120)"
+           id="circle934"
+           style="fill:#ff7500;fill-opacity:1;stroke:none;stroke-opacity:1"
+           cx="0" />
+      </g>
+      <circle
+         r="11.75"
+         fill="none"
+         stroke="#000"
+         stroke-width="3.5"
+         clip-path="url(#b)"
+         id="circle938"
+         style="stroke:#008aff;stroke-opacity:1"
+         cx="0"
+         cy="0"
+         transform="matrix(0.97854222,0,0,0.97853768,4,4.6909786)" />
+    </g>
+  </g>
+</svg>

@@ -1,13 +1,14 @@
-import { GameConstants, ObjectCategory, PlayerActions } from "../../../common/src/constants";
-import { ArmorType } from "../../../common/src/definitions/armors";
-import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Collision, Geometry, Numeric } from "../../../common/src/utils/math";
-import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type FullData } from "../../../common/src/utils/objectsSerializations";
-import { randomRotation } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { GameConstants, ObjectCategory, PlayerActions } from "@common/constants";
+import { ArmorType } from "@common/definitions/armors";
+import { Loots, type LootDefinition } from "@common/definitions/loots";
+import { PickupPacket } from "@common/packets/pickupPacket";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { Collision, Geometry, Numeric } from "@common/utils/math";
+import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { type FullData } from "@common/utils/objectsSerializations";
+import { randomRotation } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Events } from "../pluginManager";

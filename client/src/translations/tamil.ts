@@ -16,6 +16,10 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "msg_perma_ban": "நீ வாழ்நால் முழுவதும் தடை செய்யப்பட்டுள்ளாய்!",
     "msg_perma_ban_msg": "நீ தடை செய்யப்பட்டுள்ளாய். காரணம்: <reason>",
     "msg_no_reason": "காரணம் கொடுக்கவில்லை.",
+    "msg_spectating": "பார்வையிடுகிறீர்",
+    "msg_enter_team_code": "குழுமத்தின் எண்னை செலுத்துக:",
+    "msg_lost_team_connection": "உன்னுடைய குழுமத்தின் தொடர்பு துன்டிக்கப்பட்டது.",
+    "msg_error_joining_team": "குழுமத்தில் சேரமுடியவில்லை<br>அந்த குழுமம் இருக்காமல் இருக்கலாம், அல்லது முழுமையாக இருக்கலாம்.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
 
     "play_solo": "ஒற்றைவீரராக விளையாடு",
     "play_duo": "இரட்டைவீரராக விளையாடு",
@@ -30,6 +34,7 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "quit": "வெளியேறு",
     "none": "அல்ல",
     "copy": "நகலெடு",
+    "copied": "நகலெடுக்கப்பட்டது",
 
     "health": "உடல்நிலை",
     "adrenaline": "சக்தி",
@@ -153,7 +158,7 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "bindings_slot 0": "முதலாவதை பயன்படுத்த",
     "bindings_slot 1": "இரண்டாவதை பயன்படுத்த",
     "bindings_slot 2": "கையாயுதத்தை பயன்படுத்த",
-    "bindings_equip_or_cycle_throwables 1": "Equip/Cycle Throwable",
+    "bindings_equip_or_cycle_throwables 1": "குண்டுகளை எடுக்க/மாற்ற",
     "bindings_last_item": "அன்மை ஆயுதத்தை பயன்படுத்த",
     "bindings_other_weapon": "மற்ற துப்பாக்கியை பயன்படுத்த",
     "bindings_swap_gun_slots": "துப்பாக்கி இடமாற்ற",
@@ -181,20 +186,50 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> தற்கொலை செய்துகொண்டார்",
     "kf_suicide_down": "<player> தன்னைதானே செயலிழக்க செய்தார்",
-    "kf_two_party_kill": "<player> <victim>-ஐ கொலை செய்தார்",
-    "kf_two_party_down": "<player> <victim>-ஐ செயலிழக்க செய்தார்",
+
     "kf_bleed_out_kill": "<player> இரத்தம் இழந்து செத்தார்",
     "kf_bleed_out_down": "<player> இரத்தம் இழந்தார்",
+
     "kf_finished_off_kill": "<player> <victim>-ஐ முடித்தார்",
     "kf_finished_off_down": "<player> கருனையுடன் <victim>-ஐ முடித்தார்",
+
     "kf_finally_died": "<player> இருதியில் செத்தார்",
     "kf_finally_ended_themselves": "<player> இருதியில் தற்கொலை செய்தார்",
+
     "kf_finally_killed": "<player> இருதியில் கொல்லப்பட்டார்",
     "kf_finally_down": "<player> ஒருவழியாக செயலிழந்தார்",
+
     "kf_gas_kill": "<player> கொடிய வாயுவினால் செத்தார்",
     "kf_gas_down": "<player> கொடிய வாயுவினால் செயலிழந்தார்",
+
     "kf_airdrop_kill": "<player> கருனையில்லாமல் காற்றுபெட்டியால் செத்தார்",
     "kf_airdrop_down": "<player> காற்றுபெட்டியால் செயலிழந்தார்",
+
+    "finally": "இறுதியாக",
+    "with": "வைத்து",
+
+    // Kill modal only
+    "you": "நீ",
+    "yourself": "உன்னையே",
+    "km_killed": "கொன்றாய்",
+    "km_knocked": "செயலிழக்க செய்தாய்",
+
+    "km_message": "<you> <finally> <victim>-ஐ <weapon>-ஐ <with> <event>",
+
+    // Killfeed.
+    "kf_killed": "கொன்றார்",
+    "kf_knocked": "செயலிழக்க செய்தார்",
+    "kf_finished_off": "முடித்தார்",
+    "themselves": "தன்னைதானே",
+
+    "kf_message": "<player> <finally> <victim>-ஐ <weapon>-ஐ <with> <event>",
+    // ------------------------------------------------------------------
+
+    // Kill Leader stuff
+    "kf_kl_promotion": "<player> கொலை முன்னனியானார்!",
+    "kf_kl_killed": "<player> கொலை முன்னனியாளரை கொலை செய்தார்",
+    "kf_kl_dead": "கொலை முன்னனியாளர் இறந்தார்!",
+    "kf_kl_suicide": "கொலை முன்னனியாளர் தற்கொலை செய்தார்!",
 
     "tt_restores": "<item> <amount>ஐ திருப்பி தரும் <type>",
     "tt_reduces": "<item> <percent>% சேதத்தை குறைக்கும்",
@@ -209,7 +244,7 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "create_team_lock": "குழுமத்தை பூட்டு",
     "create_team_play": "விளையாட்டை ஆரம்பி",
 
-    "report_reporting": "Reporting",
+    "report_reporting": "புகார் எண்:",
     "report_id": "புகார் என்:",
     "report_instructions": `
       <p><strong>இங்குள்ள குறியீடுகளை நங்கு கவனிக்கவும். </strong>அல்லது, உன்னுடயை புகார் நிறாகறிக்கபடும்.</p>
@@ -229,6 +264,23 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "cola": "கோலா",
     "tablets": "மாத்திரைகள்",
 
+    "basic_vest": "அடிப்படை உடுப்பு",
+    "regular_vest": "வழக்கமான உடுப்பு",
+    "tactical_vest": "தந்திரோபாய உடுப்பு",
+    "basic_helmet": "அடிப்படையான தலைகவசம்",
+    "regular_helmet": "வழக்கமான தலைகவசம்",
+    "tactical_helmet": "தந்திரோபாய தலைகவசம்",
+    "bag": "பை", // This shouldn't show up in game
+    "basic_pack": "அடிப்படையான முதுகுப்பை",
+    "regular_pack": "வழக்கமான முதுகுப்பை",
+    "tactical_pack": "தந்திரோபாய முதுகுப்பை",
+
+    "1x_scope": "1வது நிலை உருப்பெருக்கான்", // This shouldn't show up in game
+    "2x_scope": "2வது நிலை உருப்பெருக்கான்",
+    "4x_scope": "4வது நிலை உருப்பெருக்கான்",
+    "8x_scope": "8வது நிலை உருப்பெருக்கான்",
+    "15x_scope": "15வது நிலை உருப்பெருக்கான்",
+
     "fists": "கைகள்",
     "baseball_bat": "மட்டை",
     "hatchet": "கோடாரி",
@@ -239,9 +291,52 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "steelfang": "ஸ்டீல்ஃபேன்கு",
     "ice_pick": "பனி கோடாரி",
     "seax": "ஸியக்ஸ்",
+    "crowbar": "கடப்பாரை",
+    "sickle": "அரிவாள்",
 
     "radio": "வானொலி",
     "deathray": "கொடிய கதிர்",
+
+    "frag_grenade": "கையெறி குண்டு",
+    "smoke_grenade": "புகைகுண்டு",
+    "confetti_grenade": "கன்ஃபெட்டி குண்டு",
+
+    "mosin": "Mosin-Nagant",
+    "lewis_gun": "Lewis Gun",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "usas12": "USAS-12",
+    "firework_launcher": "Firework Launcher",
+    "arena_closer": "Destroyer Of Worlds",
+    "revitalizer": "Revitalizer",
+    "s_g17": "G17 (Scoped)",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vector",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Stoner 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Micro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
     // For dual guns
     "dual_template": "இரட்டை <gun>",

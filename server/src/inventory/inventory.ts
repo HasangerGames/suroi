@@ -1,16 +1,17 @@
-import { DEFAULT_INVENTORY, GameConstants } from "../../../common/src/constants";
-import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
-import { ArmorType, type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type DualGunNarrowing, type GunDefinition } from "../../../common/src/definitions/guns";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { Loots, type LootDefinition, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "../../../common/src/definitions/throwables";
-import { Numeric } from "../../../common/src/utils/math";
-import { ExtendedMap, type Timeout } from "../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import type { Vector } from "../../../common/src/utils/vector";
+import { DEFAULT_INVENTORY, GameConstants } from "@common/constants";
+import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
+import { ArmorType, type ArmorDefinition } from "@common/definitions/armors";
+import { type BackpackDefinition } from "@common/definitions/backpacks";
+import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/guns";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Loots, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { Numeric } from "@common/utils/math";
+import { ExtendedMap, type Timeout } from "@common/utils/misc";
+import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import type { Vector } from "@common/utils/vector";
+
 import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
@@ -620,7 +621,7 @@ export class Inventory {
             || this.isLocked(slot)
         ) return false;
 
-        const gun = this.weapons[slot] as GunItem;
+        const gun = this.weapons[slot];
 
         if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
 

@@ -4,24 +4,28 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "name": "中文（简体）",
     "flag": "🇨🇳",
 
-    "msg_rotate": "请将设备旋转至横向来获取更好的游戏体验。",
+    "msg_rotate": "请将设备旋转至横向来获得更好的游戏体验。",
     "msg_loading": "连接中",
-    "msg_err_joining": "加入游戏时出错。",
-    "msg_err_finding": "查找游戏时出错。",
+    "msg_err_joining": "加入游戏失败。",
+    "msg_err_finding": "查找游戏失败。",
+    "msg_spectating": "正在观战",
+    "msg_enter_team_code": "输入队伍代码：",
+    "msg_lost_team_connection": "与队伍失去连接。",
+    "msg_error_joining_team": "加入队伍失败。<br>队伍可能不存在或已满.", // <br>这里是一个HTML换行元素。不要触碰或移动。
     "msg_try_again": "请重试。",
     "msg_warning": "你已被警告！",
     "msg_warning_msg": "你已被管理员警告：<reason>",
     "msg_temp_ban": "你已被暂时封禁！",
-    "msg_temp_ban_msg": "你已被暂时封禁，原因：<reason>",
+    "msg_temp_ban_msg": "你已因此被暂时封禁：<reason>",
     "msg_perma_ban": "你已被永久封禁！",
-    "msg_perma_ban_msg": "你已被永久封禁，原因：<reason>",
+    "msg_perma_ban_msg": "你已因此被永久封禁：<reason>",
     "msg_no_reason": "未提供原因。",
 
     "play_solo": "单人游戏",
     "play_duo": "双人游戏",
     "play_squad": "小队游戏",
     "join_team": "加入队伍",
-    "msg_locked_tooltip": "因为没有足够的玩家同时进行两种游戏，游戏每24小时在单人游戏和双人游戏之间切换。",
+    "msg_locked_tooltip": "因为没有足够的玩家同时进行两种游戏，游戏每天在单人游戏和双人游戏之间切换。",
     "rules_and_tutorial": "规则与教程",
     "news": "新闻",
     "loadout": "装饰",
@@ -31,6 +35,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "quit": "退出",
     "none": "无",
     "copy": "复制",
+    "copied": "已复制",
 
     "health": "血量",
     "adrenaline": "肾上腺素",
@@ -129,7 +134,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "action_close_door": "关门",
     "action_revive": "救援<player>",
     "action_cancel": "取消",
-    "action_reloading": "装弹中…",
+    "action_reloading": "装填中…",
     "action_reviving": "救援中…",
     "action_being_revived": "正在被救援…",
     "action_gauze_use": "应用<item>中",
@@ -187,20 +192,47 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player>自杀了",
     "kf_suicide_down": "<player>击倒了自己",
-    "kf_two_party_kill": "<player>击杀了<victim>",
-    "kf_two_party_down": "<player>击倒了<victim>",
+
     "kf_bleed_out_kill": "<player>失血过多",
     "kf_bleed_out_down": "<player>非致命地失血过多",
+
     "kf_finished_off_kill": "<player>解决了<victim>",
     "kf_finished_off_down": "<player>温柔地解决了<victim>",
+
     "kf_finally_died": "<player>最终死了",
-    "kf_finally_ended_themselves": "<player>最终解决了自己",
+    "kf_finally_ended_themselves": "<player>最终结束了自己",
+
     "kf_finally_killed": "<player>最终被击杀了",
     "kf_finally_down": "<player>最终被击倒了",
+
     "kf_gas_kill": "<player>死于毒气",
     "kf_gas_down": "<player>被毒气晕倒了",
+
     "kf_airdrop_kill": "<player>被空投压死了",
     "kf_airdrop_down": "<player>被空投压倒了",
+
+    // ------------------------------------------------------------------
+    "finally": "最终",
+    "with": "用",
+
+    // 击杀Modal
+    "you": "你",
+    "yourself": "自己",
+    "km_killed": "击杀了",
+    "km_knocked": "击倒了",
+
+    "km_message": "<you><finally><with><weapon><event><victim>",
+
+    // 击杀信息
+    "kf_killed": "击杀了",
+    "kf_knocked": "击倒了",
+    "kf_finished_off": "解决了",
+    "themselves": "自己",
+
+    "kf_message": "<player><finally><with><weapon><event><victim>",
+    // ------------------------------------------------------------------
+
+    // 击杀领袖信息
     "kf_kl_promotion": "<player>晋升为击杀领袖！",
     "kf_kl_killed": "<player>击杀了击杀领袖",
     "kf_kl_dead": "击杀领袖死了！",
@@ -223,15 +255,15 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "report_reporting": "举报",
     "report_id": "举报ID：",
     "report_instructions": `
-      <p><strong>请按照以下说明操作！</strong>否则，你的举报将被忽略。</p>
-      <h4>如何提交举报</h4>
-      <ol>
-        <li>加入<a href="https://discord.suroi.io">Discord服务器。</a></li>
-        <li>前往<a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
-            频道。</a></li>
-        <li>阅读置顶帖中的举报方针。</li>
-        <li>以帖子的形式提交您的举报。</li>
-      </ol>`,
+    <p><strong>请按照以下说明操作！</strong>否则，你的举报将被忽略。</p>
+    <h4>如何提交举报</h4>
+    <ol>
+      <li>加入<a href="https://discord.suroi.io">Discord服务器。</a></li>
+      <li>前往<a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheatr-reports
+          频道。</a></li>
+      <li>阅读置顶帖中的举报方针。</li>
+      <li>以帖子的形式提交您的举报。</li>
+    </ol>`,
 
     "languages": "语言",
 
@@ -248,7 +280,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "basic_helmet": "基础头盔",
     "regular_helmet": "常规头盔",
     "tactical_helmet": "战术头盔",
-    "bag": "包", // 这不应该出现在游戏中
+    "bag": "袋子", // 这不应该出现在游戏中
     "basic_pack": "基础背包",
     "regular_pack": "常规背包",
     "tactical_pack": "战术背包",
@@ -259,23 +291,59 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "8x_scope": "八倍镜",
     "15x_scope": "十五倍镜",
 
-    "fists": "拳头", // 近战武器
+    "fists": "拳头",
     "baseball_bat": "棒球棒",
     "hatchet": "斧头",
     "kbar": "卡巴刀",
     "maul": "槌子",
-    "gas_can": "汽油桶",
+    "gas_can": "汽油罐",
     "heap_sword": "HE-AP剑",
     "steelfang": "钢牙刀",
     "ice_pick": "冰镐",
     "seax": "西克斯剑",
+    "crowbar": "撬棍",
+    "sickle": "镰刀",
 
-    "mosin": "莫辛纳甘", // 枪械
+    "mosin": "莫辛纳甘",
     "radio": "无线电通话机",
     "lewis_gun": "路易士机枪",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
     "deathray": "死亡射线",
+    "usas12": "USAS-12",
+    "firework_launcher": "烟花火箭筒",
+    "arena_closer": "世界毁灭者",
+    "revitalizer": "复兴者",
+    "s_g17": "格洛克17（倍镜）",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "维普尔12",
+    "flues": "弗鲁斯",
+    "cz75a": "CZ-75A",
+    "g19": "格洛克19",
+    "mp40": "MP40",
+    "m1895": "1895式",
+    "ak47": "AK-47",
+    "vector": "维克托",
+    "mini14": "迷你14",
+    "model_37": "37式",
+    "model_89": "89式",
+    "negev": "内格夫",
+    "sr25": "SR-25",
+    "tango_51": "探戈51",
+    "barrett": "巴雷特95式",
+    "stoner_63": "斯通纳63",
+    "m1_garand": "1式加兰德",
+    "micro_uzi": "微型乌兹",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Spear",
 
-    "frag_grenade": "破片手榴弹", // 投掷物
+    "frag_grenade": "破片手榴弹",
     "smoke_grenade": "烟雾弹",
     "confetti_grenade": "彩色纸屑手榴弹",
 
@@ -287,27 +355,5 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "region_na": "北美",
     "region_eu": "欧洲",
     "region_sa": "南美",
-    "region_as": "亚洲",
-
-    /* 增补翻译 */
-
-    // 枪械
-    "model_37": "37式",
-    "flues": "弗鲁斯",
-    "vepr12": "维普尔12",
-    "tango_51": "探戈51",
-    "barrett": "巴雷特95式",
-    "m1895": "1895式",
-    "g19": "格洛克19",
-    "micro_uzi": "微型乌兹",
-    "vector": "维克托",
-    "stoner_63": "斯通纳63",
-    "negev": "内格夫",
-    "m1_garand": "1式加兰德",
-    "mini14": "迷你14",
-    "model_89": "89式",
-    "firework_launcher": "烟花火箭筒",
-    "s_g17": "格洛克17（倍镜）",
-    "arena_closer": "世界毁灭者",
-    "revitalizer": "复兴者"
+    "region_as": "亚洲"
 };

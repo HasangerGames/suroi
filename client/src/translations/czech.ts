@@ -8,6 +8,10 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Připojování...",
     "msg_err_joining": "Chyba připojení ke hře.",
     "msg_err_finding": "Chyba hledání hry..",
+    "msg_spectating": "Sledování",
+    "msg_enter_team_code": "Zadejte kód týmu:",
+    "msg_lost_team_connection": "Ztraceno spojení s týmem.",
+    "msg_error_joining_team": "Chyba připojení k týmu.<br>Nemusí existovat nebo je plný.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Prosím zkuste znovu.",
     "msg_warning": "Byli jste varováni!",
     "msg_warning_msg": "Obdrželi jste varování od moderátorů pro důvod: <reason>",
@@ -31,6 +35,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "quit": "Opustit",
     "none": "Žádné",
     "copy": "Kopírovat",
+    "copied": "Zkopírováno",
 
     "health": "zdraví",
     "adrenaline": "adrenalin",
@@ -71,7 +76,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "settings_show_coordinates": "Ukázat souřadnice",
     "settings_anon_names": "Anonymní jména hráčů",
     "settings_hide_emotes": "Skrýt emoce",
-    "settings_text_killfeed": "Textově založené počítadlo zabití",
+    "settings_text_killfeed": "Textově založené oznámení zabití",
     "settings_colored_weapon_slots": "Zabarvené pole zbraní",
     "settings_scope_looping": "Opakovat dalekohledy",
     "settings_draw_hud": "Kreslit HUD",
@@ -102,7 +107,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "emotes_category_Text": "Text",
     "emotes_category_Memes": "Memy",
     "emotes_category_Icons": "Ikony",
-    "emotes_category_Misc": "Misc",
+    "emotes_category_Misc": "Ostatní",
 
     "featured_youtubr": "Uvedený Youtubr",
     "featured_streamr": "Uvedený Streamr",
@@ -110,7 +115,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "btn_report": "Nahlásit",
     "btn_spectate_kill_leader": "Sledovat vedoucího v zabitích",
     "btn_spectate": "Sledovat",
-    "btn_play_again": "Hrt znovu",
+    "btn_play_again": "Hrát znovu",
     "btn_menu": "Menu",
 
     "msg_waiting_for_leader": "Čekání na vedoucího",
@@ -122,7 +127,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "msg_kills": "Zabití: <kills>",
 
     "gas_waiting": "Jedovatý plyn se rozšiřuje za: <time>",
-    "gas_advancing": "Jedovatý plan se rozšiřuje! Běžte do bezpečné zóny",
+    "gas_advancing": "Jedovatý plyn se rozšiřuje! Běžte do bezpečné zóny",
     "gas_inactive": "Čekání na hráče...",
 
     "action_open_door": "Otevřít dveře",
@@ -135,7 +140,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "action_gauze_use": "Obvazuje se <item>",
     "action_medikit_use": "Používá se <item>",
     "action_cola_use": "Pije se <item>",
-    "action_tablets_use": "Bere se <item>",
+    "action_tablets_use": "Berou se <item>",
 
     "interact_airdrop_crate_locked": "Otevřít Padák",
     "interact_control_panel": "Aktivovat kontrolní panel",
@@ -182,31 +187,58 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "bindings_+emote_wheel": "Emoční kolečko",
     "bindings_+map_ping_wheel": "Prohodit mapový signál",
     "bindings_+map_ping": "Mapové signálové kolečko",
-    "bindings_toggle_console": "Zobrazit konzoli",
-    "bindings_toggle_slot_lock": "Zobrazit zámek polí",
+    "bindings_toggle_console": "Používat konzoli",
+    "bindings_toggle_slot_lock": "Použít zámek polí",
 
     "kf_suicide_kill": "<player> spáchal/a sebevraždu",
-    "kf_suicide_down": "<player> vyřadil/a se",
-    "kf_two_party_kill": "<player> zabil/a <victim>",
-    "kf_two_party_down": "<player> vyřadil/a <victim>",
+    "kf_suicide_down": "<player> se vyřadil/a",
+
     "kf_bleed_out_kill": "<player> vykrvácel/a",
     "kf_bleed_out_down": "<player vykrvácel/a ne smrtelně",
+
     "kf_finished_off_kill": "<player> dokončil/a <victim>",
     "kf_finished_off_down": "<player> šetrně dokončil <victim>",
+
     "kf_finally_died": "<player> finálně zemřel/a",
     "kf_finally_ended_themselves": "<player> se finálně dokončil/a",
+
     "kf_finally_killed": "<player> byl/a finálně zabit/a",
     "kf_finally_down": "<player> byl/a finálně vyřazen/a",
+
     "kf_gas_kill": "<player> zemřel/a na plyn",
-    "kf_gas_down": "<player> sražen/a k zemi plynem",
+    "kf_gas_down": "<player> byl/a sražen/a k zemi plynem",
+
     "kf_airdrop_kill": "<player> byl/a fatálně sražen/a padákem",
     "kf_airdrop_down": "<player> byl/a vyřazen/a padákem",
+
+    // -----
+    "finally": "finálně",
+    "with": "s",
+
+    // Kill modal only
+    "you": "Vy",
+    "yourself": "Sebe",
+    "km_killed": "jste zabil/a",
+    "km_knocked": "jste vyřadila/a",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "zabil/a",
+    "kf_knocked": "vyřadil/a",
+    "kf_finished_off": "dokončil/a",
+    "themselves": "sebe",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // -----
+
+    // Kill Leader stuff
     "kf_kl_promotion": "<player> je povýšen/a na Vedoucího v zabitích!",
     "kf_kl_killed": "<player> zabil/a Vedoucího v zabitích",
     "kf_kl_dead": "Vedoucí v zabitích je mrtvý!",
     "kf_kl_suicide": "Vedoucí v zabitích se zabil/a!",
 
-    "tt_restores": "<item> uzdravuje <amount> <type>",
+    "tt_restores": "<item> dává <amount> <type>",
     "tt_reduces": "<item> snižuje <percent>% poškození",
 
     "go_kills": "Zabití:",
@@ -223,15 +255,15 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "report_reporting": "Nahlašování",
     "report_id": "Nahlašovací ID:",
     "report_instructions": `
-      <p><strong>Prosím dodržujte instrukce níže</strong> Pokud se jimi neřídíte, budete ignorováni.</p>
-      <h4>Jak poslat Nahlášení</h4>
-      <ol>
-        <li>Připojte se k <a href="https://discord.suroi.io">Discord serveru.</a></li>
-        <li>Jděte do <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
-            kanálu.</a></li>
-        <li>Přečtěte si návod na nahlašování v připnutém příspěvku.</li>
-        <li>Pošlete Vaše nahlášení jako příspěvek.</li>
-      </ol>`,
+    <p><strong>Prosím dodržujte instrukce níže</strong> Pokud se jimi neřídíte, budete ignorováni.</p>
+    <h4>Jak poslat Nahlášení</h4>
+    <ol>
+      <li>Připojte se k <a href="https://discord.suroi.io">Discord serveru.</a></li>
+      <li>Jděte do <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports
+          kanálu.</a></li>
+      <li>Přečtěte si návod na nahlašování v připnutém příspěvku.</li>
+      <li>Pošlete Vaše nahlášení jako příspěvek.</li>
+    </ol>`,
 
     "languages": "Jayzyky",
 
@@ -269,18 +301,56 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "steelfang": "Ocelový tesák",
     "ice_pick": "Cepín",
     "seax": "Seax",
+    "crowbar": "Páčidlo",
+    "sickle": "Srp",
 
-    "frag_grenade": "Granát",
+    "mosin": "Mosin-Nagant",
+    "radio": "Vysílačka",
+    "lewis_gun": "Lewisova zbraň",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf_200": "SAF-200",
+    "deathray": "Paprsek smrti",
+    "usas12": "USAS-12",
+    "firework_launcher": "Odpalovač ohňostrojů",
+    "arena_closer": "Ničitel světů",
+    "revitalizer": "Revitalizátor",
+    "s_g17": "G17 (Rozsahový)",
+    "vss": 'VSS"',
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "Vektor",
+    "mini14": "Mini-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "Negev",
+    "sr25": "SR_25",
+    "tango_51": "Tango 51",
+    "barrett": "Barrett M95",
+    "stoner_63": "Kameník 63",
+    "m1_garand": "M1 Garand",
+    "micro_uzi": "Mikro Uzi",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX Kopí",
+
+    "frag_grenade": "Střepinový granát",
     "smoke_grenade": "Dýmovnice",
     "confetti_grenade": "Konfetový granát",
-
-    "radio": "Vysílačka",
-    "deathray": "Paprsek smrti",
 
     // For dual guns
     "dual_template": "Dvojité <gun>",
 
-    // Regions
+    // regions
     "region_dev": "Lokální server",
     "region_na": "Severní Amerika",
     "region_eu": "Evropa",

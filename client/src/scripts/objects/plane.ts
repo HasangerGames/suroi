@@ -31,7 +31,7 @@ export class Plane {
         this.image = new SuroiSprite("airdrop_plane")
             .setZIndex(ZIndexes.Gas + 1)
             .setRotation(direction)
-            .setScale(2);
+            .setScale(4);
 
         this.sound = game.soundManager.play(
             "airdrop_plane",

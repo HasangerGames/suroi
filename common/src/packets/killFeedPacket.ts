@@ -75,9 +75,10 @@ export type KillFeedPacketData = ({
     readonly messageType: KillfeedMessageType.KillLeaderUpdated
     readonly attackerKills: number
 } | {
-    readonly messageType: KillfeedMessageType.KillLeaderDead
+    readonly messageType: KillfeedMessageType.KillLeaderDeadOrDisconnected
     readonly victimId: number
     readonly attackerId: number
+    readonly disconnected?: boolean
 };
 
 const attackerFilter: readonly IncludeAttacker[] = [
@@ -264,13 +265,13 @@ const factories = Object.freeze({
 
         return obj;
     },
-    [KillfeedMessageType.KillLeaderDead]() {
+    [KillfeedMessageType.KillLeaderDeadOrDisconnected]() {
         type KillLeaderDeadMessage = KillFeedPacketData & {
-            readonly messageType: KillfeedMessageType.KillLeaderDead
+            readonly messageType: KillfeedMessageType.KillLeaderDeadOrDisconnected
         };
 
         const msg: Partial<Mutable<KillLeaderDeadMessage>> = {
-            messageType: KillfeedMessageType.KillLeaderDead
+            messageType: KillfeedMessageType.KillLeaderDeadOrDisconnected
         };
 
         const obj = {
@@ -280,6 +281,10 @@ const factories = Object.freeze({
             },
             attackerId(id: number) {
                 msg.attackerId = id;
+                return obj;
+            },
+            disconnected(didDisconnect: boolean) {
+                msg.disconnected = didDisconnect;
                 return obj;
             },
 
@@ -365,9 +370,10 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 stream.writeUint8(data.attackerKills);
                 break;
 
-            case KillfeedMessageType.KillLeaderDead:
+            case KillfeedMessageType.KillLeaderDeadOrDisconnected:
                 stream.writeObjectID(data.victimId);
                 stream.writeObjectID(data.attackerId);
+                stream.writeBoolean(data.disconnected ?? false);
                 break;
         }
     },
@@ -416,9 +422,10 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 data.attackerKills = stream.readUint8();
                 break;
 
-            case KillfeedMessageType.KillLeaderDead:
+            case KillfeedMessageType.KillLeaderDeadOrDisconnected:
                 data.victimId = stream.readObjectID();
                 data.attackerId = stream.readObjectID();
+                data.disconnected = stream.readBoolean();
                 break;
         }
 
