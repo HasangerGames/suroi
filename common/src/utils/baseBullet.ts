@@ -110,7 +110,7 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if (object.isObstacle && object.definition.noBulletCollision) continue;
+            if ((object.isBuilding || object.isObstacle) && object.definition.noBulletCollision) continue;
 
             if (
                 object.damageable
