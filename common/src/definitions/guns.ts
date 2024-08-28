@@ -1776,7 +1776,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "deagle",
             name: "DEagle",
-            ammoType: "44mag",
+            ammoType: "50cal",
             ammoSpawnAmount: 48,
             fireDelay: 200,
             switchDelay: 250,
@@ -1795,6 +1795,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             },
             image: { position: Vec.create(65, 0) },
             casingParticles: [{
+                frame: "casing_50ae",
                 position: Vec.create(3.5, 0.3),
                 velocity: {
                     y: {
@@ -1828,7 +1829,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "bfr",
             name: "BFR",
-            ammoType: "44mag",
+            ammoType: "50cal",
             ammoSpawnAmount: 30,
             fireDelay: 400,
             switchDelay: 250,

@@ -89,19 +89,6 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             hideUnlessPresent: true
         },
         {
-            idString: "44mag",
-            name: ".44 Magnum",
-            maxStackSize: 24,
-            itemType: ItemType.Ammo,
-            characteristicColor: {
-                hue: 0,
-                saturation: 0,
-                lightness: 17
-            },
-            defaultCasingFrame: "casing_44mag",
-            hideUnlessPresent: true
-        },
-        {
             idString: "curadell",
             name: "Curadell",
             maxStackSize: 10,
