@@ -70,14 +70,18 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly decals: readonly BuildingDecal[]
 
     readonly puzzle?: {
-        readonly triggerInteractOn: ReferenceTo<ObstacleDefinition>
-        readonly interactDelay: number
+        readonly triggerOnSolve: ReferenceTo<ObstacleDefinition>
+        readonly delay: number
         readonly order?: readonly string[]
         readonly solvedSound?: boolean
         /**
          * Don't wait for the interact delay before setting solved to true
          */
         readonly setSolvedImmediately?: boolean
+        /**
+         * Don't activate the object when the puzzle is solved, only unlock it
+         */
+        readonly unlockOnly?: boolean
     }
 
     readonly sounds?: {
@@ -1993,8 +1997,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(320, 130, Vec.create(5, 5)),
             scopeHitbox: RectangleHitbox.fromRect(34, 51, Vec.create(115, 0)),
             puzzle: {
-                triggerInteractOn: "vault_door",
-                interactDelay: 2000
+                triggerOnSolve: "vault_door",
+                delay: 2000
             },
             sounds: {
                 solved: "generator_running",
@@ -2275,8 +2279,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(360, 130, Vec.create(30, 0)),
             scopeHitbox: RectangleHitbox.fromRect(38, 80, Vec.create(-94, 0)),
             puzzle: {
-                triggerInteractOn: "vault_door",
-                interactDelay: 1500
+                triggerOnSolve: "vault_door",
+                delay: 1500
             },
             ceilingImages: [
                 {
@@ -3058,8 +3062,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
             scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
             puzzle: {
-                triggerInteractOn: "vault_door",
-                interactDelay: 1500,
+                triggerOnSolve: "vault_door",
+                delay: 1500,
                 order: ["o", "l", "j", "y"],
                 solvedSound: true,
                 setSolvedImmediately: true
@@ -3878,8 +3882,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -85))
             ),
             puzzle: {
-                triggerInteractOn: "speaker",
-                interactDelay: 500
+                triggerOnSolve: "speaker",
+                delay: 500
             },
             sounds: {
                 solved: "speaker",
@@ -4078,11 +4082,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(50, 25, Vec.create(-31, 47)) // ADJUST THIS! (not sure if its correct) - pap
             ),
             spawnMode: MapObjectSpawnMode.Grass,
-            rotationMode: RotationMode.None,
             puzzle: {
-                triggerInteractOn: "metal_door",
+                triggerOnSolve: "metal_door",
                 solvedSound: true,
-                interactDelay: 2000
+                delay: 2000,
+                unlockOnly: true
             },
             floorImages: [
                 {
@@ -4201,7 +4205,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // main area (hallway/where unbreakable large desk is)
                 { idString: "headquarters_main_desk", position: Vec.create(-11, -52), rotation: 0 },
-                { idString: "metal_door", position: Vec.create(17.5, -107.8), rotation: 2 },
+                { idString: "metal_door", position: Vec.create(17.5, -108.2), rotation: 2 },
                 { idString: "potted_plant", position: Vec.create(-33, -57.5) },
                 { idString: "potted_plant", position: Vec.create(10.9, -57.5) },
                 { idString: "metal_small_drawer", position: Vec.create(-16.5, -31.5), rotation: 2 },
@@ -4224,7 +4228,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-53, -64.25), rotation: 2 },
                 { idString: "small_drawer", position: Vec.create(-39.7, -69.5), rotation: 2 },
                 { idString: { box: 0.9, grenade_box: 0.1 }, position: Vec.create(-38.25, -94.25) },
-                { idString: "metal_door", position: Vec.create(-58.35, -41.25), rotation: 3 }, // eh not sure if we want this one locked
+                { idString: "metal_door", position: Vec.create(-58.5, -41.25), rotation: 3 },
                 { idString: "dumpster", position: Vec.create(-63, -63), rotation: 2 },
                 { idString: "trash_bag", position: Vec.create(-63, -52.5) },
 

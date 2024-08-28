@@ -164,16 +164,16 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         this.game.addTimeout(() => {
             puzzle.solved = true;
             this.setPartialDirty();
-        }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.interactDelay);
+        }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.delay);
 
         this.game.addTimeout(() => {
             for (const obstacle of this.interactableObstacles) {
-                if (obstacle.definition.idString === puzzleDef.triggerInteractOn) {
-                    obstacle.interact();
+                if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
+                    if (!puzzleDef.unlockOnly) obstacle.interact();
                     obstacle.locked = false;
                 }
             }
-        }, puzzleDef.interactDelay);
+        }, puzzleDef.delay);
     }
 
     resetPuzzle(): void {
