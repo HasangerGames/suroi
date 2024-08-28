@@ -1805,10 +1805,10 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 }
             }],
             gasParticles: gasParticlePresets.pistol,
-            capacity: 8,
+            capacity: 7,
             reloadTime: 2.3,
             ballistics: {
-                damage: 31,
+                damage: 37,
                 obstacleMultiplier: 1.25,
                 speed: 0.22,
                 range: 130,
@@ -1837,8 +1837,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilDuration: 600,
             fsaReset: 600,
             fireMode: FireMode.Single,
-            shotSpread: 6,
-            moveSpread: 12,
+            shotSpread: 4,
+            moveSpread: 8,
             length: 6,
             noMuzzleFlash: true,
             fists: {
@@ -1883,8 +1883,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 leftRightOffset: 1.3,
                 ammoSpawnAmount: 60,
                 fireDelay: 200,
-                shotSpread: 8,
-                moveSpread: 16,
+                shotSpread: 7,
+                moveSpread: 11,
                 capacity: 10,
                 reloadTime: 4.2
             }
