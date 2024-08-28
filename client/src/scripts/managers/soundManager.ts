@@ -172,13 +172,24 @@ export class SoundManager {
             soundsToLoad[key] = `.${path}`;
         }
 
-        for (const [alias, path] of Object.entries(soundsToLoad)) {
+        const MAX_SIMULTANEOUS_SOUNDS = 20; // Set the maximum number of sounds to load simultaneously
+        
+        const soundEntries = Object.entries(soundsToLoad);
+        let loadedCount = 0;
+        
+        function loadNextSound() {
+            if (loadedCount >= soundEntries.length) {
+                return;
+            }
+        
+            const [alias, path] = soundEntries[loadedCount];
+        
             /**
              * For some reason, PIXI will call the `loaded` callback twice
              * when an error occurs…
              */
             let called = false;
-
+        
             PixiSound.sound.add(
                 alias,
                 {
@@ -191,9 +202,17 @@ export class SoundManager {
                             console.warn(`Failed to load sound '${alias}' (path '${path}')\nError object provided below`);
                             console.error(error);
                         }
+        
+                        loadedCount++;
+                        loadNextSound(); // Load the next sound
                     }
                 }
             );
+        }
+        
+        // Load the sounds sequentially
+        for (let i = 0; i < MAX_SIMULTANEOUS_SOUNDS; i++) {
+            loadNextSound();
         }
     }
 }
