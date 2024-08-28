@@ -1827,18 +1827,20 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "bfr",
-            name: "BFR",
+            idString: "rsh12",
+            name: "RSh-12",
             ammoType: "50cal",
             ammoSpawnAmount: 30,
             fireDelay: 400,
             switchDelay: 250,
-            recoilMultiplier: 0.6,
-            recoilDuration: 250,
+            recoilMultiplier: 0.8,
+            recoilDuration: 600,
+            fsaReset: 600,
             fireMode: FireMode.Single,
-            shotSpread: 2,
-            moveSpread: 5,
-            length: 5.8,
+            shotSpread: 4,
+            moveSpread: 8,
+            length: 6,
+            noMuzzleFlash: true,
             fists: {
                 left: Vec.create(40, 0),
                 right: Vec.create(40, 0),
@@ -1848,33 +1850,43 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             },
             casingParticles: [{
                 position: Vec.create(3.5, 0.3),
+                frame: "casing_127x55mm",
                 on: "reload",
+                count: 5,
                 velocity: {
+                    x: {
+                        min: -8,
+                        max: -2
+                    },
                     y: {
                         min: 2,
-                        max: 18
+                        max: 9,
+                        randomSign: true
                     }
                 }
             }],
-            image: { position: Vec.create(75, 0) },
+            image: { position: Vec.create(80, 0) },
             gasParticles: gasParticlePresets.pistol,
-            capacity: 6,
-            reloadTime: 0.95,
-            singleReload: true,
+            capacity: 5,
+            reloadTime: 2.4,
             ballistics: {
-                damage: 35,
-                obstacleMultiplier: 1.5,
-                speed: 0.26,
-                range: 160
+                damage: 60,
+                obstacleMultiplier: 2,
+                speed: 0.3,
+                range: 100,
+                tracer: {
+                    opacity: 0.6,
+                    width: 1.1
+                }
             },
             dual: {
                 leftRightOffset: 1.3,
                 ammoSpawnAmount: 60,
-                fireDelay: 265,
-                shotSpread: 3,
-                moveSpread: 6,
-                capacity: 12,
-                reloadTime: 1.65
+                fireDelay: 200,
+                shotSpread: 7,
+                moveSpread: 11,
+                capacity: 10,
+                reloadTime: 4.2
             }
         },
         // only dev weapons below this point
