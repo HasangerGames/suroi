@@ -1837,8 +1837,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilDuration: 600,
             fsaReset: 600,
             fireMode: FireMode.Single,
-            shotSpread: 4,
-            moveSpread: 8,
+            shotSpread: 6,
+            moveSpread: 12,
             length: 6,
             noMuzzleFlash: true,
             fists: {
@@ -1871,11 +1871,11 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             reloadTime: 2.4,
             ballistics: {
                 damage: 60,
-                obstacleMultiplier: 2,
+                obstacleMultiplier: 1,
                 speed: 0.3,
                 range: 100,
                 tracer: {
-                    opacity: 0.6,
+                    opacity: 0.8,
                     width: 1.1
                 }
             },
@@ -1883,8 +1883,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 leftRightOffset: 1.3,
                 ammoSpawnAmount: 60,
                 fireDelay: 200,
-                shotSpread: 7,
-                moveSpread: 11,
+                shotSpread: 8,
+                moveSpread: 16,
                 capacity: 10,
                 reloadTime: 4.2
             }
