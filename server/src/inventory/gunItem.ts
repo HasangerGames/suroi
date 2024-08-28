@@ -97,11 +97,13 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         this._shots++;
 
+        const { moveSpread, shotSpread, fsaReset } = definition;
+
+        const spread = owner.game.now - this._lastUse >= (fsaReset ?? Infinity)
+            ? 0
+            : Angle.degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);
+
         this._lastUse = owner.game.now;
-
-        const { moveSpread, shotSpread } = definition;
-
-        const spread = Angle.degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);
         const jitter = definition.jitterRadius;
 
         const offset = definition.isDual

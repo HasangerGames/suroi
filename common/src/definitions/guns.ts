@@ -20,8 +20,9 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
-    readonly bulletOffset?: number
     readonly moveSpread: number
+    readonly bulletOffset?: number
+    readonly fsaReset?: number // fist-shot-accuracy reset (ms)
     readonly jitterRadius: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning: boolean
 
@@ -174,6 +175,7 @@ type RawGunDefinition = BaseGunDefinition & {
             "recoilDuration" |
             "shotSpread" |
             "moveSpread" |
+            "fsaReset" |
             "burstProperties" |
             "leftRightOffset"
         >
