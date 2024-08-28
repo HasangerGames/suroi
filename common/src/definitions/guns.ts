@@ -22,7 +22,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly shotSpread: number
     readonly moveSpread: number
     readonly bulletOffset?: number
-    readonly fsaReset?: number // fist-shot-accuracy reset (ms)
+    readonly fsaReset?: number // first-shot-accuracy reset (ms)
     readonly jitterRadius: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning: boolean
 
