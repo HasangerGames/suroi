@@ -1,4 +1,4 @@
-import { AnimationType } from "@common/constants";
+import { AnimationType, Layer } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -95,12 +95,12 @@ class GrenadeHandler {
                 explosion,
                 referencePosition,
                 this.parent.owner,
-                this._projectile ? this._projectile.layer : 0
+                this._projectile ? this._projectile.layer : Layer.Ground
             );
         }
 
         if (particles !== undefined) {
-            game.addSyncedParticles(particles, referencePosition, this._projectile ? this._projectile.layer : 0);
+            game.addSyncedParticles(particles, referencePosition, this._projectile ? this._projectile.layer : Layer.Ground);
         }
     }
 

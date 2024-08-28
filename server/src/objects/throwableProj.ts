@@ -437,6 +437,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             || ( // or
                 (
                     !(isObstacle || isBuilding) // it's neither an obstacle nor building
+                    || (isObstacle && object.definition.isStair) // or it's a stair
                     || !object.collidable // or it's not collidable
                     || !object.hitbox // or it has not hitbox
                 )

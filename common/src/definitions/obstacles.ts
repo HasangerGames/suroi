@@ -3114,6 +3114,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             spanAdjacentLayers: true,
             indestructible: true,
             invisible: true,
+            allowFlyover: FlyoverPref.Never,
             reflectBullets: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1, 21, Vec.create(-1, 0)),
@@ -3133,6 +3134,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             spanAdjacentLayers: true,
             indestructible: true,
             invisible: true,
+            allowFlyover: FlyoverPref.Never,
             reflectBullets: true,
             hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1, 21),
