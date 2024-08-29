@@ -169,8 +169,15 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         this.game.addTimeout(() => {
             for (const obstacle of this.interactableObstacles) {
                 if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
-                    if (!puzzleDef.unlockOnly) obstacle.interact();
-                    obstacle.locked = false;
+                    if (!puzzleDef.unlockOnly) {
+                        obstacle.interact();
+
+                    // There is a bug where if the obstacle is an interactable obstacle and it's locked at first, first interaction will have no messsage.
+                    // this fixes it ig.
+                    } else if (puzzleDef.unlockOnly && obstacle.locked) {
+                        obstacle.interact();
+                        obstacle.locked = false;
+                    }
                 }
             }
         }, puzzleDef.delay);
