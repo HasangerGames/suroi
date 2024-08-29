@@ -1726,8 +1726,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         blue_house_vault_layout_4: 1,
                         blue_house_vault_layout_5: 1
                     },
-                    position: Vec.create(0, 0),
-                    orientation: 0
+                    position: Vec.create(0, 0)
                 }
             ]
         },

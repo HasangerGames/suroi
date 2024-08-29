@@ -1036,7 +1036,7 @@ logger.indent("Validating building definitions", () => {
 
                     tester.assertReferenceExists({
                         obj: puzzle,
-                        field: "triggerInteractOn",
+                        field: "triggerOnSolve",
                         collection: Obstacles,
                         collectionName: "Obstacles",
                         baseErrorPath: errorPath2
@@ -1047,27 +1047,27 @@ logger.indent("Validating building definitions", () => {
                     const puzzleTargetAlwaysExists = hasObstacles && building.obstacles.some(o => {
                         switch (typeof o.idString) {
                             case "string": {
-                                return o.idString === puzzle.triggerInteractOn;
+                                return o.idString === puzzle.triggerOnSolve;
                             }
                             case "object": {
-                                return Object.keys(o.idString).length === 1 && puzzle.triggerInteractOn in o.idString;
+                                return Object.keys(o.idString).length === 1 && puzzle.triggerOnSolve in o.idString;
                             }
                         }
                     });
 
                     if (!puzzleTargetAlwaysExists) {
-                        const targetMightExist = hasObstacles && building.obstacles.some(o => typeof o.idString === "object" && puzzle.triggerInteractOn in o.idString);
+                        const targetMightExist = hasObstacles && building.obstacles.some(o => typeof o.idString === "object" && puzzle.triggerOnSolve in o.idString);
 
                         if (targetMightExist) {
                             tester.assertWarn(
                                 true,
-                                `This puzzle specified a target of '${puzzle.triggerInteractOn}', but this obstacle is not guaranteed to spawn`,
+                                `This puzzle specified a target of '${puzzle.triggerOnSolve}', but this obstacle is not guaranteed to spawn`,
                                 errorPath2
                             );
                         } else {
                             tester.assert(
                                 false,
-                                `This puzzle specified a target of '${puzzle.triggerInteractOn}', but no instances of this obstacle exist in the building`,
+                                `This puzzle specified a target of '${puzzle.triggerOnSolve}', but no instances of this obstacle exist in the building`,
                                 errorPath2
                             );
                         }
@@ -1075,7 +1075,7 @@ logger.indent("Validating building definitions", () => {
 
                     tester.assertIsPositiveFiniteReal({
                         obj: puzzle,
-                        field: "interactDelay",
+                        field: "delay",
                         baseErrorPath: errorPath2
                     });
 
