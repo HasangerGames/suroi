@@ -56,9 +56,9 @@ export class Bullet extends BaseBullet {
         );
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
-        this.setLayer(this._layer);
         this._image.tint = new Color(color);
         this._image.zIndex = tracerStats.zIndex;
+        this.setLayer(this._layer);
 
         this.game.camera.addObject(this._image);
     }
