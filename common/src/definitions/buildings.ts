@@ -3955,7 +3955,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "bookshelf", position: Vec.create(-26, 1.5), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
                 { idString: "potted_plant", position: Vec.create(-66.7, 18) },
                 { idString: "potted_plant", position: Vec.create(-27.5, 17.7) },
-                { idString: "sword_case", position: Vec.create(-46, 18.5), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
+                { idString: "falchion_case", position: Vec.create(-46, 18.5), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
                 { idString: "water_cooler", position: Vec.create(-66.7, -42), rotation: 1 },
 
                 // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
@@ -4009,7 +4009,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "couch_part", position: Vec.create(23.95, -65.9), rotation: 3 },
                 { idString: "couch_end_right", position: Vec.create(30.5, -65.6), rotation: 0 },
                 { idString: "couch_end_left", position: Vec.create(18.4, -59.25), rotation: 0 },
-                { idString: "folders_shelf", position: Vec.create(-14, -46), rotation: 0 },
+                { idString: "file_cart", position: Vec.create(-14, -46), rotation: 0 },
 
                 // near stairs
                 { idString: "metal_small_drawer", position: Vec.create(-53.7, -80), rotation: 1 },
@@ -4210,7 +4210,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "white_small_couch", position: Vec.create(16, -72), rotation: 1 },
                 { idString: "white_small_couch", position: Vec.create(-8, -31.5), rotation: 2 },
                 { idString: "water_cooler", position: Vec.create(28, -30.7), rotation: 2 },
-                { idString: "folders_shelf", position: Vec.create(-32.5, -19), rotation: 1 },
+                { idString: "file_cart", position: Vec.create(-32.5, -19), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(-43, -12), rotation: 1 },
 
                 // bottom left room
@@ -4243,7 +4243,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "mobile_home_stove", position: Vec.create(38, -93.25), rotation: 1 },
                 { idString: "small_drawer", position: Vec.create(65, -103.25), rotation: 3 },
                 { idString: "fridge", position: Vec.create(65, -94.5), rotation: 3 },
-                { idString: "hq_fridge", position: Vec.create(37.5, -52), rotation: 1 },
+                { idString: "fridge2", position: Vec.create(37.5, -52), rotation: 1 },
                 { idString: "trash_can", position: Vec.create(37.5, -60) },
 
                 // tables (right)
@@ -4289,7 +4289,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // bottom area (right bottom or something)
                 { idString: "house_column", position: Vec.create(18, -10.8) },
-                { idString: "folders_shelf", position: Vec.create(-11, -21), rotation: 0 },
+                { idString: "file_cart", position: Vec.create(-11, -21), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(11.7, -5.25) },
                 { idString: "metal_small_drawer", position: Vec.create(13, 29.8), rotation: 2 },
                 { idString: "trash_can", position: Vec.create(65.5, 30.5) },

@@ -334,7 +334,7 @@ export const LootTables: Record<string, LootTable> = {
             { item: "cola", weight: 1 }
         ]
     },
-    hq_fridge: {
+    fridge2: {
         min: 2,
         max: 3,
         loot: [
@@ -548,7 +548,7 @@ export const LootTables: Record<string, LootTable> = {
             { item: "curadell", weight: 0.02 }
         ]
     },
-    sword_case: {
+    falchion_case: {
         min: 1,
         max: 1,
         loot: [

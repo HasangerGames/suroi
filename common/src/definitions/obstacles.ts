@@ -230,7 +230,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     porta_potty_particle:        { base: "ceiling_particle", tint: 0xe7e7e7 },
     mobile_home_particle:        { base: "ceiling_particle", tint: 0xa8a8a8 },
     metal_small_drawer_particle: { base: "wood_particle",    tint: 0x7f714d },
-    folders_shelf_particle:      { base: "wood_particle",    tint: 0x404040 },
+    file_cart_particle:          { base: "wood_particle",    tint: 0x404040 },
     grey_office_chair_particle:  { base: "wood_particle",    tint: 0x616161 },
     office_chair_particle:       { base: "wood_particle",    tint: 0x7d2b2b },
     hq_stone_wall_particle_1:    { base: "stone_particle_1", tint: 0x591919 },
@@ -1069,8 +1069,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
-            idString: "folders_shelf",
-            name: "Folder Shelf",
+            idString: "file_cart",
+            name: "File Cart",
             material: "iron",
             health: 210,
             impenetrable: true,
@@ -1086,7 +1086,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             frames: {
-                particle: "folders_shelf_particle"
+                particle: "file_cart_particle"
             }
         },
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 1),
@@ -1207,8 +1207,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
-            idString: "hq_fridge",
-            name: "Headquarters Fridge",
+            idString: "fridge2",
+            name: "Fridge 2",
             material: "appliance",
             health: 165,
             scale: {
@@ -1284,8 +1284,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "sword_case",
-            name: "Sword Case",
+            idString: "falchion_case",
+            name: "Falchion Case",
             material: "glass",
             health: 200,
             scale: {
