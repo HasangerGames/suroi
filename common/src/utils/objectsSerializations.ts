@@ -293,7 +293,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeLayer(full.layer);
             stream.writeBoolean(full.locked);
             if (full.definition.variations !== undefined && full.variation !== undefined) {
-                stream.writeVariation(full.variation);
+                stream.writeBits(full.variation, full.definition.variationBits!);
             }
             if (full.definition.isDoor && full.door) {
                 stream.writeBits(full.door.offset, 2);
@@ -317,7 +317,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readLayer(),
-                variation: definition.variations ? stream.readVariation() : undefined,
+                variation: definition.variations ? stream.readBits(definition.variationBits!) as Variation : undefined,
                 locked: stream.readBoolean(),
                 detectedMetal: definition.detector ? stream.readBoolean() : undefined
             };
@@ -516,7 +516,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const variant = full.variant;
             stream.writeBoolean(variant !== undefined);
             if (variant !== undefined) {
-                stream.writeVariation(variant);
+                stream.writeBits(variant, full.definition.variationBits!);
             }
         },
         deserializePartial(stream) {
@@ -537,9 +537,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return data;
         },
         deserializeFull(stream) {
+            const definition = SyncedParticles.readFromStream(stream);
             return {
-                definition: SyncedParticles.readFromStream(stream),
-                variant: stream.readBoolean() ? stream.readVariation() : undefined
+                definition,
+                variant: stream.readBoolean() ? stream.readBits(definition.variationBits!) as Variation : undefined
             };
         }
     }

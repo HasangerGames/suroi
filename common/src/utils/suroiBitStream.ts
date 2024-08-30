@@ -227,22 +227,6 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a game object variation to the stream
-     * @param value The variation value to write
-     */
-    writeVariation(value: Variation): void {
-        this.writeBits(value, VARIATION_BITS);
-    }
-
-    /**
-     * Read a game object variation from the stream
-     * @return The object variation
-     */
-    readVariation(): Variation {
-        return this.readBits(VARIATION_BITS) as Variation;
-    }
-
-    /**
      * Write a game object layer to the stream
      * @param value The layer value to write
      */

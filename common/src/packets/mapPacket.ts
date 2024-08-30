@@ -48,7 +48,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     Obstacles.writeToStream(stream, object.definition);
                     stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
                     if (object.definition.variations !== undefined && object.variation !== undefined) {
-                        stream.writeVariation(object.variation);
+                        stream.writeBits(object.variation, object.definition.variationBits!);
                     }
                     break;
                 }
@@ -88,7 +88,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
 
                         let variation: Variation | undefined;
                         if (definition.variations !== undefined) {
-                            variation = stream.readVariation();
+                            variation = stream.readBits(definition.variationBits!) as Variation;
                         }
                         return {
                             position,

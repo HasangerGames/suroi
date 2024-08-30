@@ -52,6 +52,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
      * @default {undefined}
      */
     readonly variations?: Variation
+    readonly variationBits?: number // TODO Auto generate this property if synced particles w/ variations are added
     /**
      * @default {ZIndexes.ObstaclesLayer1}
      */

@@ -72,6 +72,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly noCollisions: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly variations?: Exclude<Variation, 0>
+    variationBits?: number
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
     /**
@@ -3348,6 +3349,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
     ] as ReadonlyArray<StageZeroDefinition<RawObstacleDefinition, () => typeof defaultObstacle>>).map(
         o => {
             if (o.role !== undefined) (o as Mutable<ObstacleDefinition>)[`is${ObstacleSpecialRoles[o.role] as keyof typeof ObstacleSpecialRoles}`] = true;
+            if (o.variations !== undefined) o.variationBits = Math.ceil(Math.log2(o.variations));
             return o;
         }
     ) as ReadonlyArray<StageZeroDefinition<ObstacleDefinition, () => typeof defaultObstacle>>
