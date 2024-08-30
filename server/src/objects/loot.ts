@@ -13,7 +13,6 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Events } from "../pluginManager";
-import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
@@ -35,13 +34,6 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     set position(pos: Vector) { this.hitbox.position = pos; }
 
     private _oldPosition = Vec.create(0, 0);
-
-    /**
-     * Ensures that the drag experienced is not dependent on tickrate
-     *
-     * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
-     */
-    private static readonly _dragConstant = dragConst(3.69);
 
     constructor(
         game: Game,
@@ -105,7 +97,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, Loot._dragConstant);
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.003));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);

@@ -489,10 +489,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const primaryDefinition = primaryItem.definition;
 
         primaryItem.ammo = primaryDefinition.capacity;
-        this.inventory.items.setItem(
-            primaryDefinition.ammoType,
-            this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
-        );
+
+        if (!Ammos.fromString(primaryDefinition.ammoType).ephemeral) {
+            this.inventory.items.setItem(
+                primaryDefinition.ammoType,
+                this.inventory.backpack.maxCapacity[primaryDefinition.ammoType]
+            );
+        }
     }
 
     giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {

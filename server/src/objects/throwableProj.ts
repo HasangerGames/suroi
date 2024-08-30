@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
-import { CircleHitbox, Hitbox, HitboxGroup, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
+import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type HitboxGroup } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
@@ -9,11 +9,15 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { dragConst } from "../utils/misc";
+import { Building } from "./building";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
-import { Building } from "./building";
+
+const enum Drag {
+    Normal = 0.001,
+    Harsh = 0.005
+}
 
 export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.ThrowableProjectile) {
     override readonly fullAllocBytes = 16;
@@ -42,21 +46,6 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
      */
     private _collideWithOwner = false;
 
-    /**
-     * Ensures that the drag experienced is not dependant on tickrate.
-     * This particular exponent results in a 10% loss every 83ms (or a 50% loss every 546.2ms)
-     *
-     * Precise results obviously depend on the tickrate
-     */
-    private static readonly _dragConstant = dragConst(2.79, 1.6);
-
-    /**
-     * Used for creating extra drag on the projectile, in the same tickrate-independent manner
-     *
-     * This constant results in a 10% loss every 41.5ms (or a 50% loss every 273.1ms)
-     */
-    private static readonly _harshDragConstant = dragConst(5.4, 1.6);
-
     override get position(): Vector { return this.hitbox.position; }
 
     private _airborne = true;
@@ -73,7 +62,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         highFlyover: 0.0016 as number
     });
 
-    private _currentDragConst = ThrowableProjectile._dragConstant;
+    private _currentDrag = Drag.Normal;
 
     /**
      * Every object gets an "invincibility tick" cause otherwise, throwables will
@@ -81,8 +70,6 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
      * leading to a chain reaction that can vaporize certain unlucky objects
      */
     private _damagedLastTick = new Set<GameObject>();
-
-    private readonly _dt = this.game.dt;
 
     constructor(
         game: Game,
@@ -154,20 +141,20 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             return;
         }
 
-        const halfDt = 0.5 * this._dt;
+        const halfDt = 0.5 * this.game.dt;
 
         // Create a copy of the original hitbox position.
         // We need to know the hitbox's position before and after the proposed update to perform ray casting as part of
         // continuous collision detection.
-        const originalHitboxPosition: Vector = Vec.clone(this.hitbox.position);
+        const originalHitboxPosition = Vec.clone(this.hitbox.position);
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
-        this._velocity = { ...Vec.scale(this._velocity, this._currentDragConst) };
+        this._velocity = { ...Vec.scale(this._velocity, 1 / (1 + this.game.dt * this._currentDrag)) };
 
         this.hitbox.position = Vec.add(this.hitbox.position, this._calculateSafeDisplacement(halfDt));
 
-        this.rotation = Angle.normalize(this.rotation + this._angularVelocity * this._dt);
+        this.rotation = Angle.normalize(this.rotation + this._angularVelocity * this.game.dt);
 
         const impactDamage = this.definition.impactDamage;
         const currentSquaredVel = Vec.squaredLength(this.velocity);
@@ -179,7 +166,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             this._airborne = false;
 
             if (FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay) {
-                this._currentDragConst = ThrowableProjectile._harshDragConstant;
+                this._currentDrag = Drag.Harsh;
             }
         }
 
@@ -236,34 +223,31 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             const isGeometricCollision = hitbox.collidesWith(this.hitbox);
             // This is a continuous collision detection that looks for an intersection between this object's path of
             // travel and the boundaries of the object.
-            const rayCastCollisionPointWithObject: Vector | null = this._travelCollidesWith(
+            const rayCastCollisionPointWithObject = this._travelCollidesWith(
                 originalHitboxPosition, this.hitbox.position, hitbox
             );
             const isRayCastedCollision = rayCastCollisionPointWithObject !== null;
 
             // dedl0x: Leaving this here because it's very helpful for analyzing ray casting results.
             // if (isRayCastedCollision) {
-            // console.log(`Found a ray-casted collision!`);
-            // const movementVector: Vector = Vec.sub(this.hitbox.position, originalHitboxPosition);
-            // console.log(`Po: (${ originalHitboxPosition.x }, ${ originalHitboxPosition.y }), Pn: (${ this.hitbox.position.x }, ${ this.hitbox.position.y }), M: ${ Vec.length(movementVector) }`);
-            // console.log(`I: (${ rayCastCollisionPointWithObject.x}, ${ rayCastCollisionPointWithObject.y})`)
+            //     console.log("Found a ray-casted collision!");
+            //     const movementVector = Vec.sub(this.hitbox.position, originalHitboxPosition);
+            //     console.log(`Po: (${originalHitboxPosition.x}, ${originalHitboxPosition.y}), Pn: (${this.hitbox.position.x}, ${this.hitbox.position.y}), M: ${Vec.length(movementVector)}`);
+            //     console.log(`I: (${rayCastCollisionPointWithObject.x}, ${rayCastCollisionPointWithObject.y})`);
             // }
 
             const collidingWithObject = isGeometricCollision || isRayCastedCollision;
 
             if (isObstacle) {
                 if (collidingWithObject) {
-                    // console.log(`Colliding with object!`, object.data)
-
                     let isAbove = false;
                     if (isAbove = canFlyOver(object)) {
                         this._currentlyAbove.add(object);
                     } else {
-                        this._currentDragConst = ThrowableProjectile._harshDragConstant;
+                        this._currentDrag = Drag.Harsh;
                     }
 
                     if (object.definition.isStair) {
-                        // console.log(`Colliding with a stair-type object! TransportTo: ${object.layer}`);
                         object.handleStairInteraction(this);
                         continue;
                     }

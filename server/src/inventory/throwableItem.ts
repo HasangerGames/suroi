@@ -48,6 +48,9 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
         this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this, () => this._detachHandler());
         this._activeHandler.cook();
+        this.stopUse();
+        owner.attacking = false;
+        owner.stoppedAttacking = false;
     }
 
     override stopUse(): void {
@@ -95,7 +98,7 @@ class GrenadeHandler {
                 explosion,
                 referencePosition,
                 this.parent.owner,
-                this._projectile ? this._projectile.layer : Layer.Ground
+                this._projectile?.layer ?? this.parent.owner.layer
             );
         }
 
@@ -110,7 +113,7 @@ class GrenadeHandler {
         owner.dirty.weapons = true;
 
         if (!owner.dead) {
-            owner.inventory.removeThrowable(this.definition, false, 1);
+            // owner.inventory.removeThrowable(this.definition, false, 1);
         }
 
         owner.animation = AnimationType.ThrowableThrow;
@@ -201,18 +204,6 @@ class GrenadeHandler {
             this.parent
         );
 
-        /**
-         * Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
-         *
-         * For most ranges, the error is below 0.1%, and it behaves itself acceptably at different tickrates (low tickrates
-         * go slightly further, high tickrates go very very slightly less far)
-         *
-         * At very close range (the range most people would call "dropping at one's feet"), this prediction loses accuracy,
-         * but it's not a big deal because the affected range is when the desired distance is < 1 unit, and the largest
-         * error is of about 0.8%
-         */
-        const superStrangeMysteryConstant = 2.79 * Math.log(1.6) / 1000;
-
         if (this.definition.c4 !== true) {
             projectile.velocity = Vec.add(
                 Vec.fromPolar(
@@ -221,8 +212,11 @@ class GrenadeHandler {
                         ? 0
                         : Math.min(
                             definition.maxThrowDistance,
-                            this.owner.distanceToMouse
-                        ) * superStrangeMysteryConstant
+                            0.9 * this.owner.distanceToMouse
+                        //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
+                        //      while not really affecting close-range shots
+                        ) / 985
+                        //  ^^^ Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
                 ),
                 this.owner.movementVector
             );

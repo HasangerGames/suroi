@@ -81,7 +81,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             image: {
                 zIndex: 5
             },
-            maxThrowDistance: 96,
+            maxThrowDistance: 144,
             fireDelay: 250,
             speedCap: Infinity
         })
@@ -92,8 +92,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             idString: "frag_grenade",
             name: "Frag Grenade",
             fuseTime: 4000,
-            cookTime: 150,
-            throwTime: 150,
             impactDamage: 1,
             obstacleMultiplier: 20,
             cookable: true,
@@ -101,7 +99,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.13,
             detonation: {
                 explosion: "frag_grenade_explosion"
             },
@@ -131,7 +128,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "smoke_grenade_explosion",
                 particles: {
@@ -175,7 +171,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "confetti_grenade_explosion"
             },
@@ -202,7 +197,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "c4_explosion",
                 particles: {

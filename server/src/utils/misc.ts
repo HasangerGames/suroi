@@ -3,7 +3,6 @@ import { ColorStyles, styleText } from "@common/utils/ansiColoring";
 import { type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 
-import { Config } from "../config";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 
 export const Logger = {
@@ -23,14 +22,6 @@ function internalLog(...message: string[]): void {
         message.join(" ")
     );
 }
-
-export const dragConst = (aggressiveness: number, base?: number): number => Math.pow(
-    base ?? Math.E,
-    -(aggressiveness + 1 / (1.78734 * Config.tps ** 2.32999)) / Config.tps
-    // yes these are all empirical constants
-    // i'd link the desmos graph i used, but i… lost it
-    // lmao
-);
 
 export class LootItem {
     constructor(

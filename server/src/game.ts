@@ -18,7 +18,7 @@ import { PingPacket } from "@common/packets/pingPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
@@ -202,10 +202,12 @@ export class Game implements GameData {
     private _now = Date.now();
     get now(): number { return this._now; }
 
+    private readonly idealDt = 1000 / Config.tps;
+
     /**
      * Game Tick delta time
      */
-    private _dt = Config.tps / 1000;
+    private _dt = this.idealDt;
     get dt(): number { return this._dt; }
 
     private readonly _tickTimes: number[] = [];
@@ -447,7 +449,7 @@ export class Game implements GameData {
         }
     }
 
-    tick(): void {
+    readonly tick = (): void => {
         const now = Date.now();
         this._dt = now - this._now;
         this._now = now;
@@ -608,17 +610,18 @@ export class Game implements GameData {
         this._tickTimes.push(tickTime);
 
         if (this._tickTimes.length >= 200) {
-            const mspt = this._tickTimes.reduce((a, b) => a + b) / this._tickTimes.length;
-            Logger.log(`Game ${this.id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
+            const mspt = Statistics.average(this._tickTimes);
+            const stddev = Statistics.stddev(this._tickTimes);
+            Logger.log(`Game ${this.id} | ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
             this._tickTimes.length = 0;
         }
 
         this.pluginManager.emit(Events.Game_Tick, this);
 
         if (!this.stopped) {
-            setTimeout(this.tick.bind(this), 1000 / Config.tps);
+            setTimeout(this.tick, this.idealDt);
         }
-    }
+    };
 
     setGameData(data: Partial<Omit<GameData, "aliveCount">>): void {
         for (const [key, value] of Object.entries(data)) {

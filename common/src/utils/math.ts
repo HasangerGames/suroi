@@ -174,6 +174,28 @@ export const Geometry = Object.freeze({
     }
 });
 
+export const Statistics = Object.freeze({
+    average(values: readonly number[]): number {
+        return values.reduce((acc, cur) => acc + cur, 0) / values.length;
+    },
+    geomAvg(values: readonly number[]): number {
+        return values.reduce((acc, cur) => acc * cur, 1) ** (1 / values.length);
+    },
+    stddev(values: readonly number[]): number {
+        const avg = Statistics.average(values);
+        return Math.sqrt(Statistics.average(values.map(v => (v - avg) ** 2)));
+    },
+    median(values: readonly number[]): number {
+        if (values.length % 2) {
+            return [...values].sort((a, b) => a - b)[values.length >> 1];
+        }
+        const sorted = [...values].sort((a, b) => a - b); // mfw no toSorted cuz lib < es2023
+
+        const halfLength = values.length / 2;
+        return (sorted[halfLength] + sorted[halfLength - 1]) / 2;
+    }
+});
+
 export const Collision = Object.freeze({
     /**
      * Check if two circles are colliding
