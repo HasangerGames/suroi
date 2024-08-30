@@ -9,7 +9,6 @@ export const calculateEnumPacketBits = (enumeration: Record<string | number, str
 
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 13;
-export const VARIATION_BITS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 3;
 
