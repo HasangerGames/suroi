@@ -386,7 +386,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }),
-        gunMount: () => ({
+        gunMount: (gunID: string) => ({
+            idString: `gun_mount_${gunID}`,
+            name: "Gun Mount",
             material: "wood",
             health: 60,
             scale: {
@@ -2197,46 +2199,21 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "metal_particle"
             }
         },
+        apply("gunMount", {}, "mcx_spear"),
+        apply("gunMount", {}, "stoner_63"),
+        apply("gunMount", {}, "mini_14"),
         apply(
             "gunMount",
             {
-                idString: "gun_mount_mcx_spear",
-                name: "Gun Mount MCX Spear"
-            }
-        ),
-        apply(
-            "gunMount",
-            {
-                idString: "gun_mount_stoner_63",
-                name: "Gun Mount Stoner 63"
-            }
-        ),
-        apply(
-            "gunMount",
-            {
-                idString: "gun_mount_mini_14",
-                name: "Gun Mount Mini 14"
-            }
-        ),
-        apply(
-            "gunMount",
-            {
-                idString: "gun_mount_maul",
-                name: "Gun Mount Maul",
                 hitbox: new HitboxGroup(
                     RectangleHitbox.fromRect(5.05, 1, Vec.create(0, -1.3)),
                     RectangleHitbox.fromRect(0.8, 3, Vec.create(-1.55, 0.35)),
                     RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
                 )
-            }
+            },
+            "maul"
         ),
-        apply(
-            "gunMount",
-            {
-                idString: "gun_mount_hp18",
-                name: "Gun Mount HP18"
-            }
-        ),
+        apply("gunMount", {}, "hp18"),
         {
             idString: "truck",
             name: "Truck",
