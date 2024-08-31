@@ -2662,27 +2662,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "humvee",
-            name: "Humvee",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            reflectBullets: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(17, 35.25, Vec.create(0, -0.4)), // Body
-                RectangleHitbox.fromRect(18, 7, Vec.create(0, -12.3)), // Back wheels
-                RectangleHitbox.fromRect(18, 7, Vec.create(0, 13.6)), // Front wheels
-                RectangleHitbox.fromRect(2.5, 0.5, Vec.create(6.1, -18.25)), // Back exhaust
-                RectangleHitbox.fromRect(15.25, 0.5, Vec.create(0, 17.5)), // Front bumper
-                RectangleHitbox.fromRect(21, 1, Vec.create(0, 7.5)) // Front of hood
-            ),
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
-            frames: {
-                particle: "metal_particle"
-            }
-        },
-        {
             idString: "cabinet",
             name: "Cabinet",
             material: "appliance",
