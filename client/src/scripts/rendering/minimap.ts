@@ -294,7 +294,7 @@ export class Minimap {
                     for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
-                            .setRotation(rotation)
+                            .setRotation(rotation + (image.rotation ?? 0))
                             .setZIndex(definition.ceilingZIndex);
 
                         sprite.scale.set(1 / PIXI_SCALE);
