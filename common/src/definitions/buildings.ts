@@ -170,7 +170,7 @@ const randomContainer1 = {
 
 const randomContainer2 = {
     ...randomContainer1,
-    container_11: 7
+    none: 7
 };
 
 const warehouseObstacle = {
@@ -284,7 +284,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             id: number,
             tintName: "White" | "Red" | "Green" | "Blue" | "Yellow",
             open: "open2" | "open1" | "closed",
-            optimized = true,
             damaged?: boolean
         ) => {
             const tint = ContainerTints[tintName];
@@ -292,6 +291,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             let hitbox: Hitbox;
             let wallHitbox: Hitbox | undefined;
             let spawnHitbox: Hitbox;
+            let upperCeilingImage;
+            let lowerCeilingImage;
             switch (open) {
                 case "open2":
                     hitbox = new HitboxGroup(
@@ -303,6 +304,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(0.91, 27.05, Vec.create(6.11, 0))
                     );
                     spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
+                    upperCeilingImage = damaged ? "container_ceiling_3" : "container_ceiling_2";
+                    lowerCeilingImage = "container_ceiling_2";
                     break;
                 case "open1":
                     hitbox = new HitboxGroup(
@@ -316,11 +319,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(13.13, 0.92, Vec.create(0, -13.07))
                     );
                     spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec.create(0, 2));
+                    upperCeilingImage = damaged ? "container_ceiling_4" : "container_ceiling_1";
+                    lowerCeilingImage = damaged ? "container_ceiling_5" : "container_ceiling_2";
                     break;
                 case "closed":
                 default:
                     hitbox = RectangleHitbox.fromRect(14, 28);
                     spawnHitbox = RectangleHitbox.fromRect(16, 30);
+                    upperCeilingImage = lowerCeilingImage = "container_ceiling_1";
                     break;
             }
 
@@ -343,26 +349,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         { color: ContainerWallTints[tintName], hitbox: wallHitbox }
                     ],
                 graphicsZIndex: ZIndexes.BuildingsFloor + 1,
-                ceilingImages: optimized
-                    ? [
-                        {
-                            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}_2`,
-                            position: Vec.create(0, 6.95),
-                            tint
-                        },
-                        {
-                            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}_1`,
-                            position: Vec.create(0, -6.9),
-                            tint
-                        }
-                    ]
-                    : [
-                        {
-                            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
-                            position: Vec.create(0, 0),
-                            tint
-                        }
-                    ],
+                ceilingImages: [
+                    {
+                        key: upperCeilingImage,
+                        position: Vec.create(0, -6.98),
+                        tint
+                    },
+                    {
+                        key: lowerCeilingImage,
+                        position: Vec.create(0, 6.98),
+                        rotation: Math.PI,
+                        tint
+                    }
+                ],
                 floors: [{
                     type: FloorNames.Metal,
                     hitbox: RectangleHitbox.fromRect(14, 28)
@@ -1766,22 +1765,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         simple("container", 1, "White", "closed"),
         simple("container", 2, "Red", "closed"),
         simple("container", 3, "Green", "open1"),
-        simple("container", 4, "Green", "open1", false, true),
+        simple("container", 4, "Green", "open1", true),
         simple("container", 5, "Blue", "open1"),
-        simple("container", 6, "Blue", "open1", false, true),
+        simple("container", 6, "Blue", "open1", true),
         simple("container", 7, "Blue", "open2"),
-        simple("container", 8, "Blue", "open2", true, true),
+        simple("container", 8, "Blue", "open2", true),
         simple("container", 9, "Yellow", "open1"),
         simple("container", 10, "Yellow", "open2"),
-        simple("container", 12, "Green", "closed"),
-        simple("container", 13, "Yellow", "closed"),
-
-        {
-            idString: "container_11",
-            name: "Invisible Container",
-            spawnHitbox: RectangleHitbox.fromRect(16, 30)
-        },
-
+        simple("container", 11, "Green", "closed"),
+        simple("container", 12, "Yellow", "closed"),
         {
             idString: "cargo_ship_center_roof",
             name: "Cargo Ship Center Roof",
@@ -2047,7 +2039,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     orientation: 1
                 },
                 {
-                    idString: "container_12",
+                    idString: "container_11",
                     position: Vec.create(-36.2, -15.5),
                     orientation: 3
                 },
@@ -2062,7 +2054,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     orientation: 3
                 },
                 {
-                    idString: "container_13",
+                    idString: "container_12",
                     position: Vec.create(-19.9, -74.9),
                     orientation: 1
                 },

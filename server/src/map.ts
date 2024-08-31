@@ -511,9 +511,11 @@ export class GameMap {
         }
 
         for (const subBuilding of definition.subBuildings) {
+            const idString = getRandomIDString(subBuilding.idString);
+            if (idString === "none") continue;
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                getRandomIDString(subBuilding.idString),
+                idString,
                 Vec.addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation,
                 layer + (subBuilding.layer ?? 0)
