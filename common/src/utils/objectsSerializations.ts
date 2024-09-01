@@ -319,14 +319,15 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readLayer(),
                 variation: definition.variations ? stream.readBits(definition.variationBits!) as Variation : undefined,
-                locked: stream.readBoolean(),
-                detectedMetal: definition.detector ? stream.readBoolean() : undefined
+                locked: stream.readBoolean()
             };
 
             if (definition.isDoor) {
                 data.door = { offset: stream.readBits(2) };
             } else if (definition.isActivatable) {
                 data.activated = stream.readBoolean();
+            } else if (definition.detector) {
+                data.detectedMetal = stream.readBoolean();
             }
             return data;
         }
