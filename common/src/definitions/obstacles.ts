@@ -903,12 +903,28 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
 
-            hitbox: new CircleHitbox(3.65),
+            hitbox: new CircleHitbox(3.75),
             rotationMode: RotationMode.Full,
             explosion: "barrel_explosion",
             frames: {
                 particle: "metal_particle"
             },
+            reflectBullets: true
+        },
+        {
+            idString: "super_barrel",
+            name: "Super Barrel",
+            material: "metal",
+            health: 240,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
+            },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+            hitbox: new CircleHitbox(3.75),
+            rotationMode: RotationMode.Full,
+            explosion: "super_barrel_explosion",
             reflectBullets: true
         },
         {
@@ -924,7 +940,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
             hasLoot: true,
-            hitbox: new CircleHitbox(3.65),
+            hitbox: new CircleHitbox(3.75),
             rotationMode: RotationMode.Full,
             explosion: "barrel_explosion",
             reflectBullets: true,
@@ -932,22 +948,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "metal_particle",
                 residue: "barrel_residue"
             }
-        },
-        {
-            idString: "super_barrel",
-            name: "Super Barrel",
-            material: "metal",
-            health: 240,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.5
-            },
-            spawnMode: MapObjectSpawnMode.GrassAndSand,
-            hitbox: new CircleHitbox(3.6),
-            rotationMode: RotationMode.Full,
-            explosion: "super_barrel_explosion",
-            reflectBullets: true
         },
         {
             idString: "airdrop_crate_locked",
