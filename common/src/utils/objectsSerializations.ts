@@ -72,12 +72,12 @@ export interface ObjectsNetData extends BaseObjectsNetData {
                 readonly orientation: Orientation
                 readonly rotation: number
             }
-            readonly locked: boolean
             readonly variation?: Variation
             readonly activated?: boolean
             readonly detectedMetal?: boolean
             readonly door?: {
                 readonly offset: number
+                readonly locked: boolean
             }
         }
     }
@@ -294,13 +294,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             if (full.definition.variations !== undefined && full.variation !== undefined) {
                 stream.writeBits(full.variation, full.definition.variationBits!);
             }
-            stream.writeBoolean(full.locked);
+
             if (full.definition.isDoor && full.door) {
                 stream.writeBits(full.door.offset, 2);
+                stream.writeBoolean(full.door.locked);
             } else if (full.definition.isActivatable) {
                 stream.writeBoolean(full.activated ?? false);
-            } else if (full.definition.detector && full.detectedMetal) {
-                stream.writeBoolean(full.detectedMetal);
+            } else if (full.definition.detector) {
+                stream.writeBoolean(full.detectedMetal ?? false);
             }
         },
         deserializePartial(stream) {
@@ -318,12 +319,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readLayer(),
-                variation: definition.variations ? stream.readBits(definition.variationBits!) as Variation : undefined,
-                locked: stream.readBoolean()
+                variation: definition.variations ? stream.readBits(definition.variationBits!) as Variation : undefined
             };
 
             if (definition.isDoor) {
-                data.door = { offset: stream.readBits(2) };
+                data.door = {
+                    offset: stream.readBits(2),
+                    locked: stream.readBoolean()
+                };
             } else if (definition.isActivatable) {
                 data.activated = stream.readBoolean();
             } else if (definition.detector) {

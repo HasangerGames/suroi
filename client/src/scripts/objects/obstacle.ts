@@ -28,7 +28,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     definition!: ObstacleDefinition;
     scale!: number;
     variation?: Variation;
-    locked = false;
 
     /**
      * `undefined` if this obstacle hasn't been updated yet, or if it's not a door obstacle
@@ -80,9 +79,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.position = full.position;
             this.rotation = full.rotation.rotation;
             this.orientation = full.rotation.orientation;
-            this.variation = full.variation;
-            this.locked = full.locked;
             this.layer = full.layer;
+            this.variation = full.variation;
 
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
                 this.playSound("detection", {
@@ -485,7 +483,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this._door.openHitbox = hitboxes.openHitbox;
         if ("openAltHitbox" in hitboxes) this._door.openAltHitbox = hitboxes.openAltHitbox;
 
-        this._door.locked = definition.locked;
+        this._door.locked = data.door.locked;
 
         let backupHitbox = (definition.hitbox as RectangleHitbox).transform(this.position, this.scale, this.orientation);
 
@@ -570,7 +568,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player: Player): boolean {
         return !this.dead && (
-            (this._door !== undefined && !this._door.locked && !this.locked)
+            (this._door !== undefined && !this._door.locked && !(this.definition as { openOnce?: boolean }).openOnce)
             || (
                 this.definition.isActivatable === true
                 && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem)

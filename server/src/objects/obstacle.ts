@@ -42,7 +42,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     door?: {
         operationStyle: NonNullable<(ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]>
         isOpen: boolean
-        locked?: boolean
+        locked: boolean
         closedHitbox: Hitbox
         openHitbox: Hitbox
         openAltHitbox?: Hitbox
@@ -54,8 +54,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     parentBuilding?: Building;
 
     scale = 1;
-
-    locked = false;
 
     declare hitbox: Hitbox;
 
@@ -83,8 +81,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.variation = variation;
 
         this.layer = layer;
-
-        this.locked = locked ?? false;
 
         this.lootSpawnOffset = lootSpawnOffset;
 
@@ -139,7 +135,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.door = {
                 operationStyle: definition.operationStyle ?? "swivel",
                 isOpen: false,
-                locked: definition.locked,
+                locked: locked ?? definition.locked ?? false,
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
                 openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
@@ -268,7 +264,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player?: Player): boolean {
         return !this.dead && (
-            (this.isDoor && (!this.door?.locked || player === undefined) && !this.locked)
+            (this.isDoor && (!this.door?.locked || player === undefined))
             || (
                 this.definition.isActivatable === true
                 && (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem)
@@ -296,7 +292,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     interact(player?: Player): void {
-        if (!this.canInteract(player) && !this.locked) return;
+        if (!this.canInteract(player) && !this.door?.locked) return;
 
         this.game.pluginManager.emit(Events.Obstacle_Interact, {
             obstacle: this,
@@ -308,7 +304,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         switch (definition.role) {
             case ObstacleSpecialRoles.Door: {
                 // optional chaining not required but makes both eslint and tsc happy
-                if (!(this.door?.isOpen && definition.openOnce) && !this.locked) {
+                if (!(this.door?.isOpen && definition.openOnce) && !this.door?.locked) {
                     this.toggleDoor(player);
                 }
                 break;
@@ -432,7 +428,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     rotation: this.rotation,
                     orientation: this.rotation as Orientation
                 },
-                locked: this.locked,
                 detectedMetal: this.detectedMetal
             }
         };
