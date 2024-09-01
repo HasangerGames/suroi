@@ -2921,37 +2921,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.ObstaclesLayer3
         },
         {
-            idString: "small_bridge",
-            name: "Small Bridge",
-            material: "wood",
-            health: 150,
-            indestructible: true,
-            invisible: true,
-            noBulletCollision: true,
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Always,
-            frames: {
-                particle: "furniture_particle"
-            },
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(1.02, 56, Vec.create(6.39, 0)),
-                RectangleHitbox.fromRect(1.02, 56, Vec.create(-6.39, 0)),
-                ...Array.from({ length: 2 }, (_, i) => {
-                    const a = i === 0 ? 1 : -1;
-                    return Array.from({ length: 2 }, (_, i) => {
-                        const b = i === 0 ? 1 : -1;
-                        return [
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 0)),
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 9.54 * b)),
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 19.17 * b)),
-                            new CircleHitbox(1.1, Vec.create(6.39 * a, 27.97 * b))
-                        ];
-                    }).flat();
-                }).flat()
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(21.02, 69.69, Vec.create(0, 0))
-        },
-        {
             idString: "planted_bushes",
             name: "Planted Bushes",
             material: "porcelain",

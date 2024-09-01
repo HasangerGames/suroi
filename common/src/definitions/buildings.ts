@@ -3386,12 +3386,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             },
             floorImages: [
                 {
-                    key: "small_bridge_1",
+                    key: "small_bridge",
                     position: Vec.create(0, -14.5)
                 },
                 {
-                    key: "small_bridge_2",
-                    position: Vec.create(0, 14.5)
+                    key: "small_bridge",
+                    position: Vec.create(0, 14.5),
+                    rotation: Math.PI
                 }
             ],
             floors: [
