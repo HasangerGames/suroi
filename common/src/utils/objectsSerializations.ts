@@ -291,16 +291,17 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writePosition(full.position);
             stream.writeObstacleRotation(full.rotation.rotation, full.definition.rotationMode);
             stream.writeLayer(full.layer);
-            stream.writeBoolean(full.locked);
             if (full.definition.variations !== undefined && full.variation !== undefined) {
                 stream.writeBits(full.variation, full.definition.variationBits!);
             }
+            stream.writeBoolean(full.locked);
             if (full.definition.isDoor && full.door) {
                 stream.writeBits(full.door.offset, 2);
             } else if (full.definition.isActivatable) {
                 stream.writeBoolean(full.activated ?? false);
+            } else if (full.definition.detector && full.detectedMetal) {
+                stream.writeBoolean(full.detectedMetal);
             }
-            if (full.definition.detector && full.detectedMetal) stream.writeBoolean(full.detectedMetal);
         },
         deserializePartial(stream) {
             const data: ObjectsNetData[ObjectCategory.Obstacle] = {

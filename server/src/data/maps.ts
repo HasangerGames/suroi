@@ -429,10 +429,11 @@ const maps = {
         beachSize: 32,
         oceanSize: 64,
         genCallback(map) {
-            // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            for (let i = 0; i < 10; i++) {
+            //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            /*for (let i = 0; i < 10; i++) {
                 map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
-            }
+            }*/
+            map.generateBuilding("large_bridge", Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {

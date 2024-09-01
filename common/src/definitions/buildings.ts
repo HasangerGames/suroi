@@ -3491,7 +3491,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "aegis_crate", position: Vec.create(14.5, -30.5) },
 
                 // Center of the Bridge
-                { idString: "m1117_damaged", position: Vec.create(-8.5, -4), rotation: 0 },
+                { idString: "m1117", position: Vec.create(-8.5, -4), rotation: 0, variation: 1 },
                 { idString: "regular_crate", position: Vec.create(7, -20), rotation: 0 },
                 { idString: "gun_case", position: Vec.create(14, 10), rotation: 0 },
 

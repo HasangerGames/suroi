@@ -2635,26 +2635,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)), // Back of hood
                 RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
             ),
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
-            frames: {
-                particle: "metal_particle"
-            }
-        },
-        {
-            idString: "m1117_damaged",
-            name: "M1117 damaged",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            reflectBullets: true,
-            hitbox: new HitboxGroup(
-                RectangleHitbox.fromRect(18.51, 32.28, Vec.create(0, -5.17)), // Body
-                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, -10.87)), // Back wheels
-                RectangleHitbox.fromRect(19.69, 6.67, Vec.create(0, 10.8)), // Front wheels
-                RectangleHitbox.fromRect(17, 5.38, Vec.create(0, 16.14)), // Back of hood
-                RectangleHitbox.fromRect(15.06, 5.38, Vec.create(0, 19.7)) // Front of hood
-            ),
+            variations: 2,
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Never,
             frames: {
