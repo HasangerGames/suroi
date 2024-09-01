@@ -239,6 +239,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     forklift_particle:            { base: "metal_particle_1", tint: 0xac5339 },
     bollard_particle:             { base: "metal_particle_1", tint: 0xa66e20 },
     m1117_particle:               { base: "metal_particle_1", tint: 0x2f3725 },
+    file_cart_particle:           { base: "metal_particle_1", tint: 0x404040 },
     metal_small_drawer_particle:  { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:           { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:         { base: "wood_particle",    tint: 0x2687d9 },
@@ -270,7 +271,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     porta_potty_wall_particle:    { base: "plastic_particle", tint: 0x1c71d8 },
     porta_potty_particle:         { base: "ceiling_particle", tint: 0xe7e7e7 },
     mobile_home_particle:         { base: "ceiling_particle", tint: 0xa8a8a8 },
-    file_cart_particle:           { base: "wood_particle",    tint: 0x404040 },
     grey_office_chair_particle:   { base: "wood_particle",    tint: 0x616161 },
     office_chair_particle:        { base: "wood_particle",    tint: 0x7d2b2b },
     hq_stone_wall_particle_1:     { base: "stone_particle_1", tint: 0x591919 },
@@ -366,10 +366,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }),
-        concreteWall: () => ({
+        concreteWall: (useWallSystem?: boolean) => ({
             material: "stone",
             health: 500,
             noResidue: true,
+            hideOnMap: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -381,7 +382,12 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             particleVariations: 2,
             frames: {
                 particle: "rock_particle"
-            }
+            },
+            wall: useWallSystem ? {
+                color: 0x808080,
+                borderColor: 0x484848,
+                rounded: true
+            } : undefined
         }),
         mobileHomeWall: (lengthNumber: string) => ({
             idString: `mobile_home_wall_${lengthNumber}`,
@@ -2080,7 +2086,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 idString: "inner_concrete_wall_1",
                 name: "Inner Concrete Wall 1",
                 hitbox: RectangleHitbox.fromRect(10.8, 1.9)
-            }
+            },
+            true
         ),
         apply(
             "concreteWall",
@@ -2088,7 +2095,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 idString: "inner_concrete_wall_2",
                 name: "Inner Concrete Wall 2",
                 hitbox: RectangleHitbox.fromRect(36.7, 1.9)
-            }
+            },
+            true
         ),
         apply(
             "concreteWall",
@@ -2096,7 +2104,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 idString: "inner_concrete_wall_3",
                 name: "Inner Concrete Wall 3",
                 hitbox: RectangleHitbox.fromRect(39.14, 1.9)
-            }
+            },
+            true
         ),
         apply(
             "concreteWall",
@@ -2104,7 +2113,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 idString: "inner_concrete_wall_4",
                 name: "Inner Concrete Wall 4",
                 hitbox: RectangleHitbox.fromRect(47.14, 1.9)
-            }
+            },
+            true
         ),
         {
             idString: "small_refinery_barrel",
