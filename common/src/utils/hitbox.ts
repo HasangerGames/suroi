@@ -38,7 +38,7 @@ export type HitboxJSON = HitboxJSONMapping[HitboxType];
 export interface HitboxMapping {
     [HitboxType.Circle]: CircleHitbox
     [HitboxType.Rect]: RectangleHitbox
-    [HitboxType.Group]: HitboxGroup
+    [HitboxType.Group]: GroupHitbox
     [HitboxType.Polygon]: PolygonHitbox
 }
 
@@ -57,7 +57,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
             case HitboxType.Rect:
                 return new RectangleHitbox(data.min, data.max);
             case HitboxType.Group:
-                return new HitboxGroup(
+                return new GroupHitbox(
                     ...data.hitboxes.map(d => BaseHitbox.fromJSON<HitboxType.Circle | HitboxType.Rect>(d))
                 );
             case HitboxType.Polygon:
@@ -409,7 +409,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
 }
 
-export class HitboxGroup<GroupType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
+export class GroupHitbox<GroupType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
     hitboxes: GroupType;
@@ -483,8 +483,8 @@ export class HitboxGroup<GroupType extends ReadonlyArray<RectangleHitbox | Circl
         return record!;
     }
 
-    override clone(deep = true): HitboxGroup {
-        return new HitboxGroup(
+    override clone(deep = true): GroupHitbox {
+        return new GroupHitbox(
             ...(
                 deep
                     ? this.hitboxes.map(hitbox => hitbox.clone(true))
@@ -493,10 +493,10 @@ export class HitboxGroup<GroupType extends ReadonlyArray<RectangleHitbox | Circl
         );
     }
 
-    override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): HitboxGroup {
+    override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): GroupHitbox {
         this.position = position;
 
-        return new HitboxGroup(
+        return new GroupHitbox(
             ...this.hitboxes.map(hitbox => hitbox.transform(position, scale, orientation))
         );
     }

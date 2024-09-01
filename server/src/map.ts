@@ -5,7 +5,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/defini
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
-import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -37,7 +37,7 @@ export class GameMap {
     readonly oceanSize: number;
     readonly beachSize: number;
 
-    readonly beachHitbox: HitboxGroup<readonly RectangleHitbox[]>;
+    readonly beachHitbox: GroupHitbox<readonly RectangleHitbox[]>;
 
     readonly seed: number;
 
@@ -115,7 +115,7 @@ export class GameMap {
         const beachPadding = this._beachPadding = mapDef.oceanSize + mapDef.beachSize + 8;
         const oceanSize = this.oceanSize + 8;
 
-        this.beachHitbox = new HitboxGroup(
+        this.beachHitbox = new GroupHitbox(
             new RectangleHitbox(
                 Vec.create(this.width - beachPadding, oceanSize),
                 Vec.create(this.width - oceanSize, this.height - oceanSize)

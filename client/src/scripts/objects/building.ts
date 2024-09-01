@@ -2,7 +2,7 @@ import { Container, Graphics } from "pixi.js";
 import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -69,7 +69,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
-            const hitboxes = this.ceilingHitbox instanceof HitboxGroup ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
+            const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
 
             let graphics: Graphics | undefined;
             if (HITBOX_DEBUG_MODE) {

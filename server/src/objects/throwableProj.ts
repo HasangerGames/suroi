@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
-import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type HitboxGroup } from "@common/utils/hitbox";
+import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type GroupHitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
@@ -389,7 +389,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             return getClosestIntersection(getBoundaryLineSegmentsForRectangle(hitbox));
         };
 
-        const handleGroup = (hitbox: HitboxGroup): Vector | null => {
+        const handleGroup = (hitbox: GroupHitbox): Vector | null => {
             return getClosestIntersection(
                 hitbox.hitboxes
                     .filter(hitbox => hitbox instanceof RectangleHitbox) // FIXME remove when circles are supported

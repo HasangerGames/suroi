@@ -1,6 +1,6 @@
 import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomSign, randomVector } from "../utils/random";
@@ -217,7 +217,7 @@ const ContainerWallTints = {
     Yellow: 0xb3b300
 };
 
-const portWarehouseHitbox = new HitboxGroup(
+const portWarehouseHitbox = new GroupHitbox(
     // Outer corners
     RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, -51.54)),
     RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, 51.54)),
@@ -295,11 +295,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             let lowerCeilingImage;
             switch (open) {
                 case "open2":
-                    hitbox = new HitboxGroup(
+                    hitbox = new GroupHitbox(
                         RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
                         RectangleHitbox.fromRect(1.85, 28, Vec.create(-6.1, 0))
                     );
-                    wallHitbox = new HitboxGroup(
+                    wallHitbox = new GroupHitbox(
                         RectangleHitbox.fromRect(0.91, 27.05, Vec.create(-6.11, 0)),
                         RectangleHitbox.fromRect(0.91, 27.05, Vec.create(6.11, 0))
                     );
@@ -308,12 +308,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     lowerCeilingImage = "container_ceiling_2";
                     break;
                 case "open1":
-                    hitbox = new HitboxGroup(
+                    hitbox = new GroupHitbox(
                         RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
                         RectangleHitbox.fromRect(1.85, 28, Vec.create(-6.1, 0)),
                         RectangleHitbox.fromRect(14, 1.85, Vec.create(0, -13.07))
                     );
-                    wallHitbox = new HitboxGroup(
+                    wallHitbox = new GroupHitbox(
                         RectangleHitbox.fromRect(0.91, 27.05, Vec.create(-6.11, 0)),
                         RectangleHitbox.fromRect(0.91, 27.05, Vec.create(6.11, 0)),
                         RectangleHitbox.fromRect(13.13, 0.92, Vec.create(0, -13.07))
@@ -380,7 +380,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(8.93, 2.09, Vec.create(80.47, -4.78)),
                 RectangleHitbox.fromRect(8.93, 2.09, Vec.create(99.51, -4.78)),
                 RectangleHitbox.fromRect(2.21, 35.83, Vec.create(104.37, 12.09)),
@@ -607,7 +607,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Firework Warehouse",
             material: "stone",
             particle: "wall_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, -23)),
                 RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, -23)),
                 RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, 23)),
@@ -682,7 +682,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.7, 70.6, Vec.create(-19.8, 0)),
                 RectangleHitbox.fromRect(12, 1.7, Vec.create(-14.2, -34.5)),
                 RectangleHitbox.fromRect(12, 1.7, Vec.create(-14.2, 34.5)),
@@ -750,7 +750,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(57, 1.8, Vec.create(-22, -36.1)), // First topmost wall
                 RectangleHitbox.fromRect(30.75, 1.8, Vec.create(35.38, -36.1)), // Wall after the hole
                 RectangleHitbox.fromRect(2, 33.5, Vec.create(49.75, -22.25)), // Wall from top right to bottom right
@@ -764,7 +764,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(10.5, 2, Vec.create(-21.25, 9))
             ),
             spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
-            scopeHitbox: new HitboxGroup(
+            scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(33.50, 72, Vec.create(-32.75, 0)),
                 RectangleHitbox.fromRect(65.50, 29.50, Vec.create(16.75, -21.25))
             ),
@@ -1054,7 +1054,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Red House",
             material: "stone",
             particle: "wall_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(2, 9, Vec.create(30.8, -26)),
                 RectangleHitbox.fromRect(2, 22, Vec.create(30.8, -0.2)),
                 RectangleHitbox.fromRect(2, 9.8, Vec.create(30.8, 25)),
@@ -1232,7 +1232,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Red House Variation 2",
             material: "stone",
             particle: "wall_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.8, 60.1, Vec.create(-31.25, -0.3)),
                 RectangleHitbox.fromRect(1.8, 40.5, Vec.create(30.1, -9)),
                 RectangleHitbox.fromRect(1.8, 6.5, Vec.create(30.1, 25.1)),
@@ -1333,7 +1333,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Green House",
             material: "stone",
             particle: "wall_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(21.8, 1.88, Vec.create(-39.9, -30.2)),
                 RectangleHitbox.fromRect(51.88, 1.88, Vec.create(8, -30.2)),
                 RectangleHitbox.fromRect(1.88, 9.3, Vec.create(33, -2.55)),
@@ -1347,7 +1347,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(3.5, 3.5, Vec.create(42.75, 14.8))
             ),
             spawnHitbox: RectangleHitbox.fromRect(110, 70),
-            scopeHitbox: new HitboxGroup(
+            scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
                 RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1))
             ),
@@ -1376,7 +1376,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: FloorNames.Wood,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
                         RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1)),
                         RectangleHitbox.fromRect(6, 13.5, Vec.create(47.7, 7.1))
@@ -1473,7 +1473,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(48, 1.7, Vec.create(0, -6)),
                 RectangleHitbox.fromRect(48, 1.7, Vec.create(0, 6)),
                 RectangleHitbox.fromRect(1.7, 11, Vec.create(-23, 0))
@@ -1502,7 +1502,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "blue_house",
             name: "Blue House",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 // Left.
                 RectangleHitbox.fromRect(2, 11, Vec.create(-34.4, 18.25)),
                 RectangleHitbox.fromRect(2, 32.55, Vec.create(-34.4, -14.6)),
@@ -1520,7 +1520,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "wall_particle",
             spawnHitbox: RectangleHitbox.fromRect(90, 90),
-            scopeHitbox: new HitboxGroup(
+            scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
                 RectangleHitbox.fromRect(11, 10, Vec.create(-28, 27))
             ),
@@ -1544,7 +1544,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: FloorNames.Stone,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(11, 5.5, Vec.create(-3.25, -32.6)),
                         RectangleHitbox.fromRect(71, 11, Vec.create(0, 29)),
                         // mini vault
@@ -1554,7 +1554,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: FloorNames.Wood,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(41, 52, Vec.create(-13.5, -3.6)),
                         RectangleHitbox.fromRect(41, 34, Vec.create(13.5, -12)),
 
@@ -1630,7 +1630,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(14.8, 2, Vec.create(0.1, -12.1)),
                 RectangleHitbox.fromRect(15.5, 2, Vec.create(2.1, 11.9)),
                 RectangleHitbox.fromRect(2, 25, Vec.create(-6.3, 0.5)),
@@ -1651,7 +1651,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 // base ends
                 RectangleHitbox.fromRect(4.82, 1.8, Vec.create(32, -6.42)),
                 RectangleHitbox.fromRect(4.82, 1.8, Vec.create(-31.5, -6.42)),
@@ -1706,7 +1706,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.75, 29.5, Vec.create(-11.03, -1.7)), // Left wall
                 RectangleHitbox.fromRect(1.75, 9.2, Vec.create(9.43, -11.9)), // Right wall above window
                 RectangleHitbox.fromRect(1.75, 10.7, Vec.create(9.43, 7.6)), // Right wall below window
@@ -1795,7 +1795,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
 
                 // outer walls
                 RectangleHitbox.fromRect(237, 3, Vec.create(-18.5, -45.5)),
@@ -1932,7 +1932,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: FloorNames.Metal,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(10, 20.25, Vec.create(-8, 54.25)), // stair right
                         RectangleHitbox.fromRect(10, 20.25, Vec.create(-97, 54.25)), // stair left
                         RectangleHitbox.fromRect(232, 88.5, Vec.create(-18.5, 0.05)) // main floor
@@ -2087,7 +2087,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 // outer walls
                 RectangleHitbox.fromRect(250, 4.5, Vec.create(14, -42.6)),
                 RectangleHitbox.fromRect(98.25, 4.5, Vec.create(20.5, 42.6)),
@@ -2282,7 +2282,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 new CircleHitbox(31.25, Vec.create(-0.5, 4.4)),
                 new CircleHitbox(31.25, Vec.create(-72.25, 4.4)),
                 new CircleHitbox(31.25, Vec.create(73.1, 4.4)),
@@ -2326,7 +2326,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     color: 0xe6e6e6,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(1.47, 102.18, Vec.create(129.93, 73.42)),
                         RectangleHitbox.fromRect(126.01, 1.5, Vec.create(67.66, 123.77)),
                         RectangleHitbox.fromRect(84.61, 1.48, Vec.create(88.35, 74.7)),
@@ -2350,7 +2350,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     color: 0x2b2b2b,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(0.75, 128, Vec.create(64.33, -46)),
                         RectangleHitbox.fromRect(0.75, 128, Vec.create(66.55, -46)),
                         RectangleHitbox.fromRect(0.75, 128, Vec.create(127.9, -46)),
@@ -2812,7 +2812,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 new RectangleHitbox(Vec.create(23.44, -41), Vec.create(25.54, -15.1)),
                 new RectangleHitbox(Vec.create(23.44, -4), Vec.create(25.54, 23.13)),
                 new RectangleHitbox(Vec.create(23.44, 34.23), Vec.create(25.54, 41)),
@@ -2880,7 +2880,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(2.09, 42, Vec.create(16.38, 0)),
                 RectangleHitbox.fromRect(32.34, 2.08, Vec.create(1.24, -21.87)),
                 RectangleHitbox.fromRect(2.09, 3.97, Vec.create(-13.88, -19.01)),
@@ -2933,7 +2933,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
                 RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
                 RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
@@ -3298,7 +3298,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.87, 20.8, Vec.create(19.6, -20.4)),
                 RectangleHitbox.fromRect(2.37, 1.52, Vec.create(19.85, 1.62)),
                 RectangleHitbox.fromRect(17.25, 1.74, Vec.create(11.91, 25.14)),
@@ -3364,7 +3364,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             noBulletCollision: true,
             material: "wood",
             particle: "furniture_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.02, 56, Vec.create(6.39, 0)),
                 RectangleHitbox.fromRect(1.02, 56, Vec.create(-6.39, 0)),
                 ...Array.from({ length: 2 }, (_, i) => {
@@ -3410,7 +3410,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "rock_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 // Main Bridge Sides
                 RectangleHitbox.fromRect(4, 136, Vec.create(21.5, -1.5)),
                 RectangleHitbox.fromRect(4, 136, Vec.create(-21.5, -1.5)),
@@ -3615,7 +3615,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "hq_stone_wall_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(9.35, 1.6, Vec.create(-5.8, -13.5)),
                 RectangleHitbox.fromRect(1.6, 27, Vec.create(-9.7, 0)),
                 RectangleHitbox.fromRect(20, 1.6, Vec.create(0, 13))
@@ -3640,7 +3640,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "hq_stone_wall_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 // outer
                 RectangleHitbox.fromRect(1.75, 81.8, Vec.create(69.85, -80)),
                 RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.9)),
@@ -3660,7 +3660,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6))
             ),
             spawnHitbox: RectangleHitbox.fromRect(180, 190, Vec.create(0, -35)),
-            scopeHitbox: new HitboxGroup(
+            scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(143, 72.5, Vec.create(-0.5, -12.5)),
                 RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -85))
             ),
@@ -3690,7 +3690,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: FloorNames.Wood,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(55, 28, Vec.create(41.5, -55.5)),
                         RectangleHitbox.fromRect(102.5, 50, Vec.create(18, -94.5)),
                         RectangleHitbox.fromRect(47, 68, Vec.create(-47, -12)),
@@ -3704,7 +3704,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: FloorNames.Stone,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(69.5, 19.5, Vec.create(-22.5, -58)),
                         RectangleHitbox.fromRect(33.9, 26.9, Vec.create(-4.5, -55)),
                         RectangleHitbox.fromRect(22, 44, Vec.create(-46.4, -69)),
@@ -3713,7 +3713,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: FloorNames.Metal,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(10, 20.5, Vec.create(-40.25, -101.1)),
                         RectangleHitbox.fromRect(10, 3, Vec.create(-52.5, -109)),
                         RectangleHitbox.fromRect(22, 9, Vec.create(-46.5, -115))
@@ -3823,7 +3823,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "hq_stone_wall_particle",
             particleVariations: 2,
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 // Outer walls
                 RectangleHitbox.fromRect(1.75, 20, Vec.create(69.5, 25)),
                 RectangleHitbox.fromRect(1.75, 55, Vec.create(69.5, -22.5)),
@@ -3859,7 +3859,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ),
             spanAdjacentLayers: true,
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
-            scopeHitbox: new HitboxGroup(
+            scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
                 RectangleHitbox.fromRect(128, 72, Vec.create(5.75, -70.75)),
                 RectangleHitbox.fromRect(50, 25, Vec.create(-31, 47)) // ADJUST THIS! (not sure if its correct) - pap
@@ -3905,7 +3905,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: FloorNames.Wood,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(88.3, 59.5, Vec.create(25.1, 4.125)),
                         RectangleHitbox.fromRect(15.25, 1.5, Vec.create(7.75, -26.3)),
                         RectangleHitbox.fromRect(35.5, 60.5, Vec.create(51.25, -57.5)),
@@ -3916,7 +3916,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: FloorNames.Stone,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(15.25, 1, Vec.create(7.75, -27.5)),
                         RectangleHitbox.fromRect(20, 50, Vec.create(-30.85, 10)),
                         RectangleHitbox.fromRect(26, 30.5, Vec.create(-33.5, -19)),
@@ -3938,14 +3938,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: FloorNames.Carpet,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(1.67, 9.7, Vec.create(-41.8, 11.05)), // P1
                         RectangleHitbox.fromRect(27.5, 35.5, Vec.create(-56.5, 15.8))
                     )
                 },
                 {
                     type: FloorNames.Metal,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(10, 20.5, Vec.create(-52.5, -89)),
                         RectangleHitbox.fromRect(22, 30.6, Vec.create(-59.5, -18.7))
                     )
@@ -3966,7 +3966,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             visibilityOverrides: [{
-                collider: new HitboxGroup(
+                collider: new GroupHitbox(
                     RectangleHitbox.fromRect(11.2, 8, Vec.create(-51.5, -103.1)),
                     RectangleHitbox.fromRect(11.2, 4, Vec.create(-40.3, -105.1))
                 ),
@@ -4140,7 +4140,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spanAdjacentLayers: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
                 RectangleHitbox.fromRect(1.5, 16.6, Vec.create(6.1, 0.15)),
                 RectangleHitbox.fromRect(1.5, 16.6, Vec.create(-6.1, 0.15))
@@ -4165,7 +4165,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal",
             particle: "metal_particle",
-            hitbox: new HitboxGroup(
+            hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(44.5, 1.7, Vec.create(0, -18)),
                 RectangleHitbox.fromRect(1.7, 37.9, Vec.create(21.5, 0)),
                 RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
@@ -4175,7 +4175,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.7, 15.9, Vec.create(6, 25))
             ),
             spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
-            scopeHitbox: new HitboxGroup(
+            scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(42, 34.5),
                 RectangleHitbox.fromRect(10, 20, Vec.create(0, 20))
             ),
@@ -4194,7 +4194,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floors: [
                 {
                     type: FloorNames.Stone,
-                    hitbox: new HitboxGroup(
+                    hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(42, 34.5),
                         RectangleHitbox.fromRect(10, 4.5, Vec.create(0, 19))
                     )

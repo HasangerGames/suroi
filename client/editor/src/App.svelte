@@ -1,6 +1,6 @@
 <script lang="ts">
     import {
-        HitboxGroup,
+        GroupHitbox,
         HitboxType,
         RectangleHitbox
     } from "../../../common/src/utils/hitbox";
@@ -9,7 +9,7 @@
     import Hitbox from "./lib/hitbox.svelte";
 
     let hitboxes = [
-        ...new HitboxGroup(
+        ...new GroupHitbox(
                 RectangleHitbox.fromRect(2, 14.8, Vec.create(8.4, 14)),
                 RectangleHitbox.fromRect(2, 15.5, Vec.create(32.4, 12)),
                 RectangleHitbox.fromRect(25, 2, Vec.create(21, 20.4)),
@@ -90,7 +90,7 @@
 
     let hitboxesStr = "";
     function convertHitboxes() {
-        hitboxesStr = "new HitboxGroup(\n";
+        hitboxesStr = "new GroupHitbox(\n";
         hitboxesStr += hitboxes.map((hitbox) => {
             const round = (n: number) => Math.round(n * 100) / 100;
             if (hitbox.type === HitboxType.Rect) {
