@@ -162,6 +162,8 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
             });
         }
 
+        console.log(`Built spritesheet ${options.name} (${resolution}x)`);
+
         return atlases;
     }
 

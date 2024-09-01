@@ -36,6 +36,8 @@ async function buildSpritesheets(): Promise<MultiResAtlasList> {
     const atlases: MultiResAtlasList = {};
 
     for (const atlasId in atlasesToBuild) {
+        console.log(`Building spritesheet ${atlasId}...`);
+
         const files: string[] = readDirectory(atlasesToBuild[atlasId]).filter(x => imagesMatcher.match(x));
         atlases[atlasId] = await createSpritesheets(files, {
             ...compilerOpts,
@@ -87,7 +89,6 @@ export function spritesheet(): Plugin[] {
             name: `${PLUGIN_NAME}:build`,
             apply: "build",
             async buildStart() {
-                this.info("Building spritesheets");
                 atlases = await buildSpritesheets();
 
                 for (const atlasId in atlases) {
@@ -122,12 +123,10 @@ export function spritesheet(): Plugin[] {
                     clearTimeout(buildTimeout);
 
                     buildTimeout = setTimeout(() => {
-                        config.logger.info("Rebuilding spritesheets");
-
                         buildSheets().then(() => {
-                            const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
+                            const module = server.moduleGraph.getModuleById(highResResolvedVirtualModuleId);
                             if (module !== undefined) void server.reloadModule(module);
-                            const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
+                            const module2 = server.moduleGraph.getModuleById(lowResResolvedVirtualModuleId);
                             if (module2 !== undefined) void server.reloadModule(module2);
                         }).catch(e => console.error(e));
                     }, 500);
