@@ -113,7 +113,7 @@ class GrenadeHandler {
         owner.dirty.weapons = true;
 
         if (!owner.dead) {
-            // owner.inventory.removeThrowable(this.definition, false, 1);
+            owner.inventory.removeThrowable(this.definition, false, 1);
         }
 
         owner.animation = AnimationType.ThrowableThrow;
