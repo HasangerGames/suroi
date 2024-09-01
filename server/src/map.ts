@@ -82,7 +82,7 @@ export class GameMap {
     constructor(game: Game, mapData: typeof Config["map"]) {
         this.game = game;
 
-        const [name, params = []] = mapData.split(":") as [MapName, string[]];
+        const [name, ...params] = mapData.split(":") as [MapName, string[]];
         const mapDef = Maps[name];
 
         // @ts-expect-error I don't know why this rule exists
