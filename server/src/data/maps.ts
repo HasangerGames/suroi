@@ -44,7 +44,6 @@ export interface MapDefinition {
         readonly position: Vector
     }>
 
-    readonly params?: string[]
     readonly onGenerate?: (map: GameMap, params: string[]) => void
 }
 
@@ -429,12 +428,12 @@ const maps = {
         height: 1024,
         beachSize: 32,
         oceanSize: 64,
-        onGenerate(map, params) {
-            //map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            /*for (let i = 0; i < 10; i++) {
+        onGenerate(map, [building]) {
+            // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            /* for (let i = 0; i < 10; i++) {
                 map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
-            }*/
-            map.generateBuilding(params[0], Vec.create(this.width / 2, this.height / 2), 0);
+            } */
+            map.generateBuilding(building, Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -442,8 +441,8 @@ const maps = {
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        onGenerate(map, params) {
-            map.generateObstacle(params[0], Vec.create(this.width / 2, this.height / 2), { layer: 0 });
+        onGenerate(map, [obstacle]) {
+            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0 });
         }
     },
     singleGun: {
@@ -451,9 +450,9 @@ const maps = {
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        onGenerate(map, params) {
-            map.game.addLoot(params[0], Vec.create(this.width / 2, this.height / 2 - 10), 0);
-            map.game.addLoot(Guns.fromString(params[0]).ammoType, Vec.create(this.width / 2, this.height / 2 - 10), 0, { count: Infinity });
+        onGenerate(map, [gun]) {
+            map.game.addLoot(gun, Vec.create(this.width / 2, this.height / 2 - 10), 0);
+            map.game.addLoot(Guns.fromString(gun).ammoType, Vec.create(this.width / 2, this.height / 2 - 10), 0, { count: Infinity });
         }
     },
     gunsTest: (() => {

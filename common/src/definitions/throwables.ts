@@ -81,7 +81,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             image: {
                 zIndex: 5
             },
-            maxThrowDistance: 144,
+            maxThrowDistance: 128,
             fireDelay: 250,
             speedCap: Infinity
         })

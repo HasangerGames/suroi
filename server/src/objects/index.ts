@@ -4,7 +4,7 @@ import { DeathMarker } from "./deathMarker";
 import { Decal } from "./decal";
 import { Emote } from "./emote";
 import { Explosion } from "./explosion";
-import { type DamageParams, BaseGameObject, type GameObject } from "./gameObject";
+import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Parachute } from "./parachute";

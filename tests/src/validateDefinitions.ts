@@ -1,3 +1,4 @@
+import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { isStairLayer } from "@common/utils/layer";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants } from "../../common/src/constants";
@@ -22,15 +23,14 @@ import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
-import { ItemType, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
+import { ItemType, NullString, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { type Vector } from "../../common/src/utils/vector";
-import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
+import { Config, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, LootTiers } from "../../server/src/data/lootTables";
-import { Maps } from "../../server/src/data/maps";
+import { Maps, type MapName } from "../../server/src/data/maps";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
-import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 
 const testStart = Date.now();
 
@@ -734,7 +734,7 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnIdStringArray(
                     buildingObstacles,
                     (obstacle, errorPath) => {
-                        const obstacles = typeof obstacle.idString === "string"
+                        const obstacles: Array<string | typeof NullString> = typeof obstacle.idString === "string"
                             ? [obstacle.idString]
                             : Object.keys(obstacle.idString);
 
@@ -756,6 +756,7 @@ logger.indent("Validating building definitions", () => {
                         );
 
                         for (const idString of obstacles) {
+                            if (idString === NullString) continue;
                             logger.indent(`Validating '${idString}'`, () => {
                                 const errorPath2 = tester.createPath(errorPath, `obstacle '${idString}'`);
 
@@ -927,7 +928,7 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnIdStringArray(
                     buildingSubBuildings,
                     (subBuilding, errorPath) => {
-                        const subBuildings = typeof subBuilding.idString === "string"
+                        const subBuildings: Array<string | typeof NullString> = typeof subBuilding.idString === "string"
                             ? [subBuilding.idString]
                             : Object.keys(subBuilding.idString);
 
@@ -949,6 +950,7 @@ logger.indent("Validating building definitions", () => {
                         );
 
                         for (const idString of subBuildings) {
+                            if (idString === NullString) continue;
                             logger.indent(`Validating '${idString}'`, () => {
                                 tester.assertReferenceExists({
                                     value: idString,
@@ -2305,7 +2307,7 @@ logger.indent("Validating obstacles", () => {
                                 logger.indent("Validating replacement", () => {
                                     const errorPath2 = tester.createPath(errorPath, "replacement");
 
-                                    const obstacles = typeof replacement.idString === "string"
+                                    const obstacles: Array<string | typeof NullString> = typeof replacement.idString === "string"
                                         ? [replacement.idString]
                                         : Object.keys(replacement.idString);
 
@@ -2327,6 +2329,7 @@ logger.indent("Validating obstacles", () => {
                                     );
 
                                     for (const idString of obstacles) {
+                                        if (idString === NullString) continue;
                                         logger.indent(`Validating '${idString}'`, () => {
                                             tester.assertReferenceExists({
                                                 value: idString,
@@ -2664,11 +2667,9 @@ logger.indent("Validating throwables", () => {
                 });
             });
 
-            tester.assertInBounds({
+            tester.assertIsPositiveReal({
                 obj: throwable,
                 field: "speedCap",
-                min: 0,
-                max: Infinity,
                 baseErrorPath: errorPath
             });
 
@@ -2788,72 +2789,66 @@ logger.indent("Validating configurations", () => {
             baseErrorPath: errorPath
         });
 
+        const [name] = ServerConfig.map.split(":") as [MapName, string[]];
         tester.assertReferenceExistsObject({
-            obj: ServerConfig,
-            field: "mapName",
+            value: name,
             collection: Maps,
             collectionName: "maps",
-            baseErrorPath: errorPath
+            errorPath
         });
 
-        switch (ServerConfig.spawn.mode) {
-            case SpawnMode.Normal: {
-                // nothing to do
-                break;
-            }
-            case SpawnMode.Center: {
-                // nothing to do
-                break;
-            }
-            case SpawnMode.Radius: {
-                tester.assertIsPositiveFiniteReal({
-                    obj: ServerConfig.spawn,
-                    field: "radius",
-                    baseErrorPath: errorPath
-                });
+        if (typeof ServerConfig.spawn !== "number") {
+            switch (ServerConfig.spawn.mode) {
+                case SpawnMode.Radius: {
+                    tester.assertIsPositiveFiniteReal({
+                        obj: ServerConfig.spawn,
+                        field: "radius",
+                        baseErrorPath: errorPath
+                    });
 
-                const map = Maps[ServerConfig.mapName];
-                if (map !== undefined) {
-                    validators.vector(
-                        tester.createPath(errorPath, "spawn position"),
-                        ServerConfig.spawn.position,
-                        {
-                            min: 0,
-                            max: map.width,
-                            includeMin: true,
-                            includeMax: true
-                        },
-                        {
-                            min: 0,
-                            max: map.height,
-                            includeMin: true,
-                            includeMax: true
-                        }
-                    );
+                    const map = Maps[name];
+                    if (map !== undefined) {
+                        validators.vector(
+                            tester.createPath(errorPath, "spawn position"),
+                            ServerConfig.spawn.position,
+                            {
+                                min: 0,
+                                max: map.width,
+                                includeMin: true,
+                                includeMax: true
+                            },
+                            {
+                                min: 0,
+                                max: map.height,
+                                includeMin: true,
+                                includeMax: true
+                            }
+                        );
+                    }
+                    break;
                 }
-                break;
-            }
-            case SpawnMode.Fixed: {
-                const map = Maps[ServerConfig.mapName];
-                if (map !== undefined) {
-                    validators.vector(
-                        tester.createPath(errorPath, "spawn position"),
-                        ServerConfig.spawn.position,
-                        {
-                            min: 0,
-                            max: map.width,
-                            includeMin: true,
-                            includeMax: true
-                        },
-                        {
-                            min: 0,
-                            max: map.height,
-                            includeMin: true,
-                            includeMax: true
-                        }
-                    );
+                case SpawnMode.Fixed: {
+                    const map = Maps[name];
+                    if (map !== undefined) {
+                        validators.vector(
+                            tester.createPath(errorPath, "spawn position"),
+                            ServerConfig.spawn.position,
+                            {
+                                min: 0,
+                                max: map.width,
+                                includeMin: true,
+                                includeMax: true
+                            },
+                            {
+                                min: 0,
+                                max: map.height,
+                                includeMin: true,
+                                includeMax: true
+                            }
+                        );
+                    }
+                    break;
                 }
-                break;
             }
         }
 
@@ -2869,37 +2864,20 @@ logger.indent("Validating configurations", () => {
             baseErrorPath: errorPath
         });
 
-        switch (ServerConfig.gas.mode) {
-            case GasMode.Normal: {
-                // nothing to do
-                break;
-            }
-            case GasMode.Debug: {
-                tester.assertNoPointlessValue({
-                    obj: ServerConfig.gas,
-                    field: "overridePosition",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
+        if (typeof ServerConfig.gas !== "number") {
+            tester.assertNoPointlessValue({
+                obj: ServerConfig.gas,
+                field: "overridePosition",
+                defaultValue: false,
+                baseErrorPath: errorPath
+            });
 
-                tester.assertIsPositiveReal({
-                    obj: ServerConfig.gas,
-                    field: "overrideDuration",
-                    baseErrorPath: errorPath
-                });
-                break;
-            }
-            case GasMode.Disabled: {
-                // nothing to do
-                break;
-            }
+            tester.assertIsPositiveReal({
+                obj: ServerConfig.gas,
+                field: "overrideDuration",
+                baseErrorPath: errorPath
+            });
         }
-
-        tester.assertIsPositiveFiniteReal({
-            obj: ServerConfig,
-            field: "movementSpeed",
-            baseErrorPath: errorPath
-        });
 
         if (ServerConfig.protection) {
             const protection = ServerConfig.protection;

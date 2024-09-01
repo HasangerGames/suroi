@@ -2,7 +2,7 @@ import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import type { GetEnumMemberName, Mutable } from "../utils/misc";
-import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceTo, type StageZeroDefinition } from "../utils/objectDefinitions";
+import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo, type StageZeroDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
@@ -143,7 +143,7 @@ type RawObstacleDefinition = ObjectDefinition & {
         readonly interactText?: string
         readonly emitParticles?: boolean
         readonly replaceWith?: {
-            readonly idString: Record<ReferenceTo<RawObstacleDefinition>, number> | ReferenceTo<RawObstacleDefinition>
+            readonly idString: ReferenceOrRandom<RawObstacleDefinition>
             readonly delay: number
         }
     } | {

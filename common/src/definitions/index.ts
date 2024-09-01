@@ -10,12 +10,12 @@ import { Explosions } from "./explosions";
 import { Guns, type GunDefinition } from "./guns";
 import { HealingItems } from "./healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "./loots";
-import { PlayerPing } from "./mapPings";
+import { type PlayerPing } from "./mapPings";
 import { Melees, type MeleeDefinition } from "./melees";
-import { DEFAULT_SCOPE, ScopeDefinition, Scopes } from "./scopes";
-import { SkinDefinition, Skins } from "./skins";
-import { SyncedParticleDefinition } from "./syncedParticles";
-import { Throwables, ThrowableDefinition } from "./throwables";
+import { DEFAULT_SCOPE, type ScopeDefinition, Scopes } from "./scopes";
+import { type SkinDefinition, Skins } from "./skins";
+import { type SyncedParticleDefinition } from "./syncedParticles";
+import { Throwables, type ThrowableDefinition } from "./throwables";
 
 export {
     Ammos,

@@ -3,7 +3,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/defini
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
-import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -323,8 +323,16 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         this.collidable = false;
                         this.setDirty();
 
+                        const idString = getRandomIDString<
+                            ObstacleDefinition,
+                            ReferenceTo<ObstacleDefinition> | typeof NullString
+                        >(replaceWith.idString);
+                        if (idString === NullString) {
+                            return;
+                        }
+
                         this.game.map.generateObstacle(
-                            getRandomIDString(replaceWith.idString),
+                            idString,
                             this.position,
                             { rotation: this.rotation }
                         );

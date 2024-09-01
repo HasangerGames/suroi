@@ -1,9 +1,9 @@
 import { type LootDefinition } from "@common/definitions/loots";
-import { type ReferenceTo } from "@common/utils/objectDefinitions";
+import { NullString, type ReferenceTo } from "@common/utils/objectDefinitions";
 
 export type WeightedItem =
     (
-        { readonly item: ReferenceTo<LootDefinition> | null } |
+        { readonly item: ReferenceTo<LootDefinition> | typeof NullString } |
         { readonly tier: string }
     ) &
     {
@@ -324,7 +324,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "cola", weight: 0.1 },
-            { item: null, weight: 1 }
+            { item: NullString, weight: 1 }
         ]
     },
     fridge: {
@@ -470,7 +470,7 @@ export const LootTables: Record<string, LootTable> = {
             ],
             [
                 { item: "frag_grenade", count: 3, weight: 2 },
-                { item: null, weight: 1 }
+                { item: NullString, weight: 1 }
             ]
         ]
     },
@@ -789,7 +789,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "tablets", weight: 1 }
     ],
     airdrop_skins: [
-        { item: null, weight: 1 },
+        { item: NullString, weight: 1 },
         { item: "stardust", weight: 0.5 },
         { item: "aurora", weight: 0.5 },
         { item: "nebula", weight: 0.4 },
@@ -797,7 +797,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "basic_outfit", weight: 0.001 }
     ],
     airdrop_melee: [
-        { item: null, weight: 1 },
+        { item: NullString, weight: 1 },
         { item: "crowbar", weight: 0.1 },
         { item: "hatchet", weight: 0.1 },
         { item: "sickle", weight: 0.1 },

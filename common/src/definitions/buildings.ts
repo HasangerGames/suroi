@@ -2,7 +2,7 @@ import { ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
-import { MapObjectSpawnMode, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -10,7 +10,7 @@ import { type DecalDefinition } from "./decals";
 import { Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {
-    readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>
+    readonly idString: ReferenceOrRandom<ObstacleDefinition>
     readonly position: Vector
     readonly rotation?: number
     // specified as an _offset_ relative to the layer of the building in which this obstacle is placed
@@ -28,7 +28,7 @@ interface LootSpawner {
 }
 
 interface SubBuilding {
-    readonly idString: ReferenceTo<BuildingDefinition> | Record<ReferenceTo<BuildingDefinition>, number>
+    readonly idString: ReferenceOrRandom<BuildingDefinition>
     readonly position: Vector
     readonly orientation?: Orientation
     // specified as an _offset_ relative to the layer of the building in which this building appears
@@ -170,7 +170,7 @@ const randomContainer1 = {
 
 const randomContainer2 = {
     ...randomContainer1,
-    none: 7
+    [NullString]: 7
 };
 
 const warehouseObstacle = {
@@ -475,9 +475,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
                 { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
             ],
-            lootSpawners: color === "red" ? [
-                { table: "tugboat_red_floor", position: Vec.create(89, -25) }
-            ] : []
+            lootSpawners: color === "red"
+                ? [
+                    { table: "tugboat_red_floor", position: Vec.create(89, -25) }
+                ]
+                : []
         }),
         port_warehouse: (color: string, tint: number) => ({
             idString: `port_warehouse_${color}`,

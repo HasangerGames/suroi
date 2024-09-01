@@ -1,4 +1,4 @@
-import { Config } from "../config";
+import { GameConstants } from "@common/constants";
 import { Events, GamePlugin } from "../pluginManager";
 
 /**
@@ -7,12 +7,12 @@ import { Events, GamePlugin } from "../pluginManager";
 export class SpeedTogglePlugin extends GamePlugin {
     protected override initListeners(): void {
         this.on(Events.Player_Emote, ({ player }) => {
-            const { movementSpeed } = Config;
+            const { player: { baseSpeed } } = GameConstants;
 
-            if (player.baseSpeed === movementSpeed) {
-                player.baseSpeed = 12 * movementSpeed;
+            if (player.baseSpeed === baseSpeed) {
+                player.baseSpeed = 12 * baseSpeed;
             } else {
-                player.baseSpeed = movementSpeed;
+                player.baseSpeed = baseSpeed;
             }
         });
     }

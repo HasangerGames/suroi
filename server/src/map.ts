@@ -1,4 +1,3 @@
-import { Config } from "./config";
 import { Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Decals } from "@common/definitions/decals";
@@ -9,10 +8,11 @@ import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
-import { MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
+import { Config } from "./config";
 
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { MapName, Maps, ObstacleClump } from "./data/maps";
@@ -79,12 +79,11 @@ export class GameMap {
         }
     }
 
-    constructor(game: Game, mapName: typeof Config["map"]) {
+    constructor(game: Game, mapData: typeof Config["map"]) {
         this.game = game;
 
-        const params = mapName.split(":");
-
-        const mapDef = Maps[params[0] as MapName];
+        const [name, params = []] = mapData.split(":") as [MapName, string[]];
+        const mapDef = Maps[name];
 
         // @ts-expect-error I don't know why this rule exists
         type PacketType = this["_packet"];
@@ -214,7 +213,7 @@ export class GameMap {
 
         Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count));
 
-        if (mapDef.onGenerate) mapDef.onGenerate(this, params.slice(1));
+        mapDef.onGenerate?.(this, params);
 
         if (mapDef.places) {
             packet.places = mapDef.places.map(({ name, position }) => {
@@ -460,7 +459,13 @@ export class GameMap {
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles) {
-            const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
+            const idString = getRandomIDString<
+                ObstacleDefinition,
+                ReferenceTo<ObstacleDefinition> | typeof NullString
+            >(obstacleData.idString);
+            if (idString === NullString) continue;
+
+            const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
@@ -514,8 +519,13 @@ export class GameMap {
         }
 
         for (const subBuilding of definition.subBuildings) {
-            const idString = getRandomIDString(subBuilding.idString);
-            if (idString === "none") continue;
+            const idString = getRandomIDString<
+                BuildingDefinition,
+                ReferenceTo<BuildingDefinition> | typeof NullString
+            >(subBuilding.idString);
+
+            if (idString === NullString) continue;
+
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
                 idString,

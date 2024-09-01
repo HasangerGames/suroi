@@ -3,13 +3,15 @@ import { Loots } from "../../common/src/definitions/loots";
 import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
 import { type EaseFunctions } from "../../common/src/utils/math";
-import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { NullString, type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
-export function findDupes(collection: readonly string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
-    const dupes: Record<string, number> = {};
-    const set = new Set<string>();
+export function findDupes<
+    K extends string | number | symbol
+>(collection: readonly K[]): { readonly foundDupes: boolean, readonly dupes: Record<K, number> } {
+    const dupes = {} as Record<K, number>;
+    const set = new Set<K>();
     let foundDupes = false;
 
     for (const item of collection) {
@@ -902,7 +904,7 @@ export const validators = Object.freeze({
 
         if ("item" in weightedItem) {
             switch (weightedItem.item) {
-                case null: {
+                case NullString: {
                     tester.assertWarn(
                         weightedItem.count !== undefined,
                         "Specifying a count for a no-item drop is pointless",

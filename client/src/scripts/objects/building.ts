@@ -180,7 +180,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.ceilingVisible = visible;
 
-        this.ceilingTween?.kill();
         this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
             to: { alpha: visible ? 0 : 1 },
