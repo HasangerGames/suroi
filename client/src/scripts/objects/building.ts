@@ -14,6 +14,7 @@ import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     readonly ceilingContainer: Container;
@@ -398,16 +399,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.hitSound?.stop();
-        this.hitSound = this.game.soundManager.play(
-            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,
-            {
-                position,
-                falloff: 0.2,
-                maxRange: 96
-            }
-        );
-
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
@@ -418,6 +409,18 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             alpha: { start: 1, end: 0.65 },
             speed: Vec.fromPolar((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
         });
+
+        this.hitSound?.stop();
+        const { material } = this.definition;
+        if (!material) return;
+        this.hitSound = this.game.soundManager.play(
+            `${MaterialSounds[material]?.hit ?? material}_hit_${randomBoolean() ? "1" : "2"}`,
+            {
+                position,
+                falloff: 0.2,
+                maxRange: 96
+            }
+        );
     }
 
     override destroy(): void {

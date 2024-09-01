@@ -180,6 +180,26 @@ export type ObstacleDefinition = RawObstacleDefinition & (
     | ({ readonly role?: undefined } & PredicateFor<undefined>)
 );
 
+export enum RotationMode {
+    /**
+     * Allows rotation in any direction (within the limits of the bit stream's encoding capabilities)
+     */
+    Full,
+    /**
+     * Allows rotation in the four cardinal directions: up, right, down and left
+     */
+    Limited,
+    /**
+     * Allows rotation in two directions: a "normal" direction and a "flipped" direction; for example,
+     * up and down, or left and right
+     */
+    Binary,
+    /**
+     * Disabled rotation
+     */
+    None
+}
+
 export const Materials = [
     "tree",
     "stone",
@@ -198,6 +218,13 @@ export const Materials = [
     "iron",
     "piano"
 ] as const;
+
+export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
+    cardboard: { hit: "stone", destroyed: "crate"     },
+    iron:      { hit: "metal", destroyed: "appliance" },
+    crate:     { hit: "wood"  },
+    pumpkin:   { hit: "stone" }
+};
 
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
@@ -255,26 +282,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
-
-export enum RotationMode {
-    /**
-     * Allows rotation in any direction (within the limits of the bit stream's encoding capabilities)
-     */
-    Full,
-    /**
-     * Allows rotation in the four cardinal directions: up, right, down and left
-     */
-    Limited,
-    /**
-     * Allows rotation in two directions: a "normal" direction and a "flipped" direction; for example,
-     * up and down, or left and right
-     */
-    Binary,
-    /**
-     * Disabled rotation
-     */
-    None
-}
 
 const defaultObstacle = {
     indestructible: false,

@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
@@ -209,7 +209,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         maxRange: 96
                     });
                 };
-                playSound(`${definition.material}_destroyed`);
+                playSound(`${MaterialSounds[definition.material]?.destroyed ?? definition.material}_destroyed`);
                 for (const sound of definition.additionalDestroySounds) playSound(sound);
 
                 if (definition.noResidue) {
@@ -580,8 +580,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitEffect(position: Vector, angle: number): void {
         this.hitSound?.stop();
 
+        const { material } = this.definition;
         this.hitSound = this.game.soundManager.play(
-            `${this.definition.material}_hit_${this.definition.hitSoundVariations ? random(1, this.definition.hitSoundVariations).toString() : randomBoolean() ? "1" : "2"}`,
+            `${MaterialSounds[material]?.hit ?? material}_hit_${this.definition.hitSoundVariations ? random(1, this.definition.hitSoundVariations) : randomBoolean() ? "1" : "2"}`,
             {
                 position,
                 falloff: 0.2,
