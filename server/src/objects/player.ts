@@ -353,7 +353,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._team?.setDirty();
     }
 
-    baseSpeed = Config.movementSpeed;
+    baseSpeed = GameConstants.player.baseSpeed;
 
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }

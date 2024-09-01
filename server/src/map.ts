@@ -1,3 +1,4 @@
+import { Config } from "./config";
 import { Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Decals } from "@common/definitions/decals";
@@ -14,7 +15,7 @@ import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { Maps, ObstacleClump } from "./data/maps";
+import { MapName, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
@@ -78,10 +79,12 @@ export class GameMap {
         }
     }
 
-    constructor(game: Game, mapName: keyof typeof Maps) {
+    constructor(game: Game, mapName: typeof Config["map"]) {
         this.game = game;
 
-        const mapDef = Maps[mapName];
+        const params = mapName.split(":");
+
+        const mapDef = Maps[params[0] as MapName];
 
         // @ts-expect-error I don't know why this rule exists
         type PacketType = this["_packet"];
@@ -211,7 +214,7 @@ export class GameMap {
 
         Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count));
 
-        if (mapDef.genCallback) mapDef.genCallback(this);
+        if (mapDef.onGenerate) mapDef.onGenerate(this, params.slice(1));
 
         if (mapDef.places) {
             packet.places = mapDef.places.map(({ name, position }) => {

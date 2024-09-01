@@ -26,7 +26,7 @@ import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { Config, SpawnMode } from "./config";
-import { Maps } from "./data/maps";
+import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
@@ -401,9 +401,10 @@ export class Game implements GameData {
             }, Config.protection.maxJoinAttempts.duration);
         }
 
-        const map = Maps[Config.mapName];
-        this.grid = new Grid(this, map.width, map.height);
-        this.map = new GameMap(this, Config.mapName);
+        const { width, height } = Maps[Config.map.split(":")[0] as MapName];
+        this.grid = new Grid(this, width, height);
+
+        this.map = new GameMap(this, Config.map);
 
         this.gas = new Gas(this);
 
@@ -866,7 +867,7 @@ export class Game implements GameData {
                     parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
                     Logger.log(`Game ${this.id} | Preventing new players from joining`);
                     this.setGameData({ allowJoin: false });
-                }, Config.preventJoinAfter);
+                }, Config.gameJoinTime * 1000);
             }, 3000);
         }
 

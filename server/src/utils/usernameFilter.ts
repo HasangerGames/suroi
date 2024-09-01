@@ -16,7 +16,7 @@ export function cleanUsername(name?: string | null): string {
     return (
         !name?.length
         || name.length > 16
-        || (Config.censorUsernames && badWordRegexes.some(regex => regex.test(name)))
+        || (!Config.disableUsernameFilter && badWordRegexes.some(regex => regex.test(name)))
 
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
     )
