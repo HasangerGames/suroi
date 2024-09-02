@@ -7,6 +7,14 @@ import { Vec, type Vector } from "../utils/vector";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
+/*
+
+    eslint-disable
+
+    @stylistic/no-multi-spaces,
+    @stylistic/key-spacing
+*/
+
 /**
  * An enum indicating the degree to which an obstacle should allow
  * throwables to sail over it.
@@ -383,11 +391,13 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "rock_particle"
             },
-            wall: useWallSystem ? {
-                color: 0x808080,
-                borderColor: 0x484848,
-                rounded: true
-            } : undefined
+            wall: useWallSystem
+                ? {
+                    color: 0x808080,
+                    borderColor: 0x484848,
+                    rounded: true
+                }
+                : undefined
         }),
         mobileHomeWall: (lengthNumber: string) => ({
             idString: `mobile_home_wall_${lengthNumber}`,
