@@ -650,10 +650,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             Vec.scale(this.movementVector, dt)
         );
 
-        if (this.movementVector.x > 0 || this.movementVector.y > 0) {
-            this.ticksSinceLastUpdate++;
-        }
-
         if (this.action instanceof ReviveAction) {
             if (
                 Vec.squaredLength(
@@ -838,7 +834,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const fullObjects = new Set<BaseGameObject>();
 
         // Calculate visible objects
-        //console.log(this.ticksSinceLastUpdate > 8, game.updateObjects, this.updateObjects);
+        this.ticksSinceLastUpdate++;
         if (this.ticksSinceLastUpdate > 8 || game.updateObjects || this.updateObjects) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
