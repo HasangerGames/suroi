@@ -1,6 +1,5 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { Decals } from "@common/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
@@ -18,7 +17,6 @@ import { LootTables, type WeightedItem } from "./data/lootTables";
 import { MapName, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
-import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { Events } from "./pluginManager";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
@@ -537,17 +535,6 @@ export class GameMap {
 
         for (const floor of definition.floors) {
             this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), layer);
-        }
-
-        for (const decal of definition.decals) {
-            this.game.grid.addObject(
-                new Decal(
-                    this.game,
-                    Decals.reify(decal.idString),
-                    Vec.addAdjust(position, decal.position, orientation),
-                    Numeric.addOrientations(orientation, decal.orientation ?? 0)
-                )
-            );
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);

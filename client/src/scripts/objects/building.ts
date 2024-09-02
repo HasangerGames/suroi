@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { Buildings, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
@@ -211,6 +211,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 if (image.tint !== undefined) sprite.setTint(image.tint);
                 if (image.rotation) sprite.setRotation(image.rotation);
                 if (image.scale) sprite.scale = image.scale;
+                if (image.zIndex !== undefined) sprite.setZIndex(image.zIndex);
                 this.container.addChild(sprite);
             }
 

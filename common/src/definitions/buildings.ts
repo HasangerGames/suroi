@@ -35,13 +35,6 @@ interface SubBuilding {
     readonly layer?: number
 }
 
-interface BuildingDecal {
-    readonly idString: ReferenceTo<DecalDefinition>
-    readonly position: Vector
-    readonly orientation?: Orientation
-    readonly scale?: number
-}
-
 export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
@@ -67,7 +60,6 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly obstacles: readonly BuildingObstacle[]
     readonly lootSpawners: readonly LootSpawner[]
     readonly subBuildings: readonly SubBuilding[]
-    readonly decals: readonly BuildingDecal[]
 
     readonly puzzle?: {
         readonly triggerOnSolve: ReferenceTo<ObstacleDefinition>
@@ -98,6 +90,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly rotation?: number
         readonly scale?: Vector
         readonly tint?: number | `#${string}`
+        readonly zIndex?: ZIndexes
     }>
     readonly floorZIndex: ZIndexes
 
@@ -249,7 +242,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             obstacles: [],
             lootSpawners: [],
             subBuildings: [],
-            decals: [],
             wallsToDestroy: Infinity,
             floorImages: [],
             floorZIndex: ZIndexes.BuildingsFloor,
@@ -2362,117 +2354,46 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 type: FloorNames.Stone,
                 hitbox: RectangleHitbox.fromRect(300, 270, Vec.create(-5, 0))
             }],
-            decals: [
-                { idString: "floor_oil_01", position: Vec.create(69.49, 116.11) },
-                { idString: "floor_oil_02", position: Vec.create(-87.54, -117.88) },
-                { idString: "floor_oil_03", position: Vec.create(-147.56, -92.28) },
-                { idString: "floor_oil_04", position: Vec.create(86.72, -64.06) },
-                { idString: "floor_oil_05", position: Vec.create(-135.24, 82.47) },
-                { idString: "floor_oil_06", position: Vec.create(-79.85, -46.97) },
-                { idString: "floor_oil_07", position: Vec.create(-13.48, 10.95) },
+            floorImages: [
+                { key: "floor_oil_01", position: Vec.create(69.49, 116.11), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_02", position: Vec.create(-87.54, -117.88), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_03", position: Vec.create(-147.56, -92.28), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_04", position: Vec.create(86.72, -64.06), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_05", position: Vec.create(-135.24, 82.47), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_06", position: Vec.create(-79.85, -46.97), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_07", position: Vec.create(-13.48, 10.95), zIndex: ZIndexes.Decals },
 
                 // Group 1 Near Entrance
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-60, 5)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-45, 5)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-30, 5)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-60, -25)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-45, -25)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-30, -25)
-                },
+                { key: "container_mark", position: Vec.create(-60, 5), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-45, 5), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-30, 5), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-60, -25), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-45, -25), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-30, -25), zIndex: ZIndexes.Decals },
+
                 // Group 2 Near Crane
-                {
-                    idString: "container_mark",
-                    position: Vec.create(5, 5)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(20, 5)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(35, 5)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(5, -25)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(20, -25)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(35, -25)
-                },
+                { key: "container_mark", position: Vec.create(5, 5), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(20, 5), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(35, 5), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(5, -25), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(20, -25), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(35, -25), zIndex: ZIndexes.Decals },
 
                 // Group 3 Top Left corner
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-100, -60)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-115, -60)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-130, -60)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-100, -90)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-115, -90)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(-130, -90)
-                },
+                { key: "container_mark", position: Vec.create(-100, -60), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-115, -60), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-130, -60), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-100, -90), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-115, -90), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(-130, -90), zIndex: ZIndexes.Decals },
 
                 // Group 4 Under crane
-                {
-                    idString: "container_mark",
-                    position: Vec.create(82.5, 0)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(97.5, 0)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(112.5, 0)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(82.5, -30)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(97.5, -30)
-                },
-                {
-                    idString: "container_mark",
-                    position: Vec.create(112.5, -30)
-                }
+                { key: "container_mark", position: Vec.create(82.5, 0), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(97.5, 0), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(112.5, 0), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(82.5, -30), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(97.5, -30), zIndex: ZIndexes.Decals },
+                { key: "container_mark", position: Vec.create(112.5, -30), zIndex: ZIndexes.Decals }
             ],
             obstacles: [
                 // Parking lot
@@ -3428,26 +3349,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 landCheckDist: 103
             },
             floorImages: [
-                {
-                    key: "large_bridge_railing",
-                    position: Vec.create(23.3, -38)
-                },
-                {
-                    key: "large_bridge_railing",
-                    position: Vec.create(23.3, 35.3),
-                    rotation: Math.PI,
-                    scale: Vec.create(-1, 1)
-                },
-                {
-                    key: "large_bridge_railing",
-                    position: Vec.create(-23.3, -38),
-                    scale: Vec.create(-1, 1)
-                },
-                {
-                    key: "large_bridge_railing",
-                    position: Vec.create(-23.3, 35.3),
-                    rotation: Math.PI
-                }
+                { key: "large_bridge_railing", position: Vec.create(23.3, -38) },
+                { key: "large_bridge_railing", position: Vec.create(23.3, 35.3), rotation: Math.PI, scale: Vec.create(-1, 1) },
+                { key: "large_bridge_railing", position: Vec.create(-23.3, -38), scale: Vec.create(-1, 1) },
+                { key: "large_bridge_railing", position: Vec.create(-23.3, 35.3), rotation: Math.PI },
+
+                { key: "floor_oil_02", position: Vec.create(5.28, -66.1), zIndex: ZIndexes.Decals },
+                { key: "floor_oil_03", position: Vec.create(-12.06, 23.49), rotation: Math.PI / 2, zIndex: ZIndexes.Decals },
+                { key: "smoke_explosion_decal", position: Vec.create(-12.96, -49.37), zIndex: ZIndexes.Decals },
+                { key: "explosion_decal", position: Vec.create(15.91, -2.56), zIndex: ZIndexes.Decals },
+                { key: "explosion_decal", position: Vec.create(-8.65, 42.84), zIndex: ZIndexes.Decals },
+                { key: "explosion_decal", position: Vec.create(-2.11, 85.37), zIndex: ZIndexes.Decals },
+                { key: "frag_explosion_decal", position: Vec.create(-4.31, -91.09), zIndex: ZIndexes.Decals },
+                { key: "smoke_explosion_decal", position: Vec.create(11.09, 75.08), zIndex: ZIndexes.Decals }
             ],
             groundGraphics: [
                 {
@@ -3462,16 +3376,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     color: "#5d5d5d",
                     hitbox: RectangleHitbox.fromRect(3.61, 210.1)
                 }
-            ],
-            decals: [
-                { idString: "floor_oil_02", position: Vec.create(5.28, -66.1) },
-                { idString: "floor_oil_03", position: Vec.create(-12.06, 23.49), orientation: 1 },
-                { idString: "smoke_explosion_decal", position: Vec.create(-12.96, -49.37) },
-                { idString: "explosion_decal", position: Vec.create(15.91, -2.56) },
-                { idString: "explosion_decal", position: Vec.create(-8.65, 42.84) },
-                { idString: "explosion_decal", position: Vec.create(-2.11, 85.37) },
-                { idString: "frag_explosion_decal", position: Vec.create(-4.31, -91.09) },
-                { idString: "smoke_explosion_decal", position: Vec.create(11.09, 75.08) }
             ],
             floors: [
                 { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(45, 210, Vec.create(0, 0)) }

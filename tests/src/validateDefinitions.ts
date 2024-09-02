@@ -974,47 +974,6 @@ logger.indent("Validating building definitions", () => {
                 );
             });
 
-            const buildingDecals = building.decals;
-            logger.indent("Validating decals", () => {
-                const errorPath2 = tester.createPath(errorPath, "decals");
-
-                tester.runTestOnIdStringArray(
-                    buildingDecals,
-                    (decal, errorPath) => {
-                        tester.assertReferenceExists({
-                            obj: decal,
-                            field: "idString",
-                            collection: Decals,
-                            collectionName: "Decals",
-                            baseErrorPath: errorPath
-                        });
-
-                        validators.vector(tester.createPath(errorPath, "position"), decal.position);
-
-                        tester.assertNoPointlessValue({
-                            obj: decal,
-                            field: "orientation",
-                            defaultValue: 0,
-                            baseErrorPath: errorPath
-                        });
-
-                        tester.assertValidOrNPV({
-                            obj: decal,
-                            field: "scale",
-                            defaultValue: 1,
-                            validatorIfPresent: scale => {
-                                tester.assertIsFiniteRealNumber({
-                                    value: scale,
-                                    errorPath: tester.createPath(errorPath, "field 'scale'")
-                                });
-                            },
-                            baseErrorPath: errorPath
-                        });
-                    },
-                    errorPath2
-                );
-            });
-
             switch (building.puzzle) {
                 case undefined: {
                     logger.indent("Validating no-puzzle conformance", () => {
