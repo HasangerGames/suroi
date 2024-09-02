@@ -211,7 +211,7 @@ export class GameMap {
 
         Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count));
 
-        mapDef.onGenerate?.(this, params);
+        mapDef.onGenerate?.(this, ...params);
 
         if (mapDef.places) {
             packet.places = mapDef.places.map(({ name, position }) => {
