@@ -41,7 +41,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         spritesheets.map(
             spritesheet => {
                 // FIXME I have no idea why this nna is sound, someone please explain here why it is
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                 const image = spritesheet.meta.image!;
 
                 return new Promise<void>(resolve => {

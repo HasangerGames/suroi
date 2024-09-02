@@ -53,6 +53,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         pushVel && this.push(randomRotation(), pushVel);
 
         this.game.addTimeout(() => {
@@ -349,7 +350,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
 
                     inventory.useItem(idString);
                     // hope that `throwableItemMap` is sync'd
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                     inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
                 } else {
                     modifyItemCollections();

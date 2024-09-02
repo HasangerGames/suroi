@@ -6,7 +6,6 @@ import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinitio
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
-import { type DecalDefinition } from "./decals";
 import { Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {

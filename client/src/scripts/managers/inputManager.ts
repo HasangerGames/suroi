@@ -461,7 +461,7 @@ export class InputManager {
 
             input = key.length > 1
                 ? key
-                : code.match(/^(Key|Digit)/)
+                : (/^(Key|Digit)/.exec(code))
                     ? code.slice(-1)
                     : code;
 
@@ -750,7 +750,7 @@ class InputMapper {
 
         actions.delete(action);
         // safe because the backward map has already been checked
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         this._actionToInput.get(action)!.delete(input);
         return true;
     }

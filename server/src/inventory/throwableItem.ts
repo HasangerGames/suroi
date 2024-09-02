@@ -226,6 +226,8 @@ class GrenadeHandler {
     destroy(): void {
         this._cookStart = undefined;
         this._timer?.kill();
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this._projectile && this.game.removeProjectile(this._projectile);
     }
 }

@@ -1,7 +1,7 @@
 import { BitStream, type BitView } from "@damienvesper/bit-buffer";
 import { GameConstants, Layer, ObjectCategory } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
-import { type Orientation, type Variation } from "../typings";
+import { type Orientation } from "../typings";
 import { Angle, Numeric } from "./math";
 import { Vec, type Vector } from "./vector";
 

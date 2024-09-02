@@ -36,6 +36,7 @@ export function safeString(value: unknown): string {
             case !Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
             default: return JSON.stringify(value);
         }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
         return String(value);
     }
@@ -1105,7 +1106,7 @@ export const validators = Object.freeze({
             }
             case "string": {
                 tester.assert(
-                    color.match(/^#([0-9a-fA-F]{1,2}){3,4}$/) !== null,
+                    (/^#([0-9a-fA-F]{1,2}){3,4}$/.exec(color)) !== null,
                     `Color '${color}' is not a valid hexadecimal color`,
                     baseErrorPath
                 );

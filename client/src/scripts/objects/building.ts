@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { Buildings, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";

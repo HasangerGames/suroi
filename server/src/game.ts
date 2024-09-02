@@ -382,7 +382,7 @@ export class Game implements GameData {
             close(socket: WebSocket<PlayerContainer>) {
                 const data = socket.getUserData();
                 // FIXME someone explain why this is safe
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                 if (Config.protection) This.simultaneousConnections[data.ip!]--;
 
                 const { player } = data;
@@ -741,8 +741,8 @@ export class Game implements GameData {
                     const gasPosition = this.gas.currentPosition;
                     const gasRadius = this.gas.newRadius ** 2;
                     const teamPosition = this.teamMode
-                        // teamMode should guarantee the `team` object's existence
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // teamMode should guarantee the `team` object's existence
+
                         ? pickRandomInArray(team!.getLivingPlayers())?.position
                         : undefined;
 
@@ -771,7 +771,7 @@ export class Game implements GameData {
                             if (
                                 object.isPlayer
                                 // teamMode should guarantee the `team` object's existence
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                                 && (!this.teamMode || !team!.players.includes(object))
                             ) {
                                 foundPosition = false;
@@ -931,7 +931,11 @@ export class Game implements GameData {
 
         try {
             player.socket.close();
-        } catch (e) { /* not a really big deal if we can't close the socket */ }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
+            /* not a really big deal if we can't close the socket */
+            // when does this ever fail?
+        }
         this.pluginManager.emit(Events.Player_Disconnect, player);
     }
 

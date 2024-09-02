@@ -156,8 +156,8 @@ export function spritesheet(): Plugin[] {
                         const sheets = atlases[atlasId];
                         for (const sheet of [...sheets.low, ...sheets.high]) {
                             // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            files.set(sheet.json.meta.image!, sheet.image);
+
+                            files.set(sheet.json.meta.image, sheet.image);
                         }
                     }
                 }

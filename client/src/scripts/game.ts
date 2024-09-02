@@ -909,7 +909,7 @@ export class Game {
                                 )
                             ) || (
                                 type === ItemType.Gun
-                                    && weapons?.some(
+                                && weapons?.some(
                                         weapon => {
                                             const definition = weapon?.definition;
 

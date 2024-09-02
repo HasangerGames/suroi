@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import $ from "jquery";
 import { Numeric } from "../../../../../common/src/utils/math";
 import { Stack } from "../../../../../common/src/utils/misc";
@@ -223,7 +224,7 @@ export class GameConsole {
 
                 rewriteToLS = true;
 
-                if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
+                if (!(/^uv_[a-zA-Z0-9_]+$/.exec(name))) {
                     const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or is an old CVar that no longer exists). It will not be registered and will be deleted.`;
 
                     console.warn(message);

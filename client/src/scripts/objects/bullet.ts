@@ -84,6 +84,7 @@ export class Bullet extends BaseBullet {
                     );
                 }
 
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 (!object.isObstacle || !object.definition.isStair) && this.damagedIDs.add(object.id);
 
                 if (object.isObstacle) {

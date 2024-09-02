@@ -216,7 +216,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             ) continue;
 
             // do a little cfa above to see why the conditional does filter out null-ish hitboxes (left as an exercise to the reader)
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
             const hitbox = object.hitbox!;
 
             // This is a discrete collision detection that looks for overlap between geometries.
@@ -492,6 +492,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             case HitboxType.Group: {
                 for (const target of hitbox.hitboxes) {
                     if (target.collidesWith(this.hitbox)) {
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                         target instanceof CircleHitbox
                             ? handleCircle(target)
                             : handleRectangle(target);

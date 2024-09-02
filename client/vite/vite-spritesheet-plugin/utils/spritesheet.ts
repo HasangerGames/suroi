@@ -126,7 +126,7 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
 
                 const sourceParts = data.path.split(platform() === "win32" ? "\\" : "/");
                 // there is _probably_ a file name
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                 let name = sourceParts.at(-1)!;
 
                 if (options.removeExtensions) {

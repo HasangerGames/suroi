@@ -432,6 +432,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
         if (!this._head) throw new Error("Empty queue");
 
         const value = this._head.value;
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         (this._head = this._head.next) ?? delete this._tail;
 
         return value;
@@ -498,7 +499,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
 export class ExtendedMap<K, V> extends Map<K, V> {
     private _get(key: K): V {
         // it's up to callers to verify that the key is valid
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         return super.get(key)!;
     }
 
@@ -512,7 +513,7 @@ export class ExtendedMap<K, V> extends Map<K, V> {
      */
     getAndSetIfAbsent(key: K, fallback: V): V {
         // pretty obvious why this is okay
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         if (this.has(key)) return this.get(key)!;
 
         this.set(key, fallback);
@@ -530,7 +531,7 @@ export class ExtendedMap<K, V> extends Map<K, V> {
      */
     getAndGetDefaultIfAbsent(key: K, fallback: () => V): V {
         // pretty obvious why this is okay
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         if (this.has(key)) return this.get(key)!;
 
         const value = fallback();

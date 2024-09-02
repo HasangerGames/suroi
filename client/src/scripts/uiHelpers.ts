@@ -17,6 +17,7 @@ export function createDropdown(selector: string): void {
             this.caret.addClass("fa-caret-down").removeClass("fa-caret-up");
         },
         toggle() {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             this.active
                 ? this.hide()
                 : this.show();

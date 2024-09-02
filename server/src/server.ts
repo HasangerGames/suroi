@@ -255,6 +255,7 @@ if (isMainThread) {
         message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
             const player = socket.getUserData().player;
             // we pray
+
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             void player.team.onMessage(player, JSON.parse(textDecoder.decode(message)));
         },

@@ -115,6 +115,7 @@ export function getTranslatedString(key: string, replacements?: Record<string, s
         foundTranslation = TRANSLATIONS.translations[language]?.[key]
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
         foundTranslation = "no translation found";
     }

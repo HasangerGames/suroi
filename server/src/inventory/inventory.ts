@@ -178,7 +178,7 @@ export class Inventory {
         }
 
         // nna is fine cuz of the hasWeapon call above
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         const item = this.weapons[slot]!;
         const owner = this.owner;
 
@@ -230,7 +230,7 @@ export class Inventory {
      */
     get activeWeapon(): InventoryItem {
         // we hope that it's never undefined
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         return this.weapons[this._activeWeaponIndex]!;
     }
 
@@ -428,7 +428,7 @@ export class Inventory {
                 // welp, time to swap to another slot
 
                 // if we get here, there's hopefully a throwable slot
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                 const slot = this.slotsByItemType[ItemType.Throwable]![0];
 
                 this.unlock(slot);
@@ -437,7 +437,7 @@ export class Inventory {
             }
         } else {
             // only fails if `throwableItemMap` falls out-of-sync… which hopefully shouldn't happen lol
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
             this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
         }
     }
@@ -787,7 +787,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
      */
     getItem(key: ReferenceTo<ItemDef>): number {
         // please be responsible enough to call `hasItem` beforehand…
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         return this._internal.get(key)!;
     }
 

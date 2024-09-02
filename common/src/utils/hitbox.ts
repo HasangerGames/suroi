@@ -479,7 +479,7 @@ export class GroupHitbox<GroupType extends ReadonlyArray<RectangleHitbox | Circl
         }
 
         // we pray that this nna is okay (if this.hitboxes is empty, it won't be okay)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         return record!;
     }
 

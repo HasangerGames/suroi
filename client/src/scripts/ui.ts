@@ -294,6 +294,7 @@ export async function setUpUI(game: Game): Promise<void> {
     selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
     updateServerSelectors();
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
 
@@ -836,6 +837,7 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#btn-quit-game, #btn-spectate-menu, #btn-menu").on("click", () => {
         void game.endGame();
     });
+
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
         await game.endGame();
@@ -1700,7 +1702,8 @@ Video evidence is required.`)) {
             localStorage.setItem("suroi_config", input);
             alert("Settings loaded successfully.");
             window.location.reload();
-        } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
             error();
         }
     });

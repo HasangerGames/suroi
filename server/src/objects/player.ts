@@ -504,7 +504,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.items.incrementItem(idString, count ?? 3);
         inventory.useItem(idString);
         // we hope `throwableItemMap` is correctly sync'd
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
@@ -542,7 +542,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             if (inventory.throwableItemMap.has(item)) {
                 // we hope `throwableItemMap` is correctly sync'd
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                 inventory.throwableItemMap.get(item)!.count = maxCapacity;
             }
         }
@@ -1387,7 +1387,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (
                 this.game.teamMode
                 // teamMode hopefully guarantees team's existence
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                 && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)
                 && !this.downed
             ) {
@@ -1416,7 +1416,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 {
                     item: weaponUsed,
                     // canTrackStats ensures this object's existence
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
                     oldStats: oldStats!,
                     newStats: { ...weaponUsed.stats },
                     diff: {
@@ -1716,7 +1716,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             // team can't be nullish here because if it were, it would fail the conditional this code is wrapped in
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
             this.game.teams.delete(team!);
         }
     }
@@ -1878,6 +1878,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case InputActions.ToggleSlotLock: {
                     const slot = action.slot;
 
+                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     inventory.isLocked(slot)
                         ? inventory.unlock(slot)
                         : inventory.lock(slot);

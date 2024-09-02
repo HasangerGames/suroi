@@ -1184,7 +1184,7 @@ export function setUpCommands(game: Game): void {
                 return { err: `Cannot shadow cvar '${name}'` };
             }
 
-            if (name.match(/^\w{2}_/)) {
+            if (/^\w{2}_/.exec(name)) {
                 return { err: "Alias name must not match regular expression <code>^\\w{2}_</code>" };
             }
 
@@ -1392,7 +1392,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
+            if (!(/^uv_[a-zA-Z0-9_]+$/.exec(name))) {
                 return {
                     err: "Custom CVar name be at least one character long (not including the prefix) and can only contain letters, numbers and underscores"
                 };
