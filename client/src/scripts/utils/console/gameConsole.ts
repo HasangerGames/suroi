@@ -224,7 +224,7 @@ export class GameConsole {
 
                 rewriteToLS = true;
 
-                if (!(/^uv_[a-zA-Z0-9_]+$/.exec(name))) {
+                if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
                     const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or is an old CVar that no longer exists). It will not be registered and will be deleted.`;
 
                     console.warn(message);

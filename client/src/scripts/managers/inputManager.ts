@@ -461,7 +461,7 @@ export class InputManager {
 
             input = key.length > 1
                 ? key
-                : (/^(Key|Digit)/.exec(code))
+                : code.match(/^(Key|Digit)/)
                     ? code.slice(-1)
                     : code;
 

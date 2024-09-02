@@ -142,7 +142,12 @@ export default tseslint.config(
             /**
              * ESLint doesn't understand how generic types work.
              */
-            ["@typescript-eslint/no-unnecessary-type-parameters"]: "off"
+            ["@typescript-eslint/no-unnecessary-type-parameters"]: "off",
+
+            /**
+             * These two methods do NOT have the same behavior, unlike what ESLint claims.
+             */
+            ["@typescript-eslint/prefer-regexp-exec"]: "off"
 
             // #endregion
         }

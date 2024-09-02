@@ -1106,7 +1106,7 @@ export const validators = Object.freeze({
             }
             case "string": {
                 tester.assert(
-                    (/^#([0-9a-fA-F]{1,2}){3,4}$/.exec(color)) !== null,
+                    color.match(/^#([0-9a-fA-F]{1,2}){3,4}$/) !== null,
                     `Color '${color}' is not a valid hexadecimal color`,
                     baseErrorPath
                 );
