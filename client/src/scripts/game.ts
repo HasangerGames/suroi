@@ -1,5 +1,5 @@
 import { sound, type Sound } from "@pixi/sound";
-import { Application, Color } from "pixi.js";
+import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
 import { InputActions, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
@@ -22,7 +22,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { equalLayer } from "../../../common/src/utils/layer";
-import { Geometry } from "../../../common/src/utils/math";
+import { EaseFunctions, Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
@@ -52,7 +52,7 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } 
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
@@ -106,6 +106,8 @@ export class Game {
     teamID = -1;
 
     teamMode = false;
+
+    layerTween?: Tween<Container>;
 
     /**
      * proxy for `activePlayer`'s layer
@@ -612,11 +614,24 @@ export class Game {
             if (object === undefined || object.destroyed) {
                 type K = typeof type;
 
-                this.objects.add(
-                    new (
-                        ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-                    )(this, id, data)
-                );
+                const _object = new (
+                    ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+                )(this, id, data);
+                this.objects.add(_object);
+
+                // Layer Transition: We pray that this works lmao
+                if (_object.layer !== (this.layer ?? Layer.Ground)) {
+                    _object.container.alpha = 0;
+                    this.layerTween = this.addTween({
+                        target: _object.container,
+                        to: { alpha: 1 },
+                        duration: LAYER_TRANSITION_DELAY,
+                        ease: EaseFunctions.sineOut,
+                        onComplete: () => {
+                            this.layerTween = undefined;
+                        }
+                    });
+                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -639,8 +654,24 @@ export class Game {
                 continue;
             }
 
-            object.destroy();
-            this.objects.delete(object);
+            // Layer Transition: We pray that this works lmao
+            if (object.layer !== (this.layer ?? Layer.Ground)) {
+                object.container.alpha = 1;
+                this.layerTween = this.addTween({
+                    target: object.container,
+                    to: { alpha: 0 },
+                    duration: LAYER_TRANSITION_DELAY,
+                    ease: EaseFunctions.sineOut,
+                    onComplete: () => {
+                        this.layerTween = undefined;
+                        object.destroy();
+                        this.objects.delete(object);
+                    }
+                });
+            } else {
+                object.destroy();
+                this.objects.delete(object);
+            }
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {

@@ -85,6 +85,14 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
                 damageReduction: 0.45
             },
             "Tactical"
+        ),
+        apply(
+            "vest_factory",
+            {
+                level: 99,
+                damageReduction: 0.72
+            },
+            "HAZEL"
         )
     ]
 );
