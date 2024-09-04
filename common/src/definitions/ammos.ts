@@ -79,7 +79,19 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
         {
             idString: "50cal",
             name: ".50 Cal",
-            maxStackSize: 10,
+            maxStackSize: 9,
+            characteristicColor: {
+                hue: 0,
+                saturation: 0,
+                lightness: 0
+            },
+            defaultCasingFrame: "casing_50bmg",
+            hideUnlessPresent: true
+        },
+        {
+            idString: "338lap",
+            name: ".338 Lapua Magnum",
+            maxStackSize: 9,
             characteristicColor: {
                 hue: 75,
                 saturation: 100,

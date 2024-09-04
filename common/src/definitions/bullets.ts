@@ -10,7 +10,8 @@ const bulletColors: Record<string, number> = {
     "12g": 0xffc8c8,
     "556mm": 0x80ff80,
     "762mm": 0x80ffff,
-    "50cal": 0x408000,
+    "50cal": 0x202020,
+    "338lap": 0x408000,
     "shrapnel": 0x1d1d1d
 };
 

@@ -681,45 +681,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "barrett_m95",
-            name: "Barrett M95",
-            ammoType: "50cal",
-            ammoSpawnAmount: 25,
-            capacity: 5,
-            reloadTime: 3.4,
-            fireDelay: 1400,
-            switchDelay: 900,
-            recoilMultiplier: 0.3,
-            recoilDuration: 1500,
-            fireMode: FireMode.Single,
-            shotSpread: 0.5,
-            moveSpread: 4,
-            length: 9.2,
-            shootOnRelease: true,
-            fists: {
-                left: Vec.create(115, -4),
-                right: Vec.create(40, 0),
-                rightZIndex: 4,
-                animationDuration: 100
-            },
-            image: { position: Vec.create(90, 4) },
-            casingParticles: [{
-                position: Vec.create(2, 0.6),
-                ejectionDelay: 700
-            }],
-            gasParticles: gasParticlePresets.rifle,
-            ballistics: {
-                damage: 129,
-                obstacleMultiplier: 1,
-                speed: 0.45,
-                range: 300,
-                tracer: {
-                    width: 2.5,
-                    length: 4
-                }
-            }
-        },
-        {
             idString: "m1895",
             name: "M1895",
             ammoType: "762mm",
@@ -1621,6 +1582,39 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 }
             }
         },
+        {
+            idString: "l115a1", // TODO: casing
+            name: "L115A1",
+            ammoType: "338lap",
+            ammoSpawnAmount: 18,
+            fireDelay: 1500,
+            switchDelay: 900,
+            recoilMultiplier: 0.4,
+            recoilDuration: 1600,
+            fireMode: FireMode.Single,
+            shotSpread: 0.5,
+            moveSpread: 3,
+            length: 10.8,
+            fists: {
+                left: Vec.create(40, 0),
+                right: Vec.create(120, 0),
+                leftZIndex: 4,
+                animationDuration: 100
+            },
+            image: { position: Vec.create(120, 4) },
+            gasParticles: gasParticlePresets.rifle,
+            capacity: 3,
+            reloadTime: 3.8,
+            ballistics: {
+                damage: 150,
+                obstacleMultiplier: 1,
+                speed: 0.5,
+                tracer: {
+                    width: 2
+                },
+                range: 300
+            }
+        },
 
         // only event weapons below this point
         {
@@ -1934,7 +1928,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "destroyer_of_worlds",
             name: "Destroyer Of Worlds",
-            ammoType: "50cal",
+            ammoType: "338lap",
             ammoSpawnAmount: 255,
             capacity: 255,
             reloadTime: 0.4,

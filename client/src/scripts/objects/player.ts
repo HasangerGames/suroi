@@ -958,7 +958,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && !this.hideEquipment
             && (type !== "backpack" || !this.downed)
         ) {
-            image.setFrame(`${def.idString}_world`).setVisible(true);
+            if (type !== "vest") {
+                image.setFrame(`${def.idString}_world`).setVisible(true);
+            } else if ("color" in def && def.color) { // tint stuff for vests
+                image.setFrame("vest_world").setVisible(true);
+                image.setTint(def.color);
+            }
 
             if (type === "helmet") {
                 image.setPos(
