@@ -35,10 +35,13 @@ const foldersToWatch = Object.values(atlasesToBuild);
 async function buildSpritesheets(): Promise<MultiResAtlasList> {
     const atlases: MultiResAtlasList = {};
 
-    for (const atlasId in atlasesToBuild) {
-        console.log(`Building spritesheet ${atlasId}...`);
-
+    const ids = Object.keys(atlasesToBuild);
+    let i = 0;
+    for (const atlasId of ids) {
         const files: string[] = readDirectory(atlasesToBuild[atlasId]).filter(x => imagesMatcher.match(x));
+
+        console.log(`Building spritesheet '${atlasId}' (${++i} / ${ids.length}, ${files.length} files in '${atlasId}')`);
+
         atlases[atlasId] = await createSpritesheets(files, {
             ...compilerOpts,
             name: atlasId
@@ -156,8 +159,8 @@ export function spritesheet(): Plugin[] {
                         const sheets = atlases[atlasId];
                         for (const sheet of [...sheets.low, ...sheets.high]) {
                             // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-
-                            files.set(sheet.json.meta.image, sheet.image);
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            files.set(sheet.json.meta.image!, sheet.image);
                         }
                     }
                 }
