@@ -144,6 +144,7 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Otevřít Padák",
     "interact_control_panel": "Aktivovat kontrolní panel",
+    "interact_headquarters_security_desk": "Aktivovat kontrolní panel",
     "interact_generator": "Aktivovat generátor",
     "interact_button": "Zmáčknout tlačítko",
 

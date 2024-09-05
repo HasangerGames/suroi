@@ -144,6 +144,7 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Mở Airdrop",
     "interact_control_panel": "Kích Hoạt Bảng Điều Khiển",
+    "interact_headquarters_security_desk": "Kích Hoạt Bảng Điều Khiển",
     "interact_generator": "Kích Hoạt Động Cơ",
     "interact_button": "Nhấn Nút",
 

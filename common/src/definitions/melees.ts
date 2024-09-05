@@ -1,7 +1,7 @@
 import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { type Materials } from "./obstacles";
+import { Materials } from "./obstacles";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
@@ -311,7 +311,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "crate", "iron", "stone"],
+            canPierceMaterials: Materials,
             killstreak: true,
             radius: 4,
             offset: Vec.create(5, 0),

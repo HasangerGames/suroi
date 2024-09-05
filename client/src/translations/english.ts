@@ -144,6 +144,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Open Airdrop",
     "interact_control_panel": "Activate Control Panel",
+    "interact_headquarters_security_desk": "Activate Control Panel",
     "interact_generator": "Activate Generator",
     "interact_button": "Press Button",
     "interact_speaker": "Play Speaker",

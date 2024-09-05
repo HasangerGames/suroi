@@ -139,6 +139,7 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Opwen Airdwop!!",
     "interact_control_panel": "Activate Contwol Panel!!",
+    "interact_headquarters_security_desk": "Activate Contwol Panel!!",
     "interact_generator": "Activate Genewator!!",
     "interact_button": "Pwess Button!!",
 

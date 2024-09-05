@@ -144,6 +144,7 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "空中を投下開い",
     "interact_control_panel": "制御盤を活性化",
+    "interact_headquarters_security_desk": "制御盤を活性化",
     "interact_generator": "発生器を活性化",
     "interact_button": "ボタンを押す",
 

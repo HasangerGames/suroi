@@ -146,6 +146,7 @@ export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Atidaryti oro krovinį",
     "interact_control_panel": "Įjungti valdymo skydelį",
+    "interact_headquarters_security_desk": "Įjungti valdymo skydelį",
     "interact_generator": "Įjungti generatorių",
     "interact_button": "Paspausti mygtuką",
 

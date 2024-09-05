@@ -143,6 +143,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Ouvrir l'Airdrop",
     "interact_control_panel": "Activer le panneau de contrôle",
+    "interact_headquarters_security_desk": "Activer le panneau de contrôle",
     "interact_generator": "Activer le Générateur",
     "interact_button": "Appuyer sur le bouton",
 

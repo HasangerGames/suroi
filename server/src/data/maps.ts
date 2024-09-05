@@ -433,7 +433,7 @@ const maps = {
             /* for (let i = 0; i < 10; i++) {
                 map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
             } */
-            map.generateBuilding("headquarters_2", Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(building, Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -603,7 +603,8 @@ const maps = {
                 container_7: 1,
                 container_8: 1,
                 container_9: 1,
-                container_10: 1
+                container_10: 1,
+                single_bunker: 1
             };
 
             const obstacles = {

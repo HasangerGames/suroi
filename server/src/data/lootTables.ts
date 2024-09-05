@@ -102,9 +102,19 @@ export const LootTables: Record<string, LootTable> = {
         max: 5,
         loot: [
             { tier: "special_guns", weight: 1 },
-            { tier: "special_healing_items", weight: 0.15 },
             { tier: "special_equipment", weight: 0.65 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { tier: "special_healing_items", weight: 0.15 }
+        ]
+    },
+    dumpster: {
+        min: 1,
+        max: 2,
+        loot: [
+            { tier: "guns", weight: 0.8 },
+            { tier: "healing_items", weight: 0.6 },
+            { tier: "scopes", weight: 0.4 },
+            { tier: "equipment", weight: 0.3 }
         ]
     },
     flint_crate: {
@@ -264,6 +274,24 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.3 }
         ]
     },
+    hq_desk_left: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "healing_items", weight: 0.8 },
+            { tier: "guns", weight: 0.3 }
+        ]
+    },
+    hq_desk_right: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "healing_items", weight: 0.8 },
+            { tier: "guns", weight: 0.3 }
+        ]
+    },
     metal_small_drawer: {
         min: 1,
         max: 1,
@@ -319,12 +347,20 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 0.6 }
         ]
     },
-    trash_can: { // note from pap: very small chance to get the cola from the trash can :D
+    trash_can: {
         min: 1,
         max: 1,
         loot: [
-            { item: "cola", weight: 0.1 },
-            { item: NullString, weight: 1 }
+            { tier: "ammo", weight: 1 },
+            { item: "cola", weight: 0.1 }
+        ]
+    },
+    trash_bag: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { item: "cola", weight: 0.1 }
         ]
     },
     fridge: {
@@ -528,6 +564,14 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "special_guns", weight: 1 }
+        ]
+    },
+    gun_locker: {
+        min: 1,
+        max: 2,
+        loot: [
+            { tier: "special_guns", weight: 1 },
+            { tier: "airdrop_guns", weight: 0.1 }
         ]
     },
     ammo_crate: {

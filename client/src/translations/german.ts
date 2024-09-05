@@ -139,6 +139,7 @@ export const GERMAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Luftabwurf öffnen",
     "interact_control_panel": "Bedienfeld aktivieren",
+    "interact_headquarters_security_desk": "Bedienfeld aktivieren",
     "interact_generator": "Generator aktivieren",
     "interact_button": "Knopf drücken",
 
