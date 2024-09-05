@@ -420,7 +420,7 @@ Special thanks to Leia and platonthek. This update wouldn't have been possible w
 
 There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of a punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.<br><br>
 
-Surians can now customize their skins, and express themselves with emotes too! Everything is unlocked until accounts are added.`,
+Suroians can now customize their skins, and express themselves with emotes too! Everything is unlocked until accounts are added.`,
         longContent: `<h2>Suroi v0.9.0</h2>
 
 <h3>New features & changes</h3>
