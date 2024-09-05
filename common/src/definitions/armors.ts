@@ -98,7 +98,7 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
                 damageReduction: 0.72,
                 color: 0x2f0000
             },
-            "HAZEL"
+            "Developr"
         )
     ]
 );
