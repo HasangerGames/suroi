@@ -1155,15 +1155,17 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
 
         // HQ walls (headquarters)
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.5, 2) }, 1),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21, 2) }, 2),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.05, 2) }, 2),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(9.1, 2) }, 3),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(15.5, 2) }, 4),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(16.3, 2) }, 5),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.25, 2) }, 6),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 7),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.1, 1.6) }, 8, true),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.2, 1.6) }, 8, true),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11, 2) }, 9),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(16, 2) }, 10),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(39.2, 2) }, 11),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.5, 1.6) }, 12, true),
 
         {
             idString: "fridge",
@@ -3123,14 +3125,16 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "headquarters_main_desk",
             name: "Headquarters Main Desk",
-            material: "wood",
+            material: "stone",
             health: 120,
+            indestructible: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
                 destroy: 0.95
             },
             hideOnMap: true,
+            invisible: true,
             noResidue: true,
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
@@ -3139,6 +3143,29 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 RectangleHitbox.fromRect(4.6, 8, Vec.create(9.5, -1.5)),
                 RectangleHitbox.fromRect(4.6, 8, Vec.create(-9.5, -1.5))
             ),
+            frames: {
+                particle: "hq_stone_wall_particle"
+            },
+            particleVariations: 2
+        },
+        {
+            idString: "headquarters_cafeteria_table",
+            name: "Headquarters Cafeteria Table",
+            material: "wood",
+            health: 120,
+            noBulletCollision: true,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hideOnMap: true,
+            invisible: true,
+            noResidue: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            hitbox: RectangleHitbox.fromRect(22.8, 5),
             frames: {
                 particle: "headquarters_desk_particle"
             }
