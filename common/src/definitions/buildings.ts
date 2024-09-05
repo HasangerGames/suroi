@@ -2200,12 +2200,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "oil_tanker_ship_floor_2",
                     position: Vec.create(57, -0.1),
-                    scale: Vec.create(1.07, 1.07)
+                    scale: Vec.create(2.139, 2.139)
                 },
                 {
                     key: "oil_tanker_ship_floor_3",
                     position: Vec.create(153, -0.2),
-                    scale: Vec.create(1.07, 1.07)
+                    scale: Vec.create(2.139, 2.139)
                 },
                 {
                     key: "oil_tanker_ship_back",
