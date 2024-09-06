@@ -2966,45 +2966,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited
         },
         {
-            idString: "hq_stair_upper_wall",
-            name: "HQ Stair Wall (upper)",
-            material: "metal",
-            health: 1000,
-            spanAdjacentLayers: true,
-            indestructible: true,
-            invisible: true,
-            allowFlyover: FlyoverPref.Never,
-            reflectBullets: true,
-            hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(1, 21, Vec.create(-1, 0)),
-                RectangleHitbox.fromRect(1, 21, Vec.create(1, 0)),
-                RectangleHitbox.fromRect(11, 1, Vec.create(-6.5, 10))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
-            idString: "hq_stair_lower_wall",
-            name: "HQ Stair Wall (lower)",
-            material: "metal",
-            health: 1000,
-            spanAdjacentLayers: true,
-            indestructible: true,
-            invisible: true,
-            allowFlyover: FlyoverPref.Never,
-            reflectBullets: true,
-            hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(1, 21),
-                RectangleHitbox.fromRect(12, 1, Vec.create(6.5, -10.02))
-            ),
-            frames: {
-                particle: "metal_particle"
-            },
-            rotationMode: RotationMode.Limited
-        },
-        {
             idString: "bunker_stair",
             name: "Bunker Stair",
             material: "metal",
@@ -3066,12 +3027,13 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "metal",
             health: 1000,
             indestructible: true,
+            invisible: true,
             role: ObstacleSpecialRoles.Stair,
             activeEdges: {
                 high: 0,
                 low: 2
             },
-            hitbox: RectangleHitbox.fromRect(9.5, 17),
+            hitbox: RectangleHitbox.fromRect(11, 17),
             frames: {
                 particle: "metal_particle"
             },

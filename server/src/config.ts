@@ -21,11 +21,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:headquarters_2",
+    map: "singleBuilding:headquarters",
 
     spawn: SpawnMode.Center,
 
-    disableBuildingCheck: true,
+    disableBuildingCheck: false,
 
     maxTeamSize: TeamSize.Solo,
 
