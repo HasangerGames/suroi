@@ -1600,9 +1600,9 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 position: Vec.create(3.5, 0.2)
             }],
             fists: {
-                left: Vec.create(40, 0),
-                right: Vec.create(120, 0),
-                leftZIndex: 4,
+                left: Vec.create(120, 0),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
                 animationDuration: 100
             },
             image: { position: Vec.create(120, 4) },
