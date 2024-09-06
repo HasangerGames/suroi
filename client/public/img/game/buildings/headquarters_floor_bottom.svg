@@ -28,15 +28,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.26110523"
-     inkscape:cx="612.77976"
-     inkscape:cy="342.77368"
+     inkscape:zoom="0.73851711"
+     inkscape:cx="1945.7911"
+     inkscape:cy="448.87247"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g249232-7-6" />
   <defs
      id="defs62772">
     <clipPath
@@ -10212,30 +10212,7 @@
                transform="rotate(180,-112.75707,446.43538)" />
             <g
                id="g249176-1-7"
-               transform="matrix(1,0,0,-1,-1274.5153,1723.4151)">
-              <g
-                 id="g249174-9-2"
-                 transform="translate(-7114.4056,-1229.9067)">
-                <rect
-                   style="fill:#4a4134;fill-opacity:1;stroke:#453c31;stroke-width:2.69006;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
-                   id="rect249170-1-4"
-                   width="13.165745"
-                   height="13.165745"
-                   x="7831.1519"
-                   y="1973.0168"
-                   rx="1.0798858"
-                   ry="1.0798858" />
-                <rect
-                   style="fill:#a3917b;fill-opacity:1;stroke:none;stroke-width:2.25041;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
-                   id="rect249172-3-8"
-                   width="11.096908"
-                   height="11.014225"
-                   x="7832.1772"
-                   y="1974.0692"
-                   rx="0.90341306"
-                   ry="0.90341306" />
-              </g>
-            </g>
+               transform="matrix(1,0,0,-1,-1274.5153,1723.4151)" />
             <rect
                style="fill:#6e5838;fill-opacity:0.15;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
                id="rect249178-9-6"
@@ -10247,30 +10224,7 @@
                ry="0" />
             <g
                id="g249186-4-2"
-               transform="matrix(1,0,0,-1,-1274.5815,1593.93)">
-              <g
-                 id="g249184-4-2"
-                 transform="translate(-7114.4056,-1229.9067)">
-                <rect
-                   style="fill:#4a4134;fill-opacity:1;stroke:#453c31;stroke-width:2.69006;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
-                   id="rect249180-2-2"
-                   width="13.165745"
-                   height="13.165745"
-                   x="7831.1519"
-                   y="1973.0168"
-                   rx="1.0798858"
-                   ry="1.0798858" />
-                <rect
-                   style="fill:#a3917b;fill-opacity:1;stroke:none;stroke-width:2.25041;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
-                   id="rect249182-9-8"
-                   width="11.096908"
-                   height="11.014225"
-                   x="7832.1772"
-                   y="1974.0692"
-                   rx="0.90341306"
-                   ry="0.90341306" />
-              </g>
-            </g>
+               transform="matrix(1,0,0,-1,-1274.5815,1593.93)" />
             <g
                id="g249192-5-4"
                transform="matrix(-1.6665105,0,0,1.6665105,1365.7273,-436.92331)"

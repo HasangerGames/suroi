@@ -7,8 +7,8 @@
    viewBox="0 0 758.38866 426.99134"
    version="1.1"
    id="svg62775"
-   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
-   sodipodi:docname="hq final.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="headquarters_floor_top.svg"
    inkscape:export-filename="hq_floor_1_b.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.065276308"
-     inkscape:cx="-2382.1813"
-     inkscape:cy="-597.46026"
+     inkscape:zoom="0.73851712"
+     inkscape:cx="2368.2593"
+     inkscape:cy="1709.5067"
      inkscape:window-width="1920"
-     inkscape:window-height="1009"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -9823,22 +9823,6 @@
                  id="path248922-0-4" />
             </g>
             <g
-               id="g248930-4-4"
-               transform="translate(921.48937,370.7561)">
-              <path
-                 d="m -1447.4071,88.46047 h -11.0066 c -0.5954,0 -1.0795,-0.48419 -1.0795,-1.0795 V 76.3743 c 0,-0.59796 0.4841,-1.0795 1.0795,-1.0795 h 11.0066 c 0.598,0 1.0795,0.48154 1.0795,1.0795 v 11.00667 c 0,0.59531 -0.4815,1.0795 -1.0795,1.0795 z"
-                 fill="#4a4134"
-                 stroke="#453c31"
-                 stroke-width="2.69007"
-                 stroke-linecap="round"
-                 id="path248926-8-6" />
-              <path
-                 d="m -1448.2749,87.40743 h -9.2895 c -0.4974,0 -0.9023,-0.40482 -0.9023,-0.90223 v -9.2075 c 0,-0.50006 0.4049,-0.90488 0.9023,-0.90488 h 9.2895 c 0.5001,0 0.9049,0.40482 0.9049,0.90488 v 9.2075 c 0,0.49741 -0.4048,0.90223 -0.9049,0.90223 z"
-                 fill="#a3917b"
-                 id="path248928-9-6"
-                 style="stroke-width:0.264583" />
-            </g>
-            <g
                id="g249138-4-4"
                transform="translate(1527.203,1076.7701)">
               <path
@@ -10477,22 +10461,6 @@
                  stroke-linecap="square"
                  id="path249152-6-2"
                  style="fill:#8c8c8c;fill-opacity:1;stroke:#424242;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
-            </g>
-            <g
-               id="g249160-3-95"
-               transform="translate(921.48937,483.0891)">
-              <path
-                 d="m -1447.4071,88.46047 h -11.0066 c -0.5954,0 -1.0795,-0.48419 -1.0795,-1.0795 V 76.3743 c 0,-0.59796 0.4841,-1.0795 1.0795,-1.0795 h 11.0066 c 0.598,0 1.0795,0.48154 1.0795,1.0795 v 11.00667 c 0,0.59531 -0.4815,1.0795 -1.0795,1.0795 z"
-                 fill="#4a4134"
-                 stroke="#453c31"
-                 stroke-width="2.69007"
-                 stroke-linecap="round"
-                 id="path249156-5-6" />
-              <path
-                 d="m -1448.2749,87.40743 h -9.2895 c -0.4974,0 -0.9023,-0.40482 -0.9023,-0.90223 v -9.2075 c 0,-0.50006 0.4049,-0.90488 0.9023,-0.90488 h 9.2895 c 0.5001,0 0.9049,0.40482 0.9049,0.90488 v 9.2075 c 0,0.49741 -0.4048,0.90223 -0.9049,0.90223 z"
-                 fill="#a3917b"
-                 id="path249158-6-5"
-                 style="stroke-width:0.264583" />
             </g>
             <rect
                style="fill:#6e5838;fill-opacity:0.15;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
