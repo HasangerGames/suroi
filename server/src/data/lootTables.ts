@@ -370,7 +370,7 @@ export const LootTables: Record<string, LootTable> = {
             { item: "cola", weight: 1 }
         ]
     },
-    fridge2: {
+    vending_machine: {
         min: 2,
         max: 3,
         loot: [
@@ -536,7 +536,8 @@ export const LootTables: Record<string, LootTable> = {
                 { tier: "gold_airdrop_guns", weight: 1 }
             ],
             [
-                { item: "frag_grenade", count: 3, weight: 1 }
+                { item: "frag_grenade",
+                    count: 3, weight: 1 }
             ]
         ]
     },

@@ -4219,6 +4219,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "trash_can", position: Vec.create(28.5, -28.7) },
                 { idString: "file_cart", position: Vec.create(-30, -19), rotation: 1 },
                 { idString: "cabinet", position: Vec.create(-43, -9.2), rotation: 1 },
+                { idString: "file_cart", position: Vec.create(17, -42), rotation: 0 },
 
                 // near stairs + near stairs room
                 { idString: "headquarters_wall_1", position: Vec.create(-40.9, -62.7), rotation: 0 },
@@ -4233,14 +4234,34 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
                 { idString: "window", position: Vec.create(41.6, 36.75), rotation: 1 },
                 { idString: "window", position: Vec.create(70.7, -6), rotation: 0 },
+                { idString: "dumpster", position: Vec.create(-62.5, -54.5), rotation: 0 },
+                { idString: "trash_bag", position: Vec.create(-69, -57.5) },
 
                 // cafeteria (top right)
+                { idString: "potted_plant", position: Vec.create(28.5, -101.1) },
                 { idString: "headquarters_wall_3", position: Vec.create(33, -100.9), rotation: 1 },
                 { idString: "door", position: Vec.create(33, -91.7), rotation: 1 },
                 { idString: "mobile_home_sink", position: Vec.create(39, -101.25), rotation: 0 },
                 { idString: "mobile_home_stove", position: Vec.create(47.5, -101.5), rotation: 0 },
                 { idString: "fridge", position: Vec.create(55.7, -101.65), rotation: 0 },
                 { idString: "fridge", position: Vec.create(65, -101.65), rotation: 0 },
+                { idString: "door", position: Vec.create(64.225, -84), rotation: 2 },
+
+                // under cafeteria
+                { idString: "headquarters_wall_10", position: Vec.create(32.7, -73.55), rotation: 1 },
+                { idString: "house_column", position: Vec.create(32.7, -64) },
+                { idString: "house_column", position: Vec.create(32.75, -42.8) },
+                { idString: "headquarters_wall_10", position: Vec.create(32.7, -33.5), rotation: 1 },
+                { idString: "vending_machine", position: Vec.create(37.5, -30.5), rotation: 1 },
+                { idString: "large_table", position: Vec.create(60.7, -60), rotation: 1, variation: 1 },
+                { idString: "chair", position: Vec.create(64.7, -53.6), rotation: 0 },
+                { idString: "chair", position: Vec.create(57.2, -53.6), rotation: 0 },
+                { idString: "chair", position: Vec.create(64.7, -66.2), rotation: 2 },
+                { idString: "chair", position: Vec.create(57.2, -66.2), rotation: 2 },
+                { idString: "large_table", position: Vec.create(63.2, -34.4), rotation: 0, variation: 1 },
+                { idString: "chair", position: Vec.create(57, -38), rotation: 3 }, // chair dist = 7.5
+                { idString: "chair", position: Vec.create(57, -30.5), rotation: 3 },
+                { idString: "chair", position: Vec.create(64.5, -42.8), rotation: 2 },
 
                 // toilets area
                 { idString: "headquarters_wall_2", position: Vec.create(11.9, -75.8), rotation: 1 },

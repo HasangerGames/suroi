@@ -1268,8 +1268,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
-            idString: "fridge2",
-            name: "Fridge 2",
+            idString: "vending_machine",
+            name: "Vending Machine",
             material: "appliance",
             health: 165,
             scale: {
