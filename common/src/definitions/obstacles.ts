@@ -1151,7 +1151,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 13, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }),
 
         // HQ walls (headquarters)
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.5, 2) }, 1),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.4, 2) }, 1),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.05, 2) }, 2),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(9.1, 2) }, 3),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(15.5, 2) }, 4),

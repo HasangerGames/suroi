@@ -3526,20 +3526,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         },
         {
             idString: "headquarters_mini_vault",
-            name: "Headquarters Ship Vault",
-            spawnHitbox: RectangleHitbox.fromRect(22, 30.6),
-            scopeHitbox: RectangleHitbox.fromRect(22, 30.6),
+            name: "Headquarters Mini Vault",
+            spawnHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
+            scopeHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [
                 {
-                    key: "headquarters_mini_vault_ceiling_1",
-                    position: Vec.create(0, -7.3),
-                    scale: Vec.create(1.08, 1.08)
-                },
-                {
-                    key: "headquarters_mini_vault_ceiling_2",
-                    position: Vec.create(0, 7),
-                    scale: Vec.create(1.08, 1.08)
+                    key: "headquarters_vault_ceiling",
+                    position: Vec.create(0.1, -7.2),
+                    scale: Vec.create(2.16, 2.15)
                 }
             ]
         },
@@ -4073,7 +4068,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             hitbox: new GroupHitbox(
                 // Outer walls
                 RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-29.2, -106.4)), // T, W1
-                RectangleHitbox.fromRect(47.7, 1.75, Vec.create(47.7, -106.4)), // T, W2
+                RectangleHitbox.fromRect(47.7, 1.75, Vec.create(47.65, -106.4)), // T, W2
                 RectangleHitbox.fromRect(1.75, 95.5, Vec.create(70.7, -59)), // R, W3
                 RectangleHitbox.fromRect(1.75, 38.25, Vec.create(70.7, 18.5)), // R, W4
                 RectangleHitbox.fromRect(23.6, 1.75, Vec.create(58.6, 36.75)), // B, W5
@@ -4083,7 +4078,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.75, 70, Vec.create(-70.7, 1.1)), // L, W9
                 RectangleHitbox.fromRect(1.75, 45.25, Vec.create(-70.7, -84.4)), // L, W10
                 RectangleHitbox.fromRect(14.6, 1.75, Vec.create(-64, -62.7)), // L, W11
-                RectangleHitbox.fromRect(1.75, 17.6, Vec.create(-57.6, -54)), // L, W12
+                RectangleHitbox.fromRect(1.75, 17.6, Vec.create(-57.6, -53.9)), // L, W12
                 RectangleHitbox.fromRect(1.75, 2, Vec.create(-57.6, -33.5)), // L, ???
                 RectangleHitbox.fromRect(22, 1.75, Vec.create(-60, -33)), // L, W13
 
@@ -4119,8 +4114,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Grass,
             puzzle: {
                 triggerOnSolve: "metal_door",
-                solvedSound: true,
-                delay: 2000,
+                solvedSound: false,
+                delay: 1000,
                 unlockOnly: true
             },
             floorImages: [
@@ -4215,23 +4210,43 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "glass_door", position: Vec.create(-25, 36.9), rotation: 2 },
 
                 // main area (hallway/where unbreakable large desk is)
-                { idString: "metal_door", position: Vec.create(17.5, -108.2), rotation: 2 },
-                { idString: "potted_plant", position: Vec.create(-33, -56.5) },
+                { idString: "potted_plant", position: Vec.create(-32, -56.5) },
                 { idString: "potted_plant", position: Vec.create(10.9, -56.5) },
-                // { idString: "white_small_couch", position: Vec.create(-41.5, -58), rotation: 0 },
+                { idString: "white_small_couch", position: Vec.create(-41.25, -57.5), rotation: 0 },
                 { idString: "white_small_couch", position: Vec.create(17, -71), rotation: 1 },
                 { idString: "small_drawer", position: Vec.create(17, -79.5), rotation: 1 },
                 { idString: "bookshelf", position: Vec.create(-8, -28.5), rotation: 0 },
-                { idString: "trash_can", position: Vec.create(28, -28.7) },
+                { idString: "trash_can", position: Vec.create(28.5, -28.7) },
                 { idString: "file_cart", position: Vec.create(-30, -19), rotation: 1 },
-                { idString: "cabinet", position: Vec.create(-43, -8.9), rotation: 1 },
+                { idString: "cabinet", position: Vec.create(-43, -9.2), rotation: 1 },
+
+                // near stairs + near stairs room
+                { idString: "headquarters_wall_1", position: Vec.create(-40.9, -62.7), rotation: 0 },
+                { idString: "door", position: Vec.create(-51.15, -62.7), rotation: 0 },
+                { idString: "cabinet", position: Vec.create(-42.25, -90.25), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                { idString: "trash_bag", position: Vec.create(-53, -90.25) },
+                { idString: "door", position: Vec.create(-40, -78.2), rotation: 2 },
+
+                // outside of hq (also windows and metal doors)
+                { idString: "metal_door", position: Vec.create(-57.55, -39.55), rotation: 3 },
+                { idString: "metal_door", position: Vec.create(18.25, -106.4), rotation: 2 },
+                { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
+                { idString: "window", position: Vec.create(41.6, 36.75), rotation: 1 },
+                { idString: "window", position: Vec.create(70.7, -6), rotation: 0 },
+
+                // cafeteria (top right)
+                { idString: "headquarters_wall_3", position: Vec.create(33, -100.9), rotation: 1 },
+                { idString: "door", position: Vec.create(33, -91.7), rotation: 1 },
+                { idString: "mobile_home_sink", position: Vec.create(39, -101.25), rotation: 0 },
+                { idString: "mobile_home_stove", position: Vec.create(47.5, -101.5), rotation: 0 },
+                { idString: "fridge", position: Vec.create(55.7, -101.65), rotation: 0 },
+                { idString: "fridge", position: Vec.create(65, -101.65), rotation: 0 },
 
                 // toilets area
                 { idString: "headquarters_wall_2", position: Vec.create(11.9, -75.8), rotation: 1 },
                 { idString: "headquarters_wall_3", position: Vec.create(11.9, -100.9), rotation: 1 },
                 { idString: "door", position: Vec.create(11.9, -91.85), rotation: 1 },
                 { idString: "headquarters_wall_11", position: Vec.create(-10.9, -62.7), rotation: 0 },
-
                 { idString: "toilet", position: Vec.create(5.5, -69), rotation: 2 },
                 { idString: "toilet", position: Vec.create(-9, -69), rotation: 2 },
                 { idString: "used_toilet", position: Vec.create(-24, -69), rotation: 2 },
@@ -4243,10 +4258,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "porta_potty_door", position: Vec.create(3.25, -82.1), rotation: 0 },
                 { idString: "porta_potty_door", position: Vec.create(-11.7, -82.1), rotation: 0 },
                 { idString: "porta_potty_door", position: Vec.create(-23.6, -82.1), rotation: 0 },
-                { idString: "trash_can", position: Vec.create(-29, -102) }
+                { idString: "trash_can", position: Vec.create(-29, -102) },
+
+                // security room + vault
+                { idString: "metal_door", position: Vec.create(-64.25, -0.65), rotation: 0, locked: true },
+                { idString: "headquarters_security_desk", position: Vec.create(-55.9, 33.25), rotation: 0, puzzlePiece: true },
+                { idString: "gun_mount_mini_14", position: Vec.create(-68, -27), lootSpawnOffset: Vec.create(5, 0.5), rotation: 1 },
+                { idString: "gun_locker", position: Vec.create(-62.5, -13.5), lootSpawnOffset: Vec.create(0.5, 0), rotation: 0 },
+                { idString: "gun_locker", position: Vec.create(-62.5, -19), lootSpawnOffset: Vec.create(0.5, 0), rotation: 2 },
+                { idString: "box", position: Vec.create(-53, -19) },
+                { idString: "box", position: Vec.create(-51, -14) }
 
             ] as BuildingObstacle[],
             subBuildings: [
+                { idString: "headquarters_mini_vault", position: Vec.create(-58.8, -9.4) },
                 { idString: "detector", position: Vec.create(-35, 25.5) },
                 { idString: "detector", position: Vec.create(-25, 25.5) }
             ]
