@@ -1062,11 +1062,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "red_house_floor_1",
-                    position: Vec.create(0, -17.2)
+                    position: Vec.create(0, -17.23)
                 },
                 {
                     key: "red_house_floor_2",
-                    position: Vec.create(0, 17.1)
+                    position: Vec.create(0, 17.23)
                 }
             ],
             ceilingImages: [{
@@ -1119,7 +1119,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // Bathroom Toilet
                 {
                     idString: { toilet: 2, used_toilet: 1 },
-                    position: Vec.create(3.6, 23.5),
+                    position: Vec.create(3.6, 23),
                     rotation: 2
                 },
                 // Front Door
@@ -1345,11 +1345,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "green_house_floor_1",
-                    position: Vec.create(22, 0)
+                    position: Vec.create(-26.66, 0)
                 },
                 {
                     key: "green_house_floor_2",
-                    position: Vec.create(-22, 0)
+                    position: Vec.create(21.5, 0)
                 }
             ],
             ceilingImages: [
