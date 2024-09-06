@@ -1932,7 +1932,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "destroyer_of_worlds",
             name: "Destroyer Of Worlds",
-            ammoType: "338lap",
+            ammoType: "50cal",
             ammoSpawnAmount: 255,
             capacity: 255,
             reloadTime: 0.4,

@@ -204,7 +204,7 @@ class GrenadeHandler {
             this.parent
         );
 
-        if (this.definition.c4 !== true) {
+        if (!this.definition.c4) {
             projectile.velocity = Vec.add(
                 Vec.fromPolar(
                     this.owner.rotation,

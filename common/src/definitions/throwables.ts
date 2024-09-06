@@ -22,7 +22,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Whether cooking the grenade will run down the fuse
      */
     readonly cookable: boolean
-    readonly c4?: boolean
+    readonly c4: boolean
     readonly health?: number
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
@@ -72,6 +72,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             cookable: false,
             fuseTime: 4000,
             cookTime: 150,
+            c4: false,
             throwTime: 150,
             noDrop: false,
             cookSpeedMultiplier: 0.7,
