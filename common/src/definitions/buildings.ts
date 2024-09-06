@@ -3656,7 +3656,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                   couch_part
                   couch_corner
                 */
-               // { idString: "hq_stair_upper_wall", position: Vec.create(-46.5, -100.5), rotation: 0 },
+                // { idString: "hq_stair_upper_wall", position: Vec.create(-46.5, -100.5), rotation: 0 },
                 { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
 
                 // ---------------------------------------------------------------------------------------------------------------
