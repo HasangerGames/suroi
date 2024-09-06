@@ -1614,7 +1614,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 obstacleMultiplier: 1,
                 speed: 0.5,
                 tracer: {
-                    width: 2
+                    width: 2.5,
+                    length: 4
                 },
                 range: 300
             }

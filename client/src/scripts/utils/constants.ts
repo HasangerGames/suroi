@@ -3,7 +3,7 @@ import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes"
 import { Config } from "../config";
 
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = !false;
+export const HITBOX_DEBUG_MODE = false;
 
 export const LAYER_TRANSITION_DELAY = 200;
 export const DIFF_LAYER_HITBOX_OPACITY = 0.25;

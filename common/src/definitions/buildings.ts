@@ -3941,7 +3941,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
                 { idString: "window", position: Vec.create(41.6, 36.75), rotation: 1 },
                 { idString: "window", position: Vec.create(70.7, -6), rotation: 0 },
-                { idString: "dumpster", position: Vec.create(-63, -54.1), rotation: 0 },
+                { idString: "dumpster", position: Vec.create(-63, -54.1), rotation: 2 },
                 { idString: "trash_bag", position: Vec.create(-69.5, -57.3) },
 
                 // office room
