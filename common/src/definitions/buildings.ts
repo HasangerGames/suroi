@@ -742,6 +742,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             particle: "rock_particle",
             particleVariations: 2,
             hitbox: new GroupHitbox(
+                // Building walls
                 RectangleHitbox.fromRect(57, 1.8, Vec.create(-22, -36.1)), // First topmost wall
                 RectangleHitbox.fromRect(30.75, 1.8, Vec.create(35.38, -36.1)), // Wall after the hole
                 RectangleHitbox.fromRect(2, 33.5, Vec.create(49.75, -22.25)), // Wall from top right to bottom right
@@ -752,7 +753,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(35.5, 2, Vec.create(-32.75, 36.25)), // Bottommost wall
                 RectangleHitbox.fromRect(2, 74, Vec.create(-49.5, 0)), // Wall from topmost to bottommost
                 RectangleHitbox.fromRect(13.3, 2, Vec.create(-43.35, 9)), // inner door walls
-                RectangleHitbox.fromRect(10.5, 2, Vec.create(-21.25, 9))
+                RectangleHitbox.fromRect(10.5, 2, Vec.create(-21.25, 9)),
+
+                // Outer walls
+                RectangleHitbox.fromRect(40.2, 1.93, Vec.create(-33.85, 83)), // Bottom bottom left
+                RectangleHitbox.fromRect(1.93, 18, Vec.create(-53, 73.3)), // Left bottom left
+                RectangleHitbox.fromRect(1.93, 86, Vec.create(-53, 2.05)), // Left top left
+                RectangleHitbox.fromRect(60, 1.93, Vec.create(-22, -40)), // Top top left
+                RectangleHitbox.fromRect(64, 1.93, Vec.create(51, -40)), // Top
+                RectangleHitbox.fromRect(19, 1.93, Vec.create(114.45, -40)), // Top top right
+                RectangleHitbox.fromRect(1.93, 39, Vec.create(123, -19.7)), // Right top right
+                RectangleHitbox.fromRect(1.93, 55.7, Vec.create(123, 56.1)), // Right bottom right
+                RectangleHitbox.fromRect(102, 1.93, Vec.create(71.7, 83)), // Bottom bottom right
             ),
             spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
             scopeHitbox: new GroupHitbox(
@@ -767,7 +779,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "refinery_floor_2",
                     position: Vec.create(-32.85, 19)
-                }
+                },
+
+                // Outer walls
+                // Bottom left walls
+                { key: "concrete_wall_end", position: Vec.create(-15, 83), rotation: 0 },
+                { key: "concrete_wall_corner", position: Vec.create(-53, 83), rotation: 0 },
+                { key: "concrete_wall_end_broken_1", position: Vec.create(-53, 65.5), rotation: Math.PI * 1.5 },
+                // Wall from bottom left to top left
+                { key: "concrete_wall_end_broken_2", position: Vec.create(-53, 44), rotation: Math.PI / 2 },
+                // Top left corner
+                { key: "concrete_wall_corner", position: Vec.create(-53, -40), rotation: Math.PI / 2 },
+                { key: "concrete_wall_end_broken_1", position: Vec.create(7, -40), rotation: 0 },
+                { key: "concrete_wall_end_broken_2", position: Vec.create(20, -40), rotation: Math.PI },
+                { key: "concrete_wall_end_broken_2", position: Vec.create(82, -40), rotation: 0 },
+                { key: "concrete_wall_end_broken_1", position: Vec.create(106, -40), rotation: Math.PI },
+                // Top right corner
+                { key: "concrete_wall_corner", position: Vec.create(123, -40), rotation: Math.PI },
+                { key: "concrete_wall_end", position: Vec.create(123, -1.5), rotation: Math.PI / 2 },
+                { key: "concrete_wall_end", position: Vec.create(123, 29.5), rotation: Math.PI * 1.5 },
+                // Bottom right corner
+                { key: "concrete_wall_corner", position: Vec.create(123, 83), rotation: Math.PI * 1.5 },
+                { key: "concrete_wall_end", position: Vec.create(22, 83), rotation: Math.PI }
             ],
             ceilingImages: [
                 {
@@ -789,6 +822,43 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(2, 59, Vec.create(16, 53.50)) },
                 { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(133, 2, Vec.create(56.50, 3)) },
                 { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(108, 2, Vec.create(69, 25)) }
+            ],
+            graphics: [ // Outer walls
+                // Bottom bottom left
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(36, 1.93, Vec.create(-34.25, 83)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(36, 1.22, Vec.create(-34.25, 83)) },
+
+                // Left bottom left
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(1.93, 16, Vec.create(-53, 74.2)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(1.22, 16, Vec.create(-53, 74.2)) },
+
+                // Left top left
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(1.93, 82, Vec.create(-53, 1.75)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(1.22, 82, Vec.create(-53, 1.75)) },
+
+                // Top top left
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(58, 1.93, Vec.create(-23.4, -40)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(58, 1.22, Vec.create(-23.4, -40)) },
+
+                // Top
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(60, 1.93, Vec.create(51, -40)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(60, 1.22, Vec.create(51, -40)) },
+
+                // Top top right
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(15, 1.93, Vec.create(114.7, -40)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(15, 1.22, Vec.create(114.7, -40)) },
+
+                // Right top right
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(1.93, 36.5, Vec.create(123, -21)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(1.22, 36.5, Vec.create(123, -21)) },
+
+                // Right bottom right
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(1.93, 52, Vec.create(123, 56.2)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(1.22, 52, Vec.create(123, 56.2)) },
+
+                // Bottom bottom right
+                { color: 0x333333, hitbox: RectangleHitbox.fromRect(100, 1.93, Vec.create(72.2, 83)) },
+                { color: 0x808080, hitbox: RectangleHitbox.fromRect(100, 1.22, Vec.create(72.2, 83)) }
             ],
             floors: [
                 {
@@ -991,47 +1061,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "inner_concrete_wall_3", position: Vec.create(-32.45, 39), rotation: 0 },
                 { idString: "inner_concrete_wall_1", position: Vec.create(-15, 76.65), rotation: 1 },
                 { idString: "inner_concrete_wall_1", position: Vec.create(-15, 65.95), rotation: 1 },
-                //
-                // Outer walls
-                //
-                // Bottom left walls
-                { idString: "concrete_wall_end", position: Vec.create(-15, 83), rotation: 0 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(-32, 83), rotation: 0 },
-                { idString: "concrete_wall_segment", position: Vec.create(-44.3, 83), rotation: 0 },
-                { idString: "concrete_wall_corner", position: Vec.create(-53, 83), rotation: 0 },
-                { idString: "concrete_wall_segment", position: Vec.create(-53, 74.4), rotation: 1 },
-                { idString: "concrete_wall_end_broken", position: Vec.create(-53, 65.5), rotation: 1 },
-                // Wall from bottom left to top left
-                { idString: "concrete_wall_end_broken", position: Vec.create(-53, 44), rotation: 3 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(-53, 28), rotation: 3 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(-53, 0), rotation: 3 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(-53, -23.3), rotation: 3 },
-                // Top left corner
-                { idString: "concrete_wall_corner", position: Vec.create(-53, -40), rotation: 3 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(-36.3, -40), rotation: 0 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(-10, -40), rotation: 0 },
-                { idString: "concrete_wall_end_broken", position: Vec.create(7, -40), rotation: 0 },
-                { idString: "concrete_wall_end_broken", position: Vec.create(20, -40), rotation: 2 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(36, -40), rotation: 0 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(65, -40), rotation: 0 },
-                { idString: "concrete_wall_end_broken", position: Vec.create(82, -40), rotation: 0 },
-                { idString: "concrete_wall_end_broken", position: Vec.create(106, -40), rotation: 2 },
-                { idString: "concrete_wall_segment", position: Vec.create(114.2, -40), rotation: 2 },
-                // Top right corner
-                { idString: "concrete_wall_corner", position: Vec.create(123, -40), rotation: 2 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(123, -23.2), rotation: 1 },
-                { idString: "concrete_wall_segment", position: Vec.create(123, -10), rotation: 1 },
-                { idString: "concrete_wall_end", position: Vec.create(123, -1.5), rotation: 3 },
-                { idString: "concrete_wall_end", position: Vec.create(123, 29.5), rotation: 1 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(123, 46), rotation: 1 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(123, 66.3), rotation: 1 },
-                // Bottom right corner
-                { idString: "concrete_wall_corner", position: Vec.create(123, 83), rotation: 1 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(106.3, 83), rotation: 0 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(76, 83), rotation: 0 },
-                { idString: "concrete_wall_segment_long", position: Vec.create(47, 83), rotation: 0 },
-                { idString: "concrete_wall_segment", position: Vec.create(30, 83), rotation: 0 },
-                { idString: "concrete_wall_end", position: Vec.create(22, 83), rotation: 2 }
             ] as BuildingObstacle[],
             subBuildings: [
                 {

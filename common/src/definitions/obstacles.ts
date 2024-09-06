@@ -374,8 +374,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }),
-        concreteWall: (useWallSystem?: boolean) => ({
+        innerConcreteWall: (id: number, hitbox: Hitbox) => ({
+            idString: `inner_concrete_wall_${id}`,
             material: "stone",
+            hitbox,
             health: 500,
             noResidue: true,
             hideOnMap: true,
@@ -391,13 +393,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "rock_particle"
             },
-            wall: useWallSystem
-                ? {
-                    color: 0x808080,
-                    borderColor: 0x484848,
-                    rounded: true
-                }
-                : undefined
+            wall: {
+                color: 0x808080,
+                borderColor: 0x484848,
+                rounded: true
+            }
         }),
         mobileHomeWall: (lengthNumber: string) => ({
             idString: `mobile_home_wall_${lengthNumber}`,
@@ -2044,88 +2044,10 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 particle: "hq_tp_wall_particle"
             }
         },
-        apply(
-            "concreteWall",
-            {
-                idString: "concrete_wall_end",
-                name: "Concrete Wall End",
-                hitbox: RectangleHitbox.fromRect(2.4, 2),
-                indestructible: true
-            }
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "concrete_wall_end_broken",
-                name: "Concrete Wall End Broken",
-                hitbox: RectangleHitbox.fromRect(2.4, 2),
-                indestructible: true,
-                variations: 2
-            }
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "concrete_wall_segment",
-                name: "Concrete Wall Segment",
-                hitbox: RectangleHitbox.fromRect(16, 2),
-                indestructible: true
-            }
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "concrete_wall_segment_long",
-                name: "Concrete Wall Segment Long",
-                hitbox: RectangleHitbox.fromRect(32, 2),
-                indestructible: true
-            }
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "concrete_wall_corner",
-                name: "Concrete Wall Corner",
-                hitbox: RectangleHitbox.fromRect(2, 2),
-                indestructible: true
-            }
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "inner_concrete_wall_1",
-                name: "Inner Concrete Wall 1",
-                hitbox: RectangleHitbox.fromRect(10.8, 1.9)
-            },
-            true
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "inner_concrete_wall_2",
-                name: "Inner Concrete Wall 2",
-                hitbox: RectangleHitbox.fromRect(36.7, 1.9)
-            },
-            true
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "inner_concrete_wall_3",
-                name: "Inner Concrete Wall 3",
-                hitbox: RectangleHitbox.fromRect(39.14, 1.9)
-            },
-            true
-        ),
-        apply(
-            "concreteWall",
-            {
-                idString: "inner_concrete_wall_4",
-                name: "Inner Concrete Wall 4",
-                hitbox: RectangleHitbox.fromRect(47.14, 1.9)
-            },
-            true
-        ),
+        apply("innerConcreteWall", {}, 1, RectangleHitbox.fromRect(10.8, 1.9)),
+        apply("innerConcreteWall", {}, 2, RectangleHitbox.fromRect(36.7, 1.9)),
+        apply("innerConcreteWall", {}, 3, RectangleHitbox.fromRect(39.14, 1.9)),
+        apply("innerConcreteWall", {}, 4, RectangleHitbox.fromRect(47.14, 1.9)),
         {
             idString: "small_refinery_barrel",
             name: "Small Refinery Barrel",
