@@ -28,9 +28,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.52221046"
-     inkscape:cx="367.66785"
-     inkscape:cy="573.52355"
+     inkscape:zoom="1.0444209"
+     inkscape:cx="408.839"
+     inkscape:cy="780.81546"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -11282,5 +11282,37 @@
         </g>
       </g>
     </g>
+    <rect
+       style="fill:#cccccc;fill-opacity:1;fill-rule:evenodd;stroke:#666666;stroke-width:1.57066;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="rect36943-3"
+       width="18.334679"
+       height="22.0387"
+       x="352.87289"
+       y="-2475.2026"
+       transform="matrix(-0.72490989,-0.68884371,0.68860921,-0.72513265,0,0)" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.40665px;font-family:'Corsiva Hebrew';-inkscape-font-specification:'Corsiva Hebrew';white-space:pre;inline-size:16.7097;display:inline;fill:#333333;fill-opacity:1;fill-rule:evenodd;stroke:#333333;stroke-width:0.062157;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       x="-1424.0509"
+       y="2037.4591"
+       id="text36947-4"
+       transform="matrix(-0.67122884,-0.6664,0.66683975,-0.67324579,-4268.4518,1965.6924)"><tspan
+         x="-1424.0509"
+         y="2037.4591"
+         id="tspan2"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan1">todo: room</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.55578px;font-family:'Corsiva Hebrew';-inkscape-font-specification:'Corsiva Hebrew';fill:#a6433f;fill-opacity:1;fill-rule:evenodd;stroke:#a6433f;stroke-width:0.0753405;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       x="428.98843"
+       y="-2425.2483"
+       id="text36951-7"
+       transform="matrix(-0.73185625,-0.66817628,0.67340358,-0.75157888,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan36949-7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;fill:#a6433f;fill-opacity:1;stroke:#a6433f;stroke-width:0.0753405;stroke-dasharray:none;stroke-opacity:1"
+         x="428.98843"
+         y="-2425.2483">by HQ builder</tspan></text>
   </g>
 </svg>

@@ -4071,9 +4071,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.75, 10, Vec.create(65.1, -32.1)), // L, W3
                 RectangleHitbox.fromRect(140, 1.75, Vec.create(-5.5, -105.8)), // T, W4
                 RectangleHitbox.fromRect(1.75, 61, Vec.create(-63.2, -63.75)), // L, W5
-                RectangleHitbox.fromRect(1.75, 41.8, Vec.create(-76.4, -85.8)), // L
-                RectangleHitbox.fromRect(14.6, 1.75, Vec.create(-70, -66)), // L
-
+                RectangleHitbox.fromRect(1.75, 41.8, Vec.create(-76.4, -85.8)), // L, W6
+                RectangleHitbox.fromRect(14.6, 1.75, Vec.create(-70, -66)), // L, W7
                 // Discussion room perimeter
                 RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-69.5, -32.39)),
                 RectangleHitbox.fromRect(1.75, 71.4, Vec.create(-76.4, 2.3)),
@@ -4081,14 +4080,21 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(48, 1.75, Vec.create(-51.7, 37)),
 
                 // inner
-                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-35, -32.39)) // discussion room inner perimeter part
-                /* RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.5)),
-                RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
-                RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
-                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.3, -96)),
-                RectangleHitbox.fromRect(92, 1.8, Vec.create(23, -40.2)),
-                RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
-                RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6)) */
+                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-35, -32.39)), // discussion room inner perimeter part
+                RectangleHitbox.fromRect(13, 1.75, Vec.create(-57.7, -93.5)),
+                RectangleHitbox.fromRect(13, 1.75, Vec.create(-57.7, -77.5)),
+                RectangleHitbox.fromRect(1.75, 15, Vec.create(-63.3, -85.5)),
+                RectangleHitbox.fromRect(1.75, 15, Vec.create(-52.07, -85.5)),
+                RectangleHitbox.fromRect(1.75, 48.8, Vec.create(-39.1, -81.25)),
+                RectangleHitbox.fromRect(20, 1.75, Vec.create(8.8, -56)),
+                RectangleHitbox.fromRect(36, 1.75, Vec.create(46.95, -56)),
+                RectangleHitbox.fromRect(1.75, 12.1, Vec.create(-3.8, -88.9)),
+                RectangleHitbox.fromRect(1.75, 23, Vec.create(18.7, -94.425)),
+                RectangleHitbox.fromRect(12.1, 1.75, Vec.create(13, -83.8)),
+
+                // squares
+                RectangleHitbox.fromRect(4.1, 4.15, Vec.create(-40.3, -54.7)), // L, 1
+                RectangleHitbox.fromRect(4.1, 4.15, Vec.create(-3, -54.8)) // C, 2
             ),
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             /* scopeHitbox: new GroupHitbox(
