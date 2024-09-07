@@ -3075,6 +3075,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             material: "metal",
             health: 1000,
             indestructible: true,
+            invisible: true,
             reflectBullets: true,
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.4, 44, Vec.create(5.18, 0)),

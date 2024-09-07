@@ -3539,6 +3539,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
+            idString: "super_annoying_headquarters_window_part_I_hate_this",
+            name: "Headquarters Window Ceiling",
+            spawnHitbox: RectangleHitbox.fromRect(30, 50, Vec.create(-65, -84.8)),
+            ceilingZIndex: ZIndexes.BuildingsCeiling + 100,
+            ceilingImages: [
+                {
+                    key: "headquarters_torture_window",
+                    position: Vec.create(-65, -84.8),
+                    scale: Vec.create(1, 1.055)
+                }
+            ]
+        },
+        {
             idString: "headquarters_secret_room",
             name: "Headquarters Secret Room",
             material: "stone",
@@ -3762,6 +3775,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(6.25, -69)
                 },
                 {
+                    key: "headquarters_torture_window", // dont touch :3
+                    position: Vec.create(-65, -84.8),
+                    scale: Vec.create(1, 1.055)
+                },
+                {
                     key: "headquarters_ceiling_2",
                     position: Vec.create(-46.25, 5.8),
                     scale: Vec.create(2.15, 2.15)
@@ -3816,6 +3834,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
                 RectangleHitbox.fromRect(128, 72, Vec.create(5.75, -70.75)),
+                RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
                 RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)) // ADJUST THIS! (not sure if its correct) - pap
             ),
             spawnMode: MapObjectSpawnMode.Grass,
@@ -4032,6 +4051,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             ] as BuildingObstacle[],
             subBuildings: [
+                { idString: "super_annoying_headquarters_window_part_I_hate_this", position: Vec.create(0, 0), layer: 2 },
+                { idString: "headquarters_second_floor_2", position: Vec.create(6, -0.6), layer: 2 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-58.8, -9.4) },
                 { idString: "detector", position: Vec.create(-35, 25.5) },
                 { idString: "detector", position: Vec.create(-25, 25.5) }
@@ -4043,18 +4064,32 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "hq_stone_wall_particle",
             particleVariations: 2,
-            /* ceilingImages: [
-                {
-                    key: "headquarters_ceiling_2",
-                    position: Vec.create(-46.75, 5.8),
-                    scale: Vec.create(2.15, 2.15)
-                },
-                {
-                    key: "headquarters_ceiling_1",
-                    position: Vec.create(-0.1, -66.8),
-                    scale: Vec.create(2.15, 2.15)
-                }
-            ], */
+            hitbox: new GroupHitbox(
+                // outer
+                RectangleHitbox.fromRect(1.75, 59, Vec.create(65.1, -77.1)), // L, W1
+                RectangleHitbox.fromRect(93, 1.75, Vec.create(19.5, -26.5)), // C, W2
+                RectangleHitbox.fromRect(1.75, 10, Vec.create(65.1, -32.1)), // L, W3
+                RectangleHitbox.fromRect(131, 1.75, Vec.create(0, -105.8)), // T, W4
+                RectangleHitbox.fromRect(1.75, 61, Vec.create(-63.3, -63.75)),
+                /*     RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.9)),
+                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.41, -83)), */
+
+                // Discussion room perimeter
+                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-69.5, -32.39)),
+                RectangleHitbox.fromRect(1.75, 71.4, Vec.create(-76.4, 2.3)),
+                RectangleHitbox.fromRect(1.75, 71.4, Vec.create(-27.3, 2.45)),
+                RectangleHitbox.fromRect(48, 1.75, Vec.create(-51.7, 37)),
+
+                // inner
+                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-35, -32.39)) // discussion room inner perimeter part
+                /* RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.5)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
+                RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
+                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.3, -96)),
+                RectangleHitbox.fromRect(92, 1.8, Vec.create(23, -40.2)),
+                RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
+                RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6)) */
+            ),
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             /* scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
@@ -4064,22 +4099,17 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
-                    key: "headquarters_floor_entrance",
-                    position: Vec.create(-30, 45)
-                },
-                {
-                    key: "headquarters_floor_top",
+                    key: "headquarters_second_floor_top",
                     position: Vec.create(0, -69.5)
                 },
                 {
-                    key: "headquarters_floor_bottom",
-                    position: Vec.create(0.78, 5)
+                    key: "headquarters_second_floor_bottom",
+                    position: Vec.create(-5.6, 16)
                 }
             ],
             floors: [],
             groundGraphics: [],
-            obstacles: [] as BuildingObstacle[],
-            subBuildings: []
+            obstacles: [] as BuildingObstacle[]
         },
         // -----------------------------------------------------------------------------------------------
 
