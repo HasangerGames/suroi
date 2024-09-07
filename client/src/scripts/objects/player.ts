@@ -462,6 +462,32 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const full = data.full;
 
             this.container.visible = !full.dead;
+
+            // Blood particles on death (cooler graphics only)
+            if (
+                this.game.console.getBuiltInCVar("cv_cooler_graphics")
+                && !isNew
+                && this.dead !== full.dead
+                && full.dead
+            ) {
+                this.game.particleManager.spawnParticles(random(15, 30), () => ({
+                    frames: "blood_particle",
+                    lifetime: random(1000, 3000),
+                    position: this.position,
+                    layer: this.layer,
+                    alpha: {
+                        start: 1,
+                        end: 0
+                    },
+                    scale: {
+                        start: randomFloat(0.8, 1.6),
+                        end: 0
+                    },
+                    speed: randomPointInsideCircle(Vec.create(0, 0), 4),
+                    zIndex: ZIndexes.Players + 1
+                }));
+            }
+
             this.dead = full.dead;
 
             this.layer = data.layer;
@@ -548,27 +574,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.bleedEffectInterval = undefined;
             }
 
-            if (this.dead) {
-                if (this.teammateName) this.teammateName.container.visible = false;
-
-                if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-                    this.game.particleManager.spawnParticles(random(15, 30), () => ({
-                        frames: "blood_particle",
-                        lifetime: random(1000, 3000),
-                        position: this.position,
-                        layer: this.layer,
-                        alpha: {
-                            start: 1,
-                            end: 0
-                        },
-                        scale: {
-                            start: randomFloat(0.8, 1.6),
-                            end: 0
-                        },
-                        speed: randomPointInsideCircle(Vec.create(0, 0), 4),
-                        zIndex: ZIndexes.Players + 1
-                    }));
-                }
+            if (this.dead && this.teammateName) {
+                this.teammateName.container.visible = false;
             }
 
             this._oldItem = this.activeItem;
