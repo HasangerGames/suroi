@@ -604,7 +604,7 @@ const maps = {
                 container_8: 1,
                 container_9: 1,
                 container_10: 1,
-                single_bunker: 1
+                small_bunker: 1
             };
 
             const obstacles = {

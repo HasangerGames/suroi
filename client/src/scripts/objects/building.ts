@@ -4,7 +4,7 @@ import { type BuildingDefinition } from "../../../../common/src/definitions/buil
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
-import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
+import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -219,12 +219,13 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
+
             this.ceilingContainer.zIndex = getEffectiveZIndex(
                 definition.ceilingZIndex,
-                this.layer + Math.max( // make sure the ceiling appears over everything else
+                this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
                     ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
                     ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
-                )
+                ), 0, Infinity)
             );
 
             this.orientation = full.orientation;

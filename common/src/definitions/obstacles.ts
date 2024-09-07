@@ -1112,6 +1112,30 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
+            idString: "hq_large_cart",
+            name: "Large Cart",
+            material: "iron",
+            health: 210,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(1.6, 10.8, Vec.create(-16.5, 0.2)),
+                RectangleHitbox.fromRect(1.6, 10.8, Vec.create(1.5, 0.2))
+            ),
+            rotationMode: RotationMode.Limited,
+            reflectBullets: true,
+            noResidue: true,
+            frames: {
+                particle: "file_cart_particle"
+            }
+        },
+        {
             idString: "file_cart",
             name: "File Cart",
             material: "iron",
@@ -3300,8 +3324,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hideOnMap: true,
             indestructible: true,
             hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(25.3, 3, Vec.create(29.5, -117)),
-                RectangleHitbox.fromRect(4.2, 15.5, Vec.create(18.8, -111))
+                RectangleHitbox.fromRect(3.05, 21.5),
+                RectangleHitbox.fromRect(13.4, 4.25, Vec.create(-5, -8.8))
             ),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,

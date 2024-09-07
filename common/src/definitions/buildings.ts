@@ -3542,7 +3542,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "super_annoying_headquarters_window_part_I_hate_this",
             name: "Headquarters Window Ceiling",
             spawnHitbox: RectangleHitbox.fromRect(20, 50, Vec.create(-65, -84.8)),
-            ceilingZIndex: ZIndexes.BuildingsCeiling + 100,
+            ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [
                 {
                     key: "headquarters_torture_window",
@@ -3562,189 +3562,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 position: Vec.create(0, 0),
                 scale: Vec.create(1.07, 1)
             }]
-        },
-        {
-            idString: "headquarters_second_floor",
-            name: "Headquarters Second Floor",
-            material: "stone",
-            particle: "hq_stone_wall_particle",
-            particleVariations: 2,
-            hitbox: new GroupHitbox(
-                // outer
-                RectangleHitbox.fromRect(1.75, 81.8, Vec.create(69.85, -80)),
-                RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.9)),
-                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.41, -83)),
-                RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-64.5, -46.7)),
-                RectangleHitbox.fromRect(1.75, 71.5, Vec.create(-71.34, -12)),
-                RectangleHitbox.fromRect(1.75, 71, Vec.create(-22.5, -12)),
-                RectangleHitbox.fromRect(48, 1.75, Vec.create(-47, 23)),
-
-                // inner
-                RectangleHitbox.fromRect(66, 1.75, Vec.create(37, -70.5)),
-                RectangleHitbox.fromRect(4, 4, Vec.create(1.8, -69)),
-                RectangleHitbox.fromRect(4, 4, Vec.create(-35.5, -69)),
-                RectangleHitbox.fromRect(1.75, 50, Vec.create(-34.3, -96)),
-                RectangleHitbox.fromRect(92, 1.8, Vec.create(23, -40.2)),
-                RectangleHitbox.fromRect(1.75, 3, Vec.create(13.5, -41.6)),
-                RectangleHitbox.fromRect(15, 1.75, Vec.create(-29.5, -46.6))
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(180, 190, Vec.create(0, -35)),
-            scopeHitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(143, 72.5, Vec.create(-0.5, -12.5)),
-                RectangleHitbox.fromRect(130, 72, Vec.create(5.75, -85))
-            ),
-            puzzle: {
-                triggerOnSolve: "speaker",
-                delay: 500
-            },
-            sounds: {
-                solved: "speaker",
-                position: Vec.create(64, -66),
-                maxRange: 100,
-                falloff: 0.5
-            },
-            spawnMode: MapObjectSpawnMode.Grass,
-            floorImages: [
-                {
-                    key: "headquarters_second_floor_bottom",
-                    position: Vec.create(-0.85, 0),
-                    scale: Vec.create(2, 2)
-                },
-                {
-                    key: "headquarters_second_floor_top",
-                    position: Vec.create(-0.85, -77.8),
-                    scale: Vec.create(2, 2)
-                }
-            ],
-            floors: [
-                {
-                    type: FloorNames.Wood,
-                    hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(55, 28, Vec.create(41.5, -55.5)),
-                        RectangleHitbox.fromRect(102.5, 50, Vec.create(18, -94.5)),
-                        RectangleHitbox.fromRect(47, 68, Vec.create(-47, -12)),
-
-                        // patches (basically small rectangles that go under walls)
-                        RectangleHitbox.fromRect(1.8, 16, Vec.create(13.3, -61.5)), // P4
-                        RectangleHitbox.fromRect(20.5, 1.5, Vec.create(-47.5, -46.8)), // P3
-                        RectangleHitbox.fromRect(33.4, 1.8, Vec.create(-17, -69)), // P5
-                        RectangleHitbox.fromRect(1.8, 10.25, Vec.create(13.25, -48.5)) // P15
-                    )
-                },
-                {
-                    type: FloorNames.Stone,
-                    hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(69.5, 19.5, Vec.create(-22.5, -58)),
-                        RectangleHitbox.fromRect(33.9, 26.9, Vec.create(-4.5, -55)),
-                        RectangleHitbox.fromRect(22, 44, Vec.create(-46.4, -69)),
-                        RectangleHitbox.fromRect(8.5, 28.5, Vec.create(8, -55.4)) // P7
-                    )
-                },
-                {
-                    type: FloorNames.Metal,
-                    hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(10, 20.5, Vec.create(-40.25, -101.1)),
-                        RectangleHitbox.fromRect(10, 3, Vec.create(-52.5, -109)),
-                        RectangleHitbox.fromRect(22, 9, Vec.create(-46.5, -115))
-                    )
-                }
-            ],
-            obstacles: [
-                /*  couch parts (note by pap)
-                  couch_end_right
-                  couch_end_left
-                  couch_part
-                  couch_corner
-                */
-                // { idString: "hq_stair_upper_wall", position: Vec.create(-46.5, -100.5), rotation: 0 },
-                { idString: "headquarters_wood_table_second_floor", position: Vec.create(0, 0), rotation: 0 },
-
-                // ---------------------------------------------------------------------------------------------------------------
-                // discussion room? (bottom left)
-                // ---------------------------------------------------------------------------------------------------------------
-                { idString: "door", position: Vec.create(-42.8, -46.8), rotation: 2 },
-                { idString: "door", position: Vec.create(-52, -46.8), rotation: 0 },
-                { idString: "bookshelf", position: Vec.create(-26, -28), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
-                { idString: "tv", position: Vec.create(-24.35, -13.25), rotation: 0 },
-                { idString: "large_drawer", position: Vec.create(-27.4, -13.25), rotation: 3 },
-                { idString: "bookshelf", position: Vec.create(-26, 1.5), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
-                { idString: "potted_plant", position: Vec.create(-66.7, 18) },
-                { idString: "potted_plant", position: Vec.create(-27.5, 17.7) },
-                { idString: "falchion_case", position: Vec.create(-46, 18.5), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
-                { idString: "water_cooler", position: Vec.create(-66.7, -42), rotation: 1 },
-
-                // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
-                { idString: "chair", position: Vec.create(-49, -28), rotation: 2 },
-                { idString: "chair", position: Vec.create(-49, 6.5), rotation: 0 },
-
-                { idString: "large_table", variation: 1, position: Vec.create(-49.25, -22), rotation: 1 },
-                { idString: "chair", position: Vec.create(-57.5, -22), rotation: 3 }, // rotation1=I_
-                { idString: "chair", position: Vec.create(-41, -22), rotation: 1 },
-
-                { idString: "large_table", variation: 0, position: Vec.create(-49.25, -10.4), rotation: 1 },
-                { idString: "chair", position: Vec.create(-57.5, -10.4), rotation: 3 },
-                { idString: "chair", position: Vec.create(-41, -10.4), rotation: 1 },
-
-                { idString: "large_table", variation: 0, position: Vec.create(-49.25, 1.25), rotation: 1 },
-                { idString: "chair", position: Vec.create(-57.5, 1.25), rotation: 3 },
-                { idString: "chair", position: Vec.create(-41, 1.25), rotation: 1 },
-                // ---------------------------------------------------------------------------------------------------------------
-
-                { idString: "headquarters_wall_4", position: Vec.create(1.25, -79.25), rotation: 1 },
-                { idString: "house_column", position: Vec.create(1.25, -88.5) },
-                { idString: "door", position: Vec.create(1.25, -95.4), rotation: 1 },
-                { idString: "house_column", position: Vec.create(1.25, -101.5) },
-                { idString: "headquarters_wall_5", position: Vec.create(1.25, -111.1), rotation: 1 },
-
-                { idString: "headquarters_wall_1", position: Vec.create(-6.4, -69), rotation: 0 },
-                { idString: "white_small_couch", position: Vec.create(-6.4, -74.25), rotation: 2 },
-                { idString: "metal_small_drawer", position: Vec.create(-29.5, -73.5), rotation: 1 },
-                { idString: "water_cooler", position: Vec.create(-30, -80), rotation: 1 },
-                { idString: "chair", position: Vec.create(-24, -107), rotation: 2 },
-                { idString: "chair", position: Vec.create(-24, -93), rotation: 0 },
-                { idString: "large_table", position: Vec.create(-23.5, -100), rotation: 1, variation: 1 },
-                { idString: "cabinet", position: Vec.create(-25.7, -116.25), rotation: 0 },
-                { idString: "door", position: Vec.create(-17.7, -69.05), rotation: 2 },
-                { idString: "headquarters_wall_9", position: Vec.create(-27.8, -69), rotation: 0 },
-                { idString: "trash_can", position: Vec.create(-3, -116.2) },
-                { idString: "piano", position: Vec.create(41.5, -81), rotation: 0 },
-
-                { idString: "headquarters_wall_10", position: Vec.create(13.5, -61.5), rotation: 1 },
-                { idString: "door", position: Vec.create(13.5, -48.9), rotation: 1 },
-                { idString: "speaker", position: Vec.create(64, -66), rotation: 0, puzzlePiece: true },
-                { idString: "small_drawer", position: Vec.create(65.5, -45.25), rotation: 2 },
-                { idString: "couch_end_left", position: Vec.create(58, -45.25), rotation: 1 },
-                { idString: "couch_part", position: Vec.create(51.5, -44.95), rotation: 1 },
-                { idString: "small_table", position: Vec.create(51.5, -54), rotation: 1, variation: 1 },
-                { idString: "tv", position: Vec.create(51, -68.8), rotation: 1 },
-                { idString: "trash_can", position: Vec.create(39.5, -66.5) },
-                { idString: "couch_end_right", position: Vec.create(45, -45.25), rotation: 2 },
-                { idString: "potted_plant", position: Vec.create(8, -65.5) },
-                { idString: "couch_corner", position: Vec.create(18, -66), rotation: 0 },
-                { idString: "couch_part", position: Vec.create(23.95, -65.9), rotation: 3 },
-                { idString: "couch_end_right", position: Vec.create(30.5, -65.6), rotation: 0 },
-                { idString: "couch_end_left", position: Vec.create(18.4, -59.25), rotation: 0 },
-                { idString: "file_cart", position: Vec.create(-14, -46), rotation: 0 },
-
-                // near stairs
-                { idString: "metal_small_drawer", position: Vec.create(-53.7, -80), rotation: 1 },
-                { idString: "white_small_couch", position: Vec.create(-53.4, -71.8), rotation: 1 },
-
-                // secret room + near secret room
-                { idString: "large_drawer", position: Vec.create(9.5, -115), lootSpawnOffset: Vec.create(0, 3), rotation: 0 },
-                { idString: "potted_plant", position: Vec.create(64, -115) },
-                { idString: "office_chair", position: Vec.create(25.5, -110.5), rotation: 2 },
-                { idString: "office_chair", position: Vec.create(34, -110.5), rotation: 2 },
-                { idString: "bookshelf", position: Vec.create(62.26, -100.8), lootSpawnOffset: Vec.create(-2, 0), rotation: 0 },
-                { idString: "metal_small_drawer", position: Vec.create(27.8, -75.5), rotation: 2 },
-                { idString: "couch_corner", position: Vec.create(6.5, -75.2), rotation: 1 }, // pain to rotate a corner
-                { idString: "couch_part", position: Vec.create(12.5, -75.35), rotation: 1 }, // couch parts y += 1.5
-                { idString: "couch_end_left", position: Vec.create(19.2, -75.65), rotation: 1 }, // end part y += .40
-                { idString: "couch_end_right", position: Vec.create(6.9, -82.1), rotation: 1 }
-            ] as BuildingObstacle[],
-            subBuildings: [
-                { idString: "headquarters_secret_room", position: Vec.create(60.25, -84) }
-            ]
         },
         {
             idString: "headquarters",
@@ -4060,19 +3877,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "super_annoying_headquarters_window_part_I_hate_this", position: Vec.create(0, 0), layer: 2 },
-                { idString: "headquarters_second_floor_2", position: Vec.create(5.6, -0.6), layer: 2 },
+                { idString: "headquarters_second_floor", position: Vec.create(5.6, -0.6), layer: 2 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-58.8, -9.4) },
                 { idString: "detector", position: Vec.create(-35, 25.5) },
                 { idString: "detector", position: Vec.create(-25, 25.5) }
             ]
         },
         {
-            idString: "headquarters_second_floor_2",
+            idString: "headquarters_second_floor",
             name: "Headquarters Second Floor",
             material: "stone",
             particle: "hq_stone_wall_particle",
             particleVariations: 2,
-            hi2tbox: new GroupHitbox(
+            hitbox: new GroupHitbox(
                 // outer
                 RectangleHitbox.fromRect(1.75, 59, Vec.create(65.1, -77.1)), // L, W1
                 RectangleHitbox.fromRect(93, 1.75, Vec.create(19.5, -26.5)), // C, W2
@@ -4105,11 +3922,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(4.1, 4.15, Vec.create(-3, -54.8)) // C, 2
             ),
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
-            /* scopeHitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 0)),
-                RectangleHitbox.fromRect(128, 72, Vec.create(5.75, -70.75)),
-                RectangleHitbox.fromRect(50, 25, Vec.create(-31, 47)) // ADJUST THIS! (not sure if its correct) - pap
-            ), */
+            scopeHitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)),
+                RectangleHitbox.fromRect(128, 77.1, Vec.create(0, -66)),
+                RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86))
+            ),
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
                 {
@@ -4152,7 +3969,24 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             groundGraphics: [],
+            puzzle: {
+                triggerOnSolve: "speaker",
+                delay: 500
+            },
+            sounds: {
+                solved: "speaker",
+                position: Vec.create(61, -77),
+                maxRange: 60,
+                falloff: 0.5
+            },
             obstacles: [
+                /*  couch parts (note by pap)
+                  couch_end_right
+                  couch_end_left
+                  couch_part
+                  couch_corner
+                */
+
                 { idString: "fire_exit_railing", position: Vec.create(73.5, -56), rotation: 0 },
 
                 // near stairs
@@ -4165,9 +3999,27 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "file_cart", position: Vec.create(56.5, -32.5), rotation: 0 },
                 { idString: "bookshelf", position: Vec.create(-10, -30.5), lootSpawnOffset: Vec.create(0, -2), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(-22.5, -31.8), lootSpawnOffset: Vec.create(1, -1) },
+                { idString: "hq_large_cart", position: Vec.create(28.1, -39), rotation: 0 },
+                { idString: "white_small_couch", position: Vec.create(17.5, -39), rotation: 2 },
+                { idString: "box", position: Vec.create(25.5, -39.5) },
 
                 // big wood room above hallway (has piano and speaker)
+                // at this point you can tell I got tired and just spammed stuff to position them one by one
                 { idString: "headquarters_boss_desk", position: Vec.create(-28.1, -82), rotation: 0 },
+                { idString: "headquarters_wood_table_second_floor", position: Vec.create(62.5, -93.8), rotation: 0 },
+                { idString: "office_chair", position: Vec.create(56, -86), rotation: 1 },
+                { idString: "office_chair", position: Vec.create(54, -95.25), rotation: 1 },
+                { idString: "speaker", position: Vec.create(61, -77), rotation: 3, puzzlePiece: true },
+                { idString: "piano", position: Vec.create(55.25, -65), rotation: 1 },
+                { idString: "small_drawer", position: Vec.create(47, -100.6), rotation: 0, lootSpawnOffset: Vec.create(0, 2) },
+                { idString: "couch_part", position: Vec.create(31.45, -100.9), rotation: 3 },
+                { idString: "couch_end_right", position: Vec.create(38, -100.6), rotation: 0 },
+                { idString: "couch_end_left", position: Vec.create(24.9, -100.6), rotation: 3 },
+                { idString: "small_table", position: Vec.create(31.45, -90.5), rotation: 1, variation: 1 },
+                { idString: "couch_corner", position: Vec.create(1.5, -79), rotation: 0 },
+                { idString: "couch_part", position: Vec.create(7.45, -78.9), rotation: 3 },
+                { idString: "couch_end_right", position: Vec.create(14, -78.6), rotation: 0 },
+                { idString: "couch_end_left", position: Vec.create(1.9, -72.25), rotation: 0 },
                 { idString: "door", position: Vec.create(24.27, -56), rotation: 0 },
                 { idString: "headquarters_wall_1", position: Vec.create(-11.15, -54.5), rotation: 0 },
                 { idString: "door", position: Vec.create(-22.4, -54.5), rotation: 2 },
@@ -4183,7 +4035,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "bookshelf", position: Vec.create(-18.6, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                 { idString: "bookshelf", position: Vec.create(-31.5, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(1.5, -61) },
-                { idString: "bookshelf", position: Vec.create(11, -59.5), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(12, -59.5), rotation: 0 },
 
                 // secret room
                 { idString: "secret_door", position: Vec.create(-3.85, -99.4), rotation: 3 },
