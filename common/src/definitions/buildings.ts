@@ -3541,7 +3541,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "super_annoying_headquarters_window_part_I_hate_this",
             name: "Headquarters Window Ceiling",
-            spawnHitbox: RectangleHitbox.fromRect(30, 50, Vec.create(-65, -84.8)),
+            spawnHitbox: RectangleHitbox.fromRect(20, 50, Vec.create(-65, -84.8)),
             ceilingZIndex: ZIndexes.BuildingsCeiling + 100,
             ceilingImages: [
                 {
@@ -4069,10 +4069,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.75, 59, Vec.create(65.1, -77.1)), // L, W1
                 RectangleHitbox.fromRect(93, 1.75, Vec.create(19.5, -26.5)), // C, W2
                 RectangleHitbox.fromRect(1.75, 10, Vec.create(65.1, -32.1)), // L, W3
-                RectangleHitbox.fromRect(131, 1.75, Vec.create(0, -105.8)), // T, W4
-                RectangleHitbox.fromRect(1.75, 61, Vec.create(-63.3, -63.75)),
-                /*     RectangleHitbox.fromRect(129.5, 1.75, Vec.create(5.5, -119.9)),
-                RectangleHitbox.fromRect(1.75, 74.7, Vec.create(-58.41, -83)), */
+                RectangleHitbox.fromRect(140, 1.75, Vec.create(-5.5, -105.8)), // T, W4
+                RectangleHitbox.fromRect(1.75, 61, Vec.create(-63.2, -63.75)), // L, W5
+                RectangleHitbox.fromRect(1.75, 41.8, Vec.create(-76.4, -85.8)), // L
+                RectangleHitbox.fromRect(14.6, 1.75, Vec.create(-70, -66)), // L
 
                 // Discussion room perimeter
                 RectangleHitbox.fromRect(14.4, 1.75, Vec.create(-69.5, -32.39)),
