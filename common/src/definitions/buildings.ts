@@ -3904,22 +3904,30 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     type: FloorNames.Metal,
                     hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(11, 20.5, Vec.create(-64, -87.5)), // stair width = 11
                         RectangleHitbox.fromRect(10.7, 1.65, Vec.create(-64.5, -1)), // patch
                         RectangleHitbox.fromRect(22.5, 30.6, Vec.create(-59, -17)),
                         RectangleHitbox.fromRect(23, 15, Vec.create(-45.5, -86))
                     )
+                },
+                {
+                    // Yes, this is just for the stairs' floor hitbox :)
+                    type: FloorNames.Metal,
+                    hitbox: RectangleHitbox.fromRect(11, 20.5, Vec.create(-64, -87.5)), // stair width = 11
+                    layer: 1
                 }
             ],
-            groundGraphics: [],
-            /* visibilityOverrides: [{
+            groundGraphics: [{
+                color: 0x666666,
+                hitbox: RectangleHitbox.fromRect(23, 11, Vec.create(-45.5, -100))
+            }],
+            visibilityOverrides: [{
                 collider: new GroupHitbox(
-                    RectangleHitbox.fromRect(11.2, 8, Vec.create(-51.5, -103.1)),
-                    RectangleHitbox.fromRect(11.2, 4, Vec.create(-40.3, -105.1))
+                    RectangleHitbox.fromRect(35.5, 6.4, Vec.create(-52, -102)),
+                    RectangleHitbox.fromRect(11, 6.4, Vec.create(-64, -98))
                 ),
                 layer: 2,
                 allow: [0]
-            }], // the fuck is this */
+            }],
             obstacles: [
                 { idString: "headquarters_bottom_entrance", position: Vec.create(1, 2), rotation: 0 },
                 { idString: "headquarters_main_desk", position: Vec.create(-10.7, -49.5), rotation: 0 },
@@ -4113,7 +4121,34 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(-5.6, 16)
                 }
             ],
-            floors: [],
+            floors: [
+                {
+                    type: FloorNames.Wood,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)), // discussion room floor
+                        RectangleHitbox.fromRect(20.1, 1.7, Vec.create(-52.2, -31.5)), // patch
+                        RectangleHitbox.fromRect(104, 49.5, Vec.create(13, -80))
+                    )
+                },
+                {
+                    type: FloorNames.Stone,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(33.1, 1.8, Vec.create(-22, -54.3)), // patch (done)
+                        RectangleHitbox.fromRect(12, 1.8, Vec.create(24, -56)), // patch (done)
+                        RectangleHitbox.fromRect(65.1, 28, Vec.create(31.6, -41)), // FS1
+                        RectangleHitbox.fromRect(28, 28, Vec.create(-12.5, -41)), // FS2
+                        RectangleHitbox.fromRect(50, 22, Vec.create(-37.25, -43.25)), // FS3
+                        RectangleHitbox.fromRect(22.25, 44.3, Vec.create(-51.1, -54.5)) // FS4
+                    )
+                },
+                {
+                    type: FloorNames.Metal,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(11, 20.5, Vec.create(-45.7, -86.8)),
+                        RectangleHitbox.fromRect(35.5, 11, Vec.create(-57.7, -99.5))
+                    )
+                }
+            ],
             groundGraphics: [],
             obstacles: [] as BuildingObstacle[]
         },

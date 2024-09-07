@@ -534,7 +534,7 @@ export class GameMap {
         }
 
         for (const floor of definition.floors) {
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), layer);
+            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);

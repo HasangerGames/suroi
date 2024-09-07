@@ -622,6 +622,21 @@ export class Game {
                 // Layer Transition: We pray that this works lmao
                 if (_object.layer !== (this.layer ?? Layer.Ground)) {
                     _object.container.alpha = 0;
+
+                    // Yes, we need to do this specifically for building ceilings as well.
+                    if (_object.isBuilding) {
+                        _object.ceilingContainer.alpha = 0;
+                        this.addTween({
+                            target: _object.ceilingContainer,
+                            to: { alpha: 1 },
+                            duration: LAYER_TRANSITION_DELAY,
+                            ease: EaseFunctions.sineOut,
+                            onComplete: () => {
+                                this.layerTween = undefined;
+                            }
+                        });
+                    }
+
                     this.layerTween = this.addTween({
                         target: _object.container,
                         to: { alpha: 1 },
@@ -657,6 +672,21 @@ export class Game {
             // Layer Transition: We pray that this works lmao
             if (object.layer !== (this.layer ?? Layer.Ground)) {
                 object.container.alpha = 1;
+
+                // Yes, we need to do this specifically for building ceilings as well.
+                if (object.isBuilding) {
+                    object.ceilingContainer.alpha = 1;
+                    this.addTween({
+                        target: object.ceilingContainer,
+                        to: { alpha: 0 },
+                        duration: LAYER_TRANSITION_DELAY,
+                        ease: EaseFunctions.sineOut,
+                        onComplete: () => {
+                            this.layerTween = undefined;
+                        }
+                    });
+                }
+
                 this.layerTween = this.addTween({
                     target: object.container,
                     to: { alpha: 0 },
