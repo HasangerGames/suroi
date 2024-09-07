@@ -3833,7 +3833,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
-                RectangleHitbox.fromRect(128, 72, Vec.create(5.75, -70.75)),
+                RectangleHitbox.fromRect(128, 73, Vec.create(5.75, -70)),
                 RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
                 RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)) // ADJUST THIS! (not sure if its correct) - pap
             ),
@@ -3930,7 +3930,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             visibilityOverrides: [{
                 collider: new GroupHitbox(
                     RectangleHitbox.fromRect(35.5, 6.4, Vec.create(-52, -102)),
-                    RectangleHitbox.fromRect(11, 6.4, Vec.create(-64, -98))
+                    RectangleHitbox.fromRect(11, 6.4, Vec.create(-64, -98)),
+                    RectangleHitbox.fromRect(6.6, 14, Vec.create(79.8, -42.75)),
+                    RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
+                    RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
                 ),
                 layer: 2,
                 allow: [0]
