@@ -1583,7 +1583,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "l115a1", // TODO: casing
+            idString: "l115a1",
             name: "L115A1",
             ammoType: "338lap",
             ammoSpawnAmount: 18,
