@@ -1224,6 +1224,26 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true
         },
         {
+            idString: "small_stove",
+            name: "Small Stove",
+            material: "metal",
+            health: 140,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
+            rotationMode: RotationMode.Limited,
+            explosion: "stove_explosion",
+            frames: {
+                particle: "metal_particle",
+                residue: "stove_residue"
+            },
+            reflectBullets: true
+        },
+        {
             idString: "speaker",
             name: "Speaker",
             material: "iron",
@@ -1854,6 +1874,24 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(11.2, 16),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always
+        },
+        {
+            idString: "small_bed",
+            name: "Small Bed",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hideOnMap: true,
+            hitbox: RectangleHitbox.fromRect(7.12, 16.06),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always,
+            frames: {
+                particle: "bed_particle"
+            }
         },
         {
             idString: "bunk_bed",
@@ -2658,28 +2696,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.6, 1.68) }, "2"),
         apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(20.5, 1.68) }, "3"),
         apply("mobileHomeWall", { hitbox: RectangleHitbox.fromRect(10.65, 1.68) }, "4"),
-
         {
-            idString: "mobile_home_bed",
-            name: "Mobile Home Bed",
-            material: "wood",
-            health: 100,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.9
-            },
-            hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(7.12, 16.06),
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Always,
-            frames: {
-                particle: "bed_particle"
-            }
-        },
-        {
-            idString: "mobile_home_sink",
-            name: "Mobile Home Sink",
+            idString: "sink",
+            name: "Sink",
             material: "wood",
             health: 100,
             scale: {
@@ -2695,26 +2714,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 particle: "furniture_particle"
             }
-        },
-        {
-            idString: "mobile_home_stove",
-            name: "Mobile Home Stove",
-            material: "metal",
-            health: 140,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.8
-            },
-            hideOnMap: true,
-            hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
-            rotationMode: RotationMode.Limited,
-            explosion: "stove_explosion",
-            frames: {
-                particle: "metal_particle",
-                residue: "stove_residue"
-            },
-            reflectBullets: true
         },
         {
             idString: "tire",

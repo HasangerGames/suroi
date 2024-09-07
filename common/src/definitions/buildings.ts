@@ -1311,7 +1311,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_3", position: Vec.create(-24.85, -9), rotation: 0 },
                 { idString: "door", position: Vec.create(-14.55, -9), rotation: 2 },
                 { idString: "house_wall_10", position: Vec.create(1, -18.3), rotation: 1 },
-                { idString: "mobile_home_bed", position: Vec.create(-4, -19.4), rotation: 0 },
+                { idString: "small_bed", position: Vec.create(-4, -19.4), rotation: 0 },
                 { idString: "large_drawer", position: Vec.create(-26.7, -19.4), lootSpawnOffset: Vec.create(2, 0), rotation: 1 },
                 { idString: "tv", position: Vec.create(-29.8, -19.4), rotation: 2 },
 
@@ -1327,9 +1327,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_12", position: Vec.create(1, 19.85), rotation: 1 },
                 { idString: "potted_plant", position: Vec.create(-26, 5.55) },
                 { idString: "red_small_couch", position: Vec.create(-26.6, -3), rotation: 1 },
-                { idString: "mobile_home_stove", position: Vec.create(-26.6, 14.9), rotation: 1 },
+                { idString: "small_stove", position: Vec.create(-26.6, 14.9), rotation: 1 },
                 { idString: "fridge", position: Vec.create(-26.77, 23.1), rotation: 1 },
-                { idString: "mobile_home_sink", position: Vec.create(-4.5, 16.4), rotation: 3 },
+                { idString: "sink", position: Vec.create(-4.5, 16.4), rotation: 3 },
                 { idString: "small_drawer", position: Vec.create(-4.3, 24.5), rotation: 3 },
 
                 // bathroom (top right)
@@ -1425,7 +1425,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_7", position: Vec.create(-38.53, -6.29), rotation: 0 },
 
                 { idString: "toilet", position: Vec.create(-2.75, -24.92), rotation: 0 },
-                { idString: "mobile_home_sink", position: Vec.create(5.91, -25.15), rotation: 0 },
+                { idString: "sink", position: Vec.create(5.91, -25.15), rotation: 0 },
                 { idString: "bed", position: Vec.create(-43.06, -20.98), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-33.63, -25.48), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(17.46, -25.03) },
@@ -1605,7 +1605,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_6", position: Vec.create(7.5, -21.5), rotation: 1 },
                 { idString: "small_drawer", position: Vec.create(30.25, -25), rotation: 0 },
                 { idString: "fridge", position: Vec.create(21.5, -25.1), rotation: 0 },
-                { idString: "mobile_home_stove", position: Vec.create(12.5, -25), rotation: 0 },
+                { idString: "small_stove", position: Vec.create(12.5, -25), rotation: 0 },
                 { idString: "bookshelf", position: Vec.create(4.25, -22), rotation: 1 },
 
                 // bottom right (mini vault ig)
@@ -1627,7 +1627,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-10, -23.5), rotation: 3 },
                 { idString: "house_wall_17", position: Vec.create(-22.3, -9.4), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-14.7, -14.5), rotation: 2 },
-                { idString: "mobile_home_bed", position: Vec.create(-29.25, -19.9), rotation: 2 },
+                { idString: "small_bed", position: Vec.create(-29.25, -19.9), rotation: 2 },
                 // { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(-29, -4) }
             ],
@@ -3225,13 +3225,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             wallsToDestroy: 2,
             obstacles: [
                 { idString: "small_drawer", position: Vec.create(8.5, -5.5), rotation: 0 },
-                { idString: "mobile_home_sink", position: Vec.create(-16.8, -4.6), rotation: 1 },
-                { idString: "mobile_home_stove", position: Vec.create(-16.8, 3.9), rotation: 1 },
+                { idString: "sink", position: Vec.create(-16.8, -4.6), rotation: 1 },
+                { idString: "small_stove", position: Vec.create(-16.8, 3.9), rotation: 1 },
                 { idString: "door", position: Vec.create(4.5, 8.45), rotation: 2 },
                 { idString: "mobile_home_wall_4", position: Vec.create(15.5, 8.45), rotation: 0 },
                 { idString: "mobile_home_wall_3", position: Vec.create(-10.5, 8.45), rotation: 0 },
                 { idString: "tire", position: Vec.create(-24.25, 4.85), rotation: 0 },
-                { idString: "mobile_home_bed", position: Vec.create(16.8, -1), rotation: 0 },
+                { idString: "small_bed", position: Vec.create(16.8, -1), rotation: 0 },
                 { idString: "mobile_home_window", position: Vec.create(-6.6, -10.5), rotation: 0 },
                 { idString: "mobile_home_wall_1", position: Vec.create(-17.25, -10.5), rotation: 0 },
                 { idString: "mobile_home_wall_2", position: Vec.create(21.7, -1), rotation: 1 },
@@ -3959,8 +3959,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wall_4", position: Vec.create(32.6, -54.3), rotation: 1 },
                 { idString: "headquarters_wall_3", position: Vec.create(38, -88.5), rotation: 0 },
                 { idString: "headquarters_wall_5", position: Vec.create(60.8, -88.5), rotation: 0 },
-                { idString: "mobile_home_sink", position: Vec.create(38, -101.8), rotation: 1 },
-                { idString: "mobile_home_stove", position: Vec.create(38, -93.25), rotation: 1 },
+                { idString: "sink", position: Vec.create(38, -101.8), rotation: 1 },
+                { idString: "small_stove", position: Vec.create(38, -93.25), rotation: 1 },
                 { idString: "small_drawer", position: Vec.create(65, -103.25), rotation: 3 },
                 { idString: "fridge", position: Vec.create(65, -94.5), rotation: 3 },
                 { idString: "fridge2", position: Vec.create(37.5, -52), rotation: 1 },
@@ -4147,7 +4147,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "small_drawer", position: Vec.create(-5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                 { idString: "house_wall_13", position: Vec.create(0, -12.5), rotation: 1 },
                 { idString: "fridge", position: Vec.create(6.5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
-                { idString: "mobile_home_bed", position: Vec.create(16, -8.5), rotation: 0 },
+                { idString: "small_bed", position: Vec.create(16, -8.5), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(16, 3.3), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
                 { idString: "regular_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2), rotation: 0 }
             ],
