@@ -3916,7 +3916,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     // Yes, this is just for the stairs' floor hitbox :)
                     type: FloorNames.Metal,
-                    hitbox: RectangleHitbox.fromRect(11, 20.5, Vec.create(-64, -87.5)), // stair width = 11
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(11, 20.5, Vec.create(-64, -87.5)), // small stair
+                        RectangleHitbox.fromRect(11.55, 25.5, Vec.create(77.7, -63)) // large stair
+                    ),
                     layer: 1
                 }
             ],
@@ -3968,7 +3971,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // outside of hq (also windows and metal doors)
                 { idString: "fire_exit_railing", position: Vec.create(79.25, -56.6), rotation: 0 },
                 { idString: "fire_exit_railing", position: Vec.create(79.25, -56.6), layer: 1, rotation: 0 },
-                { idString: "hq_large_stair", position: Vec.create(77.6, -63.49), layer: 1, rotation: 0 },
+                { idString: "hq_large_stair", position: Vec.create(77.8, -63.49), layer: 1, rotation: 0 },
                 { idString: "metal_door", position: Vec.create(-57.55, -39.55), rotation: 3 },
                 { idString: "metal_door", position: Vec.create(18.25, -106.4), rotation: 2 },
                 { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
@@ -4140,8 +4143,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     type: FloorNames.Stone,
                     hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(33.1, 1.8, Vec.create(-22, -54.3)), // patch (done)
-                        RectangleHitbox.fromRect(12, 1.8, Vec.create(24, -56)), // patch (done)
+                        RectangleHitbox.fromRect(33.1, 1.8, Vec.create(-22, -54.3)), // patch
+                        RectangleHitbox.fromRect(12, 1.8, Vec.create(24, -56)), // patch
+                        RectangleHitbox.fromRect(1.88, 11, Vec.create(65.2, -42.5)), // patch
                         RectangleHitbox.fromRect(65.1, 28, Vec.create(31.6, -41)), // FS1
                         RectangleHitbox.fromRect(28, 28, Vec.create(-12.5, -41)), // FS2
                         RectangleHitbox.fromRect(50, 22, Vec.create(-37.25, -43.25)), // FS3
@@ -4152,7 +4156,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     type: FloorNames.Metal,
                     hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(11, 20.5, Vec.create(-45.7, -86.8)),
-                        RectangleHitbox.fromRect(35.5, 11, Vec.create(-57.7, -99.5))
+                        RectangleHitbox.fromRect(35.5, 11, Vec.create(-57.7, -99.5)),
+                        RectangleHitbox.fromRect(11.55, 14, Vec.create(71.9, -42.4)) // large stair landing
                     )
                 }
             ],
