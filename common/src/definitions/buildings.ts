@@ -4166,7 +4166,53 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             groundGraphics: [],
             obstacles: [
-                { idString: "fire_exit_railing", position: Vec.create(73.25, -56), rotation: 0 }
+                { idString: "fire_exit_railing", position: Vec.create(73.25, -56), rotation: 0 },
+
+                // near stairs
+                { idString: "small_drawer", position: Vec.create(-58, -62), rotation: 1 },
+                { idString: "white_small_couch", position: Vec.create(-58, -70.6), rotation: 1 },
+
+                // main hallway
+                { idString: "metal_door", position: Vec.create(65.2, -42.7), rotation: 1 },
+                { idString: "cabinet", position: Vec.create(56.5, -52), lootSpawnOffset: Vec.create(-1, 1), rotation: 0 },
+                { idString: "file_cart", position: Vec.create(56.5, -32.5), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-10, -30.5), lootSpawnOffset: Vec.create(0, -2), rotation: 0 },
+                { idString: "potted_plant", position: Vec.create(-22.5, -31.8), lootSpawnOffset: Vec.create(1, -1) },
+
+                // big wood room above hallway (has piano and speaker)
+                { idString: "door", position: Vec.create(24.27, -56), rotation: 0 },
+
+                // ---------------------------------------------------------------------------------------------------------------
+                // discussion room? (bottom left)
+                // ---------------------------------------------------------------------------------------------------------------
+                { idString: "door", position: Vec.create(-47.65, -32.3), rotation: 2 },
+                { idString: "door", position: Vec.create(-56.85, -32.3), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-30.8, -13), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
+                { idString: "tv", position: Vec.create(-29.2, 1.75), rotation: 0 },
+                { idString: "large_drawer", position: Vec.create(-32.3, 1.75), rotation: 3 },
+                { idString: "bookshelf", position: Vec.create(-30.8, 16.5), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
+                { idString: "potted_plant", position: Vec.create(-71.7, 31.5) },
+                { idString: "potted_plant", position: Vec.create(-32.5, 32.2) },
+                { idString: "falchion_case", position: Vec.create(-51, 32.25), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
+                { idString: "water_cooler", position: Vec.create(-71.8, -27.5), rotation: 1 },
+                { idString: "metal_small_drawer", position: Vec.create(-32.5, -27.5), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
+
+                // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
+                { idString: "chair", position: Vec.create(-54.1, -14.5), rotation: 2 },
+                { idString: "chair", position: Vec.create(-54.1, 20.5), rotation: 0 },
+
+                { idString: "large_table", variation: 1, position: Vec.create(-54.1, -8.5), rotation: 1 },
+                { idString: "chair", position: Vec.create(-62.5, -8.5), rotation: 3 }, // rotation1=I_
+                { idString: "chair", position: Vec.create(-45.5, -8.5), rotation: 1 },
+
+                { idString: "large_table", variation: 0, position: Vec.create(-54.1, 2.9), rotation: 1 },
+                { idString: "chair", position: Vec.create(-62.5, 2.9), rotation: 3 },
+                { idString: "chair", position: Vec.create(-45.5, 2.9), rotation: 1 },
+
+                { idString: "large_table", variation: 0, position: Vec.create(-54.1, 14.75), rotation: 1 },
+                { idString: "chair", position: Vec.create(-62.5, 14.75), rotation: 3 },
+                { idString: "chair", position: Vec.create(-45.5, 14.75), rotation: 1 }
+                // ---------------------------------------------------------------------------------------------------------------
             ] as BuildingObstacle[]
         },
         // -----------------------------------------------------------------------------------------------
