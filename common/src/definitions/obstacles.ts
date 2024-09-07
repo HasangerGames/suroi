@@ -1176,23 +1176,15 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         apply("houseWall", { hitbox: RectangleHitbox.fromRect(9, 2) }, 13, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }),
 
         // HQ walls (headquarters)
-
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(15.5, 2) }, 4),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(16.3, 2) }, 5),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.25, 2) }, 6),
-
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.2, 1.6) }, 8, true),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(11, 2) }, 9),
-
-        // USED
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.4, 2) }, 1),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(21.05, 2) }, 2),
         apply("hqWall", { hitbox: RectangleHitbox.fromRect(9.1, 2) }, 3),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(16, 2.1) }, 10),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.2, 2) }, 7),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(39.2, 2) }, 11),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.5, 1.6) }, 12, true),
-        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21, 2.1) }, 13),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(16, 2.1) }, 4),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(11.2, 2) }, 5),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(39.2, 2) }, 6),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.2, 1.6) }, 7, true),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(3.5, 1.6) }, 8, true),
+        apply("hqWall", { hitbox: RectangleHitbox.fromRect(21, 2.1) }, 9),
 
         {
             idString: "fridge",
