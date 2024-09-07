@@ -407,7 +407,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     updateDetector(): void {
-        for (const player of this.game.livingPlayers) {
+        for (const player of this.game.connectedPlayers) {
             if (
                 this.hitbox.collidesWith(player.hitbox)
                 && (player.activeItem.definition.idString !== "fists" || player.inventory.vest || player.inventory.helmet)
@@ -415,7 +415,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             ) {
                 this.detectedMetal = true;
                 this.setDirty();
-            } else if (this.detectedMetal) {
+            } else if (!this.hitbox.collidesWith(player.hitbox) && (player.activeItem.definition.idString === "fists" || !player.inventory.vest || !player.inventory.helmet) && player.layer !== this.layer) {
                 this.detectedMetal = false;
                 this.setDirty();
             }
