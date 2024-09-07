@@ -868,11 +868,7 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     ui.btnReport.on("click", () => {
-        if (confirm(`Are you sure you want to report this player?
-Players should only be reported for teaming or hacking.
-Video evidence is required.`)) {
             sendSpectatePacket(SpectateActions.Report);
-        }
     });
     ui.spectateNext.on("click", () => {
         sendSpectatePacket(SpectateActions.SpectateNext);
