@@ -764,7 +764,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(19, 1.93, Vec.create(114.45, -40)), // Top top right
                 RectangleHitbox.fromRect(1.93, 39, Vec.create(123, -19.7)), // Right top right
                 RectangleHitbox.fromRect(1.93, 55.7, Vec.create(123, 56.1)), // Right bottom right
-                RectangleHitbox.fromRect(102, 1.93, Vec.create(71.7, 83)), // Bottom bottom right
+                RectangleHitbox.fromRect(102, 1.93, Vec.create(71.7, 83)) // Bottom bottom right
             ),
             spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
             scopeHitbox: new GroupHitbox(
@@ -1060,7 +1060,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // Bottom left
                 { idString: "inner_concrete_wall_3", position: Vec.create(-32.45, 39), rotation: 0 },
                 { idString: "inner_concrete_wall_1", position: Vec.create(-15, 76.65), rotation: 1 },
-                { idString: "inner_concrete_wall_1", position: Vec.create(-15, 65.95), rotation: 1 },
+                { idString: "inner_concrete_wall_1", position: Vec.create(-15, 65.95), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
                 {

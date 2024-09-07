@@ -373,8 +373,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                         if (isOnOtherSide) {
                             this.door.offset = 3;
-                            // swivel door => alt hitbox
 
+                            // swivel door => alt hitbox
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             this.hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;

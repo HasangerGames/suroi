@@ -168,7 +168,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence
-
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
 

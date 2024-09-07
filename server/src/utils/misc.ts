@@ -38,8 +38,11 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
     for (const item of loots) {
         items.push(
             item.spawnSeparately && (item.count ?? 1) > 1
-            // a null-ish value would fail the conditional this branch is contingent on
-
+                /**
+                 * @author ei-pi
+                 * A null-ish value would fail the conditional that this branch is contingent on.
+                 */
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 ? new Array<WeightedItem>(item.count!).fill(item)
                 : item
         );

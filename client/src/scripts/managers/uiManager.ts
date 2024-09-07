@@ -589,7 +589,7 @@ export class UIManager {
 
             for (const outdated of notVisited) {
                 // the `notVisited` set is exclusively populated with keys from this map
-
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 _teammateDataCache.get(outdated)!.destroy();
                 _teammateDataCache.delete(outdated);
             }

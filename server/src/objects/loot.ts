@@ -349,8 +349,9 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                     modifyItemCollections();
 
                     inventory.useItem(idString);
-                    // hope that `throwableItemMap` is sync'd
 
+                    // hope that `throwableItemMap` is sync'd
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
                 } else {
                     modifyItemCollections();

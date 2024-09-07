@@ -496,7 +496,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             }
             case 3: {
                 // offset 3 means that this is a "swivel" door, meaning that there is an altHitbox
-
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 backupHitbox = this._door.openAltHitbox!.clone();
                 break;
             }

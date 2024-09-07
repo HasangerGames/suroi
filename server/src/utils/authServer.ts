@@ -12,7 +12,7 @@ export class AuthServer {
     private _gameId?: string;
 
     // Non null is asserted in server.ts
-
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     private readonly _apiKey = process.env.AUTH_SERVER_API_KEY!;
 
     constructor(public readonly game: Game) {}

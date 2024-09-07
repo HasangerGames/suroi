@@ -76,7 +76,6 @@ export default tseslint.config(
                 vars: "all",
                 args: "none"
             }],
-            ["@typescript-eslint/no-non-null-assertion"]: "off",
 
             // #region disabled rules
 

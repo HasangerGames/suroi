@@ -69,6 +69,7 @@ export class Grid {
                 hasSpawnHitbox
                     ? object.spawnHitbox
                     // can't be undefined cuz then hasSpawnHitbox would be true, meaning we'd pick the ternary's other branch
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     : hitbox!
             ).toRectangle();
 

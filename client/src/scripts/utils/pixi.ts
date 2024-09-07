@@ -40,8 +40,11 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
     await Promise.all(
         spritesheets.map(
             spritesheet => {
-                // FIXME I have no idea why this nna is sound, someone please explain here why it is
-
+                /**
+                 * this is defined via vite-spritesheet-plugin, so it is never nullish
+                 * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
+                 */
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const image = spritesheet.meta.image!;
 
                 return new Promise<void>(resolve => {

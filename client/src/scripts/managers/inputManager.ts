@@ -749,8 +749,9 @@ class InputMapper {
         if (actions === undefined) return false;
 
         actions.delete(action);
-        // safe because the backward map has already been checked
 
+        // safe because the backward map has already been checked
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._actionToInput.get(action)!.delete(input);
         return true;
     }

@@ -381,9 +381,9 @@ export class Game implements GameData {
              */
             close(socket: WebSocket<PlayerContainer>) {
                 const data = socket.getUserData();
-                // FIXME someone explain why this is safe
 
-                if (Config.protection) This.simultaneousConnections[data.ip!]--;
+                // this should never be null-ish, but will leave it here for any potential race conditions (i.e. TFO? (verification required))
+                if (Config.protection && data.ip !== undefined) This.simultaneousConnections[data.ip]--;
 
                 const { player } = data;
                 if (!player) return;
@@ -741,8 +741,8 @@ export class Game implements GameData {
                     const gasPosition = this.gas.currentPosition;
                     const gasRadius = this.gas.newRadius ** 2;
                     const teamPosition = this.teamMode
-                    // teamMode should guarantee the `team` object's existence
-
+                        // teamMode should guarantee the `team` object's existence
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         ? pickRandomInArray(team!.getLivingPlayers())?.position
                         : undefined;
 
@@ -771,7 +771,7 @@ export class Game implements GameData {
                             if (
                                 object.isPlayer
                                 // teamMode should guarantee the `team` object's existence
-
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                 && (!this.teamMode || !team!.players.includes(object))
                             ) {
                                 foundPosition = false;

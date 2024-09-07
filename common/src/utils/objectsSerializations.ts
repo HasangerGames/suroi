@@ -292,6 +292,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeObstacleRotation(full.rotation.rotation, full.definition.rotationMode);
             stream.writeLayer(full.layer);
             if (full.definition.variations !== undefined && full.variation !== undefined) {
+                // if the unserialized form is present, the serialized form should also be present
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 stream.writeBits(full.variation, full.definition.variationBits!);
             }
 
@@ -319,6 +321,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readLayer(),
+                // serialized & unserialized co-defined
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 variation: definition.variations ? stream.readBits(definition.variationBits!) as Variation : undefined
             };
 
@@ -521,6 +525,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const variant = full.variant;
             stream.writeBoolean(variant !== undefined);
             if (variant !== undefined) {
+                // serialized & unserialized co-defined
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 stream.writeBits(variant, full.definition.variationBits!);
             }
         },
@@ -545,6 +551,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const definition = SyncedParticles.readFromStream(stream);
             return {
                 definition,
+                // we're assuming that the serialized form is already present if this method is being called
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 variant: stream.readBoolean() ? stream.readBits(definition.variationBits!) as Variation : undefined
             };
         }

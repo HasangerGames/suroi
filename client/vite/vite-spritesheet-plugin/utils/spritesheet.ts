@@ -160,8 +160,11 @@ export async function createSpritesheets(
                 ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
                 const sourceParts = data.path.split(platform() === "win32" ? "\\" : "/");
-                // there is _probably_ a file name
 
+                /**
+                 * there is _probably_ a file name
+                 */
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 let name = sourceParts.at(-1)!;
 
                 if (options.removeExtensions) {

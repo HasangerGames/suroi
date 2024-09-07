@@ -128,7 +128,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
 
                     if (definition.killstreak) {
                         // we pray that these nna's are correct at runtime
-
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         stream.writeUint8(stats!.kills!);
                     }
                 }

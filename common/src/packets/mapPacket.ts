@@ -48,6 +48,8 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     Obstacles.writeToStream(stream, object.definition);
                     stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
                     if (object.definition.variations !== undefined && object.variation !== undefined) {
+                        // if the unserialized form is present, the unserialized form should also be present
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         stream.writeBits(object.variation, object.definition.variationBits!);
                     }
                     break;
@@ -88,8 +90,10 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
 
                         let variation: Variation | undefined;
                         if (definition.variations !== undefined) {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             variation = stream.readBits(definition.variationBits!) as Variation;
                         }
+
                         return {
                             position,
                             type,
