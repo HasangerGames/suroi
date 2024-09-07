@@ -3849,6 +3849,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     position: Vec.create(-30, 45)
                 },
                 {
+                    key: "headquarters_large_stair",
+                    position: Vec.create(77.8, -55.5)
+                },
+                {
                     key: "headquarters_floor_top",
                     position: Vec.create(0, -69.5)
                 },
@@ -3962,6 +3966,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-40, -78.2), rotation: 2 },
 
                 // outside of hq (also windows and metal doors)
+                { idString: "fire_exit_railing", position: Vec.create(79.25, -56.6), rotation: 0 },
+                { idString: "fire_exit_railing", position: Vec.create(79.25, -56.6), layer: 1, rotation: 0 },
+                { idString: "hq_large_stair", position: Vec.create(77.6, -63.49), layer: 1, rotation: 0 },
                 { idString: "metal_door", position: Vec.create(-57.55, -39.55), rotation: 3 },
                 { idString: "metal_door", position: Vec.create(18.25, -106.4), rotation: 2 },
                 { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
@@ -4150,7 +4157,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ],
             groundGraphics: [],
-            obstacles: [] as BuildingObstacle[]
+            obstacles: [
+                { idString: "fire_exit_railing", position: Vec.create(73.25, -56), rotation: 0 }
+            ] as BuildingObstacle[]
         },
         // -----------------------------------------------------------------------------------------------
 

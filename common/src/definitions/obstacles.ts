@@ -3041,6 +3041,25 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             zIndex: ZIndexes.BuildingsFloor
         },
         {
+            idString: "hq_large_stair",
+            name: "HQ Large Stair",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            invisible: true,
+            role: ObstacleSpecialRoles.Stair,
+            activeEdges: {
+                high: 2,
+                low: 0
+            },
+            hitbox: RectangleHitbox.fromRect(11.55, 25.5),
+            frames: {
+                particle: "metal_particle"
+            },
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.BuildingsFloor
+        },
+        {
             idString: "fire_exit_stair",
             name: "Fire Exit Stair",
             material: "metal",
@@ -3078,11 +3097,12 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             invisible: true,
             reflectBullets: true,
             hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(1.4, 44, Vec.create(5.18, 0)),
-                RectangleHitbox.fromRect(11.6, 1.4, Vec.create(-0.3, 22)),
-                new CircleHitbox(1, Vec.create(5.18, -22)),
-                new CircleHitbox(1, Vec.create(5.18, 7.4)),
-                new CircleHitbox(1, Vec.create(5.18, 22))
+                RectangleHitbox.fromRect(1.4, 41, Vec.create(5.18, 1)),
+                RectangleHitbox.fromRect(11.6, 1.4, Vec.create(-0.3, 21.5)),
+                new CircleHitbox(0.95, Vec.create(5.18, -19.3)),
+                new CircleHitbox(0.95, Vec.create(5.18, 6.6)),
+                new CircleHitbox(0.95, Vec.create(5.18, 21.5)),
+                new CircleHitbox(0.95, Vec.create(-6.18, 21.5))
             ),
             frames: {
                 particle: "metal_particle"
