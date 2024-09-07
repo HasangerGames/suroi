@@ -28,9 +28,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.4770342"
-     inkscape:cx="537.56373"
-     inkscape:cy="747.10526"
+     inkscape:zoom="1.0444209"
+     inkscape:cx="1455.352"
+     inkscape:cy="807.62459"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -10331,22 +10331,6 @@
            rx="0"
            ry="0" />
         <g
-           id="g37177-6"
-           transform="translate(144.83863,315.77381)">
-          <path
-             d="m -1722.4105,108.76921 h -11.0066 c -0.5954,0 -1.0795,-0.48419 -1.0795,-1.0795 V 96.683044 c 0,-0.59796 0.4841,-1.0795 1.0795,-1.0795 h 11.0066 c 0.598,0 1.0795,0.48154 1.0795,1.0795 v 11.006666 c 0,0.59531 -0.4815,1.0795 -1.0795,1.0795 z"
-             fill="#4a4134"
-             stroke="#453c31"
-             stroke-width="2.69007"
-             stroke-linecap="round"
-             id="path37173-99" />
-          <path
-             d="m -1723.2783,107.71617 h -9.2895 c -0.4974,0 -0.9023,-0.40482 -0.9023,-0.90223 v -9.207496 c 0,-0.50006 0.4049,-0.90488 0.9023,-0.90488 h 9.2895 c 0.5001,0 0.9049,0.40482 0.9049,0.90488 v 9.207496 c 0,0.49741 -0.4048,0.90223 -0.9049,0.90223 z"
-             fill="#a3917b"
-             id="path37175-5"
-             style="stroke-width:0.264583" />
-        </g>
-        <g
            id="g37403-5"
            transform="translate(170.61024,250.47074)">
           <rect
@@ -10987,16 +10971,16 @@
        transform="matrix(0.63986222,-0.66975533,0.60596951,0.70991643,-2296.0439,-825.01272)"><tspan
          x="-1424.0509"
          y="2037.4591"
-         id="tspan1">Have a </tspan><tspan
+         id="tspan2">Have a </tspan><tspan
          x="-1424.0509"
          y="2041.7174"
-         id="tspan3">great </tspan><tspan
+         id="tspan6">great </tspan><tspan
          x="-1424.0509"
          y="2045.9757"
-         id="tspan4">time at </tspan><tspan
+         id="tspan7">time at </tspan><tspan
          x="-1424.0509"
          y="2050.234"
-         id="tspan5">the HQ!</tspan></text>
+         id="tspan8">the HQ!</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:2.55578px;font-family:'Corsiva Hebrew';-inkscape-font-specification:'Corsiva Hebrew';fill:#a6433f;fill-opacity:1;fill-rule:evenodd;stroke:#a6433f;stroke-width:0.0753405;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

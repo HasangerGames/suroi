@@ -3554,27 +3554,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "headquarters_secret_room",
             name: "Headquarters Secret Room",
-            material: "stone",
-            particle: "hq_stone_wall_particle",
-            particleVariations: 2,
-            hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(9.35, 1.6, Vec.create(-5.8, -13.5)),
-                RectangleHitbox.fromRect(1.6, 27, Vec.create(-9.7, 0)),
-                RectangleHitbox.fromRect(20, 1.6, Vec.create(0, 13))
-            ),
-            spawnHitbox: RectangleHitbox.fromRect(19, 26),
-            scopeHitbox: RectangleHitbox.fromRect(19, 26),
+            spawnHitbox: RectangleHitbox.fromRect(20, 20),
+            scopeHitbox: RectangleHitbox.fromRect(20, 20),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [{
                 key: "secret_room_ceiling",
                 position: Vec.create(0, 0),
-                scale: Vec.create(1.05, 1.055)
-            }],
-            obstacles: [
-                // secret room
-                { idString: "secret_door", position: Vec.create(3.5, -13.5), rotation: 2 },
-                { idString: "aegis_golden_case", position: Vec.create(0.25, 9), lootSpawnOffset: Vec.create(0, -2), rotation: 2 }
-            ] as BuildingObstacle[]
+                scale: Vec.create(1.07, 1)
+            }]
         },
         {
             idString: "headquarters_second_floor",
@@ -3850,7 +3837,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "headquarters_large_stair",
-                    position: Vec.create(77.8, -55.5)
+                    position: Vec.create(77.7, -55.5)
                 },
                 {
                     key: "headquarters_floor_top",
@@ -3918,7 +3905,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     type: FloorNames.Metal,
                     hitbox: new GroupHitbox(
                         RectangleHitbox.fromRect(11, 20.5, Vec.create(-64, -87.5)), // small stair
-                        RectangleHitbox.fromRect(11.55, 25.5, Vec.create(77.7, -63)) // large stair
+                        RectangleHitbox.fromRect(11.55, 25.5, Vec.create(77.6, -63)) // large stair
                     ),
                     layer: 1
                 }
@@ -3972,9 +3959,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-40, -78.2), rotation: 2 },
 
                 // outside of hq (also windows and metal doors)
-                { idString: "fire_exit_railing", position: Vec.create(79.25, -56.6), rotation: 0 },
-                { idString: "fire_exit_railing", position: Vec.create(79.25, -56.6), layer: 1, rotation: 0 },
-                { idString: "hq_large_stair", position: Vec.create(77.8, -63.49), layer: 1, rotation: 0 },
+                { idString: "fire_exit_railing", position: Vec.create(79.1, -56.6), rotation: 0 },
+                { idString: "fire_exit_railing", position: Vec.create(79.1, -56.6), layer: 1, rotation: 0 },
+                { idString: "hq_large_stair", position: Vec.create(77.7, -63.49), layer: 1, rotation: 0 },
                 { idString: "metal_door", position: Vec.create(-57.55, -39.55), rotation: 3 },
                 { idString: "metal_door", position: Vec.create(18.25, -106.4), rotation: 2 },
                 { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
@@ -4073,7 +4060,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "super_annoying_headquarters_window_part_I_hate_this", position: Vec.create(0, 0), layer: 2 },
-                { idString: "headquarters_second_floor_2", position: Vec.create(6, -0.6), layer: 2 },
+                { idString: "headquarters_second_floor_2", position: Vec.create(5.6, -0.6), layer: 2 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-58.8, -9.4) },
                 { idString: "detector", position: Vec.create(-35, 25.5) },
                 { idString: "detector", position: Vec.create(-25, 25.5) }
@@ -4085,7 +4072,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "stone",
             particle: "hq_stone_wall_particle",
             particleVariations: 2,
-            hitbox: new GroupHitbox(
+            hi2tbox: new GroupHitbox(
                 // outer
                 RectangleHitbox.fromRect(1.75, 59, Vec.create(65.1, -77.1)), // L, W1
                 RectangleHitbox.fromRect(93, 1.75, Vec.create(19.5, -26.5)), // C, W2
@@ -4166,7 +4153,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             groundGraphics: [],
             obstacles: [
-                { idString: "fire_exit_railing", position: Vec.create(73.25, -56), rotation: 0 },
+                { idString: "fire_exit_railing", position: Vec.create(73.5, -56), rotation: 0 },
 
                 // near stairs
                 { idString: "small_drawer", position: Vec.create(-58, -62), rotation: 1 },
@@ -4180,7 +4167,28 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "potted_plant", position: Vec.create(-22.5, -31.8), lootSpawnOffset: Vec.create(1, -1) },
 
                 // big wood room above hallway (has piano and speaker)
+                { idString: "headquarters_boss_desk", position: Vec.create(-28.1, -82), rotation: 0 },
                 { idString: "door", position: Vec.create(24.27, -56), rotation: 0 },
+                { idString: "headquarters_wall_1", position: Vec.create(-11.15, -54.5), rotation: 0 },
+                { idString: "door", position: Vec.create(-22.4, -54.5), rotation: 2 },
+                { idString: "headquarters_wall_7", position: Vec.create(-32.58, -54.5), rotation: 0 },
+                { idString: "trash_can", position: Vec.create(-8.5, -58.5) },
+                { idString: "potted_plant", position: Vec.create(-33, -59.3) },
+                { idString: "house_column", position: Vec.create(-3.6, -69.9) },
+                { idString: "headquarters_wall_1", position: Vec.create(-3.6, -77.1), rotation: 1 },
+                { idString: "headquarters_wall_1", position: Vec.create(-3.6, -62.7), rotation: 1 },
+                { idString: "grey_office_chair", position: Vec.create(-26.8, -90), rotation: 0 },
+                { idString: "grey_office_chair", position: Vec.create(-28, -74.5), rotation: 2 },
+                { idString: "metal_small_drawer", position: Vec.create(-8.4, -101), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-18.6, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-31.5, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                { idString: "potted_plant", position: Vec.create(1.5, -61) },
+                { idString: "bookshelf", position: Vec.create(11, -59.5), rotation: 0 },
+
+                // secret room
+                { idString: "secret_door", position: Vec.create(-3.85, -99.4), rotation: 3 },
+                { idString: "aegis_golden_case", position: Vec.create(14, -98.5), lootSpawnOffset: Vec.create(-1, 1), rotation: 3 },
+                { idString: "secret_door", position: Vec.create(2.5, -83.7), rotation: 0 },
 
                 // ---------------------------------------------------------------------------------------------------------------
                 // discussion room? (bottom left)
@@ -4213,7 +4221,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "chair", position: Vec.create(-62.5, 14.75), rotation: 3 },
                 { idString: "chair", position: Vec.create(-45.5, 14.75), rotation: 1 }
                 // ---------------------------------------------------------------------------------------------------------------
-            ] as BuildingObstacle[]
+            ] as BuildingObstacle[],
+            subBuildings: [{ idString: "headquarters_secret_room", position: Vec.create(7.4, -94.5) }]
         },
         // -----------------------------------------------------------------------------------------------
 
