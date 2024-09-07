@@ -186,27 +186,27 @@ const randomBarrel = {
 };
 
 const ContainerTints = {
-    White: 0xc0c0c0,
-    Red: 0xa32900,
-    Green: 0x00a30e,
-    Blue: 0x005fa3,
-    Yellow: 0xcccc00
+    white: 0xc0c0c0,
+    red: 0xa32900,
+    green: 0x00a30e,
+    blue: 0x005fa3,
+    yellow: 0xcccc00
 };
 
 const ContainerWallOutlineTints = {
-    White: 0x797979,
-    Red: 0x661900,
-    Green: 0x006608,
-    Blue: 0x003b66,
-    Yellow: 0x808000
+    white: 0x797979,
+    red: 0x661900,
+    green: 0x006608,
+    blue: 0x003b66,
+    yellow: 0x808000
 };
 
 const ContainerWallTints = {
-    White: 0xa8a8a8,
-    Red: 0x8f2400,
-    Green: 0x008f0c,
-    Blue: 0x00538f,
-    Yellow: 0xb3b300
+    white: 0xa8a8a8,
+    red: 0x8f2400,
+    green: 0x008f0c,
+    blue: 0x00538f,
+    yellow: 0xb3b300
 };
 
 const portWarehouseHitbox = new GroupHitbox(
@@ -273,11 +273,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         },
         container: (
             id: number,
-            tintName: "White" | "Red" | "Green" | "Blue" | "Yellow",
+            color: "white" | "red" | "green" | "blue" | "yellow",
             open: "open2" | "open1" | "closed",
             damaged?: boolean
         ) => {
-            const tint = ContainerTints[tintName];
+            const tint = ContainerTints[color];
 
             let hitbox: Hitbox;
             let wallHitbox: Hitbox | undefined;
@@ -329,15 +329,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 hitbox,
                 reflectBullets: true,
                 material: "metal",
-                particle: "metal_particle",
+                particle: `container_particle_${color}`,
                 spawnHitbox,
                 scopeHitbox: RectangleHitbox.fromRect(12, 27),
                 graphics: closed
                     ? []
                     : [
                         { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
-                        { color: ContainerWallOutlineTints[tintName], hitbox },
-                        { color: ContainerWallTints[tintName], hitbox: wallHitbox }
+                        { color: ContainerWallOutlineTints[color], hitbox },
+                        { color: ContainerWallTints[color], hitbox: wallHitbox }
                     ],
                 graphicsZIndex: ZIndexes.BuildingsFloor + 1,
                 ceilingImages: [
@@ -1672,7 +1672,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Crane",
             reflectBullets: true,
             material: "metal",
-            particle: "metal_particle",
+            particle: "container_particle_yellow",
             hitbox: new GroupHitbox(
                 // base ends
                 RectangleHitbox.fromRect(4.82, 1.8, Vec.create(32, -6.42)),
@@ -1786,18 +1786,18 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 }
             ]
         },
-        simple("container", 1, "White", "closed"),
-        simple("container", 2, "Red", "closed"),
-        simple("container", 3, "Green", "open1"),
-        simple("container", 4, "Green", "open1", true),
-        simple("container", 5, "Blue", "open1"),
-        simple("container", 6, "Blue", "open1", true),
-        simple("container", 7, "Blue", "open2"),
-        simple("container", 8, "Blue", "open2", true),
-        simple("container", 9, "Yellow", "open1"),
-        simple("container", 10, "Yellow", "open2"),
-        simple("container", 11, "Green", "closed"),
-        simple("container", 12, "Yellow", "closed"),
+        simple("container", 1, "white", "closed"),
+        simple("container", 2, "red", "closed"),
+        simple("container", 3, "green", "open1"),
+        simple("container", 4, "green", "open1", true),
+        simple("container", 5, "blue", "open1"),
+        simple("container", 6, "blue", "open1", true),
+        simple("container", 7, "blue", "open2"),
+        simple("container", 8, "blue", "open2", true),
+        simple("container", 9, "yellow", "open1"),
+        simple("container", 10, "yellow", "open2"),
+        simple("container", 11, "green", "closed"),
+        simple("container", 12, "yellow", "closed"),
         {
             idString: "cargo_ship_center_roof",
             name: "Cargo Ship Center Roof",
