@@ -48,9 +48,6 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
         this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this, () => this._detachHandler());
         this._activeHandler.cook();
-        //  this.stopUse();
-        owner.attacking = false;
-        owner.stoppedAttacking = false;
     }
 
     override stopUse(): void {
