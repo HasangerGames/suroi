@@ -3547,7 +3547,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     key: "headquarters_torture_window",
                     position: Vec.create(-65, -84.8),
-                    scale: Vec.create(1, 1.055)
+                    scale: Vec.create(1, 1.045)
                 }
             ]
         },
@@ -3876,7 +3876,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
             ] as BuildingObstacle[],
             subBuildings: [
-                { idString: "super_annoying_headquarters_window_part_I_hate_this", position: Vec.create(0, 0), layer: 2 },
+                { idString: "super_annoying_headquarters_window_part_I_hate_this", position: Vec.create(0, 0.325), layer: 2 },
                 { idString: "headquarters_second_floor", position: Vec.create(5.6, -0.6), layer: 2 },
                 { idString: "headquarters_mini_vault", position: Vec.create(-58.8, -9.4) },
                 { idString: "detector", position: Vec.create(-35, 25.5) },
