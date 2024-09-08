@@ -140,6 +140,7 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Deschide Airdrop-ul",
     "interact_control_panel": "Activează Panoul De Control",
+    "interact_headquarters_security_desk": "Activează Panoul De Control",
     "interact_generator": "Activează Generatorul",
     "interact_button": "Apasă Butonul",
 

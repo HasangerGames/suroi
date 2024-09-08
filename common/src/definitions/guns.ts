@@ -1583,7 +1583,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }
         },
         {
-            idString: "l115a1", // TODO: casing
+            idString: "l115a1",
             name: "L115A1",
             ammoType: "338lap",
             ammoSpawnAmount: 18,
@@ -1595,10 +1595,14 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             shotSpread: 0.5,
             moveSpread: 3,
             length: 10.8,
+            casingParticles: [{
+                frame: "casing_338lap",
+                position: Vec.create(3.5, 0.2)
+            }],
             fists: {
-                left: Vec.create(40, 0),
-                right: Vec.create(120, 0),
-                leftZIndex: 4,
+                left: Vec.create(120, 0),
+                right: Vec.create(40, 0),
+                rightZIndex: 4,
                 animationDuration: 100
             },
             image: { position: Vec.create(120, 4) },
@@ -1610,7 +1614,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 obstacleMultiplier: 1,
                 speed: 0.5,
                 tracer: {
-                    width: 2
+                    width: 2.5,
+                    length: 4
                 },
                 range: 300
             }
@@ -1928,7 +1933,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         {
             idString: "destroyer_of_worlds",
             name: "Destroyer Of Worlds",
-            ammoType: "338lap",
+            ammoType: "50cal",
             ammoSpawnAmount: 255,
             capacity: 255,
             reloadTime: 0.4,

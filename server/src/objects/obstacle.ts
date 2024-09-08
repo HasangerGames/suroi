@@ -17,6 +17,7 @@ import { type Building } from "./building";
 import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { equalLayer } from "@common/utils/layer";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -407,17 +408,16 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     updateDetector(): void {
-        for (const player of this.game.livingPlayers) {
-            if (
-                this.hitbox.collidesWith(player.hitbox)
-                && (player.activeItem.definition.idString !== "fists" || player.inventory.vest || player.inventory.helmet)
-                && player.layer === this.layer
-            ) {
-                this.detectedMetal = true;
-                this.setDirty();
-            } else if (this.detectedMetal) {
-                this.detectedMetal = false;
-                this.setDirty();
+        for (const object of this.game.grid.intersectsHitbox(this.spawnHitbox)) {
+            if (object.isPlayer) {
+                const player = object;
+                const triggerCondition = player.activeItem.definition.idString !== "fists" || player.inventory.vest || player.inventory.helmet;
+
+                this.detectedMetal = this.hitbox.collidesWith(player.hitbox) && triggerCondition && equalLayer(this.layer, player.layer);
+
+                if (this.detectedMetal) {
+                    this.setDirty();
+                }
             }
         }
     }

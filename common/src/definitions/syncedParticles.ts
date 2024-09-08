@@ -170,8 +170,8 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     }
                 },
                 angularVelocity: {
-                    min: -0.0005,
-                    max: 0.0005
+                    min: -0.001,
+                    max: 0.001
                 },
                 velocity: {
                     min: {
@@ -184,10 +184,11 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     }
                 },
                 lifetime: {
-                    mean: 500,
+                    mean: 1000,
                     deviation: 0
                 },
-                frame: "metal_particle",
+                frame: "metal_particle_1",
+                tint: 0x5f5f5f,
                 zIndex: ZIndexes.ObstaclesLayer1
             })
         }

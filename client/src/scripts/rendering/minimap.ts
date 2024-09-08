@@ -379,7 +379,7 @@ export class Minimap {
         debugGraphics.clear();
         debugGraphics.zIndex = 99;
         for (const [hitbox, { floorType, layer }] of this._terrain.floors) {
-            if (layer !== this.game.activePlayer?.layer as number | undefined) continue;
+            if (layer !== this.game.activePlayer?.layer as number | undefined) continue; // this doesnt really work
 
             drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics);
             //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
@@ -447,7 +447,7 @@ export class Minimap {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
-                    this._terrain.addFloor(floor.type, hitbox, object.layer ?? 0);
+                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
                 }
             }
         }

@@ -21,7 +21,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "main",
+    map: "gallery",
 
     spawn: SpawnMode.Normal,
 

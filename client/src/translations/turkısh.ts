@@ -143,6 +143,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Hava Yardımını Aç",
     "interact_control_panel": "Kontrol Panelini Aktive Et",
+    "interact_headquarters_security_desk": "Kontrol Panelini Aktive Et",
     "interact_generator": "Jeneratörü Aktive Et",
     "interact_button": "Butona Bas",
 

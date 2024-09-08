@@ -144,6 +144,7 @@ export const DRUNKGLISH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Slap that bish",
     "interact_control_panel": "Slap that bish",
+    "interact_headquarters_security_desk": "Slap that bish",
     "interact_generator": "Slap that bish",
     "interact_button": "SLAP THAT MOTHAFUCKA",
 

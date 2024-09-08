@@ -139,6 +139,7 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Hap Airdropin",
     "interact_control_panel": "Aktivizoni Panelin e Kontrollit",
+    "interact_headquarters_security_desk": "Aktivizoni Panelin e Kontrollit",
     "interact_generator": "Aktivizoni gjeneratorin",
     "interact_button": "Shtyp butonin",
 

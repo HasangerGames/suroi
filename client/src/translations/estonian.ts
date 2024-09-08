@@ -142,6 +142,7 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Ava Õhudessant",
     "interact_control_panel": "Aktiveeri Juhtpaneel",
+    "interact_headquarters_security_desk": "Aktiveeri Juhtpaneel",
     "interact_generator": "Aktiveeri Generaator",
     "interact_button": "Vajuta Nupule",
 

@@ -83,9 +83,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.variation = full.variation;
 
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
-                this.playSound("detection", {
+                this.game.soundManager.play("detection", {
                     falloff: 0.25,
-                    maxRange: 180
+                    position: Vec.create(this.position.x + 20, this.position.y - 20),
+                    maxRange: 200
                 });
                 this.notOnCoolDown = false;
                 setTimeout(() => {

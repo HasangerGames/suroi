@@ -144,6 +144,7 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Atvērt airdropu",
     "interact_control_panel": "Aktivizēt kontroles paneli",
+    "interact_headquarters_security_desk": "Aktivizēt kontroles paneli",
     "interact_generator": "Aktivizēt ģeneratoru",
     "interact_button": "Nospiest pogu",
 
