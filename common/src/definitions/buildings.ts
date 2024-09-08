@@ -3976,7 +3976,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             sounds: {
                 solved: "speaker",
                 position: Vec.create(61, -77),
-                maxRange: 60,
+                maxRange: 97,
                 falloff: 0.5
             },
             obstacles: [
