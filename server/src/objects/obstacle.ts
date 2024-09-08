@@ -415,9 +415,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                 this.detectedMetal = this.hitbox.collidesWith(player.hitbox) && triggerCondition && equalLayer(this.layer, player.layer);
 
-                if (this.detectedMetal) {
-                    this.setDirty();
-                }
+                this.setDirty();
             }
         }
     }
