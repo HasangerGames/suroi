@@ -402,7 +402,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.joinTime = game.now;
         this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
 
-        // this.layer = -2;
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";

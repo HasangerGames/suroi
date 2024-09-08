@@ -57,6 +57,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
             const { variant, definition } = full;
 
             this._definition = definition;
+            this.layer = data.layer;
 
             this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
