@@ -580,8 +580,8 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "ammo", weight: 1 },
-            { item: "50cal", count: 21, weight: 0.2 },
-            { item: "338lap", count: 3, weight: 0.1 },
+            { item: "50cal", count: 20, weight: 0.3 },
+            { item: "338lap", count: 6, weight: 0.1 },
             { item: "curadell", weight: 0.1 }
         ]
     },
@@ -750,7 +750,8 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "12g", count: 10, weight: 0.75 },
         { item: "556mm", count: 60, weight: 1 },
         { item: "762mm", count: 60, weight: 1 },
-        { item: "9mm", count: 60, weight: 1 }
+        { item: "9mm", count: 60, weight: 1 },
+        { item: "50cal", count: 20, weight: 0.1 }
     ],
     throwables: [
         { item: "frag_grenade", count: 2, weight: 1 },
