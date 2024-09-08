@@ -2028,45 +2028,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     ]
                 }
             }
-        },
-        {
-            idString: "barrett_m95",
-            name: "Barrett M95",
-            ammoType: "50cal",
-            ammoSpawnAmount: 25,
-            capacity: 5,
-            reloadTime: 3.4,
-            fireDelay: 1400,
-            switchDelay: 900,
-            recoilMultiplier: 0.3,
-            recoilDuration: 1500,
-            fireMode: FireMode.Single,
-            shotSpread: 0.5,
-            moveSpread: 4,
-            length: 9.2,
-            shootOnRelease: true,
-            fists: {
-                left: Vec.create(115, -4),
-                right: Vec.create(40, 0),
-                rightZIndex: 4,
-                animationDuration: 100
-            },
-            image: { position: Vec.create(90, 4) },
-            casingParticles: [{
-                position: Vec.create(2, 0.6),
-                ejectionDelay: 700
-            }],
-            gasParticles: gasParticlePresets.rifle,
-            ballistics: {
-                damage: 129,
-                obstacleMultiplier: 1,
-                speed: 0.45,
-                range: 300,
-                tracer: {
-                    width: 2.5,
-                    length: 4
-                }
-            }
         }
     ] as ReadonlyArray<StageZeroDefinition<RawGunDefinition, () => typeof defaultGun>>)
     .map(e => {
