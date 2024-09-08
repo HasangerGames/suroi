@@ -63,7 +63,7 @@ export class Plane {
             this.game.planes.delete(this);
         }
 
-        if (this.game.layer) {
+        if (this.game.layer && this.game.layer !== Layer.Floor1) {
             this.image.visible = adjacentOrEqualLayer(Layer.Ground, this.game.layer);
             this.sound.maxRange = adjacentOrEqualLayer(Layer.Ground, this.game.layer) ? 256 : 0;
         }

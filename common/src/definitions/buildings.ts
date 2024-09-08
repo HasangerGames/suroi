@@ -3822,7 +3822,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_wall_3", position: Vec.create(33, -100.9), rotation: 1 },
                 { idString: "door", position: Vec.create(33, -91.7), rotation: 1 },
                 { idString: "sink", position: Vec.create(39, -101.25), rotation: 0 },
-                { idString: "stove", position: Vec.create(47.5, -101.5), rotation: 0 },
+                { idString: "small_stove", position: Vec.create(47.5, -101.5), rotation: 0 },
                 { idString: "fridge", position: Vec.create(55.7, -101.65), rotation: 0 },
                 { idString: "fridge", position: Vec.create(65, -101.65), rotation: 0 },
                 { idString: "door", position: Vec.create(64.225, -84), rotation: 2 },

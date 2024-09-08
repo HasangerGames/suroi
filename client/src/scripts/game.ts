@@ -699,6 +699,7 @@ export class Game {
                     }
                 });
             } else {
+                this.layerTween?.kill();
                 object.destroy();
                 this.objects.delete(object);
             }
