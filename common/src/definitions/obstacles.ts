@@ -230,7 +230,8 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
     cardboard: { hit: "stone", destroyed: "crate"     },
     iron:      { hit: "metal_light", destroyed: "appliance" },
     crate:     { hit: "wood"  },
-    pumpkin:   { hit: "stone" }
+    pumpkin:   { hit: "stone" },
+    trash_bag: { hit: "sand" }
 };
 
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
@@ -1408,7 +1409,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "trash_bag",
             name: "Trash Bag",
-            material: "stone",
+            material: "trash_bag",
             health: 70,
             scale: {
                 spawnMin: 1,
