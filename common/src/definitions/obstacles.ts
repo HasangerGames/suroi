@@ -212,14 +212,14 @@ export const Materials = [
     "stone",
     "bush",
     "crate",
-    "metal",
+    "metal_light",
+    "metal_heavy",
     "wood",
     "pumpkin",
     "glass",
     "porcelain",
     "cardboard",
     "appliance",
-    "large_refinery_barrel",
     "sand",
     "fence",
     "iron",
@@ -228,7 +228,7 @@ export const Materials = [
 
 export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
     cardboard: { hit: "stone", destroyed: "crate"     },
-    iron:      { hit: "metal", destroyed: "appliance" },
+    iron:      { hit: "metal_light", destroyed: "appliance" },
     crate:     { hit: "wood"  },
     pumpkin:   { hit: "stone" }
 };
@@ -474,7 +474,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "oil_tank",
             name: "Oil Tank",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             hitbox: new GroupHitbox(
@@ -922,7 +922,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "barrel",
             name: "Barrel",
-            material: "metal",
+            material: "metal_light",
             health: 160,
             scale: {
                 spawnMin: 1,
@@ -942,7 +942,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "super_barrel",
             name: "Super Barrel",
-            material: "metal",
+            material: "metal_light",
             health: 240,
             scale: {
                 spawnMin: 1,
@@ -958,7 +958,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "loot_barrel",
             name: "Loot Barrel",
-            material: "metal",
+            material: "metal_light",
             hideOnMap: true,
             health: 160,
             scale: {
@@ -980,7 +980,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "airdrop_crate_locked",
             name: "Airdrop",
-            material: "metal",
+            material: "metal_light",
             health: 10000,
             indestructible: true,
             reflectBullets: true,
@@ -1097,7 +1097,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "metal_shelf",
             name: "Metal Shelf",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             noMeleeCollision: true,
@@ -1228,7 +1228,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "stove",
             name: "Stove",
-            material: "metal",
+            material: "metal_light",
             health: 140,
             scale: {
                 spawnMin: 1,
@@ -1246,7 +1246,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "small_stove",
             name: "Small Stove",
-            material: "metal",
+            material: "metal_light",
             health: 140,
             scale: {
                 spawnMin: 1,
@@ -1469,7 +1469,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "metal_door",
             name: "Metal Door",
-            material: "metal",
+            material: "metal_heavy",
             reflectBullets: true,
             doorSound: "metal_door",
             indestructible: true,
@@ -1493,7 +1493,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "vault_door",
             name: "Vault Door",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -1915,7 +1915,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "bunk_bed",
             name: "Bunk Bed",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -2113,7 +2113,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "small_refinery_barrel",
             name: "Small Refinery Barrel",
-            material: "metal",
+            material: "metal_light",
             health: 250,
             scale: {
                 spawnMin: 1,
@@ -2133,7 +2133,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "large_refinery_barrel",
             name: "Large Refinery Barrel",
-            material: "large_refinery_barrel",
+            material: "metal_heavy",
             health: 3500,
             scale: {
                 spawnMin: 1,
@@ -2153,7 +2153,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "smokestack",
             name: "Smokestack",
-            material: "metal",
+            material: "metal_heavy",
             health: 500,
             indestructible: true,
             hitbox: new CircleHitbox(8.9),
@@ -2166,7 +2166,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "distillation_column",
             name: "Distillation Column",
-            material: "metal",
+            material: "metal_heavy",
             health: 500,
             indestructible: true,
             hitbox: new GroupHitbox(
@@ -2182,7 +2182,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "distillation_equipment",
             name: "Distillation Equipment",
-            material: "metal",
+            material: "metal_heavy",
             health: 500,
             indestructible: true,
             hitbox: new GroupHitbox(
@@ -2224,7 +2224,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "truck",
             name: "Truck",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             hitbox: new GroupHitbox(
@@ -2247,7 +2247,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "trailer",
             name: "Trailer",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -2284,7 +2284,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "control_panel",
             name: "Control Panel",
-            material: "metal",
+            material: "metal_light",
             health: 200,
             reflectBullets: true,
             scale: {
@@ -2311,7 +2311,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "control_panel_activated",
             name: "Control Panel",
-            material: "metal",
+            material: "metal_light",
             health: 200,
             reflectBullets: true,
             scale: {
@@ -2330,7 +2330,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "control_panel2",
             name: "Control Panel",
-            material: "metal",
+            material: "metal_light",
             health: 200,
             reflectBullets: true,
             scale: {
@@ -2349,7 +2349,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "control_panel_small",
             name: "Small Control Panel",
-            material: "metal",
+            material: "metal_light",
             health: 200,
             reflectBullets: true,
             scale: {
@@ -2387,7 +2387,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "generator",
             name: "Generator",
-            material: "metal",
+            material: "metal_heavy",
             health: 200,
             indestructible: true,
             reflectBullets: true,
@@ -2408,7 +2408,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "ship_oil_tank",
             name: "Ship Oil Tank",
-            material: "metal",
+            material: "metal_heavy",
             health: 200,
             indestructible: true,
             rotationMode: RotationMode.Limited,
@@ -2418,7 +2418,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "forklift",
             name: "Forklift",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -2447,7 +2447,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "bollard",
             name: "Bollard",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -2461,7 +2461,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "barrier",
             name: "Barrier",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -2640,7 +2640,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "m1117",
             name: "M1117",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             reflectBullets: true,
@@ -2810,7 +2810,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "tugboat_control_panel",
             name: "Tugboat Control Panel",
-            material: "metal",
+            material: "metal_heavy",
             health: 250,
             reflectBullets: true,
             scale: {
@@ -2972,7 +2972,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "bunker_entrance",
             name: "Bunker Entrance",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             reflectBullets: true,
             indestructible: true,
@@ -2985,7 +2985,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "bunker_stair",
             name: "Bunker Stair",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             role: ObstacleSpecialRoles.Stair,
@@ -3003,7 +3003,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         /*   {
             idString: "blue_house_stair",
             name: "Blue House Stair",
-            material: "metal",
+            material: "metal_light",
             health: 1000,
             indestructible: true,
             role: ObstacleSpecialRoles.Stair,
@@ -3021,7 +3021,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "blue_house_stair_walls", // to block -1 layer collision funnies
             name: "Blue House Stair",
-            material: "metal",
+            material: "metal_light",
             health: 1000,
             indestructible: true,
             activeEdges: {
@@ -3041,7 +3041,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "hq_stair",
             name: "HQ Stair",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             invisible: true,
@@ -3060,7 +3060,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "hq_large_stair",
             name: "HQ Large Stair",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             invisible: true,
@@ -3079,7 +3079,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "fire_exit_stair",
             name: "Fire Exit Stair",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             role: ObstacleSpecialRoles.Stair,
@@ -3108,7 +3108,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "fire_exit_railing",
             name: "Fire exit railing",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             indestructible: true,
             invisible: true,
@@ -3160,7 +3160,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
         {
             idString: "headquarters_alarm_barriers",
             name: "Headquarters Alarm Barriers",
-            material: "metal",
+            material: "metal_heavy",
             health: 1000,
             hideOnMap: true,
             indestructible: true,

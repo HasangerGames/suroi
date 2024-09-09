@@ -328,7 +328,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 name: `Container ${id}`,
                 hitbox,
                 reflectBullets: true,
-                material: "metal",
+                material: "metal_heavy",
                 particle: `container_particle_${color}`,
                 spawnHitbox,
                 scopeHitbox: RectangleHitbox.fromRect(12, 27),
@@ -369,7 +369,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: `tugboat_${color}`,
             name: "Tugboat",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(8.93, 2.09, Vec.create(80.47, -4.78)),
@@ -476,7 +476,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: `port_warehouse_${color}`,
             name: "Port Warehouse",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: portWarehouseHitbox,
             spawnHitbox: RectangleHitbox.fromRect(72, 130),
@@ -671,7 +671,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "warehouse",
             name: "Warehouse",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(1.7, 70.6, Vec.create(-19.8, 0)),
@@ -1490,7 +1490,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "blue_house_basement",
             name: "Blue House Basement",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(48, 1.7, Vec.create(0, -6)),
@@ -1649,7 +1649,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "blue_house_mini_vault",
             name: "Blue House Mini Vault",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(14.8, 2, Vec.create(0.1, -12.1)),
@@ -1671,7 +1671,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "crane",
             name: "Crane",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "container_particle_yellow",
             hitbox: new GroupHitbox(
                 // base ends
@@ -1815,7 +1815,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "cargo_ship",
             name: "Cargo Ship",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
 
@@ -2107,7 +2107,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "oil_tanker_ship",
             name: "Oil Tanker",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 // outer walls
@@ -2302,7 +2302,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "oil_tanker_tanks",
             name: "Oil Tanker Tanks",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 new CircleHitbox(31.25, Vec.create(-0.5, 4.4)),
@@ -4086,7 +4086,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Small Bunker Entrance",
             reflectBullets: true,
             spanAdjacentLayers: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
@@ -4111,7 +4111,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_main",
             name: "Small Bunker",
             reflectBullets: true,
-            material: "metal",
+            material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(44.5, 1.7, Vec.create(0, -18)),
