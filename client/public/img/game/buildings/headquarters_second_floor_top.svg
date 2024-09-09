@@ -28,9 +28,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.0444209"
-     inkscape:cx="1455.352"
-     inkscape:cy="807.62459"
+     inkscape:zoom="0.7385171"
+     inkscape:cx="330.39181"
+     inkscape:cy="1022.9959"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -10971,27 +10971,27 @@
        transform="matrix(0.63986222,-0.66975533,0.60596951,0.70991643,-2296.0439,-825.01272)"><tspan
          x="-1424.0509"
          y="2037.4591"
-         id="tspan2">Have a </tspan><tspan
+         id="tspan1">Have a </tspan><tspan
          x="-1424.0509"
          y="2041.7174"
-         id="tspan6">great </tspan><tspan
+         id="tspan3">great </tspan><tspan
          x="-1424.0509"
          y="2045.9757"
-         id="tspan7">time at </tspan><tspan
+         id="tspan4">time at </tspan><tspan
          x="-1424.0509"
          y="2050.234"
-         id="tspan8">the HQ!</tspan></text>
+         id="tspan5">the HQ!</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:2.55578px;font-family:'Corsiva Hebrew';-inkscape-font-specification:'Corsiva Hebrew';fill:#a6433f;fill-opacity:1;fill-rule:evenodd;stroke:#a6433f;stroke-width:0.0753405;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       x="-2526.0759"
-       y="-295.72998"
+       style="font-size:2.55578px;font-family:'Corsiva Hebrew';-inkscape-font-specification:'Corsiva Hebrew';fill:#a6433f;fill-opacity:1;fill-rule:evenodd;stroke:#0942dc;stroke-width:0.0753405;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       x="-2514.8333"
+       y="-295.45969"
        id="text36951-7"
        transform="matrix(0.69149436,-0.70986524,0.72940851,0.69735674,0,0)"><tspan
          sodipodi:role="line"
          id="tspan36949-7"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;fill:#a6433f;fill-opacity:1;stroke:#a6433f;stroke-width:0.0753405;stroke-dasharray:none;stroke-opacity:1"
-         x="-2526.0759"
-         y="-295.72998">by HQ builder</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;fill:#0942dc;fill-opacity:1;stroke:#0942dc;stroke-width:0.0753405;stroke-dasharray:none;stroke-opacity:1"
+         x="-2514.8333"
+         y="-295.45969">pap</tspan></text>
   </g>
 </svg>

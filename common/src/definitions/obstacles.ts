@@ -1419,7 +1419,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: new CircleHitbox(2.2),
             rotationMode: RotationMode.Full,
             allowFlyover: FlyoverPref.Always,
-            noResidue: true,
             hasLoot: true,
             frames: {
                 particle: "flint_stone_particle"
