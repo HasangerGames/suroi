@@ -3103,7 +3103,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             noCollisions: true,
             hitbox: RectangleHitbox.fromRect(0, 0),
             rotationMode: RotationMode.Limited,
-            zIndex: ZIndexes.ObstaclesLayer4
+            zIndex: ZIndexes.ObstaclesLayer3 + 1
         },
         {
             idString: "fire_exit_railing",
@@ -3265,6 +3265,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(27.5, 5.2),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Activatable,
+            zIndex: ZIndexes.ObstaclesLayer3 + 1.5,
             replaceWith: {
                 idString: "headquarters_security_desk_activated",
                 delay: 0

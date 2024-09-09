@@ -23,7 +23,7 @@ export const Config = {
 
     map: "gallery",
 
-    spawn: SpawnMode.Center,
+    spawn: SpawnMode.Normal,
 
     maxTeamSize: TeamSize.Solo,
 

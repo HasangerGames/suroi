@@ -3752,6 +3752,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "planted_bushes", position: Vec.create(-14, 45.9), rotation: 0 },
                 { idString: "glass_door", position: Vec.create(-35.1, 36.9), rotation: 0 },
                 { idString: "glass_door", position: Vec.create(-25, 36.9), rotation: 2 },
+                { idString: "hq_door_occluder", position: Vec.create(-30.09, 36.75), rotation: 0 },
 
                 // main area (hallway/where unbreakable large desk is)
                 { idString: "potted_plant", position: Vec.create(-32, -56.5) },
