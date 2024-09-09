@@ -1449,6 +1449,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "glass_door",
             name: "Glass Door",
             material: "glass",
+            doorSound: "slide",
             health: 100,
             scale: {
                 spawnMin: 1,
