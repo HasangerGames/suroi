@@ -1148,7 +1148,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 destroy: 0.95
             },
             hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(11, 6.3)
+                RectangleHitbox.fromRect(11, 5.7)
             ),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
