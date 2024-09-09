@@ -186,3 +186,26 @@
   border-bottom: 2px solid $orange_bg;
   box-shadow: inset 0 -2px $orange_bg;
 }
+
+.btn-donate {
+  transition: 0.25s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f258b7;
+  border-bottom: 2px solid #e340a4;
+  box-shadow: inset 0 -2px #e340a4;
+
+  &:hover {
+    transition: 0.25s;
+    box-shadow: inset 0 -2px #e340a4, 0 0 15px rgba(255, 255, 255, 1);
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  i {
+    margin-right: 5px;
+  }
+}
