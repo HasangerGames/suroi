@@ -578,7 +578,7 @@ const maps = {
     gallery: {
         width: 1024,
         height: 1024,
-        oceanSize: 64,
+        oceanSize: 16,
         beachSize: 32,
         loots: {
             ground_loot: 40,
