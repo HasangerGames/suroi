@@ -84,8 +84,9 @@ export class Bullet extends BaseBullet {
                     );
                 }
 
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                (!object.isObstacle || !object.definition.isStair) && this.damagedIDs.add(object.id);
+                if (!object.isObstacle || !object.definition.isStair) {
+                    this.damagedIDs.add(object.id);
+                }
 
                 if (object.isObstacle) {
                     const definition = object.definition;
@@ -93,7 +94,7 @@ export class Bullet extends BaseBullet {
                         (this.definition.penetration.obstacles && !definition.impenetrable)
                         || definition.noBulletCollision
                         || definition.noCollisions
-                        || !(definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
+                        || !(definition.spanAdjacentLayers || definition.isStair ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
                     ) continue;
 
                     if (definition.isStair) {
