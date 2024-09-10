@@ -1597,7 +1597,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             length: 10.8,
             casingParticles: [{
                 frame: "casing_338lap",
-                position: Vec.create(3.5, 0.2)
+                position: Vec.create(3.5, 0.2),
+                ejectionDelay: 500
             }],
             fists: {
                 left: Vec.create(120, 0),
