@@ -4149,7 +4149,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     type: FloorNames.Metal,
-                    hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27))
+                    hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27)),
+                    layer: -1
                 }
             ],
             obstacles: [
