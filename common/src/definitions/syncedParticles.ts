@@ -4,7 +4,7 @@ import { CircleHitbox } from "../utils/hitbox";
 import { type EaseFunctions } from "../utils/math";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import type { ScopeDefinition } from "./scopes";
+import { type ScopeDefinition } from "./scopes";
 
 export interface MinMax<T> {
     readonly min: T
@@ -234,9 +234,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     mean: 2000,
                     deviation: 500
                 },
-                hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope",
-                scopeOutPreMs: 500
+                hitbox: new CircleHitbox(5)
             },
             [],
             ["airdrop_smoke_particle"]
