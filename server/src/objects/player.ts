@@ -483,7 +483,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.updateAndApplyModifiers();
 
-        this.giveGun("ak47");
+        this.giveGun("deagle");
+        this.giveGun("rsh12");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
