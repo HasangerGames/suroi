@@ -765,6 +765,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 isInsideBuilding = true;
             }
 
+            // Automatic doors
+            if (
+                object?.isObstacle
+                && object.definition.isDoor
+                && object.definition.automatic
+                && !object.door?.isOpen
+                && Geometry.distanceSquared(object.position, this.position) < 100
+            ) {
+                object.interact();
+                const closeDoor = () => {
+                    if (Geometry.distanceSquared(object.position, this.position) >= 100) {
+                        object.interact();
+                    } else {
+                        this.game.addTimeout(closeDoor, 1000);
+                    }
+                };
+                this.game.addTimeout(closeDoor, 1000);
+            }
+
             if (
                 object instanceof SyncedParticle
                 && object.hitbox?.collidesWith(this.hitbox)

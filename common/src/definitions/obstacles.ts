@@ -126,6 +126,7 @@ type RawObstacleDefinition = ObjectDefinition & {
             readonly role: ObstacleSpecialRoles.Door
             readonly locked?: boolean
             readonly openOnce?: boolean
+            readonly automatic?: boolean
             readonly animationDuration?: number
             readonly doorSound?: string
         } & (
@@ -1460,6 +1461,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             noResidue: true,
             role: ObstacleSpecialRoles.Door,
+            automatic: true,
             operationStyle: "slide",
             slideFactor: 0.9,
             // zIndex: ZIndexes.ObstaclesLayer3,

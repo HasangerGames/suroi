@@ -265,8 +265,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player?: Player): boolean {
         return !this.dead && (
-            (this.isDoor && (!this.door?.locked || player === undefined))
-            || (
+            (
+                this.isDoor
+                && ( // Either the door must not be locked or automatic, or there must not be a player triggering it
+                    (!this.door?.locked && !(this.definition as { automatic?: boolean }).automatic)
+                    || player === undefined
+                )
+            ) || (
                 this.definition.isActivatable === true
                 && (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem)
                 && !this.activated
