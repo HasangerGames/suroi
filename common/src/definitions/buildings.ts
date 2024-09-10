@@ -2197,13 +2197,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             floorImages: [
                 {
                     key: "oil_tanker_ship_floor_2",
-                    position: Vec.create(57, -0.1),
-                    scale: Vec.create(2.139, 2.139)
+                    position: Vec.create(57.6, -0.09),
+                    scale: Vec.create(2.141, 2.141)
                 },
                 {
                     key: "oil_tanker_ship_floor_3",
                     position: Vec.create(153, -0.2),
-                    scale: Vec.create(2.139, 2.139)
+                    scale: Vec.create(2.141, 2.141)
                 },
                 {
                     key: "oil_tanker_ship_back",
