@@ -950,7 +950,7 @@ export class Game {
                             .hide();
                     }
 
-                    if ((object?.isObstacle && !object.definition.noInteractMessage)) interactMsg.show();
+                    if (!(object?.isObstacle && object.definition.noInteractMessage)) interactMsg.show();
                 } else {
                     interactMsg.hide();
                 }
