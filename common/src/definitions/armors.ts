@@ -96,7 +96,8 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
             {
                 level: 99,
                 damageReduction: 0.72,
-                color: 0x2f0000
+                color: 0x2f0000,
+                noDrop: true
             },
             "Developr"
         )
