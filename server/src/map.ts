@@ -689,7 +689,7 @@ export class GameMap {
                 this.game.addLoot(
                     item.idString,
                     position,
-                    0, // uhh what
+                    Layer.Ground,
                     { count: item.count, jitterSpawn: false }
                 );
             }

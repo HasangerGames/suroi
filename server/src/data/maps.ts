@@ -5,16 +5,18 @@ import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation, type Variation } from "@common/typings";
 import { Collision } from "@common/utils/math";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
-import { type LootTables } from "./lootTables";
+import { LootTables } from "./lootTables";
 import { Layer } from "@common/constants";
 import { Guns } from "@common/definitions";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { getLootTableLoot } from "../utils/misc";
 
 export interface MapDefinition {
     readonly width: number
@@ -580,10 +582,6 @@ const maps = {
         height: 1024,
         oceanSize: 16,
         beachSize: 32,
-        loots: {
-            ground_loot: 40,
-            regular_crate: 40
-        },
         onGenerate(map) {
             const targetBuildingIdString = "headquarters";
             map.generateBuilding(targetBuildingIdString, Vec.create(this.width / 2, this.height / 2), 0);
@@ -634,6 +632,11 @@ const maps = {
                 river_chest: Math.random() > 0.9 ? 1 : 0,
                 tango_crate: Math.random() > 0.8 ? 1 : 0,
                 lux_crate: Math.random() > 0.8 ? 1 : 0
+            };
+
+            const loots = {
+                ground_loot: 40,
+                regular_crate: 40
             };
 
             Object.entries(buildings).forEach(([building, count]) => {
@@ -699,6 +702,30 @@ const maps = {
                     }
 
                     map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+                }
+            });
+
+            Object.entries(loots ?? {}).forEach(([loot_, count]) => {
+                for (let i = 0; i < count; i++) {
+                    const loot = getLootTableLoot(LootTables[loot_].loot.flat());
+
+                    const position = map.getRandomPosition(
+                        new CircleHitbox(5),
+                        { spawnMode: MapObjectSpawnMode.GrassAndSand }
+                    );
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    for (const item of loot) {
+                        map.game.addLoot(
+                            item.idString,
+                            position,
+                            Layer.Ground,
+                            { count: item.count, jitterSpawn: false }
+                        );
+                    }
                 }
             });
         },
