@@ -197,6 +197,8 @@ export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = P
 };
 
 export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
+    if (alpha === 0) return graphics;
+
     graphics.setStrokeStyle({
         color,
         width: 2,

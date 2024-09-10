@@ -10,7 +10,7 @@ import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
@@ -377,11 +377,9 @@ export class Minimap {
     renderMapDebug(): void {
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
-        debugGraphics.zIndex = 99;
+        debugGraphics.zIndex = 999;
         for (const [hitbox, { floorType, layer }] of this._terrain.floors) {
-            if (layer !== this.game.activePlayer?.layer as number | undefined) continue; // this doesnt really work
-
-            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics);
+            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
             //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
         }
 

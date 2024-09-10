@@ -12,7 +12,7 @@ import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings } from "../utils/console/gameConsole";
-import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
+import { PIXI_SCALE } from "../utils/constants";
 import { getTranslatedString } from "../../translations";
 import { html } from "../utils/misc";
 
@@ -216,6 +216,12 @@ export class InputManager {
             this.pingWheelMinimap = false;
             $("#emote-wheel").hide();
         });
+
+        const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
+        const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
+        const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);
+        const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
+
         gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
             this.mouseX = e.clientX;

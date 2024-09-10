@@ -3690,7 +3690,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         RectangleHitbox.fromRect(22.5, 16, Vec.create(-30, 45.15)),
                         RectangleHitbox.fromRect(3.8, 10.4, Vec.create(-59.25, -39.5)), // D1
                         RectangleHitbox.fromRect(10.3, 3.8, Vec.create(18.5, -107.9)), // D2
-                        RectangleHitbox.fromRect(35.5, 13.5, Vec.create(-52.1, -70.5)),
+                        RectangleHitbox.fromRect(35.5, 14, Vec.create(-52.1, -70.5)),
                         RectangleHitbox.fromRect(10.7, 1.67, Vec.create(-39.5, -77.8)), // patch
                         RectangleHitbox.fromRect(1.67, 80.1, Vec.create(32.5, -65.5)), // large patch
 

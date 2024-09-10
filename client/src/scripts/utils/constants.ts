@@ -1,12 +1,14 @@
 import { Color } from "pixi.js";
 import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes";
 import { Config } from "../config";
+import { Layer } from "../../../../common/src/constants";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
+export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
+export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
 
 export const LAYER_TRANSITION_DELAY = 200;
-export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
 export const SOUND_FILTER_FOR_LAYERS = true; // TODO: test this, unsure if it glitches the sound manager. From testing in test server most of the times the sound would cut off and glitch.
 
 export const HITBOX_COLORS = {
@@ -48,11 +50,6 @@ export const TEAMMATE_COLORS = [
 export const PIXI_SCALE = 20;
 
 export const WALL_STROKE_WIDTH = 8;
-
-export const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
-export const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
-export const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);
-export const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
 
 export const emoteSlots = ["top", "right", "bottom", "left", "win", "death"] as const;
 
