@@ -580,8 +580,8 @@ const maps = {
     gallery: {
         width: 1024,
         height: 1024,
-        oceanSize: 16,
         beachSize: 32,
+        oceanSize: 64,
         onGenerate(map) {
             const targetBuildingIdString = "headquarters";
             map.generateBuilding(targetBuildingIdString, Vec.create(this.width / 2, this.height / 2), 0);

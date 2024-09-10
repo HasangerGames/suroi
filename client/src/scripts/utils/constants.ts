@@ -5,9 +5,10 @@ import { Config } from "../config";
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
 
+export const MAX_SIMULTANEOUS_SOUNDS = 20;
 export const LAYER_TRANSITION_DELAY = 200;
 export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
-export const SOUND_FILTER_FOR_LAYERS = false; // TODO: test this, unsure if it glitches the sound manager. From testing in test server most of the times the sound would cut off and glitch.
+export const SOUND_FILTER_FOR_LAYERS = true; // TODO: test this, unsure if it glitches the sound manager. From testing in test server most of the times the sound would cut off and glitch.
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),

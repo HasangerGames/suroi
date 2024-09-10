@@ -2,14 +2,14 @@ import { Reskins } from "../../../../common/src/definitions/modes";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
+import { MAX_SIMULTANEOUS_SOUNDS, MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
 export interface SoundOptions {
     position?: Vector
     falloff: number
-    applyFilter: boolean
+    applyFilter?: boolean
     maxRange: number
     loop: boolean
     /**
@@ -28,44 +28,40 @@ export class GameSound {
     name: string;
     position?: Vector;
     fallOff: number;
-    applyFilter: boolean;
     maxRange: number;
+    applyFilter?: boolean;
     onEnd?: () => void;
 
     readonly dynamic: boolean;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    readonly telephoneFilter?: PixiSound.filters.TelephoneFilter;
+    readonly reverbFilter: PixiSound.filters.ReverbFilter;
 
     ended = false;
 
     constructor(name: string, options: SoundOptions, manager: SoundManager) {
         this.name = name;
         this.manager = manager;
-        this.applyFilter = options.applyFilter;
         this.position = options.position;
         this.fallOff = options.falloff;
         this.maxRange = options.maxRange;
+        this.applyFilter = options.applyFilter;
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
-
-        if (SOUND_FILTER_FOR_LAYERS) {
-            this.telephoneFilter = new PixiSound.filters.TelephoneFilter();
-        }
+        this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
         if (!PixiSound.sound.exists(name)) {
             console.warn(`Unknown sound with name ${name}`);
             return;
         }
 
-        const filter = (this.applyFilter && this.telephoneFilter) ? this.telephoneFilter : this.stereoFilter;
         const instanceOrPromise = PixiSound.sound.play(name, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: [filter],
+            filters: [SOUND_FILTER_FOR_LAYERS && this.applyFilter ? this.reverbFilter : this.stereoFilter],
             loop: options.loop,
             volume: this.manager.volume
         });
@@ -134,7 +130,6 @@ export class SoundManager {
             falloff: 1,
             maxRange: 256,
             dynamic: false,
-            applyFilter: false,
             loop: false,
             ...options
         }, this);
@@ -182,7 +177,16 @@ export class SoundManager {
             soundsToLoad[key] = `.${path}`;
         }
 
-        for (const [alias, path] of Object.entries(soundsToLoad)) {
+        const soundEntries = Object.entries(soundsToLoad);
+        let loadedCount = 0;
+
+        function loadNextSound(): void {
+            if (loadedCount >= soundEntries.length) {
+                return;
+            }
+
+            const [alias, path] = soundEntries[loadedCount];
+
             /**
              * For some reason, PIXI will call the `loaded` callback twice
              * when an error occurs…
@@ -201,9 +205,17 @@ export class SoundManager {
                             console.warn(`Failed to load sound '${alias}' (path '${path}')\nError object provided below`);
                             console.error(error);
                         }
+
+                        loadedCount++;
+                        loadNextSound(); // Load the next sound
                     }
                 }
             );
+        }
+
+        // Load the sounds sequentially
+        for (let i = 0; i < MAX_SIMULTANEOUS_SOUNDS; i++) {
+            loadNextSound();
         }
     }
 }

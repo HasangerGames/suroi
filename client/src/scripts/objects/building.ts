@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -10,7 +10,7 @@ import { randomBoolean, randomFloat, randomRotation } from "../../../../common/s
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -426,7 +426,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             {
                 position,
                 falloff: 0.2,
-                maxRange: 96
+                maxRange: 96,
+                applyFilter: SOUND_FILTER_FOR_LAYERS && !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
             }
         );
     }
