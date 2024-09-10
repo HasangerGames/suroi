@@ -9,10 +9,8 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { Building } from "./building";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { Player } from "./player";
 
 const enum Drag {
     Normal = 0.001,

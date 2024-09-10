@@ -2128,7 +2128,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // vault
                 RectangleHitbox.fromRect(2, 80, Vec.create(-112.9, 0)),
                 RectangleHitbox.fromRect(18.7, 2, Vec.create(-83.7, -27.25)),
-                RectangleHitbox.fromRect(22.8, 2, Vec.create(-85.8, 17)),
+                RectangleHitbox.fromRect(23, 2, Vec.create(-86.2, 17)),
                 RectangleHitbox.fromRect(1.9, 21.25, Vec.create(-75.5, 28)),
                 RectangleHitbox.fromRect(1.9, 2.7, Vec.create(-75, -4.9)),
                 RectangleHitbox.fromRect(38, 2, Vec.create(-93, -38.8)),
@@ -2287,8 +2287,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "oil_tanker_ship_vault",
             name: "Oil Tanker Ship Vault",
-            spawnHitbox: RectangleHitbox.fromRect(22.73, 28.32),
-            scopeHitbox: RectangleHitbox.fromRect(22.73, 28.32),
+            spawnHitbox: RectangleHitbox.fromRect(20, 35),
+            scopeHitbox: RectangleHitbox.fromRect(20, 35),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [{
                 key: "oil_tanker_ship_vault_ceiling",
