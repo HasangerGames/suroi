@@ -6,10 +6,7 @@ import { type Vector } from "@common/utils/vector";
 
 import { type Airdrop, type Game } from "../game";
 import { Events } from "../pluginManager";
-import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
     override readonly fullAllocBytes = 8;
@@ -57,21 +54,21 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
                     switch (true) {
-                        case object instanceof Player: {
+                        case object.isPlayer: {
                             object.piercingDamage({
                                 amount: GameConstants.airdrop.damage,
                                 source: KillfeedEventType.Airdrop
                             });
                             break;
                         }
-                        case object instanceof Obstacle: {
+                        case object.isObstacle: {
                             object.damage({
                                 amount: Infinity,
                                 source: crate
                             });
                             break;
                         }
-                        case object instanceof Building && object.scopeHitbox?.collidesWith(crate.hitbox): {
+                        case object.isBuilding && object.scopeHitbox?.collidesWith(crate.hitbox): {
                             object.damageCeiling(Infinity);
                             break;
                         }

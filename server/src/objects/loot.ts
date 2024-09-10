@@ -119,7 +119,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
             }
 
             if (
-                object instanceof Loot
+                object.isLoot
                 && object !== this
                 && object.hitbox.collidesWith(this.hitbox)
             ) {

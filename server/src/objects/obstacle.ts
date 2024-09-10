@@ -226,10 +226,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 this.parentBuilding?.damageCeiling();
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
-                    if (
-                        object instanceof Obstacle
-                        && object.definition.isDoor
-                    ) {
+                    if (object.isObstacle && object.definition.isDoor) {
                         const definition = object.definition;
                         switch (definition.operationStyle) {
                             case "slide": {

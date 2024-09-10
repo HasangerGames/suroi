@@ -411,9 +411,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     }
 
     handleCollision(object: GameObject): void {
-        const isObstacle = object instanceof Obstacle;
-        const isPlayer = object instanceof Player;
-        const isBuilding = object instanceof Building;
+        const { isObstacle, isPlayer, isBuilding } = object;
 
         // bail early if…
         if (

@@ -785,7 +785,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             if (
-                object instanceof SyncedParticle
+                object.isSyncedParticle
                 && object.hitbox?.collidesWith(this.hitbox)
                 && adjacentOrEqualLayer(object.layer, this.layer)
             ) {
@@ -1924,13 +1924,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     for (const object of nearObjects) {
                         if (
-                            object instanceof Loot
+                            object.isLoot
                             && object.hitbox.collidesWith(detectionHitbox)
                             && adjacentOrEqualLayer(this.layer, object.layer)
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (
-                                object instanceof Loot
+                                object.isLoot
                                 && dist < uninteractable.minDist
                             ) {
                                 uninteractable.minDist = dist;

@@ -1185,7 +1185,7 @@ export class Game implements GameData {
                 for (const object of this.grid.intersectsHitbox(padded)) {
                     let hitbox: Hitbox;
                     if (
-                        object instanceof Obstacle
+                        object.isObstacle
                         && !object.dead
                         && object.definition.indestructible
                         && ((hitbox = object.spawnHitbox.clone()).scale(paddingFactor), hitbox.collidesWith(thisHitbox))

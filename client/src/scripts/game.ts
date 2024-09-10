@@ -898,7 +898,7 @@ export class Game {
                     if (differences.object || differences.offset || differences.isAction) {
                         let text;
                         switch (true) {
-                            case object instanceof Obstacle: {
+                            case object?.isObstacle: {
                                 switch (object.definition.role) {
                                     case ObstacleSpecialRoles.Door:
                                         text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
@@ -909,13 +909,13 @@ export class Game {
                                 }
                                 break;
                             }
-                            case object instanceof Loot: {
+                            case object?.isLoot: {
                                 text = `${object.definition.idString.startsWith("dual_")
                                     ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length)) })
                                     : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
-                            case object instanceof Player: {
+                            case object?.isPlayer: {
                                 text = getTranslatedString("action_revive", { player: this.uiManager.getRawPlayerName(object.id) });
                                 break;
                             }
