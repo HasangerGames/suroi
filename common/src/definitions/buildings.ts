@@ -4110,6 +4110,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_main",
             name: "Small Bunker",
             reflectBullets: true,
+            spanAdjacentLayers: true,
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
