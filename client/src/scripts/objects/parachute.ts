@@ -1,4 +1,5 @@
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
@@ -21,7 +22,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         super(game, id);
 
         this.container.addChild(this.image);
-        this.container.zIndex = getEffectiveZIndex(ZIndexes.ObstaclesLayer5, this.layer);
+        this.updateZIndex();
 
         this.updateFromData(data, true);
     }
@@ -81,6 +82,10 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
                 }));
             }
         }
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(ZIndexes.ObstaclesLayer5, this.layer, this.game.layer);
     }
 
     destroy(): void {

@@ -1,6 +1,6 @@
-import { getEffectiveZIndex, Layer } from "../../../../common/src/constants";
+import { Layer } from "../../../../common/src/constants";
 import { TintedParticles } from "../../../../common/src/definitions/obstacles";
-import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -115,7 +115,7 @@ export class Particle {
         const tintedParticle = TintedParticles[frame];
         this.image = new SuroiSprite(tintedParticle?.base ?? frame);
         this.image.tint = options.tint ?? tintedParticle?.tint ?? 0xffffff;
-        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer));
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, this.manager.game.layer));
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;
         this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
@@ -149,7 +149,7 @@ export class Particle {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
-        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer));
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, this.manager.game.layer));
 
         this.image.position.copyFrom(toPixiCoords(this.position));
         this.image.scale.set(this.scale);

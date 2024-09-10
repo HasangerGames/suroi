@@ -1,4 +1,4 @@
-import { Layer } from "../constants";
+import { Layer, ZIndexes } from "../constants";
 import type { CommonGameObject } from "./gameObject";
 import type { Hitbox } from "./hitbox";
 
@@ -124,4 +124,11 @@ export function isVisibleFromLayer(
             )
         )
     ) */; // blacklisting code commented out since it's unused rn (uncomment the collidingObjects var too)
-};
+}
+
+const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
+
+export function getEffectiveZIndex(orig: ZIndexes, layer = 0, gameLayer = 0) {
+    if (!isGroundLayer(layer) && !equalLayer(gameLayer, Layer.Basement1) && !equalLayer(layer, gameLayer)) return orig; // hahaha no stair glitch for u
+    return orig + (gameLayer < 0 && layer < 0 ? 100 : layer * layerCount);
+}

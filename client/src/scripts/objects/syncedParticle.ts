@@ -1,5 +1,6 @@
-import { getEffectiveZIndex, ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory } from "../../../../common/src/constants";
 import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Game } from "../game";
@@ -61,7 +62,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
             this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
-            this.container.zIndex = getEffectiveZIndex(definition.zIndex, this.layer);
+            this.updateZIndex();
         }
 
         this.position = data.position;
@@ -76,6 +77,10 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         }
 
         this.updateDebugGraphics();
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(this.definition.zIndex, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {

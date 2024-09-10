@@ -1,9 +1,9 @@
 import { Container, Graphics } from "pixi.js";
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -47,7 +47,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.game.camera.addObject(this.ceilingContainer);
 
         this.layer = data.layer;
-        this.container.zIndex = getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer);
 
         this.updateFromData(data, true);
     }
@@ -193,6 +192,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {
+        this.updateZIndex();
+
         if (data.full) {
             const full = data.full;
             const definition = this.definition = full.definition;
@@ -225,7 +226,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
                     ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
                     ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
-                ), 0, Infinity)
+                ), 0, Infinity),
+                this.game.layer
             );
 
             this.orientation = full.orientation;
@@ -235,7 +237,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             if (definition.graphics.length) {
                 this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex, this.layer);
+                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex, this.layer, this.game.layer);
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
                     drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
@@ -315,7 +317,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 );
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer);
+            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
             this.ceilingContainer.alpha = 1;
 
             this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
@@ -349,6 +351,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         this.updateDebugGraphics();
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {

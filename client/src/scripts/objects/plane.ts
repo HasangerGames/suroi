@@ -1,5 +1,5 @@
-import { GameConstants, getEffectiveZIndex, Layer, ZIndexes } from "../../../../common/src/constants";
-import { adjacentOrEqualLayer as adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
+import { GameConstants, Layer, ZIndexes } from "../../../../common/src/constants";
+import { adjacentOrEqualLayer as adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -48,7 +48,7 @@ export class Plane {
     }
 
     update(): void {
-        this.image.zIndex = getEffectiveZIndex(ZIndexes.BuildingsCeiling + 1, Layer.Floor1);
+        this.image.zIndex = getEffectiveZIndex(ZIndexes.BuildingsCeiling + 1, Layer.Floor1, this.game.layer);
 
         const position = this.sound.position = Vec.lerp(
             this.startPosition,

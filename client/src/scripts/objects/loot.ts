@@ -1,11 +1,11 @@
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
@@ -50,8 +50,6 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             this.images.item.setFrame(`${definition.idString}${itemType === ItemType.Skin ? "_base" : ""}`);
 
             this.container.addChild(this.images.background, this.images.item);
-
-            this.container.zIndex = getEffectiveZIndex(ZIndexes.Loot, this.layer);
 
             // Set the loot texture based on the type
             let backgroundTexture: string | undefined;
@@ -130,15 +128,17 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         this.layer = data.layer;
         this.hitbox.position = this.position;
 
-        const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
-
-        this.container.zIndex = getEffectiveZIndex(FloorTypes[floorType].overlay ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer);
+        this.updateZIndex();
 
         if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
         }
 
         this.updateDebugGraphics();
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {

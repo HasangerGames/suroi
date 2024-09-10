@@ -107,8 +107,6 @@ export class Game {
 
     teamMode = false;
 
-    layerTween?: Tween<Container>;
-
     /**
      * proxy for `activePlayer`'s layer
      */
@@ -630,21 +628,15 @@ export class Game {
                             target: _object.ceilingContainer,
                             to: { alpha: 1 },
                             duration: LAYER_TRANSITION_DELAY,
-                            ease: EaseFunctions.sineOut,
-                            onComplete: () => {
-                                this.layerTween = undefined;
-                            }
+                            ease: EaseFunctions.sineOut
                         });
                     }
 
-                    this.layerTween = this.addTween({
+                    this.addTween({
                         target: _object.container,
                         to: { alpha: 1 },
                         duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineOut,
-                        onComplete: () => {
-                            this.layerTween = undefined;
-                        }
+                        ease: EaseFunctions.sineOut
                     });
                 }
             } else {
@@ -680,26 +672,21 @@ export class Game {
                         target: object.ceilingContainer,
                         to: { alpha: 0 },
                         duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineOut,
-                        onComplete: () => {
-                            this.layerTween = undefined;
-                        }
+                        ease: EaseFunctions.sineOut
                     });
                 }
 
-                this.layerTween = this.addTween({
+                this.addTween({
                     target: object.container,
                     to: { alpha: 0 },
                     duration: LAYER_TRANSITION_DELAY,
                     ease: EaseFunctions.sineOut,
                     onComplete: () => {
-                        this.layerTween = undefined;
                         object.destroy();
                         this.objects.delete(object);
                     }
                 });
             } else {
-                this.layerTween?.kill();
                 object.destroy();
                 this.objects.delete(object);
             }
@@ -752,6 +739,30 @@ export class Game {
 
     removeTween(tween: Tween<unknown>): void {
         this.tweens.delete(tween);
+    }
+
+    backgroundTween?: Tween<unknown>;
+
+    changeLayer(layer: Layer): void {
+        for (const object of this.objects) {
+            object.updateZIndex();
+        }
+
+        const basement = layer === Layer.Basement1;
+        this.map.terrainGraphics.visible = !basement;
+        const { red, green, blue } = this.pixi.renderer.background.color;
+        const color = { r: red * 255, g: green * 255, b: blue * 255 };
+        let targetColor = basement ? COLORS.void : COLORS.grass;
+
+        this.backgroundTween?.kill();
+        this.backgroundTween = this.addTween({
+            target: color,
+            to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
+            onUpdate: () => {
+                this.pixi.renderer.background.color = new Color(color);
+            },
+            duration: LAYER_TRANSITION_DELAY
+        });
     }
 
     // yes this might seem evil. but the two local variables really only need to

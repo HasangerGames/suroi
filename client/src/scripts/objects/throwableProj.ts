@@ -1,6 +1,7 @@
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import type { ThrowableDefinition } from "../../../../common/src/definitions";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { PI } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat } from "../../../../common/src/utils/random";
@@ -56,16 +57,12 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         this.layer = data.layer;
 
         if (data.airborne) {
-            this.container.zIndex = getEffectiveZIndex(ZIndexes.AirborneThrowables, this.layer);
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.AirborneThrowables, this.layer, this.game.layer);
         } else {
             const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
             const doOverlay = FloorTypes[floorType].overlay;
 
-            const zIndex = doOverlay
-                ? ZIndexes.UnderwaterGroundedThrowables
-                : ZIndexes.GroundedThrowables;
-
-            this.container.zIndex = getEffectiveZIndex(zIndex, this.layer);
+            this.container.zIndex = getEffectiveZIndex(doOverlay ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, this.game.layer);
 
             if (floorType !== this.floorType) {
                 if (doOverlay) this.waterOverlay.setVisible(true);
@@ -92,6 +89,10 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         }
 
         this.updateDebugGraphics();
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {

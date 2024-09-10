@@ -1,13 +1,13 @@
 import { Graphics } from "pixi.js";
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
@@ -16,7 +16,6 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
-import { adjacentOrEqualLayer, equalLayer } from "../../../../common/src/utils/layer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -252,15 +251,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             }
         }
 
-        const obstacleZIndex = this.dead
-            ? ZIndexes.DeadObstacles
-            : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
-
-        this.container.zIndex = getEffectiveZIndex(obstacleZIndex, this.layer);
-
-        if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay) {
-            this.container.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer);
-        }
+        this.updateZIndex();
 
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -323,6 +314,15 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.container.rotation = this.rotation;
 
         this.updateDebugGraphics();
+    }
+
+    override updateZIndex(): void {
+        const zIndex = this.dead
+            ? this.doOverlay()
+                ? ZIndexes.UnderWaterDeadObstacles
+                : ZIndexes.DeadObstacles
+            : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {

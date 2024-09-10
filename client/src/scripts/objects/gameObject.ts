@@ -10,6 +10,7 @@ import { HITBOX_DEBUG_MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 import { makeGameObjectTemplate } from "../../../../common/src/utils/gameObject";
 import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     id: number;
@@ -133,7 +134,13 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
         });
     }
 
+    doOverlay(): boolean {
+        return FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
+    }
+
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
+
+    abstract updateZIndex(): void;
 
     /**
      * subclasses are free to override this method to draw debug graphics if they wish

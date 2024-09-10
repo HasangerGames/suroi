@@ -1,7 +1,7 @@
-import { getEffectiveZIndex, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type DecalDefinition } from "../../../../common/src/definitions/decals";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
@@ -30,18 +30,19 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
 
         this.image.setFrame(definition.image);
         this.container.addChild(this.image);
-        this.container.zIndex = getEffectiveZIndex(definition.zIndex ?? ZIndexes.Decals, this.layer);
         this.container.scale.set(definition.scale);
 
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;
 
-        if (
-            FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay
-            && definition.zIndex === undefined
-        ) {
-            this.container.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer);
-        }
+        this.updateZIndex();
+    }
+
+    override updateZIndex(): void {
+        const zIndex = this.doOverlay() && this.definition.zIndex === undefined
+            ? ZIndexes.UnderWaterDeadObstacles
+            : this.definition.zIndex ?? ZIndexes.Decals;
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
     }
 
     override destroy(): void {

@@ -1,9 +1,9 @@
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { getEffectiveZIndex, ZIndexes } from "../../../../common/src/constants";
+import { ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, isVisibleFromLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
 import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
@@ -177,7 +177,7 @@ export class Bullet extends BaseBullet {
                 ),
                 position: this.position,
                 lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this._layer),
+                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this._layer, this.game.layer),
                 scale: randomFloat(trail.scale.min, trail.scale.max),
                 alpha: {
                     start: randomFloat(trail.alpha.min, trail.alpha.max),
@@ -196,7 +196,7 @@ export class Bullet extends BaseBullet {
     private setLayer(layer: number): void {
         this._layer = layer;
         this.updateVisibility();
-        this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer);
+        this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer, this.game.layer);
     }
 
     private updateVisibility(): void {

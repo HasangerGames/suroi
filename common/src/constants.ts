@@ -2,7 +2,6 @@ import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
-import { isGroundLayer } from "./utils/layer";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
@@ -206,13 +205,6 @@ export enum ZIndexes {
     Emotes,
     Gas
 }
-
-const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
-
-export const getEffectiveZIndex = (orig: ZIndexes, layer = 0): number => {
-    if (!isGroundLayer(layer)) return orig; // hahaha no stair glitch for u
-    return orig + layer * layerCount;
-};
 
 // i'm putting this here because placing it in objectDefinitions.ts or
 // in bullets.ts causes circular imports

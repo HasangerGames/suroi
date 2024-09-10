@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Container, Text, TilingSprite } from "pixi.js";
-import { AnimationType, GameConstants, getEffectiveZIndex, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -12,7 +12,7 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/s
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
@@ -164,7 +164,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.blood
         );
 
-        this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer);
+        //this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence
@@ -186,7 +186,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer);
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -344,10 +344,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
+        const layerChange = this.layer !== data.layer || isNew;
         this.layer = data.layer;
 
         if (this.isActivePlayer) {
-            this.changeLayer(this.layer);
+            if (layerChange) this.game.changeLayer(this.layer);
 
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
@@ -535,7 +536,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     container.addChild(badge);
                 }
 
-                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer);
+                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer, this.game.layer);
                 this.game.camera.addObject(container);
             }
 
@@ -637,19 +638,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (updateContainerZIndex) {
-            // i love ternary spam
-            const zIndex = doOverlay
-                ? this.downed
-                    ? ZIndexes.UnderwaterDownedPlayers
-                    : ZIndexes.UnderwaterPlayers
-                : this.downed
-                    ? ZIndexes.DownedPlayers
-                    : ZIndexes.Players;
-
-            this.container.zIndex = getEffectiveZIndex(zIndex, this.layer);
-            this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, !isGroundLayer(this.layer) ? (this.layer + 1) : this.layer);
-        }
+        if (updateContainerZIndex) this.updateZIndex();
 
         if (data.action !== undefined) {
             const action = data.action;
@@ -935,26 +924,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    changeLayer(layer: Layer): void {
-        switch (layer) {
-            case Layer.Basement1: {
-                this.game.pixi.renderer.background.color = COLORS.void;
-                this.game.map.terrainGraphics.visible = false;
-                break;
-            }
+    override updateZIndex(): void {
+        // i love ternary spam
+        const zIndex = FloorTypes[this.floorType].overlay
+            ? this.downed
+                ? ZIndexes.UnderwaterDownedPlayers
+                : ZIndexes.UnderwaterPlayers
+            : this.downed
+                ? ZIndexes.DownedPlayers
+                : ZIndexes.Players;
 
-            case Layer.ToBasement1: {
-                this.game.pixi.renderer.background.color = COLORS.grass;
-                this.game.map.terrainGraphics.visible = true;
-                break;
-            }
-
-            case Layer.Ground: {
-                this.game.pixi.renderer.background.color = COLORS.grass;
-                this.game.map.terrainGraphics.visible = true;
-                break;
-            }
-        }
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+        this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
     }
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
