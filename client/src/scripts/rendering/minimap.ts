@@ -379,7 +379,7 @@ export class Minimap {
         debugGraphics.clear();
         debugGraphics.zIndex = 999;
         for (const [hitbox, { floorType, layer }] of this._terrain.floors) {
-            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
+            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer as Layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
             //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
         }
 

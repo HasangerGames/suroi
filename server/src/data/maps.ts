@@ -635,8 +635,8 @@ const maps = {
             };
 
             const loots = {
-                ground_loot: 40,
-                regular_crate: 40
+                ground_loot: 30,
+                regular_crate: 30
             };
 
             Object.entries(buildings).forEach(([building, count]) => {
