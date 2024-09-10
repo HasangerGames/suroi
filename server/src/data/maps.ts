@@ -580,7 +580,7 @@ const maps = {
     gallery: {
         width: 1024,
         height: 1024,
-        beachSize: 32,
+        beachSize: 64,
         oceanSize: 64,
         onGenerate(map) {
             const targetBuildingIdString = "headquarters";
@@ -635,8 +635,8 @@ const maps = {
             };
 
             const loots = {
-                ground_loot: 30,
-                regular_crate: 30
+                ground_loot: 40,
+                regular_crate: 40
             };
 
             Object.entries(buildings).forEach(([building, count]) => {

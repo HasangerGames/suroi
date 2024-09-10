@@ -147,7 +147,7 @@ export class SoundManager {
             falloff: 1,
             maxRange: 256,
             dynamic: false,
-            layer: Layer.Ground,
+            layer: this.game.layer ?? Layer.Ground,
             loop: false,
             ...options
         }, this);
