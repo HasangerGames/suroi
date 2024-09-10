@@ -21,7 +21,7 @@ import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { equalLayer } from "../../../common/src/utils/layer";
+import { adjacentOrEqualLayer } from "../../../common/src/utils/layer";
 import { EaseFunctions, Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
@@ -841,7 +841,8 @@ export class Game {
                 const { isLoot, isObstacle, isPlayer } = object;
                 if (
                     (isLoot || ((isObstacle || isPlayer) && object.canInteract(player)))
-                    && object.hitbox.collidesWith(detectionHitbox) && equalLayer(object.layer, player.layer)
+                    && object.hitbox.collidesWith(detectionHitbox)
+                    && adjacentOrEqualLayer(object.layer, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
                     if ((object.canInteract(player) || isObstacle || isPlayer) && dist < interactable.minDist) {

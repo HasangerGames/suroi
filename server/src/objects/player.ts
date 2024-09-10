@@ -1945,7 +1945,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             )
                             || !object.canInteract(this)
                             || !object.hitbox?.collidesWith(detectionHitbox)
-                            || !equalLayer(object.layer, this.layer)
+                            || !adjacentOrEqualLayer(object.layer, this.layer)
                         ) continue;
 
                         const dist = Geometry.distanceSquared(object.position, this.position);
