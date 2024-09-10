@@ -91,6 +91,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot: boolean
     readonly explosion?: string
     readonly detector?: boolean
+    readonly noInteractMessage?: boolean
     readonly noMeleeCollision: boolean
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
@@ -1430,6 +1431,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "secret_door",
             name: "Secret Door",
             material: "wood",
+            noInteractMessage: true,
             health: 120,
             scale: {
                 spawnMin: 1,
