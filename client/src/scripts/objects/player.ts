@@ -1575,7 +1575,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             {
                 position,
                 falloff: 0.2,
-                maxRange: 96
+                maxRange: 96,
+                layer: this.layer
             });
 
         this.game.particleManager.spawnParticle({

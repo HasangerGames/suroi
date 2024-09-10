@@ -6,10 +6,9 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound, type SoundOptions } from "../managers/soundManager";
-import { HITBOX_DEBUG_MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
+import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 import { makeGameObjectTemplate } from "../../../../common/src/utils/gameObject";
-import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
@@ -129,7 +128,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     playSound(name: string, options?: Partial<Omit<SoundOptions, "position">>): GameSound {
         return this.game.soundManager.play(name, {
             position: this.position,
-            applyFilter: SOUND_FILTER_FOR_LAYERS && !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer),
+            layer: this.layer,
             ...options
         });
     }

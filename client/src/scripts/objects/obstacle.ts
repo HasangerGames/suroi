@@ -1,9 +1,9 @@
 import { Graphics } from "pixi.js";
-import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -11,7 +11,7 @@ import { random, randomBoolean, randomFloat, randomRotation } from "../../../../
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, SOUND_FILTER_FOR_LAYERS, WALL_STROKE_WIDTH } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
@@ -593,7 +593,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 position,
                 falloff: 0.2,
                 maxRange: 96,
-                applyFilter: SOUND_FILTER_FOR_LAYERS && !equalLayer(this.layer, this.game.layer ?? Layer.Ground) && isGroundLayer(this.layer)
+                layer: this.layer
             }
         );
 
