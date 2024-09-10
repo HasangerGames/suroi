@@ -2,7 +2,7 @@ import { Reskins } from "../../../../common/src/definitions/modes";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { MAX_SIMULTANEOUS_SOUNDS, MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
+import { MODE, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
@@ -177,16 +177,7 @@ export class SoundManager {
             soundsToLoad[key] = `.${path}`;
         }
 
-        const soundEntries = Object.entries(soundsToLoad);
-        let loadedCount = 0;
-
-        function loadNextSound(): void {
-            if (loadedCount >= soundEntries.length) {
-                return;
-            }
-
-            const [alias, path] = soundEntries[loadedCount];
-
+        for (const [alias, path] of Object.entries(soundsToLoad)) {
             /**
              * For some reason, PIXI will call the `loaded` callback twice
              * when an error occurs…
@@ -205,17 +196,9 @@ export class SoundManager {
                             console.warn(`Failed to load sound '${alias}' (path '${path}')\nError object provided below`);
                             console.error(error);
                         }
-
-                        loadedCount++;
-                        loadNextSound(); // Load the next sound
                     }
                 }
             );
-        }
-
-        // Load the sounds sequentially
-        for (let i = 0; i < MAX_SIMULTANEOUS_SOUNDS; i++) {
-            loadNextSound();
         }
     }
 }
