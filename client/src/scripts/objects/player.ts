@@ -164,7 +164,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.blood
         );
 
-        //this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
+        // this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence

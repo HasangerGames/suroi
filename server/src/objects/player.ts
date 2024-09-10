@@ -482,9 +482,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
-
-        this.giveGun("deagle");
-        this.giveGun("rsh12");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -774,7 +771,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && Geometry.distanceSquared(object.position, this.position) < 100
             ) {
                 object.interact();
-                const closeDoor = () => {
+                const closeDoor = (): void => {
                     if (Geometry.distanceSquared(object.position, this.position) >= 100) {
                         object.interact();
                     } else {

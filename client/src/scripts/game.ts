@@ -1,5 +1,5 @@
 import { sound, type Sound } from "@pixi/sound";
-import { Application, Color, Container } from "pixi.js";
+import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
 import { InputActions, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
@@ -752,7 +752,7 @@ export class Game {
         this.map.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
         const color = { r: red * 255, g: green * 255, b: blue * 255 };
-        let targetColor = basement ? COLORS.void : COLORS.grass;
+        const targetColor = basement ? COLORS.void : COLORS.grass;
 
         this.backgroundTween?.kill();
         this.backgroundTween = this.addTween({
