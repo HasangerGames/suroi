@@ -13,6 +13,7 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
+import { Building } from "./building";
 
 export class Explosion {
     readonly game: Game;
@@ -49,6 +50,7 @@ export class Explosion {
                     object.dead
                     || !object.hitbox
                     || ![
+                        Building,
                         Obstacle,
                         Player,
                         Loot,
@@ -73,17 +75,17 @@ export class Explosion {
             const { min, max } = this.definition.radius;
             for (const collision of lineCollisions) {
                 const object = collision.object;
-                const { isPlayer, isObstacle, isLoot, isThrowableProjectile } = object;
+                const { isPlayer, isObstacle, isBuilding, isLoot, isThrowableProjectile } = object;
 
                 if (!damagedObjects.has(object.id)) {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if ((isPlayer || isObstacle) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                    if ((isPlayer || isObstacle || isBuilding) && adjacentOrEqualLayer(object.layer, this.layer)) {
                         object.damage({
                             amount: this.definition.damage
-                            * (isObstacle ? this.definition.obstacleMultiplier : 1)
-                            * ((dist > min) ? (max - dist) / (max - min) : 1),
+                                * (isObstacle ? this.definition.obstacleMultiplier : 1)
+                                * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
                             weaponUsed: this
@@ -102,9 +104,10 @@ export class Explosion {
                 }
 
                 if (
-                    isObstacle
-                    && !object.definition.noCollisions
-                    && !object.definition.isStair
+                    (isObstacle
+                        && !object.definition.noCollisions
+                        && !object.definition.isStair)
+                        || (isBuilding && !object.definition.noCollisions)
                 ) {
                     /*
                         an Obstacle with collisions will "eat" an explosion, protecting

@@ -147,11 +147,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
                         ? randomPointInsideCircle(position, jitter)
                         : position,
                     rotation: owner.rotation + Math.PI / 2
-                    + (
-                        definition.consistentPatterning
-                            ? 8 * (i / (projCount - 1) - 0.5) ** 3
-                            : randomFloat(-1, 1)
-                    ) * spread,
+                        + (
+                            definition.consistentPatterning
+                                ? 8 * (i / (projCount - 1) - 0.5) ** 3
+                                : randomFloat(-1, 1)
+                        ) * spread,
                     layer: owner.layer,
                     rangeOverride
                 }

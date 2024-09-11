@@ -1147,17 +1147,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         const target of (
                             [...this.game.objects].filter(
                                 object => !object.dead
-                                && object !== this
-                                && (
-                                    (
-                                        object.damageable
-                                        && (object.isObstacle || object.isPlayer || object.isBuilding)
-                                    ) || (object.isThrowableProjectile && object.definition.c4)
-                                )
-                                && object.hitbox?.collidesWith(hitbox)
-                                && adjacentOrEqualLayer(object.layer, this.layer)
-                                && (!object.isObstacle || (!object.definition.isStair))
-                                && (!object.isObstacle || (!object.definition.noMeleeCollision))
+                                    && object !== this
+                                    && (
+                                        (
+                                            object.damageable
+                                            && (object.isObstacle || object.isPlayer || object.isBuilding)
+                                        ) || (object.isThrowableProjectile && object.definition.c4)
+                                    )
+                                    && object.hitbox?.collidesWith(hitbox)
+                                    && adjacentOrEqualLayer(object.layer, this.layer)
+                                    && (!object.isObstacle || (!object.definition.isStair))
+                                    && (!object.isObstacle || (!object.definition.noMeleeCollision))
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
                             if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;

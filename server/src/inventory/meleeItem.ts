@@ -63,11 +63,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     [...owner.game.grid.intersectsHitbox(hitbox)]
                         .filter(
                             object => !object.dead
-                            && object !== owner
-                            && (object.damageable || (object.isThrowableProjectile && object.definition.c4))
-                            && (!object.isObstacle || (!object.definition.isStair))
-                            && object.hitbox?.collidesWith(hitbox)
-                            && adjacentOrEqualLayer(object.layer, this.owner.layer)
+                                && object !== owner
+                                && (object.damageable || (object.isThrowableProjectile && object.definition.c4))
+                                && (!object.isObstacle || (!object.definition.isStair))
+                                && object.hitbox?.collidesWith(hitbox)
+                                && adjacentOrEqualLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
                     if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;

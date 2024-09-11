@@ -105,12 +105,12 @@ export function isVisibleFromLayer(
             !object.isBuilding // the object isn't a building (vis overrides don't apply to those)
             && !!collisionCandidates?.some( // and there exists a building 'bu' such that
                 o => o.isBuilding
-                && !o.dead // bu is not dead
-                && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
-                    override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
-                    && (colliderPredicate ??= c => !!objectHitbox?.collidesWith(c))(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
-                    && override.allow?.includes(observerLayer) // and the player's layer is whitelisted.
-                )
+                    && !o.dead // bu is not dead
+                    && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
+                        override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
+                            && (colliderPredicate ??= c => !!objectHitbox?.collidesWith(c))(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
+                            && override.allow?.includes(observerLayer) // and the player's layer is whitelisted.
+                    )
             )
         )
     )/* && ( // and…

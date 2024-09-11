@@ -493,7 +493,7 @@ export class GroupHitbox<GroupType extends ReadonlyArray<RectangleHitbox | Circl
         );
     }
 
-    override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): GroupHitbox {
+    override transform(position: Vector, scale?: number, orientation?: Orientation): GroupHitbox {
         this.position = position;
 
         return new GroupHitbox(

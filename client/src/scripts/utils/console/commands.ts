@@ -1390,19 +1390,19 @@ export function setUpCommands(game: Game): void {
         {
             short: "Prints out the values of CVars",
             long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:"
-            + `<ul>${(
-                [
-                    [null, "null"],
-                    [undefined, "undefined"],
-                    ["abcd", "string"],
-                    [1234, "number"],
-                    [false, "boolean"],
-                    [5678n, "bigint"],
-                    [Symbol.for("efgh"), "symbol"],
-                    [function sin(x: number): void { /* lol ok */ }, "function"],
-                    [{}, "object"]
-                ] as Array<[unknown, string]>
-            ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
+                + `<ul>${(
+                    [
+                        [null, "null"],
+                        [undefined, "undefined"],
+                        ["abcd", "string"],
+                        [1234, "number"],
+                        [false, "boolean"],
+                        [5678n, "bigint"],
+                        [Symbol.for("efgh"), "symbol"],
+                        [function sin(x: number): void { /* lol ok */ }, "function"],
+                        [{}, "object"]
+                    ] as Array<[unknown, string]>
+                ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -1867,7 +1867,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Gives info about the client",
             long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, "
-            + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
+                + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
             signatures: [
                 {
                     args: [

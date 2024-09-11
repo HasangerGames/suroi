@@ -1616,12 +1616,12 @@ export class GameConsole {
                 this.error.raw({
                     main: "Parsing error",
                     detail: `${e.message}<br><pre><code>`
-                    + `${
-                        sanitizeHTML(
-                            query.slice(Math.max(0, index - padding), index + padding),
-                            { strict: true, escapeSpaces: true }
-                        )
-                    }<br>${`${nbsp.repeat(Math.min(index, padding))}${"^".repeat(e.length)}`.padEnd(Math.min(query.length, padding), nbsp)}</code></pre>`
+                        + `${
+                            sanitizeHTML(
+                                query.slice(Math.max(0, index - padding), index + padding),
+                                { strict: true, escapeSpaces: true }
+                            )
+                        }<br>${`${nbsp.repeat(Math.min(index, padding))}${"^".repeat(e.length)}`.padEnd(Math.min(query.length, padding), nbsp)}</code></pre>`
                 });
             } else {
                 // Forward the error

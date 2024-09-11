@@ -1063,7 +1063,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Cull explosions
         packet.explosions = game.explosions.filter(
             ({ position }) => this.screenHitbox.isPointInside(position)
-            || Geometry.distanceSquared(position, this.position) < maxDistSquared
+                || Geometry.distanceSquared(position, this.position) < maxDistSquared
         );
 
         // Emotes
