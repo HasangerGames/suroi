@@ -1679,21 +1679,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(4.82, 1.8, Vec.create(-31.5, -135.5)),
 
                 // base parts
-
-                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(-31.55, -87.3)),
-                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(-31.55, -87.3)),
+                RectangleHitbox.fromRect(5.89, 15, Vec.create(-31.55, -87.3)),
+                RectangleHitbox.fromRect(4.99, 25.69, Vec.create(-31.55, -87.3)),
                 RectangleHitbox.fromRect(4.29, 31.46, Vec.create(-31.55, -87.3)),
 
-                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(-31.55, -35.6)),
-                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(-31.55, -35.6)),
+                RectangleHitbox.fromRect(5.89, 15, Vec.create(-31.55, -35.6)),
+                RectangleHitbox.fromRect(4.99, 25.69, Vec.create(-31.55, -35.6)),
                 RectangleHitbox.fromRect(4.29, 31.46, Vec.create(-31.55, -35.6)),
 
-                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(32, -87.3)),
-                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(32, -87.3)),
+                RectangleHitbox.fromRect(5.89, 15, Vec.create(32, -87.3)),
+                RectangleHitbox.fromRect(4.99, 25.69, Vec.create(32, -87.3)),
                 RectangleHitbox.fromRect(4.29, 31.46, Vec.create(32, -87.3)),
 
-                RectangleHitbox.fromRect(6.13, 15.45, Vec.create(32, -35.6)),
-                RectangleHitbox.fromRect(5.23, 27.96, Vec.create(32, -35.6)),
+                RectangleHitbox.fromRect(5.89, 15, Vec.create(32, -35.6)),
+                RectangleHitbox.fromRect(4.99, 25.69, Vec.create(32, -35.6)),
                 RectangleHitbox.fromRect(4.29, 31.46, Vec.create(32, -35.6))
             ),
             spawnHitbox: RectangleHitbox.fromRect(210, 140, Vec.create(55, -72)),
