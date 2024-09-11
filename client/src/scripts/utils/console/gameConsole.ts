@@ -3,6 +3,7 @@ import $ from "jquery";
 import { Numeric } from "../../../../../common/src/utils/math";
 import { Stack } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
+import type { CompiledAction, CompiledTuple } from "../../managers/inputManager";
 import { sanitizeHTML } from "../misc";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
@@ -887,8 +888,8 @@ export class GameConsole {
     }
 
     // The part everyone cares about
-    handleQuery(query: string): boolean {
-        if (query.trim().length === 0) return true;
+    handleQuery(query: string, compileHint: "never" | "normal" | "always" = "normal"): { readonly success: boolean, readonly compiled?: CompiledAction | CompiledTuple } {
+        if (query.trim().length === 0) return { success: true };
 
         /*
             Now yes yes, self-documenting code and all that
@@ -1391,115 +1392,121 @@ export class GameConsole {
             return commands;
         }
 
-        try {
-            /**
-             * Reference to the current parser node being processed. A value of `undefined`
-             * signifies that we're done with the query and that no more processing is to be done
-             */
-            let currentNode: ParserNode | undefined = extractCommandsAndArgs(query);
-            /**
-             * Plays a similar role to the `groupAnchors` stack used in the parser, that being
-             * to keep track of where we should jump to after finishing the execution of a command
-             * group. Unlike the parser's version, this stores the node where execution should resume,
-             * not the node preceding it
-             */
-            const groupAnchors = new Stack<ParserNode>();
-            /**
-             * Whether the command that has just run returned an error or not
-             */
-            let error = false;
+        /**
+         * For the parts that are tuples, the "forward" version (corresponding to the one appearing
+         * in the query) is stored at index 0; the inverse is stored at index 1
+         */
+        const compiledParts: Array<CompiledAction | CompiledTuple> = [];
 
-            /**
-             * Given a target, this function determines if it should be jumped to or not
-             * @param target The parser node to attempt jumping to
-             * @returns The target in question if the jump should be made, `undefined` otherwise
-             */
-            const determineJumpTarget = <T extends ParserNode>(target: T): T | undefined => (
-                ({
-                    [ChainingTypes.Always]: true,
-                    [ChainingTypes.IfPass]: !error,
-                    [ChainingTypes.IfFail]: error
-                }[target.chaining])
-                    ? target
-                    : undefined
-            );
+        /**
+         * Reference to the current parser node being processed. A value of `undefined`
+         * signifies that we're done with the query and that no more processing is to be done
+         */
+        let currentNode: ParserNode | undefined = extractCommandsAndArgs(query);
+        /**
+         * Plays a similar role to the `groupAnchors` stack used in the parser, that being
+         * to keep track of where we should jump to after finishing the execution of a command
+         * group. Unlike the parser's version, this stores the node where execution should resume,
+         * not the node preceding it
+         */
+        const groupAnchors = new Stack<ParserNode>();
+        /**
+         * Whether the command that has just run returned an error or not
+         */
+        let error = false;
 
-            /**
-             * Pushes the current node's `next` reference
-             * onto the group anchor stack if it exists.
-             *
-             * If it does exist, then that's because this node's `cmd`
-             * is actually a command group, and we need the `next` node
-             * to know where to jump to once we're done executing the group
-             */
-            const pushGroupAnchorIfPresent = (): void => {
-                if (currentNode?.next) {
-                    groupAnchors.push(currentNode.next);
-                }
-            };
+        /**
+         * Given a target, this function determines if it should be jumped to or not
+         * @param target The parser node to attempt jumping to
+         * @returns The target in question if the jump should be made, `undefined` otherwise
+         */
+        const determineJumpTarget = <T extends ParserNode>(target: T): T | undefined => (
+            ({
+                [ChainingTypes.Always]: true,
+                [ChainingTypes.IfPass]: !error,
+                [ChainingTypes.IfFail]: error
+            }[target.chaining])
+                ? target
+                : undefined
+        );
 
-            /**
-             * Jumps to the node located at the top of the `groupAnchors` stack. This method
-             * mutates `currentNode`, possibly leaving it as `undefined` if the jump is disallowed
-             * because of conditional chaining
-             * @returns Whether a jump has been attempted; in other words, if there was a node to pop
-             * off of the stack. A value of `true` does not guarantee that `currentNode` isn't `undefined`,
-             * since it's possible for the jump to popped node to fail because of conditional chaining
-             */
-            const jumpToPoppedAnchorIfPresent = (): boolean => {
-                const doJump = groupAnchors.has();
+        /**
+         * Pushes the current node's `next` reference
+         * onto the group anchor stack if it exists.
+         *
+         * If it does exist, then that's because this node's `cmd`
+         * is actually a command group, and we need the `next` node
+         * to know where to jump to once we're done executing the group
+         */
+        const pushGroupAnchorIfPresent = (): void => {
+            if (currentNode?.next) {
+                groupAnchors.push(currentNode.next);
+            }
+        };
 
-                if (doJump) {
-                    currentNode = determineJumpTarget(groupAnchors.pop());
-                }
+        /**
+         * Jumps to the node located at the top of the `groupAnchors` stack. This method
+         * mutates `currentNode`, possibly leaving it as `undefined` if the jump is disallowed
+         * because of conditional chaining
+         * @returns Whether a jump has been attempted; in other words, if there was a node to pop
+         * off of the stack. A value of `true` does not guarantee that `currentNode` isn't `undefined`,
+         * since it's possible for the jump to popped node to fail because of conditional chaining
+         */
+        const jumpToPoppedAnchorIfPresent = (): boolean => {
+            const doJump = groupAnchors.has();
 
-                return doJump;
-            };
+            if (doJump) {
+                currentNode = determineJumpTarget(groupAnchors.pop());
+            }
 
-            /**
-             * Steps to the next node that should be processed. This method is
-             * sensitive to groupings and the state of the nodes it operates on, so
-             * this is not simply a `currentNode = currentNode.next` operation
-             */
-            const stepForward = (): void => {
-                if (currentNode?.cmd?.next === undefined) {
-                    /*
-                        Reaching the last command of the current group means that
-                        we should either jump out of the group or that we're at the
-                        end of the query
-                    */
-                    if (jumpToPoppedAnchorIfPresent()) {
-                        // If we tried to jump out of a group, then there's nothing left to do
-                        return;
-                    }
+            return doJump;
+        };
 
-                    // But if we didn't, then we conclude that we're at the end of the query
-                    currentNode = undefined;
+        /**
+         * Steps to the next node that should be processed. This method is
+         * sensitive to groupings and the state of the nodes it operates on, so
+         * this is not simply a `currentNode = currentNode.next` operation
+         */
+        const stepForward = (): void => {
+            if (currentNode?.cmd?.next === undefined) {
+                /*
+                    Reaching the last command of the current group means that
+                    we should either jump out of the group or that we're at the
+                    end of the query
+                */
+                if (jumpToPoppedAnchorIfPresent()) {
+                    // If we tried to jump out of a group, then there's nothing left to do
                     return;
                 }
 
-                // Jump to the next node
-                currentNode = determineJumpTarget(currentNode.cmd.next);
+                // But if we didn't, then we conclude that we're at the end of the query
+                currentNode = undefined;
+                return;
+            }
 
-                if (currentNode === undefined) {
-                    /*
-                        If the jump was unsuccessful, then we try to exit out
-                        of any group we might happen to be in. This is for cases
-                        like `a & (b & c); d`—if the jump from `b` to `c` fails,
-                        then we should jump out to `d`, whose node would be present
-                        on the stack at that moment
-                    */
-                    jumpToPoppedAnchorIfPresent();
-                } else {
-                    /*
-                        If we did jump to another node, then try to push a new group
-                        anchor onto the stack, if there's one.
-                        See `pushGroupAnchorIfPresent`'s comment
-                    */
-                    pushGroupAnchorIfPresent();
-                }
-            };
+            // Jump to the next node
+            currentNode = determineJumpTarget(currentNode.cmd.next);
 
+            if (currentNode === undefined) {
+                /*
+                    If the jump was unsuccessful, then we try to exit out
+                    of any group we might happen to be in. This is for cases
+                    like `a & (b & c); d`—if the jump from `b` to `c` fails,
+                    then we should jump out to `d`, whose node would be present
+                    on the stack at that moment
+                */
+                jumpToPoppedAnchorIfPresent();
+            } else {
+                /*
+                    If we did jump to another node, then try to push a new group
+                    anchor onto the stack, if there's one.
+                    See `pushGroupAnchorIfPresent`'s comment
+                */
+                pushGroupAnchorIfPresent();
+            }
+        };
+
+        try {
             /*
                 Handles cases like `(a & b); c`, where we need to add a group anchor immediately
             */
@@ -1516,7 +1523,34 @@ export class GameConsole {
 
                 const cmd = this.commands.get(name);
                 if (cmd) {
-                    const result = cmd.run(args.map(e => e.arg));
+                    const trueArgs = args.map(e => e.arg);
+                    switch (compileHint) {
+                        case "normal": {
+                            if (compiledParts.length > 1) break;
+                        }
+                        // intentional fallthrough
+                        // eslint-disable-next-line no-fallthrough
+                        case "always": {
+                            const compileCmd = (cmd: Command<boolean, Stringable>): CompiledAction => {
+                                const fn = (
+                                    args.length === 0
+                                        ? cmd.executor.bind(this.game)
+                                        : cmd.run.bind(cmd, trueArgs)
+                                ) as CompiledAction;
+
+                                // @ts-expect-error init code
+                                fn.original = `${cmd.name}${trueArgs.length ? ` ${trueArgs.map(v => v.includes(" ") ? `"${v.replace(/"/g, "\\\"\\")}"` : v).join(" ")}` : ""}`;
+                                return fn;
+                            };
+
+                            compiledParts.push(
+                                cmd.inverse
+                                    ? [compileCmd(cmd), compileCmd(cmd.inverse)]
+                                    : compileCmd(cmd)
+                            );
+                        }
+                    }
+                    const result = cmd.run(trueArgs);
 
                     if (typeof result === "object") {
                         error = true;
@@ -1528,7 +1562,19 @@ export class GameConsole {
 
                 const alias = this.aliases.get(name);
                 if (alias !== undefined) {
-                    error = !this.handleQuery(alias);
+                    const { success, compiled } = this.handleQuery(alias, compileHint);
+                    error = !success;
+
+                    switch (compileHint) {
+                        case "normal": {
+                            if (compiledParts.length > 1) break;
+                        }
+                        // intentional fallthrough
+                        // eslint-disable-next-line no-fallthrough
+                        case "always": {
+                            compiled && compiledParts.push(compiled);
+                        }
+                    }
                     stepForward();
                     continue;
                 }
@@ -1536,7 +1582,19 @@ export class GameConsole {
                 const cvar = this.variables.get(name);
                 if (cvar) {
                     if (args.length) {
-                        error = !this.handleQuery(`assign ${name} ${args.map(v => `"${v.arg}"`).join(" ")}`);
+                        const { success, compiled } = this.handleQuery(`assign ${name} ${args.map(v => `"${v.arg}"`).join(" ")}`);
+                        error = !success;
+
+                        switch (compileHint) {
+                            case "normal": {
+                                if (compiledParts.length > 1) break;
+                            }
+                            // intentional fallthrough
+                            // eslint-disable-next-line no-fallthrough
+                            case "always": {
+                                compiled && compiledParts.push(compiled);
+                            }
+                        }
                     } else {
                         this.log(`${cvar.name} = ${cvar.value}`);
                     }
@@ -1571,7 +1629,39 @@ export class GameConsole {
             }
         }
 
-        return true;
+        return {
+            success: true,
+            compiled: (() => {
+                switch (compiledParts.length) {
+                    case 0: return undefined;
+                    case 1: return compiledParts[0];
+                    case 2: {
+                        const compileList = (list: readonly CompiledAction[]): CompiledAction => {
+                            const fn = (): void => {
+                                for (const part of list) part();
+                            };
+
+                            fn.original = query;
+                            return fn;
+                        };
+
+                        const fnParts = compiledParts.map(part => typeof part === "function" ? part : part[0]);
+                        if (typeof compiledParts[0] === "function") return compileList(fnParts);
+
+                        /*
+                            we have a compiled list corresponding to smth like "+cmdA; cmdB; +cmdC"
+                            the inverse of this query is not "-cmdA; cmdB; -cmdC", it's "-cmdA; cmdB; +cmdC"
+                            (cmdC is not inverted). either way, we just need to create a new list with the first
+                            element inverted, compile that, and send it.
+                        */
+                        return [
+                            compileList(fnParts),
+                            compileList([compiledParts[0][1], ...fnParts.slice(1)])
+                        ];
+                    };
+                }
+            })()
+        };
     }
 
     open(): void { this.isOpen = true; }

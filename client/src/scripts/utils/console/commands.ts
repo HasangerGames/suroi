@@ -13,13 +13,13 @@ import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/obje
 import { Vec } from "../../../../../common/src/utils/vector";
 import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
-import { type InputManager } from "../../managers/inputManager";
+import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
 import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
 
-type CommandExecutor<ErrorType> = (
+export type CommandExecutor<ErrorType> = (
     this: Game,
     ...args: Array<string | undefined>
     // this a return type bruh
@@ -54,6 +54,8 @@ export class Command<
     }
 
     private readonly _executor: CommandExecutor<ErrorType>;
+    get executor(): CommandExecutor<ErrorType> { return this._executor; }
+
     run(args: Array<string | undefined> = []): PossibleError<ErrorType> {
         if (!this._info.allowOnlyWhenGameStarted || this._game.gameStarted) {
             return this._executor.call(this._game, ...args) as PossibleError<ErrorType>;
@@ -399,12 +401,20 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "interact",
         function() {
+            // in the absence of a "loot" bind, the "interact"
+            // command performs the "loot" action as well
+            if (!this.inputManager.binds.getInputsBoundToAction("loot").length) {
+                this.inputManager.addAction(InputActions.Loot);
+            }
+
             this.inputManager.addAction(InputActions.Interact);
         },
         game,
         {
             short: "Interacts with an object, if there is one",
-            long: "When invoked, the player will attempt to interact with the closest interactable object that is in range",
+            long:
+                "When invoked, the player will attempt to interact with the closest interactable object that is in range. "
+                + "If no input has explicitly been bound to <code>loot</code>, invoking this command will also invoke <code>loot</code>",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -1274,14 +1284,21 @@ export function setUpCommands(game: Game): void {
         function(key) {
             const logBinds = (
                 key: string,
-                actions: Array<Command<boolean, Stringable> | string>
+                actions: ReadonlyArray<Command<boolean, Stringable> | string | CompiledAction | CompiledTuple>
             ): void => {
                 if (key === "") return;
 
                 gameConsole.log.raw({
                     main: `Actions bound to input '${key}'`,
                     detail: actions
-                        .map(bind => bind instanceof Command ? bind.name : bind)
+                        .map(bind => {
+                            switch (true) {
+                                case bind instanceof Command: return bind.name;
+                                case typeof bind === "function": return bind.original;
+                                case bind instanceof Array: return bind[0].original;
+                                default: return bind;
+                            }
+                        })
                         .join("<br>")
                 });
             };
@@ -1308,7 +1325,20 @@ export function setUpCommands(game: Game): void {
                                     ...keybinds.getActionsBoundToInput(input)
                                         .map(e => {
                                             const li = document.createElement("li");
-                                            li.innerText = e;
+
+                                            switch (true) {
+                                                case typeof e === "function": {
+                                                    li.innerText = e.original; break;
+                                                }
+                                                case e instanceof Array: {
+                                                    li.innerText = e[0].original; break;
+                                                }
+                                                default: {
+                                                    li.innerText = e;
+                                                    break;
+                                                }
+                                            }
+
                                             return li;
                                         })
                                 );
