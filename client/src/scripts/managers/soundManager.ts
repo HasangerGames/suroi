@@ -38,7 +38,7 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    //readonly reverbFilter: PixiSound.filters.ReverbFilter;
+    // readonly reverbFilter: PixiSound.filters.ReverbFilter;
 
     ended = false;
 
@@ -52,17 +52,17 @@ export class GameSound {
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
-        //this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
+        // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
         if (!PixiSound.sound.exists(name)) {
             console.warn(`Unknown sound with name ${name}`);
             return;
         }
 
-        let filter: PixiSound.Filter = this.stereoFilter;
+        const filter: PixiSound.Filter = this.stereoFilter;
 
         // We want reverb inside bunkers (basement layer) or if we are on a different layer with visible objects (layer floor1)
-        /*if (SOUND_FILTER_FOR_LAYERS && this.manager.game.layer) {
+        /* if (SOUND_FILTER_FOR_LAYERS && this.manager.game.layer) {
             switch (this.manager.game.layer) {
                 case Layer.Floor1:
                     filter = !equalLayer(this.layer, this.manager.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) ? this.reverbFilter : this.stereoFilter;
@@ -72,7 +72,7 @@ export class GameSound {
                     filter = this.reverbFilter;
                     break;
             }
-        }*/
+        } */
 
         const instanceOrPromise = PixiSound.sound.play(name, {
             loaded: (_err, _sound, instance) => {
