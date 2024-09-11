@@ -3739,7 +3739,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 collider: new GroupHitbox(
                     RectangleHitbox.fromRect(35.5, 6.4, Vec.create(-52, -102)),
                     RectangleHitbox.fromRect(11, 6.4, Vec.create(-64, -98)),
-                    RectangleHitbox.fromRect(6.6, 14, Vec.create(79.8, -42.75)),
+                    RectangleHitbox.fromRect(6.5, 14, Vec.create(79.2, -42.75)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
                 ),
