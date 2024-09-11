@@ -3106,6 +3106,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             health: 1000,
             indestructible: true,
             noCollisions: true,
+            noMeleeCollision: true,
+            noBulletCollision: true,
+            noResidue: true,
             hitbox: RectangleHitbox.fromRect(0, 0),
             rotationMode: RotationMode.Limited
             //   zIndex: ZIndexes.ObstaclesLayer3 + 1
