@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="96.302002"
-   height="36.903988"
-   viewBox="0 0 25.479905 9.7641801"
+   width="98.218582"
+   height="38.820206"
+   viewBox="0 0 25.987 10.271179"
    version="1.1"
    id="svg1672"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
    sodipodi:docname="crane_base_end.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,8 +24,8 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="4.3893395"
-     inkscape:cx="63.107445"
-     inkscape:cy="30.870248"
+     inkscape:cx="64.018744"
+     inkscape:cy="32.009372"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -41,9 +41,9 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-67.7332,-66.043282)">
+     transform="translate(-67.4797,-65.789782)">
     <rect
-       style="fill:#9c8e00;fill-opacity:1;stroke:#707400;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
+       style="fill:#cab51d;fill-opacity:1;stroke:#443d0a;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect19151"
        width="23.48"
        height="7.7641797"

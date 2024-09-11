@@ -7,7 +7,7 @@
    viewBox="0 0 32.446835 166.46229"
    version="1.1"
    id="svg2068"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
    sodipodi:docname="crane_base_part.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -21,16 +21,16 @@
      inkscape:pageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:document-units="mm"
+     inkscape:document-units="px"
      showgrid="false"
-     inkscape:zoom="1.9127176"
-     inkscape:cx="38.688408"
-     inkscape:cy="588.16836"
-     inkscape:window-width="1440"
-     inkscape:window-height="847"
+     inkscape:zoom="1.3524956"
+     inkscape:cx="-17.744975"
+     inkscape:cy="300.55551"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      inkscape:showpageshadow="2"
      inkscape:deskcolor="#d1d1d1" />
@@ -111,19 +111,11 @@
        transform="scale(1,-1)" />
     <path
        id="rect11759-6-5"
-       style="fill:#ffdf05;fill-opacity:1;stroke:#5b4f00;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000;stroke-dasharray:none"
+       style="fill:#cab51d;fill-opacity:1;stroke:#443d0a;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000;stroke-dasharray:none"
        d="M 146.84631 -79.697691 C 145.72798 -79.697691 144.82782 -80.598362 144.82782 -81.716689 L 144.82782 -107.65671 C 143.38149 -108.66496 142.43676 -110.33861 142.43676 -112.24299 L 142.43676 -113.64859 L 142.43676 -179.17689 L 142.43676 -180.58301 C 142.43676 -182.48741 143.38147 -184.16104 144.82782 -185.16929 L 144.82782 -211.10931 C 144.82782 -212.22764 145.72798 -213.12779 146.84631 -213.12779 L 166.70711 -213.12779 C 167.82544 -213.12779 168.72559 -212.22764 168.72559 -211.10931 L 168.72559 -185.16877 C 170.17161 -184.16048 171.11666 -182.48715 171.11666 -180.58301 L 171.11666 -179.17689 L 171.11666 -113.64859 L 171.11666 -112.24299 C 171.11666 -110.33887 170.17159 -108.66552 168.72559 -107.65722 L 168.72559 -81.716689 C 168.72559 -80.598362 167.82544 -79.697691 166.70711 -79.697691 L 146.84631 -79.697691 z "
        transform="scale(1,-1)" />
-    <path
-       style="fill:#5b4f00;fill-opacity:1;stroke:#5b4f00;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
-       d="m 144.82782,185.16929 23.89777,-5.3e-4"
-       id="path2" />
-    <path
-       style="fill:#5b4f00;fill-opacity:1;stroke:#5b4f00;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:none"
-       d="m 144.82782,107.65671 23.89777,5.3e-4"
-       id="path3" />
     <rect
-       style="fill:none;fill-opacity:1;stroke:#5b4f00;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#453d0a;stroke-width:2.507;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="rect3"
        width="28.644337"
        height="77.615402"
