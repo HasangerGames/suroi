@@ -10,6 +10,7 @@ import { Vec } from "@common/utils/vector";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 
 /**
  * A class representing a firearm
@@ -65,7 +66,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             || owner.dead
             || owner.downed
             || owner.disconnected
-            || this !== this.owner.activeItem
+            || this !== owner.activeItem
             || (definition.summonAirdrop && owner.isInsideBuilding)
         ) {
             this._shots = 0;
@@ -82,7 +83,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        this.owner.action?.cancel();
+        owner.action?.cancel();
         clearTimeout(this._burstTimeout);
 
         owner.animation = definition.ballistics.lastShotFX && this.ammo === 1
@@ -101,7 +102,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         const spread = owner.game.now - this._lastUse >= (fsaReset ?? Infinity)
             ? 0
-            : Angle.degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);
+            : Angle.degreesToRadians((owner.isMoving ? moveSpread : shotSpread) / 2);
 
         this._lastUse = owner.game.now;
         const jitter = definition.jitterRadius;
@@ -117,44 +118,30 @@ export class GunItem extends InventoryItem<GunDefinition> {
             Vec.rotate(Vec.create(definition.length, offset), owner.rotation) // player radius + gun length
         );
 
-        for (
-            const object of
-            this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))
-        ) {
+        for (const object of owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))) {
             if (
                 object.dead
                 || object.hitbox === undefined
                 || !(object.isObstacle || object.isBuilding)
+                || !adjacentOrEqualLayer(owner.layer, object.layer)
                 || object.definition.noCollisions
             ) continue;
 
-            for (
-                const object of
-                this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
-            ) {
-                if (
-                    object.dead
-                    || object.hitbox === undefined
-                    || !(object.isObstacle || object.isBuilding)
-                    || object.definition.noCollisions
-                ) continue;
+            const intersection = object.hitbox.intersectsLine(owner.position, position);
+            if (intersection === null) continue;
 
-                const intersection = object.hitbox.intersectsLine(owner.position, position);
-                if (intersection === null) continue;
-
-                if (Geometry.distanceSquared(this.owner.position, position) > Geometry.distanceSquared(this.owner.position, intersection.point)) {
-                    position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
-                }
+            if (Geometry.distanceSquared(owner.position, position) > Geometry.distanceSquared(owner.position, intersection.point)) {
+                position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
             }
         }
 
-        const rangeOverride = this.owner.distanceToMouse - this.definition.length;
+        const rangeOverride = owner.distanceToMouse - this.definition.length;
         const projCount = definition.bulletCount;
 
         for (let i = 0; i < projCount; i++) {
-            this.owner.game.addBullet(
+            owner.game.addBullet(
                 this,
-                this.owner,
+                owner,
                 {
                     position: jitter
                         ? randomPointInsideCircle(position, jitter)
@@ -165,7 +152,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                             ? 8 * (i / (projCount - 1) - 0.5) ** 3
                             : randomFloat(-1, 1)
                     ) * spread,
-                    layer: this.owner.layer,
+                    layer: owner.layer,
                     rangeOverride
                 }
             );
@@ -185,7 +172,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (this.ammo <= 0) {
             this._shots = 0;
-            this._reloadTimeout = this.owner.game.addTimeout(
+            this._reloadTimeout = owner.game.addTimeout(
                 this.reload.bind(this, true),
                 definition.fireDelay
             );
@@ -202,8 +189,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (
-            (definition.fireMode !== FireMode.Single || this.owner.isMobile)
-            && this.owner.activeItem === this
+            (definition.fireMode !== FireMode.Single || owner.isMobile)
+            && owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeout);
             this._autoFireTimeout = setTimeout(
@@ -225,16 +212,18 @@ export class GunItem extends InventoryItem<GunDefinition> {
     }
 
     reload(skipFireDelayCheck = false): void {
+        const { owner, definition } = this;
+
         if (
-            this.definition.infiniteAmmo
-            || this.ammo >= this.definition.capacity
-            || !this.owner.inventory.items.hasItem(this.definition.ammoType)
-            || this.owner.action !== undefined
-            || this.owner.activeItem !== this
-            || (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay)
-            || this.owner.downed
+            definition.infiniteAmmo
+            || this.ammo >= definition.capacity
+            || !owner.inventory.items.hasItem(definition.ammoType)
+            || owner.action !== undefined
+            || owner.activeItem !== this
+            || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)
+            || owner.downed
         ) return;
 
-        this.owner.executeAction(new ReloadAction(this.owner, this));
+        owner.executeAction(new ReloadAction(owner, this));
     }
 }
