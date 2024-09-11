@@ -175,7 +175,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "bindings_+attack": "Use Weapon",
     "bindings_drop": "Drop Active Weapon",
     "bindings_reload": "Reload",
-    "bindings_explodeC4": "Detonate C4",
+    "bindings_explode_c4": "Detonate C4",
     "bindings_cycle_scopes -1": "Previous Scope",
     "bindings_cycle_scopes 1": "Next Scope",
     "bindings_use_consumable gauze": "Use Gauze",
