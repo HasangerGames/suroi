@@ -3528,15 +3528,15 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "headquarters_mini_vault",
-            name: "Headquarters Mini Vault",
+            idString: "headquarters_vault",
+            name: "Headquarters Vault",
             spawnHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
             scopeHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [
                 {
                     key: "headquarters_vault_ceiling",
-                    position: Vec.create(0.1, -7.2),
+                    position: Vec.create(0.1, -7.4),
                     scale: Vec.create(2.16, 2.15)
                 }
             ]
@@ -3882,7 +3882,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             subBuildings: [
                 { idString: "super_annoying_headquarters_window_part_I_hate_this", position: Vec.create(0, 0.325), layer: 2 },
                 { idString: "headquarters_second_floor", position: Vec.create(5.6, -0.6), layer: 2 },
-                { idString: "headquarters_mini_vault", position: Vec.create(-58.8, -9.4) },
+                { idString: "headquarters_vault", position: Vec.create(-58.8, -9.4) },
                 { idString: "detector", position: Vec.create(-35, 25.5) },
                 { idString: "detector", position: Vec.create(-25, 25.5) }
             ]
