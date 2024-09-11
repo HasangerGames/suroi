@@ -2366,7 +2366,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     color: 0xb2b200,
-                    hitbox: RectangleHitbox.fromRect(1.87, 186.8, Vec.create(143.17, -33.97))
+                    hitbox: RectangleHitbox.fromRect(1.87, 186.8, Vec.create(143.17, -32.5))
                 },
                 {
                     color: 0x2b2b2b,
@@ -2530,64 +2530,64 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // Fence to the bottom of the red warehouse
                 ...(() => Array.from(
-                    { length: 20 },
+                    { length: 19 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(-0.75 - (7.8 * i), 135),
+                        position: Vec.create(5 - (8.45 * i), 135),
                         rotation: 0
                     })
                 ))(),
 
                 // Fence to the bottom of the parking lot
                 ...(() => Array.from(
-                    { length: 14 },
+                    { length: 12 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(130 - (7.8 * i), 135),
+                        position: Vec.create(130 - (8.45 * i), 135),
                         rotation: 0
                     })
                 ))(),
 
                 // Fence to the left of the red warehouse
                 ...(() => Array.from(
-                    { length: 16 },
+                    { length: 15 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(-152.3, 131.8 - (7.8 * i)),
+                        position: Vec.create(-152.25, 131.5 - (8.45 * i)),
                         rotation: 1
                     })
                 ))(),
 
                 // Fence going north of the main entrance to the left.
                 ...(() => Array.from(
-                    { length: 13 },
+                    { length: 12 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(-152.3, -37.8 - (7.8 * i)),
+                        position: Vec.create(-152.25, -38.5 - (8.45 * i)),
                         rotation: 1
                     })
                 ))(),
 
                 // Fence directly north of the main entrance
                 ...(() => Array.from(
-                    { length: 24 },
+                    { length: 21 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(46 - (7.8 * i), -135),
+                        position: Vec.create(46 - (8.45 * i), -135),
                         rotation: 0
                     })
                 ))(),
 
                 // Fence north of the crane
                 ...(() => Array.from(
-                    { length: 9 },
+                    { length: 8 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(132.2 - (7.8 * i), -135),
+                        position: Vec.create(139.7 - (8.45 * i), -135),
                         rotation: 0
                     })
                 ))(),
-                { idString: "port_fence_side", position: Vec.create(139.95, -131.59), rotation: 1 }
+                { idString: "port_fence", position: Vec.create(143.1, -130), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "container_1", position: Vec.create(-40, 40), orientation: 1 },
@@ -3106,7 +3106,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "sandbags", position: Vec.create(31.6, -36.18), rotation: 0 },
                 { idString: "sandbags", position: Vec.create(30.66, -70.69), rotation: 0 },
                 { idString: "sandbags", position: Vec.create(18.54, -67.73), rotation: 1 },
-                { idString: "m1117", position: Vec.create(48.93, -53.75), rotation: 0 },
+                { idString: "m1117", position: Vec.create(48.93, -53.75), rotation: 0, variation: 0 },
                 { idString: "gun_case", position: Vec.create(30.66, -28.84), rotation: 0 },
                 { idString: "gun_case", position: Vec.create(63.16, -36.39), rotation: 1 },
                 { idString: "gun_case", position: Vec.create(19.48, 36.69), rotation: 0 },
@@ -3117,71 +3117,77 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0 },
                 { idString: "barrier", position: Vec.create(13.91, 70.32), rotation: 1 },
 
-                { idString: "port_fence_side", position: Vec.create(72.29, 80.72), rotation: 0 },
-                { idString: "port_fence_side", position: Vec.create(72.32, -80.71), rotation: 1 },
-                { idString: "port_fence_side", position: Vec.create(-72.32, -80.69), rotation: 2 },
+                { idString: "port_fence", position: Vec.create(70.5, -83.93), rotation: 0 },
 
+                // top top left
                 ...Array.from(
-                    { length: 9 },
+                    { length: 10 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(-63.89 + 8.45 * i, -84.11),
+                        position: Vec.create(-72.1 + 8.45 * i, -83.93),
                         rotation: 0
                     })
                 ),
+                // top middle
                 ...Array.from(
                     { length: 3 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(21.1 + 8.45 * i, -84.11),
+                        position: Vec.create(23 + 8.45 * i, -83.93),
                         rotation: 0
                     })
                 ),
+                // top right
+                ...Array.from(
+                    { length: 7 },
+                    (_, i) => ({
+                        idString: "port_fence",
+                        position: Vec.create(75.55, -80.45 + 8.45 * i),
+                        rotation: 1
+                    })
+                ),
+                // right bottom right
+                ...Array.from(
+                    { length: 10 },
+                    (_, i) => ({
+                        idString: "port_fence",
+                        position: Vec.create(75.55, 4.4 + 8.45 * i),
+                        rotation: 1
+                    })
+                ),
+                // bottom bottom right
+                ...Array.from(
+                    { length: 4 },
+                    (_, i) => ({
+                        idString: "port_fence",
+                        position: Vec.create(45.1 + 8.45 * i, 83.93),
+                        rotation: 0
+                    })
+                ),
+                // bottom bottom left
                 ...Array.from(
                     { length: 6 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(75.75, -72.31 + 8.45 * i),
-                        rotation: 1
+                        position: Vec.create(-58 + 8.45 * i, 83.93),
+                        rotation: 0
                     })
                 ),
+                // left bottom left
                 ...Array.from(
                     { length: 9 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(75.75, 4.7 + 8.45 * i),
+                        position: Vec.create(-75.55, 7 + 8.45 * i),
                         rotation: 1
                     })
                 ),
-                ...Array.from(
-                    { length: 3 },
-                    (_, i) => ({
-                        idString: "port_fence",
-                        position: Vec.create(46.95 + 8.45 * i, 84.11),
-                        rotation: 0
-                    })
-                ),
-                ...Array.from(
-                    { length: 6 },
-                    (_, i) => ({
-                        idString: "port_fence",
-                        position: Vec.create(-55.3 + 8.45 * i, 84.11),
-                        rotation: 0
-                    })
-                ),
+                // left top left
                 ...Array.from(
                     { length: 9 },
                     (_, i) => ({
                         idString: "port_fence",
-                        position: Vec.create(-75.75, 4.7 + 8.45 * i),
-                        rotation: 1
-                    })
-                ),
-                ...Array.from(
-                    { length: 8 },
-                    (_, i) => ({
-                        idString: "port_fence",
-                        position: Vec.create(-75.75, -72.31 + 8.45 * i),
+                        position: Vec.create(-75.55, -78.85 + 8.45 * i),
                         rotation: 1
                     })
                 )
