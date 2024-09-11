@@ -13,6 +13,7 @@ import { type Game } from "../game";
 import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 
 export class Minimap {
     private _expanded = false;
@@ -763,7 +764,7 @@ export class MapPing {
             this.inGameImage = new SuroiSprite(definition.idString)
                 .setVPos(toPixiCoords(position))
                 .setTint(this.color)
-                .setZIndex(ZIndexes.Gas + 1);
+                .setZIndex(getEffectiveZIndex(ZIndexes.Gas + 1, Layer.Floor1, game.layer));
         }
     }
 
