@@ -2481,8 +2481,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             }
         },
         {
-            idString: "port_fence",
-            name: "Port Fence",
+            idString: "fence",
+            name: "Fence",
             material: "fence",
             health: 40,
             scale: {
@@ -2493,27 +2493,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(8.45, 1.6),
             rotationMode: RotationMode.Limited,
             noResidue: true,
-            frames: {
-                particle: "fence_particle"
-            }
-        },
-        {
-            idString: "port_fence_side",
-            name: "Port Fence Side",
-            material: "fence",
-            health: 40,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.8
-            },
-            hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(7.75, 1.3, Vec.create(0, 3.2)),
-                RectangleHitbox.fromRect(1.3, 7.75, Vec.create(3.2, 0))
-            ),
-            noResidue: true,
-            rotationMode: RotationMode.Limited,
-            allowFlyover: FlyoverPref.Never,
             frames: {
                 particle: "fence_particle"
             }

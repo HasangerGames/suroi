@@ -2531,7 +2531,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...(() => Array.from(
                     { length: 19 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(5 - (8.45 * i), 135),
                         rotation: 0
                     })
@@ -2541,7 +2541,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...(() => Array.from(
                     { length: 12 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(130 - (8.45 * i), 135),
                         rotation: 0
                     })
@@ -2551,7 +2551,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...(() => Array.from(
                     { length: 15 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(-152.25, 131.5 - (8.45 * i)),
                         rotation: 1
                     })
@@ -2561,7 +2561,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...(() => Array.from(
                     { length: 12 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(-152.25, -38.5 - (8.45 * i)),
                         rotation: 1
                     })
@@ -2571,7 +2571,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...(() => Array.from(
                     { length: 21 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(46 - (8.45 * i), -135),
                         rotation: 0
                     })
@@ -2581,12 +2581,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...(() => Array.from(
                     { length: 8 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(139.7 - (8.45 * i), -135),
                         rotation: 0
                     })
                 ))(),
-                { idString: "port_fence", position: Vec.create(143.1, -130), rotation: 1 }
+                { idString: "fence", position: Vec.create(143.1, -130), rotation: 1 }
             ] as BuildingObstacle[],
             subBuildings: [
                 { idString: "container_1", position: Vec.create(-40, 40), orientation: 1 },
@@ -3116,13 +3116,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0 },
                 { idString: "barrier", position: Vec.create(13.91, 70.32), rotation: 1 },
 
-                { idString: "port_fence", position: Vec.create(70.5, -83.93), rotation: 0 },
+                { idString: "fence", position: Vec.create(70.5, -83.93), rotation: 0 },
 
                 // top top left
                 ...Array.from(
                     { length: 10 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(-72.1 + 8.45 * i, -83.93),
                         rotation: 0
                     })
@@ -3131,7 +3131,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 3 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(23 + 8.45 * i, -83.93),
                         rotation: 0
                     })
@@ -3140,7 +3140,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 7 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(75.55, -80.45 + 8.45 * i),
                         rotation: 1
                     })
@@ -3149,7 +3149,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 10 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(75.55, 4.4 + 8.45 * i),
                         rotation: 1
                     })
@@ -3158,7 +3158,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 4 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(45.1 + 8.45 * i, 83.93),
                         rotation: 0
                     })
@@ -3167,7 +3167,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 6 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(-58 + 8.45 * i, 83.93),
                         rotation: 0
                     })
@@ -3176,7 +3176,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 9 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(-75.55, 7 + 8.45 * i),
                         rotation: 1
                     })
@@ -3185,7 +3185,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 ...Array.from(
                     { length: 9 },
                     (_, i) => ({
-                        idString: "port_fence",
+                        idString: "fence",
                         position: Vec.create(-75.55, -78.85 + 8.45 * i),
                         rotation: 1
                     })
