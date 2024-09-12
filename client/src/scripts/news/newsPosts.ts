@@ -5,25 +5,14 @@ export const news: NewsPost[] = [
         date: Date.now(), // TODO
         author: "HAZEL",
         title: "High-Caliber Negotiations",
-        bannerImage: "todo",
-        content: `      
-          Good old-fashioned bureaucracy has made its way to the island with this update, alongside an overhaul of the highest tiers of ammo, two new melee weapons, and three new guns with impressive firepower. 
+        bannerImage: "../img/news/v0.19.0.png",
+        content: `
+          Good old-fashioned bureaucracy has made its way to the island with this update, alongside an overhaul of the highest tiers of ammo, two new melee weapons, and three new guns with impressive firepower.
           <br><br>Front and center, the massive <b>AEGIS Headquarters</b> has recently been completed. This titan of industry features two separate floors, a security office with an attached armory, a cafeteria, a boardroom, an executive office and lounge, and plenty of loot to make it worth your while. Rumor has it that the CEO even keeps a personal vault hidden somewhere in the building...
           <br><br>Two new handguns have been added: the <b>Deagle</b> and the <b>RSh-12</b>, both chambered in <b>.50 Cal</b>. The Deagle offers solid damage, high DPS, and a fair magazine size all in a compact package. On the other hand, the RSh-12 brings the term 'assault revolver' to life with <b>powerful First Shot Accurate rounds</b>, though it has low range and magazine capacity.
           <br><br>Due to a supply shortage, the Barrett M95 <b>is no longer available</b>. However, fear not; we've found an even more suitable replacement. The <b>L115A1</b>, chambered in <b>the elusive .338 Lapua Magnum</b>, is sure to turn heads (and pop them just as easily). Like its predecessor, the L115A1 is more than capable of engaging any opponent, regardless of armor.
           <br><br>There's much more to explore, including the <b>Fire Hatchet</b> and <b>Falchion</b> melees, overhauled Cargo Ship and Oil Tanker, brand new <b>Blue House</b>, and a few surprises coming in the near future.
-        `,
-        longContent: `
-        Good old-fashioned bureaucracy has made its way to the island with this update, alongside an overhaul of the highest tiers of ammo, two new melee weapons, and three new guns with <b>impressive firepower</b>.
-
-<br><br>Front and center, the massive <b>AEGIS Headquarters</b> has recently been completed. This titan of industry features two separate floors, a security office with an attached armory, a cafeteria, a boardroom, an executive office and lounge, and plenty of loot to make it worth your while. Rumor has it that the CEO even keeps a personal vault hidden somewhere in the building...
-
-<br><br>Two new handguns have been added: the <b>Deagle</b> and the <b>RSh-12</b>, both chambered <b>in the newly renamed .50 Cal</b>. The Deagle offers solid damage, high DPS, and a fair magazine size all in a compact package sure to satisfy even the most discerning client. On the other hand, the RSh-12 brings the term 'assault revolver' to life with powerful single shots, though it has low range and magazine capacity. It is also <b>First Shot Accurate</b>, rewarding slow and careful shots with perfect accuracy.
-
-<br><br>Due to a supply shortage, the Barrett M95 is no longer available. However, fear not; we've found an even more suitable replacement. The <b>L115A1</b>, chambered in the elusive <b>.338 Lapua Magnum</b>, is sure to turn heads (and pop them just as easily). Boasting the highest single-shot damage of any rifle in the game, the L115A1 is more than capable of engaging any opponent, regardless of armor. Be warned, though: the small magazine size and limited ammo pool make every shot a valuable asset.
-
-<br><br>There's much more to explore, including the <b>Fire Hatchet</b> and <b>Falchion</b> melees, overhauled Cargo Ship and Oil Tanker, <b>brand new Blue House</b>, increased obstacle spawn rates to make your final rings more engaging, and a few surprises coming in the near future.
-`
+        `
     },
     {
         date: 1717870665000,
