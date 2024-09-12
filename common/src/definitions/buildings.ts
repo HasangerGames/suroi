@@ -1598,7 +1598,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // outside part
                 { idString: "barrel", position: Vec.create(-7, 29) },
-                { idString: { box: 1, trash_bag: 1 }, position: Vec.create(25, 27) },
+                { idString: { box: 1, trash_bag: 0.6 }, position: Vec.create(25, 27) },
                 { idString: "box", position: Vec.create(19, 28.5) },
 
                 // top right
