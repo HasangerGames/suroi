@@ -24,13 +24,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="17.127213"
-     inkscape:cx="197.6095"
-     inkscape:cy="123.22495"
+     inkscape:zoom="6.0563696"
+     inkscape:cx="80.411209"
+     inkscape:cy="103.19714"
      inkscape:window-width="1440"
-     inkscape:window-height="900"
+     inkscape:window-height="847"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="25"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
@@ -263,7 +263,7 @@
        ry="0.84230596" />
     <path
        style="fill:#3a3a3a;fill-opacity:1;stroke:none;stroke-width:0.542589;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       d="m 110.12106,153.32158 -5.54366,2.69565 5.92951,-1.60845 -1.94431,2.50656 2.95106,-1.99021 0.49293,2.12823 0.26562,-2.11727 4.71056,-1.28324 -4.33848,-0.4917 0.62753,-1.73529 -1.4822,1.27741 -0.3703,-1.8651 -0.46647,2.00775 -2.89996,-0.97706 z"
+       d="m 110.12106,153.32158 -5.54366,2.69565 5.92951,-1.60845 -1.94431,2.50656 2.95106,-1.99021 0.49293,2.12823 0.35299,-2.69099 h 2.96309 l -2.67838,-1.20122 0.62753,-1.73529 -1.4822,1.27741 -0.3703,-1.8651 -0.46647,2.00775 -2.89996,-0.97706 z"
        id="path4"
        sodipodi:nodetypes="ccccccccccccccc" />
     <rect
@@ -351,11 +351,11 @@
        cy="148.77341"
        r="1.8751253" />
     <path
-       style="color:#000000;fill:#000000;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+       style="color:#000000;fill:#137900;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none;fill-opacity:1"
        d="m 105.03719,139.57826 h 11.5312 v 8.39123 h -11.5312 z"
        id="path1" />
     <path
-       style="fill:none;fill-opacity:1;stroke:#3a3a3a;stroke-width:0.812;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#38ff00;stroke-width:0.812;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        d="m 104.81531,143.91735 0.60533,0.72015 2.67563,-3.1564 1.52081,4.61983 3.12771,-1.0904 2.35296,-3.21379 0.6432,-0.43042 0.60556,-0.37303"
        id="path3" />
     <path

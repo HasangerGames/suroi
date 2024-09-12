@@ -23,13 +23,13 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="1.5432796"
-     inkscape:cx="70.628811"
-     inkscape:cy="43.738025"
+     inkscape:zoom="4.665165"
+     inkscape:cx="260.44095"
+     inkscape:cy="57.875767"
      inkscape:window-width="1440"
-     inkscape:window-height="900"
+     inkscape:window-height="847"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="25"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
@@ -868,17 +868,17 @@
     <circle
        style="fill:#3f280e;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:20;stroke-dasharray:none;stroke-opacity:1"
        id="path1-5-4-0-4"
-       cx="64.861397"
-       cy="171.61685"
+       cx="64.612152"
+       cy="171.5704"
        r="3.8887107"
        transform="rotate(-10.554648)" />
     <path
        style="fill:#3f280e;fill-opacity:1;fill-rule:evenodd;stroke:#3f280e;stroke-width:1.876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:20;stroke-dasharray:none;stroke-opacity:1"
-       d="m 93.205072,146.12815 3.988922,21.40832"
+       d="m 92.951537,146.12815 3.988922,21.40832"
        id="path2-96-5-4" />
     <path
        style="fill:#3f280e;fill-opacity:1;fill-rule:evenodd;stroke:#3f280e;stroke-width:1.876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:20;stroke-dasharray:none;stroke-opacity:1"
-       d="M 84.495363,158.82678 105.9037,154.83786"
+       d="m 84.241828,158.82678 21.408332,-3.98892"
        id="path2-2-3-5-3" />
     <path
        sodipodi:type="star"
@@ -901,8 +901,8 @@
     <circle
        style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#4c361e;stroke-width:2.90777;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:20;stroke-dasharray:none;stroke-opacity:1"
        id="path1-8-9-7"
-       cx="64.861397"
-       cy="171.61685"
+       cx="64.612152"
+       cy="171.5704"
        r="11.802148"
        transform="rotate(-10.554648)" />
     <rect
