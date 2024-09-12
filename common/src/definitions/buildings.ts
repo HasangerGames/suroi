@@ -4058,7 +4058,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-56.85, -32.3), rotation: 0 },
                 { idString: "bookshelf", position: Vec.create(-30.8, -13), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
                 { idString: "tv", position: Vec.create(-29.2, 1.75), rotation: 0 },
-                { idString: "large_drawer", position: Vec.create(-32.3, 1.75), rotation: 3 },
+                { idString: "large_drawer", position: Vec.create(-32.3, 1.75), lootSpawnOffset: Vec.create(-3, 0), rotation: 3 },
                 { idString: "bookshelf", position: Vec.create(-30.8, 16.5), lootSpawnOffset: Vec.create(-3, 0), rotation: 1 },
                 { idString: "potted_plant", position: Vec.create(-71.7, 31.5) },
                 { idString: "potted_plant", position: Vec.create(-32.5, 32.2) },
