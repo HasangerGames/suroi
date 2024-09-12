@@ -1020,22 +1020,26 @@ export class Game {
             }
 
             // funny detonate button stuff
-            const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
+            if (!this.inputManager.isMobile) {
+                const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
 
-            if (funnyDetonateButtonCache.bind !== boomBind) {
-                funnyDetonateButtonCache.bind = bind;
+                if (funnyDetonateButtonCache.bind !== boomBind) {
+                    funnyDetonateButtonCache.bind = bind;
 
-                if (boomBind !== undefined) {
-                    const bindImg = InputManager.getIconFromInputName(boomBind);
+                    if (boomBind !== undefined) {
+                        const bindImg = InputManager.getIconFromInputName(boomBind);
 
-                    if (bindImg === undefined) {
-                        this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                        if (bindImg === undefined) {
+                            this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                        } else {
+                            this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                        }
                     } else {
-                        this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                        this.uiManager.ui.detonateKey.hide();
                     }
-                } else {
-                    this.uiManager.ui.detonateKey.hide();
                 }
+            } else {
+                this.uiManager.ui.detonateKey.hide();
             }
         };
     })();
