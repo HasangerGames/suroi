@@ -30,7 +30,7 @@ export class Plane {
         );
 
         this.image = new SuroiSprite("airdrop_plane")
-            .setZIndex(ZIndexes.Gas + 1)
+            .setZIndex(getEffectiveZIndex(ZIndexes.Gas + 1, Layer.Floor1, game.layer)) // todo: better logic for this lol
             .setRotation(direction)
             .setScale(4);
 
@@ -48,8 +48,6 @@ export class Plane {
     }
 
     update(): void {
-        this.image.zIndex = getEffectiveZIndex(ZIndexes.BuildingsCeiling + 1, Layer.Floor1, this.game.layer);
-
         const position = this.sound.position = Vec.lerp(
             this.startPosition,
             this.endPosition,

@@ -1,4 +1,4 @@
-import { FireMode, ZIndexes, defaultBulletTemplate } from "../constants";
+import { FireMode, defaultBulletTemplate } from "../constants";
 import { mergeDeep } from "../utils/misc";
 import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo, type StageZeroDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
@@ -819,7 +819,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     image: "radio_wave",
                     opacity: 0.8,
                     particle: true,
-                    zIndex: ZIndexes.BuildingsCeiling
+                    zIndex: Number.MAX_VALUE
                 },
                 damage: 0,
                 obstacleMultiplier: 1,
