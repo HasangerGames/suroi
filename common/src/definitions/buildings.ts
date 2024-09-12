@@ -1598,7 +1598,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // outside part
                 { idString: "barrel", position: Vec.create(-7, 29) },
-                { idString: "box", position: Vec.create(25, 27) },
+                { idString: { box: 1, trash_bag: 1 }, position: Vec.create(25, 27) },
                 { idString: "box", position: Vec.create(19, 28.5) },
 
                 // top right
@@ -1606,7 +1606,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "small_drawer", position: Vec.create(30.25, -25), rotation: 0 },
                 { idString: "fridge", position: Vec.create(21.5, -25.1), rotation: 0 },
                 { idString: "small_stove", position: Vec.create(12.5, -25), rotation: 0 },
-                { idString: "bookshelf", position: Vec.create(4.25, -22), rotation: 1 },
+                //   { idString: "bookshelf", position: Vec.create(4.25, -22), rotation: 1 },
 
                 // bottom right (mini vault ig)
                 { idString: "house_wall_14", position: Vec.create(6.4, 13.1), rotation: 1 },
@@ -1620,6 +1620,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-0.2, 5.6), rotation: 2 },
                 { idString: "house_wall_14", position: Vec.create(-17, 13.15), rotation: 1 },
                 { idString: "bookshelf", position: Vec.create(-20.27, 15), rotation: 1 },
+                { idString: "trash_bag", position: Vec.create(2.4, 17.9) },
 
                 // top left
                 { idString: "house_wall_16", position: Vec.create(-10, -13.65), rotation: 1 },
@@ -1627,7 +1628,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_17", position: Vec.create(-22.3, -9.4), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-14.7, -14.5), rotation: 2 },
                 { idString: "small_bed", position: Vec.create(-29.25, -19.9), rotation: 2 },
-                // { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
+                { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
                 { idString: "potted_plant", position: Vec.create(-29, -4) }
             ],
             subBuildings: [
@@ -2448,6 +2449,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // Above red warehouse
                 { idString: "truck", position: Vec.create(12.5, 40), rotation: 3 },
                 { idString: "trailer", position: Vec.create(40, 40), rotation: 3 },
+
+                // next to red warehouse
+                { idString: "dumpster", position: Vec.create(-7, -62), rotation: 1 },
+                { idString: "dumpster", position: Vec.create(-22, -62), rotation: 1 },
 
                 // The main entrance
                 { idString: "barrier", position: Vec.create(-124, -10), rotation: 0 },
