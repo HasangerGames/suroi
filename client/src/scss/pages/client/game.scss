@@ -94,6 +94,16 @@
                 display: none;
             }
         }
+
+        @media screen and (max-height: 720px) {
+            position: absolute;
+            top: -30%;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
+        }
     }
 }
 
