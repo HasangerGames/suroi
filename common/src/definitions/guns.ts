@@ -1777,7 +1777,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "deagle",
             name: "DEagle",
             ammoType: "50cal",
-            ammoSpawnAmount: 48,
+            ammoSpawnAmount: 42,
             fireDelay: 200,
             switchDelay: 250,
             recoilMultiplier: 0.65,
@@ -1817,7 +1817,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 }
             },
             dual: {
-                ammoSpawnAmount: 96,
+                ammoSpawnAmount: 84,
                 leftRightOffset: 1.4,
                 fireDelay: 115,
                 shotSpread: 5,
