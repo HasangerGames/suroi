@@ -1490,7 +1490,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             animationDuration: 80,
             role: ObstacleSpecialRoles.Door,
             hingeOffset: Vec.create(-5.5, 0),
-            zIndex: ZIndexes.ObstaclesLayer3,
+            //   zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "metal_particle"
             }
