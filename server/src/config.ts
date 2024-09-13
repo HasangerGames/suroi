@@ -1,4 +1,4 @@
-import { TeamSize } from "@common/constants";
+import { Layer, TeamSize } from "@common/constants";
 import { type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
@@ -111,6 +111,7 @@ export interface ConfigType {
         | {
             readonly mode: SpawnMode.Fixed
             readonly position: Vector
+            readonly layer?: Layer
         }
         | SpawnMode.Center
 

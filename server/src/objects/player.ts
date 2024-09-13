@@ -1,4 +1,4 @@
-import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
+import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
@@ -366,8 +366,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     // this should probably be on the dirty object
     updatedC4Button = false;
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, team?: Team) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
+
+        if (layer !== undefined) {
+            this.layer = layer;
+        }
 
         if (team) {
             this._team = team;

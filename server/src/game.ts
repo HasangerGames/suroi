@@ -703,6 +703,7 @@ export class Game implements GameData {
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
+        let spawnLayer;
 
         let team: Team | undefined;
         if (this.teamMode) {
@@ -799,13 +800,14 @@ export class Game implements GameData {
                 }
                 case SpawnMode.Fixed: {
                     spawnPosition = Config.spawn.position;
+                    spawnLayer = Config.spawn.layer;
                     break;
                 }
             }
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, spawnPosition, team);
+        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
         this.pluginManager.emit(Events.Player_Connect, player);
         return player;
     }
