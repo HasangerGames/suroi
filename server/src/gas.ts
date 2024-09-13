@@ -106,11 +106,12 @@ export class Gas {
 
     advanceGasStage(): void {
         const { gas } = Config;
-        if (gas === GasMode.Disabled) return;
+        if (gas.mode === GasMode.Disabled) return;
+
         const currentStage = GasStages[this.stage + 1];
         if (currentStage === undefined) return;
 
-        const isDebug = typeof gas === "object" && gas.mode === GasMode.Debug;
+        const isDebug = gas.mode === GasMode.Debug;
         const duration = isDebug && gas.overrideDuration !== undefined && currentStage.duration !== 0
             ? gas.overrideDuration
             : currentStage.duration;

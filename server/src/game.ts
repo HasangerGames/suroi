@@ -735,74 +735,69 @@ export class Game implements GameData {
             }
         }
 
-        if (typeof Config.spawn !== "object") {
-            switch (Config.spawn) {
-                case SpawnMode.Normal: {
-                    const hitbox = new CircleHitbox(5);
-                    const gasPosition = this.gas.currentPosition;
-                    const gasRadius = this.gas.newRadius ** 2;
-                    const teamPosition = this.teamMode
-                        // teamMode should guarantee the `team` object's existence
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        ? pickRandomInArray(team!.getLivingPlayers())?.position
-                        : undefined;
+        switch (Config.spawn.mode) {
+            case SpawnMode.Normal: {
+                const hitbox = new CircleHitbox(5);
+                const gasPosition = this.gas.currentPosition;
+                const gasRadius = this.gas.newRadius ** 2;
+                const teamPosition = this.teamMode
+                    // teamMode should guarantee the `team` object's existence
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    ? pickRandomInArray(team!.getLivingPlayers())?.position
+                    : undefined;
 
-                    let foundPosition = false;
-                    for (let tries = 0; !foundPosition && tries < 200; tries++) {
-                        const position = this.map.getRandomPosition(
-                            hitbox,
-                            {
-                                maxAttempts: 500,
-                                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                                getPosition: this.teamMode && teamPosition
-                                    ? () => randomPointInsideCircle(teamPosition, 20, 10)
-                                    : undefined,
-                                collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius
-                            }
-                        );
+                let foundPosition = false;
+                for (let tries = 0; !foundPosition && tries < 200; tries++) {
+                    const position = this.map.getRandomPosition(
+                        hitbox,
+                        {
+                            maxAttempts: 500,
+                            spawnMode: MapObjectSpawnMode.GrassAndSand,
+                            getPosition: this.teamMode && teamPosition
+                                ? () => randomPointInsideCircle(teamPosition, 20, 10)
+                                : undefined,
+                            collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius
+                        }
+                    );
 
-                        // Break if the above code couldn't find a valid position, as it's unlikely that subsequent loops will
-                        if (!position) break;
-                        else spawnPosition = position;
+                    // Break if the above code couldn't find a valid position, as it's unlikely that subsequent loops will
+                    if (!position) break;
+                    else spawnPosition = position;
 
-                        // Ensure the position is at least 60 units from other players
-                        foundPosition = true;
-                        const radiusHitbox = new CircleHitbox(60, spawnPosition);
-                        for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
-                            if (
-                                object.isPlayer
-                                // teamMode should guarantee the `team` object's existence
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                && (!this.teamMode || !team!.players.includes(object))
-                            ) {
-                                foundPosition = false;
-                            }
+                    // Ensure the position is at least 60 units from other players
+                    foundPosition = true;
+                    const radiusHitbox = new CircleHitbox(60, spawnPosition);
+                    for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
+                        if (
+                            object.isPlayer
+                            // teamMode should guarantee the `team` object's existence
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            && (!this.teamMode || !team!.players.includes(object))
+                        ) {
+                            foundPosition = false;
                         }
                     }
+                }
 
-                    // Spawn on top of a random teammate if a valid position couldn't be found
-                    if (!foundPosition && teamPosition) spawnPosition = teamPosition;
-                    break;
-                }
-                case SpawnMode.Center: {
-                    // no-op; this is the default
-                    break;
-                }
+                // Spawn on top of a random teammate if a valid position couldn't be found
+                if (!foundPosition && teamPosition) spawnPosition = teamPosition;
+                break;
             }
-        } else {
-            switch (Config.spawn.mode) {
-                case SpawnMode.Radius: {
-                    spawnPosition = randomPointInsideCircle(
-                        Config.spawn.position,
-                        Config.spawn.radius
-                    );
-                    break;
-                }
-                case SpawnMode.Fixed: {
-                    spawnPosition = Config.spawn.position;
-                    spawnLayer = Config.spawn.layer;
-                    break;
-                }
+            case SpawnMode.Radius: {
+                spawnPosition = randomPointInsideCircle(
+                    Config.spawn.position,
+                    Config.spawn.radius
+                );
+                break;
+            }
+            case SpawnMode.Fixed: {
+                spawnPosition = Config.spawn.position;
+                spawnLayer = Config.spawn.layer;
+                break;
+            }
+            case SpawnMode.Center: {
+                // no-op; this is the default
+                break;
             }
         }
 

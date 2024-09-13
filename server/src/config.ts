@@ -1,5 +1,5 @@
 import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
+import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -23,7 +23,7 @@ export const Config = {
 
     map: "singleBuilding:headquarters",
 
-    spawn: SpawnMode.Center,
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -31,7 +31,7 @@ export const Config = {
     maxGames: 4,
     gameJoinTime: 60,
 
-    gas: GasMode.Normal,
+    gas: { mode: GasMode.Normal },
 
     tps: 40,
 
@@ -102,7 +102,7 @@ export interface ConfigType {
      * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
     readonly spawn:
-        | SpawnMode.Normal
+        | { readonly mode: SpawnMode.Normal }
         | {
             readonly mode: SpawnMode.Radius
             readonly position: Vector
@@ -113,7 +113,7 @@ export interface ConfigType {
             readonly position: Vector
             readonly layer?: Layer
         }
-        | SpawnMode.Center
+        | { readonly mode: SpawnMode.Center }
 
     /**
      * The maximum number of players allowed to join a team.
@@ -156,8 +156,8 @@ export interface ConfigType {
      * GasMode.Disabled: Gas is disabled.
      */
     readonly gas:
-        | GasMode.Disabled
-        | GasMode.Normal
+        | { readonly mode: GasMode.Disabled }
+        | { readonly mode: GasMode.Normal }
         | {
             readonly mode: GasMode.Debug
             readonly overridePosition?: boolean
