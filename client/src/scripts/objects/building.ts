@@ -1,6 +1,7 @@
 import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
@@ -14,7 +15,6 @@ import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     readonly ceilingContainer: Container;
@@ -109,12 +109,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 const direction = collision?.dir;
                 if (direction) {
                     /* if (HITBOX_DEBUG_MODE) {
-                        graphics?.lineStyle({
+                        graphics?.setStrokeStyle({
                             color: 0xff0000,
                             width: 0.1
                         });
 
-                        graphics?.beginFill();
+                        graphics?.fill();
                         graphics?.scale.set(PIXI_SCALE);
 
                         this.addTimeout(() => {
@@ -159,10 +159,11 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                                     ...this.game.objects.getCategory(ObjectCategory.Obstacle),
                                     ...this.game.objects.getCategory(ObjectCategory.Building)
                                 ].some(
-                                    ({ damageable, dead, definition, hitbox }) =>
+                                    ({ damageable, dead, definition, hitbox, layer }) =>
                                         damageable
                                         && !dead
                                         && (!("role" in definition) || !definition.isWindow)
+                                        && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(layer, player.layer)
                                         && hitbox?.intersectsLine(player.position, end)
                                 )
                         )) break;
@@ -377,7 +378,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             drawHitbox(
                 this.ceilingHitbox,
                 HITBOX_COLORS.buildingScopeCeiling,
-                this.debugGraphics
+                this.debugGraphics,
+                this.layer
             );
         }
 

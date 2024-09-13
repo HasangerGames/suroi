@@ -3635,7 +3635,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(128, 73, Vec.create(5.75, -70)),
                 RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
                 RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)), // ADJUST THIS! (not sure if its correct) - pap,
-                RectangleHitbox.fromRect(12.4, 12, Vec.create(66.05, -42.5))
+                // RectangleHitbox.fromRect(12.4, 12, Vec.create(66.05, -42.5))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             puzzle: {
@@ -3717,7 +3717,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 {
                     type: FloorNames.Metal,
                     hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(11.55, 25.5, Vec.create(77.6, -63)),  // large stair
+                        RectangleHitbox.fromRect(11.55, 25.5, Vec.create(77.6, -63)), // large stair
                         RectangleHitbox.fromRect(11.55, 16, Vec.create(-52, -100.1))
                     ),
                     layer: 1
@@ -3728,7 +3728,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 hitbox: RectangleHitbox.fromRect(23, 11, Vec.create(-45.5, -100))
             }],
             visibilityOverrides: [{
-                collider: RectangleHitbox.fromRect(11.4, 10.4, Vec.create(-39.95, -100)),
+                collider: new GroupHitbox(
+                    RectangleHitbox.fromRect(11.4, 10.4, Vec.create(-39.95, -100)),
+                    RectangleHitbox.fromRect(8.5, 16, Vec.create(79.2, -42.75)),
+                    RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
+                    RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
+                ),
                 layer: 2,
                 allow: [0]
             }],
@@ -3915,8 +3920,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)),
                 RectangleHitbox.fromRect(128, 77.1, Vec.create(0, -66)),
-                RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86))
-                //   RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05-5.6, -42.5+0.6))
+                RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86)),
+                RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05-5.6, -42.5+0.6))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
