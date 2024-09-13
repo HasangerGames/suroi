@@ -138,7 +138,7 @@ export class Bullet extends BaseBullet {
                     for stairs, honor any collision that's on an equal or adjacent layer (to allow layer transitions);
                     for everyone else, only honor collisions on the same layer
                 */
-                if ((objectIsStair ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
+                if ((objectIsStair || def.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
                     if (objectIsStair) {
                         (object as Obstacle).handleStairInteraction(this);
                     } else {
