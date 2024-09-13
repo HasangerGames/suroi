@@ -820,32 +820,36 @@ export class Game {
 
             interface CloseObject {
                 object?: Loot | Obstacle | Player
-                minDist: number
+                dist: number
             }
 
             const interactable: CloseObject = {
                 object: undefined,
-                minDist: Number.MAX_VALUE
+                dist: Number.MAX_VALUE
             };
             const uninteractable: CloseObject = {
                 object: undefined,
-                minDist: Number.MAX_VALUE
+                dist: Number.MAX_VALUE
             };
             const detectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
+                const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(player);
+
                 if (
-                    (isLoot || ((isObstacle || isPlayer) && object.canInteract(player)))
+                    (isLoot || isInteractable)
                     && object.hitbox.collidesWith(detectionHitbox)
                     && adjacentOrEqualLayer(object.layer, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object.canInteract(player) || isObstacle || isPlayer) && dist < interactable.minDist) {
-                        interactable.minDist = dist;
-                        interactable.object = object;
-                    } else if (isLoot && dist < uninteractable.minDist) {
-                        uninteractable.minDist = dist;
+                    if (isInteractable) {
+                        if (dist < interactable.dist) {
+                            interactable.dist = dist;
+                            interactable.object = object;
+                        }
+                    } else if (isLoot && dist < uninteractable.dist) {
+                        uninteractable.dist = dist;
                         uninteractable.object = object;
                     }
                 } else if (isBuilding) {

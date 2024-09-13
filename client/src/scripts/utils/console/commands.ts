@@ -401,20 +401,12 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "interact",
         function() {
-            // in the absence of a "loot" bind, the "interact"
-            // command performs the "loot" action as well
-            if (!this.inputManager.binds.getInputsBoundToAction("loot").length) {
-                this.inputManager.addAction(InputActions.Loot);
-            }
-
             this.inputManager.addAction(InputActions.Interact);
         },
         game,
         {
             short: "Interacts with an object, if there is one",
-            long:
-                "When invoked, the player will attempt to interact with the closest interactable object that is in range. "
-                + "If no input has explicitly been bound to <code>loot</code>, invoking this command will also invoke <code>loot</code>",
+            long: "When invoked, the player will attempt to interact with the closest interactable object that is in range.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -512,7 +504,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Loots closest object",
-            long: "Loots closest object, this command is also invoked with interact if there is no key bound to loot",
+            long: "When invoked, the player will attempt to pick up the closest loot that is in range.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }

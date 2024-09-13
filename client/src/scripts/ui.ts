@@ -2026,12 +2026,7 @@ export async function setUpUI(game: Game): Promise<void> {
     if (inputManager.isMobile) {
         // Interact message
         ui.interactMsg.on("click", () => {
-            if (game.uiManager.action.active) {
-                inputManager.addAction(InputActions.Cancel);
-            } else {
-                inputManager.addAction(InputActions.Interact);
-                inputManager.addAction(InputActions.Loot);
-            }
+            inputManager.addAction(game.uiManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
         // noinspection HtmlUnknownTarget
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');

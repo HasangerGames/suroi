@@ -20,7 +20,7 @@ const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
  */
 export type SimpleInputActions = Exclude<
     InputActions,
-    InputActions.EquipItem
+    | InputActions.EquipItem
     | InputActions.DropWeapon
     | InputActions.DropItem
     | InputActions.UseItem
@@ -31,23 +31,29 @@ export type SimpleInputActions = Exclude<
     | InputActions.ToggleSlotLock
 >;
 
-export type InputAction = {
-    readonly type: InputActions.UseItem
-    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
-} | {
-    readonly type: InputActions.DropItem
-    readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
-} | {
-    readonly type: InputActions.EquipItem | InputActions.DropWeapon | InputActions.LockSlot | InputActions.UnlockSlot | InputActions.ToggleSlotLock
-    readonly slot: number
-} | {
-    readonly type: InputActions.Emote
-    readonly emote: EmoteDefinition
-} | {
-    readonly type: InputActions.MapPing
-    readonly ping: PlayerPing
-    readonly position: Vector
-} | { readonly type: SimpleInputActions };
+export type InputAction =
+    | {
+        readonly type: InputActions.UseItem
+        readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition
+    }
+    | {
+        readonly type: InputActions.DropItem
+        readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
+    }
+    | {
+        readonly type: InputActions.EquipItem | InputActions.DropWeapon | InputActions.LockSlot | InputActions.UnlockSlot | InputActions.ToggleSlotLock
+        readonly slot: number
+    }
+    | {
+        readonly type: InputActions.Emote
+        readonly emote: EmoteDefinition
+    }
+    | {
+        readonly type: InputActions.MapPing
+        readonly ping: PlayerPing
+        readonly position: Vector
+    }
+    | { readonly type: SimpleInputActions };
 
 export type PlayerInputData = {
     readonly movement: {

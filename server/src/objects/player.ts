@@ -1906,69 +1906,43 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         : inventory.lock(slot);
                     break;
                 }
-                case InputActions.Loot: {
-                    interface CloseObject {
-                        object: Loot | undefined
-                        minDist: number
-                    }
-
-                    const uninteractable: CloseObject = {
-                        object: undefined,
-                        minDist: Number.MAX_VALUE
-                    };
-                    const detectionHitbox = new CircleHitbox(3, this.position);
-                    const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
-
-                    for (const object of nearObjects) {
-                        if (
-                            object.isLoot
-                            && object.hitbox.collidesWith(detectionHitbox)
-                            && adjacentOrEqualLayer(this.layer, object.layer)
-                        ) {
-                            const dist = Geometry.distanceSquared(object.position, this.position);
-                            if (
-                                object.isLoot
-                                && dist < uninteractable.minDist
-                            ) {
-                                uninteractable.minDist = dist;
-                                uninteractable.object = object;
-                            }
-                        }
-                    }
-
-                    uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
-
-                    this.canDespawn = false;
-                    this.disableInvulnerability();
-                    break;
-                }
+                case InputActions.Loot:
                 case InputActions.Interact: {
                     interface CloseObject {
-                        object: Obstacle | Player | undefined
-                        minDist: number
+                        object: Obstacle | Player | Loot | undefined
+                        dist: number
                     }
 
                     const interactable: CloseObject = {
                         object: undefined,
-                        minDist: Number.MAX_VALUE
+                        dist: Number.MAX_VALUE
+                    };
+                    const uninteractable: CloseObject = {
+                        object: undefined,
+                        dist: Number.MAX_VALUE
                     };
                     const detectionHitbox = new CircleHitbox(3, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
                     for (const object of nearObjects) {
-                        if (
-                            (
-                                !object.isObstacle && !object.isPlayer
-                            )
-                            || !object.canInteract(this)
-                            || !object.hitbox?.collidesWith(detectionHitbox)
-                            || !adjacentOrEqualLayer(object.layer, this.layer)
-                        ) continue;
+                        const { isLoot, isObstacle, isPlayer } = object;
+                        let isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(this);
 
-                        const dist = Geometry.distanceSquared(object.position, this.position);
-                        if (dist < interactable.minDist) {
-                            interactable.minDist = dist;
-                            interactable.object = object;
+                        if (
+                            (isLoot || (type === InputActions.Interact && isInteractable))
+                            && object.hitbox?.collidesWith(detectionHitbox)
+                            && adjacentOrEqualLayer(this.layer, object.layer)
+                        ) {
+                            const dist = Geometry.distanceSquared(object.position, this.position);
+                            if (isInteractable) {
+                                if (dist < interactable.dist) {
+                                    interactable.dist = dist;
+                                    interactable.object = object as CloseObject["object"];
+                                }
+                            } else if (isLoot && dist < uninteractable.dist) {
+                                uninteractable.dist = dist;
+                                uninteractable.object = object;
+                            }
                         }
                     }
 
@@ -1990,6 +1964,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 }
                             }
                         }
+                    } else {
+                        uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
                     }
 
                     this.canDespawn = false;
