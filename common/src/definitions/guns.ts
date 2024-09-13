@@ -819,7 +819,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                     image: "radio_wave",
                     opacity: 0.8,
                     particle: true,
-                    zIndex: Number.MAX_VALUE
+                    zIndex: Number.MAX_SAFE_INTEGER - 2
                 },
                 damage: 0,
                 obstacleMultiplier: 1,

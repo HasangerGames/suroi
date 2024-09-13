@@ -786,7 +786,12 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "hq_desk_left",
             name: "Headquarters Desk",
             material: "wood",
-            health: 350,
+            health: 120,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(18.25, 5.25, Vec.create(0, -3)),
                 RectangleHitbox.fromRect(4.5, 11, Vec.create(-6.8, 0))
@@ -802,7 +807,12 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             idString: "hq_desk_right",
             name: "Headquarters Desk",
             material: "wood",
-            health: 350,
+            health: 120,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
             hitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(18.25, 5.25, Vec.create(0, -3)),
                 RectangleHitbox.fromRect(4.5, 11, Vec.create(6.8, 0))
@@ -3034,7 +3044,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 high: 0,
                 low: 2
             },
-            hitbox: RectangleHitbox.fromRect(11, 17),
+            hitbox: RectangleHitbox.fromRect(11, 12.8),
             frames: {
                 particle: "metal_particle"
             },

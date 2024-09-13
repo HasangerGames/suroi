@@ -1,5 +1,5 @@
-import { GameConstants, Layer, ZIndexes } from "../../../../common/src/constants";
-import { adjacentOrEqualLayer as adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
+import { GameConstants, Layer } from "../../../../common/src/constants";
+import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -30,7 +30,7 @@ export class Plane {
         );
 
         this.image = new SuroiSprite("airdrop_plane")
-            .setZIndex(getEffectiveZIndex(ZIndexes.Gas + 1, Layer.Floor1, game.layer)) // todo: better logic for this lol
+            .setZIndex(Number.MAX_SAFE_INTEGER - 2) // todo: better logic for this lol
             .setRotation(direction)
             .setScale(4);
 
