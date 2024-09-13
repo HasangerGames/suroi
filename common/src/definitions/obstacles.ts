@@ -266,7 +266,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     furniture_particle:           { base: "wood_particle",    tint: 0x785a2e },
     couch_part_particle:          { base: "wood_particle",    tint: 0x6a330b },
     grenade_crate_particle:       { base: "wood_particle",    tint: 0x4c4823 },
-    gun_case_particle:            { base: "wood_particle",    tint: 0x2e3726 },
+    gun_case_particle:            { base: "wood_particle",    tint: 0x3e5130 },
     hazel_crate_particle:         { base: "wood_particle",    tint: 0x6ba371 },
     lux_crate_particle:           { base: "wood_particle",    tint: 0x4e5c3d },
     melee_crate_particle:         { base: "wood_particle",    tint: 0x23374c },
@@ -2612,7 +2612,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 spawnMax: 1,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(10.22, 4.73),
+            hitbox: RectangleHitbox.fromRect(10.19, 4.76),
             rotationMode: RotationMode.Limited,
             allowFlyover: FlyoverPref.Always,
             hasLoot: true
