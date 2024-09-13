@@ -125,6 +125,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 || !(object.isObstacle || object.isBuilding)
                 || !adjacentOrEqualLayer(owner.layer, object.layer)
                 || object.definition.noCollisions
+                || (object.isObstacle && object.definition.isStair)
             ) continue;
 
             const intersection = object.hitbox.intersectsLine(owner.position, position);
