@@ -810,10 +810,6 @@ export class Game {
             const player = this.activePlayer;
             if (!player) return;
 
-            for (const building of this.objects.getCategory(ObjectCategory.Building)) {
-                building.toggleCeiling();
-            }
-
             const isAction = this.uiManager.action.active;
             const showCancel = isAction && !this.uiManager.action.fake;
             let canInteract = true;
@@ -838,7 +834,7 @@ export class Game {
             const detectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
-                const { isLoot, isObstacle, isPlayer } = object;
+                const { isLoot, isObstacle, isPlayer, isBuilding } = object;
                 if (
                     (isLoot || ((isObstacle || isPlayer) && object.canInteract(player)))
                     && object.hitbox.collidesWith(detectionHitbox)
@@ -852,6 +848,8 @@ export class Game {
                         uninteractable.minDist = dist;
                         uninteractable.object = object;
                     }
+                } else if (isBuilding) {
+                    object.toggleCeiling();
                 }
             }
 
