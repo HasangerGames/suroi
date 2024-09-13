@@ -225,7 +225,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
         ): void => {
             this.game
                 .addLoot(type, this.position, this.layer, { count, jitterSpawn: false })
-                .push(player.rotation + Math.PI, 0.0007);
+                .push(player.rotation + Math.PI, 0.001);
         };
 
         if (noPickup) {
