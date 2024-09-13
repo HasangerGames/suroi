@@ -4039,7 +4039,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // secret room
                 { idString: "secret_door", position: Vec.create(-3.85, -99.4), rotation: 3 },
                 { idString: "aegis_golden_case", position: Vec.create(14, -98.5), lootSpawnOffset: Vec.create(-1, 1), rotation: 3 },
-                { idString: "secret_door", position: Vec.create(2.5, -83.7), rotation: 0 },
+                { idString: "secret_door", position: Vec.create(2.5, -83.8), rotation: 0 },
 
                 // ---------------------------------------------------------------------------------------------------------------
                 // discussion room? (bottom left)
