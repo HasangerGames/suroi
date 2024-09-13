@@ -568,8 +568,24 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 2,
         loot: [
-            { tier: "special_guns", weight: 1 },
-            { tier: "airdrop_guns", weight: 0.1 }
+            { item: "ak47", weight: 1 },
+            { item: "aug", weight: 1 },
+            { item: "model_37", weight: 1 },
+            { item: "mp40", weight: 1 },
+            { item: "m3k", weight: 0.6 },
+            { item: "flues", weight: 0.6 },
+            { item: "m16a4", weight: 0.4 },
+            { item: "cz600", weight: 0.4 },
+            { item: "mcx_spear", weight: 0.1 },
+            { item: "mg36", weight: 0.1 },
+            { item: "vss", weight: 0.1 },
+            { item: "mosin", weight: 0.1 },
+            { item: "sr25", weight: 0.05 },
+            { item: "mini14", weight: 0.05 },
+            { item: "vepr12", weight: 0.05 },
+            { item: "stoner_63", weight: 0.05 },
+            { item: "vector", weight: 0.05 },
+            { item: "tango_51", weight: 0.05 }
         ]
     },
     ammo_crate: {

@@ -466,9 +466,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                         collision.dir,
                         // dedl0x: Scaling by 1.5 fixes throwing grenades through thinner walls when facing [30, 45]
                         // degrees.
-                        ((hitbox.isPointInside(this.hitbox.position) ? -1 : 1) * collision.pen * 1.5)
-                        // "why?", you ask
-                        // cause it makes the thingy work and rectCircleIntersection is goofy
+                        collision.pen * 1.5
                     )
                 );
             } else {

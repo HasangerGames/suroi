@@ -603,7 +603,7 @@ export const Collision = Object.freeze({
             return xp > yp
                 ? {
                     dir: Vec.create(
-                        p.x > 0 ? 1 : -1,
+                        p.x > 0 ? -1 : 1,
                         0
                     ),
                     pen: -xp
@@ -611,7 +611,7 @@ export const Collision = Object.freeze({
                 : {
                     dir: Vec.create(
                         0,
-                        p.y > 0 ? 1 : -1
+                        p.y > 0 ? -1 : 1
                     ),
                     pen: -yp
                 };
