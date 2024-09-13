@@ -4057,20 +4057,20 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "metal_small_drawer", position: Vec.create(-32.5, -27.5), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
 
                 // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
-                { idString: "chair", position: Vec.create(-54.1, -14.5), rotation: 2 },
-                { idString: "chair", position: Vec.create(-54.1, 20.5), rotation: 0 },
+                { idString: "chair", position: Vec.create(-54.1, -14.6), rotation: 2 },
+                { idString: "chair", position: Vec.create(-54.1, 19.1), rotation: 0 },
 
-                { idString: "large_table", variation: 1, position: Vec.create(-54.1, -8.5), rotation: 1 },
-                { idString: "chair", position: Vec.create(-62.5, -8.5), rotation: 3 }, // rotation1=I_
-                { idString: "chair", position: Vec.create(-45.5, -8.5), rotation: 1 },
+                { idString: "large_table", variation: 1, position: Vec.create(-54.1, -9), rotation: 1 },
+                { idString: "chair", position: Vec.create(-62.5, -9), rotation: 3 }, // rotation1=I_
+                { idString: "chair", position: Vec.create(-45.5, -9), rotation: 1 },
 
-                { idString: "large_table", variation: 0, position: Vec.create(-54.1, 2.9), rotation: 1 },
-                { idString: "chair", position: Vec.create(-62.5, 2.9), rotation: 3 },
-                { idString: "chair", position: Vec.create(-45.5, 2.9), rotation: 1 },
+                { idString: "large_table", variation: 0, position: Vec.create(-54.1, 2.25), rotation: 1 },
+                { idString: "chair", position: Vec.create(-62.5, 2.25), rotation: 3 },
+                { idString: "chair", position: Vec.create(-45.5, 2.25), rotation: 1 },
 
-                { idString: "large_table", variation: 0, position: Vec.create(-54.1, 14.75), rotation: 1 },
-                { idString: "chair", position: Vec.create(-62.5, 14.75), rotation: 3 },
-                { idString: "chair", position: Vec.create(-45.5, 14.75), rotation: 1 }
+                { idString: "large_table", variation: 0, position: Vec.create(-54.1, 13.4), rotation: 1 },
+                { idString: "chair", position: Vec.create(-62.5, 13.4), rotation: 3 },
+                { idString: "chair", position: Vec.create(-45.5, 13.4), rotation: 1 }
                 // ---------------------------------------------------------------------------------------------------------------
             ] as BuildingObstacle[],
             subBuildings: [{ idString: "headquarters_secret_room", position: Vec.create(7.4, -94.5) }]
