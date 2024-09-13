@@ -274,7 +274,7 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
     "crowbar": "Rangă",
     "sickle": "Seceră",
 
-    "mosin": "Mosin-Nagant",
+    "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
     "lewis_gun": "Pușcă Mitralieră Lewis",
     "deathray": "Rază De Moarte",
