@@ -3571,7 +3571,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 },
                 {
                     key: "headquarters_second_floor_top", // dont touch :3
-                    position: Vec.create(6.25, -69)
+                    position: Vec.create(0, -69)
                 },
                 {
                     key: "headquarters_torture_window", // dont touch :3
@@ -3635,7 +3635,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(128, 73, Vec.create(5.75, -70)),
                 RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
                 RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)), // ADJUST THIS! (not sure if its correct) - pap,
-                RectangleHitbox.fromRect(12.4, 16, Vec.create(77.05, -42.7))
+                RectangleHitbox.fromRect(12.4, 12, Vec.create(66.05, -42.5))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             puzzle: {
@@ -3916,6 +3916,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)),
                 RectangleHitbox.fromRect(128, 77.1, Vec.create(0, -66)),
                 RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86))
+                //   RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05-5.6, -42.5+0.6))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
@@ -4175,7 +4176,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
                 { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 35) }
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
             ],
             subBuildings: [
                 { idString: "small_bunker_main", position: Vec.create(0, -4.6), layer: -2 },
