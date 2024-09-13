@@ -1488,6 +1488,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true,
             doorSound: "metal_door",
             indestructible: true,
+            spanAdjacentLayers: true,
             health: 500,
             scale: {
                 spawnMin: 1,
