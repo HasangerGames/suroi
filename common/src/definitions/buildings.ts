@@ -3634,7 +3634,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
                 RectangleHitbox.fromRect(128, 73, Vec.create(5.75, -70)),
                 RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
-                RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)), // ADJUST THIS! (not sure if its correct) - pap,
+                RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)) // ADJUST THIS! (not sure if its correct) - pap,
                 // RectangleHitbox.fromRect(12.4, 12, Vec.create(66.05, -42.5))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
@@ -3886,7 +3886,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             particleVariations: 2,
             hitbox: new GroupHitbox(
                 // outer
-                RectangleHitbox.fromRect(1.75, 59, Vec.create(65.1, -77.1)), // L, W1
+                RectangleHitbox.fromRect(1.75, 59.1, Vec.create(65.1, -77.1)), // L, W1
                 RectangleHitbox.fromRect(93, 1.75, Vec.create(19.5, -26.5)), // C, W2
                 RectangleHitbox.fromRect(1.75, 10, Vec.create(65.1, -32.1)), // L, W3
                 RectangleHitbox.fromRect(140, 1.75, Vec.create(-5.5, -105.8)), // T, W4
@@ -3921,7 +3921,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)),
                 RectangleHitbox.fromRect(128, 77.1, Vec.create(0, -66)),
                 RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86)),
-                RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05-5.6, -42.5+0.6))
+                RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05 - 5.6, -42.5 + 0.6))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [
@@ -3989,7 +3989,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "white_small_couch", position: Vec.create(-58, -70.6), rotation: 1 },
 
                 // main hallway
-                { idString: "metal_door", position: Vec.create(65.15, -42.7), rotation: 1 },
+                { idString: "metal_door", position: Vec.create(65.15, -42.225), rotation: 3 },
                 { idString: "cabinet", position: Vec.create(56.5, -52), lootSpawnOffset: Vec.create(-1, 1), rotation: 0 },
                 { idString: "file_cart", position: Vec.create(56.5, -32.5), rotation: 0 },
                 { idString: "bookshelf", position: Vec.create(-10, -30.5), lootSpawnOffset: Vec.create(0, -2), rotation: 0 },
