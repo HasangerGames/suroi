@@ -3100,8 +3100,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             noBulletCollision: true,
             noResidue: true,
             hitbox: RectangleHitbox.fromRect(0, 0),
-            rotationMode: RotationMode.Limited
-            //   zIndex: ZIndexes.ObstaclesLayer3 + 1
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer2
         },
         {
             idString: "fire_exit_railing",
