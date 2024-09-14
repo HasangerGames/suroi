@@ -1,4 +1,3 @@
-import { Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
@@ -272,43 +271,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             texture += `_${this.variation + 1}`;
         }
 
-        if (!definition.invisible && !definition.wall && !(this.dead && definition.noResidue)) this.image.setFrame(texture);
-
-        if (definition.tint !== undefined) this.image.setTint(definition.tint);
-
-        if (definition.wall && !this.dead && definition.hitbox instanceof RectangleHitbox) {
-            this.container.removeChildren();
-
-            const dimensions = definition.hitbox.clone();
-            dimensions.scale(PIXI_SCALE);
-
-            const wallGraphics = new Graphics();
-
-            const x = dimensions.min.x;
-            const y = dimensions.min.y;
-            const w = dimensions.max.x - dimensions.min.x;
-            const h = dimensions.max.y - dimensions.min.y;
-
-            wallGraphics
-                .rect(x, y, w, h)
-                .fill({ color: definition.wall.borderColor });
-
-            if (definition.wall.rounded) {
-                wallGraphics
-                    .roundRect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2, WALL_STROKE_WIDTH)
-                    .fill({ color: definition.wall.color });
-            } else {
-                wallGraphics
-                    .rect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2)
-                    .fill({ color: definition.wall.color });
-            }
-
-            this.container.addChild(wallGraphics);
+        if (!definition.invisible && !(this.dead && definition.noResidue)) {
+            this.image.setFrame(texture);
         }
 
-        if (definition.wall && this.dead) {
-            this.container.removeChildren();
-            if (!definition.noResidue) this.container.addChild(this.image);
+        if (definition.tint !== undefined) {
+            this.image.setTint(definition.tint);
         }
 
         this.container.rotation = this.rotation;

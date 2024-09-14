@@ -1,9 +1,10 @@
-import { Assets, RendererType, Sprite, Spritesheet, type ColorSource, type Graphics, type Renderer, type SpritesheetData, type Texture, type WebGLRenderer } from "pixi.js";
-import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE } from "./constants";
+import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 import $ from "jquery";
 import { getTranslatedString } from "../../translations";
+import { Obstacles } from "../../../../common/src/definitions/obstacles";
 
 const textures: Record<string, Texture> = {};
 
@@ -37,8 +38,8 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
     const count = spritesheets.length;
     const loader = loadSpritesheet(renderer);
 
-    await Promise.all(
-        spritesheets.map(
+    await Promise.all([
+        ...spritesheets.map(
             spritesheet => {
                 /**
                  * this is defined via vite-spritesheet-plugin, so it is never nullish
@@ -66,8 +67,42 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                         .finally(resolve);
                 });
             }
-        )
-    );
+        ),
+        ...Obstacles.definitions
+            .filter(obj => obj.wall)
+            .map(def => new Promise<void>(resolve => {
+                const { color, borderColor, rounded } = def.wall!;
+                const dimensions = (def.hitbox as RectangleHitbox).clone();
+                dimensions.scale(PIXI_SCALE);
+                const { x, y } = dimensions.min;
+                const [ w, h ] = [dimensions.max.x - x, dimensions.max.y - y];
+                const s = WALL_STROKE_WIDTH;
+
+                const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
+                renderer.render({
+                    target: wallTexture,
+                    container: new Graphics()
+                        .rect(0, 0, w, h)
+                        .fill({ color: borderColor })
+                        [rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
+                        .fill({ color })
+                });
+
+                textures[def.idString] = wallTexture;
+                resolve();
+            })),
+        new Promise<void>(resolve => {
+            const vestTexture = RenderTexture.create({ width: 102, height: 102, antialias: true });
+            renderer.render({
+                target: vestTexture,
+                container: new Graphics()
+                    .arc(51, 51, 51, 0, Math.PI * 2)
+                    .fill({ color: 0xffffff })
+            });
+            textures.vest_world = vestTexture;
+            resolve();
+        })
+    ]);
 }
 
 const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, path: string): Promise<void> => {
