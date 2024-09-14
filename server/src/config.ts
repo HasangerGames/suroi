@@ -1,7 +1,8 @@
 import { Layer, TeamSize } from "@common/constants";
-import { Vec, type Vector } from "@common/utils/vector";
+import { type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
+import { DemoPlugin } from "./defaultPlugins/demoPlugin";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 

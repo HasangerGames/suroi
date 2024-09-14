@@ -7,12 +7,11 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 
+import { Angle } from "@common/utils/math";
 import { type Game } from "../game";
-import { Events } from "../pluginManager";
 import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
-import { Angle } from "@common/utils/math";
 
 export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
@@ -78,19 +77,26 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     }
 
     damageCeiling(damage = 1): void {
-        if (this._wallsToDestroy === Infinity || this.dead) return;
+        if (
+            this._wallsToDestroy === Infinity
+            || this.dead
+            || this.game.pluginManager.emit("Building_Will_DamageCeiling", {
+                building: this,
+                damage
+            })
+        ) return;
 
-        this.game.pluginManager.emit(Events.Building_CeilingDamage, {
+        this._wallsToDestroy -= damage;
+
+        this.game.pluginManager.emit("Building_Did_DamageCeiling", {
             building: this,
             damage
         });
 
-        this._wallsToDestroy -= damage;
-
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
             this.setPartialDirty();
-            this.game.pluginManager.emit(Events.Building_CeilingDestroy, this);
+            this.game.pluginManager.emit("Building_Did_DestroyCeiling", this);
         }
     }
 

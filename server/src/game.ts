@@ -3,7 +3,7 @@ import { isMainThread, parentPort, workerData } from "worker_threads";
 
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
-import { type LootDefinition } from "@common/definitions/loots";
+import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
@@ -42,7 +42,7 @@ import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
-import { Events, PluginManager } from "./pluginManager";
+import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
@@ -355,7 +355,10 @@ export class Game implements GameData {
              */
             open(socket: WebSocket<PlayerContainer>) {
                 const data = socket.getUserData();
-                data.player = This.addPlayer(socket);
+                if ((data.player = This.addPlayer(socket)) === undefined) {
+                    socket.close();
+                }
+
                 // data.player.sendGameOverPacket(false); // uncomment to test game over screen
             },
 
@@ -410,7 +413,7 @@ export class Game implements GameData {
 
         this.setGameData({ allowJoin: true });
 
-        this.pluginManager.emit(Events.Game_Created, this);
+        this.pluginManager.emit("Game_Created", this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -590,10 +593,10 @@ export class Game implements GameData {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
-                this.pluginManager.emit(Events.Player_Win, player);
+                this.pluginManager.emit("Player_Did_Win", player);
             }
 
-            this.pluginManager.emit(Events.Game_End, this);
+            this.pluginManager.emit("Game_End", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -617,7 +620,7 @@ export class Game implements GameData {
             this._tickTimes.length = 0;
         }
 
-        this.pluginManager.emit(Events.Game_Tick, this);
+        this.pluginManager.emit("Game_Tick", this);
 
         if (!this.stopped) {
             setTimeout(this.tick, this.idealDt);
@@ -701,7 +704,11 @@ export class Game implements GameData {
         );
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
+        if (this.pluginManager.emit("Player_Will_Connect")) {
+            return undefined;
+        }
+
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
         let spawnLayer;
 
@@ -803,12 +810,18 @@ export class Game implements GameData {
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, spawnLayer, team);
-        this.pluginManager.emit(Events.Player_Connect, player);
+        this.pluginManager.emit("Player_Did_Connect", player);
         return player;
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
+        const rejectedBy = this.pluginManager.emit("Player_Will_Join", { player, joinPacket: packet });
+        if (rejectedBy) {
+            player.disconnect(`Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
+            return;
+        }
+
         if (packet.protocolVersion !== GameConstants.protocolVersion) {
             player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
             return;
@@ -877,7 +890,7 @@ export class Game implements GameData {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
-        this.pluginManager.emit(Events.Player_Join, player);
+        this.pluginManager.emit("Player_Did_Join", { player, joinPacket: packet });
     }
 
     removePlayer(player: Player): void {
@@ -933,7 +946,7 @@ export class Game implements GameData {
             /* not a really big deal if we can't close the socket */
             // when does this ever fail?
         }
-        this.pluginManager.emit(Events.Player_Disconnect, player);
+        this.pluginManager.emit("Player_Disconnect", player);
     }
 
     /**
@@ -956,7 +969,25 @@ export class Game implements GameData {
              */
             readonly jitterSpawn?: boolean
         } = {}
-    ): Loot {
+    ): Loot | undefined {
+        const args = {
+            position,
+            layer,
+            count,
+            pushVel,
+            jitterSpawn
+        };
+
+        if (
+            this.pluginManager.emit(
+                "Loot_Will_Generate",
+                {
+                    definition: definition = Loots.reify(definition),
+                    ...args
+                }
+            )
+        ) return;
+
         const loot = new Loot(
             this,
             definition,
@@ -971,7 +1002,12 @@ export class Game implements GameData {
             pushVel
         );
         this.grid.addObject(loot);
-        this.pluginManager.emit(Events.Loot_Generated, loot);
+
+        this.pluginManager.emit(
+            "Loot_Did_Generate",
+            { loot, ...args }
+        );
+
         return loot;
     }
 
@@ -1085,6 +1121,8 @@ export class Game implements GameData {
     }
 
     summonAirdrop(position: Vector): void {
+        if (this.pluginManager.emit("Airdrop_Will_Summon", { position })) return;
+
         const paddingFactor = 1.25;
 
         const crateDef = Obstacles.fromString("airdrop_crate_locked");
@@ -1236,8 +1274,6 @@ export class Game implements GameData {
 
         const airdrop = { position, type: crateDef };
 
-        this.pluginManager.emit(Events.Airdrop_Summoned, airdrop);
-
         this.airdrops.push(airdrop);
 
         this.planes.push({ position: planePos, direction });
@@ -1250,6 +1286,8 @@ export class Game implements GameData {
                 position
             });
         }, GameConstants.airdrop.flyTime);
+
+        this.pluginManager.emit("Airdrop_Did_Summon", { airdrop, position });
     }
 }
 

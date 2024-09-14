@@ -2,7 +2,6 @@ import { Loots, type LootDefinition, type WeaponDefinition } from "@common/defin
 import { type ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 
 import { type Player } from "../objects/player";
-import { Events } from "../pluginManager";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
@@ -45,8 +44,8 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         if (this._isActive !== isActive) {
             this.owner.game.pluginManager.emit(
                 isActive
-                    ? Events.InvItem_Equip
-                    : Events.InvItem_Unequip,
+                    ? "InvItem_Equip"
+                    : "InvItem_Unequip",
                 this
             );
         }
@@ -184,7 +183,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             this._modifiers.baseSpeed = newModifiers.baseSpeed;
 
             this.owner.game.pluginManager.emit(
-                Events.InvItem_ModifiersChanged,
+                "InvItem_ModifiersChanged",
                 {
                     item: this,
                     oldMods: old,

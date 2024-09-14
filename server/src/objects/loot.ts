@@ -12,7 +12,6 @@ import { FloorNames } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { Events } from "../pluginManager";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
@@ -216,7 +215,15 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     }
 
     interact(player: Player, noPickup = false): void {
-        if (this.dead) return;
+        if (
+            this.dead
+            || this.game.pluginManager.emit("Loot_Will_Interact", {
+                loot: this,
+                noPickup,
+                player
+            })
+        ) return;
+
         const createNewItem = (
             { type, count }: {
                 readonly type: LootDefinition
@@ -225,7 +232,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
         ): void => {
             this.game
                 .addLoot(type, this.position, this.layer, { count, jitterSpawn: false })
-                .push(player.rotation + Math.PI, 0.001);
+                ?.push(player.rotation + Math.PI, 0.001);
         };
 
         if (noPickup) {
@@ -416,13 +423,13 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
             })
         );
 
-        this.game.pluginManager.emit(Events.Loot_Interact, {
+        // If the item wasn't deleted, create a new loot item pushed slightly away from the player
+        if (this._count > 0) createNewItem();
+
+        this.game.pluginManager.emit("Loot_Did_Interact", {
             loot: this,
             player
         });
-
-        // If the item wasn't deleted, create a new loot item pushed slightly away from the player
-        if (this._count > 0) createNewItem();
 
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;

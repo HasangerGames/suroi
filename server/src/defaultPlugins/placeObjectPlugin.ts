@@ -7,7 +7,7 @@ import { Vec } from "@common/utils/vector";
 
 import { Obstacle } from "../objects/obstacle";
 import { Player } from "../objects/player";
-import { Events, GamePlugin } from "../pluginManager";
+import { GamePlugin } from "../pluginManager";
 
 /**
  * Plugin to help place objects when developing buildings
@@ -28,20 +28,20 @@ export class PlaceObjectPlugin extends GamePlugin {
     } ();
 
     protected override initListeners(): void {
-        this.on(Events.Player_Join, player => {
+        this.on("Player_Did_Join", ({ player }) => {
             const obstacle = new Obstacle(player.game, this.obstacleToPlace, player.position);
             this._playerToObstacle.set(player, obstacle);
             this.game.grid.addObject(obstacle);
         });
 
-        this.on(Events.Player_Disconnect, player => {
+        this.on("Player_Disconnect", player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 this.game.grid.removeObject(obstacle);
                 this._playerToObstacle.delete(player);
             });
         });
 
-        this.on(Events.Player_Emote, ({ player }) => {
+        this.on("Player_Emote", ({ player }) => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 obstacle.rotation += 1;
                 obstacle.rotation %= 4;
@@ -49,7 +49,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on(Events.Player_Update, player => {
+        this.on("Player_Update", player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const position = Vec.add(
                     player.position,
@@ -61,7 +61,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on(Events.Player_StartAttacking, player => {
+        this.on("Player_StartAttacking", player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const map = this.game.map;
                 const round = (n: number): number => Math.round(n * 100) / 100;

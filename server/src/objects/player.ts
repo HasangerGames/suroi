@@ -23,7 +23,6 @@ import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
-import { Events } from "../pluginManager";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
@@ -562,18 +561,28 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendEmote(emote?: EmoteDefinition): void {
-        if (!this.loadout.emotes.includes(emote) && (!this.game.teamMode || !emote?.isTeamEmote)) return;
-
-        if (emote) {
-            this.game.emotes.push(new Emote(emote, this));
-            this.game.pluginManager.emit(Events.Player_Emote, {
+        if (
+            this.loadout.emotes.includes(emote)
+            && (!emote?.isTeamEmote || this.game.teamMode)
+            && emote
+            && !this.game.pluginManager.emit("Player_Will_Emote", {
                 player: this,
                 emote
-            });
+            })
+        ) {
+            this.game.emotes.push(new Emote(emote, this));
         }
     }
 
     sendMapPing(ping: PlayerPing, position: Vector): void {
+        if (
+            this.game.pluginManager.emit("Player_Will_MapPing", {
+                player: this,
+                ping,
+                position
+            })
+        ) return;
+
         if (this._team) {
             for (const player of this._team.players) {
                 /*
@@ -588,6 +597,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     playerId: this.id
                 });
             }
+
             return;
         }
 
@@ -595,12 +605,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             definition: ping,
             position,
             playerId: this.id
-        });
-
-        this.game.pluginManager.emit(Events.Player_MapPing, {
-            player: this,
-            ping,
-            position
         });
     }
 
@@ -724,14 +728,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
-            this.game.pluginManager.emit(Events.Player_StartAttacking, this);
+            this.game.pluginManager.emit("Player_StartAttacking", this);
             this.startedAttacking = false;
             this.disableInvulnerability();
             this.activeItem.useItem();
         }
 
         if (this.stoppedAttacking) {
-            this.game.pluginManager.emit(Events.Player_StopAttacking, this);
+            this.game.pluginManager.emit("Player_StopAttacking", this);
             this.stoppedAttacking = false;
             this.activeItem.stopUse();
         }
@@ -836,7 +840,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         this.turning = false;
-        this.game.pluginManager.emit(Events.Player_Update, this);
+        this.game.pluginManager.emit("Player_Update", this);
     }
 
     private _firstPacket = true;
@@ -1050,7 +1054,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                        fixing this is therefore not worth the performance penalty
         */
         packet.bullets = game.newBullets.filter(
-            ({ initialPosition, finalPosition, layer }) => Collision.lineIntersectsRectTest(
+            ({ initialPosition, finalPosition }) => Collision.lineIntersectsRectTest(
                 initialPosition,
                 finalPosition,
                 this.screenHitbox.min,
@@ -1322,7 +1326,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { source, weaponUsed } = params;
         let { amount } = params;
 
-        this.game.pluginManager.emit(Events.Player_Damage, {
+        this.game.pluginManager.emit("Player_Damage", {
             amount,
             player: this,
             source,
@@ -1362,12 +1366,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         amount = this._clampDamageAmount(amount);
 
-        this.game.pluginManager.emit(Events.Player_PiercingDamage, {
-            player: this,
-            amount,
-            source,
-            weaponUsed
-        });
+        if (
+            this.game.pluginManager.emit("Player_Will_PiercingDamaged", {
+                player: this,
+                amount,
+                source,
+                weaponUsed
+            })
+        ) return;
 
         const canTrackStats = weaponUsed instanceof InventoryItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
@@ -1407,6 +1413,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        this.game.pluginManager.emit("Player_Did_PiercingDamaged", {
+            player: this,
+            amount,
+            source,
+            weaponUsed
+        });
         if (this.health <= 0 && !this.dead) {
             if (
                 this.game.teamMode
@@ -1437,7 +1449,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (statsChanged && canTrackStats) {
             this.game.pluginManager.emit(
-                Events.InvItem_StatsChanged,
+                "InvItem_StatsChanged",
                 {
                     item: weaponUsed,
 
@@ -1485,6 +1497,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     // dies of death
     die(params: Omit<DamageParams, "amount">): void {
         if (this.health > 0 || this.dead) return;
+
+        this.game.pluginManager.emit("Player_Will_Die", {
+            player: this,
+            ...params
+        });
+
         const { source, weaponUsed } = params;
 
         this.health = 0;
@@ -1630,11 +1648,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             );
         }
 
-        this.game.pluginManager.emit(Events.Player_Death, {
-            player: this,
-            ...params
-        });
-
         // Reset movement and attacking variables
         this.movement.up = this.movement.down = this.movement.left = this.movement.right = false;
         this.startedAttacking = false;
@@ -1726,6 +1739,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (this === this.game.killLeader) {
             this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
         }
+
+        this.game.pluginManager.emit("Player_Did_Die", {
+            player: this,
+            ...params
+        });
     }
 
     teamWipe(): void {
@@ -2000,7 +2018,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        this.game.pluginManager.emit(Events.Player_Input, {
+        this.game.pluginManager.emit("Player_Input", {
             player: this,
             packet
         });

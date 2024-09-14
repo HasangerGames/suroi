@@ -5,7 +5,6 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 
 import { type Airdrop, type Game } from "../game";
-import { Events } from "../pluginManager";
 import { BaseGameObject } from "./gameObject";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
@@ -34,7 +33,9 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
-            this.game.pluginManager.emit(Events.Airdrop_Landed, this._airdrop);
+            if (!crate) return;
+
+            this.game.pluginManager.emit("Airdrop_Landed", this._airdrop);
 
             // Spawn smoke
             this.game.addSyncedParticles({

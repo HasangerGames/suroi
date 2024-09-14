@@ -18,7 +18,6 @@ import { MapName, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
-import { Events } from "./pluginManager";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
 
 export class GameMap {
@@ -449,10 +448,22 @@ export class GameMap {
         position: Vector,
         orientation?: Orientation,
         layer?: number
-    ): Building {
+    ): Building | undefined {
         definition = Buildings.reify(definition);
         orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
         layer ??= 0;
+
+        if (
+            this.game.pluginManager.emit(
+                "Building_Will_Generate",
+                {
+                    definition,
+                    position,
+                    orientation,
+                    layer
+                }
+            )
+        ) return;
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
@@ -490,8 +501,10 @@ export class GameMap {
             );
 
             if (
-                obstacleDef.isActivatable
-                || obstacleDef.isDoor
+                obstacle && (
+                    obstacleDef.isActivatable
+                    || obstacleDef.isDoor
+                )
             ) {
                 building.interactableObstacles.add(obstacle);
             }
@@ -539,7 +552,8 @@ export class GameMap {
 
         if (!definition.hideOnMap) this._packet.objects.push(building);
         this.game.grid.addObject(building);
-        this.game.pluginManager.emit(Events.Building_Generated, building);
+        this.game.pluginManager.emit("Building_Did_Generate", building);
+
         return building;
     }
 
@@ -599,7 +613,7 @@ export class GameMap {
             puzzlePiece?: string | boolean
             locked?: boolean
         } = {}
-    ): Obstacle {
+    ): Obstacle | undefined {
         const def = Obstacles.reify(definition);
         layer ??= 0;
 
@@ -609,6 +623,24 @@ export class GameMap {
         }
 
         rotation ??= GameMap.getRandomRotation(def.rotationMode);
+
+        if (
+            this.game.pluginManager.emit(
+                "Obstacle_Will_Generate",
+                {
+                    type: def,
+                    position,
+                    rotation,
+                    layer,
+                    scale,
+                    variation,
+                    lootSpawnOffset,
+                    parentBuilding,
+                    puzzlePiece,
+                    locked
+                }
+            )
+        ) return;
 
         const obstacle = new Obstacle(
             this.game,
@@ -627,7 +659,7 @@ export class GameMap {
         if (!def.hideOnMap && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
-        this.game.pluginManager.emit(Events.Obstacle_Generated, obstacle);
+        this.game.pluginManager.emit("Obstacle_Did_Generate", obstacle);
         return obstacle;
     }
 

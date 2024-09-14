@@ -625,7 +625,7 @@ export class Inventory {
 
         if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
 
-        const dualGun = this._reifyItem(gun.definition.dualVariant) as GunItem;
+        const dualGun = this._reifyItem<GunDefinition>(gun.definition.dualVariant);
         this._setWeapon(slot, dualGun);
         dualGun.ammo = gun.ammo;
 

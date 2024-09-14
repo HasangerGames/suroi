@@ -8,16 +8,15 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
+import { equalLayer } from "@common/utils/layer";
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
-import { Events } from "../pluginManager";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { equalLayer } from "@common/utils/layer";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -159,37 +158,55 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
         if (
-            definition.impenetrable
-            && !(
-                (
-                    weaponDef?.itemType === ItemType.Melee
-                    && weaponDef.piercingMultiplier !== undefined
-                    && weaponDef?.canPierceMaterials?.includes(this.definition.material)
+            (
+                definition.impenetrable
+                && !(
+                    (
+                        weaponDef?.itemType === ItemType.Melee
+                        && weaponDef.piercingMultiplier !== undefined
+                        && weaponDef?.canPierceMaterials?.includes(this.definition.material)
+                    )
+                    || source instanceof Obstacle
                 )
-                || source instanceof Obstacle
             )
+            || this.game.pluginManager.emit("Obstacle_Will_Damage", {
+                obstacle: this,
+                ...params
+            })
         ) {
             return;
         }
 
-        this.game.pluginManager.emit(Events.Obstacle_Damage, {
+        this.health -= amount;
+        this.setPartialDirty();
+
+        const notDead = this.health > 0 && !this.dead;
+        if (notDead) {
+            const oldScale = this.scale;
+
+            // Calculate new scale & scale hitbox
+            const destroyScale = definition.scale?.destroy ?? 1;
+            this.scale = this.health / this.maxHealth * (this.maxScale - destroyScale) + destroyScale;
+            this.hitbox.scale(this.scale / oldScale);
+        }
+
+        this.game.pluginManager.emit("Obstacle_Did_Damage", {
             obstacle: this,
             ...params
         });
 
-        this.health -= amount;
-        this.setPartialDirty();
-
-        if (this.health <= 0 || this.dead) {
+        if (!notDead) {
             this.health = 0;
             this.dead = true;
 
-            this.game.pluginManager.emit(Events.Obstacle_Destroy, {
-                obstacle: this,
-                source,
-                weaponUsed,
-                amount
-            });
+            if (
+                this.game.pluginManager.emit("Obstacle_Will_Destroy", {
+                    obstacle: this,
+                    source,
+                    weaponUsed,
+                    amount
+                })
+            ) return;
 
             if (!(this.definition.isWindow && !this.definition.noCollisionAfterDestroyed)) this.collidable = false;
 
@@ -216,7 +233,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             : this.position,
                     this.layer,
                     { count: item.count }
-                ).push(
+                )?.push(
                     Angle.betweenPoints(this.position, lootSpawnPosition),
                     0.02
                 );
@@ -250,13 +267,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     }
                 }
             }
-        } else {
-            const oldScale = this.scale;
 
-            // Calculate new scale & scale hitbox
-            const destroyScale = definition.scale?.destroy ?? 1;
-            this.scale = this.health / this.maxHealth * (this.maxScale - destroyScale) + destroyScale;
-            this.hitbox.scale(this.scale / oldScale);
+            this.game.pluginManager.emit("Obstacle_Did_Destroy", {
+                obstacle: this,
+                source,
+                weaponUsed,
+                amount
+            });
         }
     }
 
@@ -295,12 +312,14 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     interact(player?: Player): void {
-        if (!this.canInteract(player) && !this.door?.locked) return;
-
-        this.game.pluginManager.emit(Events.Obstacle_Interact, {
-            obstacle: this,
-            player
-        });
+        if (
+            !this.canInteract(player)
+            && !this.door?.locked
+            && !this.game.pluginManager.emit("Obstacle_Will_Interact", {
+                obstacle: this,
+                player
+            })
+        ) return;
 
         const definition = this.definition;
 
@@ -344,6 +363,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 break;
             }
         }
+
+        this.game.pluginManager.emit("Obstacle_Will_Interact", {
+            obstacle: this,
+            player
+        });
         this.setDirty();
     }
 
