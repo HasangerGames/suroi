@@ -1609,8 +1609,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 //   { idString: "bookshelf", position: Vec.create(4.25, -22), rotation: 1 },
 
                 // bottom right (mini vault ig)
-                { idString: "house_wall_14", position: Vec.create(6.4, 13.1), rotation: 1 },
-                { idString: "metal_door", position: Vec.create(26.15, 5.25), rotation: 2 },
+                { idString: "house_wall_14", position: Vec.create(6.25, 13.1), rotation: 1 },
+                { idString: "metal_door", position: Vec.create(26.15, 5.7), rotation: 2 },
                 { idString: "box", position: Vec.create(16, 1.7) },
 
                 // bathroom
@@ -1620,7 +1620,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-0.2, 5.6), rotation: 2 },
                 { idString: "house_wall_14", position: Vec.create(-17, 13.15), rotation: 1 },
                 { idString: "bookshelf", position: Vec.create(-20.27, 15), rotation: 1 },
-                { idString: "trash_bag", position: Vec.create(2.4, 17.9) },
+                { idString: "trash_bag", position: Vec.create(2.2, 17.9) },
 
                 // top left
                 { idString: "house_wall_16", position: Vec.create(-10, -13.65), rotation: 1 },
@@ -1632,7 +1632,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "potted_plant", position: Vec.create(-29, -4) }
             ],
             subBuildings: [
-                { idString: "blue_house_mini_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
+                { idString: "blue_house_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
                 {
                     idString: {
                         blue_house_vault_layout_1: 1,
@@ -1646,8 +1646,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ]
         },
         {
-            idString: "blue_house_mini_vault",
-            name: "Blue House Mini Vault",
+            idString: "blue_house_vault",
+            name: "Blue House Vault",
             reflectBullets: true,
             material: "metal_heavy",
             particle: "metal_particle",
@@ -1661,9 +1661,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             scopeHitbox: RectangleHitbox.fromRect(14, 24),
             ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
             ceilingImages: [{
-                key: "blue_house_mini_vault_ceiling",
-                position: Vec.create(1.1, 0.03),
-                scale: Vec.create(2.15, 2.15)
+                key: "blue_house_vault_ceiling",
+                position: Vec.create(1, -0.1)
             }]
         },
         {
