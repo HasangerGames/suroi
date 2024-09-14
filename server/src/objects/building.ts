@@ -80,7 +80,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         if (
             this._wallsToDestroy === Infinity
             || this.dead
-            || this.game.pluginManager.emit("Building_Will_DamageCeiling", {
+            || this.game.pluginManager.emit("building_will_damage_ceiling", {
                 building: this,
                 damage
             })
@@ -88,7 +88,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
         this._wallsToDestroy -= damage;
 
-        this.game.pluginManager.emit("Building_Did_DamageCeiling", {
+        this.game.pluginManager.emit("building_did_damage_ceiling", {
             building: this,
             damage
         });
@@ -96,7 +96,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
             this.setPartialDirty();
-            this.game.pluginManager.emit("Building_Did_DestroyCeiling", this);
+            this.game.pluginManager.emit("building_did_destroy_ceiling", this);
         }
     }
 

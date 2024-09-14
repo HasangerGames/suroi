@@ -455,7 +455,7 @@ export class GameMap {
 
         if (
             this.game.pluginManager.emit(
-                "Building_Will_Generate",
+                "building_will_generate",
                 {
                     definition,
                     position,
@@ -552,7 +552,7 @@ export class GameMap {
 
         if (!definition.hideOnMap) this._packet.objects.push(building);
         this.game.grid.addObject(building);
-        this.game.pluginManager.emit("Building_Did_Generate", building);
+        this.game.pluginManager.emit("building_did_generate", building);
 
         return building;
     }
@@ -626,7 +626,7 @@ export class GameMap {
 
         if (
             this.game.pluginManager.emit(
-                "Obstacle_Will_Generate",
+                "obstacle_will_generate",
                 {
                     type: def,
                     position,
@@ -659,7 +659,7 @@ export class GameMap {
         if (!def.hideOnMap && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
-        this.game.pluginManager.emit("Obstacle_Did_Generate", obstacle);
+        this.game.pluginManager.emit("obstacle_did_generate", obstacle);
         return obstacle;
     }
 

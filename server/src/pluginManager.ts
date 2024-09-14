@@ -56,25 +56,25 @@ export const Events = {
      * websocket being closed, preventing the player from
      * joining
      */
-    Player_Will_Connect: makeEvent(true),
+    player_will_connect: makeEvent(true),
     /**
      * Emitted after the instantiation of
      * the {@link Player} object and its placement
      *
      * This event cannot be cancelled
      */
-    Player_Did_Connect: makeEvent(),
+    player_did_connect: makeEvent(),
 
     /**
      * Emitted at the start of {@link Game.activatePlayer()}.
      * Notably, a {@link JoinedPacket} will have been sent, but
      * the player will not have been added to any collections
-     * (except a team, which is done before {@link Events.Player_Did_Connect}
+     * (except a team, which is done before {@link Events.player_did_connect}
      * is fired), and the game will not have been started if need be
      *
      * Cancelling this event will disconnect the corresponding player
      */
-    Player_Will_Join: makeEvent(true),
+    player_will_join: makeEvent(true),
     /**
      * Emitted at the end of {@link Game.activatePlayer()}.
      * Notably, a {@link JoinedPacket} will have been sent,
@@ -84,7 +84,7 @@ export const Events = {
      *
      * This event cannot be cancelled
      */
-    Player_Did_Join: makeEvent(),
+    player_did_join: makeEvent(),
 
     /**
      * Emitted after the end {@link Game.removePlayer()}.
@@ -92,58 +92,58 @@ export const Events = {
      * object may have been despawned, and the player will
      * have been removed from their team
      */
-    Player_Disconnect: makeEvent(),
+    player_disconnect: makeEvent(),
     /**
      * Emitted at the end of a player's {@link Player.update() first update pass}
      * (which is in charge of updating physical quantities,
      * updating health/adren/zoom, and using items)
      */
-    Player_Update: makeEvent(),
+    player_update: makeEvent(),
     /**
      * Emitted on the first tick that a player is attacking (more
      * formally, on the first tick where a player is attacking
      * following a tick where the player was not attacking)
      */
-    Player_StartAttacking: makeEvent(),
+    player_start_attacking: makeEvent(),
     /**
      * Emitted on the first tick that a player stops attacking
      * (more formally, on the first tick where a player is not
      * attacking following a tick where the player was attacking)
      */
-    Player_StopAttacking: makeEvent(),
+    player_stop_attacking: makeEvent(),
     /**
      * Emitted every time an {@link InputPacket} is received.
      * All side-effects from inputs will have already occurred
      * by the time this event is fired.
      */
-    Player_Input: makeEvent(),
+    player_input: makeEvent(),
     /**
      * Emitted when a player is about to use a valid emote
      *
      * Cancelling this event will prevent the emote from being used
      */
-    Player_Will_Emote: makeEvent(true),
+    player_will_emote: makeEvent(true),
     /**
      * Emitted when a player uses a valid emote
      */
-    Player_Did_Emote: makeEvent(),
+    player_did_emote: makeEvent(),
     /**
      * Emitted when a player is about to use a player ping
      *
      * Cancelling this event will prevent the player ping from being used
      */
-    Player_Will_MapPing: makeEvent(true),
+    player_will_map_ping: makeEvent(true),
     /**
      * Emitted when a player uses a player ping
      */
-    Player_Did_MapPing: makeEvent(),
+    player_did_map_ping: makeEvent(),
     /**
      * Emitted when the player is about to receive damage.
      * The damage amount received is not clamped and does
      * not take protective modifiers into account; use the
-     * {@link Events.Player_Will_PiercingDamaged} for that purpose
+     * {@link Events.player_will_piercing_damaged} for that purpose
      */
-    Player_Damage: makeEvent(),
+    player_damage: makeEvent(),
     /**
      * Emitted when the player is about to receive piercing
      * damage, which is simply defined as damage that ignores
@@ -156,10 +156,10 @@ export const Events = {
      * applied, stats will not have been updated, and relevant
      * packets will not have been sent
      *
-     * Cancelling this event will prevent the payer from being
+     * Cancelling this event will prevent the player from being
      * damaged
      */
-    Player_Will_PiercingDamaged: makeEvent(true),
+    player_will_piercing_damaged: makeEvent(true),
     /**
      * Emitted after the player has received piercing
      * damage, which is simply defined as damage that ignores
@@ -169,19 +169,19 @@ export const Events = {
      *
      * Damage dealt, damage taken, and on-hit effects will have
      * been applied, but the check for player death will not yet
-     * have happened (meaning {@link Events.Player_Will_Die} will
+     * have happened (meaning {@link Events.player_will_die} will
      * always fire after this event if applicable). Item modifiers
      * will also not yet have been updated (since those depend on
-     * the death check), meaning that {@link Events.InvItem_StatsChanged}
+     * the death check), meaning that {@link Events.inv_item_stats_changed}
      * will not have been fired
      */
-    Player_Did_PiercingDamaged: makeEvent(),
+    player_did_piercing_damaged: makeEvent(),
     /**
      * Emitted when the player is about to die. Health is guaranteed
      * to be less than or equal to 0, and the `dead` flag will not
      * have been set.
      */
-    Player_Will_Die: makeEvent(),
+    player_will_die: makeEvent(),
     /**
      * Emitted when the player dies. By the time this event is
      * emitted, all player cleanup will have been finished;
@@ -199,13 +199,13 @@ export const Events = {
      * sent, and this player will have been removed from kill
      * leader (if they were there)
      */
-    Player_Did_Die: makeEvent(),
+    player_did_die: makeEvent(),
     /**
      * Emitted for each winning player. By the time this event
      * is dispatched, win emote and game over packet will have
      * been sent
      */
-    Player_Did_Win: makeEvent(),
+    player_did_win: makeEvent(),
 
     /**
      * Emitted whenever an inventory item is equipped
@@ -213,7 +213,7 @@ export const Events = {
      * marked as unequipped before the new one is marked
      * as equipped
      */
-    InvItem_Equip: makeEvent(),
+    inv_item_equip: makeEvent(),
 
     /**
      * Emitted whenever an inventory item is unequipped
@@ -221,18 +221,18 @@ export const Events = {
      * marked as unequipped before the new one is marked
      * as equipped
      */
-    InvItem_Unequip: makeEvent(),
+    inv_item_unequip: makeEvent(),
 
     /**
      * Emitted whenever a weapon's stats have been changed
      */
-    InvItem_StatsChanged: makeEvent(),
+    inv_item_stats_changed: makeEvent(),
 
     /**
      * Emitted whenever a weapon's modifiers have
      * been changed, usually as a result of stat changes
      */
-    InvItem_ModifiersChanged: makeEvent(),
+    inv_item_modifiers_changed: makeEvent(),
 
     /**
      * Emitted at the start of the {@link GameMap.generateObstacle()}
@@ -242,14 +242,14 @@ export const Events = {
      *
      * Cancelling this event will lead to the obstacle not being generated
      */
-    Obstacle_Will_Generate: makeEvent(true),
+    obstacle_will_generate: makeEvent(true),
     /**
      * Emitted at the end of the {@link GameMap.generateObstacle()}
      * method, which is invoked during map generation
      *
      * Also invoked when airdrops land
      */
-    Obstacle_Did_Generate: makeEvent(),
+    obstacle_did_generate: makeEvent(),
     /**
      * Emitted when an obstacle is about to sustain damage.
      * This event will not be fired for "invalid" attempts
@@ -260,13 +260,13 @@ export const Events = {
      *
      * Cancelling this event will lead to the obstacle sustaining no damage
      */
-    Obstacle_Will_Damage: makeEvent(true),
+    obstacle_will_damage: makeEvent(true),
     /**
      * Emitted when an obstacle has sustained damage, but before
-     * any death logic has been run or checked; {@link Events.Obstacle_Will_Destroy}
+     * any death logic has been run or checked; {@link Events.obstacle_will_destroy}
      * will thus always fire after this event if applicable
      */
-    Obstacle_Did_Damage: makeEvent(),
+    obstacle_did_damage: makeEvent(),
     /**
      * Emitted when an obstacle is destroyed. Health and death
      * variables will have been updated, but no side-effects
@@ -277,14 +277,14 @@ export const Events = {
      * the obstacle will vanish, but no explosions, nor loot, nor decal,
      * (nor etc) will spawn
      */
-    Obstacle_Will_Destroy: makeEvent(true),
+    obstacle_will_destroy: makeEvent(true),
     /**
      * Emitted when an obstacle is destroyed. Health and death
      * variables will have been updated, and all side-effects
      * (spawning explosions/decals/particles/loot) will have
      * occurred
      */
-    Obstacle_Did_Destroy: makeEvent(),
+    obstacle_did_destroy: makeEvent(),
     /**
      * Emitted when a player is about to interact with an obstacle.
      * All checks for validity will have succeeded ({@link Obstacle.canInteract()}
@@ -293,14 +293,14 @@ export const Events = {
      *
      * Cancelling this event will prevent the interaction from occurring
      */
-    Obstacle_Will_Interact: makeEvent(true),
+    obstacle_will_interact: makeEvent(true),
     /**
      * Emitted after a player has interacted with an obstacle.
      * All checks for validity will have succeeded ({@link Obstacle.canInteract()}
      * will have already returned `true`), and all side effects will
      * have occurred
      */
-    Obstacle_Did_Interact: makeEvent(),
+    obstacle_did_interact: makeEvent(),
 
     /**
      * Emitted whenever {@link Game.addLoot()} is called,
@@ -308,12 +308,12 @@ export const Events = {
      *
      * Cancelling this event will prevent the loot from being generated
      */
-    Loot_Will_Generate: makeEvent(true),
+    loot_will_generate: makeEvent(true),
     /**
      * Emitted whenever {@link Game.addLoot()} is called,
      * after the loot object has both been created and added
      */
-    Loot_Did_Generate: makeEvent(),
+    loot_did_generate: makeEvent(),
     /**
      * Emitted when a player is about to interact
      * {@link Loot} object. All checks for validity
@@ -321,11 +321,11 @@ export const Events = {
      * will hav returned `true`); however, the redundancy
      * check (indicated by the `noPickup` argument) will
      * not have run; if `noPickup` is `true`,
-     * {@link Events.Loot_Did_Interact} will not be fired.
+     * {@link Events.loot_did_interact} will not be fired.
      *
      * Cancelling this event will prevent the interaction from occurring
      */
-    Loot_Will_Interact: makeEvent(true),
+    loot_will_interact: makeEvent(true),
     /**
      * Emitted after a player successfully interacts with a
      * {@link Loot} object. By the time this event is fired,
@@ -334,10 +334,10 @@ export const Events = {
      * object will have been removed; the "new" loot
      * item (which is created if the old one isn't completely
      * consumed) will have also been created (meaning that
-     * {@link Events.Loot_Will_Generate} and
-     * {@link Events.Loot_Did_Generate} will have fired)
+     * {@link Events.loot_will_generate} and
+     * {@link Events.loot_did_generate} will have fired)
      */
-    Loot_Did_Interact: makeEvent(),
+    loot_did_interact: makeEvent(),
 
     /**
      * Emitted at the start of the {@link GameMap.generateBuilding()}
@@ -345,12 +345,12 @@ export const Events = {
      *
      * Cancelling this event will prevent the building in question from generating
      */
-    Building_Will_Generate: makeEvent(true),
+    building_will_generate: makeEvent(true),
     /**
      * Emitted at the end of the {@link GameMap.generateBuilding()}
      * method, which is invoked during map generation
      */
-    Building_Did_Generate: makeEvent(),
+    building_did_generate: makeEvent(),
     /**
      * Emitted when a building with a damageable ceiling has had
      * its ceiling damaged. This usually happens by destroying
@@ -358,19 +358,19 @@ export const Events = {
      *
      * Cancelling this event prevents the damage from being applied
      */
-    Building_Will_DamageCeiling: makeEvent(true),
+    building_will_damage_ceiling: makeEvent(true),
     /**
      * Emitted when a building with a damageable ceiling is about
      * to receive damage to said ceiling, usually by means of
      * destroying one of its walls
      */
-    Building_Did_DamageCeiling: makeEvent(),
+    building_did_damage_ceiling: makeEvent(),
     /**
      * Emitted when a building's ceiling is destroyed by means
      * of having too many of its walls destroyed. The building
      * will have been marked as "dead" and "partially dirty".
      */
-    Building_Did_DestroyCeiling: makeEvent(),
+    building_did_destroy_ceiling: makeEvent(),
 
     /**
      * Emitted when {@link Game.summonAirdrop()} is called.
@@ -379,23 +379,23 @@ export const Events = {
      *
      * Cancelling this event will prevent the airdrop from being summoned
      */
-    Airdrop_Will_Summon: makeEvent(true),
+    airdrop_will_summon: makeEvent(true),
     /**
      * Emitted when {@link Game.summonAirdrop()} is called.
      * The position of the airdrop and its plane will have
      * been decided, and it will have been scheduled.
      */
-    Airdrop_Did_Summon: makeEvent(),
+    airdrop_did_summon: makeEvent(),
     /**
      * Emitted when a {@link Parachute} object hits the ground.
      * The parachute object will have been removed, and the
      * corresponding airdrop crate will have been generated
      * (meaning that this event is always fired after an
-     * {@link Events.Obstacle_Did_Generate}). No particles will
+     * {@link Events.obstacle_did_generate}). No particles will
      * have been spawned, and no crushing damage will have been
      * applied
      */
-    Airdrop_Landed: makeEvent(),
+    airdrop_landed: makeEvent(),
 
     /**
      * Emitted when a game is created, near the end of
@@ -405,71 +405,71 @@ export const Events = {
      * and {@link Gas gas} will have been loaded. The game
      * loop will not have been started
      */
-    Game_Created: makeEvent(),
+    game_created: makeEvent(),
     /**
      * Emitted at the end of a game tick. All side-effects
      * will have occurred (including the potential dispatch
-     * of {@link Events.Game_End}), but the next tick will
+     * of {@link Events.game_end}), but the next tick will
      * not have been scheduled.
      */
-    Game_Tick: makeEvent(),
+    game_tick: makeEvent(),
     /**
      * Emitted when a player or team is determined to have
      * won the game, thereby ending it. The server will not
      * have been stopped yet
      */
-    Game_End: makeEvent()
+    game_end: makeEvent()
 };
 
 export interface EventDataMap {
-    readonly Player_Will_Connect: never
-    readonly Player_Did_Connect: Player
+    readonly player_will_connect: never
+    readonly player_did_connect: Player
 
-    readonly Player_Will_Join: {
+    readonly player_will_join: {
         readonly player: Player
         readonly joinPacket: JoinPacketData
     }
-    readonly Player_Did_Join: {
+    readonly player_did_join: {
         readonly player: Player
         readonly joinPacket: JoinPacketData
     }
 
-    readonly Player_Disconnect: Player
-    readonly Player_Update: Player
-    readonly Player_StartAttacking: Player
-    readonly Player_StopAttacking: Player
-    readonly Player_Input: {
+    readonly player_disconnect: Player
+    readonly player_update: Player
+    readonly player_start_attacking: Player
+    readonly player_stop_attacking: Player
+    readonly player_input: {
         readonly player: Player
         readonly packet: PlayerInputData
     }
-    readonly Player_Will_Emote: {
+    readonly player_will_emote: {
         readonly player: Player
         readonly emote: EmoteDefinition
     }
-    readonly Player_Did_Emote: {
+    readonly player_did_emote: {
         readonly player: Player
         readonly emote: EmoteDefinition
     }
-    readonly Player_Will_MapPing: {
+    readonly player_will_map_ping: {
         readonly player: Player
         readonly ping: PlayerPing
         readonly position: Vector
     }
-    readonly Player_Did_MapPing: {
+    readonly player_did_map_ping: {
         readonly player: Player
         readonly ping: PlayerPing
         readonly position: Vector
     }
-    readonly Player_Damage: PlayerDamageEvent
-    readonly Player_Will_PiercingDamaged: PlayerDamageEvent
-    readonly Player_Did_PiercingDamaged: PlayerDamageEvent
-    readonly Player_Will_Die: Omit<PlayerDamageEvent, "amount">
-    readonly Player_Did_Die: Omit<PlayerDamageEvent, "amount">
-    readonly Player_Did_Win: Player
+    readonly player_damage: PlayerDamageEvent
+    readonly player_will_piercing_damaged: PlayerDamageEvent
+    readonly player_did_piercing_damaged: PlayerDamageEvent
+    readonly player_will_die: Omit<PlayerDamageEvent, "amount">
+    readonly player_did_die: Omit<PlayerDamageEvent, "amount">
+    readonly player_did_win: Player
 
-    readonly InvItem_Equip: InventoryItem
-    readonly InvItem_Unequip: InventoryItem
-    readonly InvItem_StatsChanged: {
+    readonly inv_item_equip: InventoryItem
+    readonly inv_item_unequip: InventoryItem
+    readonly inv_item_stats_changed: {
         readonly item: InventoryItem
         /**
          * Specific type will be `(typeof item)["stats"]`
@@ -486,7 +486,7 @@ export interface EventDataMap {
             readonly [K in keyof InventoryItem["stats"]]: boolean
         }
     }
-    readonly InvItem_ModifiersChanged: {
+    readonly inv_item_modifiers_changed: {
         readonly item: InventoryItem
         /**
          * Specific type will be `(typeof item)["modifiers"]`
@@ -504,7 +504,7 @@ export interface EventDataMap {
         }
     }
 
-    readonly Obstacle_Will_Generate: {
+    readonly obstacle_will_generate: {
         readonly type: ObstacleDefinition
         readonly position: Vector
         readonly rotation: number
@@ -516,21 +516,21 @@ export interface EventDataMap {
         readonly puzzlePiece?: string | boolean
         readonly locked?: boolean
     }
-    readonly Obstacle_Did_Generate: Obstacle
-    readonly Obstacle_Will_Damage: ObstacleDamageEvent
-    readonly Obstacle_Did_Damage: ObstacleDamageEvent
-    readonly Obstacle_Will_Destroy: ObstacleDamageEvent
-    readonly Obstacle_Did_Destroy: ObstacleDamageEvent
-    readonly Obstacle_Will_Interact: {
+    readonly obstacle_did_generate: Obstacle
+    readonly obstacle_will_damage: ObstacleDamageEvent
+    readonly obstacle_did_damage: ObstacleDamageEvent
+    readonly obstacle_will_destroy: ObstacleDamageEvent
+    readonly obstacle_did_destroy: ObstacleDamageEvent
+    readonly obstacle_will_interact: {
         readonly obstacle: Obstacle
         readonly player?: Player
     }
-    readonly Obstacle_Did_Interact: {
+    readonly obstacle_did_interact: {
         readonly obstacle: Obstacle
         readonly player?: Player
     }
 
-    readonly Loot_Will_Generate: {
+    readonly loot_will_generate: {
         readonly definition: LootDefinition
         readonly position: Vector
         readonly layer: Layer
@@ -538,7 +538,7 @@ export interface EventDataMap {
         readonly pushVel?: number
         readonly jitterSpawn?: boolean
     }
-    readonly Loot_Did_Generate: {
+    readonly loot_did_generate: {
         readonly loot: Loot
         readonly position: Vector
         readonly layer: Layer
@@ -546,34 +546,34 @@ export interface EventDataMap {
         readonly pushVel?: number
         readonly jitterSpawn?: boolean
     }
-    readonly Loot_Will_Interact: {
+    readonly loot_will_interact: {
         readonly loot: Loot
         readonly noPickup: boolean
         readonly player: Player
     }
-    readonly Loot_Did_Interact: {
+    readonly loot_did_interact: {
         readonly loot: Loot
         readonly player: Player
     }
 
-    readonly Building_Will_Generate: {
+    readonly building_will_generate: {
         readonly definition: BuildingDefinition
         readonly position: Vector
         readonly orientation: Orientation
         readonly layer: number
     }
-    readonly Building_Did_Generate: Building
-    readonly Building_Will_DamageCeiling: {
+    readonly building_did_generate: Building
+    readonly building_will_damage_ceiling: {
         readonly building: Building
         readonly damage: number
     }
-    readonly Building_Did_DamageCeiling: {
+    readonly building_did_damage_ceiling: {
         readonly building: Building
         readonly damage: number
     }
-    readonly Building_Did_DestroyCeiling: Building
+    readonly building_did_destroy_ceiling: Building
 
-    readonly Airdrop_Will_Summon: {
+    readonly airdrop_will_summon: {
         /**
          * This is the airdrop's _desired_ location, which may
          * or may not differ from where it will end up, all depending
@@ -581,7 +581,7 @@ export interface EventDataMap {
          */
         readonly position: Vector
     }
-    readonly Airdrop_Did_Summon: {
+    readonly airdrop_did_summon: {
         readonly airdrop: Airdrop
         /**
          * This is the airdrop's _actual_ location, which may
@@ -590,11 +590,11 @@ export interface EventDataMap {
          */
         readonly position: Vector
     }
-    readonly Airdrop_Landed: Airdrop
+    readonly airdrop_landed: Airdrop
 
-    readonly Game_Created: Game
-    readonly Game_Tick: Game
-    readonly Game_End: Game
+    readonly game_created: Game
+    readonly game_tick: Game
+    readonly game_end: Game
 }
 
 type EventTypes = keyof typeof Events;

@@ -35,7 +35,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
 
             if (!crate) return;
 
-            this.game.pluginManager.emit("Airdrop_Landed", this._airdrop);
+            this.game.pluginManager.emit("airdrop_landed", this._airdrop);
 
             // Spawn smoke
             this.game.addSyncedParticles({

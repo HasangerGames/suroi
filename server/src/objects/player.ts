@@ -565,7 +565,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.loadout.emotes.includes(emote)
             && (!emote?.isTeamEmote || this.game.teamMode)
             && emote
-            && !this.game.pluginManager.emit("Player_Will_Emote", {
+            && !this.game.pluginManager.emit("player_will_emote", {
                 player: this,
                 emote
             })
@@ -576,7 +576,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     sendMapPing(ping: PlayerPing, position: Vector): void {
         if (
-            this.game.pluginManager.emit("Player_Will_MapPing", {
+            this.game.pluginManager.emit("player_will_map_ping", {
                 player: this,
                 ping,
                 position
@@ -728,14 +728,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
-            this.game.pluginManager.emit("Player_StartAttacking", this);
+            this.game.pluginManager.emit("player_start_attacking", this);
             this.startedAttacking = false;
             this.disableInvulnerability();
             this.activeItem.useItem();
         }
 
         if (this.stoppedAttacking) {
-            this.game.pluginManager.emit("Player_StopAttacking", this);
+            this.game.pluginManager.emit("player_stop_attacking", this);
             this.stoppedAttacking = false;
             this.activeItem.stopUse();
         }
@@ -840,7 +840,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         this.turning = false;
-        this.game.pluginManager.emit("Player_Update", this);
+        this.game.pluginManager.emit("player_update", this);
     }
 
     private _firstPacket = true;
@@ -1326,7 +1326,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { source, weaponUsed } = params;
         let { amount } = params;
 
-        this.game.pluginManager.emit("Player_Damage", {
+        this.game.pluginManager.emit("player_damage", {
             amount,
             player: this,
             source,
@@ -1367,7 +1367,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         amount = this._clampDamageAmount(amount);
 
         if (
-            this.game.pluginManager.emit("Player_Will_PiercingDamaged", {
+            this.game.pluginManager.emit("player_will_piercing_damaged", {
                 player: this,
                 amount,
                 source,
@@ -1413,7 +1413,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        this.game.pluginManager.emit("Player_Did_PiercingDamaged", {
+        this.game.pluginManager.emit("player_did_piercing_damaged", {
             player: this,
             amount,
             source,
@@ -1449,7 +1449,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (statsChanged && canTrackStats) {
             this.game.pluginManager.emit(
-                "InvItem_StatsChanged",
+                "inv_item_stats_changed",
                 {
                     item: weaponUsed,
 
@@ -1498,7 +1498,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     die(params: Omit<DamageParams, "amount">): void {
         if (this.health > 0 || this.dead) return;
 
-        this.game.pluginManager.emit("Player_Will_Die", {
+        this.game.pluginManager.emit("player_will_die", {
             player: this,
             ...params
         });
@@ -1740,7 +1740,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
         }
 
-        this.game.pluginManager.emit("Player_Did_Die", {
+        this.game.pluginManager.emit("player_did_die", {
             player: this,
             ...params
         });
@@ -2018,7 +2018,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        this.game.pluginManager.emit("Player_Input", {
+        this.game.pluginManager.emit("player_input", {
             player: this,
             packet
         });

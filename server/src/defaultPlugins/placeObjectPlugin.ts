@@ -28,13 +28,13 @@ export class PlaceObjectPlugin extends GamePlugin {
     } ();
 
     protected override initListeners(): void {
-        this.on("Player_Did_Join", ({ player }) => {
+        this.on("player_did_join", ({ player }) => {
             const obstacle = new Obstacle(player.game, this.obstacleToPlace, player.position);
             this._playerToObstacle.set(player, obstacle);
             this.game.grid.addObject(obstacle);
         });
 
-        this.on("Player_Disconnect", player => {
+        this.on("player_disconnect", player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 this.game.grid.removeObject(obstacle);
                 this._playerToObstacle.delete(player);
@@ -49,7 +49,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on("Player_Update", player => {
+        this.on("player_update", player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const position = Vec.add(
                     player.position,
@@ -61,7 +61,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on("Player_StartAttacking", player => {
+        this.on("player_start_attacking", player => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const map = this.game.map;
                 const round = (n: number): number => Math.round(n * 100) / 100;

@@ -17,7 +17,7 @@ const selectableThrowables = Throwables.definitions.filter(g => !g.killstreak &&
  */
 export class WeaponSwapPlugin extends GamePlugin {
     protected override initListeners(): void {
-        this.on("Player_Will_Die", ({ source }) => {
+        this.on("player_will_die", ({ source }) => {
             if (!(source instanceof Player)) return;
 
             const inventory = source.inventory;

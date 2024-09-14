@@ -44,8 +44,8 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         if (this._isActive !== isActive) {
             this.owner.game.pluginManager.emit(
                 isActive
-                    ? "InvItem_Equip"
-                    : "InvItem_Unequip",
+                    ? "inv_item_equip"
+                    : "inv_item_unequip",
                 this
             );
         }
@@ -183,7 +183,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             this._modifiers.baseSpeed = newModifiers.baseSpeed;
 
             this.owner.game.pluginManager.emit(
-                "InvItem_ModifiersChanged",
+                "inv_item_modifiers_changed",
                 {
                     item: this,
                     oldMods: old,

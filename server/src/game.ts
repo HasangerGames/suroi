@@ -413,7 +413,7 @@ export class Game implements GameData {
 
         this.setGameData({ allowJoin: true });
 
-        this.pluginManager.emit("Game_Created", this);
+        this.pluginManager.emit("game_created", this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -593,10 +593,10 @@ export class Game implements GameData {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
-                this.pluginManager.emit("Player_Did_Win", player);
+                this.pluginManager.emit("player_did_win", player);
             }
 
-            this.pluginManager.emit("Game_End", this);
+            this.pluginManager.emit("game_end", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -620,7 +620,7 @@ export class Game implements GameData {
             this._tickTimes.length = 0;
         }
 
-        this.pluginManager.emit("Game_Tick", this);
+        this.pluginManager.emit("game_tick", this);
 
         if (!this.stopped) {
             setTimeout(this.tick, this.idealDt);
@@ -705,7 +705,7 @@ export class Game implements GameData {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
-        if (this.pluginManager.emit("Player_Will_Connect")) {
+        if (this.pluginManager.emit("player_will_connect")) {
             return undefined;
         }
 
@@ -810,13 +810,13 @@ export class Game implements GameData {
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, spawnLayer, team);
-        this.pluginManager.emit("Player_Did_Connect", player);
+        this.pluginManager.emit("player_did_connect", player);
         return player;
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
-        const rejectedBy = this.pluginManager.emit("Player_Will_Join", { player, joinPacket: packet });
+        const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
         if (rejectedBy) {
             player.disconnect(`Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
             return;
@@ -890,7 +890,7 @@ export class Game implements GameData {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
-        this.pluginManager.emit("Player_Did_Join", { player, joinPacket: packet });
+        this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
 
     removePlayer(player: Player): void {
@@ -946,7 +946,7 @@ export class Game implements GameData {
             /* not a really big deal if we can't close the socket */
             // when does this ever fail?
         }
-        this.pluginManager.emit("Player_Disconnect", player);
+        this.pluginManager.emit("player_disconnect", player);
     }
 
     /**
@@ -980,7 +980,7 @@ export class Game implements GameData {
 
         if (
             this.pluginManager.emit(
-                "Loot_Will_Generate",
+                "loot_will_generate",
                 {
                     definition: definition = Loots.reify(definition),
                     ...args
@@ -1004,7 +1004,7 @@ export class Game implements GameData {
         this.grid.addObject(loot);
 
         this.pluginManager.emit(
-            "Loot_Did_Generate",
+            "loot_did_generate",
             { loot, ...args }
         );
 
@@ -1121,7 +1121,7 @@ export class Game implements GameData {
     }
 
     summonAirdrop(position: Vector): void {
-        if (this.pluginManager.emit("Airdrop_Will_Summon", { position })) return;
+        if (this.pluginManager.emit("airdrop_will_summon", { position })) return;
 
         const paddingFactor = 1.25;
 
@@ -1287,7 +1287,7 @@ export class Game implements GameData {
             });
         }, GameConstants.airdrop.flyTime);
 
-        this.pluginManager.emit("Airdrop_Did_Summon", { airdrop, position });
+        this.pluginManager.emit("airdrop_did_summon", { airdrop, position });
     }
 }
 

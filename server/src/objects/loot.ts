@@ -217,7 +217,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     interact(player: Player, noPickup = false): void {
         if (
             this.dead
-            || this.game.pluginManager.emit("Loot_Will_Interact", {
+            || this.game.pluginManager.emit("loot_will_interact", {
                 loot: this,
                 noPickup,
                 player
@@ -426,7 +426,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (this._count > 0) createNewItem();
 
-        this.game.pluginManager.emit("Loot_Did_Interact", {
+        this.game.pluginManager.emit("loot_did_interact", {
             loot: this,
             player
         });

@@ -169,7 +169,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     || source instanceof Obstacle
                 )
             )
-            || this.game.pluginManager.emit("Obstacle_Will_Damage", {
+            || this.game.pluginManager.emit("obstacle_will_damage", {
                 obstacle: this,
                 ...params
             })
@@ -190,7 +190,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.hitbox.scale(this.scale / oldScale);
         }
 
-        this.game.pluginManager.emit("Obstacle_Did_Damage", {
+        this.game.pluginManager.emit("obstacle_did_damage", {
             obstacle: this,
             ...params
         });
@@ -200,7 +200,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.dead = true;
 
             if (
-                this.game.pluginManager.emit("Obstacle_Will_Destroy", {
+                this.game.pluginManager.emit("obstacle_will_destroy", {
                     obstacle: this,
                     source,
                     weaponUsed,
@@ -268,7 +268,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 }
             }
 
-            this.game.pluginManager.emit("Obstacle_Did_Destroy", {
+            this.game.pluginManager.emit("obstacle_did_destroy", {
                 obstacle: this,
                 source,
                 weaponUsed,
@@ -315,7 +315,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (
             !this.canInteract(player)
             && !this.door?.locked
-            && !this.game.pluginManager.emit("Obstacle_Will_Interact", {
+            && !this.game.pluginManager.emit("obstacle_will_interact", {
                 obstacle: this,
                 player
             })
@@ -364,7 +364,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
         }
 
-        this.game.pluginManager.emit("Obstacle_Will_Interact", {
+        this.game.pluginManager.emit("obstacle_will_interact", {
             obstacle: this,
             player
         });
