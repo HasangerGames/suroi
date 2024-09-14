@@ -451,8 +451,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilDuration: 600,
             fireMode: FireMode.Single,
             bulletCount: 18,
-            shotSpread: 24,
-            moveSpread: 28,
+            shotSpread: 18,
+            moveSpread: 22,
             jitterRadius: 1.75,
             length: 8,
             fists: {
@@ -746,8 +746,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilMultiplier: 0.8,
             recoilDuration: 90,
             fireMode: FireMode.Single,
-            shotSpread: 7,
-            moveSpread: 14,
+            shotSpread: 5,
+            moveSpread: 10,
             length: 4.7,
             fists: {
                 left: Vec.create(40, 0),
@@ -770,16 +770,16 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             capacity: 15,
             reloadTime: 1.5,
             ballistics: {
-                damage: 11.75,
+                damage: 13,
                 obstacleMultiplier: 1,
-                speed: 0.14,
+                speed: 0.16,
                 range: 120
             },
             dual: {
                 leftRightOffset: 1.3,
                 fireDelay: 75,
-                shotSpread: 10,
-                moveSpread: 18,
+                shotSpread: 7,
+                moveSpread: 15,
                 capacity: 30,
                 reloadTime: 2.9
             }
@@ -838,8 +838,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilMultiplier: 0.8,
             recoilDuration: 90,
             fireMode: FireMode.Auto,
-            shotSpread: 12,
-            moveSpread: 19,
+            shotSpread: 8,
+            moveSpread: 14,
             length: 5.1,
             fists: {
                 left: Vec.create(40, 0),
@@ -865,13 +865,13 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 damage: 9,
                 obstacleMultiplier: 1,
                 speed: 0.16,
-                range: 85
+                range: 70
             },
             dual: {
                 leftRightOffset: 1.3,
                 fireDelay: 30,
-                shotSpread: 17,
-                moveSpread: 35,
+                shotSpread: 14,
+                moveSpread: 25,
                 capacity: 32,
                 reloadTime: 3.7
             }
