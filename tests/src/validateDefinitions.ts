@@ -26,7 +26,7 @@ import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiC
 import { ItemType, NullString, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { type Vector } from "../../common/src/utils/vector";
-import { Config, Config as ServerConfig, SpawnMode } from "../../server/src/config";
+import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, LootTiers } from "../../server/src/data/lootTables";
 import { Maps, type MapName } from "../../server/src/data/maps";
@@ -2756,59 +2756,61 @@ logger.indent("Validating configurations", () => {
             errorPath
         });
 
-        if (typeof ServerConfig.spawn !== "number") {
-            switch (ServerConfig.spawn.mode) {
-                case SpawnMode.Radius: {
-                    tester.assertIsPositiveFiniteReal({
-                        obj: ServerConfig.spawn,
-                        field: "radius",
-                        baseErrorPath: errorPath
-                    });
+        switch (ServerConfig.spawn.mode) {
+            case SpawnMode.Radius: {
+                tester.assertIsPositiveFiniteReal({
+                    obj: ServerConfig.spawn,
+                    field: "radius",
+                    baseErrorPath: errorPath
+                });
 
-                    const map = Maps[name];
-                    if (map !== undefined) {
-                        validators.vector(
-                            tester.createPath(errorPath, "spawn position"),
-                            ServerConfig.spawn.position,
-                            {
-                                min: 0,
-                                max: map.width,
-                                includeMin: true,
-                                includeMax: true
-                            },
-                            {
-                                min: 0,
-                                max: map.height,
-                                includeMin: true,
-                                includeMax: true
-                            }
-                        );
-                    }
-                    break;
+                const map = Maps[name];
+                if (map !== undefined) {
+                    validators.vector(
+                        tester.createPath(errorPath, "spawn position"),
+                        ServerConfig.spawn.position,
+                        {
+                            min: 0,
+                            max: map.width,
+                            includeMin: true,
+                            includeMax: true
+                        },
+                        {
+                            min: 0,
+                            max: map.height,
+                            includeMin: true,
+                            includeMax: true
+                        }
+                    );
                 }
-                case SpawnMode.Fixed: {
-                    const map = Maps[name];
-                    if (map !== undefined) {
-                        validators.vector(
-                            tester.createPath(errorPath, "spawn position"),
-                            ServerConfig.spawn.position,
-                            {
-                                min: 0,
-                                max: map.width,
-                                includeMin: true,
-                                includeMax: true
-                            },
-                            {
-                                min: 0,
-                                max: map.height,
-                                includeMin: true,
-                                includeMax: true
-                            }
-                        );
-                    }
-                    break;
-                }
+                break;
             }
+            case SpawnMode.Fixed: {
+                const map = Maps[name];
+                if (map !== undefined) {
+                    validators.vector(
+                        tester.createPath(errorPath, "spawn position"),
+                        ServerConfig.spawn.position,
+                        {
+                            min: 0,
+                            max: map.width,
+                            includeMin: true,
+                            includeMax: true
+                        },
+                        {
+                            min: 0,
+                            max: map.height,
+                            includeMin: true,
+                            includeMax: true
+                        }
+                    );
+                }
+                break;
+            }
+            case SpawnMode.Normal:
+            case SpawnMode.Center:
+            default:
+                break;
         }
 
         tester.assertIsNaturalNumber({
@@ -2823,7 +2825,7 @@ logger.indent("Validating configurations", () => {
             baseErrorPath: errorPath
         });
 
-        if (typeof ServerConfig.gas !== "number") {
+        if (ServerConfig.gas.mode === GasMode.Debug) {
             tester.assertNoPointlessValue({
                 obj: ServerConfig.gas,
                 field: "overridePosition",
