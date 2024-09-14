@@ -463,8 +463,7 @@ export class UIManager {
         this._teammateDataCache.clear();
     }
 
-    private _lastHealthBarAnimTime = 0;
-    private _oldHealth = 0;
+    private _oldHealthPercent = 100;
 
     updateUI(data: PlayerData): void {
         const {
@@ -508,30 +507,26 @@ export class UIManager {
             this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
 
             const normalizedHealth = this.health / this.maxHealth;
-            const realPercentage = 100 * normalizedHealth;
-            const percentage = safeRound(realPercentage);
+            const healthPercent = 100 * normalizedHealth;
 
             this.ui.healthBar
-                .width(`${realPercentage}%`)
+                .width(`${healthPercent}%`)
                 .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
-                .toggleClass("flashing", percentage <= 25);
+                .toggleClass("flashing", healthPercent <= 25);
 
-            if (realPercentage === 0) {
+            this.ui.healthAnim.stop();
+            if (this._oldHealthPercent - healthPercent >= 1) { // only animate larger changes in health
                 this.ui.healthAnim
-                    .stop()
-                    .width(0);
-            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
-                this.ui.healthAnim
-                    .stop()
-                    .width(`${this._oldHealth}%`)
-                    .animate({ width: `${realPercentage}%` }, 500);
-                this._oldHealth = realPercentage;
-                this._lastHealthBarAnimTime = Date.now();
+                    .width(`${this._oldHealthPercent}%`)
+                    .animate({ width: `${healthPercent}%` }, 500);
+            } else {
+                this.ui.healthAnim.width(`${healthPercent}%`);
             }
+            this._oldHealthPercent = healthPercent;
 
             this.ui.healthBarAmount
                 .text(safeRound(this.health))
-                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
+                .css("color", healthPercent <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
         if (teammates && this.game.teamMode) {
@@ -620,9 +615,9 @@ export class UIManager {
 
         if (adrenaline !== undefined) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
-            const percentage = 100 * this.adrenaline / this.maxAdrenaline;
+            const percent = 100 * this.adrenaline / this.maxAdrenaline;
 
-            this.ui.adrenalineBar.width(`${percentage}%`);
+            this.ui.adrenalineBar.width(`${percent}%`);
 
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
