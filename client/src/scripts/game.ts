@@ -628,7 +628,7 @@ export class Game {
                             target: _object.ceilingContainer,
                             to: { alpha: 1 },
                             duration: LAYER_TRANSITION_DELAY,
-                            ease: EaseFunctions.sineOut
+                            ease: EaseFunctions.sineIn
                         });
                     }
 
@@ -636,7 +636,7 @@ export class Game {
                         target: _object.container,
                         to: { alpha: 1 },
                         duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineOut
+                        ease: EaseFunctions.sineIn
                     });
                 }
             } else {
