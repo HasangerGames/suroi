@@ -562,14 +562,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     sendEmote(emote?: EmoteDefinition): void {
         if (
-            this.loadout.emotes.includes(emote)
-            && (!emote?.isTeamEmote || this.game.teamMode)
-            && emote
+            emote
             && !this.game.pluginManager.emit("player_will_emote", {
                 player: this,
                 emote
             })
         ) {
+            if (emote.isTeamEmote && !this.game.teamMode) return;
+
             this.game.emotes.push(new Emote(emote, this));
 
             this.game.pluginManager.emit("player_did_emote", {
