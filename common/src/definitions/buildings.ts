@@ -3728,7 +3728,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             visibilityOverrides: [{
                 collider: new GroupHitbox(
-                    RectangleHitbox.fromRect(11.4, 10.4, Vec.create(-39.95, -100)),
+                    RectangleHitbox.fromRect(11.4, 6.4, Vec.create(-39.95, -102.25)),
                     RectangleHitbox.fromRect(8.5, 16, Vec.create(79.2, -42.75)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
