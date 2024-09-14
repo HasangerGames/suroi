@@ -7,7 +7,7 @@ import { GamePlugin } from "../pluginManager";
  */
 export class TeleportPlugin extends GamePlugin {
     protected override initListeners(): void {
-        this.on("Player_MapPing", ({ player, position }) => {
+        this.on("player_did_map_ping", ({ player, position }) => {
             player.position = Vec.clone(position);
             player.updateObjects = true;
             player.setPartialDirty();

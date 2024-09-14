@@ -41,7 +41,7 @@ export class PlaceObjectPlugin extends GamePlugin {
             });
         });
 
-        this.on("Player_Emote", ({ player }) => {
+        this.on("player_did_emote", ({ player }) => {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 obstacle.rotation += 1;
                 obstacle.rotation %= 4;

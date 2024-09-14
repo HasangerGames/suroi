@@ -3633,7 +3633,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
                 RectangleHitbox.fromRect(128, 73, Vec.create(5.75, -70)),
                 RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
-                RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)), // ADJUST THIS! (not sure if its correct) - pap,
+                RectangleHitbox.fromRect(45, 25, Vec.create(-30, 47)) // ADJUST THIS! (not sure if its correct) - pap,
                 // RectangleHitbox.fromRect(12.4, 12, Vec.create(66.05, -42.5))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
@@ -3924,7 +3924,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)),
                 RectangleHitbox.fromRect(128, 77.1, Vec.create(0, -66)),
                 RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86)),
-                RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05-5.6, -42.5+0.6))
+                RectangleHitbox.fromRect(12.4, 15, Vec.create(77.05 - 5.6, -42.5 + 0.6))
             ),
             spawnMode: MapObjectSpawnMode.Grass,
             floorImages: [

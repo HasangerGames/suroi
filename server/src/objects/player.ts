@@ -571,6 +571,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             })
         ) {
             this.game.emotes.push(new Emote(emote, this));
+
+            this.game.pluginManager.emit("player_did_emote", {
+                player: this,
+                emote
+            });
         }
     }
 
@@ -605,6 +610,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             definition: ping,
             position,
             playerId: this.id
+        });
+
+        this.game.pluginManager.emit("player_did_map_ping", {
+            player: this,
+            ping,
+            position
         });
     }
 
