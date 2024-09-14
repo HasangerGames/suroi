@@ -129,7 +129,9 @@ export function isVisibleFromLayer(
 const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
 
 export function getEffectiveZIndex(orig: ZIndexes, layer = 0, gameLayer = 0): number {
-    if (layer === 1) layer = 2; // epic
+    if (!isGroundLayer(layer)) {
+        layer = (layer as Layer) < Layer.Ground ? (layer - 1) : (layer + 1);
+    }
     if (!isGroundLayer(layer) && !equalLayer(gameLayer, Layer.Basement1) && !equalLayer(layer, gameLayer)) return orig; // hahaha no stair glitch for u
     return orig + (gameLayer < 0 && layer < 0 ? 100 : layer * layerCount);
 }
