@@ -84,7 +84,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = Number.MAX_SAFE_INTEGER - 1;
+        this.container.zIndex = Number.MAX_SAFE_INTEGER - 3;
     }
 
     destroy(): void {
