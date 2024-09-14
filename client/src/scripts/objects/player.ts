@@ -184,7 +184,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container: new Container()
         };
 
-        this.game.camera.addObject(emote.container);
+        game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
         emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
         emote.container.visible = false;
@@ -206,6 +206,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     position: this.hitbox.randomPoint(),
                     lifetime: 1000,
                     zIndex: ZIndexes.Players,
+                    get layer(): Layer { return game.layer ?? Layer.Ground; },
                     rotation: 0,
                     alpha: {
                         start: 1,
