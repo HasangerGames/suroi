@@ -256,13 +256,13 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             return {
                 idString: `blue_house_vault_layout_${id}`,
                 name: "Blue House Vault Layout",
-                spawnHitbox: RectangleHitbox.fromRect(20, 20),
+                spawnHitbox: RectangleHitbox.fromRect(40, 35, Vec.create(18.4, 18)),
                 floorImages: [{
                     key: subBuildings ? "blue_house_floor_2_2_special" : "blue_house_floor_2_2",
                     position: Vec.create(18.4, 18),
                     scale: Vec.create(1.07, 1.07)
                 }],
-                obstacles: obstacles,
+                obstacles,
                 subBuildings: subBuildings ?? [],
                 lootSpawners: subBuildings
                     ? []
