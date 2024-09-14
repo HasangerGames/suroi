@@ -239,7 +239,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         super.updateContainerPosition();
         if (!this.destroyed) {
             this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-            if (this.teammateName) this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
+            if (this.teammateName) {
+                this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
+                this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, this.game.layer);
+            }
         }
     }
 

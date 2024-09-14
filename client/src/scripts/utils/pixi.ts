@@ -75,7 +75,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                 const dimensions = (def.hitbox as RectangleHitbox).clone();
                 dimensions.scale(PIXI_SCALE);
                 const { x, y } = dimensions.min;
-                const [ w, h ] = [dimensions.max.x - x, dimensions.max.y - y];
+                const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
                 const s = WALL_STROKE_WIDTH;
 
                 const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
