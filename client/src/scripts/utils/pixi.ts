@@ -71,25 +71,26 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         ...Obstacles.definitions
             .filter(obj => obj.wall)
             .map(def => new Promise<void>(resolve => {
-                const { color, borderColor, rounded } = def.wall!;
-                const dimensions = (def.hitbox as RectangleHitbox).clone();
-                dimensions.scale(PIXI_SCALE);
-                const { x, y } = dimensions.min;
-                const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
-                const s = WALL_STROKE_WIDTH;
+                if (def.wall) {
+                    const { color, borderColor, rounded } = def.wall;
+                    const dimensions = (def.hitbox as RectangleHitbox).clone();
+                    dimensions.scale(PIXI_SCALE);
+                    const { x, y } = dimensions.min;
+                    const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
+                    const s = WALL_STROKE_WIDTH;
 
-                const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
-                renderer.render({
-                    target: wallTexture,
-                    container: new Graphics()
-                        .rect(0, 0, w, h)
-                        .fill({ color: borderColor })
-                        [rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
-                        .fill({ color })
-                });
+                    const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
+                    renderer.render({
+                        target: wallTexture,
+                        container: new Graphics()
+                            .rect(0, 0, w, h)
+                            .fill({ color: borderColor })
+                            .fill({ color })[rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
+                    });
 
-                textures[def.idString] = wallTexture;
-                resolve();
+                    textures[def.idString] = wallTexture;
+                    resolve();
+                }
             })),
         new Promise<void>(resolve => {
             const vestTexture = RenderTexture.create({ width: 102, height: 102, antialias: true });
