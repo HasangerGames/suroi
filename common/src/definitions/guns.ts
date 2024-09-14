@@ -929,8 +929,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             recoilMultiplier: 0.75,
             recoilDuration: 350,
             fireMode: FireMode.Burst,
-            shotSpread: 1,
-            moveSpread: 2.5,
+            shotSpread: 2,
+            moveSpread: 4,
             length: 8.6,
             fists: {
                 left: Vec.create(120, -3),
@@ -944,7 +944,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             }],
             gasParticles: gasParticlePresets.automatic,
             ballistics: {
-                damage: 21,
+                damage: 19,
                 obstacleMultiplier: 1.5,
                 speed: 0.3,
                 range: 180
