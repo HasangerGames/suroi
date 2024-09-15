@@ -84,13 +84,13 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                         target: wallTexture,
                         container: new Graphics()
                             .rect(0, 0, w, h)
-                            .fill({ color: borderColor })
-                            .fill({ color })[rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
+                            .fill({ color: borderColor })[rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
+                            .fill({ color })
                     });
 
                     textures[def.idString] = wallTexture;
-                    resolve();
                 }
+                resolve();
             })),
         new Promise<void>(resolve => {
             const vestTexture = RenderTexture.create({ width: 102, height: 102, antialias: true });
