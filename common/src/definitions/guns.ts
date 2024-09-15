@@ -1586,7 +1586,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             idString: "l115a1",
             name: "L115A1",
             ammoType: "338lap",
-            ammoSpawnAmount: 18,
+            ammoSpawnAmount: 12,
             fireDelay: 1500,
             switchDelay: 900,
             recoilMultiplier: 0.4,
