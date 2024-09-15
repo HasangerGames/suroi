@@ -29,7 +29,7 @@ import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { getTranslatedString, initTranslation } from "../translations";
 import { InputManager } from "./managers/inputManager";
-import { SoundManager } from "./managers/soundManager";
+import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
@@ -94,6 +94,8 @@ export class Game {
     readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
+
+    windAmbientSound!: GameSound;
 
     readonly playerNames = new Map<number, {
         readonly name: string
@@ -426,6 +428,8 @@ export class Game {
         // Sound which notifies the player that the
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
+
+        this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
 
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
