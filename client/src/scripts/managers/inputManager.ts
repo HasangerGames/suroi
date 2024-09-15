@@ -16,7 +16,7 @@ import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, 
 import { getTranslatedString } from "../../translations";
 import { html } from "../utils/misc";
 
-let controllerIndex: number | null = null;
+let controllerIndex = null;
 
 let gamepadA = false;
 let gamepadB = false;
@@ -36,8 +36,12 @@ let dPadLeft = false;
 let dPadRight = false;
 let gamepadHome = false;
 
+let gamepadLeftStickHorizontal = 0;
+let gamepadLeftStickVertical = 0;
+let gamepadRightStickHorizontal = 0;
+let gamepadRightStickVertical = 0;
+
 window.addEventListener('gamepadconnected',(event)=>{
-    const gamepad = event.gamepad;
     controllerIndex = event.gamepad.index;
     console.log("gamepad connected");
 });
@@ -51,49 +55,49 @@ function controllerInput(){
     if(controllerIndex !== null){
         const gamepad = navigator.getGamepads()[controllerIndex];
         const buttons = gamepad.buttons;
-        gamepadA=buttons[0].pressed;
-        gamepadB=buttons[1].pressed;
-        gamepadX=buttons[2].pressed;
-        gamepadY=buttons[3].pressed;
-        gamepadLB=buttons[4].pressed;
-        gamepadRB=buttons[5].pressed;
-        gamepadLT=buttons[6].pressed;
-        gamepadRT=buttons[7].pressed;
-        gamepadView=buttons[8].pressed
-        gamepadMenu=buttons[9].pressed
-        gamepadLS=buttons[10].pressed
-        gamepadRS=buttons[11].pressed
-        dPadUp=buttons[12].pressed;
-        dPadDown=buttons[13].pressed;
-        dPadLeft=buttons[14].pressed;
-        dPadRight=buttons[15].pressed;
-        gamepadHome=buttons[16].pressed;
-        //please make the buttons above able to be mapped in keybinds
-        const leftStickDeadZone = 0.4;
-        /*experiment with lower deadzone values to see if it can give more fluid movement, 
-        like mobile movement instead of wasd movement.
-        also, please make it so the player faces where the he is moving by default, like mobile joystick*/
-        const horizontalLSValue = gamepad.axes[0];
-        if(horizontalLSValue>=leftStickDeadZone){
-            //move player right
-        }
-        else if(horizontalLSValue<=-leftStickDeadZone){
-            //move player left
-        }
-        const verticalLSValue = gamepad.axes[1];
-        if(verticalLSValue>=leftStickDeadZone){
-            //move player up
-        }
-        else if(verticalLSValue<=-leftStickDeadZone){
-            //move player down
-        }
-        // right stick should be used for aim with aimline like the mobile right joystick
+        gamepadA = buttons[0].pressed;
+        gamepadB = buttons[1].pressed;
+        gamepadX = buttons[2].pressed;
+        gamepadY = buttons[3].pressed;
+        gamepadLB = buttons[4].pressed;
+        gamepadRB = buttons[5].pressed;
+        gamepadLT = buttons[6].pressed;
+        gamepadRT = buttons[7].pressed;
+        gamepadView = buttons[8].pressed;
+        gamepadMenu = buttons[9].pressed;
+        gamepadLS = buttons[10].pressed;
+        gamepadRS = buttons[11].pressed;
+        dPadUp = buttons[12].pressed;
+        dPadDown = buttons[13].pressed;
+        dPadLeft = buttons[14].pressed;
+        dPadRight = buttons[15].pressed;
+        gamepadHome = buttons[16].pressed;
+        /*please make the above buttons able to be binded in keybinds, 
+        also set some defaults when a controller is detected.
+        remember, when controllerIndex !== null, that means a controller is detected. */
+
+        gamepadLeftStickHorizontal = gamepad.axes[0];
+        gamepadLeftStickVertical = gamepad.axes[1];
+        //please use left sticks for movement and make the player face where he is moving, like mobile
+        gamepadRightStickHorizontal = gamepad.axes[2];
+        gamepadRightStickVertical = gamepad.axes[3];
+        /*please use right sticks for aim (but not shoot, there's a different button) 
+        and add aim line like mobile right joystick */
+        console.log(gamepadLeftStickHorizontal);
+        console.log(gamepadLeftStickVertical);
+        console.log(gamepadRightStickHorizontal);
+        console.log(gamepadRightStickVertical);
+        /*honestly you could just derive the controls from mobile and add 
+        the physical joysticks as input instead of the virtual joysticks */
+    }
 }
+
 
 function gameLoop(){
     controllerInput();
     requestAnimationFrame(gameLoop);
 }
+
 gameLoop();
 
 
