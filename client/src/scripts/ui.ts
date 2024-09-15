@@ -490,8 +490,10 @@ export async function setUpUI(game: Game): Promise<void> {
 
         teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
-        const getPlayerHTML = (p: CustomTeamPlayerInfo): string =>
-            `
+        const getPlayerHTML = (p: CustomTeamPlayerInfo): string => {
+            let badgeSrc;
+            if (p.badge) badgeSrc = `./img/game/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
+            return `
             <div class="create-team-player-container" data-id="${p.id}">
               <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
               <div class="skin">
@@ -501,10 +503,11 @@ export async function setUpUI(game: Game): Promise<void> {
               </div>
               <div class="create-team-player-name-container">
                 <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                ${p.badge ? `<img class="create-team-player-badge" src="./img/game/badges/${p.badge}.svg" />` : ""}
+                ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/badges/${p.badge}.svg"} />` : ""}
               </div>
             </div>
             `;
+        };
 
         let playerID: number;
 
